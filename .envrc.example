@@ -1,0 +1,60 @@
+# When the application is loaded on a non-web3 browser this is the network that the browser will use.
+# Note: this is passed directly to ethers.js so you'll want to make sure ethers understand the name.
+export NEXT_JS_ENV=staging
+
+export NEXT_JS_FORTMATIC_API_KEY=<YOUR_FORTMATIC_API_KEY>
+export NEXT_JS_FORTMATIC_PRODUCTION_API_KEY=<YOUR_FORTMATIC_PRODUCTION_API_KEY>
+
+export NEXT_JS_PORTIS_API_KEY=<YOUR_PORTIS_API_KEY>
+
+export NEXT_JS_UNISWAP_SUBGRAPH_URI_MAINNET=https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2
+
+export NEXT_JS_SUBGRAPH_3_0_1_URI_MAINNET=https://api.thegraph.com/subgraphs/name/pooltogether/pooltogether-v3_0_1
+export NEXT_JS_SUBGRAPH_3_0_1_URI_ROPSTEN=https://api.thegraph.com/subgraphs/name/pooltogether/ropsten-v3_0_1
+export NEXT_JS_SUBGRAPH_3_0_1_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/pooltogether/rinkeby-v3_0_1
+
+export NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_MAINNET=https://api.thegraph.com/subgraphs/name/pooltogether/pooltogether-staging-v3_0_1
+export NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_ROPSTEN=https://api.thegraph.com/subgraphs/name/pooltogether/ropsten-staging-v3_0_1
+export NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/pooltogether/rinkeby-staging-v3_0_1
+
+export NEXT_JS_SUBGRAPH_3_1_0_URI_MAINNET=https://api.thegraph.com/subgraphs/name/pooltogether/pooltogether-v3_1_0
+export NEXT_JS_SUBGRAPH_3_1_0_URI_ROPSTEN=https://api.thegraph.com/subgraphs/name/pooltogether/ropsten-v3_1_0
+export NEXT_JS_SUBGRAPH_3_1_0_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/pooltogether/rinkeby-v3_1_0
+
+export NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_MAINNET=https://api.thegraph.com/subgraphs/name/pooltogether/pooltogether-staging-v3_1_0
+export NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_ROPSTEN=https://api.thegraph.com/subgraphs/name/pooltogether/ropsten-staging-v3_1_0
+export NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/pooltogether/rinkeby-staging-v3_1_0
+
+export NEXT_JS_SUBGRAPH_LOOTBOX_URI_MAINNET=
+export NEXT_JS_SUBGRAPH_LOOTBOX_URI_ROPSTEN=
+export NEXT_JS_SUBGRAPH_LOOTBOX_URI_RINKEBY=https://thegraph.com/explorer/subgraph/pooltogether/ptv3-lootbox-rinkeby-staging?version=current
+
+export NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME=homestead
+
+export NEXT_JS_INFURA_KEY=<YOUR_INFURA_KEY>
+export NEXT_JS_DOMAIN_NAME=<USUALLY pooltogether.com WITHOUT THE SUBDOMAIN, LEAVE BLANK IF LOCALHOST!>
+
+export MAGIC_SECRET_KEY=<YOUR_MAGIC_SECRET_KEY>
+export NEXT_JS_MAGIC_PUB_KEY=<YOUR_MAGIC_PUBLIC_KEY>
+
+export NEXT_JS_TESTWYRE_ACCOUNT_ID=<YOUR_TESTWYRE_ACCOUNT_ID>
+export NEXT_JS_SENDWYRE_ACCOUNT_ID=<YOUR_SENDWYRE_ACCOUNT_ID>
+export TESTWYRE_API_KEY=<YOUR_TESTWYRE_API_KEY>
+export SENDWYRE_API_KEY=<YOUR_SENDWYRE_API_KEY>
+export TESTWYRE_API_SECRET=<YOUR_TESTWYRE_API_SECRET>
+export SENDWYRE_API_SECRET=<YOUR_SENDWYRE_API_SECRET>
+
+export NEXT_JS_LOCIZE_DEV_API_KEY=<YOUR_LOCIZE_DEV_KEY>
+export NEXT_JS_LOCIZE_PROJECT_ID=<YOUR_LOCIZE_PROJECT_ID>
+export NEXT_JS_LOCIZE_VERSION=latest
+export NEXT_JS_FATHOM_SITE_ID=<YOUR_FATHOM_SITE_ID>
+
+export DEFI_PULSE_GAS_STATION_API_KEY=<YOUR_DEFI_PULSE_ETH_GAS_STATION_API_KEY>
+
+export NEXT_JS_SENTRY_DSN=<YOUR_NEXT_JS_SENTRY_DSN>
+
+export NEXT_JS_MAILCHIMP_LIST_ID=<LISTID>
+export NEXT_JS_MAILCHIMP_LIST_GENERAL_ID=<GENERAL_LISTID>
+
+export MAILCHIMP_API_KEY=<APIKEY>
+export MAILCHIMP_REGION=us20
