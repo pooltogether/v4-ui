@@ -4,35 +4,38 @@
 }
 
 @font-face {
-    font-family: 'DM Mono';
-    src: url('/fonts/DMMono-Regular.woff2') format('woff2'),
-        url('/fonts/DMMono-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'DM Mono';
+  src: url('/fonts/DMMono-Regular.woff2') format('woff2'),
+    url('/fonts/DMMono-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Titillium Web';
-    src: url('/fonts/TitilliumWeb-Regular.woff2') format('woff2'),
-        url('/fonts/TitilliumWeb-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Titillium Web';
+  src: url('/fonts/TitilliumWeb-Regular.woff2') format('woff2'),
+    url('/fonts/TitilliumWeb-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'Titillium Web';
-    src: url('/fonts/TitilliumWeb-Bold.woff2') format('woff2'),
-        url('/fonts/TitilliumWeb-Bold.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Titillium Web';
+  src: url('/fonts/TitilliumWeb-Bold.woff2') format('woff2'),
+    url('/fonts/TitilliumWeb-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
-html, body, table {
+html,
+body,
+table {
   -webkit-tap-highlight-color: transparent;
-  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "pnum" 1, "tnum" 0, "onum" 0, "lnum" 0, "dlig" 0;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'pnum' 1, 'tnum' 0, 'onum' 0, 'lnum' 0,
+    'dlig' 0;
 }
 
 body {
@@ -52,15 +55,25 @@ h1 {
   @apply text-2xl;
 }
 
+.description h1 {
+  @apply text-xl;
+}
+
 @screen sm {
   h1 {
     @apply text-4xl;
+  }
+  .description h1 {
+    @apply text-3xl;
   }
 }
 
 @screen lg {
   h1 {
     @apply text-5xl;
+  }
+  .description h1 {
+    @apply text-4xl;
   }
 }
 
@@ -68,9 +81,17 @@ h2 {
   @apply text-xl;
 }
 
+.description h2 {
+  @apply text-lg;
+}
+
 @screen sm {
   h2 {
     @apply text-3xl;
+  }
+
+  .description h2 {
+    @apply text-2xl;
   }
 }
 
@@ -78,15 +99,27 @@ h2 {
   h2 {
     @apply text-5xl;
   }
+
+  .description h2 {
+    @apply text-3xl;
+  }
 }
 
 h3 {
   @apply text-2xl;
 }
 
+.description h3 {
+  @apply text-xl;
+}
+
 @screen sm {
   h3 {
     @apply text-2xl;
+  }
+
+  .description h3 {
+    @apply text-xl;
   }
 }
 
@@ -94,15 +127,27 @@ h3 {
   h3 {
     @apply text-3xl;
   }
+
+  .description h3 {
+    @apply text-2xl;
+  }
 }
 
 h4 {
   @apply text-lg;
 }
 
+.description h4 {
+  @apply text-base;
+}
+
 @screen sm {
   h4 {
     @apply text-xl;
+  }
+
+  .description h4 {
+    @apply text-lg;
   }
 }
 
@@ -110,21 +155,37 @@ h4 {
   h4 {
     @apply text-2xl;
   }
+
+  .description h4 {
+    @apply text-xl;
+  }
 }
 
 h5 {
   @apply text-base;
 }
 
+.description h5 {
+  @apply text-sm;
+}
+
 @screen sm {
   h5 {
     @apply text-lg;
+  }
+
+  .description h5 {
+    @apply text-base;
   }
 }
 
 @screen lg {
   h5 {
     @apply text-xl;
+  }
+
+  .description h5 {
+    @apply text-lg;
   }
 }
 

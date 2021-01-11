@@ -29,6 +29,10 @@ export NEXT_JS_SUBGRAPH_LOOTBOX_URI_MAINNET=
 export NEXT_JS_SUBGRAPH_LOOTBOX_URI_ROPSTEN=
 export NEXT_JS_SUBGRAPH_LOOTBOX_URI_RINKEBY=https://thegraph.com/explorer/subgraph/pooltogether/ptv3-lootbox-rinkeby-staging?version=current
 
+export NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET=https://api.thegraph.com/subgraphs/name/ianlapham/governance-tracking
+export NEXT_JS_GOVERNANCE_SUBGRAPH_URI_ROPSTEN=https://api.thegraph.com/subgraphs/name/ianlapham/governance-tracking
+export NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/ianlapham/governance-tracking
+
 export NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME=homestead
 
 export NEXT_JS_INFURA_KEY=<YOUR_INFURA_KEY>

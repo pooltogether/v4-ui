@@ -1,7 +1,5 @@
 import gql from 'graphql-tag'
 
-import { controlledTokenFragment } from 'lib/fragments/controlledTokenFragment'
-
 export const accountFragment = gql`
   fragment accountFragment on Account {
     id
@@ -9,9 +7,6 @@ export const accountFragment = gql`
     controlledTokenBalances {
       id
       balance
-      controlledToken {
-        ...controlledTokenFragment
-      }
     }
 
     prizePoolAccounts {
@@ -24,5 +19,4 @@ export const accountFragment = gql`
       }
     }
   }
-  ${controlledTokenFragment}
 `

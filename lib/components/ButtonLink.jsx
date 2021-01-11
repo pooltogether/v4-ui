@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import Link from 'next/link'
 import { pick, isUndefined } from 'lodash'
 
-export function getButtonClasses(props) {
+export function getButtonClasses (props) {
   let {
     border,
     bg,
@@ -20,17 +20,18 @@ export function getButtonClasses(props) {
     transition,
     className,
     textSize,
-    width,
+    width
   } = props
 
-  let defaultClasses = 'border-2 relative inline-block text-center leading-snug cursor-pointer outline-none focus:outline-none active:outline-none no-underline'
+  let defaultClasses =
+    'border-2 relative inline-block text-center leading-snug cursor-pointer outline-none focus:outline-none active:outline-none no-underline'
   let animClass = noAnim ? '' : 'button-scale'
-  
+
   if (selected) {
     defaultClasses += ` opacity-50`
     animClass = ``
   }
-  
+
   // eg. textSize='sm', textSize='xl'
   textSize = getTextSize(textSize)
 
@@ -71,7 +72,6 @@ export function getButtonClasses(props) {
   hoverBg = hoverBg ? `hover:bg-${hoverBg}` : defaultHoverBg
   hoverText = hoverText ? `hover:text-${hoverText}` : defaultHoverText
 
-  
   return classnames(
     className,
     defaultClasses,
@@ -112,32 +112,20 @@ const getTextSize = (size) => {
   }
 }
 
-export function ButtonLink(props) {
-  let {
-    children,
-    as,
-    href,
-  } = props
+export function ButtonLink (props) {
+  let { children, as, href } = props
 
   const classes = getButtonClasses(props)
 
-  const linkProps = pick(props, [
-    'target',
-    'rel',
-  ])
-  
-  return <Link
-    href={href}
-    as={as}
-    scroll={false}
-  >
-    <a
-      {...linkProps}
-      className={classes}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {children}
-    </a>
-  </Link>
+  const anchorProps = pick(props, ['target', 'rel'])
 
+  const linkProps = pick(props, ['shallow'])
+
+  return (
+    <Link {...linkProps} href={href} as={as} scroll={false}>
+      <a {...anchorProps} className={classes} onClick={(e) => e.stopPropagation()}>
+        {children}
+      </a>
+    </Link>
+  )
 }
