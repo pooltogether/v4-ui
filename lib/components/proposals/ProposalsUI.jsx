@@ -14,9 +14,9 @@ export const ProposalsUI = (props) => {
 
   const { connectWallet, usersAddress } = useContext(AuthControllerContext)
 
-  const { isFetched, isFetching, data: proposals } = useAllProposals()
+  const { loading, data: proposals } = useAllProposals()
 
-  if (!isFetched || (isFetching && !isFetched)) {
+  if (loading) {
     return <V3LoadingDots />
   }
 

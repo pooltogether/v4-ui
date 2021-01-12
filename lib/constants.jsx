@@ -197,6 +197,8 @@ export const QUERY_KEYS = {
   accountGovernanceDataQuery: 'accountGovernanceDataQuery',
   governanceDataQuery: 'governanceDataQuery',
   proposalVotesQuery: 'proposalVotesQuery',
+  delegateDataQuery: 'delegateDataQuery',
+  tokenHolderQuery: 'tokenHolderQuery',
   proposalsQuery: 'proposalsQuery'
   // ethereumErc20sQuery: 'ethereumErc20sQuery',
   // ethereumErc721sQuery: 'ethereumErc721sQuery',

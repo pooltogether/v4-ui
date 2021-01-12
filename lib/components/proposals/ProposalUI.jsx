@@ -1,4 +1,5 @@
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
+import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
 import { useProposalData } from 'lib/hooks/useProposalData'
@@ -16,17 +17,20 @@ import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { VotersTable } from 'lib/components/proposals/VotersTable'
 import { ButtonLink } from 'lib/components/ButtonLink'
+import { useDelegateData } from 'lib/hooks/useDelegateData'
 
 export const ProposalUI = (props) => {
   const router = useRouter()
   const { id } = router.query
 
+  console.log(id)
+
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const [sendTx] = useSendTransaction('Cast Vote', transactions, setTransactions)
 
-  const { refetch, proposal, isFetching, isFetched, error } = useProposalData(id)
+  const { refetch, proposal, loading, error } = useProposalData(id)
 
-  if (!isFetched || (isFetching && !isFetched)) {
+  if (!id || loading) {
     return <V3LoadingDots />
   }
 
@@ -43,6 +47,7 @@ export const ProposalUI = (props) => {
   return (
     <>
       <ButtonLink href='/proposals'>Back</ButtonLink>
+      <UserSection />
       <div className='flex justify-between'>
         <h1>Proposal #{id}</h1>
         <ProposalStatus proposal={proposal} />
@@ -93,6 +98,41 @@ const ProposalDescription = (props) => {
       >
         {showMore ? 'Show Less' : 'Show More'}
       </Button>
+    </Card>
+  )
+}
+
+const UserSection = (props) => {
+  let { usersAddress } = useContext(AuthControllerContext)
+  // TODO: remove
+  usersAddress = '0x7e4a8391c728fed9069b2962699ab416628b19fa'
+  const { data, isFetched, isFetching } = useDelegateData(usersAddress)
+
+  if (!usersAddress) {
+    return <Card>Please connect your wallet to vote.</Card>
+  }
+
+  if (isFetching && !isFetched) {
+    return (
+      <Card>
+        <V3LoadingDots />
+      </Card>
+    )
+  }
+
+  const { delegatedVotesRaw, proposals, tokenHoldersRepresentedAmount } = data.delegate
+
+  return (
+    <Card>
+      <h5>{usersAddress}</h5>
+      <div className='flex flex-col'>
+        <h6>Votes</h6>
+        {formatVotes(delegatedVotesRaw)}
+        <div className='flex flex-row'>
+          <FeatherIcon icon='user' className='stroke-1 mr-2' />
+          {tokenHoldersRepresentedAmount}
+        </div>
+      </div>
     </Card>
   )
 }
