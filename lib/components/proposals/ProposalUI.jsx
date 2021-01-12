@@ -18,12 +18,12 @@ import { AuthControllerContext } from 'lib/components/contextProviders/AuthContr
 import { VotersTable } from 'lib/components/proposals/VotersTable'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { useDelegateData } from 'lib/hooks/useDelegateData'
+import gfm from 'remark-gfm'
+import { GovernanceNav } from 'lib/components/GovernanceNav'
 
 export const ProposalUI = (props) => {
   const router = useRouter()
   const { id } = router.query
-
-  console.log(id)
 
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const [sendTx] = useSendTransaction('Cast Vote', transactions, setTransactions)
@@ -33,8 +33,6 @@ export const ProposalUI = (props) => {
   if (!id || loading) {
     return <V3LoadingDots />
   }
-
-  console.log(id, proposal)
 
   // TODO: Why is this page not being unmounted immediately when clicking "Back" to go back to proposals.
   // Instead, it rerenders with the new route.
@@ -46,7 +44,7 @@ export const ProposalUI = (props) => {
 
   return (
     <>
-      <ButtonLink href='/proposals'>Back</ButtonLink>
+      <GovernanceNav />
       <UserSection />
       <div className='flex justify-between'>
         <h1>Proposal #{id}</h1>
@@ -88,7 +86,11 @@ const ProposalDescription = (props) => {
               : 'linear-gradient(0deg, var(--color-bg-default) 5%, transparent 100%)'
           }}
         />
-        <ReactMarkdown className='description whitespace-pre-wrap' children={description} />
+        <ReactMarkdown
+          plugins={[gfm]}
+          className='description whitespace-pre-wrap'
+          children={description}
+        />
       </div>
       <Button
         onClick={(e) => {

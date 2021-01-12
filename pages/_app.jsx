@@ -20,6 +20,7 @@ import { Layout } from 'lib/components/Layout'
 import { LoadingScreen } from 'lib/components/LoadingScreen'
 import { TransactionStatusChecker } from 'lib/components/TransactionStatusChecker'
 import { TxRefetchListener } from 'lib/components/TxRefetchListener'
+import { SocialDataFetcher } from 'lib/components/SocialDataFetcher'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -73,16 +74,9 @@ function MyApp ({ Component, pageProps, router }) {
       try {
         ethers.utils.getAddress(referrerAddress)
 
-        Cookies.set(
-          REFERRER_ADDRESS_KEY,
-          referrerAddress.toLowerCase(),
-          COOKIE_OPTIONS
-        )
+        Cookies.set(REFERRER_ADDRESS_KEY, referrerAddress.toLowerCase(), COOKIE_OPTIONS)
       } catch (e) {
-        console.error(
-          `referrer address was an invalid Ethereum address:`,
-          e.message
-        )
+        console.error(`referrer address was an invalid Ethereum address:`, e.message)
       }
     }
   }, [])
@@ -156,11 +150,9 @@ function MyApp ({ Component, pageProps, router }) {
 
           <LoadingScreen initialized={initialized} />
 
-          <ToastContainer
-            className='pool-toast'
-            position='top-center'
-            autoClose={7000}
-          />
+          <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
+
+          <SocialDataFetcher />
 
           <AllContextProviders>
             <CustomErrorBoundary>

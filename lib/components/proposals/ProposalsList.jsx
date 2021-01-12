@@ -3,6 +3,7 @@ import { Card } from 'lib/components/Card'
 import { PROPOSAL_STATUS } from 'lib/constants'
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import gfm from 'remark-gfm'
 
 export const ProposalsList = (props) => {
   const { proposals } = props
@@ -40,8 +41,6 @@ const ProposalItem = (props) => {
     title,
     id
   } = proposal
-
-  console.log('proposal', proposal)
 
   return (
     <li>
@@ -87,7 +86,7 @@ const EditableProposalDescription = (props) => {
         ></textarea>
       </div>
       <div className='flex-grow'>
-        <ReactMarkdown children={newDescription} />
+        <ReactMarkdown plugins={[gfm]} children={newDescription} />
       </div>
     </div>
   )

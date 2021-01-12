@@ -50,8 +50,6 @@ export const VotersTable = (props) => {
       return []
     }
 
-    console.log('DATA', data)
-
     return data.votes.map((vote) => ({
       voter: vote.voter.id,
       votes: formatVotes(vote.votesRaw),

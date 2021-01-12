@@ -12,10 +12,12 @@ import { Card } from 'lib/components/Card'
 import { formatVotes } from 'lib/utils/formatVotes'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { ButtonLink } from 'lib/components/ButtonLink'
+import { GovernanceNav } from 'lib/components/GovernanceNav'
+import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 
+// TODO: Smart contract case. Case when address isn't a token holder but is a delegate
 export const DelegateUI = (props) => {
   const router = useRouter()
-  console.log(router)
   const { address } = router.query
 
   const { data, isFetched, isFetching, error, loading } = useTokenHolder(address)
@@ -24,31 +26,36 @@ export const DelegateUI = (props) => {
     return <V3LoadingDots />
   }
 
-  console.log(data, address, error)
-
-  const { tokenBalance, delegate } = data.tokenHolder
+  const tokenBalance = data?.tokenBalance ?? 0
+  const delegate = data?.delegate ?? {}
 
   return (
     <>
+      <GovernanceNav />
       <Card>
         <h5>{address}</h5>
         <div className='flex flex-col'>
           <h6>Token Balance</h6>
-          {tokenBalance}
+          {tokenBalance ?? 0}
         </div>
-        <Delegate address={delegate.id} />
       </Card>
+      <DelegationCard address={address} delegateAddress={delegate?.id} />
     </>
   )
 }
 
-const Delegate = (props) => {
-  const { address } = props
+const DelegationCard = (props) => (
+  <Card>
+    <h5>Delegation</h5>
+    <DelegationControls {...props} />
+  </Card>
+)
 
-  const { data, loading, error } = useDelegateData(address)
+const DelegationControls = (props) => {
+  const { address, delegateAddress } = props
 
-  // TODO: No delegate case
-  // ALlow for changing
+  const { data, loading, error } = useDelegateData(delegateAddress)
+  const identity = useSocialIdentity(delegateAddress)
 
   if (loading) {
     return null
@@ -56,14 +63,62 @@ const Delegate = (props) => {
 
   const { delegatedVotesRaw } = data.delegate
 
+  if (!delegateAddress) {
+    return <>Currently Not Delegating</>
+  }
+
+  if (delegateAddress === address) {
+    return (
+      <>
+        <div>Self Delegating</div>
+        <div>Voting Power: {formatVotes(delegatedVotesRaw)}</div>
+      </>
+    )
+  }
+
+  // <h6>Votes</h6>
+  // {formatVotes(delegatedVotesRaw)}
+
   return (
-    <div className='mt-8'>
-      <h5>Delegate</h5>
-      <ButtonLink as={`/delegate/${address}`} href='/delegate/[address]'>
-        {address}
+    <div className='flex justify-between'>
+      <div className='flex flex-col'>
+        <div>
+          Delegating to{' '}
+          {identity.twitter && (
+            <a
+              href={`https://twitter.com/${identity.twitter.handle}`}
+              target='_blank'
+              rel='noopener'
+            >
+              {identity.twitter.handle}
+            </a>
+          )}{' '}
+          ({delegateAddress})
+        </div>
+        <div>Voting Power: {formatVotes(delegatedVotesRaw)}</div>
+      </div>
+
+      <ButtonLink as={`/delegate/${delegateAddress}`} href='/delegate/[address]'>
+        View
       </ButtonLink>
-      <h6>Votes</h6>
-      {formatVotes(delegatedVotesRaw)}
     </div>
   )
 }
+
+// const TwitterProfile = (props) => {
+//   const { address } = props
+//   const { loading, data } = useTwitterProfile(address)
+//   if (loading) {
+//     return null
+//   }
+
+//   const { name, profile_image_url, username } = data.data
+
+//   return (
+//     <div className='flex flex-row mb-4'>
+//       <img src={profile_image_url} className='rounded-full w-8 h-8 mr-2' />
+//       <FeatherIcon icon='twitter' className='stroke-1 w-8 h-8 mr-2' />
+//       {name}
+//     </div>
+//   )
+// }

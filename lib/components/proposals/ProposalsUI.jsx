@@ -8,6 +8,7 @@ import { Button } from 'lib/components/Button'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
+import { GovernanceNav } from 'lib/components/GovernanceNav'
 
 export const ProposalsUI = (props) => {
   const { t } = useTranslation()
@@ -22,6 +23,7 @@ export const ProposalsUI = (props) => {
 
   return (
     <>
+      <GovernanceNav />
       {/* TODO: Remove this */}
       {!usersAddress && (
         <Button

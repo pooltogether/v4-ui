@@ -198,7 +198,9 @@ export const QUERY_KEYS = {
   governanceDataQuery: 'governanceDataQuery',
   proposalVotesQuery: 'proposalVotesQuery',
   delegateDataQuery: 'delegateDataQuery',
+  delegatesQuery: 'delegatesQuery',
   tokenHolderQuery: 'tokenHolderQuery',
+  twitterProfileQuery: 'twitterProfileQuery',
   proposalsQuery: 'proposalsQuery'
   // ethereumErc20sQuery: 'ethereumErc20sQuery',
   // ethereumErc721sQuery: 'ethereumErc721sQuery',
@@ -344,3 +346,4 @@ export const PROPOSAL_STATES = [
 ]
 
 export const VOTERS_PER_PAGE = 5
+export const DELEGATES_PER_PAGE = 15
