@@ -1,16 +1,24 @@
-import { ButtonLink } from 'lib/components/ButtonLink'
-import { Card } from 'lib/components/Card'
-import { PROPOSAL_STATUS } from 'lib/constants'
 import React, { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 
+import { ButtonLink } from 'lib/components/ButtonLink'
+import { Card, InnerCard } from 'lib/components/Card'
+import { PROPOSAL_STATUS } from 'lib/constants'
+import ChatBubble from 'assets/images/chat-bubble.svg'
+
 export const ProposalsList = (props) => {
   const { proposals } = props
 
-  if (!proposals) {
-    return null
+  // if (!proposals) {
+  if (true) {
+    return <>
+      <h3 className='text-accent-1 mb-4'>Proposals</h3>
+      <EmptyProposalsList />
+    </>
   }
+
+  // TODO: Divide them by active nad non-active
 
   if (Object.keys(proposals)?.length === 0) {
     return <NoProposals />
@@ -90,4 +98,14 @@ const EditableProposalDescription = (props) => {
       </div>
     </div>
   )
+}
+
+const EmptyProposalsList = () => {
+  return <Card>
+    <InnerCard className='flex flex-col text-center sm:py-8 text-accent-1'>
+      <img src={ChatBubble} className='mx-auto w-16 h-16 sm:w-auto sm:h-auto mb-4 sm:mb-6' />
+      <h4 className='mb-2'>No active proposals at the moment!</h4>
+      <p>We encourage you to discuss any ideas you have on <a className='text-accent-1 underline' href='https://discord.gg/hxPhPDW' rel='noreferrer noopener' target='_blank'>Discord</a> and <a className='text-accent-1 underline' href='https://snapshot.page/#/pooltogether' target='_blank' rel='noreferrer noopener'>Snapshot</a>.</p>
+    </InnerCard>
+  </Card>
 }

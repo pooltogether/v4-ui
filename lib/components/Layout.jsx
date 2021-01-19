@@ -16,6 +16,7 @@ import { Settings } from 'lib/components/Settings'
 import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
+import { Button } from 'lib/components/Button'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -53,7 +54,7 @@ export function Layout (props) {
     router.asPath
   )
 
-  const { usersAddress, chainId } = useContext(AuthControllerContext)
+  const { usersAddress, chainId, connectWallet } = useContext(AuthControllerContext)
 
   // this is useful for showing a big banner at the top that catches
   // people's attention
@@ -98,6 +99,15 @@ export function Layout (props) {
                 lineHeight: 0
               }}
             >
+              {!usersAddress && (
+                <Button 
+                  onClick={() => connectWallet()}
+                  textSize='xxxs'
+                >
+                  Connect Wallet
+                </Button>
+              )}
+
               {usersAddress && (
                 <>
                   <NavAccount
@@ -160,7 +170,7 @@ export function Layout (props) {
           </div>
 
           <div className='content'>
-            <div className='pool-container w-full flex flex-grow relative z-10 h-full page px-4 xs:px-12 sm:px-10 pt-6 xs:pt-6 sm:pt-8'>
+            <div className='pool-container w-full flex flex-grow relative z-10 h-full page px-4 xs:px-12 sm:px-10 pt-6 xs:pt-6 sm:pt-8 pb-24 sm:pb-0'>
               <div className='flex flex-col flex-grow'>
                 <div
                   className='relative flex flex-col flex-grow h-full z-10 text-white'

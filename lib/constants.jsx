@@ -201,6 +201,7 @@ export const QUERY_KEYS = {
   delegatesQuery: 'delegatesQuery',
   tokenHolderQuery: 'tokenHolderQuery',
   twitterProfileQuery: 'twitterProfileQuery',
+  voterDataQuery: 'voterDataQuery',
   proposalsQuery: 'proposalsQuery'
   // ethereumErc20sQuery: 'ethereumErc20sQuery',
   // ethereumErc721sQuery: 'ethereumErc721sQuery',
@@ -325,7 +326,7 @@ export const STRINGS = {
 export const PROPOSAL_STATUS = {
   pending: 'pending',
   active: 'active',
-  cancelled: 'cance;ed',
+  cancelled: 'cancelled',
   defeated: 'defeated',
   succeeded: 'seucceeded',
   queued: 'queued',
@@ -337,7 +338,7 @@ export const PROPOSAL_STATUS = {
 export const PROPOSAL_STATES = [
   PROPOSAL_STATUS.pending,
   PROPOSAL_STATUS.active,
-  PROPOSAL_STATUS.canceled,
+  PROPOSAL_STATUS.cancelled,
   PROPOSAL_STATUS.defeated,
   PROPOSAL_STATUS.succeeded,
   PROPOSAL_STATUS.queued,
