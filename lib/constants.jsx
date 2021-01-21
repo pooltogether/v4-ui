@@ -37,7 +37,7 @@ const domain = process.env.NEXT_JS_DOMAIN_NAME && `.${process.env.NEXT_JS_DOMAIN
 export const COOKIE_OPTIONS = {
   sameSite: 'strict',
   secure: process.env.NEXT_JS_DOMAIN_NAME === 'pooltogether.com',
-  domain,
+  domain
 }
 
 export const POOLS = {
@@ -45,60 +45,60 @@ export const POOLS = {
     {
       name: 'DAI Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cDAI',
+      symbol: 'PT-cDAI'
     },
     {
       name: 'UNI Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cUNI',
+      symbol: 'PT-cUNI'
     },
     {
       name: 'USDC Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cUSDC',
-    },
+      symbol: 'PT-cUSDC'
+    }
   ],
   4: [
     {
       name: 'DAI Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cDAI',
+      symbol: 'PT-cDAI'
     },
     {
       name: 'BAT Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cBAT',
+      symbol: 'PT-cBAT'
     },
     {
       name: 'USDC Pool',
       frequency: 'Weekly',
-      symbol: 'PT-cUSDC',
-    },
-  ],
+      symbol: 'PT-cUSDC'
+    }
+  ]
 }
 
 export const PRIZE_STRATEGY_TYPES = {
   singleRandomWinner: 'singleRandomWinner',
-  multipleWinners: 'multipleWinners',
+  multipleWinners: 'multipleWinners'
 }
 
 export const CONTRACT_ADDRESSES = {
   1: {
     GovernorAlpha: '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F', // TODO: This is uniswap governance. Change with ours.
     GovernanceToken: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', // TODO: This is UNI swap with POOL. Change with ours.
-    Usdt: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    Usdt: '0xdac17f958d2ee523a2206206994597c13d831ec7'
     // Dai: '0x6b175474e89094c44da98b954eedeac495271d0f',
     // PermitAndDepositDai: PermitAndDepositDaiMainnet.address
   },
   3: {
-    Usdt: '0x0736d0c130b2ead47476cc262dbed90d7c4eeabd',
+    Usdt: '0x0736d0c130b2ead47476cc262dbed90d7c4eeabd'
     // Dai: '0xc2118d4d90b274016cb7a54c03ef52e6c537d957',
     // PermitAndDepositDai: PermitAndDepositDaiRopsten.address
   },
   4: {
-    Usdt: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad',
+    Usdt: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad'
     // PermitAndDepositDai: PermitAndDepositDaiRinkeby.address,
-  },
+  }
 }
 
 export const TOKEN_IMAGES = {
@@ -157,20 +157,20 @@ export const TOKEN_IMAGES = {
     '/tokens/0x0954906da0bf32d5479e25f46056d22f08464cab.png',
   '0xd291e7a03283640fdc51b121ac401383a46cc623':
     'https://assets.coingecko.com/coins/images/12900/thumb/rgt_logo.png?1603340632',
-  '0x334cbb5858417aee161b53ee0d5349ccf54514cf': '/favicon.png',
+  '0x334cbb5858417aee161b53ee0d5349ccf54514cf': '/favicon.png'
 }
 
 export const TOKEN_VALUES = {
   '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': 5.6,
   '0x852358c72f0d38df475b58f90c9b24aadc63c9db': 1,
   '0x334cbb5858417aee161b53ee0d5349ccf54514cf': 1,
-  '0x9d942bd31169ed25a1ca78c776dab92de104e50e': 279.31,
+  '0x9d942bd31169ed25a1ca78c776dab92de104e50e': 279.31
   // '0x117c2aca45d87958ba054cb85af0fd57be00d624': 603.98,
   // '0xea0bea4d852687c45fdc57f6b06a8a92302baabc': 250.49
 }
 
 export const TOKEN_NAMES = {
-  '0x334cbb5858417aee161b53ee0d5349ccf54514cf': 'PoolTogether DAI Tickets',
+  '0x334cbb5858417aee161b53ee0d5349ccf54514cf': 'PoolTogether DAI Tickets'
 }
 
 export const HISTORICAL_TOKEN_VALUES = {
@@ -178,9 +178,9 @@ export const HISTORICAL_TOKEN_VALUES = {
     1: {
       '0x06f65b8cfcb13a9fe37d836fe9708da38ecb29b2': 970.23,
       '0x117c2aca45d87958ba054cb85af0fd57be00d624': 603.98,
-      '0xea0bea4d852687c45fdc57f6b06a8a92302baabc': 250.49,
-    },
-  },
+      '0xea0bea4d852687c45fdc57f6b06a8a92302baabc': 250.49
+    }
+  }
 }
 
 export const V2_CONTRACT_ADDRESSES = [
@@ -190,7 +190,7 @@ export const V2_CONTRACT_ADDRESSES = [
   '0x6F5587E191C8b222F634C78111F97c4851663ba4'.toLowerCase(),
   '0x49d716DFe60b37379010A75329ae09428f17118d'.toLowerCase(),
   '0xBD87447F48ad729C5c4b8bcb503e1395F62e8B98'.toLowerCase(),
-  '0x801b4872a635dccc7e679eeaf04bef08e562972a'.toLowerCase(),
+  '0x801b4872a635dccc7e679eeaf04bef08e562972a'.toLowerCase()
 ]
 
 export const QUERY_KEYS = {
@@ -202,7 +202,7 @@ export const QUERY_KEYS = {
   tokenHolderQuery: 'tokenHolderQuery',
   twitterProfileQuery: 'twitterProfileQuery',
   voterDataQuery: 'voterDataQuery',
-  proposalsQuery: 'proposalsQuery',
+  proposalsQuery: 'proposalsQuery'
   // ethereumErc20sQuery: 'ethereumErc20sQuery',
   // ethereumErc721sQuery: 'ethereumErc721sQuery',
   // ethereumLootBoxQuery: 'ethereumLootBoxQuery',
@@ -228,7 +228,7 @@ export const QUERY_KEYS = {
 // we may not need any of this:
 export const POOLTOGETHER_LATEST_VERSION = {
   staging: 'v3_1_0',
-  production: 'v3_1_0',
+  production: 'v3_1_0'
 }
 
 export const POOLTOGETHER_CONTRACT_VERSIONS = {
@@ -237,7 +237,7 @@ export const POOLTOGETHER_CONTRACT_VERSIONS = {
   ['0x4706856fa8bb747d50b4ef8547fe51ab5edc4ac2'.toLowerCase()]: 'v3_0_1', // rinkeby: cDai prize pool
   ['0xe470984fbe3c16acfc41ba2e5274c297f0723134'.toLowerCase()]: 'v3_0_1', // rinkeby: cDai prize pool single winner prize strategy
   ['0x506cfb5ed425fe986cb913522f3297a79697abfc'.toLowerCase()]: 'v3_0_1', // rinkeby: cDai prize pool single winner prize strategy
-  ['0x5e0a6d336667eace5d1b33279b50055604c3e329'.toLowerCase()]: 'v3_1_0', // rinkeby: cDai prize pool multiple winners prize strategy
+  ['0x5e0a6d336667eace5d1b33279b50055604c3e329'.toLowerCase()]: 'v3_1_0' // rinkeby: cDai prize pool multiple winners prize strategy
 }
 
 export const POOLTOGETHER_VERSION_START_BLOCKS = {
@@ -245,82 +245,37 @@ export const POOLTOGETHER_VERSION_START_BLOCKS = {
     staging: {
       1: 2222222,
       3: 3333333,
-      4: 7399763,
+      4: 7399763
     },
     production: {
       1: 22222222,
       3: 33333333,
-      4: 7399763,
-    },
+      4: 7399763
+    }
   },
   v3_1_0: {
     staging: {
       1: 2222222,
       3: 3333333,
-      4: 7687002,
+      4: 7687002
     },
     production: {
       1: 22222222,
       3: 33333333,
-      4: 7687002,
-    },
-  },
-}
-
-export const POOLTOGETHER_CURRENT_GRAPH_URIS = {
-  1: process.env.NEXT_JS_SUBGRAPH_URI_MAINNET,
-  3: process.env.NEXT_JS_SUBGRAPH_URI_ROPSTEN,
-  4: process.env.NEXT_JS_SUBGRAPH_URI_RINKEBY,
+      4: 7687002
+    }
+  }
 }
 
 export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {
   1: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET,
   3: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_ROPSTEN,
-  4: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY,
-}
-
-export const POOLTOGETHER_GRAPH_URIS = {
-  v3_0_1: {
-    production: {
-      1: process.env.NEXT_JS_SUBGRAPH_3_0_1_URI_MAINNET,
-      3: process.env.NEXT_JS_SUBGRAPH_3_0_1_URI_ROPSTEN,
-      4: process.env.NEXT_JS_SUBGRAPH_3_0_1_URI_RINKEBY,
-    },
-    staging: {
-      1: process.env.NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_MAINNET,
-      3: process.env.NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_ROPSTEN,
-      4: process.env.NEXT_JS_SUBGRAPH_3_0_1_STAGING_URI_RINKEBY,
-    },
-  },
-  v3_1_0: {
-    production: {
-      1: process.env.NEXT_JS_SUBGRAPH_3_1_0_URI_MAINNET,
-      3: process.env.NEXT_JS_SUBGRAPH_3_1_0_URI_ROPSTEN,
-      4: process.env.NEXT_JS_SUBGRAPH_3_1_0_URI_RINKEBY,
-    },
-    staging: {
-      1: process.env.NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_MAINNET,
-      3: process.env.NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_ROPSTEN,
-      4: process.env.NEXT_JS_SUBGRAPH_3_1_0_STAGING_URI_RINKEBY,
-    },
-  },
-}
-
-export const LOOTBOX_GRAPH_URIS = {
-  1: process.env.NEXT_JS_SUBGRAPH_LOOTBOX_URI_MAINNET,
-  3: process.env.NEXT_JS_SUBGRAPH_LOOTBOX_URI_ROPSTEN,
-  4: process.env.NEXT_JS_SUBGRAPH_LOOTBOX_URI_RINKEBY,
-}
-
-export const UNISWAP_GRAPH_URIS = {
-  1: process.env.NEXT_JS_UNISWAP_SUBGRAPH_URI_MAINNET, // https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2
-  3: process.env.NEXT_JS_UNISWAP_SUBGRAPH_URI_ROPSTEN,
-  4: process.env.NEXT_JS_UNISWAP_SUBGRAPH_URI_RINKEBY, // https://api.thegraph.com/subgraphs/name/blockrockettech/uniswap-v2-subgraph-rinkeby
+  4: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY
 }
 
 export const STRINGS = {
   transfer: 'transfer',
-  withdraw: 'withdraw',
+  withdraw: 'withdraw'
 }
 
 export const PROPOSAL_STATUS = {
@@ -331,7 +286,7 @@ export const PROPOSAL_STATUS = {
   succeeded: 'seucceeded',
   queued: 'queued',
   expired: 'expired',
-  executed: 'executed',
+  executed: 'executed'
 }
 
 // Note: Order matches contracts
@@ -343,7 +298,7 @@ export const PROPOSAL_STATES = [
   PROPOSAL_STATUS.succeeded,
   PROPOSAL_STATUS.queued,
   PROPOSAL_STATUS.expired,
-  PROPOSAL_STATUS.executed,
+  PROPOSAL_STATUS.executed
 ]
 
 export const VOTERS_PER_PAGE = 5
