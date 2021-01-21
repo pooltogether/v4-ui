@@ -38,5 +38,3 @@ yarn-error.log*
 dist
 out
 functions-out
-public/static/locales/*
-public/static/locales
