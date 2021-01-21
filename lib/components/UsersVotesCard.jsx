@@ -1,29 +1,29 @@
-import c from 'abis/DelegateableERC20ABI'
-import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
-import classnames from 'classnames'
-import { useTranslation } from 'i18n/client'
-import { useAtom } from 'jotai'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
-import { Banner } from 'lib/components/Banner'
-import { Button } from 'lib/components/Button'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { CONTRACT_ADDRESSES } from 'lib/constants'
-import { useDelegateData } from 'lib/hooks/useDelegateData'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useTokenHolder } from 'lib/hooks/useTokenHolder'
-import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import React, { useContext, useState } from 'react'
+
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { Banner } from 'lib/components/Banner'
+import { CONTRACT_ADDRESSES } from 'lib/constants'
+import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
+import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
+import FeatherIcon from 'feather-icons-react'
+import classnames from 'classnames'
+import { numberWithCommas } from 'lib/utils/numberWithCommas'
+import { shorten } from 'lib/utils/shorten'
+import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { useAtom } from 'jotai'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
+import { useTokenHolder } from 'lib/hooks/useTokenHolder'
+import { useTranslation } from 'i18n/client'
 
 export const UsersVotesCard = () => {
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolder, loading: tokenHolderIsLoading } = useTokenHolder(usersAddress)
-  const { data: delegate, loading: delegateLoading } = useDelegateData(tokenHolder?.delegate?.id)
 
   if (
+    !tokenHolder ||
     !usersAddress ||
     tokenHolderIsLoading ||
-    delegateLoading ||
     (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)
   ) {
     return null
@@ -39,7 +39,7 @@ export const UsersVotesCard = () => {
       <div className='flex flex-col sm:flex-row'>
         <h2
           className={classnames('leading-none mr-4', {
-            'opacity-30': !tokenHolder.hasDelegated,
+            'opacity-30': !tokenHolder.hasDelegated
           })}
         >
           {votes}
@@ -59,6 +59,9 @@ const DelegateTrigger = (props) => {
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const [sendTx] = useSendTransaction(`Delegate`, transactions, setTransactions)
   const txInFlight = transactions?.find((tx) => tx.id === txId)
+
+  const delegateIdentity = useSocialIdentity(tokenHolder.delegate.id)
+  console.log(delegateIdentity)
 
   const handleDelegate = async (e) => {
     e.preventDefault()
@@ -115,9 +118,42 @@ const DelegateTrigger = (props) => {
   }
 
   if (!selfDelegated) {
+    const twitterHandle = delegateIdentity?.twitter?.handle
+    if (twitterHandle) {
+      return (
+        <p className='mt-auto'>
+          You have delegated <b>{votes}</b> votes to{' '}
+          <a
+            className='font-bold text-inverse hover:text-accent-1'
+            href={`https://twitter.com/${twitterHandle}`}
+            target='_blank'
+            rel='noopener'
+          >
+            {twitterHandle}
+            <FeatherIcon icon='external-link' className='inline w-4 h-4 mb-1 ml-1' />
+          </a>{' '}
+          (
+          <EtherscanAddressLink
+            className='font-bold text-inverse hover:text-accent-1'
+            address={tokenHolder.delegate.id}
+          >
+            {shorten(tokenHolder.delegate.id)}
+          </EtherscanAddressLink>
+          )
+        </p>
+      )
+    }
+
     return (
       <p className='mt-auto'>
-        You have delegated <b>{votes}</b> votes to <b>{tokenHolder.delegate.id}</b>
+        You have delegated <b>{votes}</b> votes to{' '}
+        <EtherscanAddressLink
+          className='font-bold text-inverse hover:text-accent-1'
+          address={tokenHolder.delegate.id}
+        >
+          <span className='hidden sm:inline'>{tokenHolder.delegate.id}</span>
+          <span className='inline sm:hidden'>{shorten(tokenHolder.delegate.id)}</span>
+        </EtherscanAddressLink>
       </p>
     )
   }

@@ -1,23 +1,23 @@
 import React, { useContext } from 'react'
 
-import { useTranslation } from 'lib/../i18n'
-
-import { useGovernanceData } from 'lib/hooks/useGovernanceData'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Button } from 'lib/components/Button'
-import { ProposalsList } from 'lib/components/proposals/ProposalsList'
-import { useAllProposals } from 'lib/hooks/useAllProposals'
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { GovernanceNav } from 'lib/components/GovernanceNav'
 import { PTHint } from 'lib/components/PTHint'
+import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+import { V3LoadingDots } from 'lib/components/V3LoadingDots'
+import { useAllProposals } from 'lib/hooks/useAllProposals'
+import { useGovernanceData } from 'lib/hooks/useGovernanceData'
+import { useTranslation } from 'lib/../i18n'
 
 export const ProposalsUI = (props) => {
-  const { t } = useTranslation()
+  const { connectWallet} = useContext(AuthControllerContext)
 
-  const { connectWallet, usersAddress } = useContext(AuthControllerContext)
-
-  const { loading, data: proposals } = useAllProposals()
+  // TODO: Uncomment and use real data.
+  // const { loading, data: proposals } = useAllProposals()
+  const loading = false
+  const proposals = []
 
   if (loading) {
     return (

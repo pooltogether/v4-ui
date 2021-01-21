@@ -4,8 +4,6 @@ import React, { useState } from 'react'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import ChatBubble from 'assets/images/chat-bubble.svg'
 import { PROPOSAL_STATUS } from 'lib/constants'
-import ReactMarkdown from 'react-markdown'
-import gfm from 'remark-gfm'
 
 export const ProposalsList = (props) => {
   const { proposals } = props
