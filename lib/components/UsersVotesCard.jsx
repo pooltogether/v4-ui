@@ -14,7 +14,7 @@ import { useAtom } from 'jotai'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
-import { useTranslation } from 'i18n/client'
+import { useTranslation } from 'i18n/../i18n'
 
 export const UsersVotesCard = () => {
   const { usersAddress } = useContext(AuthControllerContext)
