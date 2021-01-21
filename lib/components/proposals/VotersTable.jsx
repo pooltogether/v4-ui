@@ -31,17 +31,17 @@ export const VotersTable = (props) => {
     return [
       {
         Header: 'Voter',
-        accessor: 'voter'
+        accessor: 'voter',
       },
       {
         Header: 'Voting Weight',
-        accessor: 'votes'
+        accessor: 'votes',
       },
       {
         Header: 'Decision',
         accessor: 'support',
-        Cell: SupportCell
-      }
+        Cell: SupportCell,
+      },
     ]
   }, [])
 
@@ -53,13 +53,13 @@ export const VotersTable = (props) => {
     return data.votes.map((vote) => ({
       voter: vote.voter.id,
       votes: formatVotes(vote.votesRaw),
-      support: vote.support
+      support: vote.support,
     }))
   }, [data, isFetching, isFetched])
 
   const tableInstance = useTable({
     columns,
-    data: rowData
+    data: rowData,
   })
 
   if (isFetching && !isFetched) {

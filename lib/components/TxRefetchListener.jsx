@@ -5,18 +5,16 @@ import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 const debug = require('debug')('pool-app:TxRefetchListener')
 
 // TODO: Look into moving this into a useEffect ?
-export function TxRefetchListener (props) {
+export function TxRefetchListener(props) {
   const [transactions] = useAtom(transactionsAtom)
 
   const [storedPendingTransactions, setStoredPendingTransactions] = useState([])
 
-  const pendingTransactions = transactions.filter(
-    t => !t.completed && !t.cancelled
-  )
+  const pendingTransactions = transactions.filter((t) => !t.completed && !t.cancelled)
 
-  storedPendingTransactions.forEach(tx => {
+  storedPendingTransactions.forEach((tx) => {
     const storedTxId = tx.id
-    const currentTxState = transactions.find(_tx => _tx.id === storedTxId)
+    const currentTxState = transactions.find((_tx) => _tx.id === storedTxId)
 
     if (
       currentTxState &&

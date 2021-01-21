@@ -79,9 +79,6 @@ td:last-child {
   border-right: 0;
 }
 
-
-
-
 .table--small-headers thead tr {
   background-color: rgba(0, 0, 0, 0);
 }
@@ -102,7 +99,6 @@ td:last-child {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
-
 
 .players-table-min-height {
   min-height: 400px;

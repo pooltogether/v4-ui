@@ -4,17 +4,17 @@ export default [
       {
         internalType: 'address',
         name: 'timelock_',
-        type: 'address'
+        type: 'address',
       },
       {
         internalType: 'address',
         name: 'uni_',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'constructor'
+    type: 'constructor',
   },
   {
     anonymous: false,
@@ -23,11 +23,11 @@ export default [
         indexed: false,
         internalType: 'uint256',
         name: 'id',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'ProposalCanceled',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -36,59 +36,59 @@ export default [
         indexed: false,
         internalType: 'uint256',
         name: 'id',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'address',
         name: 'proposer',
-        type: 'address'
+        type: 'address',
       },
       {
         indexed: false,
         internalType: 'address[]',
         name: 'targets',
-        type: 'address[]'
+        type: 'address[]',
       },
       {
         indexed: false,
         internalType: 'uint256[]',
         name: 'values',
-        type: 'uint256[]'
+        type: 'uint256[]',
       },
       {
         indexed: false,
         internalType: 'string[]',
         name: 'signatures',
-        type: 'string[]'
+        type: 'string[]',
       },
       {
         indexed: false,
         internalType: 'bytes[]',
         name: 'calldatas',
-        type: 'bytes[]'
+        type: 'bytes[]',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'startBlock',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'endBlock',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'string',
         name: 'description',
-        type: 'string'
-      }
+        type: 'string',
+      },
     ],
     name: 'ProposalCreated',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -97,11 +97,11 @@ export default [
         indexed: false,
         internalType: 'uint256',
         name: 'id',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'ProposalExecuted',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -110,17 +110,17 @@ export default [
         indexed: false,
         internalType: 'uint256',
         name: 'id',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'eta',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'ProposalQueued',
-    type: 'event'
+    type: 'event',
   },
   {
     anonymous: false,
@@ -129,29 +129,29 @@ export default [
         indexed: false,
         internalType: 'address',
         name: 'voter',
-        type: 'address'
+        type: 'address',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         indexed: false,
         internalType: 'bool',
         name: 'support',
-        type: 'bool'
+        type: 'bool',
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'votes',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'VoteCast',
-    type: 'event'
+    type: 'event',
   },
   {
     constant: true,
@@ -161,12 +161,12 @@ export default [
       {
         internalType: 'bytes32',
         name: '',
-        type: 'bytes32'
-      }
+        type: 'bytes32',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -176,12 +176,12 @@ export default [
       {
         internalType: 'bytes32',
         name: '',
-        type: 'bytes32'
-      }
+        type: 'bytes32',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -189,14 +189,14 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'cancel',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -204,19 +204,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'bool',
         name: 'support',
-        type: 'bool'
-      }
+        type: 'bool',
+      },
     ],
     name: 'castVote',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -224,34 +224,34 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'bool',
         name: 'support',
-        type: 'bool'
+        type: 'bool',
       },
       {
         internalType: 'uint8',
         name: 'v',
-        type: 'uint8'
+        type: 'uint8',
       },
       {
         internalType: 'bytes32',
         name: 'r',
-        type: 'bytes32'
+        type: 'bytes32',
       },
       {
         internalType: 'bytes32',
         name: 's',
-        type: 'bytes32'
-      }
+        type: 'bytes32',
+      },
     ],
     name: 'castVoteBySig',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -259,14 +259,14 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'execute',
     outputs: [],
     payable: true,
     stateMutability: 'payable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -274,35 +274,35 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'getActions',
     outputs: [
       {
         internalType: 'address[]',
         name: 'targets',
-        type: 'address[]'
+        type: 'address[]',
       },
       {
         internalType: 'uint256[]',
         name: 'values',
-        type: 'uint256[]'
+        type: 'uint256[]',
       },
       {
         internalType: 'string[]',
         name: 'signatures',
-        type: 'string[]'
+        type: 'string[]',
       },
       {
         internalType: 'bytes[]',
         name: 'calldatas',
-        type: 'bytes[]'
-      }
+        type: 'bytes[]',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -310,13 +310,13 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'address',
         name: 'voter',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     name: 'getReceipt',
     outputs: [
@@ -325,27 +325,27 @@ export default [
           {
             internalType: 'bool',
             name: 'hasVoted',
-            type: 'bool'
+            type: 'bool',
           },
           {
             internalType: 'bool',
             name: 'support',
-            type: 'bool'
+            type: 'bool',
           },
           {
             internalType: 'uint96',
             name: 'votes',
-            type: 'uint96'
-          }
+            type: 'uint96',
+          },
         ],
         internalType: 'struct GovernorAlpha.Receipt',
         name: '',
-        type: 'tuple'
-      }
+        type: 'tuple',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -353,20 +353,20 @@ export default [
       {
         internalType: 'address',
         name: '',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     name: 'latestProposalIds',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -376,12 +376,12 @@ export default [
       {
         internalType: 'string',
         name: '',
-        type: 'string'
-      }
+        type: 'string',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -391,12 +391,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -406,12 +406,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -421,12 +421,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -434,60 +434,60 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'proposals',
     outputs: [
       {
         internalType: 'uint256',
         name: 'id',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'address',
         name: 'proposer',
-        type: 'address'
+        type: 'address',
       },
       {
         internalType: 'uint256',
         name: 'eta',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'startBlock',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'endBlock',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'forVotes',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'uint256',
         name: 'againstVotes',
-        type: 'uint256'
+        type: 'uint256',
       },
       {
         internalType: 'bool',
         name: 'canceled',
-        type: 'bool'
+        type: 'bool',
       },
       {
         internalType: 'bool',
         name: 'executed',
-        type: 'bool'
-      }
+        type: 'bool',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -495,40 +495,40 @@ export default [
       {
         internalType: 'address[]',
         name: 'targets',
-        type: 'address[]'
+        type: 'address[]',
       },
       {
         internalType: 'uint256[]',
         name: 'values',
-        type: 'uint256[]'
+        type: 'uint256[]',
       },
       {
         internalType: 'string[]',
         name: 'signatures',
-        type: 'string[]'
+        type: 'string[]',
       },
       {
         internalType: 'bytes[]',
         name: 'calldatas',
-        type: 'bytes[]'
+        type: 'bytes[]',
       },
       {
         internalType: 'string',
         name: 'description',
-        type: 'string'
-      }
+        type: 'string',
+      },
     ],
     name: 'propose',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: false,
@@ -536,14 +536,14 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'queue',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -553,12 +553,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -566,20 +566,20 @@ export default [
       {
         internalType: 'uint256',
         name: 'proposalId',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     name: 'state',
     outputs: [
       {
         internalType: 'enum GovernorAlpha.ProposalState',
         name: '',
-        type: 'uint8'
-      }
+        type: 'uint8',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -589,12 +589,12 @@ export default [
       {
         internalType: 'contract TimelockInterface',
         name: '',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -604,12 +604,12 @@ export default [
       {
         internalType: 'contract UniInterface',
         name: '',
-        type: 'address'
-      }
+        type: 'address',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -619,12 +619,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
+    type: 'function',
   },
   {
     constant: true,
@@ -634,11 +634,11 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256'
-      }
+        type: 'uint256',
+      },
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function'
-  }
+    type: 'function',
+  },
 ]

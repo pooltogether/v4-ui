@@ -14,18 +14,8 @@ import BatSvg from 'assets/images/bat-new-transparent.png'
 import UniSvg from 'assets/images/token-uni.png'
 import UniThemeLightSvg from 'assets/images/uniwap-theme-light-logo.svg'
 
-export const PoolCurrencyIcon = (
-  props,
-) => {
-  const {
-    className,
-    noMediaQueries,
-    sm,
-    lg,
-    xl,
-    xs,
-    pool
-  } = props
+export const PoolCurrencyIcon = (props) => {
+  const { className, noMediaQueries, sm, lg, xl, xs, pool } = props
 
   const { theme } = useContext(ThemeContext)
 
@@ -37,12 +27,12 @@ export const PoolCurrencyIcon = (
     currencyIcon = DaiSvg
   } else if (symbol === 'usdc') {
     currencyIcon = UsdcSvg
-  // } else if (symbol === 'usdt') {
-  //   currencyIcon = UsdtSvg
-  // } else if (symbol === 'wbtc') {
-  //   currencyIcon = WbtcSvg
-  // } else if (symbol === 'zrx') {
-  //   currencyIcon = ZrxSvg
+    // } else if (symbol === 'usdt') {
+    //   currencyIcon = UsdtSvg
+    // } else if (symbol === 'wbtc') {
+    //   currencyIcon = WbtcSvg
+    // } else if (symbol === 'zrx') {
+    //   currencyIcon = ZrxSvg
   } else if (symbol === 'bat') {
     currencyIcon = BatSvg
   } else if (symbol === 'uni') {
@@ -64,29 +54,25 @@ export const PoolCurrencyIcon = (
     sizeClasses = 'w-8 h-8'
   }
 
-  const classes = classnames(
-    sizeClasses,
-    {
-      [className]: className,
-      'inline-block': !className,
-      'mr-1': !noMargin,
-    }
-  )
+  const classes = classnames(sizeClasses, {
+    [className]: className,
+    'inline-block': !className,
+    'mr-1': !noMargin,
+  })
 
-  return <>
-    {!currencyIcon ? <>
-      <div
-        className={`${classes} scale-80 text-center`}
-      >
-        <PuffLoader
-          color='rgba(255,255,255,0.3)'
-        />
-      </div>
-    </> : <>
-      <img
-        src={currencyIcon}
-        className={classes}
-      />
-    </>}
-  </>
+  return (
+    <>
+      {!currencyIcon ? (
+        <>
+          <div className={`${classes} scale-80 text-center`}>
+            <PuffLoader color='rgba(255,255,255,0.3)' />
+          </div>
+        </>
+      ) : (
+        <>
+          <img src={currencyIcon} className={classes} />
+        </>
+      )}
+    </>
+  )
 }

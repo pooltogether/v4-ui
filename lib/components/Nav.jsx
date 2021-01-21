@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
 
-export function Nav (props) {
+export function Nav(props) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -23,16 +23,13 @@ export function Nav (props) {
           href='https://app.pooltogether.com/'
           className={classnames(navParentClasses, {
             'text-accent-4 hover:text-highlight-2': !poolPage,
-            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': poolPage
+            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': poolPage,
           })}
         >
-          <div
-            className='flex items-center justify-center'
-            style={{ width: 28 }}
-          >
+          <div className='flex items-center justify-center' style={{ width: 28 }}>
             <svg
               style={{
-                top: 1
+                top: 1,
               }}
               className='fill-current mx-auto relative'
               width='24'
@@ -55,16 +52,13 @@ export function Nav (props) {
           href='https://app.pooltogether.com/account'
           className={classnames(navParentClasses, {
             'text-accent-4 hover:text-highlight-2': !accountPage,
-            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': accountPage
+            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': accountPage,
           })}
         >
-          <div
-            className='flex items-center justify-center'
-            style={{ width: 28 }}
-          >
+          <div className='flex items-center justify-center' style={{ width: 28 }}>
             <svg
               style={{
-                top: 1
+                top: 1,
               }}
               className='fill-current mx-auto relative'
               width='20'
@@ -84,18 +78,15 @@ export function Nav (props) {
           <a
             className={classnames(navParentClasses, {
               'text-accent-4 hover:text-highlight-2': !votePage,
-              'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage
+              'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage,
             })}
           >
-            <div
-              className='flex items-center justify-center'
-              style={{ width: 28 }}
-            >
+            <div className='flex items-center justify-center' style={{ width: 28 }}>
               <svg
                 style={{
                   left: 2,
                   top: 2,
-                  transform: 'scale(1.15)'
+                  transform: 'scale(1.15)',
                 }}
                 className='fill-current stroke-current mx-auto relative'
                 width='20'

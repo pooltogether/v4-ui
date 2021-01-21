@@ -2,9 +2,7 @@ import React, { useContext } from 'react'
 import Cookies from 'js-cookie'
 import * as Sentry from '@sentry/react'
 
-import {
-  SELECTED_WALLET_COOKIE_KEY
-} from 'lib/constants'
+import { SELECTED_WALLET_COOKIE_KEY } from 'lib/constants'
 import { WalletContext } from 'lib/components/contextProviders/WalletContextProvider'
 import { ErrorPage } from 'lib/components/ErrorPage'
 
@@ -27,7 +25,6 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-
 export function CustomErrorBoundary(props) {
   const { children } = props
   const { onboardWallet } = useContext(WalletContext)
@@ -39,25 +36,23 @@ export function CustomErrorBoundary(props) {
   }
 
   if (!process.env.NEXT_JS_SENTRY_DSN) {
-    return <ErrorBoundary>
-      {children}
-    </ErrorBoundary>
+    return <ErrorBoundary>{children}</ErrorBoundary>
   } else {
-    return <>
-      <Sentry.ErrorBoundary
-        beforeCapture={(scope) => {
-          scope.setTag('web3', walletName)
+    return (
+      <>
+        <Sentry.ErrorBoundary
+          beforeCapture={(scope) => {
+            scope.setTag('web3', walletName)
 
-          scope.setContext('wallet', {
-            name: walletName
-          })
-        }}
-        fallback={({ error, componentStack, resetError }) => (
-          <ErrorPage />
-        )}
-      >
-        {children}
-      </Sentry.ErrorBoundary>
-    </>
+            scope.setContext('wallet', {
+              name: walletName,
+            })
+          }}
+          fallback={({ error, componentStack, resetError }) => <ErrorPage />}
+        >
+          {children}
+        </Sentry.ErrorBoundary>
+      </>
+    )
   }
 }

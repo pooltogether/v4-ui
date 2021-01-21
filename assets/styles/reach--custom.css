@@ -18,7 +18,6 @@
   animation: slide-down 0.2s ease;
 }
 
-
 /* TOOLTIPS / PTHINTS */
 .device-is-touch [data-reach-tooltip] {
   top: 154px !important;
@@ -33,8 +32,8 @@
 
 [data-reach-tooltip] {
   @apply text-inverse bg-primary rounded-lg;
-  box-shadow: 0 -10px 10px -1px rgba(0, 0, 0, .1),
-    0 20px 20px -3px rgba(0, 0, 0, .1), rgba(14, 16, 40, 0.2) 0px 15px 30px;
+  box-shadow: 0 -10px 10px -1px rgba(0, 0, 0, 0.1), 0 20px 20px -3px rgba(0, 0, 0, 0.1),
+    rgba(14, 16, 40, 0.2) 0px 15px 30px;
   border: 0;
   max-width: 30rem;
   padding: 1.25rem 2rem;
@@ -114,7 +113,7 @@
 @screen sm {
   [data-reach-menu-item] {
     @apply px-5 py-3;
-  } 
+  }
 }
 
 .theme-dark [data-reach-menu-item].selected {
@@ -175,7 +174,6 @@
   pointer-events: initial;
 }
 
-
 @screen sm {
   [data-reach-dialog-content] {
     background: transparent;
@@ -205,4 +203,3 @@
     max-width: 56rem;
   }
 }
-

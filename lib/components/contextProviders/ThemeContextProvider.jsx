@@ -16,7 +16,7 @@ export function ThemeContextProvider(props) {
 
   useEffect(() => {
     let stored = Cookies.get(THEME)
-    
+
     const body = document.body
     body.classList.add('theme-dark')
 
@@ -49,33 +49,27 @@ export function ThemeContextProvider(props) {
       body.classList.remove('theme-dark')
       body.classList.add('theme-light')
 
-      Cookies.set(
-        THEME,
-        'light',
-        COOKIE_OPTIONS
-      )
+      Cookies.set(THEME, 'light', COOKIE_OPTIONS)
 
       setTheme('light')
     } else {
       body.classList.remove('theme-light')
       body.classList.add('theme-dark')
 
-      Cookies.set(
-        THEME,
-        'dark',
-        COOKIE_OPTIONS
-      )
+      Cookies.set(THEME, 'dark', COOKIE_OPTIONS)
 
       setTheme('dark')
     }
   }
 
-  return <ThemeContext.Provider
-    value={{
-      theme,
-      toggleTheme
-    }}
-  >
-    {props.children}
-  </ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider
+      value={{
+        theme,
+        toggleTheme,
+      }}
+    >
+      {props.children}
+    </ThemeContext.Provider>
+  )
 }

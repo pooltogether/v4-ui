@@ -7,7 +7,5 @@ export const LoadingSpinner = ({}) => {
 
   const lightClass = theme === 'dark' && 'white'
 
-  return <span
-    className={`inline-block loader01 ${lightClass}`}
-  ></span>
+  return <span className={`inline-block loader01 ${lightClass}`}></span>
 }

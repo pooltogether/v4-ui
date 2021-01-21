@@ -13,14 +13,12 @@ const readTransactions = (transactions, setTransactions, chainId, usersAddress, 
     let txs = []
     if (typeof window !== 'undefined') {
       const storageKey = `${chainId}-${usersAddress.toLowerCase()}-${TRANSACTIONS_KEY}`
-      
-      txs = JSON.parse(
-        localStorage.getItem(storageKey)
-      )
+
+      txs = JSON.parse(localStorage.getItem(storageKey))
       txs = txs ? txs : []
     }
 
-    txs = txs.filter(tx => tx.sent && !tx.cancelled)
+    txs = txs.filter((tx) => tx.sent && !tx.cancelled)
 
     // re-write IDs so transactions are ordered properly
     txs = txs.map((tx, index) => (tx.id = index + 1) && tx)

@@ -4,29 +4,27 @@ import { useRouter } from 'next/router'
 import { ethers } from 'ethers'
 // import { Magic, RPCError, RPCErrorCode } from 'magic-sdk'
 
-import {
-  COOKIE_OPTIONS,
-  MAGIC_EMAIL,
-} from 'lib/constants'
+import { COOKIE_OPTIONS, MAGIC_EMAIL } from 'lib/constants'
 import { poolToast } from 'lib/utils/poolToast'
 
 export const MagicContext = React.createContext(null)
 
 export function MagicContextProvider(props) {
-  return <MagicContext.Provider
-    value={{
-      address,
-      provider,
-      magic,
-      email,
-      signedIn,
-      signIn,
-      signOut,
-    }}
-  >
-    {props.children}
-  </MagicContext.Provider>
-
+  return (
+    <MagicContext.Provider
+      value={{
+        address,
+        provider,
+        magic,
+        email,
+        signedIn,
+        signIn,
+        signOut,
+      }}
+    >
+      {props.children}
+    </MagicContext.Provider>
+  )
 
   const [magic, setMagic] = useState()
   const [provider, setProvider] = useState()
@@ -45,18 +43,13 @@ export function MagicContextProvider(props) {
     // const [ethBalance, setEthBalance] = useState('')
     // const email = Cookies.get(MAGIC_EMAIL)
 
-    Cookies.set(
-      MAGIC_EMAIL,
-      email,
-      COOKIE_OPTIONS
-    )
+    Cookies.set(MAGIC_EMAIL, email, COOKIE_OPTIONS)
   }
 
   useEffect(() => {
-    const m = new Magic(
-      process.env.NEXT_JS_MAGIC_PUB_KEY,
-      { network: networkName === 'homestead' ? 'mainnet' : networkName }
-    )
+    const m = new Magic(process.env.NEXT_JS_MAGIC_PUB_KEY, {
+      network: networkName === 'homestead' ? 'mainnet' : networkName,
+    })
     setMagic(m)
 
     setProvider(
@@ -66,7 +59,6 @@ export function MagicContextProvider(props) {
       )
     )
   }, [])
-
 
   useEffect(() => {
     const checkSignedIn = async () => {
@@ -84,7 +76,7 @@ export function MagicContextProvider(props) {
     if (e) {
       e.preventDefault()
     }
-    
+
     const logout = await magic.user.logout()
     if (logout) {
       Cookies.remove(MAGIC_EMAIL, COOKIE_OPTIONS)
@@ -97,9 +89,7 @@ export function MagicContextProvider(props) {
 
   const signIn = async (formEmail, postSignInCallback) => {
     try {
-      const did = await magic
-        .auth
-        .loginWithMagicLink({ email: formEmail })
+      const did = await magic.auth.loginWithMagicLink({ email: formEmail })
 
       const isLoggedIn = await magic.user.isLoggedIn()
 
@@ -107,7 +97,7 @@ export function MagicContextProvider(props) {
 
       if (isLoggedIn) {
         updateStateVars()
-        
+
         if (postSignInCallback) {
           postSignInCallback()
         }
@@ -133,20 +123,21 @@ export function MagicContextProvider(props) {
         }
       }
     }
-
   }
 
-  return <MagicContext.Provider
-    value={{
-      address,
-      provider,
-      magic,
-      email,
-      signedIn,
-      signIn,
-      signOut,
-    }}
-  >
-    {props.children}
-  </MagicContext.Provider>
+  return (
+    <MagicContext.Provider
+      value={{
+        address,
+        provider,
+        magic,
+        email,
+        signedIn,
+        signIn,
+        signOut,
+      }}
+    >
+      {props.children}
+    </MagicContext.Provider>
+  )
 }

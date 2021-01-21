@@ -1,21 +1,21 @@
-const chalk = require("chalk")
-const express = require("express")
-const next = require("next")
+const chalk = require('chalk')
+const express = require('express')
+const next = require('next')
 
-const i18next = require("./i18n/server")
-const nextI18NextMiddleware = require("next-i18next/middleware").default
+const i18next = require('./i18n/server')
+const nextI18NextMiddleware = require('next-i18next/middleware').default
 
-var os = require('os');
-var ifaces = os.networkInterfaces();
-var ip = '';
+var os = require('os')
+var ifaces = os.networkInterfaces()
+var ip = ''
 
 Object.keys(ifaces).forEach(function (ifname) {
-  var alias = 0;
+  var alias = 0
 
   ifaces[ifname].forEach(function (iface) {
     if ('IPv4' !== iface.family || iface.internal !== false) {
       // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-      return;
+      return
     }
 
     if (alias >= 1) {
@@ -27,23 +27,23 @@ Object.keys(ifaces).forEach(function (ifname) {
       // console.log(ifname, iface.address);
       ip = iface.address
     }
-    ++alias;
-  });
-});
+    ++alias
+  })
+})
 
 const devProxy = {
-  "/.netlify": {
-    target: "http://localhost:9000",
-    pathRewrite: { "^/.netlify/functions": "" }
-  }
+  '/.netlify': {
+    target: 'http://localhost:9000',
+    pathRewrite: { '^/.netlify/functions': '' },
+  },
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const env = process.env.NODE_ENV || 'development'
-const dev = env !== "production"
+const dev = env !== 'production'
 const app = next({
-  dir: ".", // base directory where everything is, could move to src later
-  dev
+  dir: '.', // base directory where everything is, could move to src later
+  dev,
 })
 
 const handle = app.getRequestHandler()
@@ -66,16 +66,16 @@ app
     server.use(nextI18NextMiddleware(i18next))
 
     // Default catch-all handler to allow Next.js to handle all other routes
-    server.all("*", (req, res) => handle(req, res))
+    server.all('*', (req, res) => handle(req, res))
 
-    server.listen(port, err => {
+    server.listen(port, (err) => {
       if (err) {
         throw err
       }
       console.log(chalk.yellow(`> Ready on http://${ip}:${port} [${env}]`))
     })
   })
-  .catch(err => {
-    console.log("An error occurred, unable to start the server")
+  .catch((err) => {
+    console.log('An error occurred, unable to start the server')
     console.log(err)
   })

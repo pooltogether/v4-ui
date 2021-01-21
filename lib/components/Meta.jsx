@@ -25,7 +25,7 @@ export const Meta = ({ title }) => {
           <meta property='og:description' content={description} />
           <meta property='og:site_name' content={title} />
           <meta property='og:url' content={url} />
-          
+
           <meta property='twitter:title' content={title} />
           <meta property='twitter:site' content={twitterHandle} />
           <meta property='twitter:url' content={url} />

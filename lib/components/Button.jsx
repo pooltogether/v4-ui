@@ -20,8 +20,5 @@ export function Button(props) {
     'textSize',
   ])
 
-  return <button
-    {...newProps}
-    className={classes}
-  />
+  return <button {...newProps} className={classes} />
 }

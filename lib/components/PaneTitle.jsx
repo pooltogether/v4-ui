@@ -1,11 +1,7 @@
 import React from 'react'
 
 export function PaneTitle(props) {
-  const {
-    children,
-    small,
-    short,
-  } = props
+  const { children, small, short } = props
 
   if (!children) {
     return null
@@ -23,15 +19,16 @@ export function PaneTitle(props) {
     spacingClasses = 'pb-2'
   }
 
-  return <>
-    <div
-      className={`leading-snug xs:leading-tight ${fontClasses} ${spacingClasses} mx-auto`}
-      style={{
-        maxWidth: 500
-      }}
-    >
-      {children}
-    </div>
-  </>
-
+  return (
+    <>
+      <div
+        className={`leading-snug xs:leading-tight ${fontClasses} ${spacingClasses} mx-auto`}
+        style={{
+          maxWidth: 500,
+        }}
+      >
+        {children}
+      </div>
+    </>
+  )
 }

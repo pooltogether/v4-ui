@@ -20,9 +20,11 @@ export const ProposalsUI = (props) => {
   const { loading, data: proposals } = useAllProposals()
 
   if (loading) {
-    return <div className='flex flex-grow'>
-      <V3LoadingDots className='m-auto' />
-    </div>
+    return (
+      <div className='flex flex-grow'>
+        <V3LoadingDots className='m-auto' />
+      </div>
+    )
   }
 
   return (
@@ -31,27 +33,28 @@ export const ProposalsUI = (props) => {
 
       <h1 className='text-accent-1'>Vote</h1>
       <p className='text-accent-1'>
-      The protocol is controlled by decentralized governance. Any changes are presented as “proposals” and voted on by POOL token holders. <a href='' target='_blank' rel='noreferrer noopener' className='text-accent-1 underline'>Read more about PoolTogether governance.</a>
+        The protocol is controlled by decentralized governance. Any changes are presented as
+        “proposals” and voted on by POOL token holders.{' '}
+        <a href='' target='_blank' rel='noreferrer noopener' className='text-accent-1 underline'>
+          Read more about PoolTogether governance.
+        </a>
       </p>
-      <p className='mb-4 sm:mb-8'>
-      
-
-      </p>
+      <p className='mb-4 sm:mb-8'></p>
 
       <div className='flex flex-col sm:flex-row mb-4 sm:mb-8'>
         <a href='https://snapshot.page/#/pooltogether' target='_blank' rel='noreferrer noopener'>
-          <Button
-            type='button'
-            className='mb-4 sm:mb-0 w-full sm:w-auto'
-          >
-              Discuss Proposals
+          <Button type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
+            Discuss Proposals
           </Button>
         </a>
 
-        <PTHint tip={<div className='my-2 text-center text-xs sm:text-sm'>
-            <p>Proposal creation is currently in development.</p>
-            <p>Check back soon!</p>
-          </div>}
+        <PTHint
+          tip={
+            <div className='my-2 text-center text-xs sm:text-sm'>
+              <p>Proposal creation is currently in development.</p>
+              <p>Check back soon!</p>
+            </div>
+          }
         >
           <Button
             className='sm:ml-8 w-full sm:w-auto'
@@ -60,18 +63,15 @@ export const ProposalsUI = (props) => {
               e.preventDefault()
               connectWallet()
             }}
-
             border='green'
             text='primary'
             bg='green'
-
             hoverBorder='green'
             hoverText='primary'
             hoverBg='green'
           >
             Create a Proposal
           </Button>
-
         </PTHint>
       </div>
 

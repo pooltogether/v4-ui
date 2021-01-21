@@ -1,12 +1,12 @@
 @screen sm {
   .card-min-height-desktop {
-    min-height: 210px
+    min-height: 210px;
   }
 }
 
 @screen lg {
   .card-min-height-desktop {
-    min-height: 250px
+    min-height: 250px;
   }
 }
 

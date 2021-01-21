@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { i18n } from 'lib/../i18n'
 import { DropdownList } from 'lib/components/DropdownList'
 
-{/*
+{
+  /*
   de: Deutsch (German)
   en: English
   es: Español (Spanish)
@@ -14,17 +15,16 @@ import { DropdownList } from 'lib/components/DropdownList'
   ko: 한국어 (Korean)
   tr: Türk (Turkish)
   zh: 普通话 (Mandarin)
-*/}
+*/
+}
 
 export function LanguagePicker(props) {
-  const [langs, setLangs] = useState(
-    {
-      en: {
-        'name': 'English',
-        'nativeName': 'English'
-      },
-    }
-  )
+  const [langs, setLangs] = useState({
+    en: {
+      name: 'English',
+      nativeName: 'English',
+    },
+  })
 
   const [currentLang, setCurrentLang] = useState('en')
 
@@ -40,7 +40,7 @@ export function LanguagePicker(props) {
       setCurrentLang(i18n.language)
     }
   }, [])
-  
+
   useEffect(() => {
     const runGetLangs = async () => {
       await i18n.services.backendConnector.backend.getLanguages((err, result) => {
@@ -56,37 +56,38 @@ export function LanguagePicker(props) {
         }, [])
 
         let items = {}
-        activeLangsArray.forEach(valueItem => {
+        activeLangsArray.forEach((valueItem) => {
           items[valueItem] = result[valueItem]
         })
-        
+
         setLangs(items)
       })
     }
     runGetLangs()
   }, [])
 
-
   const formatValue = (key) => {
     const lang = langs[key]
 
-    return <>
-      {key.toUpperCase()} - <span className='capitalize'>
-        {lang.nativeName.split(',')[0]}
-      </span> ({lang.name.split(';')[0]})
-    </>
+    return (
+      <>
+        {key.toUpperCase()} - <span className='capitalize'>{lang.nativeName.split(',')[0]}</span> (
+        {lang.name.split(';')[0]})
+      </>
+    )
   }
 
-  return <>
-    <DropdownList
-      id='language-picker-dropdown'
-      className='ml-8 xs:ml-6 sm:ml-6 mr-2 sm:mr-4 my-2 text-xxs sm:text-base text-lg'
-      label={currentLang?.toUpperCase()}
-      formatValue={formatValue}
-      onValueSet={onValueSet}
-      current={currentLang}
-      values={langs}
-    />
-
-  </>
+  return (
+    <>
+      <DropdownList
+        id='language-picker-dropdown'
+        className='ml-8 xs:ml-6 sm:ml-6 mr-2 sm:mr-4 my-2 text-xxs sm:text-base text-lg'
+        label={currentLang?.toUpperCase()}
+        formatValue={formatValue}
+        onValueSet={onValueSet}
+        current={currentLang}
+        values={langs}
+      />
+    </>
+  )
 }

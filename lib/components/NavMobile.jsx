@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
 
-export function NavMobile (props) {
+export function NavMobile(props) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -21,14 +21,14 @@ export function NavMobile (props) {
       <nav
         className='w-screen flex justify-between items-center fixed b-0 l-0 r-0 bg-card-purple sm:hidden z-20'
         style={{
-          height: 76
+          height: 76,
         }}
       >
         <a
           href='https://app.pooltogether.com/'
           className={classnames(mobileNavClasses, {
             'text-accent-4 hover:text-highlight-9': !poolPage,
-            'text-highlight-9 hover:text-highlight-9': poolPage
+            'text-highlight-9 hover:text-highlight-9': poolPage,
           })}
         >
           <svg
@@ -52,7 +52,7 @@ export function NavMobile (props) {
           href='https://app.pooltogether.com/account'
           className={classnames(mobileNavClasses, {
             'text-accent-4 hover:text-highlight-9': !accountPage,
-            'text-highlight-9 hover:text-highlight-9': accountPage
+            'text-highlight-9 hover:text-highlight-9': accountPage,
           })}
         >
           <svg
@@ -73,7 +73,7 @@ export function NavMobile (props) {
           <a
             className={classnames(mobileNavClasses, {
               'text-accent-4 hover:text-highlight-9': !votePage,
-              'text-highlight-9 hover:text-highlight-9': votePage
+              'text-highlight-9 hover:text-highlight-9': votePage,
             })}
           >
             <svg

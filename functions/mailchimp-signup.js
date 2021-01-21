@@ -12,19 +12,19 @@ exports.handler = async (event, context, callback) => {
   let errorMessage = null
 
   if (!formData) {
-    errorMessage = "No form data supplied"
+    errorMessage = 'No form data supplied'
     console.log(errorMessage)
     callback(errorMessage)
   }
 
   if (!email) {
-    errorMessage = "No email supplied"
+    errorMessage = 'No email supplied'
     console.log(errorMessage)
     callback(errorMessage)
   }
 
   if (!listId) {
-    errorMessage = "No listId supplied"
+    errorMessage = 'No listId supplied'
     console.log(errorMessage)
     callback(errorMessage)
   }
@@ -41,9 +41,8 @@ exports.handler = async (event, context, callback) => {
   const params = {
     email_address: email,
     status: 'subscribed',
-    merge_fields: {}
+    merge_fields: {},
   }
-
 
   const url = `https://${mcRegion}.api.mailchimp.com/3.0/lists/${listId}/members`
 
@@ -51,28 +50,23 @@ exports.handler = async (event, context, callback) => {
     headers: {
       'Authorization': `apikey ${mailChimpAPI}`,
       'Content-Type': 'application/json',
-    }
+    },
   }
-
 
   let result
   try {
-    result = await axiosInstance.post(
-      url,
-      params,
-      config
-    )
+    result = await axiosInstance.post(url, params, config)
     // console.log(result.status)
 
     if (result.status < 400) {
       callback(null, {
         statusCode: result.status,
-        body: JSON.stringify(result.data)
+        body: JSON.stringify(result.data),
       })
     } else {
       callback(result.error, {
         statusCode: result.status,
-        body: result.error.message
+        body: result.error.message,
       })
     }
   } catch (e) {

@@ -47,7 +47,7 @@ export function Input(props) {
 
   if (textClasses === undefined) {
     if (large) {
-      textClasses = 'font-bold text-3xl sm:text-5xl'  
+      textClasses = 'font-bold text-3xl sm:text-5xl'
     } else if (small) {
       textClasses = 'text-xxs xs:text-xs sm:text-sm lg:text-base'
     } else {
@@ -63,7 +63,7 @@ export function Input(props) {
     bgClasses,
     textClasses,
     roundedClasses,
-    props.className, 
+    props.className,
     {
       'text-red': isError,
     }
@@ -94,22 +94,19 @@ export function Input(props) {
     'bottomRightLabel',
   ])
 
-  return <>
-    <input
-      {...newProps}
-      autoFocus={autoFocus && isBrowser}
-      ref={register({
-        required,
-        pattern,
-        validate
-      })}
-
-      // rounded-full
-      className={classnames(
-        className,
-        'focus:outline-none pl-6',
-      )}
-    />
-
-  </>
+  return (
+    <>
+      <input
+        {...newProps}
+        autoFocus={autoFocus && isBrowser}
+        ref={register({
+          required,
+          pattern,
+          validate,
+        })}
+        // rounded-full
+        className={classnames(className, 'focus:outline-none pl-6')}
+      />
+    </>
+  )
 }

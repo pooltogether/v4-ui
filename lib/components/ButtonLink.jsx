@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import Link from 'next/link'
 import { pick, isUndefined } from 'lodash'
 
-export function getButtonClasses (props) {
+export function getButtonClasses(props) {
   let {
     border,
     bg,
@@ -20,7 +20,7 @@ export function getButtonClasses (props) {
     transition,
     className,
     textSize,
-    width
+    width,
   } = props
 
   let defaultClasses =
@@ -112,7 +112,7 @@ const getTextSize = (size) => {
   }
 }
 
-export function ButtonLink (props) {
+export function ButtonLink(props) {
   let { children, as, href } = props
 
   const classes = getButtonClasses(props)

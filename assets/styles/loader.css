@@ -16,7 +16,7 @@ span {
   width: 14px;
   height: 14px;
   margin: 0 10px;
-  background-color: #4565FF;
+  background-color: #4565ff;
   border-radius: 100%;
   display: inline-block;
   animation: bounceLoad 1.4s infinite ease-in-out both;
@@ -31,18 +31,24 @@ span {
 }
 
 @keyframes bounceLoad {
-  0%, 80%, 100% { 
+  0%,
+  80%,
+  100% {
     transform: scale3d(0, 0, 0);
-  } 40% { 
+  }
+  40% {
     transform: scale3d(0.5, 0.5, 0.5);
   }
 }
 
 @screen sm {
   @keyframes bounceLoad {
-    0%, 80%, 100% { 
+    0%,
+    80%,
+    100% {
       transform: scale3d(0, 0, 0);
-    } 40% { 
+    }
+    40% {
       transform: scale3d(1, 1, 1);
     }
   }
@@ -104,8 +110,6 @@ span {
   }
 }
 
-
-
 .loader01 {
   width: 20px;
   height: 20px;
@@ -124,8 +128,8 @@ span {
     transform: rotate(0);
   }
   100% {
-    transform: rotate(360deg); 
-  } 
+    transform: rotate(360deg);
+  }
 }
 
 .loader01.white {

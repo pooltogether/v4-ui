@@ -2,11 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { ethers } from 'ethers'
 
-import {
-  STORED_CHAIN_ID_KEY,
-  COOKIE_OPTIONS,
-  SELECTED_WALLET_COOKIE_KEY
-} from 'lib/constants'
+import { STORED_CHAIN_ID_KEY, COOKIE_OPTIONS, SELECTED_WALLET_COOKIE_KEY } from 'lib/constants'
 import { MagicContext } from 'lib/components/contextProviders/MagicContextProvider'
 
 const debug = require('debug')('WalletContextProvider')
@@ -16,16 +12,13 @@ let provider
 export const WalletContext = React.createContext(null)
 
 export function WalletContextProvider(props) {
-  const {
-    children,
-    postConnectCallback,
-  } = props
+  const { children, postConnectCallback } = props
 
   const [address, setAddress] = useState(null)
   const [network, setNetwork] = useState(null)
   const [balance, setBalance] = useState(null)
   const [wallet, setWallet] = useState({})
-  
+
   const [onboard, setOnboard] = useState(null)
 
   const { magic } = useContext(MagicContext)
@@ -37,15 +30,9 @@ export function WalletContextProvider(props) {
       console.log('no onboard?')
     }
 
-    Cookies.remove(
-      STORED_CHAIN_ID_KEY,
-      COOKIE_OPTIONS
-    )
+    Cookies.remove(STORED_CHAIN_ID_KEY, COOKIE_OPTIONS)
 
-    Cookies.remove(
-      SELECTED_WALLET_COOKIE_KEY,
-      COOKIE_OPTIONS
-    )
+    Cookies.remove(SELECTED_WALLET_COOKIE_KEY, COOKIE_OPTIONS)
   }
 
   const getOnboard = async () => {
@@ -59,7 +46,7 @@ export function WalletContextProvider(props) {
       address: setAddress,
       network: setNetwork,
       balance: setBalance,
-      wallet: wallet => {
+      wallet: (wallet) => {
         if (wallet.provider) {
           // if (magic) {
           //   magicContext.signOut()
@@ -67,11 +54,7 @@ export function WalletContextProvider(props) {
 
           setWallet(wallet)
 
-          Cookies.set(
-            SELECTED_WALLET_COOKIE_KEY,
-            wallet.name,
-            COOKIE_OPTIONS
-          )
+          Cookies.set(SELECTED_WALLET_COOKIE_KEY, wallet.name, COOKIE_OPTIONS)
 
           provider = new ethers.providers.Web3Provider(wallet.provider)
 
@@ -80,12 +63,9 @@ export function WalletContextProvider(props) {
           provider = null
           setWallet({})
 
-          Cookies.remove(
-            SELECTED_WALLET_COOKIE_KEY,
-            COOKIE_OPTIONS
-          )
+          Cookies.remove(SELECTED_WALLET_COOKIE_KEY, COOKIE_OPTIONS)
         }
-      }
+      },
     })
   }
 
@@ -103,14 +83,12 @@ export function WalletContextProvider(props) {
     }
   }, [])
 
-  const connectWallet = async (
-    postSignInCallback
-  ) => {
+  const connectWallet = async (postSignInCallback) => {
     let _onboard = onboard
 
     if (!_onboard) {
       console.warn(`onboard wasn't ready when user clicked "connect wallet"! (this is slow)`)
-      
+
       await handleLoadOnboard()
       _onboard = await getOnboard()
     }
@@ -128,7 +106,7 @@ export function WalletContextProvider(props) {
       postSignInCallback()
     }
   }
-  
+
   const reconnectWallet = (previouslySelectedWallet) => {
     onboard.walletReset()
 
@@ -137,21 +115,23 @@ export function WalletContextProvider(props) {
     }
   }
 
-  return <WalletContext.Provider
-    value={{
-      onboard,
-      onboardAddress: address,
-      onboardBalance: balance,
-      onboardNetwork: network,
-      onboardProvider: provider,
-      onboardWallet: wallet,
-      connectWallet,
-      disconnectWallet,
-      reconnectWallet,
-      walletCheck: onboard?.walletCheck,
-      handleLoadOnboard,
-    }}
-  >
-    {children}
-  </WalletContext.Provider>
+  return (
+    <WalletContext.Provider
+      value={{
+        onboard,
+        onboardAddress: address,
+        onboardBalance: balance,
+        onboardNetwork: network,
+        onboardProvider: provider,
+        onboardWallet: wallet,
+        connectWallet,
+        disconnectWallet,
+        reconnectWallet,
+        walletCheck: onboard?.walletCheck,
+        handleLoadOnboard,
+      }}
+    >
+      {children}
+    </WalletContext.Provider>
+  )
 }

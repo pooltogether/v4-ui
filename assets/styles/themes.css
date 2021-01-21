@@ -187,16 +187,11 @@
 }
 
 .theme-dark .pool-gradient-1 {
-  background: linear-gradient(72deg, #4c249f 28%, rgba(255, 119, 225, 0.9) 164%),
-    #290b5a;
+  background: linear-gradient(72deg, #4c249f 28%, rgba(255, 119, 225, 0.9) 164%), #290b5a;
 }
 
 .theme-light .pool-gradient-1 {
-  background: linear-gradient(
-    72deg,
-    #eee6ff 28%,
-    rgba(255, 185, 240, 0.9) 164%
-  );
+  background: linear-gradient(72deg, #eee6ff 28%, rgba(255, 185, 240, 0.9) 164%);
 }
 
 @screen sm {
@@ -340,9 +335,7 @@ input:-webkit-autofill:active {
 }
 
 .theme-light .nav--account-transactions-button:hover div,
-.theme-light
-  .nav--account-transactions-button:hover
-  .nav--account-transactions-button__address {
+.theme-light .nav--account-transactions-button:hover .nav--account-transactions-button__address {
   @apply bg-green text-white;
 }
 

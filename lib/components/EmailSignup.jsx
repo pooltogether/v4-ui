@@ -15,7 +15,7 @@ export function EmailSignup(props) {
   const { handleSubmit, register, watch, formState } = useForm({ mode: 'all' })
 
   const [success, setSuccess] = useState(success)
-  
+
   const watchEmail = watch('email')
 
   const onSubmit = async () => {
@@ -31,7 +31,7 @@ export function EmailSignup(props) {
 
         response = await axiosInstance.post(MAILCHIMP_LOCAL_URI, {
           email: watchEmail,
-          listId
+          listId,
         })
 
         if (response.status < 400) {
@@ -45,59 +45,57 @@ export function EmailSignup(props) {
     }
   }
 
-  return <>
-    <div className='flex flex-col items-start justify-start w-full'>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className='w-full'
-      >
-        <TextInputGroup
-          alignLeft
-          small
-          marginClasses='m-0'
-          paddingClasses='px-8 py-2'
-          borderClasses='border-0'
-          bgClasses='bg-primary'
-          id='email'
-          type='email'
-          name='email'
-          register={register}
-          placeholder={t('yourEmailAddress')}
-          inlineButton={<>
-            <button
-              className='flex w-full items-center text-highlight-1 hover:text-darkened focus:text-darkened active:text-darkened font-bold tracking-wider bg-primary hover:bg-highlight-2 active:bg-highlight-2 focus:bg-highlight-2 py-2 px-3 rounded-full trans trans-fastest'
-            >
-              {success ?
-                <FeatherIcon
-                  strokeWidth='0.15rem'
-                  icon='check-circle'
-                  className='mr-2 stroke-current w-4 h-4 relative'
-                  style={{
-                    top: 1
-                  }}
-                /> : (
-                  <>
+  return (
+    <>
+      <div className='flex flex-col items-start justify-start w-full'>
+        <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
+          <TextInputGroup
+            alignLeft
+            small
+            marginClasses='m-0'
+            paddingClasses='px-8 py-2'
+            borderClasses='border-0'
+            bgClasses='bg-primary'
+            id='email'
+            type='email'
+            name='email'
+            register={register}
+            placeholder={t('yourEmailAddress')}
+            inlineButton={
+              <>
+                <button className='flex w-full items-center text-highlight-1 hover:text-darkened focus:text-darkened active:text-darkened font-bold tracking-wider bg-primary hover:bg-highlight-2 active:bg-highlight-2 focus:bg-highlight-2 py-2 px-3 rounded-full trans trans-fastest'>
+                  {success ? (
                     <FeatherIcon
                       strokeWidth='0.15rem'
-                      icon='arrow-right'
+                      icon='check-circle'
                       className='mr-2 stroke-current w-4 h-4 relative'
                       style={{
-                        top: 1
+                        top: 1,
                       }}
-                    /> {t('getNotified')}
-                  </>
-                )}
-            </button>
-          </>}
-        />
-      </form>
+                    />
+                  ) : (
+                    <>
+                      <FeatherIcon
+                        strokeWidth='0.15rem'
+                        icon='arrow-right'
+                        className='mr-2 stroke-current w-4 h-4 relative'
+                        style={{
+                          top: 1,
+                        }}
+                      />{' '}
+                      {t('getNotified')}
+                    </>
+                  )}
+                </button>
+              </>
+            }
+          />
+        </form>
 
-      <div
-        className={`text-highlight-1 text-xs sm:text-sm lg:text-lg mb-3 text-left`}
-      >
-        {success && t('thankYouYouWillBeNotified')}
+        <div className={`text-highlight-1 text-xs sm:text-sm lg:text-lg mb-3 text-left`}>
+          {success && t('thankYouYouWillBeNotified')}
+        </div>
       </div>
-    </div>
-  </>
-
+    </>
+  )
 }

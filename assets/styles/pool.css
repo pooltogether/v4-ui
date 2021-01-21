@@ -22,12 +22,14 @@ body {
   height: 100%;
 }
 
-html, body, table {
+html,
+body,
+table {
   scroll-behavior: smooth;
 }
 
 ::selection {
-  background-color: #79FFE1;
+  background-color: #79ffe1;
   color: var(--color-text-inverse);
 }
 
@@ -66,15 +68,15 @@ a:hover {
 }
 
 @keyframes gradientBG {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .text-flashy {
@@ -118,14 +120,14 @@ a:hover {
 
 @keyframes cycleBackgroundPos {
   0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .nav--account-transactions-button__loader {
@@ -208,7 +210,7 @@ a:hover {
     width: 138px;
   }
 }
- 
+
 .pool-logo:after {
   content: '';
   background-size: cover;
@@ -310,7 +312,7 @@ a:hover {
 .card-icon {
   position: relative;
   height: 10px;
-  top: -2px
+  top: -2px;
 }
 
 @screen sm {
@@ -346,18 +348,28 @@ a:hover {
 }
 
 @media screen and (max-height: 460px) {
-  #manage-tickets-action-dropdown { display: none; }
-  .liquidity-cap { display: none; }
-  .odds-box { display: none; }
-  .ticket { display: none; }
-  .pane-title { display: none; }
+  #manage-tickets-action-dropdown {
+    display: none;
+  }
+  .liquidity-cap {
+    display: none;
+  }
+  .odds-box {
+    display: none;
+  }
+  .ticket {
+    display: none;
+  }
+  .pane-title {
+    display: none;
+  }
 }
 
 @media screen and (max-height: 600px) {
   .deposit-info-list {
     padding: 0 !important;
   }
-  
+
   .deposit-info-list li {
     padding-bottom: 3px !important;
   }
@@ -369,43 +381,27 @@ a:hover {
 
 @keyframes glow {
   from {
-    text-shadow:  0 0 1px rgb(212, 230, 52), 1px 1px 2px #fff, 2px 2px 5px #fff;
+    text-shadow: 0 0 1px rgb(212, 230, 52), 1px 1px 2px #fff, 2px 2px 5px #fff;
   }
   to {
-    text-shadow:  0 0 2px #fff, 0 0 3px #0ff, 5px 5px 4px #fff;
+    text-shadow: 0 0 2px #fff, 0 0 3px #0ff, 5px 5px 4px #fff;
   }
 }
 
 .purple-pink-gradient {
-  background-image: linear-gradient(
-    40deg,
-    #4C249F 30%,
-    #9C48BA 81%
-  )
+  background-image: linear-gradient(40deg, #4c249f 30%, #9c48ba 81%);
 }
 
 .theme-light .purple-pink-gradient {
-  background-image: linear-gradient(
-    40deg,
-    #EEE5FF 30%,
-    #FFB9F0 81%
-  )
+  background-image: linear-gradient(40deg, #eee5ff 30%, #ffb9f0 81%);
 }
 
 .pink-purple-gradient {
-  background-image: linear-gradient(
-    40deg,
-    #9C48BA 20%,
-    #4C249F 100%
-  )
+  background-image: linear-gradient(40deg, #9c48ba 20%, #4c249f 100%);
 }
 
 .theme-light .pink-purple-gradient {
-  background-image: linear-gradient(
-    40deg,
-    #FFB9F0 40%,
-    #EEE5FF 110%
-  )
+  background-image: linear-gradient(40deg, #ffb9f0 40%, #eee5ff 110%);
 }
 
 .graph-modal {
@@ -432,7 +428,6 @@ a:hover {
   }
 }
 
-
 .time-remaining-chart--big-num {
   max-height: 76px;
 }
@@ -442,7 +437,6 @@ a:hover {
     max-height: 100px;
   }
 }
-
 
 .countdown-wrapper {
 }
