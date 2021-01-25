@@ -220,6 +220,14 @@ body {
   grid-area: banner;
 }
 
+.w-fit-content {
+  width: fit-content;
+}
+
+.h-fit-content {
+  height: fit-content;
+}
+
 /* .whitespace-1 {
   grid-area: whitespace-1;
 } */

@@ -60,8 +60,8 @@ const DelegateTrigger = (props) => {
   const [sendTx] = useSendTransaction(`Delegate`, transactions, setTransactions)
   const txInFlight = transactions?.find((tx) => tx.id === txId)
 
-  const delegateIdentity = useSocialIdentity(tokenHolder.delegate.id)
-  console.log(delegateIdentity)
+  const delegateAddress = tokenHolder?.delegate?.id
+  const delegateIdentity = useSocialIdentity(delegateAddress)
 
   const handleDelegate = async (e) => {
     e.preventDefault()
@@ -135,9 +135,9 @@ const DelegateTrigger = (props) => {
           (
           <EtherscanAddressLink
             className='font-bold text-inverse hover:text-accent-1'
-            address={tokenHolder.delegate.id}
+            address={delegateAddress}
           >
-            {shorten(tokenHolder.delegate.id)}
+            {shorten(delegateAddress)}
           </EtherscanAddressLink>
           )
         </p>
@@ -149,10 +149,10 @@ const DelegateTrigger = (props) => {
         You have delegated <b>{votes}</b> votes to{' '}
         <EtherscanAddressLink
           className='font-bold text-inverse hover:text-accent-1'
-          address={tokenHolder.delegate.id}
+          address={delegateAddress}
         >
-          <span className='hidden sm:inline'>{tokenHolder.delegate.id}</span>
-          <span className='inline sm:hidden'>{shorten(tokenHolder.delegate.id)}</span>
+          <span className='hidden sm:inline'>{delegateAddress}</span>
+          <span className='inline sm:hidden'>{shorten(delegateAddress)}</span>
         </EtherscanAddressLink>
       </p>
     )

@@ -1,12 +1,17 @@
-import { Card, InnerCard } from 'lib/components/Card'
-import React, { useState } from 'react'
-
-import { ButtonLink } from 'lib/components/ButtonLink'
 import ChatBubble from 'assets/images/chat-bubble.svg'
-import { PROPOSAL_STATUS } from 'lib/constants'
+import FeatherIcon from 'feather-icons-react'
+import classnames from 'classnames'
+import React, { useState } from 'react'
+import { DateTime } from 'luxon'
+import { ButtonLink } from 'lib/components/ButtonLink'
+import { Card, InnerCard } from 'lib/components/Card'
+import { PROPOSAL_STATUS, SECONDS_PER_BLOCK } from 'lib/constants'
+import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
+import { useCurrentBlock } from 'lib/hooks/useCurrentBlock'
+import { ethers } from 'ethers'
 
 export const ProposalsList = (props) => {
-  const { proposals } = props
+  const { loading, data: proposals, sortedProposals } = useAllProposalsSorted()
 
   if (!proposals || Object.keys(proposals)?.length === 0) {
     return (
@@ -17,16 +22,43 @@ export const ProposalsList = (props) => {
     )
   }
 
+  const { active, pending, past } = sortedProposals
+
   // TODO: Divide them by active nad non-active
 
   return (
-    <ol>
-      {Object.values(proposals)
-        .reverse()
-        .map((p) => (
-          <ProposalItem key={p.id} proposal={p} />
-        ))}
-    </ol>
+    <>
+      {active.length > 0 && (
+        <>
+          <h6 className='text-accent-1 mb-4'>Active Proposals</h6>
+          <ol>
+            {active.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
+      {pending.length > 0 && (
+        <>
+          <h6 className='text-accent-1 mb-4'>Pending Proposals</h6>
+          <ol>
+            {pending.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
+      {past.length > 0 && (
+        <>
+          <h6 className='text-accent-1 mb-4'>Past Proposals</h6>
+          <ol>
+            {past.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
+    </>
   )
 }
 
@@ -42,14 +74,14 @@ const ProposalItem = (props) => {
     forVotes,
     againstVotes,
     title,
-    id,
+    id
   } = proposal
 
   return (
     <li>
       <Card>
-        <div className='flex justify-between'>
-          <h3>Proposal {id}</h3>
+        <div className='flex justify-between flex-col sm:flex-row'>
+          <h3>Proposal #{id}</h3>
           <ProposalStatus proposal={proposal} />
         </div>
         <p className='mb-4'>{title}</p>
@@ -63,39 +95,66 @@ const ProposalStatus = (props) => {
   const { proposal } = props
   const { status } = proposal
 
+  const currentBlock = useCurrentBlock()
+
+  let statusValue
   switch (status) {
-    case PROPOSAL_STATUS.pending: {
-      return <div>{status.toUpperCase()}</div>
-    }
+    case PROPOSAL_STATUS.executed:
+    case PROPOSAL_STATUS.succeeded:
     case PROPOSAL_STATUS.active: {
-      return <div>{status.toUpperCase()}</div>
+      statusValue = 1
+      break
     }
+    case PROPOSAL_STATUS.expired:
+    case PROPOSAL_STATUS.defeated:
     case PROPOSAL_STATUS.cancelled: {
-      return <div>{status.toUpperCase()}</div>
+      statusValue = -1
+      break
     }
-    case PROPOSAL_STATUS.defeated: {
-      return <div>{status.toUpperCase()}</div>
-    }
-    case PROPOSAL_STATUS.succeeded: {
-      return <div>{status.toUpperCase()}</div>
-    }
-    case PROPOSAL_STATUS.queued: {
-      return <div>{status.toUpperCase()}</div>
-    }
-    case PROPOSAL_STATUS.expired: {
-      return <div>{status.toUpperCase()}</div>
-    }
-    case PROPOSAL_STATUS.executed: {
-      return <div>{status.toUpperCase()}</div>
+    default:
+    case PROPOSAL_STATUS.queued:
+    case PROPOSAL_STATUS.pending: {
+      statusValue = 0
+      break
     }
   }
 
-  return proposal.status
-}
+  // get and format data
+  const currentBlockNumber = currentBlock?.blockNumber
+  const currentTimestamp = currentBlock?.timestamp
+  const endDate = currentBlock
+    ? DateTime.fromSeconds(
+        currentTimestamp + SECONDS_PER_BLOCK * (Number(proposal.endBlock) - currentBlockNumber)
+      )
+    : undefined
+  const now = DateTime.local()
 
-const PositiveStatus = (props) => <div>{props.children}</div>
-const NegativeStatus = (props) => <div>{props.children}</div>
-const PendingStatus = (props) => <div>{props.children}</div>
+  let icon
+  if (statusValue < 0) {
+    icon = 'x-circle'
+  } else if (statusValue > 0) {
+    icon = 'check-circle'
+  }
+
+  const statusDisplay = status.slice(0, 1).toUpperCase() + status.slice(1)
+
+  return (
+    <div
+      className={classnames(
+        'mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary',
+        {
+          'text-red': statusValue < 0,
+          'text-green': statusValue > 0,
+          'text-inverse': statusValue === 0
+        }
+      )}
+    >
+      {endDate && <div className='mr-2'>{endDate.toLocaleString(DateTime.DATE_MED)}</div>}
+      {icon && <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />}
+      <div className='font-bold'>{statusDisplay}</div>
+    </div>
+  )
+}
 
 const ViewProposalButton = (props) => {
   const { proposal } = props
@@ -146,11 +205,11 @@ const EmptyProposalsList = () => {
           and{' '}
           <a
             className='text-accent-1 underline'
-            href='https://snapshot.page/#/pooltogether'
+            href='https://gov.pooltogether.com/'
             target='_blank'
             rel='noreferrer noopener'
           >
-            Snapshot
+            Discourse
           </a>
           .
         </p>

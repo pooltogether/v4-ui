@@ -2,22 +2,19 @@ import React, { useContext } from 'react'
 
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Button } from 'lib/components/Button'
-import { GovernanceNav } from 'lib/components/GovernanceNav'
 import { PTHint } from 'lib/components/PTHint'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
-import { useGovernanceData } from 'lib/hooks/useGovernanceData'
-import { useTranslation } from 'lib/../i18n'
+import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 
 export const ProposalsUI = (props) => {
-  const { connectWallet} = useContext(AuthControllerContext)
+  const { connectWallet } = useContext(AuthControllerContext)
 
   // TODO: Uncomment and use real data.
-  // const { loading, data: proposals } = useAllProposals()
-  const loading = false
-  const proposals = []
+  const { loading } = useAllProposalsSorted()
+  // const loading = false
 
   if (loading) {
     return (
@@ -42,7 +39,7 @@ export const ProposalsUI = (props) => {
       <p className='mb-4 sm:mb-8'></p>
 
       <div className='flex flex-col sm:flex-row mb-4 sm:mb-8'>
-        <a href='https://snapshot.page/#/pooltogether' target='_blank' rel='noreferrer noopener'>
+        <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
           <Button type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
             Discuss Proposals
           </Button>
@@ -75,7 +72,7 @@ export const ProposalsUI = (props) => {
         </PTHint>
       </div>
 
-      <ProposalsList proposals={proposals} />
+      <ProposalsList />
     </>
   )
 }

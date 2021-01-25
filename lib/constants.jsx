@@ -4,7 +4,7 @@
 
 export const SUPPORTED_CHAIN_IDS = [1, 4, 31337, 1234]
 
-export const SECONDS_PER_BLOCK = 14
+export const SECONDS_PER_BLOCK = 13
 
 export const DEFAULT_TOKEN_PRECISION = 18
 

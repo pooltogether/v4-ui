@@ -1,25 +1,30 @@
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import FeatherIcon from 'feather-icons-react'
-import classnames from 'classnames'
 import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import React, { useContext, useState } from 'react'
+import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
+
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { Button } from 'lib/components/Button'
+import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
+import { ButtonLink } from 'lib/components/ButtonLink'
+import { Card, CardHeader } from 'lib/components/Card'
+import FeatherIcon from 'feather-icons-react'
+import { GovernanceNav } from 'lib/components/GovernanceNav'
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
+import ReactMarkdown from 'react-markdown'
+import { V3LoadingDots } from 'lib/components/V3LoadingDots'
+import { VotersTable } from 'lib/components/proposals/VotersTable'
+import classnames from 'classnames'
+import gfm from 'remark-gfm'
+import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { useAtom } from 'jotai'
+import { useDelegateData } from 'lib/hooks/useDelegateData'
 import { useProposalData } from 'lib/hooks/useProposalData'
 import { useRouter } from 'next/router'
-import React, { useContext, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import { Card } from 'lib/components/Card'
-import { Button } from 'lib/components/Button'
-import { useAtom } from 'jotai'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 import { useTranslation } from 'lib/../i18n'
-import GovernorAlphaABI from 'abis/GovernorAlphaABI'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { VotersTable } from 'lib/components/proposals/VotersTable'
-import { ButtonLink } from 'lib/components/ButtonLink'
-import { useDelegateData } from 'lib/hooks/useDelegateData'
-import gfm from 'remark-gfm'
-import { GovernanceNav } from 'lib/components/GovernanceNav'
+import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+
+const SMALL_DESCRIPTION_LENGTH = 500
 
 export const ProposalUI = (props) => {
   const router = useRouter()
@@ -44,63 +49,111 @@ export const ProposalUI = (props) => {
 
   return (
     <>
-      <GovernanceNav />
-      <UserSection />
-      <div className='flex justify-between'>
-        <h1>Proposal #{id}</h1>
-        <ProposalStatus proposal={proposal} />
-      </div>
-      <Votes refetch={refetch} proposal={proposal} sendTx={sendTx} />
-      <ProposalDescription description={description} />
-      <VotersTable id={id} />
+      <PageTitleAndBreadcrumbs
+        title={`Proposal`}
+        breadcrumbs={[
+          {
+            href: '/',
+            as: '/',
+            name: 'Proposals'
+          },
+          {
+            name: `Proposal #${id}`
+          }
+        ]}
+      />
+      {/* <Votes refetch={refetch} proposal={proposal} sendTx={sendTx} /> */}
+      {/* TODO: TIME TRAVEL */}
+      <UsersVotesCard />
+      {/* <ProposalVoteCard /> */}
+      <ProposalDescriptionCard proposal={proposal} />
+      <VotesCard id={id} />
     </>
   )
 }
 
-const ProposalStatus = (props) => {
-  const { proposal } = props
-
-  if (proposal.status === PROPOSAL_STATUS.active) {
-    return <div>1 Day</div>
+const ProposalVoteCard = (props) => {
+  const handleVoteFor = (e) => {
+    e.preventDefault
+    castVote(true)
   }
 
-  return <div>{proposal.status}</div>
+  const handleVoteAgainst = (e) => {
+    e.preventDefault
+    castVote(false)
+  }
+
+  const castVote = async (support) => {
+    const params = [proposal.id, support]
+
+    const id = await sendTx(
+      t,
+      provider,
+      usersAddress,
+      GovernorAlphaABI,
+      governanceAddress,
+      'castVote',
+      params,
+      refetch
+    )
+    setTxId(id)
+  }
+  {
+    status === PROPOSAL_STATUS.active && (
+      <div className='mt-4'>
+        <Button onClick={handleVoteFor}>Vote For</Button>
+        <Button onClick={handleVoteAgainst}>Vote Against</Button>
+      </div>
+    )
+  }
+  return <Card></Card>
 }
 
-const ProposalDescription = (props) => {
-  const { description } = props
-  const [showMore, setShowMore] = useState(false)
+const ProposalDescriptionCard = (props) => {
+  const { proposal } = props
+  const { description } = proposal
+  const smallDescription = description.length < SMALL_DESCRIPTION_LENGTH
+  const [showMore, setShowMore] = useState(smallDescription)
 
   return (
-    <Card>
-      <h1>Description:</h1>
-      <div
-        className={classnames('overflow-hidden text-accent-1 relative mb-8')}
-        style={{ maxHeight: showMore ? 'unset' : '300px' }}
-      >
+    <>
+      <Card title='Details'>
         <div
-          className='w-full h-full absolute'
-          style={{
-            backgroundImage: showMore
-              ? 'unset'
-              : 'linear-gradient(0deg, var(--color-bg-default) 5%, transparent 100%)',
-          }}
-        />
-        <ReactMarkdown
-          plugins={[gfm]}
-          className='description whitespace-pre-wrap'
-          children={description}
-        />
-      </div>
-      <Button
-        onClick={(e) => {
-          e.preventDefault
-          setShowMore(!showMore)
-        }}
-      >
-        {showMore ? 'Show Less' : 'Show More'}
-      </Button>
-    </Card>
+          className={classnames('overflow-hidden text-accent-1 relative')}
+          style={{ maxHeight: showMore ? 'unset' : '300px' }}
+        >
+          {!showMore && (
+            <div
+              className='w-full h-full absolute'
+              style={{
+                backgroundImage: showMore
+                  ? 'unset'
+                  : 'linear-gradient(0deg, var(--color-bg-default) 5%, transparent 100%)'
+              }}
+            />
+          )}
+          <ReactMarkdown
+            plugins={[gfm]}
+            className='description whitespace-pre-wrap break-all'
+            children={description}
+          />
+        </div>
+        {!smallDescription && (
+          <div className='flex mt-8'>
+            <button
+              className='mx-auto text-accent-1'
+              type='button'
+              onClick={(e) => {
+                e.preventDefault
+                setShowMore(!showMore)
+              }}
+            >
+              {showMore ? 'Show less' : 'Show more'}
+            </button>
+          </div>
+        )}
+      </Card>
+    </>
   )
 }
 
@@ -139,8 +192,10 @@ const UserSection = (props) => {
   )
 }
 
-const Votes = (props) => {
-  const { proposal, sendTx, refetch } = props
+const VotesCard = (props) => {
+  const { id } = props
+  const { refetch, proposal, loading, error } = useProposalData(id)
+  const { sendTx } = props
 
   const [txId, setTxId] = useState()
 
@@ -148,51 +203,51 @@ const Votes = (props) => {
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
 
-  const handleVoteFor = (e) => {
-    e.preventDefault
-    castVote(true)
-  }
-
-  const handleVoteAgainst = (e) => {
-    e.preventDefault
-    castVote(false)
-  }
-
-  const castVote = async (support) => {
-    const params = [proposal.id, support]
-
-    const id = await sendTx(
-      t,
-      provider,
-      usersAddress,
-      GovernorAlphaABI,
-      governanceAddress,
-      'castVote',
-      params,
-      refetch
-    )
-    setTxId(id)
+  if (loading) {
+    return null
   }
 
   const { forVotes, againstVotes, totalVotes, status } = proposal
   const forPercentage = calculateVotePercentage(forVotes, totalVotes)
+  const againstPercentage = 100 - forPercentage
 
   return (
-    <Card>
-      <div className='flex justify-between mb-4'>
-        <div>For: {formatVotes(forVotes)}</div>
-        <div>Against: {formatVotes(againstVotes)}</div>
-      </div>
-      <div className='w-full h-4 flex flex-row rounded-full overflow-hidden mb-4'>
-        <div className='bg-green' style={{ width: `${forPercentage}%` }} />
-        <div className='bg-red' style={{ width: `${100 - forPercentage}%` }} />
-      </div>
-      {status === PROPOSAL_STATUS.active && (
-        <div className='mt-4'>
-          <Button onClick={handleVoteFor}>Vote For</Button>
-          <Button onClick={handleVoteAgainst}>Vote Against</Button>
+    <>
+      <Card title='Votes'>
+        <div className='w-full h-2 flex flex-row rounded-full overflow-hidden my-4'>
+          <div className='bg-green' style={{ width: `${forPercentage}%` }} />
+          <div className='bg-red' style={{ width: `${againstPercentage}%` }} />
         </div>
-      )}
-    </Card>
+
+        <div className='flex justify-between mb-4 sm:mb-8'>
+          <div className='flex text-green'>
+            <FeatherIcon
+              className='mr-2 my-auto w-8 h-8 sm:w-10 sm:h-10 stroke-current'
+              icon='check-circle'
+            />
+            <div className='flex flex-col'>
+              <h5>Accept</h5>
+              <h6 className='font-normal text-xxs sm:text-xs'>{`${formatVotes(
+                forVotes
+              )} (${forPercentage}%)`}</h6>
+            </div>
+          </div>
+          <div className='flex text-red'>
+            <div className='flex flex-col'>
+              <h5>Reject</h5>
+              <h6 className='font-normal text-xxs sm:text-xs'>{`${formatVotes(
+                againstVotes
+              )} (${againstPercentage}%)`}</h6>
+            </div>
+            <FeatherIcon
+              className='ml-2 my-auto w-8 h-8 sm:w-10 sm:h-10 stroke-current'
+              icon='x-circle'
+            />
+          </div>
+        </div>
+
+        <VotersTable id={id} />
+      </Card>
+    </>
   )
 }

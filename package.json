@@ -16,13 +16,8 @@
     "watch": "yarn run test --watch"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "lib/**/*.{ts,js}"
-    ],
-    "coverageReporters": [
-      "text",
-      "html"
-    ],
+    "collectCoverageFrom": ["lib/**/*.{ts,js}"],
+    "coverageReporters": ["text", "html"],
     "moduleNameMapper": {
       "^lib/(.*)$": "<rootDir>/lib/$1",
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
@@ -87,6 +82,7 @@
     "i18next-node-locize-backend": "^3.1.2",
     "jotai": "^0.11.2",
     "js-cookie": "^2.2.1",
+    "luxon": "^1.25.0",
     "next": "10.0.0",
     "next-i18next": "^4.5.0",
     "next-images": "^1.4.1",
