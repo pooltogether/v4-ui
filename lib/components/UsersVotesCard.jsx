@@ -16,9 +16,20 @@ import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useTranslation } from 'i18n/../i18n'
 
-export const UsersVotesCard = () => {
+export const UsersVotesCard = (props) => {
+  const { blockNumber } = props
   const { usersAddress } = useContext(AuthControllerContext)
-  const { data: tokenHolder, loading: tokenHolderIsLoading } = useTokenHolder(usersAddress)
+  const {
+    data: tokenHolder,
+    loading: tokenHolderIsLoading,
+    isDataFromBeforeCurrentBlock
+  } = useTokenHolder(
+    // '0x7e4A8391C728fEd9069B2962699AB416628B19Fa', // Dharmas address for testing
+    usersAddress,
+    blockNumber
+  )
+
+  console.log(blockNumber, tokenHolder)
 
   if (
     !tokenHolder ||
@@ -31,20 +42,30 @@ export const UsersVotesCard = () => {
 
   // TODO: actually need the number at the block prior to the proposals creation
   // depending on the page the user is currently viewing
-  const votes = numberWithCommas(tokenHolder.tokenBalance)
+  const votingPower = tokenHolder.selfDelegated
+    ? numberWithCommas(tokenHolder.delegate.delegatedVotes)
+    : numberWithCommas(tokenHolder.tokenBalance)
 
   return (
     <Banner className='mb-4'>
-      <h4 className='font-normal mb-4'>Total votes</h4>
+      <div className='flex justify-between flex-col-reverse sm:flex-row'>
+        <h4 className='font-normal mb-0 sm:mb-4'>Total votes</h4>
+        {isDataFromBeforeCurrentBlock && (
+          <div className='ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary font-bold'>
+            <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
+            Data is from block #{blockNumber}
+          </div>
+        )}
+      </div>
       <div className='flex flex-col sm:flex-row'>
         <h2
-          className={classnames('leading-none mr-4', {
+          className={classnames('mb-4 sm:mb-0 leading-none mr-0 sm:mr-4', {
             'opacity-30': !tokenHolder.hasDelegated
           })}
         >
-          {votes}
+          {votingPower}
         </h2>
-        <DelegateTrigger votes={votes} tokenHolder={tokenHolder} />
+        <DelegateTrigger tokenHolder={tokenHolder} />
       </div>
     </Banner>
   )
@@ -52,7 +73,7 @@ export const UsersVotesCard = () => {
 
 const DelegateTrigger = (props) => {
   const { t } = useTranslation()
-  const { tokenHolder, votes } = props
+  const { tokenHolder } = props
   const { hasDelegated, selfDelegated } = tokenHolder
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [txId, setTxId] = useState({})
@@ -62,6 +83,8 @@ const DelegateTrigger = (props) => {
 
   const delegateAddress = tokenHolder?.delegate?.id
   const delegateIdentity = useSocialIdentity(delegateAddress)
+
+  const tokenBalanceDisplay = numberWithCommas(tokenHolder.tokenBalance)
 
   const handleDelegate = async (e) => {
     e.preventDefault()
@@ -122,41 +145,70 @@ const DelegateTrigger = (props) => {
     if (twitterHandle) {
       return (
         <p className='mt-auto'>
-          You have delegated <b>{votes}</b> votes to{' '}
-          <a
-            className='font-bold text-inverse hover:text-accent-1'
-            href={`https://twitter.com/${twitterHandle}`}
-            target='_blank'
-            rel='noopener'
-          >
-            {twitterHandle}
-            <FeatherIcon icon='external-link' className='inline w-4 h-4 mb-1 ml-1' />
-          </a>{' '}
-          (
-          <EtherscanAddressLink
-            className='font-bold text-inverse hover:text-accent-1'
-            address={delegateAddress}
-          >
-            {shorten(delegateAddress)}
-          </EtherscanAddressLink>
-          )
+          You have <b>{tokenBalanceDisplay}</b> votes delegated to{' '}
+          <b>
+            <DelegateAddress address={delegateAddress} />
+          </b>
         </p>
       )
     }
 
     return (
       <p className='mt-auto'>
-        You have delegated <b>{votes}</b> votes to{' '}
-        <EtherscanAddressLink
-          className='font-bold text-inverse hover:text-accent-1'
-          address={delegateAddress}
-        >
-          <span className='hidden sm:inline'>{delegateAddress}</span>
-          <span className='inline sm:hidden'>{shorten(delegateAddress)}</span>
-        </EtherscanAddressLink>
+        You have <b>{tokenBalanceDisplay}</b> votes delegated to{' '}
+        <b>
+          <EtherscanAddressLink
+            className='font-bold text-inverse hover:text-accent-1'
+            address={delegateAddress}
+          >
+            <span className='hidden sm:inline'>{delegateAddress}</span>
+            <span className='inline sm:hidden'>{shorten(delegateAddress)}</span>
+          </EtherscanAddressLink>
+        </b>
       </p>
     )
   }
 
-  return <p className='mt-auto'>You have {votes} for each proposal</p>
+  const delegatedVotesDisplay = numberWithCommas(tokenHolder.delegate.delegatedVotes)
+
+  return (
+    <p className='mt-auto'>
+      You have <b>{tokenBalanceDisplay}</b> tokens, and <b>{delegatedVotesDisplay}</b> delegated
+      votes
+    </p>
+  )
+}
+
+export const DelegateAddress = (props) => {
+  const { address } = props
+  const delegateIdentity = useSocialIdentity(address)
+  const twitterHandle = delegateIdentity?.twitter?.handle
+
+  if (twitterHandle) {
+    return (
+      <>
+        <a
+          className='text-inverse hover:text-accent-1 mr-2 trans'
+          href={`https://twitter.com/${twitterHandle}`}
+          target='_blank'
+          rel='noopener'
+        >
+          {twitterHandle}
+          <FeatherIcon icon='external-link' className='inline w-4 h-4 mb-1 ml-1' />
+        </a>
+        (
+        <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={address}>
+          {shorten(address)}
+        </EtherscanAddressLink>
+        )
+      </>
+    )
+  }
+
+  return (
+    <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={address}>
+      <span className='hidden sm:inline'>{address}</span>
+      <span className='inline sm:hidden'>{shorten(address)}</span>
+    </EtherscanAddressLink>
+  )
 }

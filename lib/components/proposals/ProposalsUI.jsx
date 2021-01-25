@@ -6,7 +6,6 @@ import { PTHint } from 'lib/components/PTHint'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { useAllProposals } from 'lib/hooks/useAllProposals'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 
 export const ProposalsUI = (props) => {

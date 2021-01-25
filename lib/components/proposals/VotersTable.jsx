@@ -12,6 +12,8 @@ import React, { useState } from 'react'
 import { useTable } from 'react-table'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
+import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
+import { DelegateAddress } from 'lib/components/UsersVotesCard'
 
 export const VotersTable = (props) => {
   // TODO: Page buttons. Need total number of voters.
@@ -108,10 +110,4 @@ const SupportCell = (props) => {
   return 'Rejected'
 }
 
-const VoterCell = (props) => {
-  return (
-    <EtherscanAddressLink className='text-accent-1' address={props.value}>
-      {shorten(props.value)}
-    </EtherscanAddressLink>
-  )
-}
+const VoterCell = (props) => <DelegateAddress address={props.value} />

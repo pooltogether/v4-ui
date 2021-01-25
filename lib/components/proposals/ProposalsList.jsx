@@ -80,8 +80,8 @@ const ProposalItem = (props) => {
   return (
     <li>
       <Card>
-        <div className='flex justify-between flex-col sm:flex-row'>
-          <h3>Proposal #{id}</h3>
+        <div className='flex justify-between flex-col-reverse sm:flex-row'>
+          <h3 className='leading-none mb-2'>Proposal #{id}</h3>
           <ProposalStatus proposal={proposal} />
         </div>
         <p className='mb-4'>{title}</p>
@@ -119,16 +119,6 @@ const ProposalStatus = (props) => {
     }
   }
 
-  // get and format data
-  const currentBlockNumber = currentBlock?.blockNumber
-  const currentTimestamp = currentBlock?.timestamp
-  const endDate = currentBlock
-    ? DateTime.fromSeconds(
-        currentTimestamp + SECONDS_PER_BLOCK * (Number(proposal.endBlock) - currentBlockNumber)
-      )
-    : undefined
-  const now = DateTime.local()
-
   let icon
   if (statusValue < 0) {
     icon = 'x-circle'
@@ -141,7 +131,7 @@ const ProposalStatus = (props) => {
   return (
     <div
       className={classnames(
-        'mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary',
+        'ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary',
         {
           'text-red': statusValue < 0,
           'text-green': statusValue > 0,
@@ -149,7 +139,9 @@ const ProposalStatus = (props) => {
         }
       )}
     >
-      {endDate && <div className='mr-2'>{endDate.toLocaleString(DateTime.DATE_MED)}</div>}
+      {proposal.endDate && (
+        <div className='mr-2'>{proposal.endDate.toLocaleString(DateTime.DATE_MED)}</div>
+      )}
       {icon && <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />}
       <div className='font-bold'>{statusDisplay}</div>
     </div>

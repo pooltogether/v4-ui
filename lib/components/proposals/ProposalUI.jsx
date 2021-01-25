@@ -64,7 +64,7 @@ export const ProposalUI = (props) => {
       />
       {/* <Votes refetch={refetch} proposal={proposal} sendTx={sendTx} /> */}
       {/* TODO: TIME TRAVEL */}
-      <UsersVotesCard />
+      <UsersVotesCard blockNumber={Number(proposal.startBlock)} />
       {/* <ProposalVoteCard /> */}
       <ProposalDescriptionCard proposal={proposal} />
       <VotesCard id={id} />
@@ -134,7 +134,7 @@ const ProposalDescriptionCard = (props) => {
           )}
           <ReactMarkdown
             plugins={[gfm]}
-            className='description whitespace-pre-wrap break-all'
+            className='description whitespace-pre-wrap break-word'
             children={description}
           />
         </div>
