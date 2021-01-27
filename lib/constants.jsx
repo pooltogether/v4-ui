@@ -99,7 +99,7 @@ export const CONTRACT_ADDRESSES = {
     Usdt: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad',
     // PermitAndDepositDai: PermitAndDepositDaiRinkeby.address,
     GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // TODO: This is uniswap governance. Change with ours.
-    GovernanceToken: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // TODO: This is UNI swap with POOL. Change with ours.
+    GovernanceToken: '0x4CF566d201eF144e09d2f8ABE1cC0E451D79De53' // TODO: This is UNI swap with POOL. Change with ours.
   }
 }
 
@@ -203,7 +203,7 @@ export const QUERY_KEYS = {
   delegatesQuery: 'delegatesQuery',
   tokenHolderQuery: 'tokenHolderQuery',
   twitterProfileQuery: 'twitterProfileQuery',
-  voterDataQuery: 'voterDataQuery',
+  voteDataQuery: 'voteDataQuery',
   proposalsQuery: 'proposalsQuery'
   // ethereumErc20sQuery: 'ethereumErc20sQuery',
   // ethereumErc721sQuery: 'ethereumErc721sQuery',
@@ -285,7 +285,7 @@ export const PROPOSAL_STATUS = {
   active: 'active',
   cancelled: 'cancelled',
   defeated: 'defeated',
-  succeeded: 'seucceeded',
+  succeeded: 'succeeded',
   queued: 'queued',
   expired: 'expired',
   executed: 'executed'

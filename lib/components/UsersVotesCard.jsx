@@ -15,21 +15,21 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useTranslation } from 'i18n/../i18n'
+import { PTHint } from 'lib/components/PTHint'
 
 export const UsersVotesCard = (props) => {
-  const { blockNumber } = props
+  const { blockNumber, className } = props
   const { usersAddress } = useContext(AuthControllerContext)
   const {
     data: tokenHolder,
     loading: tokenHolderIsLoading,
-    isDataFromBeforeCurrentBlock
+    isDataFromBeforeCurrentBlock,
+    refetch: refetchTokenHolderData
   } = useTokenHolder(
     // '0x7e4A8391C728fEd9069B2962699AB416628B19Fa', // Dharmas address for testing
     usersAddress,
     blockNumber
   )
-
-  console.log(blockNumber, tokenHolder)
 
   if (
     !tokenHolder ||
@@ -47,7 +47,7 @@ export const UsersVotesCard = (props) => {
     : numberWithCommas(tokenHolder.tokenBalance)
 
   return (
-    <Banner className='mb-4'>
+    <Banner className={classnames('mb-4', className)}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
         <h4 className='font-normal mb-0 sm:mb-4'>Total votes</h4>
         {isDataFromBeforeCurrentBlock && (
@@ -65,21 +65,58 @@ export const UsersVotesCard = (props) => {
         >
           {votingPower}
         </h2>
-        <DelegateTrigger tokenHolder={tokenHolder} />
+        <div className='flex'>
+          <NotDelegatedWarning
+            isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
+            tokenHolder={tokenHolder}
+          />
+
+          <DelegateTrigger
+            tokenHolder={tokenHolder}
+            refetchTokenHolderData={refetchTokenHolderData}
+            isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
+          />
+        </div>
       </div>
     </Banner>
   )
 }
 
+const NotDelegatedWarning = (props) => {
+  const { tokenHolder, isDataFromBeforeCurrentBlock } = props
+
+  if (!isDataFromBeforeCurrentBlock || tokenHolder.hasDelegated) {
+    return null
+  }
+
+  return (
+    <div className='flex mb-1 mt-auto mr-2'>
+      <PTHint
+        tip={
+          <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
+            This proposal was created prior to you delegating your votes. Therefore you are
+            ineligible to vote on this current proposal.
+          </div>
+        }
+      >
+        <FeatherIcon icon='alert-circle' className='text-orange w-4 h-4' />
+      </PTHint>
+    </div>
+  )
+}
+
 const DelegateTrigger = (props) => {
   const { t } = useTranslation()
-  const { tokenHolder } = props
+  const { tokenHolder, refetchTokenHolderData, isDataFromBeforeCurrentBlock } = props
   const { hasDelegated, selfDelegated } = tokenHolder
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [txId, setTxId] = useState({})
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(`Delegate`, transactions, setTransactions)
-  const txInFlight = transactions?.find((tx) => tx.id === txId)
+  const [sendTx] = useSendTransaction(`Self Delegate`, transactions, setTransactions)
+  const { data: tokenHolderCurrentData, loading: tokenHolderCurrentDataIsLoading } = useTokenHolder(
+    usersAddress
+  )
+  const tx = transactions?.find((tx) => tx.id === txId)
 
   const delegateAddress = tokenHolder?.delegate?.id
   const delegateIdentity = useSocialIdentity(delegateAddress)
@@ -98,12 +135,13 @@ const DelegateTrigger = (props) => {
       DelegateableERC20ABI,
       CONTRACT_ADDRESSES[chainId].GovernanceToken,
       'delegate',
-      params
+      params,
+      refetchTokenHolderData
     )
     setTxId(id)
   }
 
-  if (txInFlight?.completed && !txInFlight?.error) {
+  if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
       <p className='p-2 rounded bg-light-purple-35 text-green my-auto'>
         🎉 Successfully activated your votes 🎉
@@ -111,28 +149,33 @@ const DelegateTrigger = (props) => {
     )
   }
 
-  if (txInFlight?.completed && txInFlight?.error) {
-    return (
-      <>
-        <p className='text-red mt-auto mr-2'>Error</p>
-        <button type='button' className='underline trans mt-auto' onClick={handleDelegate}>
-          Activate my votes
-        </button>
-      </>
-    )
-  }
-
-  if (txInFlight?.inWallet) {
+  if (tx?.inWallet && !tx?.cancelled) {
     return (
       <p className='mt-auto text-green opacity-80'>Please confirm the transaction in your wallet</p>
     )
   }
 
-  if (txInFlight?.sent) {
+  if (tx?.sent) {
     return <p className='mt-auto text-green opacity-80'>Waiting for confirmations...</p>
   }
 
-  if (!hasDelegated) {
+  if (!hasDelegated || (tx?.completed && tx?.error)) {
+    if (isDataFromBeforeCurrentBlock) {
+      if (tokenHolderCurrentData.hasDelegated || tokenHolderCurrentDataIsLoading) {
+        return null
+      }
+
+      return (
+        <button
+          type='button'
+          className='text-accent-1 underline trans mt-auto'
+          onClick={handleDelegate}
+        >
+          Activate my votes for future proposals
+        </button>
+      )
+    }
+
     return (
       <button type='button' className='underline trans mt-auto' onClick={handleDelegate}>
         Activate my votes

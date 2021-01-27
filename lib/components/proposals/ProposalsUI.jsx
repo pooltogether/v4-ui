@@ -75,9 +75,3 @@ export const ProposalsUI = (props) => {
     </>
   )
 }
-
-const Tip = () => (
-  <div className='my-2 text-xs sm:text-sm'>
-    Proposal creation is currently in development. Check back soon!
-  </div>
-)

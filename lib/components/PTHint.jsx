@@ -16,11 +16,11 @@ const custom = (triggerRect, tooltipRect) => {
 
   return {
     left: Math.min(Math.max(2, left), maxLeft) + window.scrollX,
-    top: triggerRect.bottom + 40 + window.scrollY,
+    top: triggerRect.bottom + 40 + window.scrollY
   }
 }
 
-export function PTHint(props) {
+export function PTHint (props) {
   const { t } = useTranslation()
   const { children, className, isButton, title } = props
   let { tip } = props
@@ -67,7 +67,7 @@ export function PTHint(props) {
     <>
       <div
         className={classnames(className, 'relative cursor-pointer', {
-          'button-partially-disabled': isButton,
+          'button-partially-disabled': isButton
         })}
         onMouseOut={hide}
       >
@@ -78,7 +78,7 @@ export function PTHint(props) {
           onTouchStart={toggleVisible}
           className={classnames('cursor-pointer h-full w-full l-0 r-0 t-0 b-0 absolute')}
           style={{
-            zIndex: 12314082,
+            zIndex: 12314082
           }}
         />
 

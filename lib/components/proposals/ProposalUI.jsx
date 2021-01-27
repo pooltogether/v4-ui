@@ -5,10 +5,8 @@ import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Button } from 'lib/components/Button'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
-import { ButtonLink } from 'lib/components/ButtonLink'
-import { Card, CardHeader } from 'lib/components/Card'
+import { Card } from 'lib/components/Card'
 import FeatherIcon from 'feather-icons-react'
-import { GovernanceNav } from 'lib/components/GovernanceNav'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import ReactMarkdown from 'react-markdown'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
@@ -23,6 +21,9 @@ import { useRouter } from 'next/router'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTranslation } from 'lib/../i18n'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
+import { useVoteData } from 'lib/hooks/useVoteData'
+import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -30,22 +31,13 @@ export const ProposalUI = (props) => {
   const router = useRouter()
   const { id } = router.query
 
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction('Cast Vote', transactions, setTransactions)
-
-  const { refetch, proposal, loading, error } = useProposalData(id)
-
-  if (!id || loading) {
-    return <V3LoadingDots />
-  }
+  const { refetch: refetchProposalData, proposal, loading, error } = useProposalData(id)
 
   // TODO: Why is this page not being unmounted immediately when clicking "Back" to go back to proposals.
   // Instead, it rerenders with the new route.
-  if (!proposal) {
+  if (!proposal || loading) {
     return null
   }
-
-  const { description } = proposal
 
   return (
     <>
@@ -63,50 +55,12 @@ export const ProposalUI = (props) => {
         ]}
       />
       {/* <Votes refetch={refetch} proposal={proposal} sendTx={sendTx} /> */}
-      {/* TODO: TIME TRAVEL */}
-      <UsersVotesCard blockNumber={Number(proposal.startBlock)} />
-      {/* <ProposalVoteCard /> */}
+      <UsersVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
+      <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <VotesCard id={id} />
     </>
   )
-}
-
-const ProposalVoteCard = (props) => {
-  const handleVoteFor = (e) => {
-    e.preventDefault
-    castVote(true)
-  }
-
-  const handleVoteAgainst = (e) => {
-    e.preventDefault
-    castVote(false)
-  }
-
-  const castVote = async (support) => {
-    const params = [proposal.id, support]
-
-    const id = await sendTx(
-      t,
-      provider,
-      usersAddress,
-      GovernorAlphaABI,
-      governanceAddress,
-      'castVote',
-      params,
-      refetch
-    )
-    setTxId(id)
-  }
-  {
-    status === PROPOSAL_STATUS.active && (
-      <div className='mt-4'>
-        <Button onClick={handleVoteFor}>Vote For</Button>
-        <Button onClick={handleVoteAgainst}>Vote Against</Button>
-      </div>
-    )
-  }
-  return <Card></Card>
 }
 
 const ProposalDescriptionCard = (props) => {
@@ -194,29 +148,29 @@ const UserSection = (props) => {
 
 const VotesCard = (props) => {
   const { id } = props
-  const { refetch, proposal, loading, error } = useProposalData(id)
-  const { sendTx } = props
-
-  const [txId, setTxId] = useState()
-
-  const { t } = useTranslation()
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const { proposal, loading } = useProposalData(id)
 
   if (loading) {
     return null
   }
 
   const { forVotes, againstVotes, totalVotes, status } = proposal
-  const forPercentage = calculateVotePercentage(forVotes, totalVotes)
-  const againstPercentage = 100 - forPercentage
+
+  const noVotes = totalVotes.isZero()
+  const forPercentage = noVotes ? 0 : calculateVotePercentage(forVotes, totalVotes)
+  const againstPercentage = noVotes ? 0 : 100 - forPercentage
 
   return (
     <>
       <Card title='Votes'>
         <div className='w-full h-2 flex flex-row rounded-full overflow-hidden my-4'>
-          <div className='bg-green' style={{ width: `${forPercentage}%` }} />
-          <div className='bg-red' style={{ width: `${againstPercentage}%` }} />
+          {!noVotes && (
+            <>
+              <div className='bg-green' style={{ width: `${forPercentage}%` }} />
+              <div className='bg-red' style={{ width: `${againstPercentage}%` }} />
+            </>
+          )}
+          {noVotes && <div className='bg-tertiary w-full' />}
         </div>
 
         <div className='flex justify-between mb-4 sm:mb-8'>
@@ -251,3 +205,284 @@ const VotesCard = (props) => {
     </>
   )
 }
+
+const ProposalVoteCard = (props) => {
+  const { proposal, refetchProposalData } = props
+  const { id, title, status } = proposal
+
+  const { usersAddress } = useContext(AuthControllerContext)
+  const { data: tokenHolderData } = useTokenHolder(usersAddress)
+  const { data: voteData, loading: loadingVoteData, refetch: refetchVoteData } = useVoteData(
+    tokenHolderData?.delegate?.id,
+    id
+  )
+
+  const refetchData = () => {
+    refetchVoteData()
+    refetchProposalData()
+  }
+
+  const showButtons =
+    status === PROPOSAL_STATUS.active ||
+    status === PROPOSAL_STATUS.succeeded ||
+    status === PROPOSAL_STATUS.queued
+
+  return (
+    <Card>
+      <div className='flex justify-between flex-col-reverse sm:flex-row'>
+        <h3 className='leading-none mb-2'>Proposal #{id}</h3>
+        <ProposalStatus proposal={proposal} />
+      </div>
+      {title}
+      {showButtons && (
+        <div className='mt-4 sm:mt-8'>
+          {status === PROPOSAL_STATUS.active && (
+            <VoteButtons
+              id={id}
+              refetchData={refetchData}
+              selfDelegated={tokenHolderData?.selfDelegated}
+            />
+          )}
+          {status === PROPOSAL_STATUS.succeeded && (
+            <QueueButton id={id} refetchData={refetchData} />
+          )}
+          {status === PROPOSAL_STATUS.queued && <ExecuteButton id={id} refetchData={refetchData} />}
+        </div>
+      )}
+      {!loadingVoteData && voteData?.delegateDidVote && (
+        <div className='flex mt-4 sm:mt-8'>
+          <p className='mr-4'>My vote:</p>
+          <div
+            className={classnames('flex', {
+              'text-green': voteData.support,
+              'text-red': !voteData.support
+            })}
+          >
+            <FeatherIcon
+              icon={voteData.support ? 'check-circle' : 'x-circle'}
+              className='w-6 h-6 mr-2'
+            />
+            <p className='font-bold'>{voteData.support ? 'Accept' : 'Reject'}</p>
+          </div>
+        </div>
+      )}
+    </Card>
+  )
+}
+
+const VoteButtons = (props) => {
+  const { id, refetchData, selfDelegated } = props
+  const { t } = useTranslation()
+  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
+  const [transactions, setTransactions] = useAtom(transactionsAtom)
+  const [sendTx] = useSendTransaction('Cast Vote', transactions, setTransactions)
+  const [txId, setTxId] = useState()
+  const [votingFor, setVotingFor] = useState()
+  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const tx = transactions?.find((tx) => tx.id === txId)
+
+  const handleVoteFor = (e) => {
+    e.preventDefault()
+    setVotingFor(true)
+    castVote(true)
+  }
+
+  const handleVoteAgainst = (e) => {
+    e.preventDefault()
+    setVotingFor(false)
+    castVote(false)
+  }
+
+  const castVote = async (support) => {
+    const params = [id, support]
+
+    const txId = await sendTx(
+      t,
+      provider,
+      usersAddress,
+      GovernorAlphaABI,
+      governanceAddress,
+      'castVote',
+      params,
+      refetchData
+    )
+    setTxId(txId)
+  }
+
+  if (!selfDelegated) {
+    return null
+  }
+
+  if (tx?.completed && !tx?.error && !tx?.cancelled) {
+    return (
+      <TxText className='text-green'>
+        🎉 Successfully voted {votingFor ? 'Accept' : 'Reject'} 🎉
+      </TxText>
+    )
+  }
+
+  if (tx?.inWallet && !tx?.cancelled) {
+    return <TxText>Please confirm the transaction in your wallet</TxText>
+  }
+
+  if (tx?.sent) {
+    return <TxText>Waiting for confirmations...</TxText>
+  }
+
+  return (
+    <>
+      {tx?.error && (
+        <div className='text-red flex'>
+          <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
+          <p>Error with transaction. Please try again.</p>
+        </div>
+      )}
+      <div className='mt-4'>
+        <Button
+          border='green'
+          text='primary'
+          bg='green'
+          hoverBorder='green'
+          hoverText='primary'
+          hoverBg='green'
+          onClick={handleVoteFor}
+        >
+          Vote For
+        </Button>
+        <Button onClick={handleVoteAgainst}>Vote Against</Button>
+      </div>
+    </>
+  )
+}
+
+const QueueButton = (props) => {
+  const { id, refetchData } = props
+  const { t } = useTranslation()
+  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
+  const [transactions, setTransactions] = useAtom(transactionsAtom)
+  const [sendTx] = useSendTransaction('Queue Proposal', transactions, setTransactions)
+  const [txId, setTxId] = useState()
+  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const tx = transactions?.find((tx) => tx.id === txId)
+
+  const handleQueueProposal = async (e) => {
+    e.preventDefault()
+
+    const params = [id]
+
+    const txId = await sendTx(
+      t,
+      provider,
+      usersAddress,
+      GovernorAlphaABI,
+      governanceAddress,
+      'queue',
+      params,
+      refetchData
+    )
+    setTxId(txId)
+  }
+
+  if (tx?.completed && !tx?.error && !tx?.cancelled) {
+    return <TxText className='text-green'>🎉 Successfully Queued Proposal #{id} 🎉</TxText>
+  }
+
+  if (tx?.inWallet && !tx?.cancelled) {
+    return <TxText>Please confirm the transaction in your wallet</TxText>
+  }
+
+  if (tx?.sent) {
+    return <TxText>Waiting for confirmations...</TxText>
+  }
+
+  return (
+    <>
+      {tx?.error && (
+        <div className='text-red flex'>
+          <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
+          <p>Error with transaction. Please try again.</p>
+        </div>
+      )}
+      <div className='mt-4'>
+        <Button onClick={handleQueueProposal}>Queue Proposal</Button>
+      </div>
+    </>
+  )
+}
+
+const ExecuteButton = (props) => {
+  const { id, refetchData } = props
+  const { t } = useTranslation()
+  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
+  const [transactions, setTransactions] = useAtom(transactionsAtom)
+  const [sendTx] = useSendTransaction('Execute Proposal', transactions, setTransactions)
+  const [txId, setTxId] = useState()
+  const [payableAmount, setPayableAmount] = useState()
+  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const tx = transactions?.find((tx) => tx.id === txId)
+
+  // TODO: Check if it is executable
+  // TODO: Payable Amount
+
+  const handleExecuteProposal = async (e) => {
+    e.preventDefault()
+
+    const params = [id]
+
+    const txId = await sendTx(
+      t,
+      provider,
+      usersAddress,
+      GovernorAlphaABI,
+      governanceAddress,
+      'execute',
+      params,
+      refetchData
+    )
+    setTxId(txId)
+  }
+
+  if (tx?.completed && !tx?.error && !tx?.cancelled) {
+    return <TxText className='text-green'>🎉 Successfully Executed Proposal #{id} 🎉</TxText>
+  }
+
+  if (tx?.inWallet && !tx?.cancelled) {
+    return <TxText>Please confirm the transaction in your wallet</TxText>
+  }
+
+  if (tx?.sent) {
+    return <TxText>Waiting for confirmations...</TxText>
+  }
+
+  return (
+    <>
+      {tx?.error && (
+        <div className='text-red flex'>
+          <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
+          <p>Error with transaction. Please try again.</p>
+        </div>
+      )}
+      <div className='mt-4'>
+        <Button
+          border='green'
+          text='primary'
+          bg='green'
+          hoverBorder='green'
+          hoverText='primary'
+          hoverBg='green'
+          onClick={handleExecuteProposal}
+        >
+          Execute Proposal
+        </Button>
+      </div>
+    </>
+  )
+}
+
+const TxText = (props) => (
+  <p
+    className={classnames('p-2 rounded bg-light-purple-35 my-auto w-fit-content', props.className)}
+  >
+    {props.children}
+  </p>
+)

@@ -22,12 +22,32 @@ export const ProposalsList = (props) => {
     )
   }
 
-  const { active, pending, past } = sortedProposals
+  const { executable, approved, active, pending, past } = sortedProposals
 
   // TODO: Divide them by active nad non-active
 
   return (
     <>
+      {executable.length > 0 && (
+        <>
+          <h6 className='text-accent-1 mb-4'>Executable Proposals</h6>
+          <ol>
+            {executable.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
+      {approved.length > 0 && (
+        <>
+          <h6 className='text-accent-1 mb-4'>Approved Proposals</h6>
+          <ol>
+            {approved.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
       {active.length > 0 && (
         <>
           <h6 className='text-accent-1 mb-4'>Active Proposals</h6>
@@ -91,17 +111,16 @@ const ProposalItem = (props) => {
   )
 }
 
-const ProposalStatus = (props) => {
+export const ProposalStatus = (props) => {
   const { proposal } = props
   const { status } = proposal
-
-  const currentBlock = useCurrentBlock()
 
   let statusValue
   switch (status) {
     case PROPOSAL_STATUS.executed:
     case PROPOSAL_STATUS.succeeded:
-    case PROPOSAL_STATUS.active: {
+    case PROPOSAL_STATUS.active:
+    case PROPOSAL_STATUS.queued: {
       statusValue = 1
       break
     }
@@ -112,7 +131,6 @@ const ProposalStatus = (props) => {
       break
     }
     default:
-    case PROPOSAL_STATUS.queued:
     case PROPOSAL_STATUS.pending: {
       statusValue = 0
       break
@@ -127,11 +145,12 @@ const ProposalStatus = (props) => {
   }
 
   const statusDisplay = status.slice(0, 1).toUpperCase() + status.slice(1)
+  const showIcon = status !== PROPOSAL_STATUS.active && status !== PROPOSAL_STATUS.pending
 
   return (
     <div
       className={classnames(
-        'ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary',
+        'ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
         {
           'text-red': statusValue < 0,
           'text-green': statusValue > 0,
@@ -142,7 +161,9 @@ const ProposalStatus = (props) => {
       {proposal.endDate && (
         <div className='mr-2'>{proposal.endDate.toLocaleString(DateTime.DATE_MED)}</div>
       )}
-      {icon && <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />}
+      {icon && showIcon && (
+        <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />
+      )}
       <div className='font-bold'>{statusDisplay}</div>
     </div>
   )
@@ -154,7 +175,37 @@ const ViewProposalButton = (props) => {
 
   // TODO: All states
 
-  if (status === PROPOSAL_STATUS.active) {
+  if (status === PROPOSAL_STATUS.queued) {
+    return (
+      <ButtonLink
+        href={'/proposal/[id]/'}
+        as={`/proposal/${id}/`}
+        border='green'
+        text='primary'
+        bg='green'
+        hoverBorder='green'
+        hoverText='primary'
+        hoverBg='green'
+      >
+        Execute Proposal
+      </ButtonLink>
+    )
+  } else if (status === PROPOSAL_STATUS.succeeded) {
+    return (
+      <ButtonLink
+        href={'/proposal/[id]/'}
+        as={`/proposal/${id}/`}
+        border='green'
+        text='primary'
+        bg='green'
+        hoverBorder='green'
+        hoverText='primary'
+        hoverBg='green'
+      >
+        Queue Proposal
+      </ButtonLink>
+    )
+  } else if (status === PROPOSAL_STATUS.active) {
     return (
       <ButtonLink
         href={'/proposal/[id]/'}
