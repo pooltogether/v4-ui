@@ -40,8 +40,6 @@ export const UsersVotesCard = (props) => {
     return null
   }
 
-  // TODO: actually need the number at the block prior to the proposals creation
-  // depending on the page the user is currently viewing
   const votingPower = tokenHolder.selfDelegated
     ? numberWithCommas(tokenHolder.delegate.delegatedVotes)
     : numberWithCommas(tokenHolder.tokenBalance)

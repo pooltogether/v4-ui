@@ -11,9 +11,7 @@ import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 export const ProposalsUI = (props) => {
   const { connectWallet } = useContext(AuthControllerContext)
 
-  // TODO: Uncomment and use real data.
   const { loading } = useAllProposalsSorted()
-  // const loading = false
 
   if (loading) {
     return (

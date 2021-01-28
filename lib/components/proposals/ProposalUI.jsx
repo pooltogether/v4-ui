@@ -111,41 +111,6 @@ const ProposalDescriptionCard = (props) => {
   )
 }
 
-const UserSection = (props) => {
-  let { usersAddress } = useContext(AuthControllerContext)
-  // TODO: remove
-  usersAddress = '0x7e4a8391c728fed9069b2962699ab416628b19fa'
-  const { data, isFetched, isFetching } = useDelegateData(usersAddress)
-
-  if (!usersAddress) {
-    return <Card>Please connect your wallet to vote.</Card>
-  }
-
-  if (isFetching && !isFetched) {
-    return (
-      <Card>
-        <V3LoadingDots />
-      </Card>
-    )
-  }
-
-  const { delegatedVotesRaw, proposals, tokenHoldersRepresentedAmount } = data.delegate
-
-  return (
-    <Card>
-      <h5>{usersAddress}</h5>
-      <div className='flex flex-col'>
-        <h6>Votes</h6>
-        {formatVotes(delegatedVotesRaw)}
-        <div className='flex flex-row'>
-          <FeatherIcon icon='user' className='stroke-1 mr-2' />
-          {tokenHoldersRepresentedAmount}
-        </div>
-      </div>
-    </Card>
-  )
-}
-
 const VotesCard = (props) => {
   const { id } = props
   const { proposal, loading } = useProposalData(id)
@@ -463,7 +428,6 @@ const ExecuteButton = (props) => {
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const tx = transactions?.find((tx) => tx.id === txId)
 
-  // TODO: Check if it is executable
   // TODO: Payable Amount
 
   const handleExecuteProposal = async (e) => {
