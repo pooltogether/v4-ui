@@ -24,6 +24,8 @@ import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
 import { useVoteData } from 'lib/hooks/useVoteData'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
+import { proposalVotesTableRefetchAtom } from 'lib/hooks/useProposalVotes'
+import { PTHint } from 'lib/components/PTHint'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -38,6 +40,8 @@ export const ProposalUI = (props) => {
   if (!proposal || loading) {
     return null
   }
+
+  console.log(proposal)
 
   return (
     <>
@@ -216,10 +220,13 @@ const ProposalVoteCard = (props) => {
     tokenHolderData?.delegate?.id,
     id
   )
+  const [refetchTableData] = useAtom(proposalVotesTableRefetchAtom)
 
   const refetchData = () => {
     refetchVoteData()
     refetchProposalData()
+    console.log(refetchTableData)
+    refetchTableData && refetchTableData()
   }
 
   const showButtons =
@@ -230,28 +237,13 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h3 className='leading-none mb-2'>Proposal #{id}</h3>
+        <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
         <ProposalStatus proposal={proposal} />
       </div>
       {title}
-      {showButtons && (
-        <div className='mt-4 sm:mt-8'>
-          {status === PROPOSAL_STATUS.active && (
-            <VoteButtons
-              id={id}
-              refetchData={refetchData}
-              selfDelegated={tokenHolderData?.selfDelegated}
-            />
-          )}
-          {status === PROPOSAL_STATUS.succeeded && (
-            <QueueButton id={id} refetchData={refetchData} />
-          )}
-          {status === PROPOSAL_STATUS.queued && <ExecuteButton id={id} refetchData={refetchData} />}
-        </div>
-      )}
       {!loadingVoteData && voteData?.delegateDidVote && (
-        <div className='flex mt-4 sm:mt-8'>
-          <p className='mr-4'>My vote:</p>
+        <div className='flex my-auto mt-4 sm:mt-8'>
+          <p className='mr-2 sm:mr-4'>My vote:</p>
           <div
             className={classnames('flex', {
               'text-green': voteData.support,
@@ -266,12 +258,32 @@ const ProposalVoteCard = (props) => {
           </div>
         </div>
       )}
+      <div className='mt-2 sm:mt-8 flex justify-end'>
+        {showButtons && (
+          <>
+            {status === PROPOSAL_STATUS.active && (
+              <VoteButtons
+                id={id}
+                refetchData={refetchData}
+                selfDelegated={tokenHolderData?.selfDelegated}
+                alreadyVoted={voteData?.delegateDidVote}
+              />
+            )}
+            {status === PROPOSAL_STATUS.succeeded && (
+              <QueueButton id={id} refetchData={refetchData} />
+            )}
+            {status === PROPOSAL_STATUS.queued && (
+              <ExecuteButton id={id} refetchData={refetchData} />
+            )}
+          </>
+        )}
+      </div>
     </Card>
   )
 }
 
 const VoteButtons = (props) => {
-  const { id, refetchData, selfDelegated } = props
+  const { id, refetchData, selfDelegated, alreadyVoted } = props
   const { t } = useTranslation()
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
@@ -309,7 +321,7 @@ const VoteButtons = (props) => {
     setTxId(txId)
   }
 
-  if (!selfDelegated) {
+  if (!selfDelegated || alreadyVoted) {
     return null
   }
 
@@ -337,7 +349,7 @@ const VoteButtons = (props) => {
           <p>Error with transaction. Please try again.</p>
         </div>
       )}
-      <div className='mt-4'>
+      <div>
         <Button
           border='green'
           text='primary'
@@ -346,6 +358,7 @@ const VoteButtons = (props) => {
           hoverText='primary'
           hoverBg='green'
           onClick={handleVoteFor}
+          className='mr-4'
         >
           Vote For
         </Button>
@@ -396,17 +409,25 @@ const QueueButton = (props) => {
   }
 
   return (
-    <>
+    <div className='flex'>
       {tx?.error && (
-        <div className='text-red flex'>
-          <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
-          <p>Error with transaction. Please try again.</p>
-        </div>
+        <PTHint
+          tip={
+            <div className='flex'>
+              <p>Error with transaction. Please try again.</p>
+            </div>
+          }
+        >
+          <FeatherIcon
+            icon='alert-triangle'
+            className='h-4 w-4 text-red stroke-current my-auto mr-2 mt-2'
+          />
+        </PTHint>
       )}
-      <div className='mt-4'>
+      <div>
         <Button onClick={handleQueueProposal}>Queue Proposal</Button>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -455,14 +476,22 @@ const ExecuteButton = (props) => {
   }
 
   return (
-    <>
+    <div className='flex'>
       {tx?.error && (
-        <div className='text-red flex'>
-          <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
-          <p>Error with transaction. Please try again.</p>
-        </div>
+        <PTHint
+          tip={
+            <div className='flex'>
+              <p>Error with transaction. Please try again.</p>
+            </div>
+          }
+        >
+          <FeatherIcon
+            icon='alert-triangle'
+            className='h-4 w-4 text-red stroke-current my-auto mr-2 mt-2'
+          />
+        </PTHint>
       )}
-      <div className='mt-4'>
+      <div>
         <Button
           border='green'
           text='primary'
@@ -475,14 +504,12 @@ const ExecuteButton = (props) => {
           Execute Proposal
         </Button>
       </div>
-    </>
+    </div>
   )
 }
 
 const TxText = (props) => (
-  <p
-    className={classnames('p-2 rounded bg-light-purple-35 my-auto w-fit-content', props.className)}
-  >
+  <p className={classnames('p-2 rounded bg-tertiary my-auto w-fit-content', props.className)}>
     {props.children}
   </p>
 )

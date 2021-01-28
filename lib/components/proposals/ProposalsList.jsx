@@ -9,6 +9,10 @@ import { PROPOSAL_STATUS, SECONDS_PER_BLOCK } from 'lib/constants'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 import { useCurrentBlock } from 'lib/hooks/useCurrentBlock'
 import { ethers } from 'ethers'
+import { useTimeCountdown } from 'lib/hooks/useTimeCountdown'
+import { CountDown } from 'lib/components/CountDown'
+import { msToSeconds } from 'lib/utils/msToSeconds'
+import { useProposalData } from 'lib/hooks/useProposalData'
 
 export const ProposalsList = (props) => {
   const { loading, data: proposals, sortedProposals } = useAllProposalsSorted()
@@ -25,6 +29,7 @@ export const ProposalsList = (props) => {
   const { executable, approved, active, pending, past } = sortedProposals
 
   // TODO: Divide them by active nad non-active
+  console.log('sorted', sortedProposals)
 
   return (
     <>
@@ -101,7 +106,7 @@ const ProposalItem = (props) => {
     <li>
       <Card>
         <div className='flex justify-between flex-col-reverse sm:flex-row'>
-          <h3 className='leading-none mb-2'>Proposal #{id}</h3>
+          <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
           <ProposalStatus proposal={proposal} />
         </div>
         <p className='mb-4'>{title}</p>
@@ -147,6 +152,10 @@ export const ProposalStatus = (props) => {
   const statusDisplay = status.slice(0, 1).toUpperCase() + status.slice(1)
   const showIcon = status !== PROPOSAL_STATUS.active && status !== PROPOSAL_STATUS.pending
 
+  if (status === PROPOSAL_STATUS.active) {
+    return <ProposalCountDown proposal={proposal} />
+  }
+
   return (
     <div
       className={classnames(
@@ -167,6 +176,15 @@ export const ProposalStatus = (props) => {
       <div className='font-bold'>{statusDisplay}</div>
     </div>
   )
+}
+
+const ProposalCountDown = (props) => {
+  const { proposal } = props
+  const [seconds] = useState(proposal.endDateSeconds - msToSeconds(Date.now()).toNumber())
+
+  const { refetch } = useProposalData(proposal.id)
+
+  return <CountDown className='ml-auto' seconds={seconds} onZero={refetch} />
 }
 
 const ViewProposalButton = (props) => {

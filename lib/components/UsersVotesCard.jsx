@@ -53,7 +53,7 @@ export const UsersVotesCard = (props) => {
         {isDataFromBeforeCurrentBlock && (
           <div className='ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary font-bold'>
             <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
-            Data is from block #{blockNumber}
+            Voting power is locked from block #{blockNumber}
           </div>
         )}
       </div>
