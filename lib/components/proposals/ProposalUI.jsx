@@ -24,8 +24,8 @@ import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
 import { useVoteData } from 'lib/hooks/useVoteData'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
-import { proposalVotesTableRefetchAtom } from 'lib/hooks/useProposalVotes'
 import { PTHint } from 'lib/components/PTHint'
+import { useProposalVotes } from 'lib/hooks/useProposalVotes'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -35,13 +35,9 @@ export const ProposalUI = (props) => {
 
   const { refetch: refetchProposalData, proposal, loading, error } = useProposalData(id)
 
-  // TODO: Why is this page not being unmounted immediately when clicking "Back" to go back to proposals.
-  // Instead, it rerenders with the new route.
-  if (!proposal || loading) {
+  if (!proposal || (!proposal && loading)) {
     return null
   }
-
-  console.log(proposal)
 
   return (
     <>
@@ -216,23 +212,23 @@ const ProposalVoteCard = (props) => {
 
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolderData } = useTokenHolder(usersAddress)
+  const { refetch: refetchTableData } = useProposalVotes(id)
   const { data: voteData, loading: loadingVoteData, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
   )
-  const [refetchTableData] = useAtom(proposalVotesTableRefetchAtom)
 
   const refetchData = () => {
     refetchVoteData()
     refetchProposalData()
-    console.log(refetchTableData)
-    refetchTableData && refetchTableData()
+    refetchTableData()
   }
 
   const showButtons =
-    status === PROPOSAL_STATUS.active ||
-    status === PROPOSAL_STATUS.succeeded ||
-    status === PROPOSAL_STATUS.queued
+    usersAddress &&
+    (status === PROPOSAL_STATUS.active ||
+      status === PROPOSAL_STATUS.succeeded ||
+      status === PROPOSAL_STATUS.queued)
 
   return (
     <Card>
@@ -240,12 +236,12 @@ const ProposalVoteCard = (props) => {
         <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
         <ProposalStatus proposal={proposal} />
       </div>
-      {title}
+      <h6 className='font-normal mb-8'>{title}</h6>
       {!loadingVoteData && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-4 sm:mt-8'>
-          <p className='mr-2 sm:mr-4'>My vote:</p>
+          <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
           <div
-            className={classnames('flex', {
+            className={classnames('flex my-auto', {
               'text-green': voteData.support,
               'text-red': !voteData.support
             })}
@@ -258,7 +254,7 @@ const ProposalVoteCard = (props) => {
           </div>
         </div>
       )}
-      <div className='mt-2 sm:mt-8 flex justify-end'>
+      <div className='mt-2 flex justify-end'>
         {showButtons && (
           <>
             {status === PROPOSAL_STATUS.active && (
@@ -360,9 +356,25 @@ const VoteButtons = (props) => {
           onClick={handleVoteFor}
           className='mr-4'
         >
-          Vote For
+          <div className='flex'>
+            <FeatherIcon icon='check-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
+            Accept
+          </div>
         </Button>
-        <Button onClick={handleVoteAgainst}>Vote Against</Button>
+        <Button
+          border='red'
+          text='red'
+          bg='transparent'
+          hoverBorder='red'
+          hoverText='red'
+          hoverBg='transparent'
+          onClick={handleVoteAgainst}
+        >
+          <div className='flex'>
+            <FeatherIcon icon='x-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
+            Reject
+          </div>
+        </Button>
       </div>
     </>
   )
@@ -424,7 +436,16 @@ const QueueButton = (props) => {
           />
         </PTHint>
       )}
-      <div>
+      <div className='flex'>
+        <PTHint
+          tip={
+            <div className='flex'>
+              <p>Queueing a proposal is...</p>
+            </div>
+          }
+        >
+          <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
+        </PTHint>
         <Button onClick={handleQueueProposal}>Queue Proposal</Button>
       </div>
     </div>
@@ -491,7 +512,16 @@ const ExecuteButton = (props) => {
           />
         </PTHint>
       )}
-      <div>
+      <div className='flex'>
+        <PTHint
+          tip={
+            <div className='flex'>
+              <p>Executing a proposal is...</p>
+            </div>
+          }
+        >
+          <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
+        </PTHint>
         <Button
           border='green'
           text='primary'

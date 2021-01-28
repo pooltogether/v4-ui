@@ -28,9 +28,6 @@ export const ProposalsList = (props) => {
 
   const { executable, approved, active, pending, past } = sortedProposals
 
-  // TODO: Divide them by active nad non-active
-  console.log('sorted', sortedProposals)
-
   return (
     <>
       {executable.length > 0 && (

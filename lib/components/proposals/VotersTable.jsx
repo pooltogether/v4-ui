@@ -1,25 +1,19 @@
 import { BasicTable } from 'lib/components/BasicTable'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { Button } from 'lib/components/Button'
-import { Card } from 'lib/components/Card'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { VOTERS_PER_PAGE } from 'lib/constants'
-import { useProposalData } from 'lib/hooks/useProposalData'
-import { useProposalVotes } from 'lib/hooks/useProposalVotes'
+import { useProposalVotes, useProposalVotesPages } from 'lib/hooks/useProposalVotes'
 import { formatVotes } from 'lib/utils/formatVotes'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTable } from 'react-table'
-import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
-import { shorten } from 'lib/utils/shorten'
-import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { DelegateAddress } from 'lib/components/UsersVotesCard'
 
 export const VotersTable = (props) => {
   // TODO: Page buttons. Need total number of voters.
   const { id } = props
-  const [pageNumber, setPageNumber] = useState(0)
-  const { data, isFetching, isFetched } = useProposalVotes(id, pageNumber)
+
+  const [pageNumber, setPageNumber] = useProposalVotesPages(id)
+  const { data, isFetching, isFetched } = useProposalVotes(id)
 
   const prevPage = (e) => {
     e.preventDefault()

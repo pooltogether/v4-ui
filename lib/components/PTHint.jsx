@@ -66,7 +66,7 @@ export function PTHint (props) {
   return (
     <>
       <div
-        className={classnames(className, 'relative cursor-pointer', {
+        className={classnames(className, 'relative flex cursor-pointer', {
           'button-partially-disabled': isButton
         })}
         onMouseOut={hide}
