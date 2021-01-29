@@ -5,7 +5,6 @@ import { useQueryCache } from 'react-query'
 
 import {
   COOKIE_OPTIONS,
-  STORED_CHAIN_ID_KEY,
   SUPPORTED_CHAIN_IDS,
   SELECTED_WALLET_COOKIE_KEY,
   MAGIC_EMAIL,
@@ -72,17 +71,12 @@ export function AuthControllerContextProvider(props) {
   }, [onboardProvider, signedIn])
 
   useEffect(() => {
-    const storeChainIdCookie = async (newChainId) => {
-      await Cookies.set(STORED_CHAIN_ID_KEY, newChainId, COOKIE_OPTIONS)
-    }
-
     const updateChainId = async () => {
       if (onboardNetwork && onboardNetwork !== chainId) {
         queryCache.clear()
         setChangingNetwork(true)
 
         setChainId(onboardNetwork)
-        await storeChainIdCookie(onboardNetwork)
 
         setTimeout(() => {
           setChangingNetwork(false)
