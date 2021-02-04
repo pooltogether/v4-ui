@@ -17,6 +17,7 @@ import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { Button } from 'lib/components/Button'
+import { NavPoolBalance } from 'lib/components/NavPoolBalance'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -93,6 +94,8 @@ export function Layout(props) {
                 lineHeight: 0,
               }}
             >
+              <NavPoolBalance />
+
               {!usersAddress && (
                 <Button onClick={() => connectWallet()} textSize='xxxs'>
                   Connect Wallet
