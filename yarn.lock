@@ -3042,10 +3042,10 @@
     walletlink "^2.0.2"
     web3-provider-engine "^15.0.4"
 
-"@pooltogether/current-pool-data@3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.1.0.tgz#f78e813a1de9a65f1e5d0ff169d21ee4d7b1fa66"
-  integrity sha512-sZW4zW0jjhBSJN/EezIhALhxgQ+eoL+jpmPI3eqHxKbi2RJSlSP3BIQsUacBY5ICTgf3tKpgXutcv1PW4hf+yw==
+"@pooltogether/current-pool-data@3.2.0-beta.2":
+  version "3.2.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.2.0-beta.2.tgz#861d3ff0cdacb69a43d96f7dc137f7ab9a70de5f"
+  integrity sha512-gX6hKBFvYK8OnoZI4bmBdS+V/WF+IACl1dznfk0wiI1WZiobMx3AmE+4YdglrnJc1PJlK0WdJ/6oasVOFr+pcg==
 
 "@pooltogether/etherplex@^0.2.3":
   version "0.2.3"
@@ -3075,6 +3075,18 @@
   version "3.1.0-beta.7"
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-contracts/-/pooltogether-contracts-3.1.0-beta.7.tgz#be4a2cf25f31b4a8335e9d67825d540b8c786a62"
   integrity sha512-RPM3EakzE0XkYNlvewCmpcNSAg67so6y5w1enWa0PER29+Xd9LmZz2V50sbtabphnBpCc835lOSuAIRrF75IeA==
+  dependencies:
+    "@openzeppelin/contracts-upgradeable" "3.3.0"
+    "@pooltogether/fixed-point" "1.0.0-beta.2"
+    "@pooltogether/pooltogether-rng-contracts" "1.0.0"
+    "@pooltogether/uniform-random-number" "1.0.0-beta.1"
+    deploy-eip-1820 "1.0.0"
+    sortition-sum-tree-factory "0.1.0"
+
+"@pooltogether/pooltogether-contracts@3.2.0-beta.2":
+  version "3.2.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-contracts/-/pooltogether-contracts-3.2.0-beta.2.tgz#ce75592837e8e74849906dc84abebc9553b4805d"
+  integrity sha512-nPjo9Q6jDroMwhkLv0NX4TaRX2BrSNaZsy31F5FUdVXGz1+25j41e5kffjbW1rqktTRbTZVQF/379qBr04eVBA==
   dependencies:
     "@openzeppelin/contracts-upgradeable" "3.3.0"
     "@pooltogether/fixed-point" "1.0.0-beta.2"

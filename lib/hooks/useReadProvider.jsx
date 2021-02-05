@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { readProvider } from 'lib/services/readProvider'
 
-export function useReadProvider() {
+export function useReadProvider () {
   const { networkName } = useContext(AuthControllerContext)
 
   const [defaultReadProvider, setDefaultReadProvider] = useState({})
@@ -16,5 +16,7 @@ export function useReadProvider() {
     getReadProvider()
   }, [networkName])
 
-  return { readProvider: defaultReadProvider }
+  const isLoaded = Object.keys(defaultReadProvider).length > 0
+
+  return { readProvider: defaultReadProvider, isLoaded }
 }
