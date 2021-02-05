@@ -68,30 +68,14 @@ function MyApp ({ Component, pageProps, router }) {
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    if (router?.query?.referrer) {
-      const referrerAddress = router.query.referrer
-
-      try {
-        ethers.utils.getAddress(referrerAddress)
-
-        Cookies.set(REFERRER_ADDRESS_KEY, referrerAddress.toLowerCase(), COOKIE_OPTIONS)
-      } catch (e) {
-        console.error(`referrer address was an invalid Ethereum address:`, e.message)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
     const fathomSiteId = process.env.NEXT_JS_FATHOM_SITE_ID
 
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_JS_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
         includedDomains: [
-          'app-v3.pooltogether.com',
-          'app.pooltogether.com',
-          'staging-v3.pooltogether.com'
-        ]
+          'vote.pooltogether.com'
+        ],
       })
 
       function onRouteChangeComplete (url) {
