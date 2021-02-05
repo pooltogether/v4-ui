@@ -198,7 +198,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
+        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h6>
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
@@ -503,7 +503,7 @@ const ExecuteButton = (props) => {
 }
 
 const TxText = (props) => (
-  <p className={classnames('p-2 rounded bg-tertiary my-auto w-fit-content', props.className)}>
+  <p className={classnames('px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold', props.className)}>
     {props.children}
   </p>
 )

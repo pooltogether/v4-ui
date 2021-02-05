@@ -25,8 +25,9 @@ export const ProposalsUI = (props) => {
     <>
       <UsersVotesCard />
 
-      <h1 className='text-accent-1'>Vote</h1>
-      <p className='text-accent-1'>
+      <h3 className='mt-10'>Vote</h3>
+
+      <p className='text-accent-1 lg:max-w-3xl'>
         The protocol is controlled by decentralized governance. Any changes are presented as
         “proposals” and voted on by POOL token holders.{' '}
         <a href='' target='_blank' rel='noreferrer noopener' className='text-accent-1 underline'>
@@ -35,9 +36,9 @@ export const ProposalsUI = (props) => {
       </p>
       <p className='mb-4 sm:mb-8'></p>
 
-      <div className='flex flex-col sm:flex-row mb-4 sm:mb-8'>
+      <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
         <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
-          <Button type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
+          <Button textSize='xxs' type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
             Discuss Proposals
           </Button>
         </a>
@@ -51,8 +52,9 @@ export const ProposalsUI = (props) => {
           }
         >
           <Button
-            className='sm:ml-8 w-full sm:w-auto'
             disabled
+            textSize='xxs'
+            className='sm:ml-8 w-full sm:w-auto'
             onClick={(e) => {
               e.preventDefault()
               connectWallet()

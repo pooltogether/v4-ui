@@ -1,25 +1,66 @@
 import React, { useContext, useState } from 'react'
+import classnames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useAtom } from 'jotai'
 
+import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
+import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { useTranslation } from 'i18n/../i18n'
+import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Banner } from 'lib/components/Banner'
-import { CONTRACT_ADDRESSES } from 'lib/constants'
-import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
+import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
-import FeatherIcon from 'feather-icons-react'
-import classnames from 'classnames'
-import { numberWithCommas } from 'lib/utils/numberWithCommas'
-import { shorten } from 'lib/utils/shorten'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
-import { useAtom } from 'jotai'
+import { PTHint } from 'lib/components/PTHint'
+import { SmallLoader } from 'lib/components/SmallLoader'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
-import { useTranslation } from 'i18n/../i18n'
-import { PTHint } from 'lib/components/PTHint'
+import { numberWithCommas } from 'lib/utils/numberWithCommas'
+import { shorten } from 'lib/utils/shorten'
+
+const UsersVotesCardBlankState = (props) => {
+  return <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+    <div className='flex justify-between flex-col-reverse sm:flex-row'>
+      <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+    </div>
+    <div className='flex flex-col'>
+      <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>
+        0
+      </h2>
+
+      <p className='text-accent-1 mt-2'>
+        You currently have no POOL to use for voting. You can get POOL here: ...
+      </p>
+        
+    </div>
+  </Banner>
+}
+
+const UsersVotesCardConnectWallet = (props) => {
+  return <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+    <div className='flex justify-between flex-col-reverse sm:flex-row'>
+      <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+    </div>
+    <div className='flex flex-col'>
+      Connect your wallet to vote.
+
+      <Button
+        secondary
+        className='mt-3 xs:w-5/12 sm:w-1/3 lg:w-1/4'
+        textSize='xxxs'
+        onClick={() => props.connectWallet()}
+      >
+        Connect Wallet
+      </Button>
+    </div>
+  </Banner>
+}
 
 export const UsersVotesCard = (props) => {
   const { blockNumber, className } = props
-  const { usersAddress } = useContext(AuthControllerContext)
+  const { usersAddress, connectWallet } = useContext(AuthControllerContext)
+
   const {
     data: tokenHolder,
     loading: tokenHolderIsLoading,
@@ -31,25 +72,33 @@ export const UsersVotesCard = (props) => {
     blockNumber
   )
 
-  if (
-    !tokenHolder ||
-    !usersAddress ||
-    tokenHolderIsLoading ||
-    (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)
-  ) {
+  if (!usersAddress) {
+    return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
+  }
+
+  if (!tokenHolder) {
+    return <UsersVotesCardBlankState />
+  }
+
+  if (tokenHolderIsLoading) {
+    return <SmallLoader />
+  }
+
+  // does this state still apply?
+  if (!tokenHolder.hasBalance && !tokenHolder.hasDelegated) {
     return null
   }
 
   const votingPower = tokenHolder.selfDelegated
-    ? numberWithCommas(tokenHolder.delegate.delegatedVotes)
-    : numberWithCommas(tokenHolder.tokenBalance)
+    ? numberWithCommas(tokenHolder.delegate.delegatedVotes, { precision: 0 })
+    : numberWithCommas(tokenHolder.tokenBalance, { precision: 0 })
 
   return (
-    <Banner className={classnames('mb-4', className)}>
+    <Banner className={classnames('mb-4', className)} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h4 className='font-normal mb-0 sm:mb-4'>Total votes</h4>
+        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
         {isDataFromBeforeCurrentBlock && (
-          <div className='ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded p-1 w-fit-content h-fit-content bg-tertiary font-bold'>
+          <div className='ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
             <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
             Voting power is locked from block #{blockNumber}
           </div>
@@ -141,7 +190,7 @@ const DelegateTrigger = (props) => {
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
-      <p className='p-2 rounded bg-light-purple-35 text-green my-auto'>
+      <p className='px-4 py-2 rounded-lg bg-light-purple-35 text-green my-auto font-bold'>
         🎉 Successfully activated your votes 🎉
       </p>
     )
@@ -149,12 +198,12 @@ const DelegateTrigger = (props) => {
 
   if (tx?.inWallet && !tx?.cancelled) {
     return (
-      <p className='mt-auto text-green opacity-80'>Please confirm the transaction in your wallet</p>
+      <p className='mt-auto text-green font-bold'>Please confirm the transaction in your wallet</p>
     )
   }
 
   if (tx?.sent) {
-    return <p className='mt-auto text-green opacity-80'>Waiting for confirmations...</p>
+    return <p className='mt-auto text-green font-bold'>Waiting for confirmations...</p>
   }
 
   if (!hasDelegated || (tx?.completed && tx?.error)) {
@@ -166,7 +215,7 @@ const DelegateTrigger = (props) => {
       return (
         <button
           type='button'
-          className='text-accent-1 underline trans mt-auto'
+          className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
           onClick={handleDelegate}
         >
           Activate my votes for future proposals
@@ -175,7 +224,7 @@ const DelegateTrigger = (props) => {
     }
 
     return (
-      <button type='button' className='underline trans mt-auto' onClick={handleDelegate}>
+      <button type='button' className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold' onClick={handleDelegate}>
         Activate my votes
       </button>
     )
