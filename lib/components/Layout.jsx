@@ -11,11 +11,11 @@ import { NavMobile } from 'lib/components/NavMobile'
 import { NetworkText } from 'lib/components/NetworkText'
 import { Meta } from 'lib/components/Meta'
 import { Nav } from 'lib/components/Nav'
+import { PendingTxButton } from 'lib/components/PendingTxButton'
 import { LanguagePicker } from 'lib/components/LanguagePicker'
 import { Settings } from 'lib/components/Settings'
 import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
-import { Button } from 'lib/components/Button'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 
@@ -120,6 +120,8 @@ export function Layout(props) {
 
               {/* this pushes the lang picker and settings gear onto it's own roll on mobile/tablet */}
               <div className='w-full sm:hidden'></div>
+
+              <PendingTxButton openTransactions={openTransactions} />
 
               <LanguagePicker />
 
