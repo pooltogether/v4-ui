@@ -4,7 +4,9 @@ import { useRouter } from 'next/router'
 import { AnimatePresence, motion, useViewportScroll } from 'framer-motion'
 
 import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
+import { useTranslation } from 'lib/../i18n'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { Button } from 'lib/components/Button'
 import { NavAccount } from 'lib/components/NavAccount'
 import { HeaderLogo } from 'lib/components/HeaderLogo'
 import { NavMobile } from 'lib/components/NavMobile'
@@ -17,6 +19,7 @@ import { Settings } from 'lib/components/Settings'
 import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
+import { addTokenToMetaMask } from 'lib/services/addTokenToMetaMask'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 
 const onlyUnique = (value, index, self) => {
@@ -24,7 +27,11 @@ const onlyUnique = (value, index, self) => {
 }
 
 export function Layout(props) {
+  const { t } = useTranslation()
+
   const { children } = props
+
+  const { usersAddress, chainId, walletName } = useContext(AuthControllerContext)
 
   const [yScrollPosition, setYScrollPosition] = useState()
   const { scrollY } = useViewportScroll()
@@ -50,18 +57,14 @@ export function Layout(props) {
   const router = useRouter()
 
   const signIn = router.query.signIn
-  const deposit = /deposit/.test(router.asPath)
-  const manage = /\/account\/pools\/[A-Za-z-]*\/manage-tickets/.test(router.asPath)
-
-  const { usersAddress, chainId, connectWallet } = useContext(AuthControllerContext)
-
-  // this is useful for showing a big banner at the top that catches
-  // people's attention
-  const showingBanner = false
-  // const showingBanner = chainId !== 1
 
   let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((chainId) => chainIdToNetworkName(chainId))
   supportedNetworkNames = supportedNetworkNames.filter(onlyUnique)
+
+  const handleAddTokenToMetaMask = (e) => {
+    e.preventDefault()
+    addTokenToMetaMask(chainId)
+  }
 
   return (
     <>
@@ -78,12 +81,7 @@ export function Layout(props) {
         }}
       >
         <motion.div
-          className={classnames(
-            'header fixed w-full bg-body z-30 pt-1 pb-1 xs:pt-2 xs:pb-0 sm:py-0 mx-auto l-0 r-0',
-            {
-              'showing-network-banner': showingBanner,
-            }
-          )}
+          className='header fixed w-full bg-body z-30 pt-1 pb-1 xs:pt-2 xs:pb-0 sm:py-0 mx-auto l-0 r-0'
         >
           <div className='flex justify-between items-center px-4 xs:px-12 sm:px-10 py-4 xs:pb-6 sm:pt-5 sm:pb-7 mx-auto'>
             <HeaderLogo />
@@ -151,16 +149,8 @@ export function Layout(props) {
           ></motion.div>
         </motion.div>
 
-        <div
-          className={classnames('grid-wrapper', {
-            'showing-network-banner': showingBanner,
-          })}
-        >
-          <div
-            className={classnames('sidebar hidden sm:block z-20', {
-              'showing-network-banner': showingBanner,
-            })}
-          >
+        <div className='grid-wrapper'>
+          <div className='sidebar hidden sm:block z-20'>
             <Nav />
           </div>
 
@@ -177,15 +167,24 @@ export function Layout(props) {
                     {React.cloneElement(children, {
                       ...props,
                     })}
+
+                    <div
+                      className='flex flex-col sm:flex-row items-center justify-center my-20'
+                    >
+                      {walletName === 'MetaMask' && <>
+                        <div className='m-2'>
+                          <Button
+                            secondary
+                            onClick={handleAddTokenToMetaMask}
+                          >
+                            {t('addPoolTokenToMetamask')}
+                          </Button>
+                        </div>
+                      </>}
+                    </div>
                   </div>
                 </div>
 
-                {/* 
-              <div
-                className='main-footer z-10'
-              >
-                <Footer />
-              </div> */}
               </div>
             </div>
           </div>

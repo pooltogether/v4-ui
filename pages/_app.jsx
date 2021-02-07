@@ -3,7 +3,6 @@ import i18next from '../i18n'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import Cookies from 'js-cookie'
 import { ethers } from 'ethers'
 import { ToastContainer } from 'react-toastify'
 import { ReactQueryDevtools } from 'react-query-devtools'
@@ -11,11 +10,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { QueryCache, ReactQueryCacheProvider } from 'react-query'
 import { Provider } from 'jotai'
 
-import { COOKIE_OPTIONS, REFERRER_ADDRESS_KEY } from 'lib/constants'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { BodyClasses } from 'lib/components/BodyClasses'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { GraphErrorModal } from 'lib/components/GraphErrorModal'
 import { Layout } from 'lib/components/Layout'
 import { LoadingScreen } from 'lib/components/LoadingScreen'
 import { TransactionStatusChecker } from 'lib/components/TransactionStatusChecker'
@@ -68,29 +65,13 @@ function MyApp ({ Component, pageProps, router }) {
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
-    if (router?.query?.referrer) {
-      const referrerAddress = router.query.referrer
-
-      try {
-        ethers.utils.getAddress(referrerAddress)
-
-        Cookies.set(REFERRER_ADDRESS_KEY, referrerAddress.toLowerCase(), COOKIE_OPTIONS)
-      } catch (e) {
-        console.error(`referrer address was an invalid Ethereum address:`, e.message)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
     const fathomSiteId = process.env.NEXT_JS_FATHOM_SITE_ID
 
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_JS_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
         includedDomains: [
-          'app-v3.pooltogether.com',
-          'app.pooltogether.com',
-          'staging-v3.pooltogether.com'
+          'vote.pooltogether.com'
         ]
       })
 
