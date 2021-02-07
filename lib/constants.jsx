@@ -2,7 +2,8 @@
 // const PermitAndDepositDaiRinkeby = require(`@pooltogether/pooltogether-contracts/deployments/rinkeby/PermitAndDepositDai.json`)
 // const PermitAndDepositDaiRopsten = require(`@pooltogether/pooltogether-contracts/deployments/ropsten/PermitAndDepositDai.json`)
 
-export const SUPPORTED_CHAIN_IDS = [1, 4, 31337, 1234]
+// export const SUPPORTED_CHAIN_IDS = [1, 4, 31337, 1234]
+export const SUPPORTED_CHAIN_IDS = [4, 31337, 1234]
 
 export const SECONDS_PER_BLOCK = 13
 

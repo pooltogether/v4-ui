@@ -11,7 +11,7 @@ import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 export const ProposalsUI = (props) => {
   const { connectWallet } = useContext(AuthControllerContext)
 
-  const { loading } = useAllProposalsSorted()
+  const { error, loading } = useAllProposalsSorted()
 
   if (loading) {
     return (
@@ -30,10 +30,16 @@ export const ProposalsUI = (props) => {
       <p className='text-accent-1 lg:max-w-3xl'>
         The protocol is controlled by decentralized governance. Any changes are presented as
         “proposals” and voted on by POOL token holders.{' '}
-        <a href='' target='_blank' rel='noreferrer noopener' className='text-accent-1 underline'>
+        <a
+          href=''
+          target='_blank'
+          rel='noreferrer noopener'
+          className='text-accent-1 underline'
+        >
           Read more about PoolTogether governance.
         </a>
       </p>
+
       <p className='mb-4 sm:mb-8'></p>
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>

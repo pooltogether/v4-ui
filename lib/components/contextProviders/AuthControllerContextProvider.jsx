@@ -64,11 +64,7 @@ export function AuthControllerContextProvider(props) {
   const [magicAutoSignInAlreadyExecuted, setMagicAutoSignInAlreadyExecuted] = useState(false)
 
   useEffect(() => {
-    let provider = onboardProvider
-    // if (!provider && signedIn) {
-    //   provider = provider
-    // }
-    setProvider(provider)
+    setProvider(onboardProvider)
   }, [onboardProvider, signedIn])
 
   useEffect(() => {
