@@ -29,6 +29,7 @@ const UsersVotesCardBlankState = (props) => {
         0
       </h2>
 
+      {/* TODO: Add a link to where they can get POOL  */}
       <p className='text-accent-1 mt-2'>
         You currently have no POOL to use for voting. You can get POOL here: ...
       </p>
