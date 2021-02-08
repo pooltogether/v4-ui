@@ -11,12 +11,9 @@ export const RetroactivePoolClaimBanner = (props) => {
   const { t } = useTranslation()
   const { data, loading } = useRetroactivePoolClaimData()
 
-  console.log(data)
-  console.log(loading)
-
-  // if (loading || data?.isClaimed) {
-  //   return null
-  // }
+  if (loading || data?.isClaimed) {
+    return null
+  }
 
   return (
     <Banner gradient={'rainbow'} className='mb-12'>
