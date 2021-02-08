@@ -1,31 +1,29 @@
-import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
 import React, { useContext, useState } from 'react'
-import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
+import FeatherIcon from 'feather-icons-react'
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
+import ReactMarkdown from 'react-markdown'
+import classnames from 'classnames'
+import gfm from 'remark-gfm'
+import { useRouter } from 'next/router'
+import { useAtom } from 'jotai'
 
+import { useTranslation } from 'lib/../i18n'
+import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Button } from 'lib/components/Button'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { Card } from 'lib/components/Card'
-import FeatherIcon from 'feather-icons-react'
-import GovernorAlphaABI from 'abis/GovernorAlphaABI'
-import ReactMarkdown from 'react-markdown'
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { VotersTable } from 'lib/components/proposals/VotersTable'
-import classnames from 'classnames'
-import gfm from 'remark-gfm'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
-import { useAtom } from 'jotai'
-import { useDelegateData } from 'lib/hooks/useDelegateData'
-import { useProposalData } from 'lib/hooks/useProposalData'
-import { useRouter } from 'next/router'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useTranslation } from 'lib/../i18n'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
-import { useVoteData } from 'lib/hooks/useVoteData'
-import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { PTHint } from 'lib/components/PTHint'
+import { useProposalData } from 'lib/hooks/useProposalData'
 import { useProposalVotes } from 'lib/hooks/useProposalVotes'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useTokenHolder } from 'lib/hooks/useTokenHolder'
+import { useVoteData } from 'lib/hooks/useVoteData'
+import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -198,7 +196,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
+        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h6>
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
@@ -503,7 +501,7 @@ const ExecuteButton = (props) => {
 }
 
 const TxText = (props) => (
-  <p className={classnames('p-2 rounded bg-tertiary my-auto w-fit-content', props.className)}>
+  <p className={classnames('px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold', props.className)}>
     {props.children}
   </p>
 )

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
-import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
 import { useTranslation } from 'lib/../i18n'
+import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Modal } from 'lib/components/Modal'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'

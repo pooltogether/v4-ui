@@ -11,7 +11,7 @@ import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 export const ProposalsUI = (props) => {
   const { connectWallet } = useContext(AuthControllerContext)
 
-  const { loading } = useAllProposalsSorted()
+  const { error, loading } = useAllProposalsSorted()
 
   if (loading) {
     return (
@@ -30,19 +30,20 @@ export const ProposalsUI = (props) => {
         The protocol is controlled by decentralized governance. Any changes are presented as
         “proposals” and voted on by POOL token holders.{' '}
         <a
-          href='https://medium.com/p/23b09f36db48/edit'
+          href='https://medium.com/p/23b09f36db48'
           target='_blank'
           rel='noreferrer noopener'
           className='text-accent-1 underline'
         >
           Read more about PoolTogether governance
-        </a>
+        </a>.
       </p>
+
       <p className='mb-4 sm:mb-8'></p>
 
-      <div className='flex flex-col sm:flex-row mb-4 sm:mb-8'>
+      <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
         <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
-          <Button type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
+          <Button textSize='xxs' type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
             Discuss Proposals
           </Button>
         </a>
@@ -56,8 +57,9 @@ export const ProposalsUI = (props) => {
           }
         >
           <Button
-            className='sm:ml-8 w-full sm:w-auto'
             disabled
+            textSize='xxs'
+            className='sm:ml-8 w-full sm:w-auto'
             onClick={(e) => {
               e.preventDefault()
               connectWallet()
