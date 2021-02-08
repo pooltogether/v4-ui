@@ -24,15 +24,16 @@ const UsersVotesCardBlankState = (props) => {
     <div className='flex justify-between flex-col-reverse sm:flex-row'>
       <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
     </div>
+    
     <div className='flex flex-col'>
       <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>
         0
       </h2>
 
+      {/* TODO: Add a link to where they can get POOL  */}
       <p className='text-accent-1 mt-2'>
         You currently have no POOL to use for voting. You can get POOL here: ...
       </p>
-        
     </div>
   </Banner>
 }
@@ -76,17 +77,12 @@ export const UsersVotesCard = (props) => {
     return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
   }
 
-  if (!tokenHolder) {
+  if (!tokenHolder || (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)) {
     return <UsersVotesCardBlankState />
   }
 
   if (tokenHolderIsLoading) {
     return <SmallLoader />
-  }
-
-  // does this state still apply?
-  if (!tokenHolder.hasBalance && !tokenHolder.hasDelegated) {
-    return null
   }
 
   const votingPower = tokenHolder.selfDelegated

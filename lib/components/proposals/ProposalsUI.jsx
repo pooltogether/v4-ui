@@ -25,19 +25,18 @@ export const ProposalsUI = (props) => {
     <>
       <UsersVotesCard />
 
-      <h3 className='mt-10'>Vote</h3>
-
-      <p className='text-accent-1 lg:max-w-3xl'>
+      <h1 className='text-accent-1'>Vote</h1>
+      <p className='text-accent-1 sm:w-10/12'>
         The protocol is controlled by decentralized governance. Any changes are presented as
         “proposals” and voted on by POOL token holders.{' '}
         <a
-          href=''
+          href='https://medium.com/p/23b09f36db48'
           target='_blank'
           rel='noreferrer noopener'
           className='text-accent-1 underline'
         >
-          Read more about PoolTogether governance.
-        </a>
+          Read more about PoolTogether governance
+        </a>.
       </p>
 
       <p className='mb-4 sm:mb-8'></p>

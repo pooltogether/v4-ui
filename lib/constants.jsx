@@ -5,12 +5,7 @@ export const SECONDS_PER_BLOCK = 13
 
 export const DEFAULT_TOKEN_PRECISION = 18
 
-export const COINGECKO_POLLING_INTERVAL = 120 * 1000
-export const UNISWAP_POLLING_INTERVAL = process.env.NEXT_JS_DOMAIN_NAME ? 120 * 1000 : 60 * 1000
-export const ERC_721_POLLING_INTERVAL = 120 * 1000
 export const MAINNET_POLLING_INTERVAL = process.env.NEXT_JS_DOMAIN_NAME ? 22 * 1000 : 16 * 1000
-
-export const PLAYER_PAGE_SIZE = 10
 
 export const MAX_SAFE_INTEGER = 9007199254740991
 
@@ -33,62 +28,16 @@ export const COOKIE_OPTIONS = {
   domain
 }
 
-export const POOLS = {
-  1: [
-    {
-      name: 'DAI Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cDAI'
-    },
-    {
-      name: 'UNI Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cUNI'
-    },
-    {
-      name: 'USDC Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cUSDC'
-    }
-  ],
-  4: [
-    {
-      name: 'DAI Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cDAI'
-    },
-    {
-      name: 'BAT Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cBAT'
-    },
-    {
-      name: 'USDC Pool',
-      frequency: 'Weekly',
-      symbol: 'PT-cUSDC'
-    }
-  ]
-}
-
-export const PRIZE_STRATEGY_TYPES = {
-  singleRandomWinner: 'singleRandomWinner',
-  multipleWinners: 'multipleWinners'
-}
-
 export const CONTRACT_ADDRESSES = {
   1: {
     GovernorAlpha: '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F', // TODO: This is uniswap governance. Change with ours.
-    GovernanceToken: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', // TODO: This is UNI swap with POOL. Change with ours.
-    Usdt: '0xdac17f958d2ee523a2206206994597c13d831ec7'
+    GovernanceToken: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984' // TODO: This is UNI swap with POOL. Change with ours.
   },
   3: {
-    Usdt: '0x0736d0c130b2ead47476cc262dbed90d7c4eeabd'
   },
   4: {
-    PoolToken: '0xeae2de7ba52298a535c59d37bae409ccecade234',
-    GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // TODO: This is uniswap governance. Change with ours.
-    GovernanceToken: '0xEae2De7Ba52298a535C59D37BAe409cCeCaDE234', // TODO: This is UNI swap with POOL. Change with ours.
-    Usdt: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad',
+    GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8',
+    GovernanceToken: '0xEae2De7Ba52298a535C59D37BAe409cCeCaDE234'
   }
 }
 
@@ -109,11 +58,6 @@ export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {
   1: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET,
   3: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_ROPSTEN,
   4: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY
-}
-
-export const STRINGS = {
-  transfer: 'transfer',
-  withdraw: 'withdraw'
 }
 
 export const PROPOSAL_STATUS = {
