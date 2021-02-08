@@ -19,7 +19,7 @@ export const ProposalsList = (props) => {
   if (!proposals || Object.keys(proposals)?.length === 0) {
     return (
       <>
-        <h6 className='text-accent-1 mb-4'>Proposals</h6>
+        <h6 className='text-inverse mb-4'>Proposals</h6>
         <EmptyProposalsList />
       </>
     )
@@ -31,7 +31,7 @@ export const ProposalsList = (props) => {
     <>
       {executable.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Executable Proposals</h6>
+          <h6 className='text-inverse mb-4'>Executable Proposals</h6>
           <ol>
             {executable.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -41,7 +41,7 @@ export const ProposalsList = (props) => {
       )}
       {approved.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Approved Proposals</h6>
+          <h6 className='text-inverse mb-4'>Approved Proposals</h6>
           <ol>
             {approved.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -51,7 +51,7 @@ export const ProposalsList = (props) => {
       )}
       {active.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Active Proposals</h6>
+          <h6 className='text-inverse mb-4'>Active Proposals</h6>
           <ol>
             {active.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -61,7 +61,7 @@ export const ProposalsList = (props) => {
       )}
       {pending.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Pending Proposals</h6>
+          <h6 className='text-inverse mb-4'>Pending Proposals</h6>
           <ol>
             {pending.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -71,7 +71,7 @@ export const ProposalsList = (props) => {
       )}
       {past.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Past Proposals</h6>
+          <h6 className='text-inverse mb-4'>Past Proposals</h6>
           <ol>
             {past.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -246,13 +246,13 @@ const ViewProposalButton = (props) => {
 const EmptyProposalsList = () => {
   return (
     <Card>
-      <InnerCard className='flex flex-col text-center py-8 text-accent-1'>
+      <InnerCard className='flex flex-col text-center py-8 text-inverse'>
         <img src={ChatBubble} className='mx-auto w-16 h-16 sm:w-auto sm:h-auto mb-4 sm:mb-6' />
         <h4 className='mb-2'>No active proposals at the moment!</h4>
         <p>
           We encourage you to discuss any ideas you have on{' '}
           <a
-            className='text-accent-1 underline'
+            className='text-inverse underline'
             href='https://discord.gg/hxPhPDW'
             rel='noreferrer noopener'
             target='_blank'
@@ -261,7 +261,7 @@ const EmptyProposalsList = () => {
           </a>{' '}
           and{' '}
           <a
-            className='text-accent-1 underline'
+            className='text-inverse underline'
             href='https://gov.pooltogether.com/'
             target='_blank'
             rel='noreferrer noopener'

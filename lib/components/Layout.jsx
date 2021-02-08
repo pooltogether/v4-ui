@@ -4,9 +4,7 @@ import { useRouter } from 'next/router'
 import { AnimatePresence, motion, useViewportScroll } from 'framer-motion'
 
 import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
-import { useTranslation } from 'lib/../i18n'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { Button } from 'lib/components/Button'
 import { NavAccount } from 'lib/components/NavAccount'
 import { HeaderLogo } from 'lib/components/HeaderLogo'
 import { NavMobile } from 'lib/components/NavMobile'
@@ -19,7 +17,6 @@ import { Settings } from 'lib/components/Settings'
 import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
-import { addTokenToMetaMask } from 'lib/services/addTokenToMetaMask'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 
 const onlyUnique = (value, index, self) => {
@@ -27,8 +24,6 @@ const onlyUnique = (value, index, self) => {
 }
 
 export function Layout(props) {
-  const { t } = useTranslation()
-
   const { children } = props
 
   const { usersAddress, chainId, walletName } = useContext(AuthControllerContext)
@@ -60,11 +55,6 @@ export function Layout(props) {
 
   let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((chainId) => chainIdToNetworkName(chainId))
   supportedNetworkNames = supportedNetworkNames.filter(onlyUnique)
-
-  const handleAddTokenToMetaMask = (e) => {
-    e.preventDefault()
-    addTokenToMetaMask(chainId)
-  }
 
   return (
     <>
@@ -167,21 +157,6 @@ export function Layout(props) {
                     {React.cloneElement(children, {
                       ...props,
                     })}
-
-                    <div
-                      className='flex flex-col sm:flex-row items-center justify-center my-20'
-                    >
-                      {walletName === 'MetaMask' && <>
-                        <div className='m-2'>
-                          <Button
-                            secondary
-                            onClick={handleAddTokenToMetaMask}
-                          >
-                            {t('addPoolTokenToMetamask')}
-                          </Button>
-                        </div>
-                      </>}
-                    </div>
                   </div>
                 </div>
 

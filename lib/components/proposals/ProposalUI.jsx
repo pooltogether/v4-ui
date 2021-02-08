@@ -11,6 +11,7 @@ import { useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { Card } from 'lib/components/Card'
@@ -57,6 +58,8 @@ export const ProposalUI = (props) => {
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <VotesCard id={id} />
+
+      <AddGovernanceTokenToMetaMask />
     </>
   )
 }
@@ -475,15 +478,15 @@ const ExecuteButton = (props) => {
         </PTHint>
       )}
       <div className='flex'>
-        <PTHint
+        {/* <PTHint
           tip={
             <div className='flex'>
-              <p>Executing a proposal is...</p>
+              <p>TODO: Explain what executing a proposal is...</p>
             </div>
           }
         >
           <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
-        </PTHint>
+        </PTHint> */}
         <Button
           border='green'
           text='primary'

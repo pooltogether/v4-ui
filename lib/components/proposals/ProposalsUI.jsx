@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
 import { PTHint } from 'lib/components/PTHint'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
@@ -25,21 +26,20 @@ export const ProposalsUI = (props) => {
     <>
       <UsersVotesCard />
 
-      <h1 className='text-accent-1'>Vote</h1>
-      <p className='text-accent-1 sm:w-10/12'>
+      <h1 className='text-inverse'>Vote</h1>
+
+      <p className='text-inverse sm:w-10/12 mb-4 sm:mb-8'>
         The protocol is controlled by decentralized governance. Any changes are presented as
         “proposals” and voted on by POOL token holders.{' '}
         <a
           href='https://medium.com/p/23b09f36db48'
           target='_blank'
           rel='noreferrer noopener'
-          className='text-accent-1 underline'
+          className='text-inverse underline'
         >
           Read more about PoolTogether governance
         </a>.
       </p>
-
-      <p className='mb-4 sm:mb-8'></p>
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
         <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
@@ -77,6 +77,8 @@ export const ProposalsUI = (props) => {
       </div>
 
       <ProposalsList />
+
+      <AddGovernanceTokenToMetaMask />
     </>
   )
 }
