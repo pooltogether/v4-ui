@@ -1,18 +1,17 @@
-import ChatBubble from 'assets/images/chat-bubble.svg'
+import React, { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
-import React, { useState } from 'react'
 import { DateTime } from 'luxon'
-import { ButtonLink } from 'lib/components/ButtonLink'
+
+import { PROPOSAL_STATUS } from 'lib/constants'
 import { Card, InnerCard } from 'lib/components/Card'
-import { PROPOSAL_STATUS, SECONDS_PER_BLOCK } from 'lib/constants'
-import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
-import { useCurrentBlock } from 'lib/hooks/useCurrentBlock'
-import { ethers } from 'ethers'
-import { useTimeCountdown } from 'lib/hooks/useTimeCountdown'
 import { CountDown } from 'lib/components/CountDown'
-import { msToSeconds } from 'lib/utils/msToSeconds'
+import { ButtonLink } from 'lib/components/ButtonLink'
+import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 import { useProposalData } from 'lib/hooks/useProposalData'
+import { msToSeconds } from 'lib/utils/msToSeconds'
+
+import ChatBubble from 'assets/images/chat-bubble.svg'
 
 export const ProposalsList = (props) => {
   const { loading, data: proposals, sortedProposals } = useAllProposalsSorted()
@@ -20,7 +19,7 @@ export const ProposalsList = (props) => {
   if (!proposals || Object.keys(proposals)?.length === 0) {
     return (
       <>
-        <h3 className='text-accent-1 mb-4'>Proposals</h3>
+        <h6 className='text-inverse mb-4'>Proposals</h6>
         <EmptyProposalsList />
       </>
     )
@@ -32,7 +31,7 @@ export const ProposalsList = (props) => {
     <>
       {executable.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Executable Proposals</h6>
+          <h6 className='text-inverse mb-4'>Executable Proposals</h6>
           <ol>
             {executable.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -42,7 +41,7 @@ export const ProposalsList = (props) => {
       )}
       {approved.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Approved Proposals</h6>
+          <h6 className='text-inverse mb-4'>Approved Proposals</h6>
           <ol>
             {approved.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -52,7 +51,7 @@ export const ProposalsList = (props) => {
       )}
       {active.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Active Proposals</h6>
+          <h6 className='text-inverse mb-4'>Active Proposals</h6>
           <ol>
             {active.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -62,7 +61,7 @@ export const ProposalsList = (props) => {
       )}
       {pending.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Pending Proposals</h6>
+          <h6 className='text-inverse mb-4'>Pending Proposals</h6>
           <ol>
             {pending.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -72,7 +71,7 @@ export const ProposalsList = (props) => {
       )}
       {past.length > 0 && (
         <>
-          <h6 className='text-accent-1 mb-4'>Past Proposals</h6>
+          <h6 className='text-inverse mb-4'>Past Proposals</h6>
           <ol>
             {past.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
@@ -103,7 +102,7 @@ const ProposalItem = (props) => {
     <li>
       <Card>
         <div className='flex justify-between flex-col-reverse sm:flex-row'>
-          <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
+          <h6 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h6>
           <ProposalStatus proposal={proposal} />
         </div>
         <p className='mb-4'>{title}</p>
@@ -156,21 +155,21 @@ export const ProposalStatus = (props) => {
   return (
     <div
       className={classnames(
-        'ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
+        'ml-auto text-white sm:ml-0 mb-4 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
         {
-          'text-red': statusValue < 0,
-          'text-green': statusValue > 0,
+          'text-orange': statusValue < 0,
+          'text-highlight-9': statusValue > 0,
           'text-inverse': statusValue === 0
         }
       )}
     >
       {proposal.endDate && (
-        <div className='mr-2'>{proposal.endDate.toLocaleString(DateTime.DATE_MED)}</div>
+        <div className='pl-2 sm:pl-4 mr-2 sm:mr-4'>{proposal.endDate.toLocaleString(DateTime.DATE_MED)}</div>
       )}
       {icon && showIcon && (
         <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />
       )}
-      <div className='font-bold'>{statusDisplay}</div>
+      <div className='pr-2 sm:pr-4 font-bold'>{statusDisplay}</div>
     </div>
   )
 }
@@ -238,7 +237,7 @@ const ViewProposalButton = (props) => {
   }
 
   return (
-    <ButtonLink href={'/proposal/[id]/'} as={`/proposal/${id}/`}>
+    <ButtonLink textSize='xxs' href={'/proposal/[id]/'} as={`/proposal/${id}/`}>
       View Proposal
     </ButtonLink>
   )
@@ -247,13 +246,13 @@ const ViewProposalButton = (props) => {
 const EmptyProposalsList = () => {
   return (
     <Card>
-      <InnerCard className='flex flex-col text-center sm:py-8 text-accent-1'>
+      <InnerCard className='flex flex-col text-center py-8 text-inverse'>
         <img src={ChatBubble} className='mx-auto w-16 h-16 sm:w-auto sm:h-auto mb-4 sm:mb-6' />
         <h4 className='mb-2'>No active proposals at the moment!</h4>
         <p>
           We encourage you to discuss any ideas you have on{' '}
           <a
-            className='text-accent-1 underline'
+            className='text-inverse underline'
             href='https://discord.gg/hxPhPDW'
             rel='noreferrer noopener'
             target='_blank'
@@ -262,7 +261,7 @@ const EmptyProposalsList = () => {
           </a>{' '}
           and{' '}
           <a
-            className='text-accent-1 underline'
+            className='text-inverse underline'
             href='https://gov.pooltogether.com/'
             target='_blank'
             rel='noreferrer noopener'

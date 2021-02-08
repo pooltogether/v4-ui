@@ -1,40 +1,43 @@
 import React from 'react'
 import classnames from 'classnames'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
 
 export function Nav(props) {
   const { t } = useTranslation()
-  const router = useRouter()
 
-  const accountPage = false
-  const votePage = router.pathname.match('')
-  const poolPage = false
+  const votePage = true
 
-  const navParentClasses =
-    'leading-none rounded-full hover:bg-accent-grey-1 w-8/12 flex justify-start items-center text-lg lg:text-xl py-3 px-6 lg:px-8 trans tracking-wider outline-none focus:outline-none active:outline-none my-3 font-bold ml-3 lg:ml-0 h-10'
+  const navParentClasses = 'leading-none rounded-full hover:bg-accent-grey-1 w-8/12 flex justify-start items-center text-lg lg:text-xl py-3 px-6 lg:px-8 trans tracking-wider outline-none focus:outline-none active:outline-none my-3 font-bold ml-3 lg:ml-0 h-10'
 
-  return (
-    <>
-      <nav className='flex flex-col items-start hidden sm:block pt-8 lg:pt-10 ml-2 text-center'>
+  return <>
+    <nav
+      className='flex flex-col items-start hidden sm:block pt-8 lg:pt-10 ml-2 text-center'
+    >
+      <Link
+        href='/'
+        as='/'
+        shallow
+      >
         <a
-          href='https://app.pooltogether.com/'
-          className={classnames(navParentClasses, {
-            'text-accent-4 hover:text-highlight-2': !poolPage,
-            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': poolPage,
-          })}
+          id='_navPoolsButton'
+          className={classnames(
+            'text-accent-4 hover:text-highlight-2',
+            navParentClasses,
+          )}
         >
-          <div className='flex items-center justify-center' style={{ width: 28 }}>
+          <div
+            className='flex items-center justify-center'
+          >
             <svg
               style={{
-                top: 1,
+                top: -2,
               }}
-              className='fill-current mx-auto relative'
-              width='24'
-              height='24'
-              viewBox='0 0 24 24'
+              className='fill-current mr-auto relative'
+              width='19'
+              height='19'
+              viewBox='0 0 19 19'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
             >
@@ -45,22 +48,30 @@ export function Nav(props) {
             </svg>
           </div>
 
-          <span className='pl-2 capitalize'>{t('pools')}</span>
+          <span className='pl-3 capitalize'>{t('pools')}</span>
         </a>
+      </Link>
 
+      <Link
+        href='/account'
+        as='/account'
+        shallow
+      >
         <a
-          href='https://app.pooltogether.com/account'
-          className={classnames(navParentClasses, {
-            'text-accent-4 hover:text-highlight-2': !accountPage,
-            'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': accountPage,
-          })}
+          id='_navAccountButton'
+          className={classnames(
+            'text-accent-4 hover:text-highlight-2',
+            navParentClasses,
+          )}
         >
-          <div className='flex items-center justify-center' style={{ width: 28 }}>
+          <div
+            className='flex items-center justify-center'
+          >
             <svg
               style={{
                 top: 1,
               }}
-              className='fill-current mx-auto relative'
+              className='fill-current mr-auto relative'
               width='20'
               height='20'
               viewBox='0 0 20 20'
@@ -71,41 +82,49 @@ export function Nav(props) {
             </svg>
           </div>
 
-          <span className='pl-2 capitalize'>{t('account')}</span>
+          <span className='pl-3 capitalize'>{t('account')}</span>
         </a>
+      </Link>
 
-        <Link href='/' as='/' shallow>
-          <a
-            className={classnames(navParentClasses, {
+      <Link
+        href='/vote'
+        as='/vote'
+        shallow
+      >
+        <a
+          className={classnames(
+            navParentClasses,
+            {
               'text-accent-4 hover:text-highlight-2': !votePage,
-              'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage,
-            })}
+              'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage
+            }
+          )}
+        >
+          <div
+            className='flex items-center justify-center'
           >
-            <div className='flex items-center justify-center' style={{ width: 28 }}>
-              <svg
-                style={{
-                  left: 2,
-                  top: 2,
-                  transform: 'scale(1.15)',
-                }}
-                className='fill-current stroke-current mx-auto relative'
-                width='20'
-                height='25'
-                viewBox='0 0 20 25'
-                fill='none'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  d='M16.994 10.3965C16.9924 10.3869 16.9903 10.3776 16.988 10.3682C16.9854 10.3575 16.9847 10.3466 16.9811 10.3361L15.101 4.78371C15.0514 4.63717 14.9176 4.53904 14.7675 4.53904H11.3679L8.04561 1.1069C7.90755 0.964407 7.68401 0.964288 7.54595 1.10702L4.89902 3.84348C4.83275 3.91199 4.79547 4.00488 4.79547 4.10182C4.79547 4.19876 4.83275 4.29165 4.89902 4.36016L5.07221 4.53904H3.23034C3.08009 4.53904 2.94629 4.63729 2.8967 4.78394L1.01979 10.3363C1.01752 10.343 1.0173 10.3501 1.01543 10.3569C1.011 10.3727 1.00746 10.3887 1.00512 10.4054C1.00364 10.4161 1.00256 10.4267 1.002 10.4375C1.00163 10.4445 1 10.451 1 10.458V19.6346C1 19.8365 1.15819 20 1.35343 20H16.6466C16.8418 20 17 19.8365 17 19.6346V10.458C17 10.4539 16.999 10.4502 16.9988 10.4461C16.9984 10.4295 16.9967 10.4131 16.994 10.3965ZM7.79595 1.88191L11.4957 5.70383L9.93702 7.31523H8.76018L5.64879 4.10182L7.79595 1.88191ZM3.48126 5.26981H5.77914L7.75993 7.31523H6.71461C6.51937 7.31523 6.36118 7.47878 6.36118 7.68062C6.36118 7.88246 6.51937 8.04601 6.71461 8.04601H8.61395H10.0834H11.2864C11.4817 8.04601 11.6399 7.88246 11.6399 7.68062C11.6399 7.47878 11.4817 7.31523 11.2864 7.31523H10.9366L12.2454 5.96217C12.3834 5.81956 12.3834 5.58822 12.2454 5.44549L12.0756 5.26981H14.5168L16.1494 10.0914H1.85136L3.48126 5.26981ZM16.2931 19.2692H1.70686V10.8234H16.2931V19.2692V19.2692Z'
-                  strokeWidth='0.5'
-                />
-              </svg>
-            </div>
+            <svg
+              style={{
+                left: 2,
+                top: 1,
+                transform: 'scale(1.1)'
+              }}
+              className='fill-current stroke-current mr-auto relative'
+              width='20'
+              height='25'
+              viewBox='0 0 20 25'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+            >
+              <path d="M16.994 10.3965C16.9924 10.3869 16.9903 10.3776 16.988 10.3682C16.9854 10.3575 16.9847 10.3466 16.9811 10.3361L15.101 4.78371C15.0514 4.63717 14.9176 4.53904 14.7675 4.53904H11.3679L8.04561 1.1069C7.90755 0.964407 7.68401 0.964288 7.54595 1.10702L4.89902 3.84348C4.83275 3.91199 4.79547 4.00488 4.79547 4.10182C4.79547 4.19876 4.83275 4.29165 4.89902 4.36016L5.07221 4.53904H3.23034C3.08009 4.53904 2.94629 4.63729 2.8967 4.78394L1.01979 10.3363C1.01752 10.343 1.0173 10.3501 1.01543 10.3569C1.011 10.3727 1.00746 10.3887 1.00512 10.4054C1.00364 10.4161 1.00256 10.4267 1.002 10.4375C1.00163 10.4445 1 10.451 1 10.458V19.6346C1 19.8365 1.15819 20 1.35343 20H16.6466C16.8418 20 17 19.8365 17 19.6346V10.458C17 10.4539 16.999 10.4502 16.9988 10.4461C16.9984 10.4295 16.9967 10.4131 16.994 10.3965ZM7.79595 1.88191L11.4957 5.70383L9.93702 7.31523H8.76018L5.64879 4.10182L7.79595 1.88191ZM3.48126 5.26981H5.77914L7.75993 7.31523H6.71461C6.51937 7.31523 6.36118 7.47878 6.36118 7.68062C6.36118 7.88246 6.51937 8.04601 6.71461 8.04601H8.61395H10.0834H11.2864C11.4817 8.04601 11.6399 7.88246 11.6399 7.68062C11.6399 7.47878 11.4817 7.31523 11.2864 7.31523H10.9366L12.2454 5.96217C12.3834 5.81956 12.3834 5.58822 12.2454 5.44549L12.0756 5.26981H14.5168L16.1494 10.0914H1.85136L3.48126 5.26981ZM16.2931 19.2692H1.70686V10.8234H16.2931V19.2692V19.2692Z" strokeWidth="0.5" />
+            </svg>
+          </div>
 
-            <span className='pl-2'>{t('vote')}</span>
-          </a>
-        </Link>
-      </nav>
-    </>
-  )
+          <span className='pl-3 capitalize'>{t('vote')}</span>
+        </a>
+      </Link>
+    </nav>
+
+  </>
+
 }

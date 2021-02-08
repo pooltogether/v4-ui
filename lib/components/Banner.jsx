@@ -11,7 +11,7 @@ export const BannerGradient = {
 const BannerUnmemoized = (props) => {
   const { gradient, className, children, style, outerClassName, innerClassName } = props
 
-  const bannerClass = 'p-4 sm:p-8 rounded-lg'
+  const bannerClass = 'p-6 sm:p-8 rounded-lg'
 
   if (gradient === BannerGradient.rainbow) {
     return (

@@ -1,14 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { useTranslation } from 'lib/../i18n'
-import { PoolCurrencyIcon } from 'lib/components/PoolCurrencyIcon'
-import { Chip } from 'lib/components/Chip'
-
 export const PageTitleAndBreadcrumbs = (props) => {
-  const { t } = useTranslation()
-
-  const { breadcrumbs, title, pool } = props
+  const { breadcrumbs, title } = props
 
   return (
     <div className='flex flex-col items-start justify-between w-full leading-none mb-4 sm:mb-8'>

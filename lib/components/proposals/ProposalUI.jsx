@@ -1,31 +1,30 @@
-import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
 import React, { useContext, useState } from 'react'
-import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
-
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { Button } from 'lib/components/Button'
-import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
-import { Card } from 'lib/components/Card'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import ReactMarkdown from 'react-markdown'
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { VotersTable } from 'lib/components/proposals/VotersTable'
 import classnames from 'classnames'
 import gfm from 'remark-gfm'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
-import { useAtom } from 'jotai'
-import { useDelegateData } from 'lib/hooks/useDelegateData'
-import { useProposalData } from 'lib/hooks/useProposalData'
 import { useRouter } from 'next/router'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useAtom } from 'jotai'
+
 import { useTranslation } from 'lib/../i18n'
-import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
+import { Button } from 'lib/components/Button'
+import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
+import { Card } from 'lib/components/Card'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
-import { useVoteData } from 'lib/hooks/useVoteData'
-import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { PTHint } from 'lib/components/PTHint'
+import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+import { VotersTable } from 'lib/components/proposals/VotersTable'
+import { useProposalData } from 'lib/hooks/useProposalData'
 import { useProposalVotes } from 'lib/hooks/useProposalVotes'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useTokenHolder } from 'lib/hooks/useTokenHolder'
+import { useVoteData } from 'lib/hooks/useVoteData'
+import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -59,6 +58,8 @@ export const ProposalUI = (props) => {
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <VotesCard id={id} />
+
+      <AddGovernanceTokenToMetaMask />
     </>
   )
 }
@@ -198,7 +199,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h3 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h3>
+        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h6>
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
@@ -477,15 +478,15 @@ const ExecuteButton = (props) => {
         </PTHint>
       )}
       <div className='flex'>
-        <PTHint
+        {/* <PTHint
           tip={
             <div className='flex'>
-              <p>Executing a proposal is...</p>
+              <p>TODO: Explain what executing a proposal is...</p>
             </div>
           }
         >
           <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
-        </PTHint>
+        </PTHint> */}
         <Button
           border='green'
           text='primary'
@@ -503,7 +504,7 @@ const ExecuteButton = (props) => {
 }
 
 const TxText = (props) => (
-  <p className={classnames('p-2 rounded bg-tertiary my-auto w-fit-content', props.className)}>
+  <p className={classnames('px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold', props.className)}>
     {props.children}
   </p>
 )
