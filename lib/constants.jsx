@@ -38,14 +38,14 @@ export const CONTRACT_ADDRESSES = {
   },
   4: {
     Usdt: '0x3b00ef435fa4fcff5c209a37d1f3dcff37c705ad',
-    GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // TODO: This is uniswap governance. Change with ours.
+    GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8',
     GovernanceToken: '0xEae2De7Ba52298a535C59D37BAe409cCeCaDE234' // TODO: This is UNI swap with POOL. Change with ours.
   }
 }
 
 export const QUERY_KEYS = {
   accountGovernanceDataQuery: 'accountGovernanceDataQuery',
-  governanceDataQuery: 'governanceDataQuery',
+  governorAlphaDataQuery: 'governorAlphaDataQuery',
   proposalVotesQuery: 'proposalVotesQuery',
   delegateDataQuery: 'delegateDataQuery',
   delegatesQuery: 'delegatesQuery',

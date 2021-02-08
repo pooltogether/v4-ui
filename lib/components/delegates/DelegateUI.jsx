@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
 import FeatherIcon from 'feather-icons-react'
-import { useGovernanceData } from 'lib/hooks/useGovernanceData'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Button } from 'lib/components/Button'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
