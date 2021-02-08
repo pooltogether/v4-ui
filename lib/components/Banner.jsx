@@ -9,12 +9,12 @@ export const BannerGradient = {
 const BannerUnmemoized = (props) => {
   const { gradient, className, children, style } = props
 
-  const bannerClass = 'p-6 sm:p-10 rounded-lg'
+  const bannerClass = 'p-6 sm:p-8 rounded-lg'
 
   if (gradient === BannerGradient.rainbow) {
     return (
       <div
-        className={classnames(bannerClass, 'text-purple', {}, className)}
+        className={classnames(bannerClass, 'text-purple', className)}
         style={{
           ...style,
           backgroundImage: 'url("/BackgroundGradient.svg")',

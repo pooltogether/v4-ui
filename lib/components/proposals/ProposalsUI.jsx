@@ -5,6 +5,7 @@ import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenT
 import { Button } from 'lib/components/Button'
 import { PTHint } from 'lib/components/PTHint'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
+import { RetroactivePoolClaimBanner } from 'lib/components/RetroactivePoolClaimBanner'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
@@ -24,6 +25,8 @@ export const ProposalsUI = (props) => {
 
   return (
     <>
+      <RetroactivePoolClaimBanner />
+
       <UsersVotesCard />
 
       <h1 className='text-inverse'>Vote</h1>
