@@ -7,7 +7,6 @@ import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
-import { ButtonLink } from 'lib/components/ButtonLink'
 
 export const ProposalsUI = (props) => {
   const { connectWallet } = useContext(AuthControllerContext)
@@ -48,19 +47,31 @@ export const ProposalsUI = (props) => {
           </Button>
         </a>
 
-        <ButtonLink
-          href={'/proposals/create'}
-          as={'/proposals/create'}
-          className='sm:ml-8 w-full sm:w-auto'
-          border='green'
-          text='primary'
-          bg='green'
-          hoverBorder='green'
-          hoverText='primary'
-          hoverBg='green'
+        <PTHint
+          tip={
+            <div className='my-2 text-center text-xs sm:text-sm'>
+              <p>Proposal creation is currently in development.</p>
+              <p>Check back soon!</p>
+            </div>
+          }
         >
-          Create a Proposal
-        </ButtonLink>
+          <Button
+            className='sm:ml-8 w-full sm:w-auto'
+            disabled
+            onClick={(e) => {
+              e.preventDefault()
+              connectWallet()
+            }}
+            border='green'
+            text='primary'
+            bg='green'
+            hoverBorder='green'
+            hoverText='primary'
+            hoverBg='green'
+          >
+            Create a Proposal
+          </Button>
+        </PTHint>
       </div>
 
       <ProposalsList />
