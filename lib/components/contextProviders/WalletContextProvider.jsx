@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { ethers } from 'ethers'
 
-import { STORED_CHAIN_ID_KEY, COOKIE_OPTIONS, SELECTED_WALLET_COOKIE_KEY } from 'lib/constants'
+import { COOKIE_OPTIONS, SELECTED_WALLET_COOKIE_KEY } from 'lib/constants'
 import { MagicContext } from 'lib/components/contextProviders/MagicContextProvider'
 
 const debug = require('debug')('WalletContextProvider')
@@ -29,8 +29,6 @@ export function WalletContextProvider(props) {
     } else {
       console.log('no onboard?')
     }
-
-    Cookies.remove(STORED_CHAIN_ID_KEY, COOKIE_OPTIONS)
 
     Cookies.remove(SELECTED_WALLET_COOKIE_KEY, COOKIE_OPTIONS)
   }
