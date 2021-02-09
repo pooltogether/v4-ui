@@ -16,9 +16,8 @@ export function Nav(props) {
       className='flex flex-col items-start hidden sm:block pt-8 lg:pt-10 ml-2 text-center'
     >
       <Link
-        href='/'
-        as='/'
-        shallow
+        href='https://app.pooltogether.com'
+        as='https://app.pooltogether.com'
       >
         <a
           id='_navPoolsButton'
@@ -53,9 +52,8 @@ export function Nav(props) {
       </Link>
 
       <Link
-        href='/account'
-        as='/account'
-        shallow
+        href='https://app.pooltogether.com/account'
+        as='https://app.pooltogether.com/account'
       >
         <a
           id='_navAccountButton'
@@ -87,8 +85,8 @@ export function Nav(props) {
       </Link>
 
       <Link
-        href='/vote'
-        as='/vote'
+        href='/'
+        as='/'
         shallow
       >
         <a
