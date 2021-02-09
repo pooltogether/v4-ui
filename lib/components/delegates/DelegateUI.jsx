@@ -14,9 +14,9 @@ export const DelegateUI = (props) => {
   const router = useRouter()
   const { address } = router.query
 
-  const { data, isFetched, isFetching, error, loading } = useTokenHolder(address)
+  const { data, isFetched, isFetching, error } = useTokenHolder(address)
 
-  if (!address || loading) {
+  if (!address || !isFetched) {
     return <V3LoadingDots />
   }
 
@@ -48,10 +48,10 @@ const DelegationCard = (props) => (
 const DelegationControls = (props) => {
   const { address, delegateAddress } = props
 
-  const { data, loading, error } = useDelegateData(delegateAddress)
+  const { data, isFetched, error } = useDelegateData(delegateAddress)
   const identity = useSocialIdentity(delegateAddress)
 
-  if (loading) {
+  if (!isFetched) {
     return null
   }
 
@@ -101,8 +101,8 @@ const DelegationControls = (props) => {
 
 // const TwitterProfile = (props) => {
 //   const { address } = props
-//   const { loading, data } = useTwitterProfile(address)
-//   if (loading) {
+//   const { isFetched, data } = useTwitterProfile(address)
+//   if (!isFetched) {
 //     return null
 //   }
 

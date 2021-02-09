@@ -14,7 +14,7 @@ import { msToSeconds } from 'lib/utils/msToSeconds'
 import ChatBubble from 'assets/images/chat-bubble.svg'
 
 export const ProposalsList = (props) => {
-  const { loading, data: proposals, sortedProposals } = useAllProposalsSorted()
+  const { isFetched, data: proposals, sortedProposals } = useAllProposalsSorted()
 
   if (!proposals || Object.keys(proposals)?.length === 0) {
     return (
@@ -164,7 +164,9 @@ export const ProposalStatus = (props) => {
       )}
     >
       {proposal.endDate && (
-        <div className='pl-2 sm:pl-4 mr-2 sm:mr-4'>{proposal.endDate.toLocaleString(DateTime.DATE_MED)}</div>
+        <div className='pl-2 sm:pl-4 mr-2 sm:mr-4'>
+          {proposal.endDate.toLocaleString(DateTime.DATE_MED)}
+        </div>
       )}
       {icon && showIcon && (
         <FeatherIcon icon={icon} className='my-auto mr-2 stroke-current w-4 h-4' />

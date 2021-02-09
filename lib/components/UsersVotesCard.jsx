@@ -20,42 +20,43 @@ import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
 
 const UsersVotesCardBlankState = (props) => {
-  return <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
-    <div className='flex justify-between flex-col-reverse sm:flex-row'>
-      <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
-    </div>
-    
-    <div className='flex flex-col'>
-      <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>
-        0
-      </h2>
+  return (
+    <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+      <div className='flex justify-between flex-col-reverse sm:flex-row'>
+        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+      </div>
 
-      {/* TODO: Add a link to where they can get POOL  */}
-      <p className='text-accent-1 mt-2'>
-        You currently have no POOL to use for voting. You can get POOL here: ...
-      </p>
-    </div>
-  </Banner>
+      <div className='flex flex-col'>
+        <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>0</h2>
+
+        {/* TODO: Add a link to where they can get POOL  */}
+        <p className='text-accent-1 mt-2'>
+          You currently have no POOL to use for voting. You can get POOL here: ...
+        </p>
+      </div>
+    </Banner>
+  )
 }
 
 const UsersVotesCardConnectWallet = (props) => {
-  return <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
-    <div className='flex justify-between flex-col-reverse sm:flex-row'>
-      <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
-    </div>
-    <div className='flex flex-col'>
-      Connect your wallet to vote.
-
-      <Button
-        secondary
-        className='mt-3 xs:w-5/12 sm:w-1/3 lg:w-1/4'
-        textSize='xxxs'
-        onClick={() => props.connectWallet()}
-      >
-        Connect Wallet
-      </Button>
-    </div>
-  </Banner>
+  return (
+    <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+      <div className='flex justify-between flex-col-reverse sm:flex-row'>
+        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+      </div>
+      <div className='flex flex-col'>
+        Connect your wallet to vote.
+        <Button
+          secondary
+          className='mt-3 xs:w-5/12 sm:w-1/3 lg:w-1/4'
+          textSize='xxxs'
+          onClick={() => props.connectWallet()}
+        >
+          Connect Wallet
+        </Button>
+      </div>
+    </Banner>
+  )
 }
 
 export const UsersVotesCard = (props) => {
@@ -64,7 +65,7 @@ export const UsersVotesCard = (props) => {
 
   const {
     data: tokenHolder,
-    loading: tokenHolderIsLoading,
+    isFetched: isTokenHolderFetched,
     isDataFromBeforeCurrentBlock,
     refetch: refetchTokenHolderData
   } = useTokenHolder(
@@ -81,7 +82,7 @@ export const UsersVotesCard = (props) => {
     return <UsersVotesCardBlankState />
   }
 
-  if (tokenHolderIsLoading) {
+  if (!isTokenHolderFetched) {
     return <SmallLoader />
   }
 
@@ -156,7 +157,7 @@ const DelegateTrigger = (props) => {
   const [txId, setTxId] = useState({})
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const [sendTx] = useSendTransaction(`Self Delegate`, transactions, setTransactions)
-  const { data: tokenHolderCurrentData, loading: tokenHolderCurrentDataIsLoading } = useTokenHolder(
+  const { data: tokenHolderCurrentData, isFetched: isTokenHolderFetched } = useTokenHolder(
     usersAddress
   )
   const tx = transactions?.find((tx) => tx.id === txId)
@@ -204,7 +205,7 @@ const DelegateTrigger = (props) => {
 
   if (!hasDelegated || (tx?.completed && tx?.error)) {
     if (isDataFromBeforeCurrentBlock) {
-      if (tokenHolderCurrentData.hasDelegated || tokenHolderCurrentDataIsLoading) {
+      if (tokenHolderCurrentData.hasDelegated || !isTokenHolderFetched) {
         return null
       }
 
@@ -220,7 +221,11 @@ const DelegateTrigger = (props) => {
     }
 
     return (
-      <button type='button' className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold' onClick={handleDelegate}>
+      <button
+        type='button'
+        className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
+        onClick={handleDelegate}
+      >
         Activate my votes
       </button>
     )

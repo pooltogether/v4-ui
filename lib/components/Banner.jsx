@@ -1,17 +1,19 @@
 import React from 'react'
 import classnames from 'classnames'
 
-export const BannerGradient = {
-  purplePink: 'purple-pink',
+export const BannerTheme = {
+  purplePink: 'purplePink',
   rainbow: 'rainbow',
+  rainbowBorder: 'rainbowBorder',
+  purplePinkBorder: 'purplePinkBorder'
 }
 
 const BannerUnmemoized = (props) => {
-  const { gradient, className, children, style } = props
+  const { theme, className, children, style, outerClassName, innerClassName } = props
 
   const bannerClass = 'p-6 sm:p-8 rounded-lg'
 
-  if (gradient === BannerGradient.rainbow) {
+  if (theme === BannerTheme.rainbow) {
     return (
       <div
         className={classnames(bannerClass, 'text-purple', className)}
@@ -19,10 +21,33 @@ const BannerUnmemoized = (props) => {
           ...style,
           backgroundImage: 'url("/BackgroundGradient.svg")',
           backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
+          backgroundSize: 'cover'
         }}
       >
         {children}
+      </div>
+    )
+  } else if (theme === BannerTheme.rainbowBorder) {
+    return (
+      <div
+        className={classnames('text-inverse p-1 rounded-lg', outerClassName)}
+        style={{
+          backgroundImage: 'url("/BackgroundGradient.svg")',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover'
+        }}
+      >
+        <div className={classnames(bannerClass, 'bg-body', innerClassName)} style={style}>
+          {children}
+        </div>
+      </div>
+    )
+  } else if (theme === BannerTheme.purplePinkBorder) {
+    return (
+      <div className={classnames('text-inverse p-1 rounded-lg pool-gradient-1', outerClassName)}>
+        <div className={classnames(bannerClass, 'bg-body', innerClassName)} style={style}>
+          {children}
+        </div>
       </div>
     )
   }
@@ -35,7 +60,7 @@ const BannerUnmemoized = (props) => {
 }
 
 BannerUnmemoized.defaultProps = {
-  gradient: BannerGradient.purplePink,
+  theme: BannerTheme.purplePink
 }
 
 export const Banner = React.memo(BannerUnmemoized)

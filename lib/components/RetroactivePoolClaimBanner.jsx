@@ -9,14 +9,14 @@ import Bell from 'assets/images/bell@2x.png'
 
 export const RetroactivePoolClaimBanner = (props) => {
   const { t } = useTranslation()
-  const { data, loading } = useRetroactivePoolClaimData()
+  const { data, isFetched } = useRetroactivePoolClaimData()
 
-  if (loading || data?.isClaimed) {
+  if (!isFetched || data?.isClaimed) {
     return null
   }
 
   return (
-    <Banner gradient={'rainbow'} className='mb-12'>
+    <Banner theme={'rainbow'} className='mb-12'>
       <div className='flex sm:flex-row flex-col'>
         <div className='mb-3 sm:mb-2 ml-0 mr-auto sm:mb-auto sm:mr-4 sm:mt-1'>
           <img className='shake' src={Bell} style={{ maxWidth: 30 }} />
