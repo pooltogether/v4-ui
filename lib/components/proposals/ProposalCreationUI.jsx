@@ -32,8 +32,6 @@ const ProposalCreationMinimumRequirementBanner = () => {
   const { isFetched, userCanCreateProposal } = useUserCanCreateProposal()
   const { data: governorAlphaData } = useGovernorAlphaData()
 
-  console.log(isFetched, userCanCreateProposal)
-
   if (!isFetched || userCanCreateProposal) return null
 
   const proposalThreshold = numberWithCommas(
@@ -42,10 +40,10 @@ const ProposalCreationMinimumRequirementBanner = () => {
   )
 
   return (
-    <Banner gradient='purplePinkBorder' outerClassName='mb-8' innerClassName='text-center'>
+    <Banner theme='purplePinkBorder' outerClassName='mb-8' innerClassName='text-center'>
       <h6>
-        📣 In order to submit a proposal your wallet must hold at least {proposalThreshold} POOL
-        tokens 📣
+        📣 In order to submit a proposal you must have at least {proposalThreshold} POOL tokens
+        delegated to you 📣
       </h6>
       <a>More about POOL</a>
     </Banner>

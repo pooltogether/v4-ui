@@ -20,7 +20,7 @@ export const DelegatesUI = (props) => {
 
 const DelegatesList = () => {
   const [pageNumber, setPageNumber] = useState(0)
-  const { loading, data } = useAllDelegates(pageNumber)
+  const { isFetched, data } = useAllDelegates(pageNumber)
 
   const prevPage = (e) => {
     e.preventDefault()
@@ -34,7 +34,7 @@ const DelegatesList = () => {
     setPageNumber(newPage)
   }
 
-  if (loading) {
+  if (!isFetched) {
     return <V3LoadingDots />
   }
 

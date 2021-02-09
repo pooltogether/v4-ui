@@ -13,9 +13,9 @@ import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 export const ProposalsUI = (props) => {
   const { connectWallet } = useContext(AuthControllerContext)
 
-  const { error, loading } = useAllProposalsSorted()
+  const { error, isFetched } = useAllProposalsSorted()
 
-  if (loading) {
+  if (!isFetched) {
     return (
       <div className='flex flex-grow'>
         <V3LoadingDots className='m-auto' />
@@ -41,7 +41,8 @@ export const ProposalsUI = (props) => {
           className='text-inverse underline'
         >
           Read more about PoolTogether governance
-        </a>.
+        </a>
+        .
       </p>
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>

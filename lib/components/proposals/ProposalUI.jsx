@@ -32,9 +32,9 @@ export const ProposalUI = (props) => {
   const router = useRouter()
   const { id } = router.query
 
-  const { refetch: refetchProposalData, proposal, loading, error } = useProposalData(id)
+  const { refetch: refetchProposalData, proposal, isFetched, error } = useProposalData(id)
 
-  if (!proposal || (!proposal && loading)) {
+  if (!proposal || (!proposal && !isFetched)) {
     return null
   }
 
@@ -114,9 +114,9 @@ const ProposalDescriptionCard = (props) => {
 
 const VotesCard = (props) => {
   const { id } = props
-  const { proposal, loading } = useProposalData(id)
+  const { proposal, isFetched } = useProposalData(id)
 
-  if (loading) {
+  if (!isFetched) {
     return null
   }
 
@@ -179,7 +179,7 @@ const ProposalVoteCard = (props) => {
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolderData } = useTokenHolder(usersAddress)
   const { refetch: refetchTableData } = useProposalVotes(id)
-  const { data: voteData, loading: loadingVoteData, refetch: refetchVoteData } = useVoteData(
+  const { data: voteData, isFetched: isVoteDataFetched, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
   )
@@ -203,7 +203,7 @@ const ProposalVoteCard = (props) => {
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
-      {!loadingVoteData && voteData?.delegateDidVote && (
+      {isVoteDataFetched && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-4 sm:mt-8'>
           <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
           <div
@@ -504,7 +504,12 @@ const ExecuteButton = (props) => {
 }
 
 const TxText = (props) => (
-  <p className={classnames('px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold', props.className)}>
+  <p
+    className={classnames(
+      'px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold',
+      props.className
+    )}
+  >
     {props.children}
   </p>
 )

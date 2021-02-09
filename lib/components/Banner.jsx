@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 
-export const BannerGradient = {
+export const BannerTheme = {
   purplePink: 'purplePink',
   rainbow: 'rainbow',
   rainbowBorder: 'rainbowBorder',
@@ -9,11 +9,11 @@ export const BannerGradient = {
 }
 
 const BannerUnmemoized = (props) => {
-  const { gradient, className, children, style, outerClassName, innerClassName } = props
+  const { theme, className, children, style, outerClassName, innerClassName } = props
 
   const bannerClass = 'p-6 sm:p-8 rounded-lg'
 
-  if (gradient === BannerGradient.rainbow) {
+  if (theme === BannerTheme.rainbow) {
     return (
       <div
         className={classnames(bannerClass, 'text-purple', className)}
@@ -27,7 +27,7 @@ const BannerUnmemoized = (props) => {
         {children}
       </div>
     )
-  } else if (gradient === BannerGradient.rainbowBorder) {
+  } else if (theme === BannerTheme.rainbowBorder) {
     return (
       <div
         className={classnames('text-inverse p-1 rounded-lg', outerClassName)}
@@ -42,7 +42,7 @@ const BannerUnmemoized = (props) => {
         </div>
       </div>
     )
-  } else if (gradient === BannerGradient.purplePinkBorder) {
+  } else if (theme === BannerTheme.purplePinkBorder) {
     return (
       <div className={classnames('text-inverse p-1 rounded-lg pool-gradient-1', outerClassName)}>
         <div className={classnames(bannerClass, 'bg-body', innerClassName)} style={style}>
@@ -60,7 +60,7 @@ const BannerUnmemoized = (props) => {
 }
 
 BannerUnmemoized.defaultProps = {
-  gradient: BannerGradient.purplePink
+  theme: BannerTheme.purplePink
 }
 
 export const Banner = React.memo(BannerUnmemoized)
