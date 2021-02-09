@@ -12,13 +12,17 @@ import gfm from 'remark-gfm'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
-  const { handleSubmit, register, watch, formState, control } = useForm({ mode: 'all' })
+  const { handleSubmit, register, watch, formState, control } = useForm()
 
-  const [actions, setActions] = useState([])
+  const [actions, setActions] = useState([
+    {
+      id: Date.now()
+    }
+  ])
 
   return (
     <>
-      <ActionsCard />
+      <ActionsCard actions={actions} setActions={setActions} />
       <TitleCard register={register} disabled={!userCanCreateProposal} />
       <DescriptionCard register={register} control={control} disabled={!userCanCreateProposal} />
     </>
@@ -29,8 +33,8 @@ const TitleCard = (props) => {
   const { register, disabled } = props
 
   return (
-    <Card className='text-accent-1'>
-      <h3 className='mb-6'>Title</h3>
+    <Card>
+      <h4 className='mb-6'>Title</h4>
       <p className='mb-4'>
         The title is the first introduction of your proposal to the voters. Make sure to make it
         clear and to the point.
@@ -52,8 +56,8 @@ const DescriptionCard = (props) => {
   const { control, register, disabled } = props
 
   return (
-    <Card className='text-accent-1'>
-      <h3 className='mb-6'>Description</h3>
+    <Card>
+      <h4 className='mb-6'>Description</h4>
       <p className='mb-4'>
         The description should present in full detail what the actions of the proposal are doing.
         This is where voters will educate themselves on what they are voting on.
@@ -127,7 +131,7 @@ const TabbedView = (props) => {
       <div className='flex'>
         {tabs.map((tab, index) => (
           <Tab
-            key={`${tab.title}-${index}`}
+            key={`${tab.title}-${index}-tab`}
             tab={tab.title}
             isSelected={selectedTabIndex === index}
             setTab={() => setSelectedTabIndex(index)}
@@ -136,7 +140,12 @@ const TabbedView = (props) => {
       </div>
       <div className='bg-body p-8 border border-accent-3 rounded-b-lg'>
         {tabs.map((tab, index) => (
-          <div className={classnames({ hidden: selectedTabIndex !== index })}>{tab.view}</div>
+          <div
+            key={`${tab.title}-${index}-view`}
+            className={classnames({ hidden: selectedTabIndex !== index })}
+          >
+            {tab.view}
+          </div>
         ))}
       </div>
     </>
