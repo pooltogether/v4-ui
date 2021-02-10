@@ -1,7 +1,7 @@
 import { Button } from 'lib/components/Button'
 import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
-import { useGovernorAlpha } from 'lib/hooks/useGovernanceData'
+import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import React from 'react'
 import { useController, useFormContext, useWatch } from 'react-hook-form'
