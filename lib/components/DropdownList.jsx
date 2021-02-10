@@ -33,7 +33,10 @@ export function DropdownList (props) {
 
     if (value.groupHeader) {
       return (
-        <div className='border-b opacity-50 text-inverse text-xs px-3 sm:px-5 pt-2'>
+        <div
+          key={`${id}-value-picker-group-header-${value.groupHeader}`}
+          className='border-b opacity-50 text-inverse text-xs px-3 sm:px-5 pt-2'
+        >
           {value.groupHeader}
         </div>
       )

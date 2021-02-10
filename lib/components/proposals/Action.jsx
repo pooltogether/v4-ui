@@ -1,9 +1,10 @@
 import FeatherIcon from 'feather-icons-react'
 import VisuallyHidden from '@reach/visually-hidden'
 import React, { useContext, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { useForm, useFormContext } from 'react-hook-form'
 import { useMemo } from 'react'
 
+import { axiosInstance } from 'lib/axiosInstance'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
@@ -14,6 +15,9 @@ import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
+import { useDebouncedFn } from 'beautiful-react-hooks'
+import { testAddress } from 'lib/utils/testAddress'
+import { getContractAbi } from 'lib/services/etherscanApi'
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index, hideRemoveButton } = props
@@ -150,18 +154,64 @@ const ContractSelect = (props) => {
         values={options}
         current={currentContract}
       />
-      <CustomContractInput contract={currentContract} setContract={setContract} />
+      {currentContract?.custom && (
+        <CustomContractInput contract={currentContract} setContract={setContract} />
+      )}
     </>
   )
 }
 
 const CustomContractInput = (props) => {
-  const { contract } = props
+  const { contract, setContract } = props
   const [address, setAddress] = useState('')
 
-  if (!contract?.custom) return null
+  // TODO: This is ugly. Move this into a useQuery hook so abis get cached.
+  const debouncedFn = useDebouncedFn(
+    async (address) => {
+      const addressError = testAddress(address)
+      if (address && !addressError) {
+        const response = await getContractAbi(address)
+        const { data, status } = response
+        if (status !== 200) {
+          // TODO:
+          setContract({
+            ...contract,
+            abi: null,
+            address: ''
+          })
+        } else {
+          const { result, status: contractAbiStatus } = data
+          if (contractAbiStatus !== 1) {
+            // TODO:
+            setContract({
+              ...contract,
+              abi: null,
+              address: ''
+            })
+          }
+
+          const abi = JSON.parse(result)
+          setContract({
+            ...contract,
+            abi,
+            address
+          })
+        }
+      } else if (contract.address) {
+        setContract({
+          ...contract,
+          abi: null,
+          address: ''
+        })
+      }
+    },
+    250,
+    null,
+    [contract, setContract]
+  )
 
   // TODO: Debounce fetch abi from etherscan
+  // TODO: This will only work on mainnet
 
   return (
     <TextInputGroup
@@ -172,6 +222,7 @@ const CustomContractInput = (props) => {
       onChange={(e) => {
         e.preventDefault()
         setAddress(e.target.value)
+        debouncedFn(e.target.value)
       }}
     />
   )
@@ -185,7 +236,7 @@ const FunctionSelect = (props) => {
     [contract]
   )
 
-  if (!contract) return null
+  if (!contract || !contract?.abi) return null
 
   const formatValue = (fn) => {
     return fn?.name

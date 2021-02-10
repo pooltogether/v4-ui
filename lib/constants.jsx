@@ -55,6 +55,8 @@ export const QUERY_KEYS = {
   prizePoolContractAddresses: 'prizePoolContractAddresses'
 }
 
+export const ETHERSCAN_API_KEY = process.env.NEXT_JS_ETHERSCAN_API_KEY
+
 export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {
   1: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET,
   4: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY
