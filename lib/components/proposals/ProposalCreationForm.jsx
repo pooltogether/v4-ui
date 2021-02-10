@@ -6,13 +6,13 @@ import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import React from 'react'
 import { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
-  const { handleSubmit, register, watch, formState, control } = useForm()
+  const formMethods = useForm()
 
   const [actions, setActions] = useState([
     {
@@ -22,15 +22,21 @@ export const ProposalCreationForm = () => {
 
   return (
     <>
-      <ActionsCard actions={actions} setActions={setActions} />
-      <TitleCard register={register} disabled={!userCanCreateProposal} />
-      <DescriptionCard register={register} control={control} disabled={!userCanCreateProposal} />
+      <FormProvider {...formMethods}>
+        <button onClick={() => console.log(formMethods.getValues())}>TEST: Log Form Values</button>
+        <button onClick={() => console.log(formMethods.formState)}>TEST: Log State</button>
+        <button onClick={() => formMethods.trigger()}>Trigger Validation</button>
+        <ActionsCard actions={actions} setActions={setActions} />
+        <TitleCard disabled={!userCanCreateProposal} />
+        <DescriptionCard disabled={!userCanCreateProposal} />
+      </FormProvider>
     </>
   )
 }
 
 const TitleCard = (props) => {
-  const { register, disabled } = props
+  const { disabled } = props
+  const { register } = useFormContext()
 
   return (
     <Card>
@@ -53,7 +59,10 @@ const TitleCard = (props) => {
 }
 
 const DescriptionCard = (props) => {
-  const { control, register, disabled } = props
+  const { disabled } = props
+  const { register, control } = useFormContext()
+  const name = 'description'
+  const text = useWatch({ control, name, defaultValue: '' })
 
   return (
     <Card>
@@ -62,20 +71,13 @@ const DescriptionCard = (props) => {
         The description should present in full detail what the actions of the proposal are doing.
         This is where voters will educate themselves on what they are voting on.
       </p>
-      <MarkdownInputArea
-        name='description'
-        control={control}
-        register={register}
-        disabled={disabled}
-      />
+      <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
     </Card>
   )
 }
 
 const MarkdownInputArea = (props) => {
-  const { control, name, register, disabled } = props
-
-  const text = useWatch({ control, name, defaultValue: '' })
+  const { text, name, register, disabled } = props
 
   const tabs = [
     {

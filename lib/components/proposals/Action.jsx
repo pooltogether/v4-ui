@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import { DropdownList } from 'lib/components/DropdownList'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { useEffect } from 'react'
+import { useFormContext } from 'react-hook-form'
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index } = props
@@ -47,7 +47,12 @@ export const Action = (props) => {
       <div className='flex flex-col'>
         <ContractSelect setContract={setContract} currentContract={action.contract} />
         <div className='flex flex-col xs:pl-8 mt-2'>
-          <FunctionSelect contract={action.contract} setFunction={setFunction} fn={action.fn} />
+          <FunctionSelect
+            contract={action.contract}
+            setFunction={setFunction}
+            fn={action.fn}
+            actionIndex={index}
+          />
         </div>
       </div>
     </div>
@@ -128,7 +133,7 @@ const CustomContractInput = (props) => {
 }
 
 const FunctionSelect = (props) => {
-  const { fn, contract, setFunction } = props
+  const { fn, contract, setFunction, actionIndex } = props
   const functions = useMemo(
     () =>
       contract?.abi?.filter((item) => item.type === 'function' && item.stateMutability !== 'view'),
@@ -145,6 +150,8 @@ const FunctionSelect = (props) => {
     setFunction(fn)
   }
 
+  // TODO: Custom Contract input for custom data blob
+
   return (
     <>
       <DropdownList
@@ -156,34 +163,51 @@ const FunctionSelect = (props) => {
         values={functions}
         current={fn}
       />
-      <FunctionInputs fn={fn} />
+      <FunctionInputs fn={fn} actionIndex={actionIndex} />
     </>
   )
 }
 
 const FunctionInputs = (props) => {
-  const { fn, setInputs } = props
+  const { fn, actionIndex } = props
   const inputs = fn?.inputs
   if (!fn || inputs.length === 0) return null
 
   // TODO: Pass the register all the way down, dynamically set the name
 
   return (
-    <ul className='pl-4 mt-2'>
-      {inputs.map((input) => (
-        <FunctionInput key={input.name} {...input} />
+    <ul className='mt-2'>
+      {inputs.map((input, index) => (
+        <FunctionInput
+          fnName={fn.name}
+          key={input.name}
+          {...input}
+          actionIndex={actionIndex}
+          inputIndex={index}
+        />
       ))}
     </ul>
   )
 }
 
 const FunctionInput = (props) => {
-  const { name, type } = props
+  const { name, type, fnName, actionIndex, inputIndex } = props
+  const { register } = useFormContext()
 
+  // TODO: Validate inputs? At least addresses.
   return (
-    <li className='mt-2 first:mt-0'>
-      <span>{name}</span>
-      <span className='ml-1 text-xxs opacity-70'>{`[${type}]`}</span>
+    <li className='mt-2 first:mt-0 flex'>
+      <span className='w-1/4 text-right'>
+        {name} <span className='ml-1 text-xxs opacity-70'>{`[${type}]`}</span>
+      </span>
+      <input
+        className='bg-card w-3/4 ml-4'
+        name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
+        ref={register({ required: true })}
+        type='text'
+        autoComplete={`${fnName}.${name}`}
+        autoCorrect='off'
+      />
     </li>
   )
 }

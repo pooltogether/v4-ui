@@ -4,11 +4,29 @@ import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlphaData } from 'lib/hooks/useGovernanceData'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import React from 'react'
+import { useController, useFormContext, useWatch } from 'react-hook-form'
 
 export const ActionsCard = (props) => {
-  const { actions, setActions } = props
   const { isFetched: isPrizePoolsFetched } = usePrizePools()
   const { data: governorAlphaData, isFetched: isGovernorAlphaDataFetched } = useGovernorAlphaData()
+
+  const name = 'actions'
+  const { control } = useFormContext()
+
+  const {
+    field: { onChange, value: actions }
+  } = useController({
+    name,
+    control,
+    defaultValue: [
+      {
+        id: Date.now()
+      }
+    ],
+    rules: {
+      validate: validateAction
+    }
+  })
 
   if (!isPrizePoolsFetched || !isGovernorAlphaDataFetched) return null
 
@@ -26,13 +44,15 @@ export const ActionsCard = (props) => {
         const setAction = (action) => {
           const newActions = [...actions]
           newActions.splice(index, 1, action)
-          setActions(newActions)
+          // setActions(newActions)
+          onChange(newActions)
         }
 
         const deleteAction = () => {
           const newActions = [...actions]
           newActions.splice(index, 1)
-          setActions(newActions)
+          // setActions(newActions)
+          onChange(newActions)
         }
         return (
           <Action
@@ -48,7 +68,7 @@ export const ActionsCard = (props) => {
         className='mt-8'
         onClick={(e) => {
           e.preventDefault()
-          setActions([
+          onChange([
             ...actions,
             {
               id: Date.now()
@@ -61,4 +81,9 @@ export const ActionsCard = (props) => {
       </Button>
     </Card>
   )
+}
+
+const validateAction = (action) => {
+  // TODO: Validate action
+  return true
 }
