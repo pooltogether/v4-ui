@@ -51,7 +51,8 @@ export const QUERY_KEYS = {
   voteDataQuery: 'voteDataQuery',
   proposalsQuery: 'proposalsQuery',
   tokenFaucetAddresses: 'tokenFaucetAddresses',
-  usePools: 'usePools'
+  usePools: 'usePools',
+  prizePoolContractAddresses: 'prizePoolContractAddresses'
 }
 
 export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {

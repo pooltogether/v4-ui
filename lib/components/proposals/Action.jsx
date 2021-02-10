@@ -1,16 +1,22 @@
 import FeatherIcon from 'feather-icons-react'
 import VisuallyHidden from '@reach/visually-hidden'
-import { usePrizePools } from 'lib/hooks/usePrizePools'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { useMemo } from 'react'
 
-import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { useFormContext } from 'react-hook-form'
+import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+
+import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
+import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
+import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
 
 export const Action = (props) => {
-  const { action, setAction, deleteAction, index } = props
+  const { action, setAction, deleteAction, index, hideRemoveButton } = props
 
   const setContract = (contract) => {
     setAction({
@@ -31,7 +37,7 @@ export const Action = (props) => {
     <div className='mt-4 mx-auto py-4 px-8 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
         <h6 className='mb-4'>Action {index + 1}</h6>
-        {index > 0 && (
+        {!hideRemoveButton && (
           <button
             className='trans hover:opacity-50'
             onClick={(e) => {
@@ -62,26 +68,65 @@ export const Action = (props) => {
 const ContractSelect = (props) => {
   const { setContract, currentContract } = props
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
+  const { chainId } = useContext(AuthControllerContext)
 
   const options = useMemo(() => {
     const options = []
 
     if (prizePoolsIsFetched) {
-      prizePools.forEach((prizePool) => {
+      // Add POOL token
+      options.push({
+        address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+        name: `POOL Token`,
+        abi: DelegateableERC20ABI
+      })
+
+      options.push({
+        address: '',
+        name: `Custom Contract`,
+        abi: null,
+        custom: true
+      })
+
+      // Add Prize Pool contracts
+      options.push({
+        groupHeader: `Prize Pools`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
         options.push({
-          address: prizePool.id,
+          address: prizePool.prizePool,
           name: `${prizePool.underlyingCollateralName} Prize Pool`,
           abi: PrizePoolAbi
         })
       })
-    }
 
-    options.push({
-      address: '',
-      name: `Custom Contract`,
-      abi: null,
-      custom: true
-    })
+      // Add Prize Strategies
+      options.push({
+        groupHeader: `Prize Strategies`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
+        options.push({
+          address: prizePool.prizeStrategy,
+          name: `${prizePool.underlyingCollateralName} Prize Strategy`,
+          abi: MultipleWinnersPrizeStrategyAbi
+        })
+      })
+
+      // Add Token Faucets
+      options.push({
+        groupHeader: `Token Faucets`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
+        options.push({
+          address: prizePool.tokenFaucet,
+          name: `${prizePool.underlyingCollateralName} Token Faucet`,
+          abi: TokenFaucetAbi
+        })
+      })
+    }
 
     return options
   }, [prizePools, prizePoolsIsFetched])

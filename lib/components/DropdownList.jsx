@@ -28,10 +28,16 @@ export function DropdownList (props) {
     valuesArray = Object.keys(values).map((v) => v)
   }
 
-  const menuItems = valuesArray.map((valueItem) => {
-    let value = valueItem
-
+  const menuItems = valuesArray.map((value) => {
     const selected = value === current
+
+    if (value.groupHeader) {
+      return (
+        <div className='border-b opacity-50 text-inverse text-xs px-3 sm:px-5 pt-2'>
+          {value.groupHeader}
+        </div>
+      )
+    }
 
     return (
       <MenuItem
@@ -42,6 +48,7 @@ export function DropdownList (props) {
         className={classnames({
           selected
         })}
+        disabled={value.disabled}
       >
         {formatValue ? formatValue(value) : value}
       </MenuItem>
@@ -83,7 +90,7 @@ export function DropdownList (props) {
               />
             </MenuButton>
 
-            <MenuList className='slide-down'>{menuItems}</MenuList>
+            <MenuList className='slide-down overflow-y-auto max-h-1/2'>{menuItems}</MenuList>
           </>
         )}
       </Menu>

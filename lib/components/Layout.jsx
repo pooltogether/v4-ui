@@ -23,7 +23,7 @@ const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
 }
 
-export function Layout(props) {
+export function Layout (props) {
   const { children } = props
 
   const { usersAddress, chainId, walletName } = useContext(AuthControllerContext)
@@ -67,21 +67,25 @@ export function Layout(props) {
       <div
         className='flex flex-col w-full'
         style={{
-          minHeight: '100vh',
+          minHeight: '100vh'
         }}
       >
-        <motion.div
-          className='header fixed w-full bg-body z-30 pt-1 pb-1 xs:pt-2 xs:pb-0 sm:py-0 mx-auto l-0 r-0'
-        >
+        <motion.div className='header fixed w-full bg-body z-30 pt-1 pb-1 xs:pt-2 xs:pb-0 sm:py-0 mx-auto l-0 r-0'>
           <div className='flex justify-between items-center px-4 xs:px-12 sm:px-10 py-4 xs:pb-6 sm:pt-5 sm:pb-7 mx-auto'>
             <HeaderLogo />
 
             <div
               className={classnames('flex items-center justify-end flex-row flex-wrap relative')}
               style={{
-                lineHeight: 0,
+                lineHeight: 0
               }}
             >
+              {usersAddress && chainId && chainId !== 1 && (
+                <>
+                  <NetworkText openTransactions={openTransactions} />
+                </>
+              )}
+
               <NavPoolBalance />
 
               {/* {!usersAddress && (
@@ -97,12 +101,6 @@ export function Layout(props) {
                     closeTransactions={closeTransactions}
                     showTransactionsDialog={showTransactionsDialog}
                   />
-                </>
-              )}
-
-              {usersAddress && chainId && chainId !== 1 && (
-                <>
-                  <NetworkText openTransactions={openTransactions} />
                 </>
               )}
 
@@ -122,19 +120,19 @@ export function Layout(props) {
             style={{
               boxShadow: 'rgba(0, 0, 0, 0.025) 0px 0px 1px 1px, rgba(0, 0, 0, 0.1) 0px 1px 7px 1px',
               height: 0,
-              maxWidth: '100vw',
+              maxWidth: '100vw'
             }}
             animate={yScrollPosition > 1 ? 'enter' : 'exit'}
             variants={{
               enter: {
                 opacity: 1,
                 transition: {
-                  duration: 1,
-                },
+                  duration: 1
+                }
               },
               exit: {
-                opacity: 0,
-              },
+                opacity: 0
+              }
             }}
           ></motion.div>
         </motion.div>
@@ -150,16 +148,15 @@ export function Layout(props) {
                 <div
                   className='relative flex flex-col flex-grow h-full z-10 text-white'
                   style={{
-                    flex: 1,
+                    flex: 1
                   }}
                 >
                   <div className='my-0 text-inverse sm:pt-2 lg:pt-4'>
                     {React.cloneElement(children, {
-                      ...props,
+                      ...props
                     })}
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
