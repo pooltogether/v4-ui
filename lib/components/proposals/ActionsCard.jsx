@@ -1,14 +1,14 @@
 import { Button } from 'lib/components/Button'
 import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
-import { useGovernorAlphaData } from 'lib/hooks/useGovernanceData'
+import { useGovernorAlpha } from 'lib/hooks/useGovernanceData'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import React from 'react'
 import { useController, useFormContext, useWatch } from 'react-hook-form'
 
 export const ActionsCard = (props) => {
-  const { isFetched: isPrizePoolsFetched } = usePrizePools()
-  const { data: governorAlphaData, isFetched: isGovernorAlphaDataFetched } = useGovernorAlphaData()
+  const { isFetched: prizePoolsIsFetched } = usePrizePools()
+  const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
   const name = 'actions'
   const { control } = useFormContext()
@@ -28,9 +28,9 @@ export const ActionsCard = (props) => {
     }
   })
 
-  if (!isPrizePoolsFetched || !isGovernorAlphaDataFetched) return null
+  if (!prizePoolsIsFetched || !governorAlphaIsFetched) return null
 
-  const { proposalMaxOperations } = governorAlphaData
+  const { proposalMaxOperations } = governorAlpha
 
   return (
     <Card>

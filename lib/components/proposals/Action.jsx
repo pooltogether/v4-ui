@@ -61,12 +61,12 @@ export const Action = (props) => {
 
 const ContractSelect = (props) => {
   const { setContract, currentContract } = props
-  const { data: prizePools, isFetched: isPrizePoolsFetched } = usePrizePools()
+  const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
 
   const options = useMemo(() => {
     const options = []
 
-    if (isPrizePoolsFetched) {
+    if (prizePoolsIsFetched) {
       prizePools.forEach((prizePool) => {
         options.push({
           address: prizePool.id,
@@ -84,7 +84,7 @@ const ContractSelect = (props) => {
     })
 
     return options
-  }, [prizePools, isPrizePoolsFetched])
+  }, [prizePools, prizePoolsIsFetched])
 
   const formatValue = (value) => {
     return value?.name
