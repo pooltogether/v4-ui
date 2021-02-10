@@ -194,8 +194,8 @@ const ViewProposalButton = (props) => {
   if (status === PROPOSAL_STATUS.queued) {
     return (
       <ButtonLink
-        href={'/proposal/[id]/'}
-        as={`/proposal/${id}/`}
+        href={'/proposals/[id]/'}
+        as={`/proposals/${id}/`}
         border='green'
         text='primary'
         bg='green'
@@ -209,8 +209,8 @@ const ViewProposalButton = (props) => {
   } else if (status === PROPOSAL_STATUS.succeeded) {
     return (
       <ButtonLink
-        href={'/proposal/[id]/'}
-        as={`/proposal/${id}/`}
+        href={'/proposals/[id]/'}
+        as={`/proposals/${id}/`}
         border='green'
         text='primary'
         bg='green'
@@ -224,8 +224,8 @@ const ViewProposalButton = (props) => {
   } else if (status === PROPOSAL_STATUS.active) {
     return (
       <ButtonLink
-        href={'/proposal/[id]/'}
-        as={`/proposal/${id}/`}
+        href={'/proposals/[id]/'}
+        as={`/proposals/${id}/`}
         border='green'
         text='primary'
         bg='green'
@@ -239,7 +239,7 @@ const ViewProposalButton = (props) => {
   }
 
   return (
-    <ButtonLink textSize='xxs' href={'/proposal/[id]/'} as={`/proposal/${id}/`}>
+    <ButtonLink textSize='xxs' href={'/proposals/[id]/'} as={`/proposals/${id}/`}>
       View Proposal
     </ButtonLink>
   )

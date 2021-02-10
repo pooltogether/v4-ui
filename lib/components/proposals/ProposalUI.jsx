@@ -179,7 +179,7 @@ const ProposalVoteCard = (props) => {
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolderData } = useTokenHolder(usersAddress)
   const { refetch: refetchTableData } = useProposalVotes(id)
-  const { data: voteData, isFetched: isVoteDataFetched, refetch: refetchVoteData } = useVoteData(
+  const { data: voteData, isFetched: voteDataIsFetched, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
   )
@@ -203,7 +203,7 @@ const ProposalVoteCard = (props) => {
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
-      {isVoteDataFetched && voteData?.delegateDidVote && (
+      {voteDataIsFetched && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-4 sm:mt-8'>
           <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
           <div

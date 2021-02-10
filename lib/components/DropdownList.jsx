@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
-export function DropdownList(props) {
+export function DropdownList (props) {
   const {
     id,
     className,
@@ -14,35 +14,33 @@ export function DropdownList(props) {
     textColor,
     values,
     onValueSet,
+    placeholder
   } = props
 
-  const [currentValue, setCurrentValue] = useState(current ? current : '')
-
   const handleChangeValueClick = (newValue) => {
-    if (current !== null) {
-      setCurrentValue(newValue)
-    }
     onValueSet(newValue)
   }
 
   let valuesArray = []
-  if (typeof values === 'object') {
+  if (Array.isArray(values)) {
+    valuesArray = values
+  } else if (typeof values === 'object') {
     valuesArray = Object.keys(values).map((v) => v)
   }
 
   const menuItems = valuesArray.map((valueItem) => {
     let value = valueItem
 
-    const selected = value === currentValue
+    const selected = value === current
 
     return (
       <MenuItem
-        key={`${id}-value-picker-item-${value}`}
+        key={`${id}-value-picker-item-${JSON.stringify(value)}`}
         onSelect={() => {
           handleChangeValueClick(value)
         }}
         className={classnames({
-          selected,
+          selected
         })}
       >
         {formatValue ? formatValue(value) : value}
@@ -52,6 +50,15 @@ export function DropdownList(props) {
 
   const inactiveTextColorClasses = `${textColor} hover:${hoverTextColor}`
   const activeTextColorClasses = `${hoverTextColor} hover:${hoverTextColor}`
+
+  let buttonText = ''
+  if (label) {
+    buttonText = label
+  } else if (current) {
+    buttonText = formatValue(current)
+  } else if (placeholder) {
+    buttonText = placeholder
+  }
 
   return (
     <>
@@ -64,11 +71,11 @@ export function DropdownList(props) {
                 'inline-flex items-center justify-center trans font-bold',
                 {
                   [inactiveTextColorClasses]: !isExpanded,
-                  [activeTextColorClasses]: isExpanded,
+                  [activeTextColorClasses]: isExpanded
                 }
               )}
             >
-              {label ? label : currentValue}{' '}
+              {buttonText}
               <FeatherIcon
                 icon={isExpanded ? 'chevron-up' : 'chevron-down'}
                 className='relative w-4 h-4 inline-block ml-2'

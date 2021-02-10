@@ -7,7 +7,7 @@ import { useRetroactivePoolClaimData } from 'lib/hooks/useRetroactivePoolClaimDa
 
 import Bell from 'assets/images/bell@2x.png'
 
-export const RetroactivePoolClaimBanner = (props) => {
+export const RetroactivePoolClaimBanner = () => {
   const { t } = useTranslation()
   const { data, isFetched } = useRetroactivePoolClaimData()
 

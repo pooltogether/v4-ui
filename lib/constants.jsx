@@ -50,13 +50,18 @@ export const QUERY_KEYS = {
   twitterProfileQuery: 'twitterProfileQuery',
   voteDataQuery: 'voteDataQuery',
   proposalsQuery: 'proposalsQuery',
-  tokenFaucetAddresses: 'tokenFaucetAddresses'
+  tokenFaucetAddresses: 'tokenFaucetAddresses',
+  usePools: 'usePools'
 }
 
 export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {
   1: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET,
-  3: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_ROPSTEN,
   4: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_RINKEBY
+}
+
+export const POOLTOGETHER_SUBGRAPH_URIS = {
+  1: process.env.NEXT_JS_SUBGRAPH_URI_MAINNET,
+  4: process.env.NEXT_JS_SUBGRAPH_URI_RINKEBY
 }
 
 export const PROPOSAL_STATUS = {

@@ -3,7 +3,7 @@ import { Banner } from 'lib/components/Banner'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { ProposalCreationForm } from 'lib/components/proposals/ProposalCreationForm'
 import { DEFAULT_TOKEN_PRECISION } from 'lib/constants'
-import { useGovernorAlphaData } from 'lib/hooks/useGovernanceData'
+import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePoolTokenData } from 'lib/hooks/usePoolTokenData'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
@@ -30,12 +30,12 @@ export const ProposalCreationUI = (props) => {
 
 const ProposalCreationMinimumRequirementBanner = () => {
   const { isFetched, userCanCreateProposal } = useUserCanCreateProposal()
-  const { data: governorAlphaData } = useGovernorAlphaData()
+  const { data: governorAlpha } = useGovernorAlpha()
 
   if (!isFetched || userCanCreateProposal) return null
 
   const proposalThreshold = numberWithCommas(
-    ethers.utils.formatUnits(governorAlphaData.proposalThreshold, DEFAULT_TOKEN_PRECISION),
+    ethers.utils.formatUnits(governorAlpha.proposalThreshold, DEFAULT_TOKEN_PRECISION),
     { precision: 0 }
   )
 

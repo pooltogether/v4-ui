@@ -65,7 +65,7 @@ export const UsersVotesCard = (props) => {
 
   const {
     data: tokenHolder,
-    isFetched: isTokenHolderFetched,
+    isFetched: tokenHolderIsFetched,
     isDataFromBeforeCurrentBlock,
     refetch: refetchTokenHolderData
   } = useTokenHolder(
@@ -82,7 +82,7 @@ export const UsersVotesCard = (props) => {
     return <UsersVotesCardBlankState />
   }
 
-  if (!isTokenHolderFetched) {
+  if (!tokenHolderIsFetched) {
     return <SmallLoader />
   }
 
@@ -157,7 +157,7 @@ const DelegateTrigger = (props) => {
   const [txId, setTxId] = useState({})
   const [transactions, setTransactions] = useAtom(transactionsAtom)
   const [sendTx] = useSendTransaction(`Self Delegate`, transactions, setTransactions)
-  const { data: tokenHolderCurrentData, isFetched: isTokenHolderFetched } = useTokenHolder(
+  const { data: tokenHolderCurrentData, isFetched: tokenHolderIsFetched } = useTokenHolder(
     usersAddress
   )
   const tx = transactions?.find((tx) => tx.id === txId)
@@ -205,7 +205,7 @@ const DelegateTrigger = (props) => {
 
   if (!hasDelegated || (tx?.completed && tx?.error)) {
     if (isDataFromBeforeCurrentBlock) {
-      if (tokenHolderCurrentData.hasDelegated || !isTokenHolderFetched) {
+      if (tokenHolderCurrentData.hasDelegated || !tokenHolderIsFetched) {
         return null
       }
 

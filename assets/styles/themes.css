@@ -38,6 +38,7 @@
   --color-bg-teal: #0ea3a4;
   --color-bg-purple: #401c94;
   --color-bg-light-purple-35: rgba(173, 153, 216, 0.35);
+  --color-bg-light-purple-10: rgba(173, 153, 216, 0.1);
 
   --color-text-accent-1: #cdc5df;
   --color-text-accent-2: #cdc5df;
@@ -125,6 +126,7 @@
   --color-bg-teal: #0ea3a4;
   --color-bg-purple: #4c249f;
   --color-bg-light-purple-35: rgba(173, 153, 216, 0.35);
+  --color-bg-light-purple-10: rgba(173, 153, 216, 0.1);
 
   --color-text-accent-1: #a5a0b3;
   --color-text-accent-2: #4c249f;

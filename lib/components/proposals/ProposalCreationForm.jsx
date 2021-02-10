@@ -6,31 +6,41 @@ import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import React from 'react'
 import { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
-  const { handleSubmit, register, watch, formState, control } = useForm({ mode: 'all' })
+  const formMethods = useForm()
 
-  const [actions, setActions] = useState([])
+  const [actions, setActions] = useState([
+    {
+      id: Date.now()
+    }
+  ])
 
   return (
     <>
-      <ActionsCard />
-      <TitleCard register={register} disabled={!userCanCreateProposal} />
-      <DescriptionCard register={register} control={control} disabled={!userCanCreateProposal} />
+      <FormProvider {...formMethods}>
+        <button onClick={() => console.log(formMethods.getValues())}>TEST: Log Form Values</button>
+        <button onClick={() => console.log(formMethods.formState)}>TEST: Log State</button>
+        <button onClick={() => formMethods.trigger()}>Trigger Validation</button>
+        <ActionsCard actions={actions} setActions={setActions} />
+        <TitleCard disabled={!userCanCreateProposal} />
+        <DescriptionCard disabled={!userCanCreateProposal} />
+      </FormProvider>
     </>
   )
 }
 
 const TitleCard = (props) => {
-  const { register, disabled } = props
+  const { disabled } = props
+  const { register } = useFormContext()
 
   return (
-    <Card className='text-accent-1'>
-      <h3 className='mb-6'>Title</h3>
+    <Card>
+      <h4 className='mb-6'>Title</h4>
       <p className='mb-4'>
         The title is the first introduction of your proposal to the voters. Make sure to make it
         clear and to the point.
@@ -49,29 +59,25 @@ const TitleCard = (props) => {
 }
 
 const DescriptionCard = (props) => {
-  const { control, register, disabled } = props
+  const { disabled } = props
+  const { register, control } = useFormContext()
+  const name = 'description'
+  const text = useWatch({ control, name, defaultValue: '' })
 
   return (
-    <Card className='text-accent-1'>
-      <h3 className='mb-6'>Description</h3>
+    <Card>
+      <h4 className='mb-6'>Description</h4>
       <p className='mb-4'>
         The description should present in full detail what the actions of the proposal are doing.
         This is where voters will educate themselves on what they are voting on.
       </p>
-      <MarkdownInputArea
-        name='description'
-        control={control}
-        register={register}
-        disabled={disabled}
-      />
+      <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
     </Card>
   )
 }
 
 const MarkdownInputArea = (props) => {
-  const { control, name, register, disabled } = props
-
-  const text = useWatch({ control, name, defaultValue: '' })
+  const { text, name, register, disabled } = props
 
   const tabs = [
     {
@@ -127,7 +133,7 @@ const TabbedView = (props) => {
       <div className='flex'>
         {tabs.map((tab, index) => (
           <Tab
-            key={`${tab.title}-${index}`}
+            key={`${tab.title}-${index}-tab`}
             tab={tab.title}
             isSelected={selectedTabIndex === index}
             setTab={() => setSelectedTabIndex(index)}
@@ -136,7 +142,12 @@ const TabbedView = (props) => {
       </div>
       <div className='bg-body p-8 border border-accent-3 rounded-b-lg'>
         {tabs.map((tab, index) => (
-          <div className={classnames({ hidden: selectedTabIndex !== index })}>{tab.view}</div>
+          <div
+            key={`${tab.title}-${index}-view`}
+            className={classnames({ hidden: selectedTabIndex !== index })}
+          >
+            {tab.view}
+          </div>
         ))}
       </div>
     </>

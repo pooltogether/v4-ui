@@ -5,7 +5,7 @@ import { isBrowser } from 'react-device-detect'
 
 import { DEFAULT_INPUT_CLASSES } from 'lib/constants'
 
-export function Input(props) {
+export function Input (props) {
   let {
     autoFocus,
     large,
@@ -20,7 +20,7 @@ export function Input(props) {
     isError,
     required,
     register,
-    validate,
+    validate
   } = props
 
   const defaultTextClasses = 'text-xxs xs:text-sm sm:text-xl lg:text-2xl'
@@ -65,7 +65,7 @@ export function Input(props) {
     roundedClasses,
     props.className,
     {
-      'text-red': isError,
+      'text-red': isError
     }
   )
 
@@ -91,7 +91,7 @@ export function Input(props) {
     'unsignedWholeNumber',
     'centerLabel',
     'rightLabel',
-    'bottomRightLabel',
+    'bottomRightLabel'
   ])
 
   return (
@@ -99,10 +99,10 @@ export function Input(props) {
       <input
         {...newProps}
         autoFocus={autoFocus && isBrowser}
-        ref={register({
+        ref={register?.({
           required,
           pattern,
-          validate,
+          validate
         })}
         // rounded-full
         className={classnames(className, 'focus:outline-none pl-6')}
