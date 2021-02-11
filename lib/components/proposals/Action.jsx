@@ -1,23 +1,24 @@
 import FeatherIcon from 'feather-icons-react'
+import classnames from 'classnames'
 import VisuallyHidden from '@reach/visually-hidden'
 import React, { useContext, useState } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useForm, useFormContext, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 
-import { axiosInstance } from 'lib/axiosInstance'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
-import { useDebouncedFn } from 'beautiful-react-hooks'
-import { testAddress } from 'lib/utils/testAddress'
-import { getContractAbi } from 'lib/services/etherscanApi'
+import { useEffect } from 'react'
+import { ClipLoader } from 'react-spinners'
+import { isValidAddress } from 'lib/utils/isValidAddress'
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index, hideRemoveButton } = props
@@ -38,7 +39,7 @@ export const Action = (props) => {
   }
 
   return (
-    <div className='mt-4 mx-auto py-4 px-8 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
+    <div className='mt-4 mx-auto p-4 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
         <h6 className='mb-4'>Action {index + 1}</h6>
         {!hideRemoveButton && (
@@ -163,67 +164,145 @@ const ContractSelect = (props) => {
 
 const CustomContractInput = (props) => {
   const { contract, setContract } = props
-  const [address, setAddress] = useState('')
 
-  // TODO: This is ugly. Move this into a useQuery hook so abis get cached.
-  const debouncedFn = useDebouncedFn(
-    async (address) => {
-      const addressError = testAddress(address)
-      if (address && !addressError) {
-        const response = await getContractAbi(address)
-        const { data, status } = response
-        if (status !== 200) {
-          // TODO:
-          setContract({
-            ...contract,
-            abi: null,
-            address: ''
-          })
-        } else {
-          const { result, status: contractAbiStatus } = data
-          if (contractAbiStatus !== 1) {
-            // TODO:
-            setContract({
-              ...contract,
-              abi: null,
-              address: ''
-            })
-          }
+  const [showAbiInput, setShowAbiInput] = useState(false)
+  const addressFormName = 'contractAddress'
+  const { register, control, watch, errors } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+  // const address = watch(addressFormName)
+  const address = useWatch({ control, name: addressFormName })
 
-          const abi = JSON.parse(result)
-          setContract({
-            ...contract,
-            abi,
-            address
-          })
-        }
-      } else if (contract.address) {
+  console.log(address)
+
+  const {
+    data: etherscanAbiUseQueryResponse,
+    isFetching: etherscanAbiIsFetching
+  } = useEtherscanAbi(address, showAbiInput)
+
+  // TODO: Error states
+  useEffect(() => {
+    if (showAbiInput) return
+
+    if (!etherscanAbiUseQueryResponse) {
+      if (contract.abi) {
         setContract({
           ...contract,
-          abi: null,
-          address: ''
+          abi: null
         })
       }
-    },
-    250,
-    null,
-    [contract, setContract]
-  )
+      return
+    }
 
-  // TODO: Debounce fetch abi from etherscan
-  // TODO: This will only work on mainnet
+    const {
+      status: requestStatus,
+      data: etherscanAbiRequestResponse
+    } = etherscanAbiUseQueryResponse
+
+    if (requestStatus === 200) {
+      const { status: etherscanAbiStatus, result: etherscanAbi } = etherscanAbiRequestResponse
+
+      if (etherscanAbiStatus != 1) {
+        setContract({
+          ...contract,
+          abi: null
+        })
+        return
+      }
+
+      try {
+        const abi = JSON.parse(etherscanAbi)
+        setContract({
+          ...contract,
+          abi
+        })
+      } catch (e) {
+        setContract({
+          ...contract,
+          abi: null
+        })
+      }
+    } else if (contract.abi) {
+      setContract({
+        ...contract,
+        abi: null
+      })
+    }
+  }, [etherscanAbiUseQueryResponse, showAbiInput])
+
+  // TODO: This will only work with mainnet contracts
 
   return (
-    <TextInputGroup
-      id='_customContractAddress'
-      label='Custom contract address'
-      value={address}
-      placeholder='0x1f9840a85...'
-      onChange={(e) => {
-        e.preventDefault()
-        setAddress(e.target.value)
-        debouncedFn(e.target.value)
-      }}
+    <>
+      <SimpleInput
+        className='mt-2'
+        label='Contract Address'
+        errorMessage={errors?.[addressFormName]?.message}
+        name={addressFormName}
+        register={register}
+        required
+        validate={(address) => isValidAddress(address) || 'Invalid contract address'}
+        placeholder='0x1f9840a85...'
+        loading={etherscanAbiIsFetching}
+      />
+      {showAbiInput && <CustomAbiInput contract={contract} setContract={setContract} />}
+
+      <div className='flex flex-col xs:flex-row xs:w-3/4 xs:ml-auto'>
+        <button
+          type='button'
+          onClick={(e) => {
+            e.preventDefault()
+            setShowAbiInput(!showAbiInput)
+          }}
+          className='ml-auto mt-2 w-fit-content text-xxs text-inverse hover:opacity-50 trans'
+        >
+          {showAbiInput ? 'Hide ABI input' : 'Have the ABI? Manually input it here'}
+        </button>
+      </div>
+    </>
+  )
+}
+
+const CustomAbiInput = (props) => {
+  const { contract, setContract } = props
+
+  const abiFormName = 'contractAbi'
+  const { register, watch } = useForm()
+  const abiString = watch(abiFormName, false)
+
+  useEffect(() => {
+    if (abiString) {
+      try {
+        const abi = JSON.parse(abiString)
+        setContract({
+          ...contract,
+          abi
+        })
+      } catch (e) {
+        // TODO: Error case
+        console.warn(e.message)
+        setContract({
+          ...contract,
+          abi: null
+        })
+      }
+    } else if (contract.abi) {
+      setContract({
+        ...contract,
+        abi: null
+      })
+    }
+  }, [abiString])
+
+  return (
+    <SimpleInput
+      className='mt-4'
+      label='Contract ABI'
+      name={abiFormName}
+      register={register}
+      required
+      placeholder='[{ type: "function", ...'
     />
   )
 }
@@ -293,18 +372,52 @@ const FunctionInput = (props) => {
   // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
-      <span className='w-1/4 text-right'>
-        {name} <span className='ml-1 text-xxs opacity-70'>{`[${type}]`}</span>
-      </span>
-      <input
-        className='bg-card w-3/4 ml-4'
-        name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
-        ref={register({ required: true })}
-        type='text'
-        autoComplete={`${fnName}.${name}`}
-        autoCorrect='off'
-      />
+      <SimpleInput label={name} name={name} register={register} required dataType={type} />
     </li>
+  )
+}
+
+const SimpleInput = (props) => {
+  const {
+    className,
+    name,
+    dataType,
+    register,
+    required,
+    pattern,
+    validate,
+    autoCorrect,
+    label,
+    loading,
+    errorMessage,
+    autoComplete,
+    ...inputProps
+  } = props
+
+  return (
+    <>
+      <span className={classnames('flex flex-col xs:flex-row w-full relative', className)}>
+        <label className='xs:w-1/4 xs:text-right my-auto xs:mr-4' htmlFor={name}>
+          {label} {dataType && <span className='ml-1 text-xxs opacity-70'>{`[${dataType}]`}</span>}
+        </label>
+        <input
+          {...inputProps}
+          className='bg-card xs:w-3/4 p-2'
+          id={name}
+          name={name}
+          ref={register({ required, pattern, validate })}
+          type='text'
+          autoCorrect={autoCorrect || 'off'}
+          autoComplete={autoComplete || 'hidden'}
+        />
+        {loading && (
+          <div className='absolute right-0 mr-2 mt-2'>
+            <ClipLoader size={14} color='rgba(255,255,255,0.3)' />
+          </div>
+        )}
+      </span>
+      {errorMessage && <span className='ml-auto text-xxs text-orange'>{errorMessage}</span>}
+    </>
   )
 }
 
