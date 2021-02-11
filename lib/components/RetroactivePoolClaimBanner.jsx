@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { useTranslation } from 'lib/../i18n'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Banner } from 'lib/components/Banner'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { useRetroactivePoolClaimData } from 'lib/hooks/useRetroactivePoolClaimData'
@@ -9,9 +10,11 @@ import Bell from 'assets/images/bell@2x.png'
 
 export const RetroactivePoolClaimBanner = () => {
   const { t } = useTranslation()
+  
+  const { usersAddress } = useContext(AuthControllerContext)
   const { data, isFetched } = useRetroactivePoolClaimData()
 
-  if (!isFetched || data?.isClaimed) {
+  if (!isFetched || data?.isMissing || data?.isClaimed) {
     return null
   }
 
@@ -27,8 +30,8 @@ export const RetroactivePoolClaimBanner = () => {
             {t('retroactivePoolBannerDescription')}
           </p>
           <ButtonLink
-            as='https://app.pooltogether.com?claim=1'
-            href='https://app.pooltogether.com?claim=1'
+            as={`https://app.pooltogether.com?claim=1&address=${usersAddress}`}
+            href={`https://app.pooltogether.com?claim=1&address=${usersAddress}`}
             type='button'
             className='w-full xs:w-auto'
             border='transparent'
