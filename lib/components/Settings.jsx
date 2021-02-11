@@ -7,7 +7,10 @@ import { motion } from 'framer-motion'
 
 import { useTranslation } from 'lib/../i18n'
 import { COOKIE_OPTIONS, SHOW_MANAGE_LINKS } from 'lib/constants'
+import { ButtonLink } from 'lib/components/ButtonLink'
 import { CheckboxInputGroup } from 'lib/components/CheckboxInputGroup'
+import { QuestionMarkCircle } from 'lib/components/QuestionMarkCircle'
+import { PTHint } from 'lib/components/PTHint'
 import { ThemeSwitcher } from 'lib/components/ThemeSwitcher'
 
 export function Settings(props) {
@@ -61,22 +64,11 @@ export function Settings(props) {
         }}
         animate={isOpen ? 'enter' : 'exit'}
         initial='initial'
+        transition={{ duration: 0.1 }}
         variants={{
-          exit: {
-            opacity: 0,
-            transition: {
-              duration: 0.1,
-            },
-          },
-          enter: {
-            opacity: 1,
-            transition: {
-              duration: 0.1,
-            },
-          },
-          initial: {
-            opacity: 0,
-          },
+          exit: { opacity: 0 },
+          enter: { opacity: 1 },
+          initial: { opacity: 0 },
         }}
       />
 
@@ -95,6 +87,7 @@ export function Settings(props) {
             x: '320px',
             opacity: 0,
             transition: {
+              duration: 0.2,
               staggerChildren: 0.1,
             },
           },
@@ -109,6 +102,9 @@ export function Settings(props) {
           initial: {
             x: 0,
             opacity: 0,
+            transition: {
+              duration: 0.1,
+            },
           },
         }}
       >
@@ -128,32 +124,50 @@ export function Settings(props) {
 
         <h6 className='text-white mt-4 mb-16 capitalize'>{t('settings')}</h6>
 
-        <div className='my-12'>
-          <label className='uppercase text-caption font-mono mb-4'>{t('theme')}:</label>
+        <div className='mt-4'>
+          <label className='uppercase text-accent-1 font-bold text-xxs mb-4'>{t('theme')}</label>
           <ThemeSwitcher />
         </div>
 
-        <div className='my-12'>
-          <label className='uppercase text-caption font-mono mb-2'>{t('manage')}:</label>
-          <div className='flex flex-col sm:flex-wrap sm:flex-row items-center justify-start text-center'>
-            <CheckboxInputGroup
-              large
-              id='settings-show-award'
-              name='settings-show-award'
-              label={t('showPoolManagementPages')}
+        <div className='mt-6'>
+          <div className='flex items-end'>
+            <label className='uppercase text-accent-1 font-bold text-xxs mb-2 mr-2'>{t('manage')}</label> <PTHint
               title={t('managePools')}
-              hint={
-                <>
-                  <div className='my-2 text-xs sm:text-sm'>
-                    {t('showPoolManagementDescription')}
-                  </div>
-                </>
-              }
-              checked={showManageLinks}
-              handleClick={handleShowManageLinksClick}
-            />
+              tip={<div className='my-2 text-xs sm:text-sm'>
+                {t('showPoolManagementDescription')}
+              </div>}>
+              <QuestionMarkCircle />
+            </PTHint>
           </div>
+
+          <CheckboxInputGroup
+            large
+            id='settings-show-award'
+            name='settings-show-award'
+            label={t('showPoolManagementPages')}
+            checked={showManageLinks}
+            handleClick={handleShowManageLinksClick}
+          />
         </div>
+
+        <div className='mt-10'>
+          <label className='uppercase text-accent-1 font-bold text-xxs mb-4 mr-2'>{t('claim')}</label>
+
+          <p className='text-white font-bold text-xxs leading-snug mb-4'>
+            {t('claimTokensOnBehalfOf')}
+          </p>
+
+          <ButtonLink
+            secondary
+            textSize='xxxs'
+            padding='px-6 py-2'
+            as='https://app.pooltogether.com?claim=1'
+            href='https://app.pooltogether.com?claim=1'
+          >
+            Open POOL Claim
+          </ButtonLink>
+        </div>
+
       </motion.div>
     </>
   )

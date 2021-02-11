@@ -1,14 +1,15 @@
-import { Dialog } from '@reach/dialog'
-import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
+import { Dialog } from '@reach/dialog'
 
 import { useTranslation } from 'lib/../i18n'
-import { getPrecision, numberWithCommas } from 'lib/utils/numberWithCommas'
-import Squiggle from 'assets/images/squiggle.svg'
-import PoolIcon from 'assets/images/pool-icon.svg'
+import { NumberCountUp } from 'lib/components/NumberCountUp'
 import { usePoolTokenData } from 'lib/hooks/usePoolTokenData'
 import { useTotalClaimablePool } from 'lib/hooks/useTotalClaimablePool'
-import { NumberCountUp } from 'lib/components/NumberCountUp'
+import { getPrecision, numberWithCommas } from 'lib/utils/numberWithCommas'
+
+import Squiggle from 'assets/images/squiggle.svg'
+import PoolIcon from 'assets/images/pool-icon.svg'
 
 export const NavPoolBalance = () => {
   const [isOpen, setIsOpen] = useState(false)
