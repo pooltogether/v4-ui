@@ -81,9 +81,7 @@ export function Layout (props) {
               }}
             >
               {usersAddress && chainId && chainId !== 1 && (
-                <>
-                  <NetworkText openTransactions={openTransactions} />
-                </>
+                <NetworkText openTransactions={openTransactions} />
               )}
 
               <NavPoolBalance />
@@ -95,13 +93,11 @@ export function Layout (props) {
               )} */}
 
               {usersAddress && (
-                <>
-                  <NavAccount
-                    openTransactions={openTransactions}
-                    closeTransactions={closeTransactions}
-                    showTransactionsDialog={showTransactionsDialog}
-                  />
-                </>
+                <NavAccount
+                  openTransactions={openTransactions}
+                  closeTransactions={closeTransactions}
+                  showTransactionsDialog={showTransactionsDialog}
+                />
               )}
 
               {/* this pushes the lang picker and settings gear onto it's own roll on mobile/tablet */}

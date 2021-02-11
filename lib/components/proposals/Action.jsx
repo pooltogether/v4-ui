@@ -1,9 +1,10 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useMemo, useEffect } from 'react'
 import { useForm, useFormContext, useWatch } from 'react-hook-form'
-import { useMemo } from 'react'
+import { ClipLoader } from 'react-spinners'
 
+import { isValidAddress } from 'lib/utils/isValidAddress'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
@@ -14,9 +15,6 @@ import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
-import { useEffect } from 'react'
-import { ClipLoader } from 'react-spinners'
-import { isValidAddress } from 'lib/utils/isValidAddress'
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index, hideRemoveButton } = props
@@ -171,8 +169,6 @@ const CustomContractInput = (props) => {
   })
   const address = useWatch({ control, name: addressFormName })
 
-  console.log(address)
-
   const {
     data: etherscanAbiUseQueryResponse,
     isFetching: etherscanAbiIsFetching
@@ -181,6 +177,7 @@ const CustomContractInput = (props) => {
   useEffect(() => {
     if (showAbiInput) return
 
+    // If there was no response, clear the abi in the form
     if (!etherscanAbiUseQueryResponse) {
       if (contract.abi) {
         setContract({
@@ -191,44 +188,10 @@ const CustomContractInput = (props) => {
       return
     }
 
-    const {
-      status: requestStatus,
-      data: etherscanAbiRequestResponse
-    } = etherscanAbiUseQueryResponse
-
-    if (requestStatus === 200) {
-      const { status: etherscanAbiStatus, result: etherscanAbi } = etherscanAbiRequestResponse
-
-      if (etherscanAbiStatus != '1') {
-        setContract({
-          ...contract,
-          abi: null
-        })
-        return
-      }
-
-      try {
-        const abi = JSON.parse(etherscanAbi)
-        setContract({
-          ...contract,
-          abi
-        })
-      } catch (e) {
-        setContract({
-          ...contract,
-          abi: null
-        })
-      }
-    } else if (contract.abi) {
-      setContract({
-        ...contract,
-        abi: null
-      })
-    }
+    handleEtherscanAbiUseQueryResponse(etherscanAbiUseQueryResponse, setContract, contract)
   }, [etherscanAbiUseQueryResponse, showAbiInput])
 
   const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
-  console.log(etherscanAbiStatus)
   const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
 
   // TODO: This will only work with mainnet contracts
@@ -427,4 +390,45 @@ const getErrorMessage = (validationMessage, status) => {
   if (status === '0') return 'Contract ABI not found on Etherscan'
 
   return null
+}
+
+const handleEtherscanAbiUseQueryResponse = (
+  etherscanAbiUseQueryResponse,
+  setContract,
+  contract
+) => {
+  const { status: requestStatus, data: etherscanAbiRequestResponse } = etherscanAbiUseQueryResponse
+
+  // Check http request status
+  if (requestStatus === 200) {
+    const { status: etherscanAbiStatus, result: etherscanAbi } = etherscanAbiRequestResponse
+
+    // Check the status of the contract abi
+    if (etherscanAbiStatus != '1') {
+      setContract({
+        ...contract,
+        abi: null
+      })
+      return
+    }
+
+    // Try to parse the response
+    try {
+      const abi = JSON.parse(etherscanAbi)
+      setContract({
+        ...contract,
+        abi
+      })
+    } catch (e) {
+      setContract({
+        ...contract,
+        abi: null
+      })
+    }
+  } else if (contract.abi) {
+    setContract({
+      ...contract,
+      abi: null
+    })
+  }
 }
