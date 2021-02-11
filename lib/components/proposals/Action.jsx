@@ -203,7 +203,7 @@ const CustomContractInput = (props) => {
     if (requestStatus === 200) {
       const { status: etherscanAbiStatus, result: etherscanAbi } = etherscanAbiRequestResponse
 
-      if (etherscanAbiStatus != 1) {
+      if (etherscanAbiStatus != '1') {
         setContract({
           ...contract,
           abi: null
@@ -231,6 +231,10 @@ const CustomContractInput = (props) => {
     }
   }, [etherscanAbiUseQueryResponse, showAbiInput])
 
+  const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
+  console.log(etherscanAbiStatus)
+  const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
+
   // TODO: This will only work with mainnet contracts
 
   return (
@@ -238,7 +242,7 @@ const CustomContractInput = (props) => {
       <SimpleInput
         className='mt-2'
         label='Contract Address'
-        errorMessage={errors?.[addressFormName]?.message}
+        errorMessage={errorMessage}
         name={addressFormName}
         register={register}
         required
@@ -372,7 +376,13 @@ const FunctionInput = (props) => {
   // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
-      <SimpleInput label={name} name={name} register={register} required dataType={type} />
+      <SimpleInput
+        label={name}
+        name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
+        register={register}
+        required
+        dataType={type}
+      />
     </li>
   )
 }
@@ -421,24 +431,9 @@ const SimpleInput = (props) => {
   )
 }
 
-// TODO: Unused but kinda nice
-const Select = (props) => {
-  const { options, label, ...selectProps } = props
+const getErrorMessage = (validationMessage, status) => {
+  if (validationMessage) return validationMessage
+  if (status === '0') return 'Contract ABI not found on Etherscan'
 
-  return (
-    <>
-      {label && <label htmlFor={selectProps.name}>{label}</label>}
-      <VisuallyHidden>{label}</VisuallyHidden>
-      <select {...selectProps}>
-        {options.map((option, index) => {
-          const { view, ...optionProps } = option
-          return (
-            <option key={index} {...optionProps}>
-              {view || option.value}
-            </option>
-          )
-        })}
-      </select>
-    </>
-  )
+  return null
 }
