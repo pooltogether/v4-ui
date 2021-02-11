@@ -1,13 +1,11 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
-import VisuallyHidden from '@reach/visually-hidden'
 import React, { useContext, useState } from 'react'
 import { useForm, useFormContext, useWatch } from 'react-hook-form'
 import { useMemo } from 'react'
 
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
-import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
@@ -167,11 +165,10 @@ const CustomContractInput = (props) => {
 
   const [showAbiInput, setShowAbiInput] = useState(false)
   const addressFormName = 'contractAddress'
-  const { register, control, watch, errors } = useForm({
+  const { register, control, errors } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
-  // const address = watch(addressFormName)
   const address = useWatch({ control, name: addressFormName })
 
   console.log(address)
@@ -181,7 +178,6 @@ const CustomContractInput = (props) => {
     isFetching: etherscanAbiIsFetching
   } = useEtherscanAbi(address, showAbiInput)
 
-  // TODO: Error states
   useEffect(() => {
     if (showAbiInput) return
 
@@ -259,7 +255,7 @@ const CustomContractInput = (props) => {
             e.preventDefault()
             setShowAbiInput(!showAbiInput)
           }}
-          className='ml-auto mt-2 w-fit-content text-xxs text-inverse hover:opacity-50 trans'
+          className='xs:ml-auto mt-2 w-fit-content text-xxs text-inverse hover:opacity-50 trans'
         >
           {showAbiInput ? 'Hide ABI input' : 'Have the ABI? Manually input it here'}
         </button>
@@ -284,7 +280,6 @@ const CustomAbiInput = (props) => {
           abi
         })
       } catch (e) {
-        // TODO: Error case
         console.warn(e.message)
         setContract({
           ...contract,
@@ -329,8 +324,6 @@ const FunctionSelect = (props) => {
     setFunction(fn)
   }
 
-  // TODO: Custom Contract input for custom data blob
-
   return (
     <>
       <DropdownList
@@ -351,8 +344,6 @@ const FunctionInputs = (props) => {
   const { fn, actionIndex } = props
   const inputs = fn?.inputs
   if (!fn || inputs.length === 0) return null
-
-  // TODO: Pass the register all the way down, dynamically set the name
 
   return (
     <ul className='mt-2'>
@@ -412,7 +403,7 @@ const SimpleInput = (props) => {
         </label>
         <input
           {...inputProps}
-          className='bg-card xs:w-3/4 p-2'
+          className='bg-card xs:w-3/4 p-2 rounded-sm'
           id={name}
           name={name}
           ref={register({ required, pattern, validate })}
