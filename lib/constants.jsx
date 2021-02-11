@@ -51,8 +51,12 @@ export const QUERY_KEYS = {
   voteDataQuery: 'voteDataQuery',
   proposalsQuery: 'proposalsQuery',
   tokenFaucetAddresses: 'tokenFaucetAddresses',
-  usePools: 'usePools'
+  usePools: 'usePools',
+  prizePoolContractAddresses: 'prizePoolContractAddresses',
+  etherscanContractAbi: 'etherscanContractAbi'
 }
+
+export const ETHERSCAN_API_KEY = process.env.NEXT_JS_ETHERSCAN_API_KEY
 
 export const POOLTOGETHER_CURRENT_GOVERNANCE_GRAPH_URIS = {
   1: process.env.NEXT_JS_GOVERNANCE_SUBGRAPH_URI_MAINNET,

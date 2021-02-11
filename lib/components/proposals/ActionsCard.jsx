@@ -4,9 +4,9 @@ import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import React from 'react'
-import { useController, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useFormContext } from 'react-hook-form'
 
-export const ActionsCard = (props) => {
+export const ActionsCard = () => {
   const { isFetched: prizePoolsIsFetched } = usePrizePools()
   const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
@@ -44,14 +44,12 @@ export const ActionsCard = (props) => {
         const setAction = (action) => {
           const newActions = [...actions]
           newActions.splice(index, 1, action)
-          // setActions(newActions)
           onChange(newActions)
         }
 
         const deleteAction = () => {
           const newActions = [...actions]
           newActions.splice(index, 1)
-          // setActions(newActions)
           onChange(newActions)
         }
         return (
@@ -61,6 +59,7 @@ export const ActionsCard = (props) => {
             index={index}
             setAction={setAction}
             deleteAction={deleteAction}
+            hideRemoveButton={actions.length === 1 && index === 0}
           />
         )
       })}

@@ -1,16 +1,23 @@
 import FeatherIcon from 'feather-icons-react'
-import VisuallyHidden from '@reach/visually-hidden'
-import { usePrizePools } from 'lib/hooks/usePrizePools'
-import React, { useState } from 'react'
-import { useMemo } from 'react'
+import classnames from 'classnames'
+import React, { useContext, useState, useMemo, useEffect } from 'react'
+import { useForm, useFormContext, useWatch } from 'react-hook-form'
+import { ClipLoader } from 'react-spinners'
 
-import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import { isValidAddress } from 'lib/utils/isValidAddress'
+import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
-import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { useFormContext } from 'react-hook-form'
+import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
+
+import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
+import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
+import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
 
 export const Action = (props) => {
-  const { action, setAction, deleteAction, index } = props
+  const { action, setAction, deleteAction, index, hideRemoveButton } = props
 
   const setContract = (contract) => {
     setAction({
@@ -28,10 +35,10 @@ export const Action = (props) => {
   }
 
   return (
-    <div className='mt-4 mx-auto py-4 px-8 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
+    <div className='mt-4 mx-auto p-4 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
         <h6 className='mb-4'>Action {index + 1}</h6>
-        {index > 0 && (
+        {!hideRemoveButton && (
           <button
             className='trans hover:opacity-50'
             onClick={(e) => {
@@ -62,26 +69,65 @@ export const Action = (props) => {
 const ContractSelect = (props) => {
   const { setContract, currentContract } = props
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
+  const { chainId } = useContext(AuthControllerContext)
 
   const options = useMemo(() => {
     const options = []
 
     if (prizePoolsIsFetched) {
-      prizePools.forEach((prizePool) => {
+      // Add POOL token
+      options.push({
+        address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+        name: `POOL Token`,
+        abi: DelegateableERC20ABI
+      })
+
+      options.push({
+        address: '',
+        name: `Custom Contract`,
+        abi: null,
+        custom: true
+      })
+
+      // Add Prize Pool contracts
+      options.push({
+        groupHeader: `Prize Pools`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
         options.push({
-          address: prizePool.id,
+          address: prizePool.prizePool,
           name: `${prizePool.underlyingCollateralName} Prize Pool`,
           abi: PrizePoolAbi
         })
       })
-    }
 
-    options.push({
-      address: '',
-      name: `Custom Contract`,
-      abi: null,
-      custom: true
-    })
+      // Add Prize Strategies
+      options.push({
+        groupHeader: `Prize Strategies`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
+        options.push({
+          address: prizePool.prizeStrategy,
+          name: `${prizePool.underlyingCollateralName} Prize Strategy`,
+          abi: MultipleWinnersPrizeStrategyAbi
+        })
+      })
+
+      // Add Token Faucets
+      options.push({
+        groupHeader: `Token Faucets`
+      })
+      Object.keys(prizePools).forEach((prizePoolAddress) => {
+        const prizePool = prizePools[prizePoolAddress]
+        options.push({
+          address: prizePool.tokenFaucet,
+          name: `${prizePool.underlyingCollateralName} Token Faucet`,
+          abi: TokenFaucetAbi
+        })
+      })
+    }
 
     return options
   }, [prizePools, prizePoolsIsFetched])
@@ -105,29 +151,120 @@ const ContractSelect = (props) => {
         values={options}
         current={currentContract}
       />
-      <CustomContractInput contract={currentContract} setContract={setContract} />
+      {currentContract?.custom && (
+        <CustomContractInput contract={currentContract} setContract={setContract} />
+      )}
     </>
   )
 }
 
 const CustomContractInput = (props) => {
-  const { contract } = props
-  const [address, setAddress] = useState('')
+  const { contract, setContract } = props
 
-  if (!contract?.custom) return null
+  const [showAbiInput, setShowAbiInput] = useState(false)
+  const addressFormName = 'contractAddress'
+  const { register, control, errors } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+  const address = useWatch({ control, name: addressFormName })
 
-  // TODO: Debounce fetch abi from etherscan
+  const {
+    data: etherscanAbiUseQueryResponse,
+    isFetching: etherscanAbiIsFetching
+  } = useEtherscanAbi(address, showAbiInput)
+
+  useEffect(() => {
+    if (showAbiInput) return
+
+    // If there was no response, clear the abi in the form
+    if (!etherscanAbiUseQueryResponse) {
+      if (contract.abi) {
+        setContract({
+          ...contract,
+          abi: null
+        })
+      }
+      return
+    }
+
+    handleEtherscanAbiUseQueryResponse(etherscanAbiUseQueryResponse, setContract, contract)
+  }, [etherscanAbiUseQueryResponse, showAbiInput])
+
+  const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
+  const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
+
+  // TODO: This will only work with mainnet contracts
 
   return (
-    <TextInputGroup
-      id='_customContractAddress'
-      label='Custom contract address'
-      value={address}
-      placeholder='0x1f9840a85...'
-      onChange={(e) => {
-        e.preventDefault()
-        setAddress(e.target.value)
-      }}
+    <>
+      <SimpleInput
+        className='mt-2'
+        label='Contract Address'
+        errorMessage={errorMessage}
+        name={addressFormName}
+        register={register}
+        required
+        validate={(address) => isValidAddress(address) || 'Invalid contract address'}
+        placeholder='0x1f9840a85...'
+        loading={etherscanAbiIsFetching}
+      />
+      {showAbiInput && <CustomAbiInput contract={contract} setContract={setContract} />}
+
+      <div className='flex flex-col xs:flex-row xs:w-3/4 xs:ml-auto'>
+        <button
+          type='button'
+          onClick={(e) => {
+            e.preventDefault()
+            setShowAbiInput(!showAbiInput)
+          }}
+          className='xs:ml-auto mt-2 w-fit-content text-xxs text-inverse hover:opacity-50 trans'
+        >
+          {showAbiInput ? 'Hide ABI input' : 'Have the ABI? Manually input it here'}
+        </button>
+      </div>
+    </>
+  )
+}
+
+const CustomAbiInput = (props) => {
+  const { contract, setContract } = props
+
+  const abiFormName = 'contractAbi'
+  const { register, watch } = useForm()
+  const abiString = watch(abiFormName, false)
+
+  useEffect(() => {
+    if (abiString) {
+      try {
+        const abi = JSON.parse(abiString)
+        setContract({
+          ...contract,
+          abi
+        })
+      } catch (e) {
+        console.warn(e.message)
+        setContract({
+          ...contract,
+          abi: null
+        })
+      }
+    } else if (contract.abi) {
+      setContract({
+        ...contract,
+        abi: null
+      })
+    }
+  }, [abiString])
+
+  return (
+    <SimpleInput
+      className='mt-4'
+      label='Contract ABI'
+      name={abiFormName}
+      register={register}
+      required
+      placeholder='[{ type: "function", ...'
     />
   )
 }
@@ -140,7 +277,7 @@ const FunctionSelect = (props) => {
     [contract]
   )
 
-  if (!contract) return null
+  if (!contract || !contract?.abi) return null
 
   const formatValue = (fn) => {
     return fn?.name
@@ -149,8 +286,6 @@ const FunctionSelect = (props) => {
   const onValueSet = (fn) => {
     setFunction(fn)
   }
-
-  // TODO: Custom Contract input for custom data blob
 
   return (
     <>
@@ -172,8 +307,6 @@ const FunctionInputs = (props) => {
   const { fn, actionIndex } = props
   const inputs = fn?.inputs
   if (!fn || inputs.length === 0) return null
-
-  // TODO: Pass the register all the way down, dynamically set the name
 
   return (
     <ul className='mt-2'>
@@ -197,39 +330,105 @@ const FunctionInput = (props) => {
   // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
-      <span className='w-1/4 text-right'>
-        {name} <span className='ml-1 text-xxs opacity-70'>{`[${type}]`}</span>
-      </span>
-      <input
-        className='bg-card w-3/4 ml-4'
+      <SimpleInput
+        label={name}
         name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
-        ref={register({ required: true })}
-        type='text'
-        autoComplete={`${fnName}.${name}`}
-        autoCorrect='off'
+        register={register}
+        required
+        dataType={type}
       />
     </li>
   )
 }
 
-// TODO: Unused but kinda nice
-const Select = (props) => {
-  const { options, label, ...selectProps } = props
+const SimpleInput = (props) => {
+  const {
+    className,
+    name,
+    dataType,
+    register,
+    required,
+    pattern,
+    validate,
+    autoCorrect,
+    label,
+    loading,
+    errorMessage,
+    autoComplete,
+    ...inputProps
+  } = props
 
   return (
     <>
-      {label && <label htmlFor={selectProps.name}>{label}</label>}
-      <VisuallyHidden>{label}</VisuallyHidden>
-      <select {...selectProps}>
-        {options.map((option, index) => {
-          const { view, ...optionProps } = option
-          return (
-            <option key={index} {...optionProps}>
-              {view || option.value}
-            </option>
-          )
-        })}
-      </select>
+      <span className={classnames('flex flex-col xs:flex-row w-full relative', className)}>
+        <label className='xs:w-1/4 xs:text-right my-auto xs:mr-4' htmlFor={name}>
+          {label} {dataType && <span className='ml-1 text-xxs opacity-70'>{`[${dataType}]`}</span>}
+        </label>
+        <input
+          {...inputProps}
+          className='bg-card xs:w-3/4 p-2 rounded-sm'
+          id={name}
+          name={name}
+          ref={register({ required, pattern, validate })}
+          type='text'
+          autoCorrect={autoCorrect || 'off'}
+          autoComplete={autoComplete || 'hidden'}
+        />
+        {loading && (
+          <div className='absolute right-0 mr-2 mt-2'>
+            <ClipLoader size={14} color='rgba(255,255,255,0.3)' />
+          </div>
+        )}
+      </span>
+      {errorMessage && <span className='ml-auto text-xxs text-orange'>{errorMessage}</span>}
     </>
   )
+}
+
+const getErrorMessage = (validationMessage, status) => {
+  if (validationMessage) return validationMessage
+  if (status === '0') return 'Contract ABI not found on Etherscan'
+
+  return null
+}
+
+const handleEtherscanAbiUseQueryResponse = (
+  etherscanAbiUseQueryResponse,
+  setContract,
+  contract
+) => {
+  const { status: requestStatus, data: etherscanAbiRequestResponse } = etherscanAbiUseQueryResponse
+
+  // Check http request status
+  if (requestStatus === 200) {
+    const { status: etherscanAbiStatus, result: etherscanAbi } = etherscanAbiRequestResponse
+
+    // Check the status of the contract abi
+    if (etherscanAbiStatus != '1') {
+      setContract({
+        ...contract,
+        abi: null
+      })
+      return
+    }
+
+    // Try to parse the response
+    try {
+      const abi = JSON.parse(etherscanAbi)
+      setContract({
+        ...contract,
+        abi
+      })
+    } catch (e) {
+      setContract({
+        ...contract,
+        abi: null
+      })
+    }
+  } else if (contract.abi) {
+    setContract({
+      ...contract,
+      abi: null
+    })
+  }
 }
