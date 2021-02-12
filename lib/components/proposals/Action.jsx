@@ -1,7 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 
 import { useTranslation } from 'lib/../i18n'
@@ -19,8 +19,20 @@ import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contract
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index, hideRemoveButton } = props
-
   const { t } = useTranslation()
+
+  // const { control } = useFormContext()
+  // const actionName = `actions[${index}]`
+  // useController({
+  //   name: actionName,
+  //   control,
+  //   rules: { required: true, validate: validateAction },
+  //   defaultValue: [
+  //     {
+  //       id: Date.now()
+  //     }
+  //   ]
+  // })
 
   const setContract = (contract) => {
     setAction({
@@ -278,6 +290,8 @@ const CustomAbiInput = (props) => {
 
 const FunctionSelect = (props) => {
   const { fn, contract, setFunction, actionIndex } = props
+  const { t } = useTranslation()
+
   const functions = useMemo(
     () =>
       contract?.abi?.filter((item) => item.type === 'function' && item.stateMutability !== 'view'),
@@ -440,4 +454,9 @@ const handleEtherscanAbiUseQueryResponse = (
       abi: null
     })
   }
+}
+
+const validateAction = (action) => {
+  // TODO: Validate action
+  return false || 'Missing Data'
 }

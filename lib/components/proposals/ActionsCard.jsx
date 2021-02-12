@@ -8,7 +8,8 @@ import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 
-export const ActionsCard = () => {
+export const ActionsCard = (props) => {
+  const { disabled } = props
   const { t } = useTranslation()
   const { isFetched: prizePoolsIsFetched } = usePrizePools()
   const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
@@ -25,10 +26,7 @@ export const ActionsCard = () => {
       {
         id: Date.now()
       }
-    ],
-    rules: {
-      validate: validateAction
-    }
+    ]
   })
 
   if (!prizePoolsIsFetched || !governorAlphaIsFetched) return null
@@ -38,32 +36,31 @@ export const ActionsCard = () => {
   return (
     <Card>
       <h4 className='mb-6'>{t('actions')}</h4>
-      <p className='mb-4'>
-        {t('actionCardDescription')}
-      </p>
-      {actions.map((action, index) => {
-        const setAction = (action) => {
-          const newActions = [...actions]
-          newActions.splice(index, 1, action)
-          onChange(newActions)
-        }
+      <p className='mb-4'>{t('actionCardDescription')}</p>
+      {!disabled &&
+        actions.map((action, index) => {
+          const setAction = (action) => {
+            const newActions = [...actions]
+            newActions.splice(index, 1, action)
+            onChange(newActions)
+          }
 
-        const deleteAction = () => {
-          const newActions = [...actions]
-          newActions.splice(index, 1)
-          onChange(newActions)
-        }
-        return (
-          <Action
-            key={action.id}
-            action={action}
-            index={index}
-            setAction={setAction}
-            deleteAction={deleteAction}
-            hideRemoveButton={actions.length === 1 && index === 0}
-          />
-        )
-      })}
+          const deleteAction = () => {
+            const newActions = [...actions]
+            newActions.splice(index, 1)
+            onChange(newActions)
+          }
+          return (
+            <Action
+              key={action.id}
+              action={action}
+              index={index}
+              setAction={setAction}
+              deleteAction={deleteAction}
+              hideRemoveButton={actions.length === 1 && index === 0}
+            />
+          )
+        })}
       <Button
         className='mt-8'
         onClick={(e) => {
@@ -75,15 +72,10 @@ export const ActionsCard = () => {
             }
           ])
         }}
-        disabled={actions.length >= proposalMaxOperations}
+        disabled={actions.length >= proposalMaxOperations || disabled}
       >
         {t('addAnotherAction')}
       </Button>
     </Card>
   )
-}
-
-const validateAction = (action) => {
-  // TODO: Validate action
-  return true
 }
