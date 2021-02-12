@@ -1,12 +1,15 @@
+import React from 'react'
+import { useController, useFormContext } from 'react-hook-form'
+
+import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'
 import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
-import React from 'react'
-import { useController, useFormContext } from 'react-hook-form'
 
 export const ActionsCard = () => {
+  const { t } = useTranslation()
   const { isFetched: prizePoolsIsFetched } = usePrizePools()
   const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
@@ -34,11 +37,9 @@ export const ActionsCard = () => {
 
   return (
     <Card>
-      <h4 className='mb-6'>Actions</h4>
+      <h4 className='mb-6'>{t('actions')}</h4>
       <p className='mb-4'>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat.
+        {t('actionCardDescription')}
       </p>
       {actions.map((action, index) => {
         const setAction = (action) => {
@@ -76,7 +77,7 @@ export const ActionsCard = () => {
         }}
         disabled={actions.length >= proposalMaxOperations}
       >
-        Add another action
+        {t('addAnotherAction')}
       </Button>
     </Card>
   )

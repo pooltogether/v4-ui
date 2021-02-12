@@ -164,7 +164,7 @@ export function Settings(props) {
             as='https://app.pooltogether.com?claim=1'
             href='https://app.pooltogether.com?claim=1'
           >
-            Open POOL Claim
+            {t('openPoolClaim')}
           </ButtonLink>
         </div>
 

@@ -17,6 +17,7 @@ import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { Card } from 'lib/components/Card'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
 import { PTHint } from 'lib/components/PTHint'
+import { TxText } from 'lib/components/TxText'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { VotersTable } from 'lib/components/proposals/VotersTable'
 import { useProposalData } from 'lib/hooks/useProposalData'
@@ -29,6 +30,8 @@ import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 const SMALL_DESCRIPTION_LENGTH = 500
 
 export const ProposalUI = (props) => {
+  const { t } = useTranslation()
+  
   const router = useRouter()
   const { id } = router.query
 
@@ -41,15 +44,15 @@ export const ProposalUI = (props) => {
   return (
     <>
       <PageTitleAndBreadcrumbs
-        title={`Proposal`}
+        title={t('proposals')}
         breadcrumbs={[
           {
             href: '/',
             as: '/',
-            name: 'Proposals'
+            name: t('proposals')
           },
           {
-            name: `Proposal #${id}`
+            name: t('proposalId', { id })
           }
         ]}
       />
@@ -66,13 +69,15 @@ export const ProposalUI = (props) => {
 
 const ProposalDescriptionCard = (props) => {
   const { proposal } = props
+  
+  const { t } = useTranslation()
   const { description } = proposal
   const smallDescription = description.length < SMALL_DESCRIPTION_LENGTH
   const [showMore, setShowMore] = useState(smallDescription)
 
   return (
     <>
-      <Card title='Details'>
+      <Card title={t('details')}>
         <div
           className={classnames('overflow-hidden text-accent-1 relative')}
           style={{ maxHeight: showMore ? 'unset' : '300px' }}
@@ -103,7 +108,7 @@ const ProposalDescriptionCard = (props) => {
                 setShowMore(!showMore)
               }}
             >
-              {showMore ? 'Show less' : 'Show more'}
+              {showMore ? t('showLess') : t('showMore')}
             </button>
           </div>
         )}
@@ -114,6 +119,8 @@ const ProposalDescriptionCard = (props) => {
 
 const VotesCard = (props) => {
   const { id } = props
+
+  const { t } = useTranslation()
   const { proposal, isFetched } = useProposalData(id)
 
   if (!isFetched) {
@@ -146,7 +153,7 @@ const VotesCard = (props) => {
               icon='check-circle'
             />
             <div className='flex flex-col'>
-              <h5>Accept</h5>
+              <h5>{t('accept')}</h5>
               <h6 className='font-normal text-xxs sm:text-xs'>{`${formatVotes(
                 forVotes
               )} (${forPercentage}%)`}</h6>
@@ -154,7 +161,7 @@ const VotesCard = (props) => {
           </div>
           <div className='flex text-red'>
             <div className='flex flex-col'>
-              <h5>Reject</h5>
+              <h5>{t('reject')}</h5>
               <h6 className='font-normal text-xxs sm:text-xs'>{`${formatVotes(
                 againstVotes
               )} (${againstPercentage}%)`}</h6>
@@ -174,6 +181,8 @@ const VotesCard = (props) => {
 
 const ProposalVoteCard = (props) => {
   const { proposal, refetchProposalData } = props
+  
+  const { t } = useTranslation()
   const { id, title, status } = proposal
 
   const { usersAddress } = useContext(AuthControllerContext)
@@ -199,7 +208,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>Proposal #{id}</h6>
+        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6>
         <ProposalStatus proposal={proposal} />
       </div>
       <h6 className='font-normal mb-8'>{title}</h6>
@@ -246,10 +255,12 @@ const ProposalVoteCard = (props) => {
 
 const VoteButtons = (props) => {
   const { id, refetchData, selfDelegated, alreadyVoted } = props
+  
   const { t } = useTranslation()
+
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction('Cast Vote', transactions, setTransactions)
+  const [sendTx] = useSendTransaction(t('sendVoteForProposalId'), transactions, setTransactions)
   const [txId, setTxId] = useState()
   const [votingFor, setVotingFor] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
@@ -290,17 +301,17 @@ const VoteButtons = (props) => {
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
       <TxText className='text-green'>
-        🎉 Successfully voted {votingFor ? 'Accept' : 'Reject'} 🎉
+        🎉 {t('successfullyVoted')} - {votingFor ? t('accept') : t('reject')} 🎉
       </TxText>
     )
   }
 
   if (tx?.inWallet && !tx?.cancelled) {
-    return <TxText>Please confirm the transaction in your wallet</TxText>
+    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>Waiting for confirmations...</TxText>
+    return <TxText>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
@@ -308,7 +319,7 @@ const VoteButtons = (props) => {
       {tx?.error && (
         <div className='text-red flex'>
           <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
-          <p>Error with transaction. Please try again.</p>
+          <p>{t('errorWithTxPleaseTryAgain')}</p>
         </div>
       )}
       <div>
@@ -324,7 +335,7 @@ const VoteButtons = (props) => {
         >
           <div className='flex'>
             <FeatherIcon icon='check-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
-            Accept
+            {t('accept')}
           </div>
         </Button>
         <Button
@@ -338,7 +349,7 @@ const VoteButtons = (props) => {
         >
           <div className='flex'>
             <FeatherIcon icon='x-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
-            Reject
+            {t('reject')}
           </div>
         </Button>
       </div>
@@ -348,10 +359,11 @@ const VoteButtons = (props) => {
 
 const QueueButton = (props) => {
   const { id, refetchData } = props
+
   const { t } = useTranslation()
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction('Queue Proposal', transactions, setTransactions)
+  const [sendTx] = useSendTransaction(t('queueProposal', { id }), transactions, setTransactions)
   const [txId, setTxId] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const tx = transactions?.find((tx) => tx.id === txId)
@@ -375,15 +387,16 @@ const QueueButton = (props) => {
   }
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
-    return <TxText className='text-green'>🎉 Successfully Queued Proposal #{id} 🎉</TxText>
+    // Successfully Queued Proposal #{ id }
+    return <TxText className='text-green'>🎉 {t('successfullyQueuedProposalId', { id })} 🎉</TxText>
   }
 
   if (tx?.inWallet && !tx?.cancelled) {
-    return <TxText>Please confirm the transaction in your wallet</TxText>
+    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>Waiting for confirmations...</TxText>
+    return <TxText>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
@@ -392,7 +405,7 @@ const QueueButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              <p>Error with transaction. Please try again.</p>
+              <p>{t('errorWithTxPleaseTryAgain')}</p>
             </div>
           }
         >
@@ -406,13 +419,14 @@ const QueueButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              <p>Queueing a proposal is...</p>
+              {/* <p>Queueing a proposal is...</p> */}
+              <p>{t('queueingAProposalDescription')}</p>
             </div>
           }
         >
           <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
         </PTHint>
-        <Button onClick={handleQueueProposal}>Queue Proposal</Button>
+        <Button onClick={handleQueueProposal}>{t('queueProposal')}</Button>
       </div>
     </div>
   )
@@ -420,10 +434,11 @@ const QueueButton = (props) => {
 
 const ExecuteButton = (props) => {
   const { id, refetchData } = props
+  
   const { t } = useTranslation()
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction('Execute Proposal', transactions, setTransactions)
+  const [sendTx] = useSendTransaction(t('executeProposalId', { id }), transactions, setTransactions)
   const [txId, setTxId] = useState()
   const [payableAmount, setPayableAmount] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
@@ -450,15 +465,16 @@ const ExecuteButton = (props) => {
   }
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
-    return <TxText className='text-green'>🎉 Successfully Executed Proposal #{id} 🎉</TxText>
+    // Successfully Executed Proposal #{ id }
+    return <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })}  🎉</TxText>
   }
 
   if (tx?.inWallet && !tx?.cancelled) {
-    return <TxText>Please confirm the transaction in your wallet</TxText>
+    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>Waiting for confirmations...</TxText>
+    return <TxText>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
@@ -467,7 +483,7 @@ const ExecuteButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              <p>Error with transaction. Please try again.</p>
+              <p>{t('errorWithTxPleaseTryAgain')}</p>
             </div>
           }
         >
@@ -496,20 +512,9 @@ const ExecuteButton = (props) => {
           hoverBg='green'
           onClick={handleExecuteProposal}
         >
-          Execute Proposal
+          {t('executeProposal')}
         </Button>
       </div>
     </div>
   )
 }
-
-const TxText = (props) => (
-  <p
-    className={classnames(
-      'px-4 py-2 rounded-lg pool-gradient-1 my-auto w-fit-content font-bold',
-      props.className
-    )}
-  >
-    {props.children}
-  </p>
-)

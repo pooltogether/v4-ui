@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
+import { useTranslation } from 'lib/../i18n'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
@@ -36,20 +37,21 @@ export const ProposalCreationForm = () => {
 
 const TitleCard = (props) => {
   const { disabled } = props
+  
+  const { t } = useTranslation()
   const { register } = useFormContext()
 
   return (
     <Card>
-      <h4 className='mb-6'>Title</h4>
+      <h4 className='mb-6'>{t('title')}</h4>
       <p className='mb-4'>
-        The title is the first introduction of your proposal to the voters. Make sure to make it
-        clear and to the point.
+        {t('theTitleIsDescription')}
       </p>
       <TextInputGroup
         disabled={disabled}
-        placeholder='Enter the title of your proposal'
+        placeholder={t('enterTheTitleOfYourProposal')}
         id='_proposalTitle'
-        label='Proposal title'
+        label={t('proposalTitle')}
         name='title'
         required
         register={register}
@@ -60,16 +62,17 @@ const TitleCard = (props) => {
 
 const DescriptionCard = (props) => {
   const { disabled } = props
+  
+  const { t } = useTranslation()
   const { register, control } = useFormContext()
   const name = 'description'
   const text = useWatch({ control, name, defaultValue: '' })
 
   return (
     <Card>
-      <h4 className='mb-6'>Description</h4>
+      <h4 className='mb-6'>{t('description')}</h4>
       <p className='mb-4'>
-        The description should present in full detail what the actions of the proposal are doing.
-        This is where voters will educate themselves on what they are voting on.
+        {t('theDescriptionShouldPresentInFullDescription')}
       </p>
       <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
     </Card>
@@ -79,12 +82,14 @@ const DescriptionCard = (props) => {
 const MarkdownInputArea = (props) => {
   const { text, name, register, disabled } = props
 
+  const { t } = useTranslation()
+
   const tabs = [
     {
-      title: 'Write',
+      title: t('write'),
       view: (
         <TextArea
-          placeholder='Add the proposal details here'
+          placeholder={t('addTheProposalDetailsHere')}
           rows={15}
           disabled={disabled}
           name='description'
@@ -94,7 +99,7 @@ const MarkdownInputArea = (props) => {
       )
     },
     {
-      title: 'Preview',
+      title: t('preview'),
       view: <MarkdownPreview text={text} />
     }
   ]
@@ -127,7 +132,9 @@ const MarkdownPreview = (props) => {
 
 const TabbedView = (props) => {
   const { tabs, initialTabIndex } = props
+  const { t } = useTranslation()
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialTabIndex)
+  
   return (
     <>
       <div className='flex'>

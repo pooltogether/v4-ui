@@ -1,4 +1,7 @@
+import React from 'react'
 import { ethers } from 'ethers'
+
+import { useTranslation } from 'lib/../i18n'
 import { Banner } from 'lib/components/Banner'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { ProposalCreationForm } from 'lib/components/proposals/ProposalCreationForm'
@@ -7,19 +10,20 @@ import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePoolTokenData } from 'lib/hooks/usePoolTokenData'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
-import React from 'react'
 
 export const ProposalCreationUI = (props) => {
+  const { t } = useTranslation()
+
   return (
     <>
       <ProposalCreationMinimumRequirementBanner />
       <PageTitleAndBreadcrumbs
-        title={`Create a new proposal`}
+        title={t('createANewProposal')}
         breadcrumbs={[
           {
             href: '/',
             as: '/',
-            name: 'Proposals'
+            name: t('proposals')
           }
         ]}
       />
@@ -29,6 +33,8 @@ export const ProposalCreationUI = (props) => {
 }
 
 const ProposalCreationMinimumRequirementBanner = () => {
+  const { t } = useTranslation()
+
   const { isFetched, userCanCreateProposal } = useUserCanCreateProposal()
   const { data: governorAlpha } = useGovernorAlpha()
 
@@ -42,10 +48,9 @@ const ProposalCreationMinimumRequirementBanner = () => {
   return (
     <Banner theme='purplePinkBorder' outerClassName='mb-8' innerClassName='text-center'>
       <h6>
-        📣 In order to submit a proposal you must have at least {proposalThreshold} POOL tokens
-        delegated to you 📣
+        <span className='mr-2'>📣</span>{' '}{t('inOrderToSubmitAProposalYouNeedDelegatedThreshold', { proposalThreshold })}{' '}<span className='ml-2'>📣</span>
       </h6>
-      <a>More about POOL</a>
+      <a>{t('moreAboutToken')}</a>
     </Banner>
   )
 }

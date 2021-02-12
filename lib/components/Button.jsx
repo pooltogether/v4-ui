@@ -17,6 +17,7 @@ export function Button(props) {
     'noAnim',
     'outline',
     'secondary',
+    'tertiary',
     'textSize',
   ])
 
