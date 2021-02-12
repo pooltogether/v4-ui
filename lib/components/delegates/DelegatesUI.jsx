@@ -1,3 +1,6 @@
+import React, { useState } from 'react'
+
+import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { Card } from 'lib/components/Card'
@@ -6,8 +9,6 @@ import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllDelegates } from 'lib/hooks/useAllDelegates'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { formatVotes } from 'lib/utils/formatVotes'
-import React from 'react'
-import { useState } from 'react'
 
 export const DelegatesUI = (props) => {
   return (
@@ -19,6 +20,7 @@ export const DelegatesUI = (props) => {
 }
 
 const DelegatesList = () => {
+  const { t } = useTranslation()
   const [pageNumber, setPageNumber] = useState(0)
   const { isFetched, data } = useAllDelegates(pageNumber)
 
@@ -48,9 +50,9 @@ const DelegatesList = () => {
         ))}
       </ol>
       <div className='flex flex-row'>
-        <Button onClick={prevPage}>Prev</Button>
-        <Button onClick={nextPage}>Next</Button>
-        Page: {pageNumber}
+        <Button onClick={prevPage}>{t('previous')}</Button>
+        <Button onClick={nextPage}>{t('next')}</Button>
+        {t('pageNumber', { pageNumber })}
       </div>
     </>
   )
@@ -58,6 +60,8 @@ const DelegatesList = () => {
 
 const DelegateItem = (props) => {
   const { delegate } = props
+
+  const { t } = useTranslation()
   const { id: address, delegatedVotesRaw } = delegate
   const votes = formatVotes(delegatedVotesRaw)
 
@@ -80,7 +84,7 @@ const DelegateItem = (props) => {
         </div>
         <div>{votes}</div>
         <ButtonLink as={`/delegate/${address}`} href={'/delegate/[address]'}>
-          View
+          {t('view')}
         </ButtonLink>
       </Card>
     </li>

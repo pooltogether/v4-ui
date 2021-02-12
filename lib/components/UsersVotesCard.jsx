@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useAtom } from 'jotai'
 
-import { useTranslation } from 'i18n/../i18n'
+import { Trans, useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
@@ -13,6 +13,7 @@ import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { PTHint } from 'lib/components/PTHint'
 import { SmallLoader } from 'lib/components/SmallLoader'
+import { TxText } from 'lib/components/TxText'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
@@ -20,10 +21,12 @@ import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
 
 const UsersVotesCardBlankState = (props) => {
+  const { t } = useTranslation()
+
   return (
     <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+        <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
       </div>
 
       <div className='flex flex-col'>
@@ -31,7 +34,7 @@ const UsersVotesCardBlankState = (props) => {
 
         {/* TODO: Add a link to where they can get POOL  */}
         <p className='text-accent-1 mt-2'>
-          You currently have no POOL to use for voting. You can get POOL here: ...
+          {t('youCurrentlyHaveNoPoolToUseForVotingDescription')}
         </p>
       </div>
     </Banner>
@@ -39,20 +42,22 @@ const UsersVotesCardBlankState = (props) => {
 }
 
 const UsersVotesCardConnectWallet = (props) => {
+  const { t } = useTranslation()
+
   return (
     <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+        <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
       </div>
       <div className='flex flex-col'>
-        Connect your wallet to vote.
+        {t('connectYourWalletToVote')}
         <Button
           secondary
           className='mt-3 xs:w-5/12 sm:w-1/3 lg:w-1/4'
           textSize='xxxs'
           onClick={() => props.connectWallet()}
         >
-          Connect Wallet
+          {t('connectWallet')}
         </Button>
       </div>
     </Banner>
@@ -61,6 +66,8 @@ const UsersVotesCardConnectWallet = (props) => {
 
 export const UsersVotesCard = (props) => {
   const { blockNumber, className } = props
+
+  const { t } = useTranslation()
   const { usersAddress, connectWallet } = useContext(AuthControllerContext)
 
   const {
@@ -93,11 +100,11 @@ export const UsersVotesCard = (props) => {
   return (
     <Banner className={classnames('mb-4', className)} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h5 className='font-normal mb-0 sm:mb-3'>Total votes</h5>
+        <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
         {isDataFromBeforeCurrentBlock && (
           <div className='ml-auto sm:ml-0 mb-4 sm:mb-0 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
             <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
-            Voting power is locked from block #{blockNumber}
+            {t('votingPowerIsLockedFromBlock', { blockNumber })}
           </div>
         )}
       </div>
@@ -129,6 +136,8 @@ export const UsersVotesCard = (props) => {
 const NotDelegatedWarning = (props) => {
   const { tokenHolder, isDataFromBeforeCurrentBlock } = props
 
+  const { t } = useTranslation()
+
   if (!isDataFromBeforeCurrentBlock || tokenHolder.hasDelegated) {
     return null
   }
@@ -138,8 +147,7 @@ const NotDelegatedWarning = (props) => {
       <PTHint
         tip={
           <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
-            This proposal was created prior to you delegating your votes. Therefore you are
-            ineligible to vote on this current proposal.
+            {t('proposalCreatedPriorToDelegationDescription')}
           </div>
         }
       >
@@ -150,13 +158,14 @@ const NotDelegatedWarning = (props) => {
 }
 
 const DelegateTrigger = (props) => {
-  const { t } = useTranslation()
   const { tokenHolder, refetchTokenHolderData, isDataFromBeforeCurrentBlock } = props
+  
+  const { t } = useTranslation()
   const { hasDelegated, selfDelegated } = tokenHolder
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [txId, setTxId] = useState({})
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(`Self Delegate`, transactions, setTransactions)
+  const [sendTx] = useSendTransaction(t('selfDelegate'), transactions, setTransactions)
   const { data: tokenHolderCurrentData, isFetched: tokenHolderIsFetched } = useTokenHolder(
     usersAddress
   )
@@ -188,23 +197,21 @@ const DelegateTrigger = (props) => {
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
       <p className='px-4 py-2 rounded-lg bg-light-purple-35 text-green my-auto font-bold'>
-        🎉 Successfully activated your votes 🎉
+        🎉 {t('successfullyActivatedYourVotes')} 🎉
       </p>
     )
   }
 
   if (tx?.inWallet && !tx?.cancelled) {
-    return (
-      <p className='mt-auto text-green font-bold'>Please confirm the transaction in your wallet</p>
-    )
+    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <p className='mt-auto text-green font-bold'>Waiting for confirmations...</p>
+    return <TxText>{t('waitingForConfirmations')}...</TxText>
   }
 
   if (!hasDelegated || (tx?.completed && tx?.error)) {
-    if (isDataFromBeforeCurrentBlock) {
+    if (tokenHolderCurrentData && isDataFromBeforeCurrentBlock) {
       if (tokenHolderCurrentData.hasDelegated || !tokenHolderIsFetched) {
         return null
       }
@@ -215,7 +222,7 @@ const DelegateTrigger = (props) => {
           className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
           onClick={handleDelegate}
         >
-          Activate my votes for future proposals
+          {t('activateMyVotesForFutureProposals')}
         </button>
       )
     }
@@ -226,7 +233,7 @@ const DelegateTrigger = (props) => {
         className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
         onClick={handleDelegate}
       >
-        Activate my votes
+        {t('activateMyVotes')}
       </button>
     )
   }
@@ -236,18 +243,36 @@ const DelegateTrigger = (props) => {
     if (twitterHandle) {
       return (
         <p className='mt-auto'>
-          You have <b>{tokenBalanceDisplay}</b> votes delegated to{' '}
-          <b>
+          <Trans
+            i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
+            defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
+            components={{
+              bold: <span className='font-bold' />,
+            }}
+            values={{
+              tokenBalanceDisplay
+            }}
+          />{' '}
+          <strong>
             <DelegateAddress address={delegateAddress} />
-          </b>
+          </strong>
         </p>
       )
     }
 
     return (
       <p className='mt-auto'>
-        You have <b>{tokenBalanceDisplay}</b> votes delegated to{' '}
-        <b>
+        <Trans
+          i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
+          defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
+          components={{
+            bold: <span className='font-bold' />,
+          }}
+          values={{
+            tokenBalanceDisplay
+          }}
+        />{' '}
+        <strong>
           <EtherscanAddressLink
             className='font-bold text-inverse hover:text-accent-1'
             address={delegateAddress}
@@ -255,7 +280,7 @@ const DelegateTrigger = (props) => {
             <span className='hidden sm:inline'>{delegateAddress}</span>
             <span className='inline sm:hidden'>{shorten(delegateAddress)}</span>
           </EtherscanAddressLink>
-        </b>
+        </strong>
       </p>
     )
   }
@@ -264,8 +289,17 @@ const DelegateTrigger = (props) => {
 
   return (
     <p className='mt-auto'>
-      You have <b>{tokenBalanceDisplay}</b> tokens, and <b>{delegatedVotesDisplay}</b> delegated
-      votes
+      <Trans
+        i18nKey='youHaveBalanceTokensAndDelegatedTokens'
+        defaults='You have <bold>{{tokenBalanceDisplay}}</bold> tokens, and <bold>{{delegatedVotesDisplay}}</bold> delegated votes'
+        components={{
+          bold: <span className='font-bold' />,
+        }}
+        values={{
+          tokenBalanceDisplay,
+          delegatedVotesDisplay
+        }}
+      />
     </p>
   )
 }

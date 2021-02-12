@@ -1,16 +1,20 @@
-import { BasicTable } from 'lib/components/BasicTable'
+import React from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { useTable } from 'react-table'
+
+import { useTranslation } from 'lib/../i18n'
+import { BasicTable } from 'lib/components/BasicTable'
+import { DelegateAddress } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useProposalVotes, useProposalVotesPages } from 'lib/hooks/useProposalVotes'
 import { formatVotes } from 'lib/utils/formatVotes'
-import React from 'react'
-import { useTable } from 'react-table'
-import { DelegateAddress } from 'lib/components/UsersVotesCard'
 
 export const VotersTable = (props) => {
   // TODO: Page buttons. Need total number of voters.
   const { id } = props
+
+  const { t } = useTranslation()
 
   const [pageNumber, setPageNumber] = useProposalVotesPages(id)
   const { data, isFetching, isFetched } = useProposalVotes(id)
@@ -31,16 +35,16 @@ export const VotersTable = (props) => {
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Voter',
+        Header: t('voter'),
         accessor: 'voter',
         Cell: VoterCell
       },
       {
-        Header: 'Voting Weight',
+        Header: t('votingWeight'),
         accessor: 'votes'
       },
       {
-        Header: 'Decision',
+        Header: t('decision'),
         accessor: 'support',
         Cell: SupportCell
       }
@@ -98,10 +102,12 @@ export const VotersTable = (props) => {
 }
 
 const SupportCell = (props) => {
+  const { t } = useTranslation()
+
   if (props.value) {
-    return 'Accepted'
+    return t('accepted')
   }
-  return 'Rejected'
+  return t('rejected')
 }
 
 const VoterCell = (props) => <DelegateAddress address={props.value} />

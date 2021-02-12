@@ -21,7 +21,7 @@ export function AddGovernanceTokenToMetaMask(props) {
       {walletName === 'MetaMask' && <>
         <div className='m-2'>
           <Button
-            secondary
+            tertiary
             onClick={handleAddTokenToMetaMask}
           >
             {t('addPoolTokenToMetamask')}

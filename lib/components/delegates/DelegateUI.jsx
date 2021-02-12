@@ -1,6 +1,8 @@
 import React from 'react'
-import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useRouter } from 'next/router'
+
+import { useTranslation } from 'lib/../i18n'
+import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useDelegateData } from 'lib/hooks/useDelegateData'
 import { Card } from 'lib/components/Card'
 import { formatVotes } from 'lib/utils/formatVotes'
@@ -11,6 +13,7 @@ import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 
 // TODO: Smart contract case. Case when address isn't a token holder but is a delegate
 export const DelegateUI = (props) => {
+  const { t } = useTranslation()
   const router = useRouter()
   const { address } = router.query
 
@@ -29,7 +32,7 @@ export const DelegateUI = (props) => {
       <Card>
         <h5>{address}</h5>
         <div className='flex flex-col'>
-          <h6>Token Balance</h6>
+          <h6>{t('tokenBalance')}</h6>
           {tokenBalance ?? 0}
         </div>
       </Card>
@@ -38,16 +41,19 @@ export const DelegateUI = (props) => {
   )
 }
 
-const DelegationCard = (props) => (
-  <Card>
-    <h5>Delegation</h5>
+const DelegationCard = (props) => {
+  const { t } = useTranslation()
+
+  return <Card>
+    <h5>{t('delegation')}</h5>
     <DelegationControls {...props} />
   </Card>
-)
+}
 
 const DelegationControls = (props) => {
   const { address, delegateAddress } = props
 
+  const { t } = useTranslation()
   const { data, isFetched, error } = useDelegateData(delegateAddress)
   const identity = useSocialIdentity(delegateAddress)
 
@@ -58,26 +64,26 @@ const DelegationControls = (props) => {
   const { delegatedVotesRaw } = data.delegate
 
   if (!delegateAddress) {
-    return <>Currently Not Delegating</>
+    return <>{t('currentlyNotDelegating')}</>
   }
 
   if (delegateAddress === address) {
     return (
       <>
-        <div>Self Delegating</div>
-        <div>Voting Power: {formatVotes(delegatedVotesRaw)}</div>
+        <div>{t('selfDelegating')}</div>
+        <div>{t('votingPower')}: {formatVotes(delegatedVotesRaw)}</div>
       </>
     )
   }
 
-  // <h6>Votes</h6>
+  // <h6>{t('votes')}</h6>
   // {formatVotes(delegatedVotesRaw)}
 
   return (
     <div className='flex justify-between'>
       <div className='flex flex-col'>
         <div>
-          Delegating to{' '}
+          {t('delegatingTo')}{' '}
           {identity.twitter && (
             <a
               href={`https://twitter.com/${identity.twitter.handle}`}
@@ -89,11 +95,11 @@ const DelegationControls = (props) => {
           )}{' '}
           ({delegateAddress})
         </div>
-        <div>Voting Power: {formatVotes(delegatedVotesRaw)}</div>
+        <div>{t('votingPower')}: {formatVotes(delegatedVotesRaw)}</div>
       </div>
 
       <ButtonLink as={`/delegate/${delegateAddress}`} href='/delegate/[address]'>
-        View
+        {t('view')}
       </ButtonLink>
     </div>
   )

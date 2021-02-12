@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 
+import { useTranslation } from 'lib/../i18n'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
@@ -11,6 +12,7 @@ import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 
 export const ProposalsUI = (props) => {
+  const { t } = useTranslation()
   const { connectWallet } = useContext(AuthControllerContext)
 
   const { error, isFetched } = useAllProposalsSorted()
@@ -29,18 +31,17 @@ export const ProposalsUI = (props) => {
 
       <UsersVotesCard />
 
-      <h1 className='text-inverse'>Vote</h1>
+      <h1 className='text-inverse'>{t('vote')}</h1>
 
       <p className='text-inverse sm:w-10/12 mb-4 sm:mb-8'>
-        The protocol is controlled by decentralized governance. Any changes are presented as
-        “proposals” and voted on by POOL token holders.{' '}
+        {t('theProtocolIsControlledByDecentralizedGovernance')}{' '}
         <a
           href='https://medium.com/p/23b09f36db48'
           target='_blank'
           rel='noreferrer noopener'
           className='text-inverse underline'
         >
-          Read more about PoolTogether governance
+          {t('readMoreAboutPoolTogetherGovernance')}
         </a>
         .
       </p>
@@ -48,15 +49,15 @@ export const ProposalsUI = (props) => {
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
         <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
           <Button textSize='xxs' type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
-            Discuss Proposals
+            {t('discussProposals')}
           </Button>
         </a>
 
         <PTHint
           tip={
             <div className='my-2 text-center text-xs sm:text-sm'>
-              <p>Proposal creation is currently in development.</p>
-              <p>Check back soon!</p>
+              <p>{t('proposalCreationUnderDevelopment')}</p>
+              <p>{t('checkBackSoon')}</p>
             </div>
           }
         >
@@ -75,7 +76,7 @@ export const ProposalsUI = (props) => {
             hoverText='primary'
             hoverBg='green'
           >
-            Create a Proposal
+            {t('createAProposal')}
           </Button>
         </PTHint>
       </div>

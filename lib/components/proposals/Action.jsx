@@ -4,6 +4,7 @@ import React, { useContext, useState, useMemo, useEffect } from 'react'
 import { useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 
+import { useTranslation } from 'lib/../i18n'
 import { isValidAddress } from 'lib/utils/isValidAddress'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
@@ -18,6 +19,8 @@ import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contract
 
 export const Action = (props) => {
   const { action, setAction, deleteAction, index, hideRemoveButton } = props
+
+  const { t } = useTranslation()
 
   const setContract = (contract) => {
     setAction({
@@ -37,7 +40,7 @@ export const Action = (props) => {
   return (
     <div className='mt-4 mx-auto p-4 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
-        <h6 className='mb-4'>Action {index + 1}</h6>
+        <h6 className='mb-4'>{t('actionNumber', { number: index + 1 })}</h6>
         {!hideRemoveButton && (
           <button
             className='trans hover:opacity-50'
@@ -68,6 +71,8 @@ export const Action = (props) => {
 
 const ContractSelect = (props) => {
   const { setContract, currentContract } = props
+
+  const { t } = useTranslation()
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
   const { chainId } = useContext(AuthControllerContext)
 
@@ -78,52 +83,53 @@ const ContractSelect = (props) => {
       // Add POOL token
       options.push({
         address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
-        name: `POOL Token`,
+        name: t('poolToken'),
         abi: DelegateableERC20ABI
       })
 
       options.push({
         address: '',
-        name: `Custom Contract`,
+        name: t('customContract'),
         abi: null,
         custom: true
       })
 
       // Add Prize Pool contracts
       options.push({
-        groupHeader: `Prize Pools`
+        groupHeader: t('prizePools')
       })
       Object.keys(prizePools).forEach((prizePoolAddress) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.prizePool,
-          name: `${prizePool.underlyingCollateralName} Prize Pool`,
+          name: t('prizePoolTokenName', { tokenName: prizePool.underlyingCollateralName }),
           abi: PrizePoolAbi
         })
       })
 
       // Add Prize Strategies
       options.push({
-        groupHeader: `Prize Strategies`
+        groupHeader: t('prizeStrategies')
       })
       Object.keys(prizePools).forEach((prizePoolAddress) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.prizeStrategy,
-          name: `${prizePool.underlyingCollateralName} Prize Strategy`,
+          name: t('prizeStrategyTokenName', { tokenName: prizePool.underlyingCollateralName }),
           abi: MultipleWinnersPrizeStrategyAbi
         })
       })
 
       // Add Token Faucets
       options.push({
-        groupHeader: `Token Faucets`
+        groupHeader: t('tokenFaucets')
       })
       Object.keys(prizePools).forEach((prizePoolAddress) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.tokenFaucet,
-          name: `${prizePool.underlyingCollateralName} Token Faucet`,
+          name: t('tokenFaucetTokenName', { tokenName: prizePool.underlyingCollateralName }),
+          // name: `${prizePool.underlyingCollateralName} Token Faucet`,
           abi: TokenFaucetAbi
         })
       })
@@ -145,7 +151,7 @@ const ContractSelect = (props) => {
       <DropdownList
         id='contract-picker-dropdown'
         className='text-inverse hover:opacity-50 w-fit-content'
-        placeholder='Select a contract'
+        placeholder={t('selectAContract')}
         formatValue={formatValue}
         onValueSet={onValueSet}
         values={options}
@@ -161,6 +167,7 @@ const ContractSelect = (props) => {
 const CustomContractInput = (props) => {
   const { contract, setContract } = props
 
+  const { t } = useTranslation()
   const [showAbiInput, setShowAbiInput] = useState(false)
   const addressFormName = 'contractAddress'
   const { register, control, errors } = useForm({
@@ -200,12 +207,12 @@ const CustomContractInput = (props) => {
     <>
       <SimpleInput
         className='mt-2'
-        label='Contract Address'
+        label={t('contractAddress')}
         errorMessage={errorMessage}
         name={addressFormName}
         register={register}
         required
-        validate={(address) => isValidAddress(address) || 'Invalid contract address'}
+        validate={(address) => isValidAddress(address) || t('invalidContractAddress')}
         placeholder='0x1f9840a85...'
         loading={etherscanAbiIsFetching}
       />
@@ -220,7 +227,7 @@ const CustomContractInput = (props) => {
           }}
           className='xs:ml-auto mt-2 w-fit-content text-xxs text-inverse hover:opacity-50 trans'
         >
-          {showAbiInput ? 'Hide ABI input' : 'Have the ABI? Manually input it here'}
+          {showAbiInput ? t('hideAbiInput') : t('haveTheAbiManuallyInput')}
         </button>
       </div>
     </>
@@ -230,6 +237,7 @@ const CustomContractInput = (props) => {
 const CustomAbiInput = (props) => {
   const { contract, setContract } = props
 
+  const { t } = useTranslation()
   const abiFormName = 'contractAbi'
   const { register, watch } = useForm()
   const abiString = watch(abiFormName, false)
@@ -260,7 +268,7 @@ const CustomAbiInput = (props) => {
   return (
     <SimpleInput
       className='mt-4'
-      label='Contract ABI'
+      label={t('contractAbi')}
       name={abiFormName}
       register={register}
       required
@@ -292,7 +300,7 @@ const FunctionSelect = (props) => {
       <DropdownList
         id='function-picker-dropdown'
         className='text-inverse hover:opacity-50 w-fit-content'
-        placeholder='Select a function'
+        placeholder={t('selectAFunction')}
         formatValue={formatValue}
         onValueSet={onValueSet}
         values={functions}
@@ -386,8 +394,10 @@ const SimpleInput = (props) => {
 }
 
 const getErrorMessage = (validationMessage, status) => {
+  const { t } = useTranslation()
+
   if (validationMessage) return validationMessage
-  if (status === '0') return 'Contract ABI not found on Etherscan'
+  if (status === '0') return t('contractAbiNotFoundOnEtherscan')
 
   return null
 }
