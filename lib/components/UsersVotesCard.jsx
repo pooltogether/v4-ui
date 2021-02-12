@@ -19,6 +19,7 @@ import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
+import { useTransaction } from 'lib/hooks/useTransaction'
 
 const UsersVotesCardBlankState = (props) => {
   const { t } = useTranslation()
@@ -33,9 +34,7 @@ const UsersVotesCardBlankState = (props) => {
         <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>0</h2>
 
         {/* TODO: Add a link to where they can get POOL  */}
-        <p className='text-accent-1 mt-2'>
-          {t('youCurrentlyHaveNoPoolToUseForVotingDescription')}
-        </p>
+        <p className='text-accent-1 mt-2'>{t('youCurrentlyHaveNoPoolToUseForVotingDescription')}</p>
       </div>
     </Banner>
   )
@@ -159,17 +158,16 @@ const NotDelegatedWarning = (props) => {
 
 const DelegateTrigger = (props) => {
   const { tokenHolder, refetchTokenHolderData, isDataFromBeforeCurrentBlock } = props
-  
+
   const { t } = useTranslation()
   const { hasDelegated, selfDelegated } = tokenHolder
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [txId, setTxId] = useState({})
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('selfDelegate'), transactions, setTransactions)
+  const { usersAddress, chainId } = useContext(AuthControllerContext)
+  const [txId, setTxId] = useState(0)
+  const sendTx = useSendTransaction()
   const { data: tokenHolderCurrentData, isFetched: tokenHolderIsFetched } = useTokenHolder(
     usersAddress
   )
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   const delegateAddress = tokenHolder?.delegate?.id
   const delegateIdentity = useSocialIdentity(delegateAddress)
@@ -182,9 +180,7 @@ const DelegateTrigger = (props) => {
     const params = [usersAddress]
 
     const id = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('selfDelegate'),
       DelegateableERC20ABI,
       CONTRACT_ADDRESSES[chainId].GovernanceToken,
       'delegate',
@@ -247,7 +243,7 @@ const DelegateTrigger = (props) => {
             i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
             defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
             components={{
-              bold: <span className='font-bold' />,
+              bold: <span className='font-bold' />
             }}
             values={{
               tokenBalanceDisplay
@@ -266,7 +262,7 @@ const DelegateTrigger = (props) => {
           i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
           defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
           components={{
-            bold: <span className='font-bold' />,
+            bold: <span className='font-bold' />
           }}
           values={{
             tokenBalanceDisplay
@@ -293,7 +289,7 @@ const DelegateTrigger = (props) => {
         i18nKey='youHaveBalanceTokensAndDelegatedTokens'
         defaults='You have <bold>{{tokenBalanceDisplay}}</bold> tokens, and <bold>{{delegatedVotesDisplay}}</bold> delegated votes'
         components={{
-          bold: <span className='font-bold' />,
+          bold: <span className='font-bold' />
         }}
         values={{
           tokenBalanceDisplay,

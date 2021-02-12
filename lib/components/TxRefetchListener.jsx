@@ -11,6 +11,23 @@ export function TxRefetchListener (props) {
 
   const pendingTransactions = transactions.filter((t) => !t.completed && !t.cancelled)
 
+  const runRefetch = (tx) => {
+    // we don't know when the Graph will have processed the new block data or when it has
+    // so simply query a few times for the updated data
+    if (tx?.refetch) {
+      tx.refetch()
+      setTimeout(() => {
+        tx.refetch()
+        debug('refetch!')
+      }, 2000)
+
+      setTimeout(() => {
+        tx.refetch()
+        debug('refetch!')
+      }, 8000)
+    }
+  }
+
   storedPendingTransactions.forEach((tx) => {
     const storedTxId = tx.id
     const currentTxState = transactions.find((_tx) => _tx.id === storedTxId)
@@ -22,6 +39,8 @@ export function TxRefetchListener (props) {
       !currentTxState.cancelled
     ) {
       tx?.callback?.()
+
+      runRefetch(tx)
     }
   })
 

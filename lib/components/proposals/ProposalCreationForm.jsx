@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import { Dialog } from '@reach/dialog'
 
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { Card } from 'lib/components/Card'
 import { ActionsCard } from 'lib/components/proposals/ActionsCard'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
@@ -14,13 +15,34 @@ import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useTransaction } from 'lib/hooks/useTransaction'
+import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { useContext } from 'react'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { ethers } from 'ethers'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
   const formMethods = useForm({ mode: 'onSubmit', shouldFocusError: false })
   const [showSummary, setShowSummary] = useState(false)
 
-  const onSubmit = (data) => console.log('Submit', data)
+  const { chainId } = useContext(AuthControllerContext)
+  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+
+  const [txId, setTxId] = useState(0)
+  const sendTx = useSendTransaction()
+  const tx = useTransaction(txId)
+
+  const onSubmit = async (data) => {
+    console.log('Submit', data)
+
+    const params = getProposeParamsFromForm(data)
+    console.log('params', params)
+    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params)
+    console.log(txId)
+    setTxId(txId)
+  }
   const onError = (data) => console.log('Error', data)
 
   return (
@@ -28,11 +50,14 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            <button onClick={() => console.log(formMethods.getValues())}>
+            <button type='button' onClick={() => console.log(formMethods.getValues())}>
               TEST: Log Form Values
             </button>
-            <button onClick={() => console.log(formMethods.formState)}>TEST: Log State</button>
+            <button type='button' onClick={() => console.log(formMethods.formState)}>
+              TEST: Log State
+            </button>
             <button
+              type='button'
               onClick={async () => {
                 const r = await formMethods.trigger()
                 console.log(r)
@@ -64,6 +89,7 @@ export const ProposalCreationForm = () => {
                 window.scrollTo(0, 0)
               }}
               getValues={formMethods.getValues}
+              handleSubmit={formMethods.handleSubmit}
             />
           )}
         </form>
@@ -223,7 +249,6 @@ const ProposalSummary = (props) => {
   const { showForm, getValues } = props
 
   const { actions, title, description } = getValues()
-  console.log(actions, title, description)
 
   return (
     <>
@@ -360,4 +385,27 @@ const ProposalTransactionModal = (props) => {
       </div>
     </Dialog>
   )
+}
+
+const getProposeParamsFromForm = (formData) => {
+  const targets = []
+  const values = []
+  const signatures = []
+  const calldatas = []
+  const description = `# ${formData.title}\n${formData.description}`
+
+  formData.actions.forEach((action) => {
+    targets.push(action.contract.address)
+    values.push(0)
+
+    const contractInterface = new ethers.utils.Interface(action.contract.abi)
+    signatures.push(contractInterface.functions[action.fn.name].signature)
+    calldatas.push(
+      contractInterface.functions[action.fn.name].encode(
+        action.fn.inputs.map((input) => input.value)
+      )
+    )
+  })
+
+  return [targets, values, signatures, calldatas, description]
 }

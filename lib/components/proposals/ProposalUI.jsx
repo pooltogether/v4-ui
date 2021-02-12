@@ -26,12 +26,13 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
 import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
+import { useTransaction } from 'lib/hooks/useTransaction'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
 export const ProposalUI = (props) => {
   const { t } = useTranslation()
-  
+
   const router = useRouter()
   const { id } = router.query
 
@@ -69,7 +70,7 @@ export const ProposalUI = (props) => {
 
 const ProposalDescriptionCard = (props) => {
   const { proposal } = props
-  
+
   const { t } = useTranslation()
   const { description } = proposal
   const smallDescription = description.length < SMALL_DESCRIPTION_LENGTH
@@ -181,7 +182,7 @@ const VotesCard = (props) => {
 
 const ProposalVoteCard = (props) => {
   const { proposal, refetchProposalData } = props
-  
+
   const { t } = useTranslation()
   const { id, title, status } = proposal
 
@@ -255,16 +256,15 @@ const ProposalVoteCard = (props) => {
 
 const VoteButtons = (props) => {
   const { id, refetchData, selfDelegated, alreadyVoted } = props
-  
+
   const { t } = useTranslation()
 
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('sendVoteForProposalId'), transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const [votingFor, setVotingFor] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   const handleVoteFor = (e) => {
     e.preventDefault()
@@ -282,9 +282,7 @@ const VoteButtons = (props) => {
     const params = [id, support]
 
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('sendVoteForProposalId'),
       GovernorAlphaABI,
       governanceAddress,
       'castVote',
@@ -361,12 +359,11 @@ const QueueButton = (props) => {
   const { id, refetchData } = props
 
   const { t } = useTranslation()
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('queueProposal', { id }), transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   const handleQueueProposal = async (e) => {
     e.preventDefault()
@@ -374,9 +371,7 @@ const QueueButton = (props) => {
     const params = [id]
 
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('queueProposal', { id }),
       GovernorAlphaABI,
       governanceAddress,
       'queue',
@@ -434,15 +429,14 @@ const QueueButton = (props) => {
 
 const ExecuteButton = (props) => {
   const { id, refetchData } = props
-  
+
   const { t } = useTranslation()
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('executeProposalId', { id }), transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const [payableAmount, setPayableAmount] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   // TODO: Payable Amount
 
@@ -452,9 +446,7 @@ const ExecuteButton = (props) => {
     const params = [id]
 
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('executeProposalId', { id }),
       GovernorAlphaABI,
       governanceAddress,
       'execute',
@@ -466,7 +458,9 @@ const ExecuteButton = (props) => {
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     // Successfully Executed Proposal #{ id }
-    return <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })}  🎉</TxText>
+    return (
+      <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })} 🎉</TxText>
+    )
   }
 
   if (tx?.inWallet && !tx?.cancelled) {
