@@ -129,7 +129,6 @@ const ContractSelect = (props) => {
         options.push({
           address: prizePool.tokenFaucet,
           name: t('tokenFaucetTokenName', { tokenName: prizePool.underlyingCollateralName }),
-          // name: `${prizePool.underlyingCollateralName} Token Faucet`,
           abi: TokenFaucetAbi
         })
       })
