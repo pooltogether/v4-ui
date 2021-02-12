@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
@@ -21,11 +21,16 @@ import { CONTRACT_ADDRESSES } from 'lib/constants'
 import { useContext } from 'react'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { ethers } from 'ethers'
+import { TxStatus } from 'lib/components/TxStatus'
+import { Banner } from 'lib/components/Banner'
+import { useCallback } from 'react'
 
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
   const formMethods = useForm({ mode: 'onSubmit', shouldFocusError: false })
   const [showSummary, setShowSummary] = useState(false)
+
+  const [showModal, setShowModal] = useState(false)
 
   const { chainId } = useContext(AuthControllerContext)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
@@ -34,19 +39,33 @@ export const ProposalCreationForm = () => {
   const sendTx = useSendTransaction()
   const tx = useTransaction(txId)
 
+  const onCancelled = () => setShowModal(false)
+
   const onSubmit = async (data) => {
     console.log('Submit', data)
 
     const params = getProposeParamsFromForm(data)
     console.log('params', params)
-    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params)
+    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
+      onCancelled
+    })
     console.log(txId)
     setTxId(txId)
+    setShowModal(true)
   }
   const onError = (data) => console.log('Error', data)
 
+  const closeModal = useCallback(() => {
+    if (tx && !tx?.inWallet) {
+      setShowModal(false)
+      setShowSummary(false)
+      formMethods.reset()
+    }
+  }, [tx])
+
   return (
     <>
+      <ProposalTransactionModal tx={tx} isOpen={showModal} closeModal={closeModal} />
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
@@ -344,45 +363,23 @@ const FormattedInputValue = (props) => {
 }
 
 const ProposalTransactionModal = (props) => {
+  const { isOpen, closeModal, tx } = props
+
   return (
     <Dialog aria-label='Proposal Summary' isOpen={isOpen} onDismiss={closeModal}>
-      <div className='text-inverse p-4 bg-card h-full sm:h-auto rounded-none sm:rounded-xl sm:max-w-sm mx-auto flex flex-col'>
-        <div className='flex'>
+      <Banner className='flex flex-col relative text-center'>
+        <TxStatus tx={tx} />
+        {tx && !tx?.inWallet && (
           <button
-            className='my-auto ml-auto close-button trans text-inverse hover:opacity-30'
+            className='absolute right-4 top-4 close-button trans text-inverse hover:opacity-30'
             onClick={closeModal}
           >
             <FeatherIcon icon='x' className='w-6 h-6' />
           </button>
-        </div>
-
-        <div className='flex mx-auto'>
-          <img src={PoolIcon} className='shadow-xl rounded-full w-28 h-28 spinningCoin' />
-          <div className='flex flex-col ml-8 justify-center mr-8'>
-            <h3>{numberWithCommas(usersBalance, { precision: getPrecision(usersBalance) })}</h3>
-            <span className='text-accent-1'>POOL</span>
-          </div>
-        </div>
-
-        <div className='bg-body p-4 rounded-xl mt-8'>
-          <div className='flex justify-between'>
-            <span className='text-accent-1'>{t('balance')}:</span>
-            <span className='font-bold'>{formattedBalance}</span>
-          </div>
-
-          <div className='flex justify-between'>
-            <span className='text-accent-1'>{t('unclaimed')}:</span>
-            <span className='font-bold'>{totalClaimablePoolFormatted}</span>
-          </div>
-
-          <img src={Squiggle} className='mx-auto my-2' />
-
-          <div className='flex justify-between'>
-            <span className='text-accent-1'>{t('totalSupply')}:</span>
-            <span className='font-bold'>{formattedTotalSupply}</span>
-          </div>
-        </div>
-      </div>
+        )}
+        {/* TODO: Link back to proposal? */}
+        {/* TODO: refetch proposals on success */}
+      </Banner>
     </Dialog>
   )
 }

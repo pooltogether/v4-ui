@@ -38,9 +38,18 @@ export function TxRefetchListener (props) {
       !currentTxState.error &&
       !currentTxState.cancelled
     ) {
-      tx?.callback?.()
+      tx?.onSuccess?.()
 
       runRefetch(tx)
+    } else if (
+      currentTxState &&
+      currentTxState.completed &&
+      currentTxState.error &&
+      !currentTxState.cancelled
+    ) {
+      tx?.onError?.()
+    } else if (currentTxState.cancelled) {
+      tx?.onCancelled?.()
     }
   })
 

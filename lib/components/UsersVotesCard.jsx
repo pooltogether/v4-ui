@@ -185,7 +185,9 @@ const DelegateTrigger = (props) => {
       CONTRACT_ADDRESSES[chainId].GovernanceToken,
       'delegate',
       params,
-      refetchTokenHolderData
+      {
+        refetch: refetchTokenHolderData
+      }
     )
     setTxId(id)
   }

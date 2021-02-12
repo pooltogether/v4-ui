@@ -287,7 +287,9 @@ const VoteButtons = (props) => {
       governanceAddress,
       'castVote',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
@@ -376,7 +378,9 @@ const QueueButton = (props) => {
       governanceAddress,
       'queue',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
@@ -451,7 +455,9 @@ const ExecuteButton = (props) => {
       governanceAddress,
       'execute',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
