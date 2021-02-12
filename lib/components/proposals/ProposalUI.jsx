@@ -260,7 +260,8 @@ const VoteButtons = (props) => {
 
   const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('sendVoteForProposalId'), transactions, setTransactions)
+  const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
+  const [sendTx] = useSendTransaction(txName, transactions, setTransactions)
   const [txId, setTxId] = useState()
   const [votingFor, setVotingFor] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
@@ -419,7 +420,6 @@ const QueueButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              {/* <p>Queueing a proposal is...</p> */}
               <p>{t('queueingAProposalDescription')}</p>
             </div>
           }
