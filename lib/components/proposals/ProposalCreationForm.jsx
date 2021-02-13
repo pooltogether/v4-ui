@@ -48,6 +48,7 @@ const TitleCard = (props) => {
         {t('theTitleIsDescription')}
       </p>
       <TextInputGroup
+        alignLeft
         disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
         id='_proposalTitle'
