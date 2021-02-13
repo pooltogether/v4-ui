@@ -5,11 +5,9 @@ import ReactMarkdown from 'react-markdown'
 import classnames from 'classnames'
 import gfm from 'remark-gfm'
 import { useRouter } from 'next/router'
-import { useAtom } from 'jotai'
 
 import { useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
@@ -80,7 +78,7 @@ const ProposalDescriptionCard = (props) => {
     <>
       <Card title={t('details')}>
         <div
-          className={classnames('overflow-hidden text-accent-1 relative')}
+          className={classnames('proposal-details overflow-hidden text-inverse relative')}
           style={{ maxHeight: showMore ? 'unset' : '300px' }}
         >
           {!showMore && (
@@ -208,11 +206,11 @@ const ProposalVoteCard = (props) => {
 
   return (
     <Card>
-      <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6>
+      <div className='flex justify-between flex-col sm:flex-row'>
+        <h4 className='mb-2 sm:mb-8'>{title}</h4>
+        {/* <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6> */}
         <ProposalStatus proposal={proposal} />
       </div>
-      <h6 className='font-normal mb-8'>{title}</h6>
       {voteDataIsFetched && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-4 sm:mt-8'>
           <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
@@ -230,7 +228,7 @@ const ProposalVoteCard = (props) => {
           </div>
         </div>
       )}
-      <div className='mt-2 flex justify-end'>
+      <div className='mt-2 flex justify-end h-12'>
         {showButtons && (
           <>
             {status === PROPOSAL_STATUS.active && (

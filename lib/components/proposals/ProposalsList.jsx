@@ -188,7 +188,7 @@ const ProposalCountDown = (props) => {
   const [seconds] = useState(proposal.endDateSeconds - msToSeconds(Date.now()).toNumber())
   const { refetch } = useProposalData(proposal.id)
 
-  return <CountDown className='ml-auto' seconds={seconds} onZero={refetch} />
+  return <CountDown className='sm:ml-auto mb-4 sm:mb-0' seconds={seconds} onZero={refetch} />
 }
 
 const ViewProposalButton = (props) => {

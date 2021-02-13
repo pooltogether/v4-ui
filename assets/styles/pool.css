@@ -456,3 +456,9 @@ a:hover {
     width: 300px;
   }
 }
+
+.proposal-details h1 {
+  @apply text-accent-3;
+
+  font-size: 1.5rem;
+}
