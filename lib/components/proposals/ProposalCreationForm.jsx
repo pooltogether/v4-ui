@@ -124,7 +124,7 @@ const TitleCard = (props) => {
   const { register } = useFormContext()
 
   return (
-    <Card>
+    <Card disabled={disabled}>
       <h4 className='mb-6'>{t('title')}</h4>
       <p className='mb-4'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
@@ -149,7 +149,7 @@ const DescriptionCard = (props) => {
   const text = useWatch({ control, name, defaultValue: '' })
 
   return (
-    <Card>
+    <Card disabled={disabled}>
       <h4 className='mb-6'>{t('description')}</h4>
       <p className='mb-4'>{t('theDescriptionShouldPresentInFullDescription')}</p>
       <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />

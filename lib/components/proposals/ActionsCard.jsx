@@ -34,7 +34,7 @@ export const ActionsCard = (props) => {
   const { proposalMaxOperations } = governorAlpha
 
   return (
-    <Card>
+    <Card disabled={disabled}>
       <h4 className='mb-6'>{t('actions')}</h4>
       <p className='mb-4'>{t('actionCardDescription')}</p>
       {!disabled &&

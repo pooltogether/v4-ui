@@ -11,7 +11,7 @@ export const BannerTheme = {
 const BannerUnmemoized = (props) => {
   const { theme, className, children, style, outerClassName, innerClassName } = props
 
-  const bannerClass = 'p-6 sm:p-8 rounded-lg'
+  const bannerClass = 'p-6 sm:p-8 rounded-sm'
 
   if (theme === BannerTheme.rainbow) {
     return (
