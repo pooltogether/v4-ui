@@ -3,7 +3,6 @@ import FeatherIcon from 'feather-icons-react'
 import { Dialog } from '@reach/dialog'
 
 import { useTranslation } from 'lib/../i18n'
-import { NumberCountUp } from 'lib/components/NumberCountUp'
 import { usePoolTokenData } from 'lib/hooks/usePoolTokenData'
 import { useTotalClaimablePool } from 'lib/hooks/useTotalClaimablePool'
 import { getPrecision, numberWithCommas } from 'lib/utils/numberWithCommas'
@@ -31,10 +30,7 @@ export const NavPoolBalance = () => {
         onClick={openModal}
       >
         <span className='hidden sm:block mr-2'>
-          <NumberCountUp
-            amount={usersBalance}
-            decimals={getPrecision(usersBalance)}
-          />
+          {numberWithCommas(usersBalance, { precision: getPrecision(usersBalance) })}
         </span>
         POOL
       </div>

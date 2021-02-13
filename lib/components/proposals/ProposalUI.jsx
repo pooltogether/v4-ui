@@ -5,11 +5,9 @@ import ReactMarkdown from 'react-markdown'
 import classnames from 'classnames'
 import gfm from 'remark-gfm'
 import { useRouter } from 'next/router'
-import { useAtom } from 'jotai'
 
 import { useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
@@ -26,12 +24,13 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
 import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
+import { useTransaction } from 'lib/hooks/useTransaction'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
 export const ProposalUI = (props) => {
   const { t } = useTranslation()
-  
+
   const router = useRouter()
   const { id } = router.query
 
@@ -69,7 +68,7 @@ export const ProposalUI = (props) => {
 
 const ProposalDescriptionCard = (props) => {
   const { proposal } = props
-  
+
   const { t } = useTranslation()
   const { description } = proposal
   const smallDescription = description.length < SMALL_DESCRIPTION_LENGTH
@@ -79,7 +78,7 @@ const ProposalDescriptionCard = (props) => {
     <>
       <Card title={t('details')}>
         <div
-          className={classnames('overflow-hidden text-accent-1 relative')}
+          className={classnames('proposal-details overflow-hidden text-inverse relative')}
           style={{ maxHeight: showMore ? 'unset' : '300px' }}
         >
           {!showMore && (
@@ -181,7 +180,7 @@ const VotesCard = (props) => {
 
 const ProposalVoteCard = (props) => {
   const { proposal, refetchProposalData } = props
-  
+
   const { t } = useTranslation()
   const { id, title, status } = proposal
 
@@ -207,11 +206,10 @@ const ProposalVoteCard = (props) => {
 
   return (
     <Card>
-      <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6>
+      <div className='flex justify-between flex-col sm:flex-row'>
+        <h4 className='mb-2 sm:mb-8'>{title}</h4>
         <ProposalStatus proposal={proposal} />
       </div>
-      <h6 className='font-normal mb-8'>{title}</h6>
       {voteDataIsFetched && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-4 sm:mt-8'>
           <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
@@ -229,7 +227,7 @@ const ProposalVoteCard = (props) => {
           </div>
         </div>
       )}
-      <div className='mt-2 flex justify-end'>
+      <div className='mt-2 flex justify-end h-12'>
         {showButtons && (
           <>
             {status === PROPOSAL_STATUS.active && (
@@ -255,17 +253,15 @@ const ProposalVoteCard = (props) => {
 
 const VoteButtons = (props) => {
   const { id, refetchData, selfDelegated, alreadyVoted } = props
-  
+
   const { t } = useTranslation()
 
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
-  const [sendTx] = useSendTransaction(txName, transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const [votingFor, setVotingFor] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   const handleVoteFor = (e) => {
     e.preventDefault()
@@ -282,15 +278,17 @@ const VoteButtons = (props) => {
   const castVote = async (support) => {
     const params = [id, support]
 
+    const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
+
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      txName,
       GovernorAlphaABI,
       governanceAddress,
       'castVote',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
@@ -362,12 +360,11 @@ const QueueButton = (props) => {
   const { id, refetchData } = props
 
   const { t } = useTranslation()
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('queueProposal', { id }), transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   const handleQueueProposal = async (e) => {
     e.preventDefault()
@@ -375,14 +372,14 @@ const QueueButton = (props) => {
     const params = [id]
 
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('queueProposal', { id }),
       GovernorAlphaABI,
       governanceAddress,
       'queue',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
@@ -434,15 +431,14 @@ const QueueButton = (props) => {
 
 const ExecuteButton = (props) => {
   const { id, refetchData } = props
-  
+
   const { t } = useTranslation()
-  const { usersAddress, provider, chainId } = useContext(AuthControllerContext)
-  const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const [sendTx] = useSendTransaction(t('executeProposalId', { id }), transactions, setTransactions)
-  const [txId, setTxId] = useState()
+  const { chainId } = useContext(AuthControllerContext)
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
   const [payableAmount, setPayableAmount] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-  const tx = transactions?.find((tx) => tx.id === txId)
+  const tx = useTransaction(txId)
 
   // TODO: Payable Amount
 
@@ -452,21 +448,23 @@ const ExecuteButton = (props) => {
     const params = [id]
 
     const txId = await sendTx(
-      t,
-      provider,
-      usersAddress,
+      t('executeProposalId', { id }),
       GovernorAlphaABI,
       governanceAddress,
       'execute',
       params,
-      refetchData
+      {
+        refetch: refetchData
+      }
     )
     setTxId(txId)
   }
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     // Successfully Executed Proposal #{ id }
-    return <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })}  🎉</TxText>
+    return (
+      <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })} 🎉</TxText>
+    )
   }
 
   if (tx?.inWallet && !tx?.cancelled) {

@@ -35,7 +35,7 @@ export function DropdownList (props) {
       return (
         <div
           key={`${id}-value-picker-group-header-${value.groupHeader}`}
-          className='border-b opacity-50 text-inverse text-xs px-3 sm:px-5 pt-2'
+          className='opacity-50 text-accent-1 text-xs px-3 sm:px-5 pt-10'
         >
           {value.groupHeader}
         </div>

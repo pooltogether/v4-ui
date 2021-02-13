@@ -36,7 +36,8 @@ export const CONTRACT_ADDRESSES = {
   3: {},
   4: {
     GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8',
-    GovernanceToken: '0xEae2De7Ba52298a535C59D37BAe409cCeCaDE234',
+    // GovernanceToken: '0xEae2De7Ba52298a535C59D37BAe409cCeCaDE234', // POOL
+    GovernanceToken: '0x4cf566d201ef144e09d2f8abe1cc0e451d79de53', // defisaver
     MerkleDistributor: '0x5fcD21897939B09eAF9c81eF8C2C4CD64FA75558'
   }
 }
