@@ -63,6 +63,8 @@ export const ActionsCard = (props) => {
         })}
       <Button
         className='mt-8'
+        type='button'
+        disabled={actions.length >= proposalMaxOperations || disabled}
         onClick={(e) => {
           e.preventDefault()
           onChange([
@@ -72,7 +74,6 @@ export const ActionsCard = (props) => {
             }
           ])
         }}
-        disabled={actions.length >= proposalMaxOperations || disabled}
       >
         {t('addAnotherAction')}
       </Button>

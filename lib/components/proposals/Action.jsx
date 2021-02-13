@@ -114,7 +114,10 @@ const ContractSelect = (props) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.prizePool,
-          name: t('prizePoolTokenName', { tokenName: prizePool.underlyingCollateralName }),
+          name: t('prizePoolTokenName', {
+            tokenSymbol: prizePool.underlyingCollateralSymbol,
+            tokenName: prizePool.underlyingCollateralName
+          }),
           abi: PrizePoolAbi
         })
       })
@@ -127,7 +130,10 @@ const ContractSelect = (props) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.prizeStrategy,
-          name: t('prizeStrategyTokenName', { tokenName: prizePool.underlyingCollateralName }),
+          name: t('prizeStrategyTokenName', {
+            tokenSymbol: prizePool.underlyingCollateralSymbol,
+            tokenName: prizePool.underlyingCollateralName
+          }),
           abi: MultipleWinnersPrizeStrategyAbi
         })
       })
@@ -140,7 +146,10 @@ const ContractSelect = (props) => {
         const prizePool = prizePools[prizePoolAddress]
         options.push({
           address: prizePool.tokenFaucet,
-          name: t('tokenFaucetTokenName', { tokenName: prizePool.underlyingCollateralName }),
+          name: t('tokenFaucetTokenName', {
+            tokenSymbol: prizePool.underlyingCollateralSymbol,
+            tokenName: prizePool.underlyingCollateralName
+          }),
           abi: TokenFaucetAbi
         })
       })
@@ -401,7 +410,7 @@ const SimpleInput = (props) => {
           </div>
         )}
       </span>
-      {errorMessage && <span className='ml-auto text-xxs text-orange'>{errorMessage}</span>}
+      {errorMessage && <span className='ml-auto text-xxs text-red font-bold'>{errorMessage}</span>}
     </>
   )
 }

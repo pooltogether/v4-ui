@@ -17,7 +17,7 @@ import { TxText } from 'lib/components/TxText'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
-import { numberWithCommas } from 'lib/utils/numberWithCommas'
+import { numberWithCommas, getPrecision } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
 import { useTransaction } from 'lib/hooks/useTransaction'
 
@@ -174,7 +174,8 @@ const DelegateTrigger = (props) => {
   const delegateAddress = tokenHolder?.delegate?.id
   const delegateIdentity = useSocialIdentity(delegateAddress)
 
-  const tokenBalanceDisplay = numberWithCommas(tokenHolder.tokenBalance)
+  const tokenBalance = tokenHolder.tokenBalance
+  const tokenBalanceDisplay = numberWithCommas(tokenBalance, { precision: getPrecision(tokenBalance) })
 
   const handleDelegate = async (e) => {
     e.preventDefault()
@@ -242,7 +243,7 @@ const DelegateTrigger = (props) => {
     const twitterHandle = delegateIdentity?.twitter?.handle
     if (twitterHandle) {
       return (
-        <p className='mt-auto'>
+        <p className='text-accent-1 mt-auto'>
           <Trans
             i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
             defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
@@ -261,7 +262,7 @@ const DelegateTrigger = (props) => {
     }
 
     return (
-      <p className='mt-auto'>
+      <p className='text-accent-1 mt-auto'>
         <Trans
           i18nKey='youHaveTokenDelegatedBalanceDelegatedTo'
           defaults='You have <bold>{{tokenBalanceDisplay}}</bold> votes delegated to'
@@ -285,13 +286,14 @@ const DelegateTrigger = (props) => {
     )
   }
 
-  const delegatedVotesDisplay = numberWithCommas(tokenHolder.delegate.delegatedVotes)
+  const delegatedVotes = tokenHolder.delegate.delegatedVotes
+  const delegatedVotesDisplay = numberWithCommas(delegatedVotes, { precision: getPrecision(delegatedVotes) })
 
   return (
-    <p className='mt-auto'>
+    <p className='text-accent-1 mt-auto'>
       <Trans
         i18nKey='youHaveBalanceTokensAndDelegatedTokens'
-        defaults='You have <bold>{{tokenBalanceDisplay}}</bold> tokens, and <bold>{{delegatedVotesDisplay}}</bold> delegated votes'
+        defaults='You have <bold>{{tokenBalanceDisplay}}</bold> tokens and <bold>{{delegatedVotesDisplay}}</bold> delegated votes'
         components={{
           bold: <span className='font-bold' />
         }}

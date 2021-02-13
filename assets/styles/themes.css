@@ -219,13 +219,13 @@ input:-webkit-autofill:active {
 .theme-light ::placeholder,
 .theme-light .input::placeholder,
 .theme-light .textarea::placeholder {
-  color: #ded4f2;
+  color: #c8bce0;
 }
 
 .theme-dark ::placeholder,
 .theme-dark .input::placeholder,
 .theme-dark .textarea::placeholder {
-  color: #392781;
+  color: #5d2d9b;
 }
 
 .theme-dark .toggle {

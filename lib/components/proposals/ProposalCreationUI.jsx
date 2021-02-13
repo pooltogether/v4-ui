@@ -9,7 +9,6 @@ import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { ProposalCreationForm } from 'lib/components/proposals/ProposalCreationForm'
 import { DEFAULT_TOKEN_PRECISION } from 'lib/constants'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
-import { usePoolTokenData } from 'lib/hooks/usePoolTokenData'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 
