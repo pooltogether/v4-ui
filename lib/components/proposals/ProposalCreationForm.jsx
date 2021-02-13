@@ -128,6 +128,7 @@ const TitleCard = (props) => {
       <h4 className='mb-6'>{t('title')}</h4>
       <p className='mb-4'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
+        alignLeft
         disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
         id='_proposalTitle'

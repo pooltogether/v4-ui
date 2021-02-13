@@ -208,7 +208,6 @@ const ProposalVoteCard = (props) => {
     <Card>
       <div className='flex justify-between flex-col sm:flex-row'>
         <h4 className='mb-2 sm:mb-8'>{title}</h4>
-        {/* <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6> */}
         <ProposalStatus proposal={proposal} />
       </div>
       {voteDataIsFetched && voteData?.delegateDidVote && (
@@ -279,8 +278,10 @@ const VoteButtons = (props) => {
   const castVote = async (support) => {
     const params = [id, support]
 
+    const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
+
     const txId = await sendTx(
-      t('sendVoteForProposalId'),
+      txName,
       GovernorAlphaABI,
       governanceAddress,
       'castVote',
@@ -416,7 +417,6 @@ const QueueButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              {/* <p>Queueing a proposal is...</p> */}
               <p>{t('queueingAProposalDescription')}</p>
             </div>
           }
