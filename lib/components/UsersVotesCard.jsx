@@ -84,6 +84,8 @@ export const UsersVotesCard = (props) => {
     return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
   }
 
+  // TODO: This view is wrong for when we're looking at proposals in the past
+  // TODO: After the polling comes back, the "Success" card gets cleared
   if (!tokenHolder || (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)) {
     return <UsersVotesCardBlankState />
   }
