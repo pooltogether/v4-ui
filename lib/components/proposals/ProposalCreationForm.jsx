@@ -46,12 +46,12 @@ export const ProposalCreationForm = () => {
 
     const params = getProposeParamsFromForm(data)
     console.log('params', params)
-    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-      onCancelled
-    })
-    console.log(txId)
-    setTxId(txId)
-    setShowModal(true)
+    // const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
+    //   onCancelled
+    // })
+    // console.log(txId)
+    // setTxId(txId)
+    // setShowModal(true)
   }
   const onError = (data) => console.log('Error', data)
 

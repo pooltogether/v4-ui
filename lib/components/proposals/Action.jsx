@@ -1,7 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 
 import { useTranslation } from 'lib/../i18n'
@@ -354,7 +354,7 @@ const FunctionInputs = (props) => {
 }
 
 const FunctionInput = (props) => {
-  const { name, type, fnName, actionIndex, inputIndex } = props
+  const { name, type, actionIndex, inputIndex } = props
   const { register } = useFormContext()
 
   // TODO: Validate inputs? At least addresses.
