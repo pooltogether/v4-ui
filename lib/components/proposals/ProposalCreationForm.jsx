@@ -26,6 +26,8 @@ import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
 
 export const ProposalCreationForm = () => {
+  const { t } = useTranslation()
+  
   const { userCanCreateProposal } = useUserCanCreateProposal()
   const formMethods = useForm({ mode: 'onSubmit', shouldFocusError: false })
   const [showSummary, setShowSummary] = useState(false)
@@ -97,7 +99,7 @@ export const ProposalCreationForm = () => {
                 window.scrollTo(0, 0)
               }}
             >
-              Preview Proposal
+              {t('previewProposal')}
             </Button>
           </div>
 
@@ -192,7 +194,7 @@ const TextArea = (props) => {
   const { register, required, pattern, validate, classNames, ...textAreaProps } = props
   return (
     <textarea
-      className={classnames('p-1 bg-body text-inverse w-full resize-none', classNames)}
+      className={classnames('h-96 p-4 xs:p-8 bg-body text-inverse w-full resize-none', classNames)}
       ref={register({ required, pattern, validate })}
       {...textAreaProps}
     />
@@ -202,15 +204,18 @@ const TextArea = (props) => {
 const MarkdownPreview = (props) => {
   const { text, className } = props
 
+  // Extra div with padding aligns the 'Write' tab content with the 'Preview' tab content exactly
   return (
-    <ReactMarkdown
-      plugins={[gfm]}
-      className={classnames(
-        'description whitespace-pre-wrap break-word overflow-y-auto',
-        className
-      )}
-      children={text}
-    />
+    <div style={{ paddingTop: 0, paddingBottom: 6 }}>
+      <ReactMarkdown
+        plugins={[gfm]}
+        className={classnames(
+          'p-4 xs:p-8 description whitespace-pre-wrap break-word overflow-y-auto tracking-wider',
+          className
+        )}
+        children={text}
+      />
+    </div>
   )
 }
 
@@ -231,7 +236,7 @@ const TabbedView = (props) => {
           />
         ))}
       </div>
-      <div className='bg-body p-4 xs:p-8 border border-accent-3 rounded-b-lg'>
+      <div className='bg-body border border-accent-3 rounded-b-lg'>
         {tabs.map((tab, index) => (
           <div
             key={`${tab.title}-${index}-view`}

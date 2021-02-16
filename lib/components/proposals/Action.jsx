@@ -396,7 +396,7 @@ const SimpleInput = (props) => {
         </label>
         <input
           {...inputProps}
-          className='bg-card xs:w-3/4 p-2 rounded-sm'
+          className='bg-card xs:w-3/4 p-2 rounded-sm outline-none focus:outline-none active:outline-none hover:bg-primary focus:bg-primary trans trans-fast border border-transparent focus:border-card'
           id={name}
           name={name}
           ref={register({ required, pattern, validate })}

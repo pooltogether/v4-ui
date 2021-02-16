@@ -147,7 +147,7 @@ export function Layout (props) {
                     flex: 1
                   }}
                 >
-                  <div className='my-0 text-inverse sm:pt-2 lg:pt-4'>
+                  <div className='my-0 text-inverse sm:pt-2 lg:pt-4 pb-40'>
                     {React.cloneElement(children, {
                       ...props
                     })}

@@ -147,3 +147,7 @@ input[type='number'] {
     max-width: 370px;
   }
 }
+
+textarea {
+  @apply tracking-wider;
+}
