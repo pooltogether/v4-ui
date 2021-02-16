@@ -125,9 +125,11 @@ const TitleCard = (props) => {
 
   return (
     <Card disabled={disabled}>
-      <h4 className='mb-6'>{t('title')}</h4>
-      <p className='mb-4'>{t('theTitleIsDescription')}</p>
+      <h4 className='mb-2'>{t('title')}</h4>
+      <p className='mb-6'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
+        className='border-accent-3'
+        bgClasses='bg-body'
         alignLeft
         disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
@@ -151,8 +153,8 @@ const DescriptionCard = (props) => {
 
   return (
     <Card disabled={disabled}>
-      <h4 className='mb-6'>{t('description')}</h4>
-      <p className='mb-4'>{t('theDescriptionShouldPresentInFullDescription')}</p>
+      <h4 className='mb-2'>{t('description')}</h4>
+      <p className='mb-8'>{t('theDescriptionShouldPresentInFullDescription')}</p>
       <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
     </Card>
   )
