@@ -184,7 +184,7 @@ export const ProposalStatus = (props) => {
 
 const ProposalCountDown = (props) => {
   const { proposal } = props
-  
+
   const [seconds] = useState(proposal.endDateSeconds - msToSeconds(Date.now()).toNumber())
   const { refetch } = useProposalData(proposal.id)
 
@@ -196,8 +196,6 @@ const ViewProposalButton = (props) => {
 
   const { t } = useTranslation()
   const { status, id } = proposal
-
-  // TODO: All states
 
   if (status === PROPOSAL_STATUS.queued) {
     return (
@@ -255,7 +253,7 @@ const ViewProposalButton = (props) => {
 
 const EmptyProposalsList = () => {
   const { t } = useTranslation()
-  
+
   return (
     <Card>
       <InnerCard className='flex flex-col text-center py-8 text-inverse'>
