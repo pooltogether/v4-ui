@@ -3,6 +3,7 @@ import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
 import { useController, useFieldArray, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
+import { isBrowser } from 'react-device-detect'
 
 import { useTranslation } from 'lib/../i18n'
 import { isValidAddress } from 'lib/utils/isValidAddress'
@@ -29,12 +30,25 @@ export const Action = (props) => {
 
   const { control } = useFormContext()
 
+  const actionIndex = index + 1
+
+  const validateContract = (contract) => {
+    return (
+      (Boolean(contract.abi) && Boolean(contract.address)) ||
+      t('contractRequiredForAction', { number: actionIndex })
+    )
+  }
+
+  const validateFn = (fn) => {
+    return Boolean(fn.name) || t('functionRequiredForAction', { number: actionIndex })
+  }
+
   const {
     field: { value: contract, onChange: contractOnChange }
   } = useController({
     name: `${actionPath}.contract`,
     control,
-    rules: { required: true },
+    rules: { validate: validateContract },
     defaultValue: EMPTY_CONTRACT
   })
 
@@ -43,7 +57,7 @@ export const Action = (props) => {
   } = useController({
     name: `${actionPath}.contract.fn`,
     control,
-    rules: { required: true },
+    rules: { required: t('blankIsRequired', { blank: t('function') }), validate: validateFn },
     defaultValue: EMPTY_FN
   })
 
@@ -66,7 +80,7 @@ export const Action = (props) => {
   return (
     <div className='mt-4 mx-auto p-4 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
-        <h6 className='mb-4'>{t('actionNumber', { number: index + 1 })}</h6>
+        <h6 className='mb-4'>{t('actionNumber', { number: actionIndex })}</h6>
         {!hideRemoveButton && (
           <button
             className='trans hover:opacity-50'
@@ -275,6 +289,7 @@ const CustomAbiInput = (props) => {
   const abiFormName = 'contractAbi'
   const { register, watch } = useForm()
   const abiString = watch(abiFormName, false)
+  const [abiError, setAbiError] = useState(false)
 
   useEffect(() => {
     if (abiString) {
@@ -284,18 +299,21 @@ const CustomAbiInput = (props) => {
           ...contract,
           abi
         })
+        setAbiError(false)
       } catch (e) {
         console.warn(e.message)
         setContract({
           ...contract,
           abi: null
         })
+        setAbiError(true)
       }
     } else if (contract.abi) {
       setContract({
         ...contract,
         abi: null
       })
+      setAbiError(false)
     }
   }, [abiString])
 
@@ -307,6 +325,7 @@ const CustomAbiInput = (props) => {
       register={register}
       required
       placeholder='[{ type: "function", ...'
+      errorMessage={abiError ? t('errorWithAbi') : ''}
     />
   )
 }
@@ -368,12 +387,13 @@ const FunctionInputs = (props) => {
 }
 
 const FunctionInput = (props) => {
+  const { t } = useTranslation()
   const { name, type, fnInputPath } = props
-  const { register, unregister } = useFormContext()
+  const { register, unregister, formState } = useFormContext()
 
   useEffect(() => {
     return () => {
-      unregister(`${fnInputPath}.value`)
+      unregister(`${fnInputPath}`)
     }
   }, [])
 
@@ -382,9 +402,9 @@ const FunctionInput = (props) => {
     <li className='mt-2 first:mt-0 flex'>
       <SimpleInput
         label={name}
-        name={`${fnInputPath}.value`}
+        name={`${fnInputPath}`}
         register={register}
-        required
+        required={t('blankIsRequired', { blank: name })}
         dataType={type}
       />
     </li>
@@ -405,6 +425,7 @@ const SimpleInput = (props) => {
     loading,
     errorMessage,
     autoComplete,
+    autoFocus,
     ...inputProps
   } = props
 
@@ -418,8 +439,9 @@ const SimpleInput = (props) => {
           {...inputProps}
           className='bg-card xs:w-3/4 p-2 rounded-sm'
           id={name}
+          autoFocus={autoFocus && isBrowser}
           name={name}
-          ref={register({ required, pattern, validate })}
+          ref={register?.({ required, pattern, validate })}
           type='text'
           autoCorrect={autoCorrect || 'off'}
           autoComplete={autoComplete || 'hidden'}
@@ -483,9 +505,4 @@ const handleEtherscanAbiUseQueryResponse = (
       abi: null
     })
   }
-}
-
-const validateAction = (action) => {
-  // TODO: Validate action
-  return false || 'Missing Data'
 }

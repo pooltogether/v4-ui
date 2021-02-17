@@ -1,5 +1,5 @@
 import React from 'react'
-import { useController, useFieldArray, useFormContext } from 'react-hook-form'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'

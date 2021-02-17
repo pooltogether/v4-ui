@@ -24,6 +24,7 @@ import { ethers } from 'ethers'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
+import { poolToast } from 'lib/utils/poolToast'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -49,7 +50,6 @@ export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
   const formMethods = useForm({
     mode: 'onSubmit',
-    shouldFocusError: false,
     defaultValues: {
       title: '',
       description: '',
@@ -58,7 +58,7 @@ export const ProposalCreationForm = () => {
   })
 
   const [showSummary, setShowSummary] = useState(false)
-
+  const [validFormData, setValidFormData] = useState()
   const [showModal, setShowModal] = useState(false)
 
   const { chainId } = useContext(AuthControllerContext)
@@ -70,19 +70,52 @@ export const ProposalCreationForm = () => {
 
   const onCancelled = () => setShowModal(false)
 
+  const submitTransaction = async () => {
+    const params = getProposeParamsFromForm(validFormData)
+    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
+      onCancelled
+    })
+    console.log(txId)
+    setTxId(txId)
+    setShowModal(true)
+  }
+
   const onSubmit = async (data) => {
     console.log('Submit', data)
-
-    const params = getProposeParamsFromForm(data)
-    console.log('params', params)
-    // const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-    //   onCancelled
-    // })
-    // console.log(txId)
-    // setTxId(txId)
-    // setShowModal(true)
+    window?.scrollTo(0, 0)
+    setShowSummary(true)
+    setValidFormData(data)
   }
-  const onError = (data) => console.log('Error', data)
+  const onError = (data) => {
+    console.log('Error', data)
+    const parsedErrorMessages = []
+
+    if (data?.title?.message) parsedErrorMessages.push(data.title.message)
+    if (data?.description?.message) parsedErrorMessages.push(data.description.message)
+
+    if (data?.actions) {
+      data?.actions.forEach((action) => {
+        if (action?.contract?.message) {
+          parsedErrorMessages.push(action.contract.message)
+        }
+
+        if (action?.contract?.fn?.message) {
+          parsedErrorMessages.push(action.contract.fn.message)
+        }
+
+        if (action?.contract?.fn?.values) {
+          Object.keys(action.contract.fn.values).forEach((fnName) => {
+            if (action.contract.fn.values[fnName]?.message) {
+              console.log('HERE', fnName)
+              parsedErrorMessages.push(action.contract.fn.values[fnName].message)
+            }
+          })
+        }
+      })
+    }
+
+    poolToast.error(parsedErrorMessages.join('. '))
+  }
 
   const closeModal = useCallback(() => {
     if (tx && !tx?.inWallet) {
@@ -116,22 +149,14 @@ export const ProposalCreationForm = () => {
             <ActionsCard disabled={!userCanCreateProposal} />
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
-            <Button
-              className='mb-16 w-full'
-              disabled={!userCanCreateProposal}
-              type='button'
-              onClick={(e) => {
-                e.preventDefault()
-                setShowSummary(true)
-                window.scrollTo(0, 0)
-              }}
-            >
+            <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
               Preview Proposal
             </Button>
           </div>
 
           {showSummary && (
             <ProposalSummary
+              submitTransaction={submitTransaction}
               showForm={() => {
                 setShowSummary(false)
                 window.scrollTo(0, 0)
@@ -163,7 +188,7 @@ const TitleCard = (props) => {
         id='_proposalTitle'
         label={t('proposalTitle')}
         name='title'
-        required
+        required={t('blankIsRequired', { blank: t('title') })}
         register={register}
       />
     </Card>
@@ -201,7 +226,7 @@ const MarkdownInputArea = (props) => {
           rows={15}
           disabled={disabled}
           name='description'
-          required
+          required={t('blankIsRequired', { blank: t('description') })}
           register={register}
         />
       )
@@ -293,9 +318,10 @@ const Tab = (props) => {
   )
 }
 
+// TODO: It'd be awesome to be able to link to a filled out form. Just stuff everything into query params?
 const ProposalSummary = (props) => {
   const { t } = useTranslation()
-  const { showForm, getValues } = props
+  const { showForm, getValues, submitTransaction } = props
 
   const { actions, title, description } = getValues()
 
@@ -309,7 +335,7 @@ const ProposalSummary = (props) => {
         <MarkdownPreview className='text-accent-1' text={description} />
         <h5 className='my-4'>Actions:</h5>
         {actions.map((action, index) => (
-          <ActionSummary key={action.id} action={action} index={index} />
+          <ActionSummary key={index} action={action} index={index} />
         ))}
       </Card>
       <Button
@@ -323,7 +349,14 @@ const ProposalSummary = (props) => {
       >
         Edit Proposal
       </Button>
-      <Button className='mt-4 mb-16 w-full' type='submit'>
+      <Button
+        className='mt-4 mb-16 w-full'
+        type='button'
+        onClick={(e) => {
+          e.preventDefault()
+          submitTransaction()
+        }}
+      >
         Submit Proposal
       </Button>
     </>
@@ -332,9 +365,9 @@ const ProposalSummary = (props) => {
 
 const ActionSummary = (props) => {
   const { action, index } = props
-  const { contract, fn, id } = action
-  const { name: contractName, address } = contract
-  const { inputs, name: fnName } = fn
+  const { contract } = action
+  const { name: contractName, address, fn } = contract
+  const { inputs, name: fnName, values } = fn
 
   const actionNumber = index + 1
 
@@ -359,7 +392,7 @@ const ActionSummary = (props) => {
       </span>
       {inputs.map((input, index) => (
         <div
-          key={`${id}-${index}-fn-input`}
+          key={`${actionNumber}-${index}-fn-input`}
           className='flex ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
         >
           <div className='xs:w-1/4 flex flex-wrap'>
@@ -368,7 +401,7 @@ const ActionSummary = (props) => {
           </div>
           <div className='xs:w-3/4'>
             <span className='text-inverse'>
-              <FormattedInputValue {...input} />
+              <FormattedInputValue {...input} value={values[input.name]} />
             </span>
           </div>
         </div>
@@ -414,6 +447,7 @@ const ProposalTransactionModal = (props) => {
   )
 }
 
+// TODO: Some functions have optional parameters. That isn't abailable in the ABI.
 const getProposeParamsFromForm = (formData) => {
   const targets = []
   const values = []
@@ -426,10 +460,10 @@ const getProposeParamsFromForm = (formData) => {
     values.push(0)
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
-    signatures.push(contractInterface.functions[action.fn.name].signature)
+    signatures.push(contractInterface.functions[action.contract.fn.name].signature)
     calldatas.push(
-      contractInterface.functions[action.fn.name].encode(
-        action.fn.inputs.map((input) => input.value)
+      contractInterface.functions[action.contract.fn.name].encode(
+        action.contract.fn.inputs.map((input) => action.contract.fn.values[input.name])
       )
     )
   })
