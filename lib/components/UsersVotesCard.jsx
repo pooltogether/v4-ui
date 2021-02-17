@@ -22,6 +22,7 @@ import { shorten } from 'lib/utils/shorten'
 import { useTransaction } from 'lib/hooks/useTransaction'
 
 const UsersVotesCardBlankState = (props) => {
+  const { isDataFromBeforeCurrentBlock } = props
   const { t } = useTranslation()
 
   return (
@@ -34,10 +35,10 @@ const UsersVotesCardBlankState = (props) => {
         <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>0</h2>
 
         <p className='text-accent-1 ml-4 mt-2'>
-          {t('youCurrentlyHaveNoPoolToUseForVotingDescription')} <Link
-            href='https://app.pooltogether.com'
-            as='https://app.pooltogether.com'
-          >
+          {isDataFromBeforeCurrentBlock
+            ? t('youPreviouslyHadNoPoolToUseForVotingDescription')
+            : t('youCurrentlyHaveNoPoolToUseForVotingDescription')}{' '}
+          <Link href='https://app.pooltogether.com' as='https://app.pooltogether.com'>
             <a className='text-highlight-2 hover:text-white underline trans trans-fast'>
               {t('getPoolFromDepositingInPools')}
             </a>
@@ -92,10 +93,9 @@ export const UsersVotesCard = (props) => {
     return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
   }
 
-  // TODO: This view is wrong for when we're looking at proposals in the past
   // TODO: After the polling comes back, the "Success" card gets cleared
   if (!tokenHolder || (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)) {
-    return <UsersVotesCardBlankState />
+    return <UsersVotesCardBlankState isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
   }
 
   if (!tokenHolderIsFetched) {
@@ -183,7 +183,9 @@ const DelegateTrigger = (props) => {
   const delegateIdentity = useSocialIdentity(delegateAddress)
 
   const tokenBalance = tokenHolder.tokenBalance
-  const tokenBalanceDisplay = numberWithCommas(tokenBalance, { precision: getPrecision(tokenBalance) })
+  const tokenBalanceDisplay = numberWithCommas(tokenBalance, {
+    precision: getPrecision(tokenBalance)
+  })
 
   const handleDelegate = async (e) => {
     e.preventDefault()
@@ -295,7 +297,9 @@ const DelegateTrigger = (props) => {
   }
 
   const delegatedVotes = tokenHolder.delegate.delegatedVotes
-  const delegatedVotesDisplay = numberWithCommas(delegatedVotes, { precision: getPrecision(delegatedVotes) })
+  const delegatedVotesDisplay = numberWithCommas(delegatedVotes, {
+    precision: getPrecision(delegatedVotes)
+  })
 
   return (
     <p className='text-accent-1 mt-auto'>
