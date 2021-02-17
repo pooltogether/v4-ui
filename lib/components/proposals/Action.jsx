@@ -221,7 +221,7 @@ const CustomContractInput = (props) => {
   const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
   const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
 
-  // TODO: This will only work with mainnet contracts
+  // This will only work with mainnet contracts
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useAtom } from 'jotai'
+import Link from 'next/link'
 
 import { Trans, useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
@@ -30,11 +30,19 @@ const UsersVotesCardBlankState = (props) => {
         <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
       </div>
 
-      <div className='flex flex-col'>
+      <div className='flex items-center lg:items-end'>
         <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>0</h2>
 
-        {/* TODO: Add a link to where they can get POOL  */}
-        <p className='text-accent-1 mt-2'>{t('youCurrentlyHaveNoPoolToUseForVotingDescription')}</p>
+        <p className='text-accent-1 ml-4 mt-2'>
+          {t('youCurrentlyHaveNoPoolToUseForVotingDescription')} <Link
+            href='https://app.pooltogether.com'
+            as='https://app.pooltogether.com'
+          >
+            <a className='text-highlight-2 hover:text-white underline trans trans-fast'>
+              {t('getPoolFromDepositingInPools')}
+            </a>
+          </Link>
+        </p>
       </div>
     </Banner>
   )
