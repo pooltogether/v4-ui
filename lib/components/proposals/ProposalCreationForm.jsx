@@ -74,11 +74,16 @@ export const ProposalCreationForm = () => {
 
   const onCancelled = () => setShowModal(false)
 
+  const onSuccess = () => {
+    refetchAllProposals()
+    // TODO: Send user to proposals list or ideally the specific proposal they just created
+  }
+
   const submitTransaction = async () => {
     const params = getProposeParamsFromForm(validFormData)
     const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
       onCancelled,
-      onSuccess: refetchAllProposals
+      onSuccess
     })
     console.log(txId)
     setTxId(txId)
