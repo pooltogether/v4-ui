@@ -1,7 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useFieldArray, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 
 import { useTranslation } from 'lib/../i18n'
@@ -16,37 +16,51 @@ import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
+import { contract } from '@pooltogether/etherplex'
+import {
+  EMPTY_ACTION,
+  EMPTY_CONTRACT,
+  EMPTY_FN
+} from 'lib/components/proposals/ProposalCreationForm'
 
 export const Action = (props) => {
-  const { action, setAction, deleteAction, index, hideRemoveButton } = props
+  const { deleteAction, actionPath, index, hideRemoveButton } = props
   const { t } = useTranslation()
 
-  // const { control } = useFormContext()
-  // const actionName = `actions[${index}]`
-  // useController({
-  //   name: actionName,
-  //   control,
-  //   rules: { required: true, validate: validateAction },
-  //   defaultValue: [
-  //     {
-  //       id: Date.now()
-  //     }
-  //   ]
-  // })
+  const { control } = useFormContext()
+
+  const {
+    field: { value: contract, onChange: contractOnChange }
+  } = useController({
+    name: `${actionPath}.contract`,
+    control,
+    rules: { required: true },
+    defaultValue: EMPTY_CONTRACT
+  })
+
+  const {
+    field: { value: fn, onChange: fnOnChange }
+  } = useController({
+    name: `${actionPath}.contract.fn`,
+    control,
+    rules: { required: true },
+    defaultValue: EMPTY_FN
+  })
 
   const setContract = (contract) => {
-    setAction({
-      ...action,
-      fn: undefined,
-      contract
+    console.log('setContract', contract)
+    contractOnChange({
+      ...contract
     })
   }
 
+  useEffect(() => {
+    fnOnChange(EMPTY_FN)
+  }, [contract])
+
   const setFunction = (fn) => {
-    setAction({
-      ...action,
-      fn
-    })
+    console.log('setFunction', fn)
+    fnOnChange(fn)
   }
 
   return (
@@ -67,13 +81,13 @@ export const Action = (props) => {
       </div>
 
       <div className='flex flex-col'>
-        <ContractSelect setContract={setContract} currentContract={action.contract} />
+        <ContractSelect setContract={setContract} currentContract={contract} />
         <div className='flex flex-col xs:pl-8 mt-2'>
           <FunctionSelect
-            contract={action.contract}
+            contract={contract}
             setFunction={setFunction}
-            fn={action.fn}
-            actionIndex={index}
+            fn={fn}
+            fnPath={`${actionPath}.contract.fn`}
           />
         </div>
       </div>
@@ -158,12 +172,12 @@ const ContractSelect = (props) => {
     return options
   }, [prizePools, prizePoolsIsFetched])
 
-  const formatValue = (value) => {
-    return value?.name
+  const formatValue = (contract) => {
+    return contract?.name || t('selectAContract')
   }
 
   const onValueSet = (contract) => {
-    setContract(contract)
+    setContract({ ...contract })
   }
 
   return (
@@ -298,7 +312,7 @@ const CustomAbiInput = (props) => {
 }
 
 const FunctionSelect = (props) => {
-  const { fn, contract, setFunction, actionIndex } = props
+  const { fn, contract, setFunction, fnPath } = props
   const { t } = useTranslation()
 
   const functions = useMemo(
@@ -310,11 +324,11 @@ const FunctionSelect = (props) => {
   if (!contract || !contract?.abi) return null
 
   const formatValue = (fn) => {
-    return fn?.name
+    return fn?.name || t('selectAFunction')
   }
 
   const onValueSet = (fn) => {
-    setFunction(fn)
+    setFunction({ ...fn })
   }
 
   return (
@@ -328,25 +342,25 @@ const FunctionSelect = (props) => {
         values={functions}
         current={fn}
       />
-      <FunctionInputs fn={fn} actionIndex={actionIndex} />
+      <FunctionInputs fn={fn} fnPath={fnPath} />
     </>
   )
 }
 
 const FunctionInputs = (props) => {
-  const { fn, actionIndex } = props
-  const inputs = fn?.inputs
-  if (!fn || inputs.length === 0) return null
+  const { fn, fnPath } = props
+
+  const inputs = fn?.inputs || []
+
+  if (!inputs || inputs.length === 0) return null
 
   return (
     <ul className='mt-2'>
       {inputs.map((input, index) => (
         <FunctionInput
-          fnName={fn.name}
-          key={input.name}
           {...input}
-          actionIndex={actionIndex}
-          inputIndex={index}
+          key={`${fnPath}-${fn.name}-${input.name}`}
+          fnInputPath={`${fnPath}.values[${input.name}]`}
         />
       ))}
     </ul>
@@ -354,15 +368,21 @@ const FunctionInputs = (props) => {
 }
 
 const FunctionInput = (props) => {
-  const { name, type, actionIndex, inputIndex } = props
-  const { register } = useFormContext()
+  const { name, type, fnInputPath } = props
+  const { register, unregister } = useFormContext()
+
+  useEffect(() => {
+    return () => {
+      unregister(`${fnInputPath}.value`)
+    }
+  }, [])
 
   // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
       <SimpleInput
         label={name}
-        name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
+        name={`${fnInputPath}.value`}
         register={register}
         required
         dataType={type}

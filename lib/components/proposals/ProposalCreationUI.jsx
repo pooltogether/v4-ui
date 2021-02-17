@@ -48,8 +48,6 @@ const ProposalCreationMinimumRequirementBanner = () => {
   const { isFetched, userCanCreateProposal } = useUserCanCreateProposal()
   const { data: governorAlpha } = useGovernorAlpha()
 
-  console.log(isFetched, userCanCreateProposal)
-
   // TODO: Add links for 'more about token'
 
   if (!usersAddress) {

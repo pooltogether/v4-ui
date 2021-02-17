@@ -25,9 +25,38 @@ import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
 
+export const EMPTY_INPUT = {
+  type: null,
+  name: null,
+  value: null
+}
+
+export const EMPTY_FN = { inputs: [], name: null, type: null }
+
+export const EMPTY_CONTRACT = {
+  address: null,
+  name: null,
+  abi: null,
+  custom: null,
+  fn: EMPTY_FN
+}
+
+export const EMPTY_ACTION = {
+  contract: EMPTY_CONTRACT
+}
+
 export const ProposalCreationForm = () => {
   const { userCanCreateProposal } = useUserCanCreateProposal()
-  const formMethods = useForm({ mode: 'onSubmit', shouldFocusError: false })
+  const formMethods = useForm({
+    mode: 'onSubmit',
+    shouldFocusError: false,
+    defaultValues: {
+      title: '',
+      description: '',
+      actions: [EMPTY_ACTION]
+    }
+  })
+
   const [showSummary, setShowSummary] = useState(false)
 
   const [showModal, setShowModal] = useState(false)
