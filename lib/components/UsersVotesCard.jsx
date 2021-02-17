@@ -26,13 +26,13 @@ const UsersVotesCardBlankState = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+    <Banner className={classnames('mb-8 sm:mb-10')} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
         <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
       </div>
 
       <div className='flex items-center lg:items-end'>
-        <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4'>0</h2>
+        <h2 className='mb-4 sm:mb-0 leading-none mr-0 sm:mr-4 opacity-70'>0</h2>
 
         <p className='text-accent-1 ml-4 mt-2'>
           {isDataFromBeforeCurrentBlock
@@ -53,21 +53,24 @@ const UsersVotesCardConnectWallet = (props) => {
   const { t } = useTranslation()
 
   return (
-    <Banner className={classnames('mb-4')} style={{ color: 'white' }}>
+    <Banner className={classnames('mb-8 sm:mb-10')} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
         <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
       </div>
-      <div className='flex flex-col'>
-        {t('connectYourWalletToVote')}
-        <Button
-          secondary
-          className='mt-3 xs:w-5/12 sm:w-1/3 lg:w-1/4'
-          textSize='xxxs'
-          onClick={() => props.connectWallet()}
-        >
-          {t('connectWallet')}
-        </Button>
-      </div>
+
+      <Trans
+        i18nKey='connectAWalletToVoteAndParticipate'
+        defaults='<button>Connect a wallet</button> to vote and participate in governance'
+        components={{
+          button: (
+            <button
+              type='button'
+              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
+              onClick={() => props.connectWallet()}
+            />
+          )
+        }}
+      />
     </Banner>
   )
 }
@@ -83,11 +86,7 @@ export const UsersVotesCard = (props) => {
     isFetched: tokenHolderIsFetched,
     isDataFromBeforeCurrentBlock,
     refetch: refetchTokenHolderData
-  } = useTokenHolder(
-    // '0x7e4A8391C728fEd9069B2962699AB416628B19Fa', // Dharmas address for testing
-    usersAddress,
-    blockNumber
-  )
+  } = useTokenHolder(usersAddress, blockNumber)
 
   if (!usersAddress) {
     return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
@@ -107,7 +106,7 @@ export const UsersVotesCard = (props) => {
     : numberWithCommas(tokenHolder.tokenBalance, { precision: 0 })
 
   return (
-    <Banner className={classnames('mb-4', className)} style={{ color: 'white' }}>
+    <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
         <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
         {isDataFromBeforeCurrentBlock && (
@@ -120,7 +119,7 @@ export const UsersVotesCard = (props) => {
       <div className='flex flex-col sm:flex-row'>
         <h2
           className={classnames('mb-4 sm:mb-0 leading-none mr-0 sm:mr-4', {
-            'opacity-30': !tokenHolder.hasDelegated
+            'opacity-30': !tokenHolder.hasDelegated || votingPower === '0'
           })}
         >
           {votingPower}

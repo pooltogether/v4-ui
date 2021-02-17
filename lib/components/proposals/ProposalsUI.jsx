@@ -47,12 +47,6 @@ export const ProposalsUI = (props) => {
       </p>
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
-        <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
-          <Button textSize='xxs' type='button' className='mb-4 sm:mb-0 w-full sm:w-auto'>
-            {t('discussProposals')}
-          </Button>
-        </a>
-
         <PTHint
           tip={
             <div className='my-2 text-center text-xs sm:text-sm'>
@@ -64,21 +58,22 @@ export const ProposalsUI = (props) => {
           <Button
             disabled
             textSize='xxs'
-            className='sm:ml-8 w-full sm:w-auto'
+            className='w-full sm:w-auto mb-4 sm:mb-0 '
             onClick={(e) => {
               e.preventDefault()
               connectWallet()
             }}
-            border='green'
-            text='primary'
-            bg='green'
-            hoverBorder='green'
-            hoverText='primary'
-            hoverBg='green'
+            tertiary
           >
             {t('createAProposal')}
           </Button>
         </PTHint>
+
+        <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
+          <Button secondary textSize='xxs' type='button' className='w-full sm:w-auto sm:ml-2'>
+            {t('discussProposals')}
+          </Button>
+        </a>
       </div>
 
       <ProposalsList />
