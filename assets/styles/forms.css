@@ -65,6 +65,12 @@ input[type='submit'][disabled] {
   @apply text-accent-3 font-bold text-xxxs xs:text-xxs px-4 sm:px-8;
 }
 
+@screen sm {
+  .fieldset label {
+    @apply px-6;
+  }
+}
+
 .check {
   stroke: #05e6c4;
   fill: none;
@@ -140,4 +146,8 @@ input[type='number'] {
   .radio-input {
     max-width: 370px;
   }
+}
+
+textarea {
+  @apply tracking-wider;
 }

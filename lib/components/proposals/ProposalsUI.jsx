@@ -39,7 +39,7 @@ export const ProposalsUI = (props) => {
           href='https://medium.com/p/23b09f36db48'
           target='_blank'
           rel='noreferrer noopener'
-          className='text-inverse underline'
+          className='text-inverse hover:text-highlight-2 underline trans trans-fast'
         >
           {t('readMoreAboutPoolTogetherGovernance')}
         </a>

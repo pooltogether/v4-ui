@@ -25,6 +25,7 @@ import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
 import { poolToast } from 'lib/utils/poolToast'
+import { useAllProposals } from 'lib/hooks/useAllProposals'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -47,6 +48,9 @@ export const EMPTY_ACTION = {
 }
 
 export const ProposalCreationForm = () => {
+  const { t } = useTranslation()
+  const { refetch: refetchAllProposals } = useAllProposals()
+
   const { userCanCreateProposal } = useUserCanCreateProposal()
   const formMethods = useForm({
     mode: 'onSubmit',
@@ -73,7 +77,8 @@ export const ProposalCreationForm = () => {
   const submitTransaction = async () => {
     const params = getProposeParamsFromForm(validFormData)
     const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-      onCancelled
+      onCancelled,
+      onSuccess: refetchAllProposals
     })
     console.log(txId)
     setTxId(txId)
@@ -150,7 +155,7 @@ export const ProposalCreationForm = () => {
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
             <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
-              Preview Proposal
+              {t('previewProposal')}
             </Button>
           </div>
 
@@ -179,9 +184,11 @@ const TitleCard = (props) => {
 
   return (
     <Card disabled={disabled}>
-      <h4 className='mb-6'>{t('title')}</h4>
-      <p className='mb-4'>{t('theTitleIsDescription')}</p>
+      <h4 className='mb-2'>{t('title')}</h4>
+      <p className='mb-6'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
+        className='border-accent-3'
+        bgClasses='bg-body'
         alignLeft
         disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
@@ -205,8 +212,8 @@ const DescriptionCard = (props) => {
 
   return (
     <Card disabled={disabled}>
-      <h4 className='mb-6'>{t('description')}</h4>
-      <p className='mb-4'>{t('theDescriptionShouldPresentInFullDescription')}</p>
+      <h4 className='mb-2'>{t('description')}</h4>
+      <p className='mb-8'>{t('theDescriptionShouldPresentInFullDescription')}</p>
       <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
     </Card>
   )
@@ -244,7 +251,7 @@ const TextArea = (props) => {
   const { register, required, pattern, validate, classNames, ...textAreaProps } = props
   return (
     <textarea
-      className={classnames('p-1 bg-body text-inverse w-full resize-none', classNames)}
+      className={classnames('h-96 p-4 xs:p-8 bg-body text-inverse w-full resize-none', classNames)}
       ref={register({ required, pattern, validate })}
       {...textAreaProps}
     />
@@ -254,15 +261,18 @@ const TextArea = (props) => {
 const MarkdownPreview = (props) => {
   const { text, className } = props
 
+  // Extra div with padding aligns the 'Write' tab content with the 'Preview' tab content exactly
   return (
-    <ReactMarkdown
-      plugins={[gfm]}
-      className={classnames(
-        'description whitespace-pre-wrap break-word overflow-y-auto',
-        className
-      )}
-      children={text}
-    />
+    <div style={{ paddingTop: 0, paddingBottom: 6 }}>
+      <ReactMarkdown
+        plugins={[gfm]}
+        className={classnames(
+          'p-4 xs:p-8 description whitespace-pre-wrap break-word overflow-y-auto tracking-wider',
+          className
+        )}
+        children={text}
+      />
+    </div>
   )
 }
 
@@ -283,7 +293,7 @@ const TabbedView = (props) => {
           />
         ))}
       </div>
-      <div className='bg-body p-4 xs:p-8 border border-accent-3 rounded-b-lg'>
+      <div className='bg-body border border-accent-3 rounded-b-lg'>
         {tabs.map((tab, index) => (
           <div
             key={`${tab.title}-${index}-view`}

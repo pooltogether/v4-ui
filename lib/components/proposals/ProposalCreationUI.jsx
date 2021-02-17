@@ -30,7 +30,17 @@ export const ProposalCreationUI = (props) => {
             {
               href: '/',
               as: '/',
+              name: t('vote')
+            },
+            {
+              href: '/',
+              as: '/',
               name: t('proposals')
+            },
+            {
+              href: '/proposals/create',
+              as: '/proposals/create',
+              name: t('createProposal')
             }
           ]}
         />

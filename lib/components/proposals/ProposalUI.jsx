@@ -48,6 +48,11 @@ export const ProposalUI = (props) => {
           {
             href: '/',
             as: '/',
+            name: t('vote')
+          },
+          {
+            href: '/',
+            as: '/',
             name: t('proposals')
           },
           {
@@ -207,7 +212,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col sm:flex-row'>
-        <h4 className='mb-2 sm:mb-8'>{title}</h4>
+        <h4 className={classnames({ 'mb-2 sm:mb-8': showButtons })}>{title}</h4>
         <ProposalStatus proposal={proposal} />
       </div>
       {voteDataIsFetched && voteData?.delegateDidVote && (
@@ -227,26 +232,25 @@ const ProposalVoteCard = (props) => {
           </div>
         </div>
       )}
-      <div className='mt-2 flex justify-end h-12'>
-        {showButtons && (
-          <>
-            {status === PROPOSAL_STATUS.active && (
-              <VoteButtons
-                id={id}
-                refetchData={refetchData}
-                selfDelegated={tokenHolderData?.selfDelegated}
-                alreadyVoted={voteData?.delegateDidVote}
-              />
-            )}
-            {status === PROPOSAL_STATUS.succeeded && (
-              <QueueButton id={id} refetchData={refetchData} />
-            )}
-            {status === PROPOSAL_STATUS.queued && (
-              <ExecuteButton id={id} refetchData={refetchData} />
-            )}
-          </>
-        )}
-      </div>
+
+      {showButtons && (
+        <div className='mt-2 flex justify-end h-12'>
+          {status === PROPOSAL_STATUS.active && (
+            <VoteButtons
+              id={id}
+              refetchData={refetchData}
+              selfDelegated={tokenHolderData?.selfDelegated}
+              alreadyVoted={voteData?.delegateDidVote}
+            />
+          )}
+          {status === PROPOSAL_STATUS.succeeded && (
+            <QueueButton id={id} refetchData={refetchData} />
+          )}
+          {status === PROPOSAL_STATUS.queued && (
+            <ExecuteButton id={id} refetchData={refetchData} />
+          )}
+        </div>
+      )}
     </Card>
   )
 }

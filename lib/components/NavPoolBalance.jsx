@@ -29,7 +29,7 @@ export const NavPoolBalance = () => {
         className='relative text-highlight-9 hover:text-white font-bold cursor-pointer pool-gradient-1 rounded-full px-3 xs:px-4 p-2 leading-none trans mr-2 flex'
         onClick={openModal}
       >
-        <span className='hidden sm:block mr-2'>
+        <span className='mr-1'>
           {numberWithCommas(usersBalance, { precision: getPrecision(usersBalance) })}
         </span>
         POOL
@@ -46,9 +46,9 @@ const PoolBalanceModal = (props) => {
 
   const { total: totalClaimablePool, isFetched: totalClaimableIsFetched } = useTotalClaimablePool()
 
-  if (!totalClaimableIsFetched) {
-    return null
-  }
+  // if (!totalClaimableIsFetched) {
+  //   return null
+  // }
 
   const totalClaimablePoolFormatted = numberWithCommas(totalClaimablePool, {
     precision: getPrecision(totalClaimablePool)

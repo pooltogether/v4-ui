@@ -249,7 +249,7 @@ const CustomContractInput = (props) => {
   const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
   const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
 
-  // TODO: This will only work with mainnet contracts
+  // This will only work with mainnet contracts
 
   return (
     <>
@@ -437,7 +437,7 @@ const SimpleInput = (props) => {
         </label>
         <input
           {...inputProps}
-          className='bg-card xs:w-3/4 p-2 rounded-sm'
+          className='bg-card xs:w-3/4 p-2 rounded-sm outline-none focus:outline-none active:outline-none hover:bg-primary focus:bg-primary trans trans-fast border border-transparent focus:border-card'
           id={name}
           autoFocus={autoFocus && isBrowser}
           name={name}
