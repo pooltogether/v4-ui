@@ -29,8 +29,10 @@ export const COOKIE_OPTIONS = {
 
 export const CONTRACT_ADDRESSES = {
   1: {
-    GovernorAlpha: '0xB3a87172F555ae2a2AB79Be60B336D2F7D0187f0',
-    GovernanceToken: '0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e'
+    // GovernorAlpha: '0xB3a87172F555ae2a2AB79Be60B336D2F7D0187f0',
+    // GovernanceToken: '0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e'
+    GovernorAlpha: '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F', // TODO: This is uniswap governance. Change with ours.
+    GovernanceToken: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984' // TODO: This is UNI swap with POOL. Change with ours.
   },
   3: {},
   4: {
