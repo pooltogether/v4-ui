@@ -170,7 +170,7 @@ export const ProposalStatus = (props) => {
       )}
     >
       {proposal.endDate && (
-        <div className='pl-2 sm:pl-4 mr-2 sm:mr-4'>
+        <div className='pl-2 sm:pl-4 mr-2 sm:mr-4 text-right' style={{ minWidth: 104 }}>
           {proposal.endDate.toLocaleString(DateTime.DATE_MED)}
         </div>
       )}

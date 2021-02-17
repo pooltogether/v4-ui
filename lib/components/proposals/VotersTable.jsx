@@ -2,6 +2,7 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import { useTable } from 'react-table'
 
+import { VOTERS_PER_PAGE } from 'lib/constants'
 import { useTranslation } from 'lib/../i18n'
 import { BasicTable } from 'lib/components/BasicTable'
 import { BlankStateMessage } from 'lib/components/BlankStateMessage'
@@ -17,29 +18,13 @@ export const VotersTable = (props) => {
   const { t } = useTranslation()
   const router = useRouter()
 
-  // const [pageNumber, setPageNumber] = useProposalVotesPages(id)
-  const { data, isFetching, isFetched } = useProposalVotes(id)
+  const allVotesPageNumber = -1
+  const { data: allVotes, isFetched: allVotesFetched } = useProposalVotes(id, allVotesPageNumber)
 
-  // const prevPage = (e) => {
-  //   e.preventDefault()
-  //   const newPage = pageNumber - 1
-  //   setPageNumber(newPage >= 0 ? newPage : 0)
-  // }
-
-  // const nextPage = (e) => {
-  //   e.preventDefault()
-  //   // TODO: Get last page number
-  //   const newPage = pageNumber + 1
-  //   setPageNumber(newPage)
-  // }
-
-  // const voteCount = proposals
-
-  const voteCount = 66
-  const VOTE_PAGE_SIZE = 10
+  const voteCount = allVotes?.votes?.length
 
   const page = router?.query?.page ? parseInt(router.query.page, 10) : 1
-  const pages = Math.ceil(Number(voteCount / VOTE_PAGE_SIZE))
+  const pages = Math.ceil(Number(voteCount / VOTERS_PER_PAGE))
 
   const baseAsPath = `/proposals/${id}`
   const baseHref = '/proposals/[id]'
@@ -49,6 +34,8 @@ export const VotersTable = (props) => {
   const prevPage = page - 1
   const nextPath = asPath(nextPage)
   const prevPath = asPath(prevPage)
+
+  const { data, isFetching, isFetched } = useProposalVotes(id, page)
 
   const columns = React.useMemo(() => {
     return [
@@ -86,41 +73,16 @@ export const VotersTable = (props) => {
     data: rowData
   })
 
-  if (isFetching && !isFetched) {
-    return <V3LoadingDots />
-  }
-
   return (
     <>
-      {data?.votes?.length === 0 ? 
+      {allVotes && allVotes.votes && allVotes.votes.length === 0 ? 
         <BlankStateMessage>
           {t('noVotesHaveBeenCastYet')}
         </BlankStateMessage> : (
         <>
-          <BasicTable tableInstance={tableInstance} />
-{/* 
-          <div className='flex flex-row justify-center mt-4'>
-            <button type='button' onClick={prevPage}>
-              <FeatherIcon
-                icon='chevron-left'
-                className={classnames(
-                  'w-8 h-8 text-accent-1 hover:text-inverse trans stroke-current stroke-1',
-                  {
-                    'opacity-20': pageNumber === 0
-                  }
-                )}
-              />
-            </button>
-            <span className='my-auto text-accent-1 mx-2'>{pageNumber}</span>
-            <button type='button' onClick={nextPage}>
-              <FeatherIcon
-                icon='chevron-right'
-                className={classnames(
-                  'w-8 h-8 text-accent-1 hover:text-inverse trans stroke-current stroke-1'
-                )}
-              />
-            </button>
-          </div> */}
+          <div className='basic-table-min-height'>
+            {(isFetching && !isFetched) ? <V3LoadingDots /> : <BasicTable tableInstance={tableInstance} />}
+          </div>
 
           <PaginationUI
             prevPath={prevPath}

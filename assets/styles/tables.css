@@ -11,7 +11,7 @@ table {
 
 @screen sm {
   table {
-    @apply text-sm;
+    @apply text-xxs;
   }
 }
 
@@ -100,18 +100,24 @@ td:last-child {
   padding-right: 0 !important;
 }
 
-.players-table-min-height {
-  min-height: 400px;
+.basic-table-min-height {
+  min-height: 290px;
 }
 
 @screen xs {
-  .players-table-min-height {
-    min-height: 550px;
+  .basic-table-min-height {
+    min-height: 440px;
   }
 }
 
 @screen sm {
-  .players-table-min-height {
-    min-height: 620px;
+  .basic-table-min-height {
+    min-height: 410px;
+  }
+}
+
+@screen lg {
+  .basic-table-min-height {
+    min-height: 510px;
   }
 }

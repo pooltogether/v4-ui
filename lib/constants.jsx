@@ -93,5 +93,5 @@ export const PROPOSAL_STATES = [
   PROPOSAL_STATUS.executed
 ]
 
-export const VOTERS_PER_PAGE = 5
+export const VOTERS_PER_PAGE = 10
 export const DELEGATES_PER_PAGE = 15
