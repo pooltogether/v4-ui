@@ -141,7 +141,7 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            <button type='button' onClick={() => console.log(formMethods.getValues())}>
+            {/* <button type='button' onClick={() => console.log(formMethods.getValues())}>
               TEST: Log Form Values
             </button>
             <button type='button' onClick={() => console.log(formMethods.formState)}>
@@ -155,7 +155,7 @@ export const ProposalCreationForm = () => {
               }}
             >
               Trigger Validation
-            </button>
+            </button> */}
             <ActionsCard disabled={!userCanCreateProposal} />
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
@@ -344,9 +344,9 @@ const ProposalSummary = (props) => {
     <>
       <h4 className='mb-8'>Proposal review</h4>
       <Card>
-        <h5 className='mb-4'>Title:</h5>
-        <span className='text-accent-1'>{title}</span>
-        <h5 className='my-4'>Description:</h5>
+        <h5 className=''>Title:</h5>
+        <h6 className='text-accent-1 p-4 xs:p-8'>{title}</h6>
+        <h5 className=''>Description:</h5>
         <MarkdownPreview className='text-accent-1' text={description} />
         <h5 className='my-4'>Actions:</h5>
         {actions.map((action, index) => (

@@ -23,7 +23,9 @@ export const ProposalCreationUI = (props) => {
     <>
       <ProposalCreationMinimumRequirementBanner />
 
-      <div className={classnames('trans', { 'opacity-40': isFetched && !userCanCreateProposal })}>
+      <div
+        className={classnames('trans mb-12', { 'opacity-40': isFetched && !userCanCreateProposal })}
+      >
         <PageTitleAndBreadcrumbs
           title={t('createANewProposal')}
           breadcrumbs={[
