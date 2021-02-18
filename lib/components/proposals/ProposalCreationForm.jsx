@@ -24,14 +24,45 @@ import { ethers } from 'ethers'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
+import { poolToast } from 'lib/utils/poolToast'
+import { useAllProposals } from 'lib/hooks/useAllProposals'
+
+export const EMPTY_INPUT = {
+  type: null,
+  name: null,
+  value: null
+}
+
+export const EMPTY_FN = { inputs: [], name: null, type: null }
+
+export const EMPTY_CONTRACT = {
+  address: null,
+  name: null,
+  abi: null,
+  custom: null,
+  fn: EMPTY_FN
+}
+
+export const EMPTY_ACTION = {
+  contract: EMPTY_CONTRACT
+}
 
 export const ProposalCreationForm = () => {
   const { t } = useTranslation()
-  
-  const { userCanCreateProposal } = useUserCanCreateProposal()
-  const formMethods = useForm({ mode: 'onSubmit', shouldFocusError: false })
-  const [showSummary, setShowSummary] = useState(false)
+  const { refetch: refetchAllProposals } = useAllProposals()
 
+  const { userCanCreateProposal } = useUserCanCreateProposal()
+  const formMethods = useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      title: '',
+      description: '',
+      actions: [EMPTY_ACTION]
+    }
+  })
+
+  const [showSummary, setShowSummary] = useState(false)
+  const [validFormData, setValidFormData] = useState()
   const [showModal, setShowModal] = useState(false)
 
   const { chainId } = useContext(AuthControllerContext)
@@ -43,19 +74,58 @@ export const ProposalCreationForm = () => {
 
   const onCancelled = () => setShowModal(false)
 
-  const onSubmit = async (data) => {
-    console.log('Submit', data)
+  const onSuccess = () => {
+    refetchAllProposals()
+    // TODO: Send user to proposals list or ideally the specific proposal they just created
+  }
 
-    const params = getProposeParamsFromForm(data)
-    console.log('params', params)
+  const submitTransaction = async () => {
+    const params = getProposeParamsFromForm(validFormData)
     const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-      onCancelled
+      onCancelled,
+      onSuccess
     })
     console.log(txId)
     setTxId(txId)
     setShowModal(true)
   }
-  const onError = (data) => console.log('Error', data)
+
+  const onSubmit = async (data) => {
+    console.log('Submit', data)
+    window?.scrollTo(0, 0)
+    setShowSummary(true)
+    setValidFormData(data)
+  }
+  const onError = (data) => {
+    console.log('Error', data)
+    const parsedErrorMessages = []
+
+    if (data?.title?.message) parsedErrorMessages.push(data.title.message)
+    if (data?.description?.message) parsedErrorMessages.push(data.description.message)
+
+    if (data?.actions) {
+      data?.actions.forEach((action) => {
+        if (action?.contract?.message) {
+          parsedErrorMessages.push(action.contract.message)
+        }
+
+        if (action?.contract?.fn?.message) {
+          parsedErrorMessages.push(action.contract.fn.message)
+        }
+
+        if (action?.contract?.fn?.values) {
+          Object.keys(action.contract.fn.values).forEach((fnName) => {
+            if (action.contract.fn.values[fnName]?.message) {
+              console.log('HERE', fnName)
+              parsedErrorMessages.push(action.contract.fn.values[fnName].message)
+            }
+          })
+        }
+      })
+    }
+
+    poolToast.error(parsedErrorMessages.join('. '))
+  }
 
   const closeModal = useCallback(() => {
     if (tx && !tx?.inWallet) {
@@ -71,7 +141,7 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            <button type='button' onClick={() => console.log(formMethods.getValues())}>
+            {/* <button type='button' onClick={() => console.log(formMethods.getValues())}>
               TEST: Log Form Values
             </button>
             <button type='button' onClick={() => console.log(formMethods.formState)}>
@@ -85,26 +155,18 @@ export const ProposalCreationForm = () => {
               }}
             >
               Trigger Validation
-            </button>
+            </button> */}
             <ActionsCard disabled={!userCanCreateProposal} />
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
-            <Button
-              className='mb-16 w-full'
-              disabled={!userCanCreateProposal}
-              type='button'
-              onClick={(e) => {
-                e.preventDefault()
-                setShowSummary(true)
-                window.scrollTo(0, 0)
-              }}
-            >
+            <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
               {t('previewProposal')}
             </Button>
           </div>
 
           {showSummary && (
             <ProposalSummary
+              submitTransaction={submitTransaction}
               showForm={() => {
                 setShowSummary(false)
                 window.scrollTo(0, 0)
@@ -138,7 +200,7 @@ const TitleCard = (props) => {
         id='_proposalTitle'
         label={t('proposalTitle')}
         name='title'
-        required
+        required={t('blankIsRequired', { blank: t('title') })}
         register={register}
       />
     </Card>
@@ -176,7 +238,7 @@ const MarkdownInputArea = (props) => {
           rows={15}
           disabled={disabled}
           name='description'
-          required
+          required={t('blankIsRequired', { blank: t('description') })}
           register={register}
         />
       )
@@ -271,9 +333,10 @@ const Tab = (props) => {
   )
 }
 
+// TODO: It'd be awesome to be able to link to a filled out form. Just stuff everything into query params?
 const ProposalSummary = (props) => {
   const { t } = useTranslation()
-  const { showForm, getValues } = props
+  const { showForm, getValues, submitTransaction } = props
 
   const { actions, title, description } = getValues()
 
@@ -281,13 +344,13 @@ const ProposalSummary = (props) => {
     <>
       <h4 className='mb-8'>Proposal review</h4>
       <Card>
-        <h5 className='mb-4'>Title:</h5>
-        <span className='text-accent-1'>{title}</span>
-        <h5 className='my-4'>Description:</h5>
+        <h5 className=''>Title:</h5>
+        <h6 className='text-accent-1 p-4 xs:p-8'>{title}</h6>
+        <h5 className=''>Description:</h5>
         <MarkdownPreview className='text-accent-1' text={description} />
         <h5 className='my-4'>Actions:</h5>
         {actions.map((action, index) => (
-          <ActionSummary key={action.id} action={action} index={index} />
+          <ActionSummary key={index} action={action} index={index} />
         ))}
       </Card>
       <Button
@@ -301,7 +364,14 @@ const ProposalSummary = (props) => {
       >
         Edit Proposal
       </Button>
-      <Button className='mt-4 mb-16 w-full' type='submit'>
+      <Button
+        className='mt-4 mb-16 w-full'
+        type='button'
+        onClick={(e) => {
+          e.preventDefault()
+          submitTransaction()
+        }}
+      >
         Submit Proposal
       </Button>
     </>
@@ -310,9 +380,9 @@ const ProposalSummary = (props) => {
 
 const ActionSummary = (props) => {
   const { action, index } = props
-  const { contract, fn, id } = action
-  const { name: contractName, address } = contract
-  const { inputs, name: fnName } = fn
+  const { contract } = action
+  const { name: contractName, address, fn } = contract
+  const { inputs, name: fnName, values } = fn
 
   const actionNumber = index + 1
 
@@ -337,7 +407,7 @@ const ActionSummary = (props) => {
       </span>
       {inputs.map((input, index) => (
         <div
-          key={`${id}-${index}-fn-input`}
+          key={`${actionNumber}-${index}-fn-input`}
           className='flex ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
         >
           <div className='xs:w-1/4 flex flex-wrap'>
@@ -346,7 +416,7 @@ const ActionSummary = (props) => {
           </div>
           <div className='xs:w-3/4'>
             <span className='text-inverse'>
-              <FormattedInputValue {...input} />
+              <FormattedInputValue {...input} value={values[input.name]} />
             </span>
           </div>
         </div>
@@ -392,6 +462,7 @@ const ProposalTransactionModal = (props) => {
   )
 }
 
+// TODO: Some functions have optional parameters. That isn't abailable in the ABI.
 const getProposeParamsFromForm = (formData) => {
   const targets = []
   const values = []
@@ -404,10 +475,10 @@ const getProposeParamsFromForm = (formData) => {
     values.push(0)
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
-    signatures.push(contractInterface.functions[action.fn.name].signature)
+    signatures.push(contractInterface.functions[action.contract.fn.name].signature)
     calldatas.push(
-      contractInterface.functions[action.fn.name].encode(
-        action.fn.inputs.map((input) => input.value)
+      contractInterface.functions[action.contract.fn.name].encode(
+        action.contract.fn.inputs.map((input) => action.contract.fn.values[input.name])
       )
     )
   })

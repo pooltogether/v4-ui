@@ -1,5 +1,5 @@
 import React from 'react'
-import { useController, useFormContext } from 'react-hook-form'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'
@@ -7,6 +7,7 @@ import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
+import { EMPTY_ACTION } from 'lib/components/proposals/ProposalCreationForm'
 
 export const ActionsCard = (props) => {
   const { disabled } = props
@@ -15,18 +16,11 @@ export const ActionsCard = (props) => {
   const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
   const name = 'actions'
-  const { control } = useFormContext()
 
-  const {
-    field: { onChange, value: actions }
-  } = useController({
-    name,
+  const { control } = useFormContext()
+  const { fields: actions, append, remove } = useFieldArray({
     control,
-    defaultValue: [
-      {
-        id: Date.now()
-      }
-    ]
+    name
   })
 
   if (!prizePoolsIsFetched || !governorAlphaIsFetched) return null
@@ -39,24 +33,12 @@ export const ActionsCard = (props) => {
       <p className='mb-4'>{t('actionCardDescription')}</p>
       {!disabled &&
         actions.map((action, index) => {
-          const setAction = (action) => {
-            const newActions = [...actions]
-            newActions.splice(index, 1, action)
-            onChange(newActions)
-          }
-
-          const deleteAction = () => {
-            const newActions = [...actions]
-            newActions.splice(index, 1)
-            onChange(newActions)
-          }
           return (
             <Action
               key={action.id}
-              action={action}
+              actionPath={`actions[${index}]`}
               index={index}
-              setAction={setAction}
-              deleteAction={deleteAction}
+              deleteAction={() => remove(index)}
               hideRemoveButton={actions.length === 1 && index === 0}
             />
           )
@@ -67,12 +49,7 @@ export const ActionsCard = (props) => {
         disabled={actions.length >= proposalMaxOperations || disabled}
         onClick={(e) => {
           e.preventDefault()
-          onChange([
-            ...actions,
-            {
-              id: Date.now()
-            }
-          ])
+          append(EMPTY_ACTION)
         }}
       >
         {t('addAnotherAction')}

@@ -1,8 +1,9 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useFieldArray, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
+import { isBrowser } from 'react-device-detect'
 
 import { useTranslation } from 'lib/../i18n'
 import { isValidAddress } from 'lib/utils/isValidAddress'
@@ -16,43 +17,70 @@ import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
+import { contract } from '@pooltogether/etherplex'
+import {
+  EMPTY_ACTION,
+  EMPTY_CONTRACT,
+  EMPTY_FN
+} from 'lib/components/proposals/ProposalCreationForm'
 
 export const Action = (props) => {
-  const { action, setAction, deleteAction, index, hideRemoveButton } = props
+  const { deleteAction, actionPath, index, hideRemoveButton } = props
   const { t } = useTranslation()
 
-  // const { control } = useFormContext()
-  // const actionName = `actions[${index}]`
-  // useController({
-  //   name: actionName,
-  //   control,
-  //   rules: { required: true, validate: validateAction },
-  //   defaultValue: [
-  //     {
-  //       id: Date.now()
-  //     }
-  //   ]
-  // })
+  const { control } = useFormContext()
+
+  const actionIndex = index + 1
+
+  const validateContract = (contract) => {
+    return (
+      (Boolean(contract.abi) && Boolean(contract.address)) ||
+      t('contractRequiredForAction', { number: actionIndex })
+    )
+  }
+
+  const validateFn = (fn) => {
+    return Boolean(fn.name) || t('functionRequiredForAction', { number: actionIndex })
+  }
+
+  const {
+    field: { value: contract, onChange: contractOnChange }
+  } = useController({
+    name: `${actionPath}.contract`,
+    control,
+    rules: { validate: validateContract },
+    defaultValue: EMPTY_CONTRACT
+  })
+
+  const {
+    field: { value: fn, onChange: fnOnChange }
+  } = useController({
+    name: `${actionPath}.contract.fn`,
+    control,
+    rules: { required: t('blankIsRequired', { blank: t('function') }), validate: validateFn },
+    defaultValue: EMPTY_FN
+  })
 
   const setContract = (contract) => {
-    setAction({
-      ...action,
-      fn: undefined,
-      contract
+    console.log('setContract', contract)
+    contractOnChange({
+      ...contract
     })
   }
 
+  useEffect(() => {
+    fnOnChange(EMPTY_FN)
+  }, [contract])
+
   const setFunction = (fn) => {
-    setAction({
-      ...action,
-      fn
-    })
+    console.log('setFunction', fn)
+    fnOnChange(fn)
   }
 
   return (
     <div className='mt-4 mx-auto p-4 sm:py-8 sm:px-10 rounded-xl bg-light-purple-10'>
       <div className='flex flex-row justify-between'>
-        <h6 className='mb-4'>{t('actionNumber', { number: index + 1 })}</h6>
+        <h6 className='mb-4'>{t('actionNumber', { number: actionIndex })}</h6>
         {!hideRemoveButton && (
           <button
             className='trans hover:opacity-50'
@@ -67,13 +95,13 @@ export const Action = (props) => {
       </div>
 
       <div className='flex flex-col'>
-        <ContractSelect setContract={setContract} currentContract={action.contract} />
+        <ContractSelect setContract={setContract} currentContract={contract} />
         <div className='flex flex-col xs:pl-8 mt-2'>
           <FunctionSelect
-            contract={action.contract}
+            contract={contract}
             setFunction={setFunction}
-            fn={action.fn}
-            actionIndex={index}
+            fn={fn}
+            fnPath={`${actionPath}.contract.fn`}
           />
         </div>
       </div>
@@ -158,12 +186,12 @@ const ContractSelect = (props) => {
     return options
   }, [prizePools, prizePoolsIsFetched])
 
-  const formatValue = (value) => {
-    return value?.name
+  const formatValue = (contract) => {
+    return contract?.name || t('selectAContract')
   }
 
   const onValueSet = (contract) => {
-    setContract(contract)
+    setContract({ ...contract })
   }
 
   return (
@@ -261,6 +289,7 @@ const CustomAbiInput = (props) => {
   const abiFormName = 'contractAbi'
   const { register, watch } = useForm()
   const abiString = watch(abiFormName, false)
+  const [abiError, setAbiError] = useState(false)
 
   useEffect(() => {
     if (abiString) {
@@ -270,18 +299,21 @@ const CustomAbiInput = (props) => {
           ...contract,
           abi
         })
+        setAbiError(false)
       } catch (e) {
         console.warn(e.message)
         setContract({
           ...contract,
           abi: null
         })
+        setAbiError(true)
       }
     } else if (contract.abi) {
       setContract({
         ...contract,
         abi: null
       })
+      setAbiError(false)
     }
   }, [abiString])
 
@@ -293,12 +325,13 @@ const CustomAbiInput = (props) => {
       register={register}
       required
       placeholder='[{ type: "function", ...'
+      errorMessage={abiError ? t('errorWithAbi') : ''}
     />
   )
 }
 
 const FunctionSelect = (props) => {
-  const { fn, contract, setFunction, actionIndex } = props
+  const { fn, contract, setFunction, fnPath } = props
   const { t } = useTranslation()
 
   const functions = useMemo(
@@ -310,11 +343,11 @@ const FunctionSelect = (props) => {
   if (!contract || !contract?.abi) return null
 
   const formatValue = (fn) => {
-    return fn?.name
+    return fn?.name || t('selectAFunction')
   }
 
   const onValueSet = (fn) => {
-    setFunction(fn)
+    setFunction({ ...fn })
   }
 
   return (
@@ -328,25 +361,25 @@ const FunctionSelect = (props) => {
         values={functions}
         current={fn}
       />
-      <FunctionInputs fn={fn} actionIndex={actionIndex} />
+      <FunctionInputs fn={fn} fnPath={fnPath} />
     </>
   )
 }
 
 const FunctionInputs = (props) => {
-  const { fn, actionIndex } = props
-  const inputs = fn?.inputs
-  if (!fn || inputs.length === 0) return null
+  const { fn, fnPath } = props
+
+  const inputs = fn?.inputs || []
+
+  if (!inputs || inputs.length === 0) return null
 
   return (
     <ul className='mt-2'>
       {inputs.map((input, index) => (
         <FunctionInput
-          fnName={fn.name}
-          key={input.name}
           {...input}
-          actionIndex={actionIndex}
-          inputIndex={index}
+          key={`${fnPath}-${fn.name}-${input.name}`}
+          fnInputPath={`${fnPath}.values[${input.name}]`}
         />
       ))}
     </ul>
@@ -354,17 +387,24 @@ const FunctionInputs = (props) => {
 }
 
 const FunctionInput = (props) => {
-  const { name, type, fnName, actionIndex, inputIndex } = props
-  const { register } = useFormContext()
+  const { t } = useTranslation()
+  const { name, type, fnInputPath } = props
+  const { register, unregister, formState } = useFormContext()
+
+  useEffect(() => {
+    return () => {
+      unregister(`${fnInputPath}`)
+    }
+  }, [])
 
   // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
       <SimpleInput
         label={name}
-        name={`actions[${actionIndex}].fn.inputs[${inputIndex}].value`}
+        name={`${fnInputPath}`}
         register={register}
-        required
+        required={t('blankIsRequired', { blank: name })}
         dataType={type}
       />
     </li>
@@ -385,6 +425,7 @@ const SimpleInput = (props) => {
     loading,
     errorMessage,
     autoComplete,
+    autoFocus,
     ...inputProps
   } = props
 
@@ -398,8 +439,9 @@ const SimpleInput = (props) => {
           {...inputProps}
           className='bg-card xs:w-3/4 p-2 rounded-sm outline-none focus:outline-none active:outline-none hover:bg-primary focus:bg-primary trans trans-fast border border-transparent focus:border-card'
           id={name}
+          autoFocus={autoFocus && isBrowser}
           name={name}
-          ref={register({ required, pattern, validate })}
+          ref={register?.({ required, pattern, validate })}
           type='text'
           autoCorrect={autoCorrect || 'off'}
           autoComplete={autoComplete || 'hidden'}
@@ -463,9 +505,4 @@ const handleEtherscanAbiUseQueryResponse = (
       abi: null
     })
   }
-}
-
-const validateAction = (action) => {
-  // TODO: Validate action
-  return false || 'Missing Data'
 }
