@@ -18412,6 +18412,14 @@ solc@^0.6.3:
     semver "^5.5.0"
     tmp "0.0.33"
 
+solidity-validator@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/solidity-validator/-/solidity-validator-0.5.2.tgz#dd78f6337325a74395c179874e30c5b65967f0b0"
+  integrity sha512-ujCywVzpXMcfGjNJqln3Ygaft2vVOQDT+qdNR3xnaqFyPm+wrPq+XXYbc3SuHcSWp0kKEJG1nDXx+QjQLinhlA==
+  dependencies:
+    bignumber.js "^9.0.0"
+    web3-utils "^1.0.0-beta.36"
+
 sonic-boom@^0.7.5:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-0.7.7.tgz#d921de887428208bfa07b0ae32c278de043f350a"
@@ -20732,6 +20740,20 @@ web3-utils@1.3.0, web3-utils@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.3.0.tgz#5bac16e5e0ec9fe7bdcfadb621655e8aa3cf14e1"
   integrity sha512-2mS5axFCbkhicmoDRuJeuo0TVGQDgC2sPi/5dblfVC+PMtX0efrb8Xlttv/eGkq7X4E83Pds34FH98TP2WOUZA==
+  dependencies:
+    bn.js "^4.11.9"
+    eth-lib "0.2.8"
+    ethereum-bloom-filters "^1.0.6"
+    ethjs-unit "0.1.6"
+    number-to-bn "1.7.0"
+    randombytes "^2.1.0"
+    underscore "1.9.1"
+    utf8 "3.0.0"
+
+web3-utils@^1.0.0-beta.36:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.3.4.tgz#9b1aa30d7549f860b573e7bb7e690999e7192198"
+  integrity sha512-/vC2v0MaZNpWooJfpRw63u0Y3ag2gNjAWiLtMSL6QQLmCqCy4SQIndMt/vRyx0uMoeGt1YTwSXEcHjUzOhLg0A==
   dependencies:
     bn.js "^4.11.9"
     eth-lib "0.2.8"

@@ -10,13 +10,17 @@ export const BannerTheme = {
 
 const BannerUnmemoized = (props) => {
   const { theme, className, children, style, outerClassName, innerClassName } = props
+  const { defaultBorderRadius, defaultPadding } = props
 
-  const bannerClass = 'p-6 sm:p-8 rounded-lg'
+  const bannerClasses = {
+    'p-6 sm:p-8': defaultPadding,
+    'rounded-lg': defaultBorderRadius
+  }
 
   if (theme === BannerTheme.rainbow) {
     return (
       <div
-        className={classnames(bannerClass, 'text-purple', className)}
+        className={classnames(bannerClasses, 'text-purple', className)}
         style={{
           ...style,
           backgroundImage: 'url("/BackgroundGradient.svg")',
@@ -37,7 +41,7 @@ const BannerUnmemoized = (props) => {
           backgroundSize: 'cover'
         }}
       >
-        <div className={classnames(bannerClass, 'bg-body', innerClassName)} style={style}>
+        <div className={classnames(bannerClasses, 'bg-body', innerClassName)} style={style}>
           {children}
         </div>
       </div>
@@ -45,7 +49,7 @@ const BannerUnmemoized = (props) => {
   } else if (theme === BannerTheme.purplePinkBorder) {
     return (
       <div className={classnames('text-inverse p-1 rounded-lg pool-gradient-1', outerClassName)}>
-        <div className={classnames(bannerClass, 'bg-body', innerClassName)} style={style}>
+        <div className={classnames(bannerClasses, 'bg-body', innerClassName)} style={style}>
           {children}
         </div>
       </div>
@@ -53,14 +57,16 @@ const BannerUnmemoized = (props) => {
   }
 
   return (
-    <div className={classnames(bannerClass, 'pool-gradient-1', className)} style={style}>
+    <div className={classnames(bannerClasses, 'pool-gradient-1', className)} style={style}>
       {children}
     </div>
   )
 }
 
 BannerUnmemoized.defaultProps = {
-  theme: BannerTheme.purplePink
+  theme: BannerTheme.purplePink,
+  defaultBorderRadius: true,
+  defaultPadding: true
 }
 
 export const Banner = React.memo(BannerUnmemoized)
