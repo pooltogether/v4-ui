@@ -433,7 +433,6 @@ const FunctionInput = (props) => {
         label={name}
         name={`${fnInputPath}`}
         register={register}
-        // required={t('blankIsRequired', { blank: name })}
         validate={(value) => isValidSolidityData(type, value) || `${name} is invalid`}
         dataType={type}
       />
