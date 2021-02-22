@@ -77,8 +77,6 @@ export const ProposalCreationForm = () => {
 
   const onSuccess = () => {
     refetchAllProposals()
-
-    // TODO: Send user to proposals list or ideally the specific proposal they just created
   }
 
   const submitTransaction = async () => {
@@ -141,21 +139,6 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            {/* <button type='button' onClick={() => console.log(formMethods.getValues())}>
-              TEST: Log Form Values
-            </button>
-            <button type='button' onClick={() => console.log(formMethods.formState)}>
-              TEST: Log State
-            </button>
-            <button
-              type='button'
-              onClick={async () => {
-                const r = await formMethods.trigger()
-                console.log(r)
-              }}
-            >
-              Trigger Validation
-            </button> */}
             <ActionsCard disabled={!userCanCreateProposal} />
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
@@ -523,15 +506,17 @@ const getProposeParamsFromForm = (formData) => {
     values.push(0)
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
-    signatures.push(contractInterface.functions[action.contract.fn.name].signature)
-    calldatas.push(
-      contractInterface.functions[action.contract.fn.name].encode(
-        action.contract.fn.inputs.map(
-          (input) =>
-            action.contract.fn.values[input.name] || getEmptySolidityDataTypeValue(input.type)
-        )
-      )
+    const fn = contractInterface.functions[action.contract.fn.name]
+
+    signatures.push(fn.signature)
+
+    const fnParameters = action.contract.fn.inputs.map(
+      (input) => action.contract.fn.values[input.name] || getEmptySolidityDataTypeValue(input.type)
     )
+    const fullCalldata = fn.encode(fnParameters)
+    const calldata = fullCalldata.replace(fn.sighash, '0x')
+
+    calldatas.push(calldata)
   })
 
   return [targets, values, signatures, calldatas, description]

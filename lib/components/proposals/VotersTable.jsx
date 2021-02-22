@@ -73,15 +73,20 @@ export const VotersTable = (props) => {
     data: rowData
   })
 
+  // TODO: Skip is -20 after first vote
+
   return (
     <>
-      {allVotes && allVotes.votes && allVotes.votes.length === 0 ? 
-        <BlankStateMessage>
-          {t('noVotesHaveBeenCastYet')}
-        </BlankStateMessage> : (
+      {allVotes && allVotes.votes && allVotes.votes.length === 0 ? (
+        <BlankStateMessage>{t('noVotesHaveBeenCastYet')}</BlankStateMessage>
+      ) : (
         <>
           <div className='basic-table-min-height'>
-            {(isFetching && !isFetched) ? <V3LoadingDots /> : <BasicTable tableInstance={tableInstance} />}
+            {isFetching && !isFetched ? (
+              <V3LoadingDots />
+            ) : (
+              <BasicTable tableInstance={tableInstance} />
+            )}
           </div>
 
           <PaginationUI

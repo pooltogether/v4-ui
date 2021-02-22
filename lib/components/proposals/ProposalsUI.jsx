@@ -10,6 +10,7 @@ import { RetroactivePoolClaimBanner } from 'lib/components/RetroactivePoolClaimB
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
+import { ButtonLink } from 'lib/components/ButtonLink'
 
 export const ProposalsUI = (props) => {
   const { t } = useTranslation()
@@ -47,27 +48,16 @@ export const ProposalsUI = (props) => {
       </p>
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
-        <PTHint
-          tip={
-            <div className='my-2 text-center text-xs sm:text-sm'>
-              <p>{t('proposalCreationUnderDevelopment')}</p>
-              <p>{t('checkBackSoon')}</p>
-            </div>
-          }
+        <ButtonLink
+          a={`/proposals/create`}
+          href={`/proposals/create`}
+          disabled
+          textSize='xxs'
+          className='w-full sm:w-auto mb-4 sm:mb-0 '
+          tertiary
         >
-          <Button
-            disabled
-            textSize='xxs'
-            className='w-full sm:w-auto mb-4 sm:mb-0 '
-            onClick={(e) => {
-              e.preventDefault()
-              connectWallet()
-            }}
-            tertiary
-          >
-            {t('createAProposal')}
-          </Button>
-        </PTHint>
+          {t('createAProposal')}
+        </ButtonLink>
 
         <a href='https://gov.pooltogether.com/' target='_blank' rel='noreferrer noopener'>
           <Button secondary textSize='xxs' type='button' className='w-full sm:w-auto sm:ml-2'>

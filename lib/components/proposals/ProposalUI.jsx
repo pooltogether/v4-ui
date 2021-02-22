@@ -25,6 +25,8 @@ import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
 import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 import { useTransaction } from 'lib/hooks/useTransaction'
+import { useInterval } from 'lib/hooks/useInterval'
+import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -191,7 +193,6 @@ const ProposalVoteCard = (props) => {
 
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolderData } = useTokenHolder(usersAddress)
-  const { refetch: refetchTableData } = useProposalVotes(id)
   const { data: voteData, isFetched: voteDataIsFetched, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
@@ -200,7 +201,6 @@ const ProposalVoteCard = (props) => {
   const refetchData = () => {
     refetchVoteData()
     refetchProposalData()
-    refetchTableData()
   }
 
   const showButtons =
@@ -216,7 +216,7 @@ const ProposalVoteCard = (props) => {
         <ProposalStatus proposal={proposal} />
       </div>
       {voteDataIsFetched && voteData?.delegateDidVote && (
-        <div className='flex my-auto mt-4 sm:mt-8'>
+        <div className='flex my-auto mt-2'>
           <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
           <div
             className={classnames('flex my-auto', {
@@ -234,7 +234,7 @@ const ProposalVoteCard = (props) => {
       )}
 
       {showButtons && (
-        <div className='mt-2 flex justify-end h-12'>
+        <div className='mt-2 flex justify-end '>
           {status === PROPOSAL_STATUS.active && (
             <VoteButtons
               id={id}
@@ -247,7 +247,11 @@ const ProposalVoteCard = (props) => {
             <QueueButton id={id} refetchData={refetchData} />
           )}
           {status === PROPOSAL_STATUS.queued && (
-            <ExecuteButton id={id} refetchData={refetchData} />
+            <ExecuteButton
+              id={id}
+              refetchData={refetchData}
+              executionETA={Number(proposal?.executionETA)}
+            />
           )}
         </div>
       )}
@@ -257,6 +261,11 @@ const ProposalVoteCard = (props) => {
 
 const VoteButtons = (props) => {
   const { id, refetchData, selfDelegated, alreadyVoted } = props
+
+  const router = useRouter()
+  const page = router?.query?.page ? parseInt(router.query.page, 10) : 1
+  const { refetch: refetchVoteCount } = useProposalVotes(id, -1)
+  const { refetch: refetchVoterTable } = useProposalVotes(id, page)
 
   const { t } = useTranslation()
 
@@ -279,21 +288,20 @@ const VoteButtons = (props) => {
     castVote(false)
   }
 
+  const refetch = () => {
+    refetchData()
+    refetchVoteCount()
+    refetchVoterTable()
+  }
+
   const castVote = async (support) => {
     const params = [id, support]
 
     const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
 
-    const txId = await sendTx(
-      txName,
-      GovernorAlphaABI,
-      governanceAddress,
-      'castVote',
-      params,
-      {
-        refetch: refetchData
-      }
-    )
+    const txId = await sendTx(txName, GovernorAlphaABI, governanceAddress, 'castVote', params, {
+      refetch
+    })
     setTxId(txId)
   }
 
@@ -309,7 +317,7 @@ const VoteButtons = (props) => {
     )
   }
 
-  if (tx?.inWallet && !tx?.cancelled) {
+  if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
     return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
@@ -325,7 +333,7 @@ const VoteButtons = (props) => {
           <p>{t('errorWithTxPleaseTryAgain')}</p>
         </div>
       )}
-      <div>
+      <div className='h-10 xs:h-12'>
         <Button
           border='green'
           text='primary'
@@ -393,7 +401,7 @@ const QueueButton = (props) => {
     return <TxText className='text-green'>🎉 {t('successfullyQueuedProposalId', { id })} 🎉</TxText>
   }
 
-  if (tx?.inWallet && !tx?.cancelled) {
+  if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
     return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
@@ -402,7 +410,7 @@ const QueueButton = (props) => {
   }
 
   return (
-    <div className='flex'>
+    <div className='flex h-10 xs:h-12'>
       {tx?.error && (
         <PTHint
           tip={
@@ -413,28 +421,26 @@ const QueueButton = (props) => {
         >
           <FeatherIcon
             icon='alert-triangle'
-            className='h-4 w-4 text-red stroke-current my-auto mr-2 mt-2'
+            className='h-4 w-4 text-red stroke-current my-auto mr-2'
           />
         </PTHint>
       )}
-      <div className='flex'>
-        <PTHint
-          tip={
-            <div className='flex'>
-              <p>{t('queueingAProposalDescription')}</p>
-            </div>
-          }
-        >
-          <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
-        </PTHint>
-        <Button onClick={handleQueueProposal}>{t('queueProposal')}</Button>
-      </div>
+      {/* <PTHint
+        tip={
+          <div className='flex'>
+            <p>{t('queueingAProposalDescription')}</p>
+          </div>
+        }
+      >
+        <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
+      </PTHint> */}
+      <Button onClick={handleQueueProposal}>{t('queueProposal')}</Button>
     </div>
   )
 }
 
 const ExecuteButton = (props) => {
-  const { id, refetchData } = props
+  const { id, refetchData, executionETA } = props
 
   const { t } = useTranslation()
   const { chainId } = useContext(AuthControllerContext)
@@ -443,6 +449,12 @@ const ExecuteButton = (props) => {
   const [payableAmount, setPayableAmount] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const tx = useTransaction(txId)
+
+  const [currentTime, setCurrentTime] = useState(Date.now() / 100)
+
+  useInterval(() => {
+    setCurrentTime(getSecondsSinceEpoch())
+  }, 1000)
 
   // TODO: Payable Amount
 
@@ -471,7 +483,7 @@ const ExecuteButton = (props) => {
     )
   }
 
-  if (tx?.inWallet && !tx?.cancelled) {
+  if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
     return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
@@ -480,7 +492,7 @@ const ExecuteButton = (props) => {
   }
 
   return (
-    <div className='flex'>
+    <div className='flex h-10 xs:h-12'>
       {tx?.error && (
         <PTHint
           tip={
@@ -491,12 +503,11 @@ const ExecuteButton = (props) => {
         >
           <FeatherIcon
             icon='alert-triangle'
-            className='h-4 w-4 text-red stroke-current my-auto mr-2 mt-2'
+            className='h-4 w-4 text-red stroke-current my-auto mr-2'
           />
         </PTHint>
       )}
-      <div className='flex'>
-        {/* <PTHint
+      {/* <PTHint
           tip={
             <div className='flex'>
               <p>TODO: Explain what executing a proposal is...</p>
@@ -505,18 +516,18 @@ const ExecuteButton = (props) => {
         >
           <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
         </PTHint> */}
-        <Button
-          border='green'
-          text='primary'
-          bg='green'
-          hoverBorder='green'
-          hoverText='primary'
-          hoverBg='green'
-          onClick={handleExecuteProposal}
-        >
-          {t('executeProposal')}
-        </Button>
-      </div>
+      <Button
+        border='green'
+        text='primary'
+        bg='green'
+        hoverBorder='green'
+        hoverText='primary'
+        hoverBg='green'
+        onClick={handleExecuteProposal}
+        disabled={currentTime < executionETA}
+      >
+        {t('executeProposal')}
+      </Button>
     </div>
   )
 }
