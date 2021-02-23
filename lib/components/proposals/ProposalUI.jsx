@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import ReactMarkdown from 'react-markdown'
@@ -27,6 +27,7 @@ import { calculateVotePercentage, formatVotes } from 'lib/utils/formatVotes'
 import { useTransaction } from 'lib/hooks/useTransaction'
 import { useInterval } from 'lib/hooks/useInterval'
 import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
+import { ethers } from 'ethers'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -251,6 +252,7 @@ const ProposalVoteCard = (props) => {
               id={id}
               refetchData={refetchData}
               executionETA={Number(proposal?.executionETA)}
+              proposal={proposal}
             />
           )}
         </div>
@@ -299,8 +301,15 @@ const VoteButtons = (props) => {
 
     const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
 
-    const txId = await sendTx(txName, GovernorAlphaABI, governanceAddress, 'castVote', params, {
-      refetch
+    const txId = await sendTx({
+      name: txName,
+      contractAbi: GovernorAlphaABI,
+      contractAddress: governanceAddress,
+      method: 'castVote',
+      params,
+      callbacks: {
+        refetch
+      }
     })
     setTxId(txId)
   }
@@ -383,16 +392,16 @@ const QueueButton = (props) => {
 
     const params = [id]
 
-    const txId = await sendTx(
-      t('queueProposal', { id }),
-      GovernorAlphaABI,
-      governanceAddress,
-      'queue',
+    const txId = await sendTx({
+      name: t('queueProposal', { id }),
+      contractAbi: GovernorAlphaABI,
+      contractAddress: governanceAddress,
+      method: 'queue',
       params,
-      {
+      callbacks: {
         refetch: refetchData
       }
-    )
+    })
     setTxId(txId)
   }
 
@@ -440,13 +449,12 @@ const QueueButton = (props) => {
 }
 
 const ExecuteButton = (props) => {
-  const { id, refetchData, executionETA } = props
+  const { id, refetchData, executionETA, proposal } = props
 
   const { t } = useTranslation()
   const { chainId } = useContext(AuthControllerContext)
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
-  const [payableAmount, setPayableAmount] = useState()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const tx = useTransaction(txId)
 
@@ -456,23 +464,33 @@ const ExecuteButton = (props) => {
     setCurrentTime(getSecondsSinceEpoch())
   }, 1000)
 
-  // TODO: Payable Amount
+  const payableAmountInWei = useMemo(
+    () =>
+      proposal.values.reduce(
+        (totalPayableAmount, currentPayableAmount) =>
+          totalPayableAmount.add(ethers.utils.bigNumberify(currentPayableAmount)),
+        ethers.utils.bigNumberify(0)
+      ),
+    [proposal.values]
+  )
+  const payableAmountInEther = ethers.utils.formatEther(payableAmountInWei)
 
   const handleExecuteProposal = async (e) => {
     e.preventDefault()
 
     const params = [id]
 
-    const txId = await sendTx(
-      t('executeProposalId', { id }),
-      GovernorAlphaABI,
-      governanceAddress,
-      'execute',
+    const txId = await sendTx({
+      name: t('executeProposalId', { id }),
+      contractAbi: GovernorAlphaABI,
+      contractAddress: governanceAddress,
+      method: 'execute',
       params,
-      {
+      callbacks: {
         refetch: refetchData
-      }
-    )
+      },
+      value: payableAmountInWei.toHexString()
+    })
     setTxId(txId)
   }
 
@@ -504,6 +522,23 @@ const ExecuteButton = (props) => {
           <FeatherIcon
             icon='alert-triangle'
             className='h-4 w-4 text-red stroke-current my-auto mr-2'
+          />
+        </PTHint>
+      )}
+      {!payableAmountInWei.isZero() && (
+        <PTHint
+          tip={
+            <div className='flex'>
+              <p>
+                Execution will cost {payableAmountInEther.toString()} ether due to payable contract
+                calls
+              </p>
+            </div>
+          }
+        >
+          <FeatherIcon
+            icon='alert-circle'
+            className='h-4 w-4 text-inverse stroke-current my-auto mr-2'
           />
         </PTHint>
       )}

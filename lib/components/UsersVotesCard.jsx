@@ -191,16 +191,16 @@ const DelegateTrigger = (props) => {
 
     const params = [usersAddress]
 
-    const id = await sendTx(
-      t('selfDelegate'),
-      DelegateableERC20ABI,
-      CONTRACT_ADDRESSES[chainId].GovernanceToken,
-      'delegate',
+    const id = await sendTx({
+      name: t('selfDelegate'),
+      contractAbi: DelegateableERC20ABI,
+      contractAddress: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+      method: 'delegate',
       params,
-      {
+      callbacks: {
         refetch: refetchTokenHolderData
       }
-    )
+    })
     setTxId(id)
   }
 

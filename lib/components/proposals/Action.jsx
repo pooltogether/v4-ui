@@ -94,7 +94,11 @@ export const Action = (props) => {
       </div>
 
       <div className='flex flex-col'>
-        <ContractSelect setContract={setContract} currentContract={contract} />
+        <ContractSelect
+          setContract={setContract}
+          currentContract={contract}
+          contractPath={`${actionPath}.contract`}
+        />
         <div className='flex flex-col xs:pl-8 mt-2'>
           <FunctionSelect
             contract={contract}
@@ -109,7 +113,7 @@ export const Action = (props) => {
 }
 
 const ContractSelect = (props) => {
-  const { setContract, currentContract } = props
+  const { setContract, currentContract, contractPath } = props
 
   const { t } = useTranslation()
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
@@ -208,29 +212,27 @@ const ContractSelect = (props) => {
         <CustomContractInputMainnet contract={currentContract} setContract={setContract} />
       )}
       {currentContract?.custom && chainId === 4 && (
-        <CustomContractInputRinkeby contract={currentContract} setContract={setContract} />
+        <CustomContractInputRinkeby
+          contract={currentContract}
+          setContract={setContract}
+          contractPath={contractPath}
+        />
       )}
     </>
   )
 }
 
 const CustomContractInputRinkeby = (props) => {
-  const { contract, setContract } = props
-
+  const { contract, setContract, contractPath } = props
   const { t } = useTranslation()
-  const addressFormName = 'contractAddress'
-  const { register, control, errors } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange'
-  })
+  const { register } = useFormContext()
 
   return (
     <>
       <SimpleInput
         className='mt-2'
         label={t('contractAddress')}
-        errorMessage={errors?.[addressFormName]?.message}
-        name={addressFormName}
+        name={`${contractPath}.address`}
         register={register}
         required
         validate={(address) => isValidAddress(address) || t('invalidContractAddress')}
@@ -397,10 +399,9 @@ const FunctionSelect = (props) => {
 
 const FunctionInputs = (props) => {
   const { fn, fnPath } = props
+  const { register } = useFormContext()
 
   const inputs = fn?.inputs || []
-
-  if (!inputs || inputs.length === 0) return null
 
   return (
     <ul className='mt-2'>
@@ -411,6 +412,19 @@ const FunctionInputs = (props) => {
           fnInputPath={`${fnPath}.values[${input.name}]`}
         />
       ))}
+      {fn.payable && (
+        <li className='mt-2 first:mt-0 flex'>
+          <SimpleInput
+            key={`${fnPath}-${fn.name}-payable`}
+            label={'payableAmount'}
+            name={`${fnPath}.payableAmount`}
+            register={register}
+            type='number'
+            validate={(value) => value >= 0 || `payableAmount is invalid`}
+            dataType={'ether'}
+          />
+        </li>
+      )}
     </ul>
   )
 }
@@ -466,12 +480,12 @@ const SimpleInput = (props) => {
         </label>
         <input
           {...inputProps}
+          type={inputProps.type || 'text'}
           className='bg-card xs:w-3/4 p-2 rounded-sm outline-none focus:outline-none active:outline-none hover:bg-primary focus:bg-primary trans trans-fast border border-transparent focus:border-card'
           id={name}
           autoFocus={autoFocus && isBrowser}
           name={name}
           ref={register?.({ required, pattern, validate })}
-          type='text'
           autoCorrect={autoCorrect || 'off'}
           autoComplete={autoComplete || 'hidden'}
         />

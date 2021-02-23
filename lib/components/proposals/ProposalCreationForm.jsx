@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import { Dialog } from '@reach/dialog'
+import { ethers } from 'ethers'
 
-import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { Card } from 'lib/components/Card'
 import { ActionsCard } from 'lib/components/proposals/ActionsCard'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
@@ -18,16 +18,15 @@ import { shorten } from 'lib/utils/shorten'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTransaction } from 'lib/hooks/useTransaction'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
-import { useContext } from 'react'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { ethers } from 'ethers'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
-import { useCallback } from 'react'
 import { poolToast } from 'lib/utils/poolToast'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { getEmptySolidityDataTypeValue } from 'lib/utils/getEmptySolidityDataTypeValue'
+
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -81,9 +80,16 @@ export const ProposalCreationForm = () => {
 
   const submitTransaction = async () => {
     const params = getProposeParamsFromForm(validFormData)
-    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-      onCancelled,
-      onSuccess
+    const txId = await sendTx({
+      name: 'Propose',
+      contractAbi: GovernorAlphaABI,
+      contractAddress: governanceAddress,
+      method: 'propose',
+      params,
+      callbacks: {
+        onCancelled,
+        onSuccess
+      }
     })
     setTxId(txId)
     setShowModal(true)
@@ -102,12 +108,20 @@ export const ProposalCreationForm = () => {
 
     if (data?.actions) {
       data?.actions.forEach((action) => {
+        if (action?.contract?.address?.message) {
+          parsedErrorMessages.push(action.contract.address.message)
+        }
+
         if (action?.contract?.message) {
           parsedErrorMessages.push(action.contract.message)
         }
 
         if (action?.contract?.fn?.message) {
           parsedErrorMessages.push(action.contract.fn.message)
+        }
+
+        if (action?.contract?.fn?.payableAmount?.message) {
+          parsedErrorMessages.push(action.contract.fn.payableAmount.message)
         }
 
         if (action?.contract?.fn?.values) {
@@ -365,7 +379,7 @@ const ActionSummary = (props) => {
   const { action, index } = props
   const { contract } = action
   const { name: contractName, address, fn } = contract
-  const { inputs, name: fnName, values } = fn
+  const { inputs, name: fnName, values, payableAmount, payable } = fn
 
   const actionNumber = index + 1
 
@@ -391,7 +405,7 @@ const ActionSummary = (props) => {
       {inputs.map((input, index) => (
         <div
           key={`${actionNumber}-${index}-fn-input`}
-          className='flex ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
+          className='ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
         >
           <div className='xs:w-1/4 flex flex-wrap'>
             <b>{input.name}</b>
@@ -404,6 +418,18 @@ const ActionSummary = (props) => {
           </div>
         </div>
       ))}
+      {payable && (
+        <div className='ml-8 xs:ml-12 mb-2 flex flex-col xs:flex-row '>
+          {' '}
+          <div className='xs:w-1/4 flex flex-wrap'>
+            <b>payableAmount</b>
+            <span className='mx-2'>ether:</span>
+          </div>
+          <div className='xs:w-3/4'>
+            <span className='text-inverse'>{payableAmount}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -429,7 +455,6 @@ const ProposalTransactionModal = (props) => {
   const { chainId, provider } = useContext(AuthControllerContext)
   const [proposalId, setProposalId] = useState()
 
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const showClose = tx && (tx.error || tx.cancelled)
   const showNavigateToProposal = tx && !tx.error && tx.completed && proposalId !== undefined
 
@@ -485,9 +510,6 @@ const ProposalTransactionModal = (props) => {
             View Proposal
           </ButtonLink>
         )}
-
-        {/* TODO: Link back to proposal? */}
-        {/* TODO: refetch proposals on success */}
       </Banner>
     </Dialog>
   )
@@ -503,7 +525,13 @@ const getProposeParamsFromForm = (formData) => {
 
   formData.actions.forEach((action) => {
     targets.push(action.contract.address)
-    values.push(0)
+
+    if (action.contract.fn.payableAmount) {
+      const ethAmount = action.contract.fn.payableAmount
+      values.push(ethers.utils.parseEther(ethAmount).toString())
+    } else {
+      values.push(0)
+    }
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
     const fn = contractInterface.functions[action.contract.fn.name]
