@@ -161,7 +161,7 @@ export const ProposalStatus = (props) => {
   return (
     <div
       className={classnames(
-        'ml-auto text-white sm:ml-0 my-2 sm:my-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
+        'ml-auto text-white sm:ml-0 mb-2 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
         {
           'text-orange': statusValue < 0,
           'text-highlight-9': statusValue > 0,

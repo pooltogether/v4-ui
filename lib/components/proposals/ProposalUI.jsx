@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import ReactMarkdown from 'react-markdown'
@@ -39,6 +39,10 @@ export const ProposalUI = (props) => {
 
   const router = useRouter()
   const { id } = router.query
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const { refetch: refetchProposalData, proposal, isFetched, error } = useProposalData(id)
 
@@ -158,7 +162,6 @@ const ProposalActionRow = (props) => {
   const fnName = signature.slice(0, signature.indexOf('('))
 
   const { data, isFetching: etherscanAbiIsFetching } = useEtherscanAbi(target)
-  // const { data } = useEtherscanAbi('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')
 
   useEffect(() => {
     if (data && data.status === 200 && data.data && data.data.status === '1') {
@@ -166,7 +169,6 @@ const ProposalActionRow = (props) => {
         const abi = JSON.parse(data.data.result)
         const iface = new ethers.utils.Interface(abi)
         const fnIface = iface.functions[fnName]
-        console.log(fnIface)
         const sighash = fnIface.sighash
         const fnData = calldata.replace('0x', sighash)
         const parsedData = iface.parseTransaction({ data: fnData })
@@ -192,7 +194,6 @@ const ProposalActionRow = (props) => {
   }, [data])
 
   const payableAmount = ethers.utils.formatEther(value)
-  console.log(value, payableAmount)
 
   return (
     <li className='flex break-all'>
@@ -320,7 +321,7 @@ const ProposalVoteCard = (props) => {
 
   return (
     <Card>
-      <div className='flex justify-between flex-col sm:flex-row'>
+      <div className='flex justify-between flex-col-reverse sm:flex-row'>
         <h4 className={classnames({ 'mb-2 sm:mb-8': showButtons })}>{title}</h4>
         <ProposalStatus proposal={proposal} />
       </div>
