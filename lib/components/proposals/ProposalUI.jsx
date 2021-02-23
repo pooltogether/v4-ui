@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import ReactMarkdown from 'react-markdown'
@@ -28,6 +28,9 @@ import { useTransaction } from 'lib/hooks/useTransaction'
 import { useInterval } from 'lib/hooks/useInterval'
 import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 import { ethers } from 'ethers'
+import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
+import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
+import { shorten } from 'lib/utils/shorten'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -63,10 +66,10 @@ export const ProposalUI = (props) => {
           }
         ]}
       />
-      {/* <Votes refetch={refetch} proposal={proposal} sendTx={sendTx} /> */}
       <UsersVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
+      <ProposalActionsCard proposal={proposal} />
       <VotesCard id={id} />
 
       <AddGovernanceTokenToMetaMask />
@@ -121,6 +124,111 @@ const ProposalDescriptionCard = (props) => {
         )}
       </Card>
     </>
+  )
+}
+
+const ProposalActionsCard = (props) => {
+  const { proposal } = props
+
+  return (
+    <Card title='Actions'>
+      <ul>
+        {proposal.signatures.map((signature, index) => {
+          return (
+            <ProposalActionRow
+              actionIndex={index + 1}
+              value={proposal.values[index]}
+              target={proposal.targets[index]}
+              calldata={proposal.calldatas[index]}
+              signature={signature}
+            />
+          )
+        })}
+      </ul>
+    </Card>
+  )
+}
+
+// TODO: If there are more than 5 actions, this will cause problems since
+// etherscan can only accept 5 requests a second
+const ProposalActionRow = (props) => {
+  const { actionIndex, calldata, signature, value, target } = props
+
+  const [fnParameters, setFnParameters] = useState(null)
+  const fnName = signature.slice(0, signature.indexOf('('))
+
+  const { data, isFetching: etherscanAbiIsFetching } = useEtherscanAbi(target)
+  // const { data } = useEtherscanAbi('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')
+
+  useEffect(() => {
+    if (data && data.status === 200 && data.data && data.data.status === '1') {
+      try {
+        const abi = JSON.parse(data.data.result)
+        const iface = new ethers.utils.Interface(abi)
+        const fnIface = iface.functions[fnName]
+        console.log(fnIface)
+        const sighash = fnIface.sighash
+        const fnData = calldata.replace('0x', sighash)
+        const parsedData = iface.parseTransaction({ data: fnData })
+        setFnParameters(
+          parsedData.args.map((arg, index) => {
+            const input = { ...fnIface.inputs[index] }
+            if (typeof arg === 'object') {
+              try {
+                input.value = arg.toString()
+              } catch (e) {
+                input.value = '[object]'
+              }
+            } else {
+              input.value = arg
+            }
+            return input
+          })
+        )
+      } catch (e) {
+        console.warn(e.message)
+      }
+    }
+  }, [data])
+
+  const payableAmount = ethers.utils.formatEther(value)
+  console.log(value, payableAmount)
+
+  return (
+    <li className='flex break-all'>
+      <b>{`${actionIndex}.`}</b>
+      <div className='flex flex-col pl-2 text-accent-1'>
+        <div className='w-full flex'>
+          <span className='mr-2'>Contract:</span>
+          <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={target}>
+            {shorten(target)}
+          </EtherscanAddressLink>
+        </div>
+
+        <div className='w-full'>
+          <span className='mr-2'>Function:</span>
+          <span className='text-inverse'>{signature}</span>
+        </div>
+
+        <div className='w-full'>
+          <span className='mr-2'>Inputs:</span>
+          {fnParameters ? (
+            <span className='text-inverse'>
+              {fnParameters.map((input) => input.value).join(', ')}
+            </span>
+          ) : (
+            <span className='text-inverse'>{calldata}</span>
+          )}
+        </div>
+
+        {value > 0 && (
+          <div>
+            <span className='mr-2'>Payable Amount:</span>
+            <span className='text-inverse'>{payableAmount} ether</span>
+          </div>
+        )}
+      </div>
+    </li>
   )
 }
 
