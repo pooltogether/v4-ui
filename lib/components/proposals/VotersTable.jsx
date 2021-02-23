@@ -73,8 +73,6 @@ export const VotersTable = (props) => {
     data: rowData
   })
 
-  // TODO: Skip is -20 after first vote
-
   return (
     <>
       {allVotes && allVotes.votes && allVotes.votes.length === 0 ? (
