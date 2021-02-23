@@ -23,6 +23,7 @@ import {
   EMPTY_CONTRACT,
   EMPTY_FN
 } from 'lib/components/proposals/ProposalCreationForm'
+import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 export const Action = (props) => {
   const { deleteAction, actionPath, index, hideRemoveButton } = props
@@ -62,7 +63,6 @@ export const Action = (props) => {
   })
 
   const setContract = (contract) => {
-    console.log('setContract', contract)
     contractOnChange({
       ...contract
     })
@@ -73,7 +73,6 @@ export const Action = (props) => {
   }, [contract])
 
   const setFunction = (fn) => {
-    console.log('setFunction', fn)
     fnOnChange(fn)
   }
 
@@ -205,14 +204,44 @@ const ContractSelect = (props) => {
         values={options}
         current={currentContract}
       />
-      {currentContract?.custom && (
-        <CustomContractInput contract={currentContract} setContract={setContract} />
+      {currentContract?.custom && chainId === 1 && (
+        <CustomContractInputMainnet contract={currentContract} setContract={setContract} />
+      )}
+      {currentContract?.custom && chainId === 4 && (
+        <CustomContractInputRinkeby contract={currentContract} setContract={setContract} />
       )}
     </>
   )
 }
 
-const CustomContractInput = (props) => {
+const CustomContractInputRinkeby = (props) => {
+  const { contract, setContract } = props
+
+  const { t } = useTranslation()
+  const addressFormName = 'contractAddress'
+  const { register, control, errors } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+
+  return (
+    <>
+      <SimpleInput
+        className='mt-2'
+        label={t('contractAddress')}
+        errorMessage={errors?.[addressFormName]?.message}
+        name={addressFormName}
+        register={register}
+        required
+        validate={(address) => isValidAddress(address) || t('invalidContractAddress')}
+        placeholder='0x1f9840a85...'
+      />
+      <CustomAbiInput contract={contract} setContract={setContract} />
+    </>
+  )
+}
+
+const CustomContractInputMainnet = (props) => {
   const { contract, setContract } = props
 
   const { t } = useTranslation()
@@ -404,7 +433,7 @@ const FunctionInput = (props) => {
         label={name}
         name={`${fnInputPath}`}
         register={register}
-        required={t('blankIsRequired', { blank: name })}
+        validate={(value) => isValidSolidityData(type, value) || `${name} is invalid`}
         dataType={type}
       />
     </li>
@@ -433,7 +462,7 @@ const SimpleInput = (props) => {
     <>
       <span className={classnames('flex flex-col xs:flex-row w-full relative', className)}>
         <label className='xs:w-1/4 xs:text-right my-auto xs:mr-4' htmlFor={name}>
-          {label} {dataType && <span className='ml-1 text-xxs opacity-70'>{`[${dataType}]`}</span>}
+          {label} {dataType && <span className='ml-1 text-xxs opacity-70'>{`${dataType}`}</span>}
         </label>
         <input
           {...inputProps}

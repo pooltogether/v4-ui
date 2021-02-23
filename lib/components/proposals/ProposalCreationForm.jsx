@@ -26,6 +26,8 @@ import { Banner } from 'lib/components/Banner'
 import { useCallback } from 'react'
 import { poolToast } from 'lib/utils/poolToast'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
+import { ButtonLink } from 'lib/components/ButtonLink'
+import { getEmptySolidityDataTypeValue } from 'lib/utils/getEmptySolidityDataTypeValue'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -67,7 +69,6 @@ export const ProposalCreationForm = () => {
 
   const { chainId } = useContext(AuthControllerContext)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
-
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
   const tx = useTransaction(txId)
@@ -76,7 +77,6 @@ export const ProposalCreationForm = () => {
 
   const onSuccess = () => {
     refetchAllProposals()
-    // TODO: Send user to proposals list or ideally the specific proposal they just created
   }
 
   const submitTransaction = async () => {
@@ -85,19 +85,16 @@ export const ProposalCreationForm = () => {
       onCancelled,
       onSuccess
     })
-    console.log(txId)
     setTxId(txId)
     setShowModal(true)
   }
 
   const onSubmit = async (data) => {
-    console.log('Submit', data)
     window?.scrollTo(0, 0)
     setShowSummary(true)
     setValidFormData(data)
   }
   const onError = (data) => {
-    console.log('Error', data)
     const parsedErrorMessages = []
 
     if (data?.title?.message) parsedErrorMessages.push(data.title.message)
@@ -116,7 +113,6 @@ export const ProposalCreationForm = () => {
         if (action?.contract?.fn?.values) {
           Object.keys(action.contract.fn.values).forEach((fnName) => {
             if (action.contract.fn.values[fnName]?.message) {
-              console.log('HERE', fnName)
               parsedErrorMessages.push(action.contract.fn.values[fnName].message)
             }
           })
@@ -127,35 +123,22 @@ export const ProposalCreationForm = () => {
     poolToast.error(parsedErrorMessages.join('. '))
   }
 
-  const closeModal = useCallback(() => {
-    if (tx && !tx?.inWallet) {
-      setShowModal(false)
-      setShowSummary(false)
-      formMethods.reset()
-    }
-  }, [tx])
+  const closeModal = () => {
+    setShowModal(false)
+    setShowSummary(false)
+  }
 
   return (
     <>
-      <ProposalTransactionModal tx={tx} isOpen={showModal} closeModal={closeModal} />
+      <ProposalTransactionModal
+        tx={tx}
+        isOpen={showModal}
+        closeModal={closeModal}
+        resetForm={formMethods.reset}
+      />
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            {/* <button type='button' onClick={() => console.log(formMethods.getValues())}>
-              TEST: Log Form Values
-            </button>
-            <button type='button' onClick={() => console.log(formMethods.formState)}>
-              TEST: Log State
-            </button>
-            <button
-              type='button'
-              onClick={async () => {
-                const r = await formMethods.trigger()
-                console.log(r)
-              }}
-            >
-              Trigger Validation
-            </button> */}
             <ActionsCard disabled={!userCanCreateProposal} />
             <TitleCard disabled={!userCanCreateProposal} />
             <DescriptionCard disabled={!userCanCreateProposal} />
@@ -412,7 +395,7 @@ const ActionSummary = (props) => {
         >
           <div className='xs:w-1/4 flex flex-wrap'>
             <b>{input.name}</b>
-            <span className='mx-2'>[{input.type}]:</span>
+            <span className='mx-2'>{input.type}:</span>
           </div>
           <div className='xs:w-3/4'>
             <span className='text-inverse'>
@@ -431,7 +414,7 @@ const FormattedInputValue = (props) => {
   if (type === 'address') {
     return (
       <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={value}>
-        <span className='hidden sm:inline'>{value}</span>
+        <span className='hidden sm:inline'>{value || getEmptySolidityDataTypeValue(type)}</span>
         <span className='inline sm:hidden'>{shorten(value)}</span>
       </EtherscanAddressLink>
     )
@@ -441,20 +424,68 @@ const FormattedInputValue = (props) => {
 }
 
 const ProposalTransactionModal = (props) => {
-  const { isOpen, closeModal, tx } = props
+  const { isOpen, closeModal, tx, resetForm } = props
+
+  const { chainId, provider } = useContext(AuthControllerContext)
+  const [proposalId, setProposalId] = useState()
+
+  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const showClose = tx && (tx.error || tx.cancelled)
+  const showNavigateToProposal = tx && !tx.error && tx.completed && proposalId !== undefined
+
+  useEffect(() => {
+    const getProposalId = async () => {
+      const hash = tx.hash
+      await tx.ethersTx.wait()
+      const receipt = await provider.getTransactionReceipt(hash)
+      const governorAlphaInterface = new ethers.utils.Interface(GovernorAlphaABI)
+      const governorAlphaEventLog = receipt.logs.reduce((events, log) => {
+        try {
+          const event = governorAlphaInterface.parseLog(log)
+          if (event) {
+            events.push(event)
+          }
+        } catch (e) {}
+        return events
+      }, [])
+      const proposalCreatedEvent = governorAlphaEventLog.find(
+        (event) => event.name === 'ProposalCreated'
+      )
+      setProposalId(proposalCreatedEvent.values[0])
+    }
+
+    if (tx && tx.completed && !tx.error && !tx.cancelled) {
+      getProposalId()
+    }
+  }, [tx, tx?.completed, tx?.error])
+
+  const onClose = () => {
+    if (tx && (tx.completed || tx.error || tx.cancelled)) {
+      closeModal()
+    }
+  }
 
   return (
-    <Dialog aria-label='Proposal Summary' isOpen={isOpen} onDismiss={closeModal}>
-      <Banner className='flex flex-col relative text-center'>
-        <TxStatus tx={tx} />
-        {tx && !tx?.inWallet && (
+    <Dialog aria-label='Proposal Summary' isOpen={isOpen} onDismiss={onClose}>
+      <Banner
+        defaultBorderRadius={false}
+        className='flex flex-col relative text-center rounded-b-lg sm:rounded-lg sm:max-w-3/4 mx-auto'
+      >
+        {showClose && (
           <button
             className='absolute right-4 top-4 close-button trans text-inverse hover:opacity-30'
-            onClick={closeModal}
+            onClick={onClose}
           >
             <FeatherIcon icon='x' className='w-6 h-6' />
           </button>
         )}
+        <TxStatus tx={tx} />
+        {showNavigateToProposal && (
+          <ButtonLink className='mt-8' href='/proposals/[id]' as={`/proposals/${proposalId}`}>
+            View Proposal
+          </ButtonLink>
+        )}
+
         {/* TODO: Link back to proposal? */}
         {/* TODO: refetch proposals on success */}
       </Banner>
@@ -475,12 +506,17 @@ const getProposeParamsFromForm = (formData) => {
     values.push(0)
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
-    signatures.push(contractInterface.functions[action.contract.fn.name].signature)
-    calldatas.push(
-      contractInterface.functions[action.contract.fn.name].encode(
-        action.contract.fn.inputs.map((input) => action.contract.fn.values[input.name])
-      )
+    const fn = contractInterface.functions[action.contract.fn.name]
+
+    signatures.push(fn.signature)
+
+    const fnParameters = action.contract.fn.inputs.map(
+      (input) => action.contract.fn.values[input.name] || getEmptySolidityDataTypeValue(input.type)
     )
+    const fullCalldata = fn.encode(fnParameters)
+    const calldata = fullCalldata.replace(fn.sighash, '0x')
+
+    calldatas.push(calldata)
   })
 
   return [targets, values, signatures, calldatas, description]
