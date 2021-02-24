@@ -198,8 +198,6 @@ const ProposalActionRow = (props) => {
 
   const payableAmount = ethers.utils.formatEther(value)
 
-  console.log(fnParameters, calldata)
-
   return (
     <li className='flex break-all'>
       <b>{`${actionIndex}.`}</b>
