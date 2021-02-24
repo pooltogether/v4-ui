@@ -545,15 +545,6 @@ const QueueButton = (props) => {
           />
         </PTHint>
       )}
-      {/* <PTHint
-        tip={
-          <div className='flex'>
-            <p>{t('queueingAProposalDescription')}</p>
-          </div>
-        }
-      >
-        <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
-      </PTHint> */}
       <Button onClick={handleQueueProposal}>{t('queueProposal')}</Button>
     </div>
   )
@@ -606,7 +597,6 @@ const ExecuteButton = (props) => {
   }
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
-    // Successfully Executed Proposal #{ id }
     return (
       <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })} 🎉</TxText>
     )
@@ -650,15 +640,6 @@ const ExecuteButton = (props) => {
           />
         </PTHint>
       )}
-      {/* <PTHint
-          tip={
-            <div className='flex'>
-              <p>TODO: Explain what executing a proposal is...</p>
-            </div>
-          }
-        >
-          <FeatherIcon icon='help-circle' className='h-4 w-4 stroke-current my-auto mr-2' />
-        </PTHint> */}
       <Button
         border='green'
         text='primary'
