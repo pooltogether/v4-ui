@@ -516,7 +516,9 @@ const ProposalTransactionModal = (props) => {
 
 const ProposalCreationWarning = (props) => {
   const { t } = useTranslation()
-  const { data: governorAlpha } = useGovernorAlpha()
+  const { data: governorAlpha, isFetched } = useGovernorAlpha()
+
+  if (!isFetched) return null
 
   const proposalThreshold = numberWithCommas(
     ethers.utils.formatUnits(governorAlpha.proposalThreshold, DEFAULT_TOKEN_PRECISION),
