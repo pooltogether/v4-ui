@@ -153,9 +153,9 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            <ActionsCard disabled={!userCanCreateProposal} />
-            <TitleCard disabled={!userCanCreateProposal} />
-            <DescriptionCard disabled={!userCanCreateProposal} />
+            <ActionsCard />
+            <TitleCard />
+            <DescriptionCard />
             <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
               {t('previewProposal')}
             </Button>
@@ -179,20 +179,17 @@ export const ProposalCreationForm = () => {
 }
 
 const TitleCard = (props) => {
-  const { disabled } = props
-
   const { t } = useTranslation()
   const { register } = useFormContext()
 
   return (
-    <Card disabled={disabled}>
+    <Card>
       <h4 className='mb-2'>{t('title')}</h4>
       <p className='mb-6'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
         className='border-accent-3'
         bgClasses='bg-body'
         alignLeft
-        disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
         id='_proposalTitle'
         label={t('proposalTitle')}
@@ -205,18 +202,16 @@ const TitleCard = (props) => {
 }
 
 const DescriptionCard = (props) => {
-  const { disabled } = props
-
   const { t } = useTranslation()
   const { register, control } = useFormContext()
   const name = 'description'
   const text = useWatch({ control, name, defaultValue: '' })
 
   return (
-    <Card disabled={disabled}>
+    <Card>
       <h4 className='mb-2'>{t('description')}</h4>
       <p className='mb-8'>{t('theDescriptionShouldPresentInFullDescription')}</p>
-      <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
+      <MarkdownInputArea name={name} text={text} register={register} />
     </Card>
   )
 }
