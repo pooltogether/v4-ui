@@ -418,7 +418,7 @@ const FunctionInputs = (props) => {
             name={`${fnPath}.payableAmount`}
             register={register}
             type='number'
-            validate={(value) => value >= 0 || t('fieldIsInalid', { field: 'payableAmount' })}
+            validate={(value) => value >= 0 || t('fieldIsInvalid', { field: 'payableAmount' })}
             dataType={'ETH'}
           />
         </li>
