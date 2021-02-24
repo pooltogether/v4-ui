@@ -161,7 +161,7 @@ export const ProposalStatus = (props) => {
   return (
     <div
       className={classnames(
-        'ml-auto text-white sm:ml-0 mb-4 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
+        'ml-auto text-white sm:ml-0 mb-2 sm:mb-0 flex rounded px-2 py-1 w-fit-content h-fit-content bg-tertiary',
         {
           'text-orange': statusValue < 0,
           'text-highlight-9': statusValue > 0,
@@ -188,7 +188,9 @@ const ProposalCountDown = (props) => {
   const [seconds] = useState(proposal.endDateSeconds - msToSeconds(Date.now()).toNumber())
   const { refetch } = useProposalData(proposal.id)
 
-  return <CountDown className='sm:ml-auto mb-4 sm:mb-0' seconds={seconds} onZero={refetch} />
+  return (
+    <CountDown className='sm:ml-auto sm:w-unset mb-4 sm:mb-0' seconds={seconds} onZero={refetch} />
+  )
 }
 
 const ViewProposalButton = (props) => {

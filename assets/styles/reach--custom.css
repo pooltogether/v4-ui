@@ -138,6 +138,7 @@
 }
 
 [data-reach-dialog-content] {
+  background: transparent;
   max-width: initial;
   margin: 0;
   padding: 0;

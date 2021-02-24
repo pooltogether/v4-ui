@@ -48,7 +48,7 @@ export function TxRefetchListener (props) {
       !currentTxState.cancelled
     ) {
       tx?.onError?.()
-    } else if (currentTxState.cancelled) {
+    } else if (currentTxState?.cancelled) {
       tx?.onCancelled?.()
     }
   })

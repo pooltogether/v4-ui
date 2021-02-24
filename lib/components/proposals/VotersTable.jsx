@@ -75,13 +75,16 @@ export const VotersTable = (props) => {
 
   return (
     <>
-      {allVotes && allVotes.votes && allVotes.votes.length === 0 ? 
-        <BlankStateMessage>
-          {t('noVotesHaveBeenCastYet')}
-        </BlankStateMessage> : (
+      {allVotes && allVotes.votes && allVotes.votes.length === 0 ? (
+        <BlankStateMessage>{t('noVotesHaveBeenCastYet')}</BlankStateMessage>
+      ) : (
         <>
           <div className='basic-table-min-height'>
-            {(isFetching && !isFetched) ? <V3LoadingDots /> : <BasicTable tableInstance={tableInstance} />}
+            {isFetching && !isFetched ? (
+              <V3LoadingDots />
+            ) : (
+              <BasicTable tableInstance={tableInstance} />
+            )}
           </div>
 
           <PaginationUI

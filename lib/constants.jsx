@@ -39,6 +39,9 @@ export const CONTRACT_ADDRESSES = {
     GovernorAlpha: '0x9B63243CD27102fbEc9FAf67CA1a858dcC16Ee01',
     GovernanceToken: '0xc4E90a8Dc6CaAb329f08ED3C8abc6b197Cf0F40A',
     MerkleDistributor: '0x5fcD21897939B09eAF9c81eF8C2C4CD64FA75558'
+
+    // GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // OLD Governor Alpha
+    // GovernanceToken: '0x4cf566d201ef144e09d2f8abe1cc0e451d79de53' // defisaver
   }
 }
 
