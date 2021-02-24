@@ -141,6 +141,7 @@ const ProposalActionsCard = (props) => {
         {proposal.signatures.map((signature, index) => {
           return (
             <ProposalActionRow
+              key={index}
               actionIndex={index + 1}
               value={proposal.values[index]}
               target={proposal.targets[index]}
@@ -197,6 +198,8 @@ const ProposalActionRow = (props) => {
 
   const payableAmount = ethers.utils.formatEther(value)
 
+  console.log(fnParameters, calldata)
+
   return (
     <li className='flex break-all'>
       <b>{`${actionIndex}.`}</b>
@@ -213,16 +216,18 @@ const ProposalActionRow = (props) => {
           <span className='text-inverse'>{signature}</span>
         </div>
 
-        <div className='w-full'>
-          <span className='mr-2'>{t('inputs')}:</span>
-          {fnParameters ? (
-            <span className='text-inverse'>
-              {fnParameters.map((input) => input.value).join(', ')}
-            </span>
-          ) : (
-            <span className='text-inverse'>{calldata}</span>
-          )}
-        </div>
+        {calldata !== '0x' && (
+          <div className='w-full'>
+            <span className='mr-2'>{t('inputs')}:</span>
+            {fnParameters ? (
+              <span className='text-inverse'>
+                {fnParameters.map((input) => input.value).join(', ')}
+              </span>
+            ) : (
+              <span className='text-inverse'>{calldata}</span>
+            )}
+          </div>
+        )}
 
         {value > 0 && (
           <div>
