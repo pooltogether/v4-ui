@@ -227,24 +227,54 @@ const DelegateTrigger = (props) => {
       }
 
       return (
-        <button
-          type='button'
-          className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
-          onClick={handleDelegate}
-        >
-          {t('activateMyVotesForFutureProposals')}
-        </button>
+        <div className='mt-auto'>
+          <button
+            type='button'
+            className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold mr-2'
+            onClick={handleDelegate}
+          >
+            {t('activateMyVotesForFutureProposals')}
+          </button>
+          <Trans
+            i18nKey='orDelegateOnSybil'
+            components={{
+              a: (
+                <a
+                  href='https://sybil.org/#/delegates/pool'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  title='Sybil'
+                />
+              )
+            }}
+          />
+        </div>
       )
     }
 
     return (
-      <button
-        type='button'
-        className='opacity-70 hover:opacity-100 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
-        onClick={handleDelegate}
-      >
-        {t('activateMyVotes')}
-      </button>
+      <div className='mt-auto'>
+        <button
+          type='button'
+          className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold mr-2'
+          onClick={handleDelegate}
+        >
+          {t('activateMyVotes')}
+        </button>
+        <Trans
+          i18nKey='orDelegateOnSybil'
+          components={{
+            a: (
+              <a
+                href='https://sybil.org/#/delegates/pool'
+                target='_blank'
+                rel='noopener noreferrer'
+                title='Sybil'
+              />
+            )
+          }}
+        />
+      </div>
     )
   }
 
