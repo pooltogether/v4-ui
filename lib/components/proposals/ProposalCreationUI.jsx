@@ -23,9 +23,7 @@ export const ProposalCreationUI = (props) => {
     <>
       <ProposalCreationMinimumRequirementBanner />
 
-      <div
-        className={classnames('trans mb-12', { 'opacity-40': isFetched && !userCanCreateProposal })}
-      >
+      <div className={classnames('trans mb-12')}>
         <PageTitleAndBreadcrumbs
           title={t('createANewProposal')}
           breadcrumbs={[
@@ -69,15 +67,16 @@ const ProposalCreationMinimumRequirementBanner = () => {
         outerClassName='mb-8'
         innerClassName='text-center flex flex-col'
       >
-        <h6>
-          <FeatherIcon
-            icon='alert-circle'
-            className='text-red w-8 h-8 mx-auto'
-            strokeWidth='0.15rem'
-          />
-          {t('connectAWalletToCreateAProposal')}
-        </h6>
-        <a>{t('moreAboutToken')}</a>
+        <h2>🗳</h2>
+        <h6>{t('connectAWalletToCreateAProposal')}</h6>
+        <a
+          href='https://medium.com/pooltogether/governance-101-fca9ab8b8ba2'
+          target='_blank'
+          rel='noopener noreferrer'
+          title='Governance 101'
+        >
+          {t('learnMore')}
+        </a>
         <Button
           tertiary
           type='button'
@@ -100,15 +99,16 @@ const ProposalCreationMinimumRequirementBanner = () => {
 
   return (
     <Banner theme='purplePinkBorder' outerClassName='mb-8' innerClassName='text-center'>
-      <h6>
-        <FeatherIcon
-          icon='alert-circle'
-          className='text-red w-8 h-8 mx-auto'
-          strokeWidth='0.15rem'
-        />{' '}
-        {t('inOrderToSubmitAProposalYouNeedDelegatedThreshold', { proposalThreshold })}{' '}
-      </h6>
-      <a>{t('moreAboutToken')}</a>
+      <h2>🗳</h2>
+      <h6>{t('inOrderToSubmitAProposalYouNeedDelegatedThreshold', { proposalThreshold })} </h6>
+      <a
+        href='https://medium.com/pooltogether/governance-101-fca9ab8b8ba2'
+        target='_blank'
+        rel='noopener noreferrer'
+        title='Governance 101'
+      >
+        {t('learnMore')}
+      </a>
     </Banner>
   )
 }

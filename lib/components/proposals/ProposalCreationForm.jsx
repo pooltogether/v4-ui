@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
 import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import { Dialog } from '@reach/dialog'
+import { ethers } from 'ethers'
 
-import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { Card } from 'lib/components/Card'
 import { ActionsCard } from 'lib/components/proposals/ActionsCard'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
@@ -18,16 +18,15 @@ import { shorten } from 'lib/utils/shorten'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTransaction } from 'lib/hooks/useTransaction'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
-import { useContext } from 'react'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
-import { ethers } from 'ethers'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
-import { useCallback } from 'react'
 import { poolToast } from 'lib/utils/poolToast'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { getEmptySolidityDataTypeValue } from 'lib/utils/getEmptySolidityDataTypeValue'
+
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -81,9 +80,16 @@ export const ProposalCreationForm = () => {
 
   const submitTransaction = async () => {
     const params = getProposeParamsFromForm(validFormData)
-    const txId = await sendTx('Propose', GovernorAlphaABI, governanceAddress, 'propose', params, {
-      onCancelled,
-      onSuccess
+    const txId = await sendTx({
+      name: t('propose'),
+      contractAbi: GovernorAlphaABI,
+      contractAddress: governanceAddress,
+      method: 'propose',
+      params,
+      callbacks: {
+        onCancelled,
+        onSuccess
+      }
     })
     setTxId(txId)
     setShowModal(true)
@@ -102,12 +108,20 @@ export const ProposalCreationForm = () => {
 
     if (data?.actions) {
       data?.actions.forEach((action) => {
+        if (action?.contract?.address?.message) {
+          parsedErrorMessages.push(action.contract.address.message)
+        }
+
         if (action?.contract?.message) {
           parsedErrorMessages.push(action.contract.message)
         }
 
         if (action?.contract?.fn?.message) {
           parsedErrorMessages.push(action.contract.fn.message)
+        }
+
+        if (action?.contract?.fn?.payableAmount?.message) {
+          parsedErrorMessages.push(action.contract.fn.payableAmount.message)
         }
 
         if (action?.contract?.fn?.values) {
@@ -139,9 +153,9 @@ export const ProposalCreationForm = () => {
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit, onError)}>
           <div className={classnames('flex flex-col', { hidden: showSummary })}>
-            <ActionsCard disabled={!userCanCreateProposal} />
-            <TitleCard disabled={!userCanCreateProposal} />
-            <DescriptionCard disabled={!userCanCreateProposal} />
+            <ActionsCard />
+            <TitleCard />
+            <DescriptionCard />
             <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
               {t('previewProposal')}
             </Button>
@@ -165,20 +179,17 @@ export const ProposalCreationForm = () => {
 }
 
 const TitleCard = (props) => {
-  const { disabled } = props
-
   const { t } = useTranslation()
   const { register } = useFormContext()
 
   return (
-    <Card disabled={disabled}>
+    <Card>
       <h4 className='mb-2'>{t('title')}</h4>
       <p className='mb-6'>{t('theTitleIsDescription')}</p>
       <TextInputGroup
         className='border-accent-3'
         bgClasses='bg-body'
         alignLeft
-        disabled={disabled}
         placeholder={t('enterTheTitleOfYourProposal')}
         id='_proposalTitle'
         label={t('proposalTitle')}
@@ -191,18 +202,16 @@ const TitleCard = (props) => {
 }
 
 const DescriptionCard = (props) => {
-  const { disabled } = props
-
   const { t } = useTranslation()
   const { register, control } = useFormContext()
   const name = 'description'
   const text = useWatch({ control, name, defaultValue: '' })
 
   return (
-    <Card disabled={disabled}>
+    <Card>
       <h4 className='mb-2'>{t('description')}</h4>
       <p className='mb-8'>{t('theDescriptionShouldPresentInFullDescription')}</p>
-      <MarkdownInputArea name={name} text={text} register={register} disabled={disabled} />
+      <MarkdownInputArea name={name} text={text} register={register} />
     </Card>
   )
 }
@@ -266,7 +275,6 @@ const MarkdownPreview = (props) => {
 
 const TabbedView = (props) => {
   const { tabs, initialTabIndex } = props
-  const { t } = useTranslation()
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialTabIndex)
 
   return (
@@ -325,13 +333,13 @@ const ProposalSummary = (props) => {
 
   return (
     <>
-      <h4 className='mb-8'>Proposal review</h4>
+      <h4 className='mb-8'>{t('proposalReview')}</h4>
       <Card>
-        <h5 className=''>Title:</h5>
+        <h5 className=''>{t('title')}:</h5>
         <h6 className='text-accent-1 p-4 xs:p-8'>{title}</h6>
-        <h5 className=''>Description:</h5>
+        <h5 className=''>{t('description')}:</h5>
         <MarkdownPreview className='text-accent-1' text={description} />
-        <h5 className='my-4'>Actions:</h5>
+        <h5 className='my-4'>{t('actions')}:</h5>
         {actions.map((action, index) => (
           <ActionSummary key={index} action={action} index={index} />
         ))}
@@ -345,7 +353,7 @@ const ProposalSummary = (props) => {
           showForm()
         }}
       >
-        Edit Proposal
+        {t('editProposal')}
       </Button>
       <Button
         className='mt-4 mb-16 w-full'
@@ -355,7 +363,7 @@ const ProposalSummary = (props) => {
           submitTransaction()
         }}
       >
-        Submit Proposal
+        {t('submitProposal')}
       </Button>
     </>
   )
@@ -365,7 +373,7 @@ const ActionSummary = (props) => {
   const { action, index } = props
   const { contract } = action
   const { name: contractName, address, fn } = contract
-  const { inputs, name: fnName, values } = fn
+  const { inputs, name: fnName, values, payableAmount, payable } = fn
 
   const actionNumber = index + 1
 
@@ -391,7 +399,7 @@ const ActionSummary = (props) => {
       {inputs.map((input, index) => (
         <div
           key={`${actionNumber}-${index}-fn-input`}
-          className='flex ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
+          className='ml-8 xs:ml-12 flex flex-col xs:flex-row mb-2'
         >
           <div className='xs:w-1/4 flex flex-wrap'>
             <b>{input.name}</b>
@@ -404,6 +412,18 @@ const ActionSummary = (props) => {
           </div>
         </div>
       ))}
+      {payable && (
+        <div className='ml-8 xs:ml-12 mb-2 flex flex-col xs:flex-row '>
+          {' '}
+          <div className='xs:w-1/4 flex flex-wrap'>
+            <b>payableAmount</b>
+            <span className='mx-2'>ETH:</span>
+          </div>
+          <div className='xs:w-3/4'>
+            <span className='text-inverse'>{payableAmount}</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -424,12 +444,12 @@ const FormattedInputValue = (props) => {
 }
 
 const ProposalTransactionModal = (props) => {
-  const { isOpen, closeModal, tx, resetForm } = props
+  const { isOpen, closeModal, tx } = props
 
-  const { chainId, provider } = useContext(AuthControllerContext)
+  const { t } = useTranslation()
+  const { provider } = useContext(AuthControllerContext)
   const [proposalId, setProposalId] = useState()
 
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const showClose = tx && (tx.error || tx.cancelled)
   const showNavigateToProposal = tx && !tx.error && tx.completed && proposalId !== undefined
 
@@ -482,12 +502,9 @@ const ProposalTransactionModal = (props) => {
         <TxStatus tx={tx} />
         {showNavigateToProposal && (
           <ButtonLink className='mt-8' href='/proposals/[id]' as={`/proposals/${proposalId}`}>
-            View Proposal
+            {t('viewProposal')}
           </ButtonLink>
         )}
-
-        {/* TODO: Link back to proposal? */}
-        {/* TODO: refetch proposals on success */}
       </Banner>
     </Dialog>
   )
@@ -503,7 +520,13 @@ const getProposeParamsFromForm = (formData) => {
 
   formData.actions.forEach((action) => {
     targets.push(action.contract.address)
-    values.push(0)
+
+    if (action.contract.fn.payableAmount) {
+      const ethAmount = action.contract.fn.payableAmount
+      values.push(ethers.utils.parseEther(ethAmount).toString())
+    } else {
+      values.push(0)
+    }
 
     const contractInterface = new ethers.utils.Interface(action.contract.abi)
     const fn = contractInterface.functions[action.contract.fn.name]

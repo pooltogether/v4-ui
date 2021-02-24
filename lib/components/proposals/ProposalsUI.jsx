@@ -1,10 +1,8 @@
-import React, { useContext } from 'react'
+import React, { useLayoutEffect } from 'react'
 
 import { useTranslation } from 'lib/../i18n'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
-import { PTHint } from 'lib/components/PTHint'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { RetroactivePoolClaimBanner } from 'lib/components/RetroactivePoolClaimBanner'
 import { UsersVotesCard } from 'lib/components/UsersVotesCard'
@@ -14,7 +12,10 @@ import { ButtonLink } from 'lib/components/ButtonLink'
 
 export const ProposalsUI = (props) => {
   const { t } = useTranslation()
-  const { connectWallet } = useContext(AuthControllerContext)
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const { error, isFetched } = useAllProposalsSorted()
 
