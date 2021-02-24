@@ -17,12 +17,7 @@ import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
-import { contract } from '@pooltogether/etherplex'
-import {
-  EMPTY_ACTION,
-  EMPTY_CONTRACT,
-  EMPTY_FN
-} from 'lib/components/proposals/ProposalCreationForm'
+import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
 import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 export const Action = (props) => {
@@ -401,6 +396,7 @@ const FunctionSelect = (props) => {
 
 const FunctionInputs = (props) => {
   const { fn, fnPath } = props
+  const { t } = useTranslation()
   const { register } = useFormContext()
 
   const inputs = fn?.inputs || []
@@ -422,8 +418,8 @@ const FunctionInputs = (props) => {
             name={`${fnPath}.payableAmount`}
             register={register}
             type='number'
-            validate={(value) => value >= 0 || `payableAmount is invalid`}
-            dataType={'ether'}
+            validate={(value) => value >= 0 || t('fieldIsInvalid', { field: 'payableAmount' })}
+            dataType={'ETH'}
           />
         </li>
       )}

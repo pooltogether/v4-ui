@@ -17,7 +17,7 @@ import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTransaction } from 'lib/hooks/useTransaction'
-import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { CONTRACT_ADDRESSES, DEFAULT_TOKEN_PRECISION } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
@@ -27,6 +27,9 @@ import { ButtonLink } from 'lib/components/ButtonLink'
 import { getEmptySolidityDataTypeValue } from 'lib/utils/getEmptySolidityDataTypeValue'
 
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
+import { PTHint } from 'lib/components/PTHint'
+import { numberWithCommas } from 'lib/utils/numberWithCommas'
+import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -156,6 +159,7 @@ export const ProposalCreationForm = () => {
             <ActionsCard />
             <TitleCard />
             <DescriptionCard />
+            {!userCanCreateProposal && <ProposalCreationWarning />}
             <Button className='mb-16 w-full' disabled={!userCanCreateProposal} type='submit'>
               {t('previewProposal')}
             </Button>
@@ -507,6 +511,23 @@ const ProposalTransactionModal = (props) => {
         )}
       </Banner>
     </Dialog>
+  )
+}
+
+const ProposalCreationWarning = (props) => {
+  const { t } = useTranslation()
+  const { data: governorAlpha } = useGovernorAlpha()
+
+  const proposalThreshold = numberWithCommas(
+    ethers.utils.formatUnits(governorAlpha.proposalThreshold, DEFAULT_TOKEN_PRECISION),
+    { precision: 0 }
+  )
+
+  return (
+    <div className='flex mb-7 mx-auto flex flex-col xs:flex-row text-center'>
+      <FeatherIcon icon='alert-circle' className='w-6 h-6 text-red mx-auto xs:mr-4 mb-2 xs:mb-0' />
+      <span>{t('inOrderToSubmitAProposalYouNeedDelegatedThreshold', { proposalThreshold })} </span>
+    </div>
   )
 }
 
