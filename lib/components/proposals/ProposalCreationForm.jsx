@@ -81,7 +81,7 @@ export const ProposalCreationForm = () => {
   const submitTransaction = async () => {
     const params = getProposeParamsFromForm(validFormData)
     const txId = await sendTx({
-      name: 'Propose',
+      name: t('propose'),
       contractAbi: GovernorAlphaABI,
       contractAddress: governanceAddress,
       method: 'propose',
@@ -280,7 +280,6 @@ const MarkdownPreview = (props) => {
 
 const TabbedView = (props) => {
   const { tabs, initialTabIndex } = props
-  const { t } = useTranslation()
   const [selectedTabIndex, setSelectedTabIndex] = useState(initialTabIndex)
 
   return (
@@ -339,13 +338,13 @@ const ProposalSummary = (props) => {
 
   return (
     <>
-      <h4 className='mb-8'>Proposal review</h4>
+      <h4 className='mb-8'>{t('proposalReview')}</h4>
       <Card>
-        <h5 className=''>Title:</h5>
+        <h5 className=''>{t('title')}:</h5>
         <h6 className='text-accent-1 p-4 xs:p-8'>{title}</h6>
-        <h5 className=''>Description:</h5>
+        <h5 className=''>{t('description')}:</h5>
         <MarkdownPreview className='text-accent-1' text={description} />
-        <h5 className='my-4'>Actions:</h5>
+        <h5 className='my-4'>{t('actions')}:</h5>
         {actions.map((action, index) => (
           <ActionSummary key={index} action={action} index={index} />
         ))}
@@ -359,7 +358,7 @@ const ProposalSummary = (props) => {
           showForm()
         }}
       >
-        Edit Proposal
+        {t('editProposal')}
       </Button>
       <Button
         className='mt-4 mb-16 w-full'
@@ -369,7 +368,7 @@ const ProposalSummary = (props) => {
           submitTransaction()
         }}
       >
-        Submit Proposal
+        {t('submitProposal')}
       </Button>
     </>
   )
@@ -423,7 +422,7 @@ const ActionSummary = (props) => {
           {' '}
           <div className='xs:w-1/4 flex flex-wrap'>
             <b>payableAmount</b>
-            <span className='mx-2'>ether:</span>
+            <span className='mx-2'>ETH:</span>
           </div>
           <div className='xs:w-3/4'>
             <span className='text-inverse'>{payableAmount}</span>
@@ -450,9 +449,10 @@ const FormattedInputValue = (props) => {
 }
 
 const ProposalTransactionModal = (props) => {
-  const { isOpen, closeModal, tx, resetForm } = props
+  const { isOpen, closeModal, tx } = props
 
-  const { chainId, provider } = useContext(AuthControllerContext)
+  const { t } = useTranslation()
+  const { provider } = useContext(AuthControllerContext)
   const [proposalId, setProposalId] = useState()
 
   const showClose = tx && (tx.error || tx.cancelled)
@@ -507,7 +507,7 @@ const ProposalTransactionModal = (props) => {
         <TxStatus tx={tx} />
         {showNavigateToProposal && (
           <ButtonLink className='mt-8' href='/proposals/[id]' as={`/proposals/${proposalId}`}>
-            View Proposal
+            {t('viewProposal')}
           </ButtonLink>
         )}
       </Banner>

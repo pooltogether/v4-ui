@@ -132,10 +132,11 @@ const ProposalDescriptionCard = (props) => {
 }
 
 const ProposalActionsCard = (props) => {
+  const { t } = useTranslation()
   const { proposal } = props
 
   return (
-    <Card title='Actions'>
+    <Card title={t('actions')}>
       <ul>
         {proposal.signatures.map((signature, index) => {
           return (
@@ -159,9 +160,10 @@ const ProposalActionRow = (props) => {
   const { actionIndex, calldata, signature, value, target } = props
 
   const [fnParameters, setFnParameters] = useState(null)
-  const fnName = signature.slice(0, signature.indexOf('('))
+  const { t } = useTranslation()
+  const { data } = useEtherscanAbi(target)
 
-  const { data, isFetching: etherscanAbiIsFetching } = useEtherscanAbi(target)
+  const fnName = signature.slice(0, signature.indexOf('('))
 
   useEffect(() => {
     if (data && data.status === 200 && data.data && data.data.status === '1') {
@@ -200,19 +202,19 @@ const ProposalActionRow = (props) => {
       <b>{`${actionIndex}.`}</b>
       <div className='flex flex-col pl-2 text-accent-1'>
         <div className='w-full flex'>
-          <span className='mr-2'>Contract:</span>
+          <span className='mr-2'>{t('contract')}:</span>
           <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={target}>
             {shorten(target)}
           </EtherscanAddressLink>
         </div>
 
         <div className='w-full'>
-          <span className='mr-2'>Function:</span>
+          <span className='mr-2'>{t('function')}:</span>
           <span className='text-inverse'>{signature}</span>
         </div>
 
         <div className='w-full'>
-          <span className='mr-2'>Inputs:</span>
+          <span className='mr-2'>{t('inputs')}:</span>
           {fnParameters ? (
             <span className='text-inverse'>
               {fnParameters.map((input) => input.value).join(', ')}
@@ -224,8 +226,8 @@ const ProposalActionRow = (props) => {
 
         {value > 0 && (
           <div>
-            <span className='mr-2'>Payable Amount:</span>
-            <span className='text-inverse'>{payableAmount} ether</span>
+            <span className='mr-2'>{t('payableAmount')}:</span>
+            <span className='text-inverse'>{payableAmount} ETH</span>
           </div>
         )}
       </div>
@@ -251,7 +253,7 @@ const VotesCard = (props) => {
 
   return (
     <>
-      <Card title='Votes'>
+      <Card title={t('votes')}>
         <div className='w-full h-2 flex flex-row rounded-full overflow-hidden my-4'>
           {!noVotes && (
             <>
@@ -327,7 +329,7 @@ const ProposalVoteCard = (props) => {
       </div>
       {voteDataIsFetched && voteData?.delegateDidVote && (
         <div className='flex my-auto mt-2'>
-          <h6 className='font-normal mr-2 sm:mr-4'>My vote:</h6>
+          <h6 className='font-normal mr-2 sm:mr-4'>{t('myVote')}:</h6>
           <div
             className={classnames('flex my-auto', {
               'text-green': voteData.support,
@@ -338,7 +340,7 @@ const ProposalVoteCard = (props) => {
               icon={voteData.support ? 'check-circle' : 'x-circle'}
               className='w-6 h-6 mr-2'
             />
-            <p className='font-bold'>{voteData.support ? 'Accept' : 'Reject'}</p>
+            <p className='font-bold'>{voteData.support ? t('accept') : t('reject')}</p>
           </div>
         </div>
       )}
@@ -638,10 +640,7 @@ const ExecuteButton = (props) => {
         <PTHint
           tip={
             <div className='flex'>
-              <p>
-                Execution will cost {payableAmountInEther.toString()} ether due to payable contract
-                calls
-              </p>
+              <p>{t('executionCostInEth', { amount: payableAmountInEther.toString() })}</p>
             </div>
           }
         >

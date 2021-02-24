@@ -243,6 +243,10 @@ const CustomContractInputRinkeby = (props) => {
   )
 }
 
+/**
+ * Etherscans ABI API only supports mainnet
+ * @param {*} props
+ */
 const CustomContractInputMainnet = (props) => {
   const { contract, setContract } = props
 
@@ -279,8 +283,6 @@ const CustomContractInputMainnet = (props) => {
 
   const etherscanAbiStatus = etherscanAbiUseQueryResponse?.data?.status
   const errorMessage = getErrorMessage(errors?.[addressFormName]?.message, etherscanAbiStatus)
-
-  // This will only work with mainnet contracts
 
   return (
     <>
