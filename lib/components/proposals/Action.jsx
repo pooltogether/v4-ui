@@ -15,6 +15,7 @@ import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import ReserveAbi from '@pooltogether/pooltogether-contracts/abis/Reserve'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
 import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
@@ -118,6 +119,14 @@ const ContractSelect = (props) => {
     const options = []
 
     if (prizePoolsIsFetched) {
+      // Add Custom option
+      options.push({
+        address: '',
+        name: t('customContract'),
+        abi: null,
+        custom: true
+      })
+
       // Add POOL token
       options.push({
         address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
@@ -125,11 +134,11 @@ const ContractSelect = (props) => {
         abi: DelegateableERC20ABI
       })
 
+      // Add Governance Reserve
       options.push({
-        address: '',
-        name: t('customContract'),
-        abi: null,
-        custom: true
+        address: CONTRACT_ADDRESSES[chainId].GovernanceReserve,
+        name: t('reserve'),
+        abi: ReserveAbi
       })
 
       // Add Prize Pool contracts
