@@ -12,14 +12,14 @@ import { DropdownList } from 'lib/components/DropdownList'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
+import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
+import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import PrizePoolBuilderAbi from '@pooltogether/pooltogether-contracts/abis/PoolWithMultipleWinnersBuilder'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
-import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
-import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 export const Action = (props) => {
   const { deleteAction, actionPath, index, hideRemoveButton } = props
@@ -134,11 +134,11 @@ const ContractSelect = (props) => {
     })
 
     // Add Prize Pool Builder
-    options.push({
-      address: CONTRACT_ADDRESSES[chainId].PrizePoolBuilder,
-      name: 'Prize Pool Builder',
-      abi: PrizePoolBuilderAbi
-    })
+    // options.push({
+    //   address: CONTRACT_ADDRESSES[chainId].PrizePoolBuilder,
+    //   name: 'Prize Pool Builder',
+    //   abi: PrizePoolBuilderAbi
+    // })
 
     if (prizePoolsIsFetched) {
       // Add Prize Pool contracts

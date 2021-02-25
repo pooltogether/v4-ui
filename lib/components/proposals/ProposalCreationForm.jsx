@@ -82,7 +82,9 @@ export const ProposalCreationForm = () => {
   }
 
   const submitTransaction = async () => {
-    const params = getProposeParamsFromForm(validFormData)
+    const params = getProposeParamsFromForm(validFormData, t)
+    if (!params) return
+
     const txId = await sendTx({
       name: t('propose'),
       contractAbi: GovernorAlphaABI,
@@ -534,41 +536,43 @@ const ProposalCreationWarning = (props) => {
 }
 
 // TODO: Some functions have optional parameters. That isn't abailable in the ABI.
-const getProposeParamsFromForm = (formData) => {
+const getProposeParamsFromForm = (formData, t) => {
   const targets = []
   const values = []
   const signatures = []
   const calldatas = []
   const description = `# ${formData.title}\n${formData.description}`
 
-  console.log('formData', formData)
+  try {
+    formData.actions.forEach((action) => {
+      targets.push(action.contract.address)
 
-  formData.actions.forEach((action) => {
-    targets.push(action.contract.address)
+      if (action.contract.fn.payableAmount) {
+        const ethAmount = action.contract.fn.payableAmount
+        values.push(ethers.utils.parseEther(ethAmount).toString())
+      } else {
+        values.push(0)
+      }
 
-    if (action.contract.fn.payableAmount) {
-      const ethAmount = action.contract.fn.payableAmount
-      values.push(ethers.utils.parseEther(ethAmount).toString())
-    } else {
-      values.push(0)
-    }
+      const contractInterface = new ethers.utils.Interface(action.contract.abi)
+      const fn = contractInterface.functions[action.contract.fn.name]
 
-    const contractInterface = new ethers.utils.Interface(action.contract.abi)
-    const fn = contractInterface.functions[action.contract.fn.name]
+      signatures.push(fn.signature)
 
-    signatures.push(fn.signature)
+      const fnParameters = action.contract.fn.inputs.map(
+        (input) =>
+          JSON.parse(action.contract.fn.values[input.name]) ||
+          getEmptySolidityDataTypeValue(input.type)
+      )
+      const fullCalldata = fn.encode(fnParameters)
+      const calldata = fullCalldata.replace(fn.sighash, '0x')
 
-    const fnParameters = action.contract.fn.inputs.map(
-      (input) =>
-        JSON.parse(action.contract.fn.values[input.name]) ||
-        getEmptySolidityDataTypeValue(input.type)
-    )
-    console.log(action, action.contract.fn.name, fn, fnParameters)
-    const fullCalldata = fn.encode(fnParameters)
-    const calldata = fullCalldata.replace(fn.sighash, '0x')
+      calldatas.push(calldata)
+    })
 
-    calldatas.push(calldata)
-  })
-
-  return [targets, values, signatures, calldatas, description]
+    return [targets, values, signatures, calldatas, description]
+  } catch (e) {
+    poolToast.error(t('errorEncodingData'))
+    return null
+  }
 }
