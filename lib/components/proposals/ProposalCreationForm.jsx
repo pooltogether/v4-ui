@@ -382,7 +382,7 @@ const ActionSummary = (props) => {
   const actionNumber = index + 1
 
   return (
-    <div className='flex flex-col text-accent-1 mb-4 last:mb-0'>
+    <div className='flex flex-col text-accent-1 mb-4 last:mb-0 break-all'>
       <span className='mb-2'>
         <b>{actionNumber}.</b>
         <span className='ml-2'>
@@ -541,6 +541,8 @@ const getProposeParamsFromForm = (formData) => {
   const calldatas = []
   const description = `# ${formData.title}\n${formData.description}`
 
+  console.log('formData', formData)
+
   formData.actions.forEach((action) => {
     targets.push(action.contract.address)
 
@@ -557,8 +559,11 @@ const getProposeParamsFromForm = (formData) => {
     signatures.push(fn.signature)
 
     const fnParameters = action.contract.fn.inputs.map(
-      (input) => action.contract.fn.values[input.name] || getEmptySolidityDataTypeValue(input.type)
+      (input) =>
+        JSON.parse(action.contract.fn.values[input.name]) ||
+        getEmptySolidityDataTypeValue(input.type)
     )
+    console.log(action, action.contract.fn.name, fn, fnParameters)
     const fullCalldata = fn.encode(fnParameters)
     const calldata = fullCalldata.replace(fn.sighash, '0x')
 

@@ -1,3 +1,6 @@
+import PoolWithMultipleWinnersBuilderMainnet from '@pooltogether/pooltogether-contracts/deployments/mainnet/PoolWithMultipleWinnersBuilder.json'
+import PoolWithMultipleWinnersBuilderRinkeby from '@pooltogether/pooltogether-contracts/deployments/rinkeby/PoolWithMultipleWinnersBuilder.json'
+
 export const SUPPORTED_CHAIN_IDS = [1, 4, 31337, 1234]
 
 export const SECONDS_PER_BLOCK = 13
@@ -30,7 +33,8 @@ export const COOKIE_OPTIONS = {
 export const CONTRACT_ADDRESSES = {
   1: {
     GovernorAlpha: '0xB3a87172F555ae2a2AB79Be60B336D2F7D0187f0',
-    GovernanceToken: '0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e'
+    GovernanceToken: '0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e',
+    PrizePoolBuilder: PoolWithMultipleWinnersBuilderMainnet.address
     // GovernorAlpha: '0x5e4be8Bc9637f0EAA1A755019e06A68ce081D58F',  // Uniswap Governance for testing
     // GovernanceToken: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984' // Uniswap UNI Token  for testing
   },
@@ -38,7 +42,8 @@ export const CONTRACT_ADDRESSES = {
   4: {
     GovernorAlpha: '0x9B63243CD27102fbEc9FAf67CA1a858dcC16Ee01',
     GovernanceToken: '0xc4E90a8Dc6CaAb329f08ED3C8abc6b197Cf0F40A',
-    MerkleDistributor: '0x5fcD21897939B09eAF9c81eF8C2C4CD64FA75558'
+    MerkleDistributor: '0x5fcD21897939B09eAF9c81eF8C2C4CD64FA75558',
+    PrizePoolBuilder: PoolWithMultipleWinnersBuilderRinkeby.address
 
     // GovernorAlpha: '0x2f8bef449f3b7f1083E0173317bc26FA417C8Ae8', // OLD Governor Alpha
     // GovernanceToken: '0x4cf566d201ef144e09d2f8abe1cc0e451d79de53' // defisaver

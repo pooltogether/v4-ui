@@ -15,6 +15,7 @@ import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import PrizePoolBuilderAbi from '@pooltogether/pooltogether-contracts/abis/PoolWithMultipleWinnersBuilder'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
 import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
@@ -117,21 +118,29 @@ const ContractSelect = (props) => {
   const options = useMemo(() => {
     const options = []
 
+    // Add Custom Contract
+    options.push({
+      address: '',
+      name: t('customContract'),
+      abi: null,
+      custom: true
+    })
+
+    // Add POOL token
+    options.push({
+      address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+      name: t('poolToken'),
+      abi: DelegateableERC20ABI
+    })
+
+    // Add Prize Pool Builder
+    options.push({
+      address: CONTRACT_ADDRESSES[chainId].PrizePoolBuilder,
+      name: 'Prize Pool Builder',
+      abi: PrizePoolBuilderAbi
+    })
+
     if (prizePoolsIsFetched) {
-      // Add POOL token
-      options.push({
-        address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
-        name: t('poolToken'),
-        abi: DelegateableERC20ABI
-      })
-
-      options.push({
-        address: '',
-        name: t('customContract'),
-        abi: null,
-        custom: true
-      })
-
       // Add Prize Pool contracts
       options.push({
         groupHeader: t('prizePools')
@@ -429,7 +438,7 @@ const FunctionInputs = (props) => {
 
 const FunctionInput = (props) => {
   const { t } = useTranslation()
-  const { name, type, fnInputPath } = props
+  const { name, type, fnInputPath, components } = props
   const { register, unregister, formState } = useFormContext()
 
   useEffect(() => {
@@ -445,7 +454,7 @@ const FunctionInput = (props) => {
         label={name}
         name={`${fnInputPath}`}
         register={register}
-        validate={(value) => isValidSolidityData(type, value) || `${name} is invalid`}
+        validate={(value) => isValidSolidityData(type, value, components) || `${name} is invalid`}
         dataType={type}
       />
     </li>
