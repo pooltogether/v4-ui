@@ -1,7 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useController, useFieldArray, useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 import { isBrowser } from 'react-device-detect'
 
@@ -17,7 +17,7 @@ import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
-import PrizePoolBuilderAbi from '@pooltogether/pooltogether-contracts/abis/PoolWithMultipleWinnersBuilder'
+import ReserveAbi from '@pooltogether/pooltogether-contracts/abis/Reserve'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
 
@@ -131,6 +131,13 @@ const ContractSelect = (props) => {
       address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
       name: t('poolToken'),
       abi: DelegateableERC20ABI
+    })
+
+    // Add Governance Reserve
+    options.push({
+      address: CONTRACT_ADDRESSES[chainId].GovernanceReserve,
+      name: t('reserve'),
+      abi: ReserveAbi
     })
 
     // Add Prize Pool Builder
