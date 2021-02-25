@@ -562,7 +562,7 @@ const getProposeParamsFromForm = (formData, t) => {
       const fnParameters = action.contract.fn.inputs.map(
         (input) =>
           JSON.parse(action.contract.fn.values[input.name]) ||
-          getEmptySolidityDataTypeValue(input.type)
+          getEmptySolidityDataTypeValue(input.type, input.components)
       )
       const fullCalldata = fn.encode(fnParameters)
       const calldata = fullCalldata.replace(fn.sighash, '0x')
