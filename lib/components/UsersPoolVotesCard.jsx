@@ -139,22 +139,20 @@ const DelegatedVotes = (props) => {
     setTxId(id)
   }
 
+  // Transaction states
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
       <p className='mt-2 xs:mt-4 px-4 py-2 rounded-lg bg-light-purple-35 text-green my-auto font-bold w-fit-content'>
         🎉 {t('successfullyActivatedYourVotes')} 🎉
       </p>
     )
-  }
-
-  if (tx?.inWallet && !tx?.cancelled) {
+  } else if (tx?.inWallet && !tx?.cancelled) {
     return <TxText className='mt-2 xs:mt-4'>{t('pleaseConfirmInYourWallet')}</TxText>
-  }
-
-  if (tx?.sent) {
+  } else if (tx?.sent) {
     return <TxText className='mt-2 xs:mt-4'>{t('waitingForConfirmations')}...</TxText>
   }
 
+  // User has self delegated
   if (tokenHolder.selfDelegated) {
     if (tokenHolder.tokenHoldersRepresentedAmount > 1) {
       return (
@@ -176,7 +174,8 @@ const DelegatedVotes = (props) => {
     }
   }
 
-  if (tokenHolder.hasDelegated && !tokenHolder.selfDelegated) {
+  // User has delegated to someone else
+  if (tokenHolder.hasDelegated) {
     return (
       <p className='text-accent-1 mt-2 xs:mt-4'>
         <Trans
@@ -194,6 +193,8 @@ const DelegatedVotes = (props) => {
     )
   }
 
+  // Looking in the past
+  // User didn't delegate at that time, but did after that time
   if (
     (isDataFromBeforeCurrentBlock && tokenHolderCurrentData?.hasDelegated) ||
     !tokenHolderCurrentDataIsFetched
@@ -201,8 +202,13 @@ const DelegatedVotes = (props) => {
     return null
   }
 
+  // User has not delegated their votes
   return (
-    <div className='mt-4'>
+    <div className='mt-4 flex'>
+      <NotDelegatedWarning
+        tokenHolder={tokenHolder}
+        isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
+      />
       <button
         type='button'
         className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-2 font-bold'
@@ -235,7 +241,7 @@ const NotDelegatedWarning = (props) => {
 
   const { t } = useTranslation()
 
-  if (!isDataFromBeforeCurrentBlock || tokenHolder.hasDelegated) {
+  if (!isDataFromBeforeCurrentBlock) {
     return null
   }
 
