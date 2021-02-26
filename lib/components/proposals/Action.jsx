@@ -1,7 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import React, { useContext, useState, useMemo, useEffect } from 'react'
-import { useController, useFieldArray, useForm, useFormContext, useWatch } from 'react-hook-form'
+import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 import { isBrowser } from 'react-device-detect'
 
@@ -12,14 +12,14 @@ import { DropdownList } from 'lib/components/DropdownList'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
+import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
+import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import ReserveAbi from '@pooltogether/pooltogether-contracts/abis/Reserve'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
-import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
-import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
 
 export const Action = (props) => {
   const { deleteAction, actionPath, index, hideRemoveButton } = props
@@ -118,29 +118,36 @@ const ContractSelect = (props) => {
   const options = useMemo(() => {
     const options = []
 
+    // Add Custom Contract
+    options.push({
+      address: '',
+      name: t('customContract'),
+      abi: null,
+      custom: true
+    })
+
+    // Add POOL token
+    options.push({
+      address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+      name: t('poolToken'),
+      abi: DelegateableERC20ABI
+    })
+
+    // Add Governance Reserve
+    options.push({
+      address: CONTRACT_ADDRESSES[chainId].GovernanceReserve,
+      name: t('reserve'),
+      abi: ReserveAbi
+    })
+
+    // Add Prize Pool Builder
+    // options.push({
+    //   address: CONTRACT_ADDRESSES[chainId].PrizePoolBuilder,
+    //   name: 'Prize Pool Builder',
+    //   abi: PrizePoolBuilderAbi
+    // })
+
     if (prizePoolsIsFetched) {
-      // Add Custom option
-      options.push({
-        address: '',
-        name: t('customContract'),
-        abi: null,
-        custom: true
-      })
-
-      // Add POOL token
-      options.push({
-        address: CONTRACT_ADDRESSES[chainId].GovernanceToken,
-        name: t('poolToken'),
-        abi: DelegateableERC20ABI
-      })
-
-      // Add Governance Reserve
-      options.push({
-        address: CONTRACT_ADDRESSES[chainId].GovernanceReserve,
-        name: t('reserve'),
-        abi: ReserveAbi
-      })
-
       // Add Prize Pool contracts
       options.push({
         groupHeader: t('prizePools')
@@ -438,7 +445,7 @@ const FunctionInputs = (props) => {
 
 const FunctionInput = (props) => {
   const { t } = useTranslation()
-  const { name, type, fnInputPath } = props
+  const { name, type, fnInputPath, components } = props
   const { register, unregister, formState } = useFormContext()
 
   useEffect(() => {
@@ -454,7 +461,7 @@ const FunctionInput = (props) => {
         label={name}
         name={`${fnInputPath}`}
         register={register}
-        validate={(value) => isValidSolidityData(type, value) || `${name} is invalid`}
+        validate={(value) => isValidSolidityData(type, value, components) || `${name} is invalid`}
         dataType={type}
       />
     </li>
