@@ -6,13 +6,10 @@ import Link from 'next/link'
 import { Trans, useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Banner } from 'lib/components/Banner'
-import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { PTHint } from 'lib/components/PTHint'
-import { SmallLoader } from 'lib/components/SmallLoader'
 import { TxText } from 'lib/components/TxText'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useSocialIdentity } from 'lib/hooks/useTwitterProfile'
@@ -37,7 +34,7 @@ export const UsersPoolVotesCard = (props) => {
     return <UsersPoolVotesCardConnectWallet {...props} connectWallet={connectWallet} />
   }
 
-  if (!tokenHolder) return null
+  if (!tokenHolder || !tokenHolderIsFetched) return null
 
   if (!tokenHolder.hasDelegated && !tokenHolder.canVote && tokenHolder.tokenBalance === '0') {
     return (
@@ -60,7 +57,7 @@ export const UsersPoolVotesCard = (props) => {
       className={classnames('flex flex-col mb-8 sm:mb-10', className)}
       style={{ color: 'white' }}
     >
-      <div className='flex flex-col-reverse sx:flex-row'>
+      <div className='flex flex-col-reverse xs:flex-row'>
         <div className='flex w-full xs:w-1/2 '>
           <div className='flex-col w-full xs:w-1/2 mb-2 sm:mb-0 '>
             <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
@@ -85,7 +82,7 @@ export const UsersPoolVotesCard = (props) => {
           </div>
         </div>
 
-        <div>
+        <div className='flex w-full xs:w-1/2'>
           {isDataFromBeforeCurrentBlock && (
             <div className='ml-auto mb-4 sm:mb-0 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
               <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
@@ -116,6 +113,10 @@ const DelegatedVotes = (props) => {
 
   const { t } = useTranslation()
   const { usersAddress, chainId } = useContext(AuthControllerContext)
+  const {
+    data: tokenHolderCurrentData,
+    isFetched: tokenHolderCurrentDataIsFetched
+  } = useTokenHolder(usersAddress, blockNumber)
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
   const tx = useTransaction(txId)
@@ -191,6 +192,13 @@ const DelegatedVotes = (props) => {
         />
       </p>
     )
+  }
+
+  if (
+    (isDataFromBeforeCurrentBlock && tokenHolderCurrentData?.hasDelegated) ||
+    !tokenHolderCurrentDataIsFetched
+  ) {
+    return null
   }
 
   return (
