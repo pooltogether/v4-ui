@@ -205,10 +205,7 @@ const DelegatedVotes = (props) => {
   // User has not delegated their votes
   return (
     <div className='mt-4 flex'>
-      <NotDelegatedWarning
-        tokenHolder={tokenHolder}
-        isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
-      />
+      <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
       <button
         type='button'
         className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-2 font-bold'
@@ -237,7 +234,7 @@ const DelegatedVotes = (props) => {
 }
 
 const NotDelegatedWarning = (props) => {
-  const { tokenHolder, isDataFromBeforeCurrentBlock } = props
+  const { isDataFromBeforeCurrentBlock } = props
 
   const { t } = useTranslation()
 
