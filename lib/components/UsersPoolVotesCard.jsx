@@ -208,7 +208,7 @@ const DelegatedVotes = (props) => {
       <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
       <button
         type='button'
-        className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-2 font-bold'
+        className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
         onClick={handleDelegate}
       >
         {isDataFromBeforeCurrentBlock
@@ -224,7 +224,7 @@ const DelegatedVotes = (props) => {
               target='_blank'
               rel='noopener noreferrer'
               title='Sybil'
-              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold'
+              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
             />
           )
         }}
