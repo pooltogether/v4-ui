@@ -354,7 +354,7 @@ const ProposalVoteCard = (props) => {
             <VoteButtons
               id={id}
               refetchData={refetchData}
-              selfDelegated={tokenHolderData?.selfDelegated}
+              canVote={tokenHolderData?.canVote}
               alreadyVoted={voteData?.delegateDidVote}
             />
           )}
@@ -376,7 +376,7 @@ const ProposalVoteCard = (props) => {
 }
 
 const VoteButtons = (props) => {
-  const { id, refetchData, selfDelegated, alreadyVoted } = props
+  const { id, refetchData, canVote, alreadyVoted } = props
 
   const router = useRouter()
   const page = router?.query?.page ? parseInt(router.query.page, 10) : 1
@@ -428,7 +428,7 @@ const VoteButtons = (props) => {
     setTxId(txId)
   }
 
-  if (!selfDelegated || alreadyVoted) {
+  if (!canVote || alreadyVoted) {
     return null
   }
 

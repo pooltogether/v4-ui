@@ -75,6 +75,180 @@ const UsersVotesCardConnectWallet = (props) => {
   )
 }
 
+export const PoolVotesCard = (props) => {
+  const { blockNumber, className } = props
+  const { t } = useTranslation()
+  const { usersAddress, connectWallet } = useContext(AuthControllerContext)
+
+  const {
+    data: tokenHolder,
+    isFetched: tokenHolderIsFetched,
+    isDataFromBeforeCurrentBlock,
+    refetch: refetchTokenHolderData
+  } = useTokenHolder(usersAddress, blockNumber)
+
+  if (!tokenHolderIsFetched) return null
+
+  if (!usersAddress) {
+    return <VotesCardConnectWallet {...props} connectWallet={connectWallet} />
+  }
+
+  if (!tokenHolder.hasDelegated && !tokenHolder.canVote && tokenHolder.tokenBalance === '0') {
+    return (
+      <PoolVotesCardNoPool {...props} isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
+    )
+  }
+
+  const votingPower = numberWithCommas(tokenHolder.votes, {
+    precision: getPrecision(tokenHolder.votes)
+  })
+  const usersPoolBalance = numberWithCommas(tokenHolder.tokenBalance, {
+    precision: getPrecision(tokenHolder.tokenBalance)
+  })
+
+  return (
+    <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
+      <div className='flex flex-row'>
+        <div className='flex-col w-full xs:w-1/4 mb-2 sm:mb-0 '>
+          <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
+          <h2
+            className={classnames('leading-none mr-0 sm:mr-4', {
+              'opacity-30': !tokenHolder.hasDelegated && !tokenHolder.canVote
+            })}
+          >
+            {votingPower}
+          </h2>
+        </div>
+
+        <div className='flex-col w-full xs:w-1/4 mb-2 sm:mb-0 '>
+          <h5 className='font-normal mb-0 sm:mb-3'>My votes</h5>
+          <h2
+            className={classnames('leading-none mr-0 sm:mr-4', {
+              'opacity-30': !tokenHolder.hasDelegated
+            })}
+          >
+            {usersPoolBalance}
+          </h2>
+        </div>
+      </div>
+      <DelegatedVotes
+        tokenHolder={tokenHolder}
+        refetchTokenHolderData={refetchTokenHolderData}
+        usersPoolBalance={usersPoolBalance}
+      />
+    </Banner>
+  )
+}
+
+const DelegatedVotes = (props) => {
+  const { tokenHolder, refetchTokenHolderData, usersPoolBalance } = props
+
+  const { t } = useTranslation()
+  const { usersAddress, chainId } = useContext(AuthControllerContext)
+  const [txId, setTxId] = useState(0)
+  const sendTx = useSendTransaction()
+  const tx = useTransaction(txId)
+
+  const handleDelegate = async (e) => {
+    e.preventDefault()
+
+    const params = [usersAddress]
+
+    const id = await sendTx({
+      name: t('selfDelegate'),
+      contractAbi: DelegateableERC20ABI,
+      contractAddress: CONTRACT_ADDRESSES[chainId].GovernanceToken,
+      method: 'delegate',
+      params,
+      callbacks: {
+        refetch: refetchTokenHolderData
+      }
+    })
+    setTxId(id)
+  }
+
+  if (tx?.completed && !tx?.error && !tx?.cancelled) {
+    return (
+      <p className='mt-2 xs:mt-4 px-4 py-2 rounded-lg bg-light-purple-35 text-green my-auto font-bold w-fit-content'>
+        🎉 {t('successfullyActivatedYourVotes')} 🎉
+      </p>
+    )
+  }
+
+  if (tx?.inWallet && !tx?.cancelled) {
+    return <TxText className='mt-2 xs:mt-4'>{t('pleaseConfirmInYourWallet')}</TxText>
+  }
+
+  if (tx?.sent) {
+    return <TxText className='mt-2 xs:mt-4'>{t('waitingForConfirmations')}...</TxText>
+  }
+
+  if (tokenHolder.selfDelegated) {
+    if (tokenHolder.tokenHoldersRepresentedAmount > 1) {
+      return (
+        <p className='text-accent-1 mt-2 xs:mt-4'>
+          <Trans
+            i18nKey='youAreVotingOnBehalfOfXUsers'
+            defaults='You are voting on behalf of <b>{{amount}}</b> PoolTogether users'
+            components={{
+              b: <b />
+            }}
+            values={{
+              amount: tokenHolder.tokenHoldersRepresentedAmount
+            }}
+          />
+        </p>
+      )
+    } else {
+      return null
+    }
+  }
+
+  if (tokenHolder.hasDelegated && !tokenHolder.selfDelegated) {
+    return (
+      <p className='text-accent-1 mt-2 xs:mt-4'>
+        <Trans
+          i18nKey='youAreDelegatingXVotesToY'
+          defaults='You are delegating <b>{{amount}}</b> votes to <address></address>'
+          components={{
+            b: <b />,
+            address: <DelegateAddress className='font-bold' address={tokenHolder.delegateAddress} />
+          }}
+          values={{
+            amount: usersPoolBalance
+          }}
+        />
+      </p>
+    )
+  }
+
+  return (
+    <div className='mt-4'>
+      <button
+        type='button'
+        className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-2 font-bold'
+        onClick={handleDelegate}
+      >
+        {t('activateMyVotes')}
+      </button>
+      <Trans
+        i18nKey='orDelegateOnSybil'
+        components={{
+          a: (
+            <a
+              href='https://sybil.org/#/delegates/pool'
+              target='_blank'
+              rel='noopener noreferrer'
+              title='Sybil'
+              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-2 font-bold'
+            />
+          )
+        }}
+      />
+    </div>
+  )
+}
+
 export const UsersVotesCard = (props) => {
   const { blockNumber, className } = props
 
@@ -88,12 +262,16 @@ export const UsersVotesCard = (props) => {
     refetch: refetchTokenHolderData
   } = useTokenHolder(usersAddress, blockNumber)
 
+  console.log('tokenHolder', tokenHolder)
+
   if (!usersAddress) {
     return <UsersVotesCardConnectWallet connectWallet={connectWallet} />
   }
 
-  // TODO: After the polling comes back, the "Success" card gets cleared
-  if (!tokenHolder || (!tokenHolder.hasBalance && !tokenHolder.hasDelegated)) {
+  if (
+    !tokenHolder ||
+    (!tokenHolder.hasBalance && !tokenHolder.hasDelegated && !tokenHolder.canVote)
+  ) {
     return <UsersVotesCardBlankState isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
   }
 
@@ -101,8 +279,8 @@ export const UsersVotesCard = (props) => {
     return <SmallLoader />
   }
 
-  const votingPower = tokenHolder.selfDelegated
-    ? numberWithCommas(tokenHolder.delegate.delegatedVotes, { precision: 0 })
+  const votingPower = tokenHolder.canVote
+    ? numberWithCommas(tokenHolder.votes, { precision: 0 })
     : numberWithCommas(tokenHolder.tokenBalance, { precision: 0 })
 
   return (
@@ -178,7 +356,7 @@ const DelegateTrigger = (props) => {
   )
   const tx = useTransaction(txId)
 
-  const delegateAddress = tokenHolder?.delegate?.id
+  const delegateAddress = tokenHolder?.delegateAddress
   const delegateIdentity = useSocialIdentity(delegateAddress)
 
   const tokenBalance = tokenHolder.tokenBalance
@@ -348,7 +526,7 @@ const DelegateTrigger = (props) => {
 }
 
 export const DelegateAddress = (props) => {
-  const { address } = props
+  const { address, className } = props
   const delegateIdentity = useSocialIdentity(address)
   const twitterHandle = delegateIdentity?.twitter?.handle
 
@@ -356,7 +534,7 @@ export const DelegateAddress = (props) => {
     return (
       <>
         <a
-          className='text-inverse hover:text-accent-1 mr-2 trans'
+          className={classnames('text-inverse hover:text-accent-1 mr-2 trans', className)}
           href={`https://twitter.com/${twitterHandle}`}
           target='_blank'
           rel='noopener'
@@ -365,7 +543,10 @@ export const DelegateAddress = (props) => {
           <FeatherIcon icon='external-link' className='inline w-4 h-4 mb-1 ml-1' />
         </a>
         (
-        <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={address}>
+        <EtherscanAddressLink
+          className={classnames('text-inverse hover:text-accent-1 mr-2 trans', className)}
+          address={address}
+        >
           {shorten(address)}
         </EtherscanAddressLink>
         )
@@ -374,9 +555,54 @@ export const DelegateAddress = (props) => {
   }
 
   return (
-    <EtherscanAddressLink className='text-inverse hover:text-accent-1' address={address}>
+    <EtherscanAddressLink
+      className={classnames('text-inverse hover:text-accent-1 mr-2 trans', className)}
+      address={address}
+    >
       <span className='hidden sm:inline'>{address}</span>
       <span className='inline sm:hidden'>{shorten(address)}</span>
     </EtherscanAddressLink>
+  )
+}
+
+const PoolVotesCardNoPool = (props) => {
+  const { isDataFromBeforeCurrentBlock, className } = props
+  const { t } = useTranslation()
+
+  return (
+    <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
+      <p className='text-accent-1'>
+        {isDataFromBeforeCurrentBlock
+          ? t('youPreviouslyHadNoPoolToUseForVotingDescription')
+          : t('youCurrentlyHaveNoPoolToUseForVotingDescription')}{' '}
+        <Link href='https://app.pooltogether.com' as='https://app.pooltogether.com'>
+          <a className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold'>
+            {t('getPoolFromDepositingInPools')}
+          </a>
+        </Link>
+      </p>
+    </Banner>
+  )
+}
+
+const VotesCardConnectWallet = (props) => {
+  const { connectWallet, className } = props
+
+  return (
+    <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
+      <Trans
+        i18nKey='connectAWalletToVoteAndParticipate'
+        defaults='<button>Connect a wallet</button> to vote and participate in governance'
+        components={{
+          button: (
+            <button
+              type='button'
+              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
+              onClick={() => connectWallet()}
+            />
+          )
+        }}
+      />
+    </Banner>
   )
 }
