@@ -16,7 +16,7 @@ import { Card } from 'lib/components/Card'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
 import { PTHint } from 'lib/components/PTHint'
 import { TxText } from 'lib/components/TxText'
-import { UsersVotesCard } from 'lib/components/UsersVotesCard'
+import { UsersPoolVotesCard } from 'lib/components/UsersPoolVotesCard'
 import { VotersTable } from 'lib/components/proposals/VotersTable'
 import { useProposalData } from 'lib/hooks/useProposalData'
 import { useProposalVotes } from 'lib/hooks/useProposalVotes'
@@ -70,7 +70,7 @@ export const ProposalUI = (props) => {
           }
         ]}
       />
-      <UsersVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
+      <UsersPoolVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
