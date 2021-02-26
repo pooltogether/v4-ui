@@ -62,8 +62,7 @@ export const QUERY_KEYS = {
   tokenFaucetAddresses: 'tokenFaucetAddresses',
   usePools: 'usePools',
   prizePoolContractAddresses: 'prizePoolContractAddresses',
-  etherscanContractAbi: 'etherscanContractAbi',
-  useUserPoolData: 'useUserPoolData'
+  etherscanContractAbi: 'etherscanContractAbi'
 }
 
 export const ETHERSCAN_API_KEY = process.env.NEXT_JS_ETHERSCAN_API_KEY
