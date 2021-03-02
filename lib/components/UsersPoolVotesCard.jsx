@@ -51,6 +51,8 @@ export const UsersPoolVotesCard = (props) => {
   const usersPoolBalance = numberWithCommas(tokenHolder.tokenBalance, {
     precision: getPrecision(tokenHolder.tokenBalance)
   })
+  const holderHasDelegatedToAnotherUser = tokenHolder.hasDelegated && !tokenHolder.selfDelegated
+  const holderHasBeenDelegatedTo = tokenHolder.canVote && votingPower !== usersPoolBalance
 
   return (
     <Banner
@@ -71,8 +73,7 @@ export const UsersPoolVotesCard = (props) => {
           </div>
         </div>
 
-        {((tokenHolder.hasDelegated && !tokenHolder.selfDelegated) ||
-          (tokenHolder.canVote && votingPower !== usersPoolBalance)) && (
+        {(holderHasDelegatedToAnotherUser || holderHasBeenDelegatedTo) && (
           <div className='flex-col w-full xs:w-1/4 mb-4 sm:mb-0 '>
             <h5 className='font-normal mb-0 sm:mb-3'>
               {tokenHolder.hasDelegated && !tokenHolder.selfDelegated
