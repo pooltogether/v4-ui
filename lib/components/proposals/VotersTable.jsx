@@ -6,11 +6,11 @@ import { VOTERS_PER_PAGE } from 'lib/constants'
 import { useTranslation } from 'lib/../i18n'
 import { BasicTable } from 'lib/components/BasicTable'
 import { BlankStateMessage } from 'lib/components/BlankStateMessage'
-import { DelegateAddress } from 'lib/components/UsersVotesCard'
 import { PaginationUI } from 'lib/components/PaginationUI'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { useProposalVotes, useProposalVotesPages } from 'lib/hooks/useProposalVotes'
+import { useProposalVotes } from 'lib/hooks/useProposalVotes'
 import { formatVotes } from 'lib/utils/formatVotes'
+import { DelegateAddress } from 'lib/components/UsersPoolVotesCard'
 
 export const VotersTable = (props) => {
   const { id } = props
