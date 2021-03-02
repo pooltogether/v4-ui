@@ -58,19 +58,8 @@ export const UsersPoolVotesCard = (props) => {
       style={{ color: 'white' }}
     >
       <div className='flex flex-col-reverse xs:flex-row'>
-        <div className='flex w-full xs:w-1/2 '>
-          <div className='flex-col w-full xs:w-1/2 mb-2 sm:mb-0 '>
-            <h5 className='font-normal mb-0 sm:mb-3'>{t('totalVotes')}</h5>
-            <h2
-              className={classnames('leading-none mr-0 sm:mr-4', {
-                'opacity-30': !tokenHolder.hasDelegated && !tokenHolder.canVote
-              })}
-            >
-              {votingPower}
-            </h2>
-          </div>
-
-          <div className='flex-col w-full xs:w-1/2 mb-2 sm:mb-0 '>
+        <div className='flex w-full xs:w-1/4 '>
+          <div className='flex-col w-full xs:w-1/2 mb-4 sm:mb-0 '>
             <h5 className='font-normal mb-0 sm:mb-3'>My votes</h5>
             <h2
               className={classnames('leading-none mr-0 sm:mr-4', {
@@ -82,7 +71,34 @@ export const UsersPoolVotesCard = (props) => {
           </div>
         </div>
 
-        <div className='flex w-full xs:w-1/2'>
+        {((tokenHolder.hasDelegated && !tokenHolder.selfDelegated) ||
+          (tokenHolder.canVote && votingPower !== usersPoolBalance)) && (
+          <div className='flex-col w-full xs:w-1/4 mb-4 sm:mb-0 '>
+            <h5 className='font-normal mb-0 sm:mb-3'>
+              {tokenHolder.hasDelegated && !tokenHolder.selfDelegated
+                ? 'My delegates votes'
+                : 'My total votes'}
+              <div className='inline-block mt-auto ml-2'>
+                <PTHint
+                  tip={
+                    <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
+                      All votes that have been delegated to{' '}
+                      <DelegateAddress
+                        className='font-bold'
+                        address={tokenHolder.canVote ? usersAddress : tokenHolder.delegateAddress}
+                      />
+                    </div>
+                  }
+                >
+                  <FeatherIcon icon='info' className='text-inverse w-4 h-4' />
+                </PTHint>
+              </div>
+            </h5>
+            <h2 className={classnames('leading-none mr-0 sm:mr-4')}>{votingPower}</h2>
+          </div>
+        )}
+
+        <div className='flex xs:ml-auto'>
           {isDataFromBeforeCurrentBlock && (
             <div className='ml-auto mb-4 sm:mb-0 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
               <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
@@ -204,7 +220,7 @@ const DelegatedVotes = (props) => {
 
   // User has not delegated their votes
   return (
-    <div className='mt-4 flex'>
+    <div className='mt-4'>
       <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
       <button
         type='button'
@@ -243,7 +259,7 @@ const NotDelegatedWarning = (props) => {
   }
 
   return (
-    <div className='flex mb-1 mt-auto mr-2'>
+    <div className='inline-block mb-1 mt-auto mr-2'>
       <PTHint
         tip={
           <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
