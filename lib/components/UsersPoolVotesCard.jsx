@@ -76,9 +76,7 @@ export const UsersPoolVotesCard = (props) => {
         {(holderHasDelegatedToAnotherUser || holderHasBeenDelegatedTo) && (
           <div className='flex-col w-full xs:w-1/4 mb-4 sm:mb-0 '>
             <h5 className='font-normal mb-0 sm:mb-3'>
-              {tokenHolder.hasDelegated && !tokenHolder.selfDelegated
-                ? t('myDelegatesVotes')
-                : t('myTotalVotes')}
+              {holderHasDelegatedToAnotherUser ? t('myDelegatesVotes') : t('myTotalVotes')}
               <div className='inline-block mt-auto ml-2'>
                 <PTHint
                   tip={
