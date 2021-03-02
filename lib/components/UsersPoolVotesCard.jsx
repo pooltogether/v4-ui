@@ -60,7 +60,7 @@ export const UsersPoolVotesCard = (props) => {
       <div className='flex flex-col-reverse xs:flex-row'>
         <div className='flex w-full xs:w-1/4 '>
           <div className='flex-col w-full xs:w-1/2 mb-4 sm:mb-0 '>
-            <h5 className='font-normal mb-0 sm:mb-3'>My votes</h5>
+            <h5 className='font-normal mb-0 sm:mb-3'>{t('myVotes')}</h5>
             <h2
               className={classnames('leading-none mr-0 sm:mr-4', {
                 'opacity-30': !tokenHolder.hasDelegated
@@ -76,16 +76,25 @@ export const UsersPoolVotesCard = (props) => {
           <div className='flex-col w-full xs:w-1/4 mb-4 sm:mb-0 '>
             <h5 className='font-normal mb-0 sm:mb-3'>
               {tokenHolder.hasDelegated && !tokenHolder.selfDelegated
-                ? 'My delegates votes'
-                : 'My total votes'}
+                ? t('myDelegatesVotes')
+                : t('myTotalVotes')}
               <div className='inline-block mt-auto ml-2'>
                 <PTHint
                   tip={
                     <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
-                      All votes that have been delegated to{' '}
-                      <DelegateAddress
-                        className='font-bold'
-                        address={tokenHolder.canVote ? usersAddress : tokenHolder.delegateAddress}
+                      <Trans
+                        i18nKey='allVotesThatHaveBeenDelegatedToUser'
+                        defaults='All votes that have been delegated to <delegate></delegate>'
+                        components={{
+                          delegate: (
+                            <DelegateAddress
+                              className='font-bold'
+                              address={
+                                tokenHolder.canVote ? usersAddress : tokenHolder.delegateAddress
+                              }
+                            />
+                          )
+                        }}
                       />
                     </div>
                   }
