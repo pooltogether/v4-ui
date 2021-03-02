@@ -413,10 +413,10 @@ const VoteButtons = (props) => {
   const castVote = async (support) => {
     const params = [id, support]
 
-    const txName = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
+    const name = t('sendVoteForProposalId', { support: support ? t('accept') : t('reject'), id })
 
     const txId = await sendTx({
-      name: txName,
+      name,
       contractAbi: GovernorAlphaABI,
       contractAddress: governanceAddress,
       method: 'castVote',
