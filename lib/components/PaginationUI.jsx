@@ -13,6 +13,7 @@ export const DefaultPaginationButtons = ({ currentPage, totalPages, baseAsPath, 
     prevPage={currentPage - 1}
     nextPage={currentPage + 1}
     currentPage={currentPage}
+    currentPath={addPageQueryParam(baseAsPath, currentPage)}
     firstPath={addPageQueryParam(baseAsPath, 1)}
     lastPath={addPageQueryParam(baseAsPath, totalPages)}
     hrefPathname={baseHref}
@@ -38,7 +39,8 @@ export function PaginationUI (props) {
     showFirst,
     showLast,
     showPrev,
-    showNext
+    showNext,
+    currentPath
   } = props
   const { t } = useTranslation()
 
@@ -113,7 +115,7 @@ export function PaginationUI (props) {
           )}
           <li id='current-page-num'>
             <Link
-              as={prevPath}
+              as={currentPath}
               href={{
                 pathname: hrefPathname,
                 query: {
