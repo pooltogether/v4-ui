@@ -30,6 +30,13 @@ import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { PTHint } from 'lib/components/PTHint'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
+import {
+  arrayRegex,
+  dataArrayRegex,
+  fixedArrayRegex,
+  isValidSolidityData,
+  tupleRegex
+} from 'lib/utils/isValidSolidityData'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -535,7 +542,6 @@ const ProposalCreationWarning = (props) => {
   )
 }
 
-// TODO: Some functions have optional parameters. That isn't abailable in the ABI.
 const getProposeParamsFromForm = (formData, t) => {
   const targets = []
   const values = []
@@ -556,14 +562,31 @@ const getProposeParamsFromForm = (formData, t) => {
 
       const contractInterface = new ethers.utils.Interface(action.contract.abi)
       const fn = contractInterface.functions[action.contract.fn.name]
+      console.log(fn)
 
       signatures.push(fn.signature)
 
-      const fnParameters = action.contract.fn.inputs.map(
-        (input) =>
-          JSON.parse(action.contract.fn.values[input.name]) ||
-          getEmptySolidityDataTypeValue(input.type, input.components)
-      )
+      const fnParameters = action.contract.fn.inputs.map((input) => {
+        const rawData = action.contract.fn.values[input.name]
+
+        console.log(rawData, input.type)
+
+        if (!rawData) return getEmptySolidityDataTypeValue(input.type, input.components)
+
+        if (
+          input.type === 'tuple' ||
+          dataArrayRegex.test(rawData) ||
+          arrayRegex.test(rawData) ||
+          fixedArrayRegex.test(rawData)
+        ) {
+          return JSON.parse(rawData, (key, value) =>
+            typeof value === 'number' ? String(value) : value
+          )
+        }
+
+        return rawData
+      })
+      console.log(fnParameters)
       const fullCalldata = fn.encode(fnParameters)
       const calldata = fullCalldata.replace(fn.sighash, '0x')
 
@@ -572,6 +595,7 @@ const getProposeParamsFromForm = (formData, t) => {
 
     return [targets, values, signatures, calldatas, description]
   } catch (e) {
+    console.warn(e.message)
     poolToast.error(t('errorEncodingData'))
     return null
   }

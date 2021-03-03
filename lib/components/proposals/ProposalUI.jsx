@@ -31,6 +31,7 @@ import { ethers } from 'ethers'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
+import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -74,7 +75,7 @@ export const ProposalUI = (props) => {
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
-      <VotesCard id={id} />
+      <VotesCard proposal={proposal} isFetched={isFetched} id={id} />
 
       <AddGovernanceTokenToMetaMask />
     </>
@@ -239,12 +240,12 @@ const ProposalActionRow = (props) => {
 }
 
 const VotesCard = (props) => {
-  const { id } = props
+  const { id, isFetched, proposal } = props
 
   const { t } = useTranslation()
-  const { proposal, isFetched } = useProposalData(id)
+  const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
-  if (!isFetched) {
+  if (!isFetched || !governorAlphaIsFetched) {
     return null
   }
 
@@ -254,10 +255,16 @@ const VotesCard = (props) => {
   const forPercentage = noVotes ? 0 : calculateVotePercentage(forVotes, totalVotes)
   const againstPercentage = noVotes ? 0 : 100 - forPercentage
 
+  const quoromHasBeenMet = forVotes.gt(governorAlpha.quorumVotes)
+
   return (
     <>
       <Card title={t('votes')}>
-        <div className='w-full h-2 flex flex-row rounded-full overflow-hidden my-4'>
+        <div
+          className={classnames('w-full h-2 flex flex-row rounded-full overflow-hidden my-4', {
+            'opacity-80': !quoromHasBeenMet
+          })}
+        >
           {!noVotes && (
             <>
               <div className='bg-green' style={{ width: `${forPercentage}%` }} />
