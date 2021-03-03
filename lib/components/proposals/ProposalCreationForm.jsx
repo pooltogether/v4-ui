@@ -30,6 +30,13 @@ import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 import { PTHint } from 'lib/components/PTHint'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
+import {
+  arrayRegex,
+  dataArrayRegex,
+  fixedArrayRegex,
+  isValidSolidityData,
+  tupleRegex
+} from 'lib/utils/isValidSolidityData'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -535,7 +542,21 @@ const ProposalCreationWarning = (props) => {
   )
 }
 
-// TODO: Some functions have optional parameters. That isn't abailable in the ABI.
+/**
+ * Values are the data that a user has input as a string.
+ * When encoding the values from user input -> data for a tx, ethers is picky.
+ * We need to parse the data from the strings in some cases.
+ *
+ *    solidity data type -> js data type before encoding
+ *
+ *    tuple -> object
+ *    array of data types -> array of js data type
+ *    numbers (int, unit, etc) -> string
+ *    string, address (any hex) -> string
+ *
+ * @param {*} formData data values come in as strings
+ * @param {*} t translate for errors
+ */
 const getProposeParamsFromForm = (formData, t) => {
   const targets = []
   const values = []
@@ -559,11 +580,24 @@ const getProposeParamsFromForm = (formData, t) => {
 
       signatures.push(fn.signature)
 
-      const fnParameters = action.contract.fn.inputs.map(
-        (input) =>
-          JSON.parse(action.contract.fn.values[input.name]) ||
-          getEmptySolidityDataTypeValue(input.type, input.components)
-      )
+      const fnParameters = action.contract.fn.inputs.map((input) => {
+        const rawData = action.contract.fn.values[input.name]
+
+        if (!rawData) return getEmptySolidityDataTypeValue(input.type, input.components)
+
+        if (
+          input.type === 'tuple' ||
+          dataArrayRegex.test(rawData) ||
+          arrayRegex.test(rawData) ||
+          fixedArrayRegex.test(rawData)
+        ) {
+          return JSON.parse(rawData, (key, value) =>
+            typeof value === 'number' ? String(value) : value
+          )
+        }
+
+        return rawData
+      })
       const fullCalldata = fn.encode(fnParameters)
       const calldata = fullCalldata.replace(fn.sighash, '0x')
 
@@ -572,6 +606,7 @@ const getProposeParamsFromForm = (formData, t) => {
 
     return [targets, values, signatures, calldatas, description]
   } catch (e) {
+    console.warn(e.message)
     poolToast.error(t('errorEncodingData'))
     return null
   }
