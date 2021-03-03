@@ -7,7 +7,7 @@ import gfm from 'remark-gfm'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
-import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import { CONTRACT_ADDRESSES, DEFAULT_TOKEN_PRECISION, PROPOSAL_STATUS } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
@@ -32,6 +32,7 @@ import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
+import { numberWithCommas } from 'lib/utils/numberWithCommas'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -256,13 +257,37 @@ const VotesCard = (props) => {
   const againstPercentage = noVotes ? 0 : 100 - forPercentage
 
   const quoromHasBeenMet = forVotes.gt(governorAlpha.quorumVotes)
+  const quoromFormatted = ethers.utils.formatUnits(
+    governorAlpha.quorumVotes,
+    DEFAULT_TOKEN_PRECISION
+  )
+  const remainingVotesForQuorom = ethers.utils.formatUnits(
+    governorAlpha.quorumVotes.sub(forVotes),
+    DEFAULT_TOKEN_PRECISION
+  )
 
   return (
     <>
       <Card title={t('votes')}>
+        {!quoromHasBeenMet && (
+          <div className='flex text-accent-1 bg-light-purple-10 py-1 px-2 rounded-sm w-fit-content ml-auto mb-6'>
+            <span className='mr-2'>
+              {numberWithCommas(remainingVotesForQuorom, { precision: 0 })} votes needed
+            </span>
+            <PTHint
+              tip={`For a proposal to succeed, a minimum of
+            ${numberWithCommas(quoromFormatted, {
+              precision: 0
+            })} in favor of the proposal must be cast`}
+            >
+              <FeatherIcon className='my-auto w-4 h-4 stroke-current' icon='info' />
+            </PTHint>
+          </div>
+        )}
+
         <div
           className={classnames('w-full h-2 flex flex-row rounded-full overflow-hidden my-4', {
-            'opacity-80': !quoromHasBeenMet
+            'opacity-50': !quoromHasBeenMet
           })}
         >
           {!noVotes && (
@@ -274,7 +299,11 @@ const VotesCard = (props) => {
           {noVotes && <div className='bg-tertiary w-full' />}
         </div>
 
-        <div className='flex justify-between mb-4 sm:mb-8'>
+        <div
+          className={classnames('flex justify-between mb-4 sm:mb-8', {
+            'opacity-50': !quoromHasBeenMet
+          })}
+        >
           <div className='flex text-green'>
             <FeatherIcon
               className='mr-2 my-auto w-8 h-8 sm:w-10 sm:h-10 stroke-current'

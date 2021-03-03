@@ -455,7 +455,6 @@ const FunctionInput = (props) => {
     }
   }, [])
 
-  // TODO: Validate inputs? At least addresses.
   return (
     <li className='mt-2 first:mt-0 flex'>
       <SimpleInput

@@ -542,6 +542,21 @@ const ProposalCreationWarning = (props) => {
   )
 }
 
+/**
+ * Values are the data that a user has input as a string.
+ * When encoding the values from user input -> data for a tx, ethers is picky.
+ * We need to parse the data from the strings in some cases.
+ *
+ *    solidity data type -> js data type before encoding
+ *
+ *    tuple -> object
+ *    array of data types -> array of js data type
+ *    numbers (int, unit, etc) -> string
+ *    string, address (any hex) -> string
+ *
+ * @param {*} formData data values come in as strings
+ * @param {*} t translate for errors
+ */
 const getProposeParamsFromForm = (formData, t) => {
   const targets = []
   const values = []
@@ -562,14 +577,11 @@ const getProposeParamsFromForm = (formData, t) => {
 
       const contractInterface = new ethers.utils.Interface(action.contract.abi)
       const fn = contractInterface.functions[action.contract.fn.name]
-      console.log(fn)
 
       signatures.push(fn.signature)
 
       const fnParameters = action.contract.fn.inputs.map((input) => {
         const rawData = action.contract.fn.values[input.name]
-
-        console.log(rawData, input.type)
 
         if (!rawData) return getEmptySolidityDataTypeValue(input.type, input.components)
 
@@ -586,7 +598,6 @@ const getProposeParamsFromForm = (formData, t) => {
 
         return rawData
       })
-      console.log(fnParameters)
       const fullCalldata = fn.encode(fnParameters)
       const calldata = fullCalldata.replace(fn.sighash, '0x')
 
