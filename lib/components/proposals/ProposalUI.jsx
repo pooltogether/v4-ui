@@ -256,12 +256,12 @@ const VotesCard = (props) => {
   const forPercentage = noVotes ? 0 : calculateVotePercentage(forVotes, totalVotes)
   const againstPercentage = noVotes ? 0 : 100 - forPercentage
 
-  const quoromHasBeenMet = forVotes.gt(governorAlpha.quorumVotes)
-  const quoromFormatted = ethers.utils.formatUnits(
+  const quorumHasBeenMet = forVotes.gt(governorAlpha.quorumVotes)
+  const quorumFormatted = ethers.utils.formatUnits(
     governorAlpha.quorumVotes,
     DEFAULT_TOKEN_PRECISION
   )
-  const remainingVotesForQuorom = ethers.utils.formatUnits(
+  const remainingVotesForQuorum = ethers.utils.formatUnits(
     governorAlpha.quorumVotes.sub(forVotes),
     DEFAULT_TOKEN_PRECISION
   )
@@ -269,16 +269,19 @@ const VotesCard = (props) => {
   return (
     <>
       <Card title={t('votes')}>
-        {!quoromHasBeenMet && (
+        {!quorumHasBeenMet && (
           <div className='flex text-accent-1 bg-light-purple-10 py-1 px-2 rounded-sm w-fit-content ml-auto mb-6'>
             <span className='mr-2'>
-              {numberWithCommas(remainingVotesForQuorom, { precision: 0 })} votes needed
+              {t('numVotesNeeded', {
+                num: numberWithCommas(remainingVotesForQuorum, { precision: 0 })
+              })}
             </span>
             <PTHint
-              tip={`For a proposal to succeed, a minimum of
-            ${numberWithCommas(quoromFormatted, {
-              precision: 0
-            })} in favor of the proposal must be cast`}
+              tip={t('forAProposalToSucceedMinNumOfVotes', {
+                num: numberWithCommas(quorumFormatted, {
+                  precision: 0
+                })
+              })}
             >
               <FeatherIcon className='my-auto w-4 h-4 stroke-current' icon='info' />
             </PTHint>
@@ -287,7 +290,7 @@ const VotesCard = (props) => {
 
         <div
           className={classnames('w-full h-2 flex flex-row rounded-full overflow-hidden my-4', {
-            'opacity-50': !quoromHasBeenMet
+            'opacity-50': !quorumHasBeenMet
           })}
         >
           {!noVotes && (
@@ -301,7 +304,7 @@ const VotesCard = (props) => {
 
         <div
           className={classnames('flex justify-between mb-4 sm:mb-8', {
-            'opacity-50': !quoromHasBeenMet
+            'opacity-50': !quorumHasBeenMet
           })}
         >
           <div className='flex text-green'>
