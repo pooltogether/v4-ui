@@ -33,6 +33,7 @@ import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
+import { useProposalVotesTotalPages } from 'lib/hooks/useProposalVotesTotalPages'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -419,7 +420,7 @@ const VoteButtons = (props) => {
 
   const router = useRouter()
   const page = router?.query?.page ? parseInt(router.query.page, 10) : 1
-  const { refetch: refetchVoteCount } = useProposalVotes(id, -1)
+  const { refetch: refetchTotalVotesPages } = useProposalVotesTotalPages(id)
   const { refetch: refetchVoterTable } = useProposalVotes(id, page)
 
   const { t } = useTranslation()
@@ -445,7 +446,7 @@ const VoteButtons = (props) => {
 
   const refetch = () => {
     refetchData()
-    refetchVoteCount()
+    refetchTotalVotesPages()
     refetchVoterTable()
   }
 
