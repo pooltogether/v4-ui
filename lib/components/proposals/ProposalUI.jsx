@@ -7,7 +7,7 @@ import gfm from 'remark-gfm'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
-import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import { CONTRACT_ADDRESSES, DEFAULT_TOKEN_PRECISION, PROPOSAL_STATUS } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { Button } from 'lib/components/Button'
@@ -31,6 +31,8 @@ import { ethers } from 'ethers'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
+import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
+import { numberWithCommas } from 'lib/utils/numberWithCommas'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -74,7 +76,7 @@ export const ProposalUI = (props) => {
       <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
-      <VotesCard id={id} />
+      <VotesCard proposal={proposal} isFetched={isFetched} id={id} />
 
       <AddGovernanceTokenToMetaMask />
     </>
@@ -239,12 +241,12 @@ const ProposalActionRow = (props) => {
 }
 
 const VotesCard = (props) => {
-  const { id } = props
+  const { id, isFetched, proposal } = props
 
   const { t } = useTranslation()
-  const { proposal, isFetched } = useProposalData(id)
+  const { data: governorAlpha, isFetched: governorAlphaIsFetched } = useGovernorAlpha()
 
-  if (!isFetched) {
+  if (!isFetched || !governorAlphaIsFetched) {
     return null
   }
 
@@ -254,10 +256,43 @@ const VotesCard = (props) => {
   const forPercentage = noVotes ? 0 : calculateVotePercentage(forVotes, totalVotes)
   const againstPercentage = noVotes ? 0 : 100 - forPercentage
 
+  const quorumHasBeenMet = forVotes.gt(governorAlpha.quorumVotes)
+  const quorumFormatted = ethers.utils.formatUnits(
+    governorAlpha.quorumVotes,
+    DEFAULT_TOKEN_PRECISION
+  )
+  const remainingVotesForQuorum = ethers.utils.formatUnits(
+    governorAlpha.quorumVotes.sub(forVotes),
+    DEFAULT_TOKEN_PRECISION
+  )
+
   return (
     <>
       <Card title={t('votes')}>
-        <div className='w-full h-2 flex flex-row rounded-full overflow-hidden my-4'>
+        {!quorumHasBeenMet && (
+          <div className='flex text-accent-1 bg-light-purple-10 py-1 px-2 rounded-sm w-fit-content ml-auto mb-6'>
+            <span className='mr-2'>
+              {t('numVotesNeeded', {
+                num: numberWithCommas(remainingVotesForQuorum, { precision: 0 })
+              })}
+            </span>
+            <PTHint
+              tip={t('forAProposalToSucceedMinNumOfVotes', {
+                num: numberWithCommas(quorumFormatted, {
+                  precision: 0
+                })
+              })}
+            >
+              <FeatherIcon className='my-auto w-4 h-4 stroke-current' icon='info' />
+            </PTHint>
+          </div>
+        )}
+
+        <div
+          className={classnames('w-full h-2 flex flex-row rounded-full overflow-hidden my-4', {
+            'opacity-50': !quorumHasBeenMet
+          })}
+        >
           {!noVotes && (
             <>
               <div className='bg-green' style={{ width: `${forPercentage}%` }} />
@@ -267,7 +302,11 @@ const VotesCard = (props) => {
           {noVotes && <div className='bg-tertiary w-full' />}
         </div>
 
-        <div className='flex justify-between mb-4 sm:mb-8'>
+        <div
+          className={classnames('flex justify-between mb-4 sm:mb-8', {
+            'opacity-50': !quorumHasBeenMet
+          })}
+        >
           <div className='flex text-green'>
             <FeatherIcon
               className='mr-2 my-auto w-8 h-8 sm:w-10 sm:h-10 stroke-current'
