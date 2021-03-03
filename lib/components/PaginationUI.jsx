@@ -4,25 +4,44 @@ import classnames from 'classnames'
 
 import { useTranslation } from 'lib/../i18n'
 
-export function PaginationUI({
-  prevPath,
-  nextPath,
-  currentPage,
-  currentPath,
-  lastPath,
-  firstPath,
-  hrefPathname,
-  prevPage,
-  nextPage,
-  lastPage,
-  showFirst,
-  showLast,
-  showPrev,
-  showNext,
-  prevLabel,
-  nextLabel,
-  className,
-}) {
+const addPageQueryParam = (path, pageNum) => `${path}?page=${pageNum}`
+
+export const DefaultPaginationButtons = ({ currentPage, totalPages, baseAsPath, baseHref }) => (
+  <PaginationUI
+    prevPath={addPageQueryParam(baseAsPath, currentPage - 1)}
+    nextPath={addPageQueryParam(baseAsPath, currentPage + 1)}
+    prevPage={currentPage - 1}
+    nextPage={currentPage + 1}
+    currentPage={currentPage}
+    currentPath={addPageQueryParam(baseAsPath, currentPage)}
+    firstPath={addPageQueryParam(baseAsPath, 1)}
+    lastPath={addPageQueryParam(baseAsPath, totalPages)}
+    hrefPathname={baseHref}
+    lastPage={totalPages}
+    showFirst={currentPage > 2}
+    showLast={currentPage < totalPages - 1}
+    showPrev={currentPage > 1}
+    showNext={totalPages > currentPage}
+  />
+)
+
+export function PaginationUI (props) {
+  const {
+    prevPath,
+    nextPath,
+    currentPage,
+    lastPath,
+    firstPath,
+    hrefPathname,
+    prevPage,
+    nextPage,
+    lastPage,
+    showFirst,
+    showLast,
+    showPrev,
+    showNext,
+    currentPath
+  } = props
   const { t } = useTranslation()
 
   const nextPrevPageClasses =
@@ -41,8 +60,8 @@ export function PaginationUI({
             href={{
               pathname: hrefPathname,
               query: {
-                page: prevPage,
-              },
+                page: prevPage
+              }
             }}
             scroll={false}
           >
@@ -62,8 +81,8 @@ export function PaginationUI({
                   href={{
                     pathname: hrefPathname,
                     query: {
-                      page: 1,
-                    },
+                      page: 1
+                    }
                   }}
                   scroll={false}
                 >
@@ -83,8 +102,8 @@ export function PaginationUI({
                 href={{
                   pathname: hrefPathname,
                   query: {
-                    page: prevPage,
-                  },
+                    page: prevPage
+                  }
                 }}
                 scroll={false}
               >
@@ -96,12 +115,12 @@ export function PaginationUI({
           )}
           <li id='current-page-num'>
             <Link
-              as={prevPath}
+              as={currentPath}
               href={{
                 pathname: hrefPathname,
                 query: {
-                  page: currentPage,
-                },
+                  page: currentPage
+                }
               }}
               scroll={false}
             >
@@ -115,8 +134,8 @@ export function PaginationUI({
                 href={{
                   pathname: hrefPathname,
                   query: {
-                    page: nextPage,
-                  },
+                    page: nextPage
+                  }
                 }}
                 scroll={false}
               >
@@ -136,8 +155,8 @@ export function PaginationUI({
                   href={{
                     pathname: hrefPathname,
                     query: {
-                      page: lastPage,
-                    },
+                      page: lastPage
+                    }
                   }}
                   scroll={false}
                 >
@@ -157,8 +176,8 @@ export function PaginationUI({
             href={{
               pathname: hrefPathname,
               query: {
-                page: nextPage,
-              },
+                page: nextPage
+              }
             }}
             scroll={false}
           >
