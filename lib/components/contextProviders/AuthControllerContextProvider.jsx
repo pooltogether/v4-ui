@@ -25,7 +25,7 @@ export const AuthControllerContext = React.createContext(null)
 //
 // This also provides a unified authentication pattern to get the usersAddress
 // and ethers provider for transactions
-export function AuthControllerContextProvider (props) {
+export function AuthControllerContextProvider(props) {
   const { children } = props
 
   const router = useRouter()

@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 
-export function DropdownList (props) {
+export function DropdownList(props) {
   const {
     id,
     className,

@@ -6,23 +6,23 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'owner',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'spender',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'value',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'Approval',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -31,17 +31,17 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'tokenHolder',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'AuthorizedOperator',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -50,35 +50,35 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'Burned',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -87,29 +87,29 @@ export default [
         indexed: true,
         internalType: 'uint256',
         name: 'timestamp',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'tokens',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'mantissa',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'CollateralizationChanged',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -118,41 +118,41 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'drawId',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'Deposited',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -161,35 +161,35 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'to',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'Minted',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -198,35 +198,35 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'PendingDepositWithdrawn',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -235,41 +235,41 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'Redeemed',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -278,41 +278,41 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'RedeemedToPool',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -321,17 +321,17 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'tokenHolder',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'RevokedOperator',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -340,41 +340,41 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'to',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         indexed: false,
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'Sent',
-    type: 'event',
+    type: 'event'
   },
   {
     anonymous: false,
@@ -383,23 +383,23 @@ export default [
         indexed: true,
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: true,
         internalType: 'address',
         name: 'to',
-        type: 'address',
+        type: 'address'
       },
       {
         indexed: false,
         internalType: 'uint256',
         name: 'value',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'Transfer',
-    type: 'event',
+    type: 'event'
   },
   {
     constant: true,
@@ -407,25 +407,25 @@ export default [
       {
         internalType: 'address',
         name: 'holder',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: 'spender',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'allowance',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -433,25 +433,25 @@ export default [
       {
         internalType: 'address',
         name: 'spender',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'value',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'approve',
     outputs: [
       {
         internalType: 'bool',
         name: '',
-        type: 'bool',
-      },
+        type: 'bool'
+      }
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -459,14 +459,14 @@ export default [
       {
         internalType: 'address',
         name: 'operator',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'authorizeOperator',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -476,12 +476,12 @@ export default [
       {
         internalType: 'uint8',
         name: '',
-        type: 'uint8',
-      },
+        type: 'uint8'
+      }
     ],
     payable: false,
     stateMutability: 'pure',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -491,12 +491,12 @@ export default [
       {
         internalType: 'address[]',
         name: '',
-        type: 'address[]',
-      },
+        type: 'address[]'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -506,12 +506,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -519,25 +519,25 @@ export default [
       {
         internalType: 'address',
         name: 'operator',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: 'tokenHolder',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'isOperatorFor',
     outputs: [
       {
         internalType: 'bool',
         name: '',
-        type: 'bool',
-      },
+        type: 'bool'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -547,12 +547,12 @@ export default [
       {
         internalType: 'string',
         name: '',
-        type: 'string',
-      },
+        type: 'string'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -562,12 +562,12 @@ export default [
       {
         internalType: 'contract MCDAwarePool',
         name: '',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -575,14 +575,14 @@ export default [
       {
         internalType: 'address',
         name: 'operator',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'revokeOperator',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -592,12 +592,12 @@ export default [
       {
         internalType: 'string',
         name: '',
-        type: 'string',
-      },
+        type: 'string'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -605,14 +605,14 @@ export default [
       {
         internalType: 'contract MCDAwarePool',
         name: '_pool',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'initialize',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -621,7 +621,7 @@ export default [
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -629,24 +629,24 @@ export default [
       {
         internalType: 'string',
         name: 'name',
-        type: 'string',
+        type: 'string'
       },
       {
         internalType: 'string',
         name: 'symbol',
-        type: 'string',
+        type: 'string'
       },
       {
         internalType: 'address[]',
         name: 'defaultOperators',
-        type: 'address[]',
-      },
+        type: 'address[]'
+      }
     ],
     name: 'initialize',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -654,29 +654,29 @@ export default [
       {
         internalType: 'address',
         name: 'user',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorDeposit',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -684,19 +684,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'deposit',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -704,39 +704,39 @@ export default [
       {
         internalType: 'address',
         name: '',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: '',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: '',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: '',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'tokensReceived',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -744,20 +744,20 @@ export default [
       {
         internalType: 'address',
         name: 'user',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'balanceOfUnderlying',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -765,20 +765,20 @@ export default [
       {
         internalType: 'address',
         name: 'user',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'pendingDeposit',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -788,12 +788,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -801,29 +801,29 @@ export default [
       {
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorWithdrawPendingDeposit',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -831,14 +831,14 @@ export default [
       {
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'withdrawAndRedeemCollateral',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -846,19 +846,19 @@ export default [
       {
         internalType: 'address',
         name: 'from',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'operatorWithdrawAndRedeemCollateral',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -866,19 +866,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'withdrawPendingDeposit',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -886,24 +886,24 @@ export default [
       {
         internalType: 'address',
         name: 'recipient',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'send',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -911,34 +911,34 @@ export default [
       {
         internalType: 'address',
         name: 'sender',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: 'recipient',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorSend',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -946,20 +946,20 @@ export default [
       {
         internalType: 'address',
         name: 'tokenHolder',
-        type: 'address',
-      },
+        type: 'address'
+      }
     ],
     name: 'balanceOf',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -969,12 +969,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -982,25 +982,25 @@ export default [
       {
         internalType: 'address',
         name: 'recipient',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'transfer',
     outputs: [
       {
         internalType: 'bool',
         name: '',
-        type: 'bool',
-      },
+        type: 'bool'
+      }
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1008,30 +1008,30 @@ export default [
       {
         internalType: 'address',
         name: 'sender',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'address',
         name: 'recipient',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'transferFrom',
     outputs: [
       {
         internalType: 'bool',
         name: '',
-        type: 'bool',
-      },
+        type: 'bool'
+      }
     ],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1039,29 +1039,29 @@ export default [
       {
         internalType: 'address',
         name: '',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: '',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: '',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorBurn',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1069,19 +1069,19 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: '',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'burn',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1089,24 +1089,24 @@ export default [
       {
         internalType: 'address',
         name: '',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'winnings',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'uint256',
         name: 'drawId',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'rewarded',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -1116,12 +1116,12 @@ export default [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1129,29 +1129,29 @@ export default [
       {
         internalType: 'address',
         name: 'account',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorRedeem',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1159,19 +1159,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'redeem',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1179,29 +1179,29 @@ export default [
       {
         internalType: 'address',
         name: 'account',
-        type: 'address',
+        type: 'address'
       },
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
+        type: 'bytes'
       },
       {
         internalType: 'bytes',
         name: 'operatorData',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'operatorRedeemToPool',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: false,
@@ -1209,19 +1209,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'amount',
-        type: 'uint256',
+        type: 'uint256'
       },
       {
         internalType: 'bytes',
         name: 'data',
-        type: 'bytes',
-      },
+        type: 'bytes'
+      }
     ],
     name: 'redeemToPool',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -1229,20 +1229,20 @@ export default [
       {
         internalType: 'uint256',
         name: 'tokens',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'tokenToCollateralValue',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
+    type: 'function'
   },
   {
     constant: true,
@@ -1250,19 +1250,19 @@ export default [
       {
         internalType: 'uint256',
         name: 'collateral',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     name: 'collateralToTokenValue',
     outputs: [
       {
         internalType: 'uint256',
         name: '',
-        type: 'uint256',
-      },
+        type: 'uint256'
+      }
     ],
     payable: false,
     stateMutability: 'view',
-    type: 'function',
-  },
+    type: 'function'
+  }
 ]

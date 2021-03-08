@@ -10,13 +10,13 @@ export function GraphErrorModal() {
         id='graph-error-modal'
         className='hidden w-screen h-screen fixed t-0 l-0 r-0 b-0'
         style={{
-          zIndex: 199,
+          zIndex: 199
         }}
       >
         <div
           className={'fixed t-0 l-0 r-0 b-0 w-full h-full bg-overlay bg-blur'}
           style={{
-            zIndex: 198,
+            zIndex: 198
           }}
         ></div>
 
@@ -24,7 +24,7 @@ export function GraphErrorModal() {
           className='graph-modal fixed xs:inset-4 bg-black text-white border-2 border-green rounded-lg px-6 py-4 font-bold mt-32'
           style={{
             maxHeight: '26rem',
-            zIndex: 200,
+            zIndex: 200
           }}
         >
           <button

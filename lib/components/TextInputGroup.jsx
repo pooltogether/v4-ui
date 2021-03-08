@@ -14,7 +14,7 @@ export const TextInputGroup = (props) => {
     unsignedWholeNumber,
     bottomRightLabel,
     centerLabel,
-    rightLabel,
+    rightLabel
   } = props
 
   let { type } = props
@@ -24,19 +24,19 @@ export const TextInputGroup = (props) => {
   if (type === 'email') {
     pattern = {
       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: 'invalid email address',
+      message: 'invalid email address'
     }
   } else if (unsignedNumber) {
     type = 'number'
     pattern = {
       value: /^\d*\.?\d*$/,
-      message: 'please enter a positive number',
+      message: 'please enter a positive number'
     }
   } else if (unsignedWholeNumber) {
     type = 'number'
     pattern = {
       value: /^\d+$/,
-      message: 'please enter a positive number',
+      message: 'please enter a positive number'
     }
   }
 
@@ -45,7 +45,7 @@ export const TextInputGroup = (props) => {
       <div
         className={classnames('fieldset relative w-full', {
           'mx-0': alignLeft,
-          'mx-auto': !alignLeft,
+          'mx-auto': !alignLeft
         })}
       >
         {(label || rightLabel || centerLabel) && (
@@ -57,7 +57,7 @@ export const TextInputGroup = (props) => {
                   'sm:pl-8 w-1/2': rightLabel && !centerLabel,
                   'sm:pl-8 w-1/3': rightLabel && centerLabel,
                   'font-bold text-primary cursor-not-allowed': disabled,
-                  'font-bold text-default-soft hover:text-default': !disabled,
+                  'font-bold text-default-soft hover:text-default': !disabled
                 })}
               >
                 {label}
@@ -69,7 +69,7 @@ export const TextInputGroup = (props) => {
                 <label
                   className={classnames('mt-0 trans w-1/3 text-center', {
                     'font-bold text-primary cursor-not-allowed': disabled,
-                    'font-bold text-default-soft hover:text-default': !disabled,
+                    'font-bold text-default-soft hover:text-default': !disabled
                   })}
                 >
                   {centerLabel}
@@ -84,7 +84,7 @@ export const TextInputGroup = (props) => {
                     'w-1/2': rightLabel && !centerLabel,
                     'w-1/3': rightLabel && centerLabel,
                     'font-bold text-primary cursor-not-allowed': disabled,
-                    'font-bold text-default-soft hover:text-default': !disabled,
+                    'font-bold text-default-soft hover:text-default': !disabled
                   })}
                 >
                   {rightLabel}

@@ -4,7 +4,7 @@ const NextI18Next = require('next-i18next').default
 const {
   NEXT_JS_LOCIZE_PROJECT_ID: locizeProjectId,
   NEXT_JS_LOCIZE_DEV_API_KEY: locizeApiKey,
-  NEXT_JS_LOCIZE_VERSION: locizeVersion,
+  NEXT_JS_LOCIZE_VERSION: locizeVersion
 } = process.env
 
 module.exports = new NextI18Next({
@@ -17,6 +17,6 @@ module.exports = new NextI18Next({
     projectId: locizeProjectId,
     apiKey: locizeApiKey,
     version: locizeVersion || 'latest',
-    referenceLng: 'en',
-  },
+    referenceLng: 'en'
+  }
 })

@@ -15,19 +15,16 @@ export function AddGovernanceTokenToMetaMask(props) {
   }
 
   return (
-    <div
-      className='flex flex-col sm:flex-row items-center justify-center my-20'
-    >
-      {walletName === 'MetaMask' && <>
-        <div className='m-2'>
-          <Button
-            tertiary
-            onClick={handleAddTokenToMetaMask}
-          >
-            {t('addPoolTokenToMetamask')}
-          </Button>
-        </div>
-      </>}
+    <div className='flex flex-col sm:flex-row items-center justify-center my-20'>
+      {walletName === 'MetaMask' && (
+        <>
+          <div className='m-2'>
+            <Button tertiary onClick={handleAddTokenToMetaMask}>
+              {t('addPoolTokenToMetamask')}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   )
 }

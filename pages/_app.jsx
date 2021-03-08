@@ -61,7 +61,7 @@ if (process.env.NEXT_JS_SENTRY_DSN) {
   })
 }
 
-function MyApp ({ Component, pageProps, router }) {
+function MyApp({ Component, pageProps, router }) {
   const [initialized, setInitialized] = useState(false)
 
   useEffect(() => {
@@ -70,12 +70,10 @@ function MyApp ({ Component, pageProps, router }) {
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_JS_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
-        includedDomains: [
-          'vote.pooltogether.com'
-        ]
+        includedDomains: ['vote.pooltogether.com']
       })
 
-      function onRouteChangeComplete (url) {
+      function onRouteChangeComplete(url) {
         if (window['fathom']) {
           window['fathom'].trackPageview()
         }

@@ -4,7 +4,7 @@ import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 
 const debug = require('debug')('pool-app:TxRefetchListener')
 
-export function TxRefetchListener (props) {
+export function TxRefetchListener(props) {
   const [transactions] = useAtom(transactionsAtom)
 
   const [storedPendingTransactions, setStoredPendingTransactions] = useState([])

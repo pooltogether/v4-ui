@@ -22,8 +22,8 @@ export function LanguagePicker(props) {
   const [langs, setLangs] = useState({
     en: {
       name: 'English',
-      nativeName: 'English',
-    },
+      nativeName: 'English'
+    }
   })
 
   const [currentLang, setCurrentLang] = useState('en')

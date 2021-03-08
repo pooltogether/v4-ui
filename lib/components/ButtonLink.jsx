@@ -21,7 +21,7 @@ export function getButtonClasses(props) {
     transition,
     className,
     textSize,
-    width,
+    width
   } = props
 
   let defaultClasses =

@@ -106,7 +106,7 @@ export const Footer = () => {
                   src={MailFooterIcon}
                   className='h-3 relative'
                   style={{
-                    top: 6,
+                    top: 6
                   }}
                 />
               </a>
