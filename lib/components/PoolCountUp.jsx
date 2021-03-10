@@ -50,7 +50,7 @@ export function PoolCountUp(props) {
         className={classnames({
           'font-sans': fontSansRegular,
           'font-mono': !fontSansRegular,
-          'font-bold': fontBold,
+          'font-bold': fontBold
         })}
       >
         <CountUp

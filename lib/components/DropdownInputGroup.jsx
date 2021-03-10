@@ -31,7 +31,7 @@ export function DropdownInputGroup(props) {
           handleChange(value)
         }}
         className={classnames({
-          selected,
+          selected
         })}
       >
         {options[value]}
@@ -64,7 +64,7 @@ export function DropdownInputGroup(props) {
                   className,
                   {
                     [inactiveTextColorClasses]: !isExpanded,
-                    [activeTextColorClasses]: isExpanded,
+                    [activeTextColorClasses]: isExpanded
                   }
                 )}
               >

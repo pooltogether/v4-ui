@@ -19,7 +19,7 @@ export function MagicContextProvider(props) {
         email,
         signedIn,
         signIn,
-        signOut,
+        signOut
       }}
     >
       {props.children}
@@ -48,7 +48,7 @@ export function MagicContextProvider(props) {
 
   useEffect(() => {
     const m = new Magic(process.env.NEXT_JS_MAGIC_PUB_KEY, {
-      network: networkName === 'homestead' ? 'mainnet' : networkName,
+      network: networkName === 'homestead' ? 'mainnet' : networkName
     })
     setMagic(m)
 
@@ -134,7 +134,7 @@ export function MagicContextProvider(props) {
         email,
         signedIn,
         signIn,
-        signOut,
+        signOut
       }}
     >
       {props.children}

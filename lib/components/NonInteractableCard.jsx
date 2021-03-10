@@ -13,7 +13,7 @@ export const NonInteractableCard = (props) => {
           'interactable-card bg-card border-card w-full px-4 xs:px-6 mb-4 py-5 sm:py-6 trans rounded-lg text-inverse'
         )}
         style={{
-          minHeight: 120,
+          minHeight: 120
         }}
         animate={{
           scale: 1,
@@ -22,14 +22,14 @@ export const NonInteractableCard = (props) => {
           transition: {
             duration: 0.2,
             staggerChildren: 0.5,
-            delayChildren: 0.2,
-          },
+            delayChildren: 0.2
+          }
         }}
         exit={{
           scale: 0,
           y: -10,
           opacity: 0,
-          transition: { staggerChildren: 0.05, staggerDirection: -1 },
+          transition: { staggerChildren: 0.05, staggerDirection: -1 }
         }}
       >
         {props.children}

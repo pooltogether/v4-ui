@@ -45,7 +45,7 @@ export function CustomErrorBoundary(props) {
             scope.setTag('web3', walletName)
 
             scope.setContext('wallet', {
-              name: walletName,
+              name: walletName
             })
           }}
           fallback={({ error, componentStack, resetError }) => <ErrorPage />}

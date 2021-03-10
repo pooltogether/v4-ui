@@ -31,7 +31,7 @@ export function QuestionMarkCircle(props) {
           className='relative font-mono font-bold text-xs'
           style={{
             left: '0.02rem',
-            top: '0.04rem',
+            top: '0.04rem'
           }}
         >
           ?

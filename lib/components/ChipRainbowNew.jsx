@@ -17,14 +17,14 @@ export const ChipRainbowNew = (props) => {
         className={classes}
         style={{
           top: -4,
-          left: 4,
+          left: 4
         }}
       >
         <img src={DDChipSvg} className={imgClasses} />{' '}
         <span
           className='uppercase absolute l-0 t-0 r-0 b-0 text-xxxs text-primary font-mono'
           style={{
-            top: 1,
+            top: 1
           }}
         >
           {text}

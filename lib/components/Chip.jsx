@@ -22,7 +22,7 @@ export const Chip = (props) => {
         style={{
           lineHeight: '0.35rem',
           top: -2,
-          left: 2,
+          left: 2
         }}
       >
         {text}

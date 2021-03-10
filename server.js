@@ -34,8 +34,8 @@ Object.keys(ifaces).forEach(function (ifname) {
 const devProxy = {
   '/.netlify': {
     target: 'http://localhost:9000',
-    pathRewrite: { '^/.netlify/functions': '' },
-  },
+    pathRewrite: { '^/.netlify/functions': '' }
+  }
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000
@@ -43,7 +43,7 @@ const env = process.env.NODE_ENV || 'development'
 const dev = env !== 'production'
 const app = next({
   dir: '.', // base directory where everything is, could move to src later
-  dev,
+  dev
 })
 
 const handle = app.getRequestHandler()

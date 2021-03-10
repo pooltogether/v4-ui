@@ -18,7 +18,7 @@ export function Button(props) {
     'outline',
     'secondary',
     'tertiary',
-    'textSize',
+    'textSize'
   ])
 
   return <button {...newProps} className={classes} />

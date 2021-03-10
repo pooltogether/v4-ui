@@ -25,7 +25,7 @@ export const DefaultPaginationButtons = ({ currentPage, totalPages, baseAsPath, 
   />
 )
 
-export function PaginationUI (props) {
+export function PaginationUI(props) {
   const {
     prevPath,
     nextPath,

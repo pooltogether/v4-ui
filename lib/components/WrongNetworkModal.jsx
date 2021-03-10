@@ -41,7 +41,7 @@ export function WrongNetworkModal(props) {
           <div
             className='r-0 l-0 fixed w-10/12 sm:w-1/4 bg-red px-4 py-2 font-bold mx-auto text-center rounded-lg z-50 text-white'
             style={{
-              bottom: '10vh',
+              bottom: '10vh'
             }}
           >
             {t('unsupportedNetwork')} {networkName}

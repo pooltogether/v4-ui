@@ -34,27 +34,22 @@ export function ProfileAvatar(props) {
     }
   }, [usersAddress])
 
-
   if (!usersAddress) {
     return null
   }
 
-  const image = (profile && isValidImage(profile.image)) ?
-    <img
-      alt='profile avatar'
-      src={`https://ipfs.infura.io/ipfs/${profile.image[0].contentUrl['/']}`}
-      className={classnames(
-        'profile-img relative inline-block rounded-full mr-2 w-5 h-5'
-      )}
-    /> :
-    <div
-      className='profile-img profile-img--jazzicon relative inline-block mr-2'
-    >
-      <Jazzicon
-        diameter={diameter}
-        seed={jsNumberForAddress(usersAddress)}
+  const image =
+    profile && isValidImage(profile.image) ? (
+      <img
+        alt='profile avatar'
+        src={`https://ipfs.infura.io/ipfs/${profile.image[0].contentUrl['/']}`}
+        className={classnames('profile-img relative inline-block rounded-full mr-2 w-5 h-5')}
       />
-    </div>
+    ) : (
+      <div className='profile-img profile-img--jazzicon relative inline-block mr-2'>
+        <Jazzicon diameter={diameter} seed={jsNumberForAddress(usersAddress)} />
+      </div>
+    )
 
   return image
 }

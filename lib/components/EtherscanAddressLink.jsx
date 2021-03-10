@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import { formatEtherscanAddressUrl } from 'lib/utils/formatEtherscanAddressUrl'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 
-export function EtherscanAddressLink (props) {
+export function EtherscanAddressLink(props) {
   const { address, children, className } = props
 
   const { chainId } = useContext(AuthControllerContext)
