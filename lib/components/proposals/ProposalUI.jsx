@@ -74,7 +74,11 @@ export const ProposalUI = (props) => {
         ]}
       />
       <UsersPoolVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
-      <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
+      <ProposalVoteCard
+        blockNumber={Number(proposal.startBlock)}
+        proposal={proposal}
+        refetchProposalData={refetchProposalData}
+      />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
       <VotesCard proposal={proposal} isFetched={isFetched} id={id} />
@@ -341,13 +345,13 @@ const VotesCard = (props) => {
 }
 
 const ProposalVoteCard = (props) => {
-  const { proposal, refetchProposalData } = props
+  const { proposal, refetchProposalData, blockNumber } = props
 
   const { t } = useTranslation()
   const { id, title, status } = proposal
 
   const { usersAddress } = useContext(AuthControllerContext)
-  const { data: tokenHolderData } = useTokenHolder(usersAddress)
+  const { data: tokenHolderData } = useTokenHolder(usersAddress, blockNumber)
   const { data: voteData, isFetched: voteDataIsFetched, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
