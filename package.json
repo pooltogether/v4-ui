@@ -44,7 +44,7 @@
   "dependencies": {
     "3box": "^1.21.0",
     "@argent/smartwallet-utils": "^0.0.11",
-    "@pooltogether/bnc-onboard": "1.16.2-b",
+    "@pooltogether/bnc-onboard": "1.20.1",
     "@pooltogether/current-pool-data": "3.2.0-beta.5",
     "@pooltogether/etherplex": "^0.2.3",
     "@pooltogether/loot-box": "1.0.0",
