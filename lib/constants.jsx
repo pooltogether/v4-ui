@@ -5,6 +5,10 @@ export const SUPPORTED_CHAIN_IDS = [1, 4, 31337, 1234]
 
 export const SECONDS_PER_BLOCK = 13
 
+export const SECONDS_PER_WEEK = 604800
+export const SECONDS_PER_DAY = 86400
+export const SECONDS_PER_HOUR = 3600
+
 export const DEFAULT_TOKEN_PRECISION = 18
 
 export const MAINNET_POLLING_INTERVAL = process.env.NEXT_JS_DOMAIN_NAME ? 22 * 1000 : 16 * 1000

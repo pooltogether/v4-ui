@@ -16,7 +16,7 @@ const custom = (triggerRect, tooltipRect) => {
 
   return {
     left: Math.min(Math.max(2, left), maxLeft) + window.scrollX,
-    top: triggerRect.bottom + 40
+    top: triggerRect.bottom
   }
 }
 
