@@ -199,37 +199,7 @@ const ViewProposalButton = (props) => {
   const { t } = useTranslation()
   const { status, id } = proposal
 
-  if (status === PROPOSAL_STATUS.queued) {
-    return (
-      <ButtonLink
-        href={'/proposals/[id]/'}
-        as={`/proposals/${id}/`}
-        border='green'
-        text='primary'
-        bg='green'
-        hoverBorder='green'
-        hoverText='primary'
-        hoverBg='green'
-      >
-        {t('executeProposal')}
-      </ButtonLink>
-    )
-  } else if (status === PROPOSAL_STATUS.succeeded) {
-    return (
-      <ButtonLink
-        href={'/proposals/[id]/'}
-        as={`/proposals/${id}/`}
-        border='green'
-        text='primary'
-        bg='green'
-        hoverBorder='green'
-        hoverText='primary'
-        hoverBg='green'
-      >
-        {t('queueProposal')}
-      </ButtonLink>
-    )
-  } else if (status === PROPOSAL_STATUS.active) {
+  if (status === PROPOSAL_STATUS.active) {
     return (
       <ButtonLink
         href={'/proposals/[id]/'}
