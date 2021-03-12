@@ -3,11 +3,12 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 
+import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import { Trans, useTranslation } from 'lib/../i18n'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
-import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Banner } from 'lib/components/Banner'
+import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { PTHint } from 'lib/components/PTHint'
 import { TxText } from 'lib/components/TxText'
@@ -344,21 +345,30 @@ const UsersPoolVotesCardNoPool = (props) => {
 const UsersPoolVotesCardConnectWallet = (props) => {
   const { connectWallet, className } = props
 
+  const { t } = useTranslation()
+
   return (
     <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
-      <Trans
-        i18nKey='connectAWalletToVoteAndParticipate'
-        defaults='<button>Connect a wallet</button> to vote and participate in governance'
-        components={{
-          button: (
-            <button
-              type='button'
-              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
-              onClick={() => connectWallet()}
-            />
-          )
-        }}
-      />
+      <div className='flex flex-col sm:flex-row items-center text-center sm:text-left sm:justify-between'>
+        <h5 className='inline-block mb-2 sm:mr-4'>
+          <Trans
+            i18nKey='connectAWalletToVoteAndParticipate'
+            defaults='<button>Connect a wallet</button> to vote and participate in governance'
+            components={{
+              button: (
+                <button
+                  type='button'
+                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
+                  onClick={() => connectWallet()}
+                />
+              )
+            }}
+          />
+        </h5>
+        <Button textSize='xxs' type='button' onClick={() => connectWallet()}>
+          {t('connectWallet')}
+        </Button>
+      </div>
     </Banner>
   )
 }
