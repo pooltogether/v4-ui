@@ -16,11 +16,11 @@ const custom = (triggerRect, tooltipRect) => {
 
   return {
     left: Math.min(Math.max(2, left), maxLeft) + window.scrollX,
-    top: triggerRect.bottom + 40 + window.scrollY
+    top: triggerRect.bottom
   }
 }
 
-export function PTHint (props) {
+export function PTHint(props) {
   const { t } = useTranslation()
   const { children, className, isButton, title } = props
   let { tip } = props

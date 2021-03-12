@@ -21,9 +21,7 @@ export function ProfileName(props) {
     }
   }, [usersAddress])
 
-  const name = (profile && profile.name) ?
-    profile.name :
-    shorten(usersAddress)
+  const name = profile && profile.name ? profile.name : shorten(usersAddress)
 
   return name
 }

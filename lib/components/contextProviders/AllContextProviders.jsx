@@ -35,7 +35,7 @@ export function AllContextProviders(props) {
             <WalletContextProviderDynamic
               postConnectCallback={async () => {
                 router.push(`${router.pathname}`, `${router.asPath}`, {
-                  shallow: true,
+                  shallow: true
                 })
               }}
             >

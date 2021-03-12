@@ -63,7 +63,7 @@ export function WalletContextProvider(props) {
 
           Cookies.remove(SELECTED_WALLET_COOKIE_KEY, COOKIE_OPTIONS)
         }
-      },
+      }
     })
   }
 
@@ -126,7 +126,7 @@ export function WalletContextProvider(props) {
         disconnectWallet,
         reconnectWallet,
         walletCheck: onboard?.walletCheck,
-        handleLoadOnboard,
+        handleLoadOnboard
       }}
     >
       {children}

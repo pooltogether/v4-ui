@@ -16,7 +16,7 @@ const nextI18NextInstance = new NextI18Next({
     apiKey: locizeApiKey,
     version: locizeVersion || 'latest',
     referenceLng: 'en',
-    debug: true,
+    debug: true
   },
   defaultLanguage: 'en',
   fallbackLng: 'en',
@@ -30,14 +30,14 @@ const nextI18NextInstance = new NextI18Next({
     lookupLocalStorage: 'i18nextLng',
 
     // cache the language in cookies and local storage
-    caches: ['cookie', 'localStorage'],
+    caches: ['cookie', 'localStorage']
   },
   react: {
     // trigger a rerender when language is changed
     bindI18n: 'languageChanged',
     // we're NOT using suspsense to detect when the translations have loaded
-    useSuspense: false,
-  },
+    useSuspense: false
+  }
 })
 
 export default nextI18NextInstance
@@ -50,5 +50,5 @@ export const {
   config,
   // withTranslation,
   useTranslation,
-  i18n,
+  i18n
 } = nextI18NextInstance

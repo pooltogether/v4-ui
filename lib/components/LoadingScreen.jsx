@@ -15,23 +15,23 @@ export function LoadingScreen(props) {
         transition={{ duration: 0.5, ease: 'easeIn' }}
         variants={{
           initial: {
-            opacity: 1,
+            opacity: 1
           },
           enter: {
-            opacity: 1,
+            opacity: 1
           },
           exit: {
             opacity: 0,
             transitionEnd: {
-              display: 'none',
-            },
-          },
+              display: 'none'
+            }
+          }
         }}
         className='h-screen w-screen fixed overflow-hidden t-0 r-0 l-0 b-0 text-white flex flex-col items-center justify-center'
         style={{
           backgroundColor: '#1E0B43',
           color: 'white',
-          zIndex: 12345678,
+          zIndex: 12345678
         }}
       >
         <img

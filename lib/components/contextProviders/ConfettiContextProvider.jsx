@@ -8,7 +8,7 @@ export const ConfettiContextProvider = function ({ children }) {
   return (
     <ConfettiContext.Provider
       value={{
-        confetti,
+        confetti
       }}
     >
       {children}

@@ -10,7 +10,7 @@ import { poolToast } from 'lib/utils/poolToast'
 
 const MAILCHIMP_LOCAL_URI = `/.netlify/functions/mailchimp-signup`
 
-export function EmailSignup (props) {
+export function EmailSignup(props) {
   const { t } = useTranslation()
   const { handleSubmit, register, watch, formState } = useForm({ mode: 'all' })
 

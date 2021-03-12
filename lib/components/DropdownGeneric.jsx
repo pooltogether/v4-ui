@@ -20,7 +20,7 @@ export function DropdownGeneric(props) {
                 'inline-flex items-center justify-center trans font-bold',
                 {
                   [inactiveTextColorClasses]: !isExpanded,
-                  [activeTextColorClasses]: isExpanded,
+                  [activeTextColorClasses]: isExpanded
                 }
               )}
             >

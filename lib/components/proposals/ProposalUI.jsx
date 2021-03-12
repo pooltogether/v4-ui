@@ -34,6 +34,7 @@ import { shorten } from 'lib/utils/shorten'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { useProposalVotesTotalPages } from 'lib/hooks/useProposalVotesTotalPages'
+import { TimeCountDown } from 'lib/components/TimeCountDown'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -74,7 +75,11 @@ export const ProposalUI = (props) => {
         ]}
       />
       <UsersPoolVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
-      <ProposalVoteCard proposal={proposal} refetchProposalData={refetchProposalData} />
+      <ProposalVoteCard
+        blockNumber={Number(proposal.startBlock)}
+        proposal={proposal}
+        refetchProposalData={refetchProposalData}
+      />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
       <VotesCard proposal={proposal} isFetched={isFetched} id={id} />
@@ -341,13 +346,13 @@ const VotesCard = (props) => {
 }
 
 const ProposalVoteCard = (props) => {
-  const { proposal, refetchProposalData } = props
+  const { proposal, refetchProposalData, blockNumber } = props
 
   const { t } = useTranslation()
   const { id, title, status } = proposal
 
   const { usersAddress } = useContext(AuthControllerContext)
-  const { data: tokenHolderData } = useTokenHolder(usersAddress)
+  const { data: tokenHolderData } = useTokenHolder(usersAddress, blockNumber)
   const { data: voteData, isFetched: voteDataIsFetched, refetch: refetchVoteData } = useVoteData(
     tokenHolderData?.delegate?.id,
     id
@@ -367,7 +372,7 @@ const ProposalVoteCard = (props) => {
   return (
     <Card>
       <div className='flex justify-between flex-col-reverse sm:flex-row'>
-        <h4 className={classnames({ 'mb-2 sm:mb-8': showButtons })}>{title}</h4>
+        <h4 className={classnames('mr-2', { 'mb-2 sm:mb-8': showButtons })}>{title}</h4>
         <ProposalStatus proposal={proposal} />
       </div>
       {voteDataIsFetched && voteData?.delegateDidVote && (
@@ -389,7 +394,7 @@ const ProposalVoteCard = (props) => {
       )}
 
       {showButtons && (
-        <div className='mt-2 flex justify-end '>
+        <>
           {status === PROPOSAL_STATUS.active && (
             <VoteButtons
               id={id}
@@ -409,7 +414,7 @@ const ProposalVoteCard = (props) => {
               proposal={proposal}
             />
           )}
-        </div>
+        </>
       )}
     </Card>
   )
@@ -474,60 +479,58 @@ const VoteButtons = (props) => {
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
-      <TxText className='text-green'>
+      <TxText className='text-green ml-auto'>
         🎉 {t('successfullyVoted')} - {votingFor ? t('accept') : t('reject')} 🎉
       </TxText>
     )
   }
 
   if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
-    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
+    return <TxText className='ml-auto'>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>{t('waitingForConfirmations')}...</TxText>
+    return <TxText className='ml-auto'>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
-    <>
+    <div className='flex mt-2 justify-end'>
       {tx?.error && (
         <div className='text-red flex'>
           <FeatherIcon icon='alert-triangle' className='h-4 w-4 stroke-current my-auto mr-2' />
           <p>{t('errorWithTxPleaseTryAgain')}</p>
         </div>
       )}
-      <div className='h-10 xs:h-12'>
-        <Button
-          border='green'
-          text='primary'
-          bg='green'
-          hoverBorder='green'
-          hoverText='primary'
-          hoverBg='green'
-          onClick={handleVoteFor}
-          className='mr-4'
-        >
-          <div className='flex'>
-            <FeatherIcon icon='check-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
-            {t('accept')}
-          </div>
-        </Button>
-        <Button
-          border='red'
-          text='red'
-          bg='transparent'
-          hoverBorder='red'
-          hoverText='red'
-          hoverBg='transparent'
-          onClick={handleVoteAgainst}
-        >
-          <div className='flex'>
-            <FeatherIcon icon='x-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
-            {t('reject')}
-          </div>
-        </Button>
-      </div>
-    </>
+      <Button
+        border='green'
+        text='primary'
+        bg='green'
+        hoverBorder='green'
+        hoverText='primary'
+        hoverBg='green'
+        onClick={handleVoteFor}
+        className='mr-4'
+      >
+        <div className='flex'>
+          <FeatherIcon icon='check-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
+          {t('accept')}
+        </div>
+      </Button>
+      <Button
+        border='red'
+        text='red'
+        bg='transparent'
+        hoverBorder='red'
+        hoverText='red'
+        hoverBg='transparent'
+        onClick={handleVoteAgainst}
+      >
+        <div className='flex'>
+          <FeatherIcon icon='x-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
+          {t('reject')}
+        </div>
+      </Button>
+    </div>
   )
 }
 
@@ -561,19 +564,23 @@ const QueueButton = (props) => {
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     // Successfully Queued Proposal #{ id }
-    return <TxText className='text-green'>🎉 {t('successfullyQueuedProposalId', { id })} 🎉</TxText>
+    return (
+      <TxText className='text-green ml-auto'>
+        🎉 {t('successfullyQueuedProposalId', { id })} 🎉
+      </TxText>
+    )
   }
 
   if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
-    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
+    return <TxText className='ml-auto'>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>{t('waitingForConfirmations')}...</TxText>
+    return <TxText className='ml-auto'>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
-    <div className='flex h-10 xs:h-12'>
+    <div className='flex mt-2 justify-end'>
       {tx?.error && (
         <PTHint
           tip={
@@ -603,7 +610,7 @@ const ExecuteButton = (props) => {
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const tx = useTransaction(txId)
 
-  const [currentTime, setCurrentTime] = useState(Date.now() / 100)
+  const [currentTime, setCurrentTime] = useState(getSecondsSinceEpoch())
 
   useInterval(() => {
     setCurrentTime(getSecondsSinceEpoch())
@@ -641,60 +648,70 @@ const ExecuteButton = (props) => {
 
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
-      <TxText className='text-green'>🎉 {t('successfullyExecutedProposalId', { id })} 🎉</TxText>
+      <TxText className='text-green ml-auto'>
+        🎉 {t('successfullyExecutedProposalId', { id })} 🎉
+      </TxText>
     )
   }
 
   if (tx?.inWallet && !tx?.cancelled && !tx?.error) {
-    return <TxText>{t('pleaseConfirmInYourWallet')}</TxText>
+    return <TxText className='ml-auto'>{t('pleaseConfirmInYourWallet')}</TxText>
   }
 
   if (tx?.sent) {
-    return <TxText>{t('waitingForConfirmations')}...</TxText>
+    return <TxText className='ml-auto'>{t('waitingForConfirmations')}...</TxText>
   }
 
   return (
-    <div className='flex h-10 xs:h-12'>
-      {tx?.error && (
-        <PTHint
-          tip={
-            <div className='flex'>
-              <p>{t('errorWithTxPleaseTryAgain')}</p>
-            </div>
-          }
-        >
-          <FeatherIcon
-            icon='alert-triangle'
-            className='h-4 w-4 text-red stroke-current my-auto mr-2'
-          />
-        </PTHint>
+    <>
+      {currentTime < executionETA && (
+        <div className='flex'>
+          <span className='xs:ml-auto mt-auto text-accent-1'>{t('executableIn')}</span>
+          <TimeCountDown endTime={executionETA} />
+        </div>
       )}
-      {!payableAmountInWei.isZero() && (
-        <PTHint
-          tip={
-            <div className='flex'>
-              <p>{t('executionCostInEth', { amount: payableAmountInEther.toString() })}</p>
-            </div>
-          }
+      <div className='flex mt-2 justify-end'>
+        {tx?.error && (
+          <PTHint
+            tip={
+              <div className='flex'>
+                <p>{t('errorWithTxPleaseTryAgain')}</p>
+              </div>
+            }
+          >
+            <FeatherIcon
+              icon='alert-triangle'
+              className='h-4 w-4 text-red stroke-current my-auto mr-2'
+            />
+          </PTHint>
+        )}
+        {!payableAmountInWei.isZero() && (
+          <PTHint
+            tip={
+              <div className='flex'>
+                <p>{t('executionCostInEth', { amount: payableAmountInEther.toString() })}</p>
+              </div>
+            }
+          >
+            <FeatherIcon
+              icon='alert-circle'
+              className='h-4 w-4 text-inverse stroke-current my-auto mr-2'
+            />
+          </PTHint>
+        )}
+        <Button
+          border='green'
+          text='primary'
+          bg='green'
+          hoverBorder='green'
+          hoverText='primary'
+          hoverBg='green'
+          onClick={handleExecuteProposal}
+          disabled={currentTime < executionETA}
         >
-          <FeatherIcon
-            icon='alert-circle'
-            className='h-4 w-4 text-inverse stroke-current my-auto mr-2'
-          />
-        </PTHint>
-      )}
-      <Button
-        border='green'
-        text='primary'
-        bg='green'
-        hoverBorder='green'
-        hoverText='primary'
-        hoverBg='green'
-        onClick={handleExecuteProposal}
-        disabled={currentTime < executionETA}
-      >
-        {t('executeProposal')}
-      </Button>
-    </div>
+          {t('executeProposal')}
+        </Button>
+      </div>
+    </>
   )
 }

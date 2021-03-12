@@ -42,7 +42,7 @@ export const Tab = ({ isSelected, onClick, children }) => {
         'cursor-pointer relative capitalize text-center leading-none rounded-full hover:bg-accent-grey-1 flex justify-start items-center text-sm xs:text-lg lg:text-xl py-2 px-6 lg:px-8 trans tracking-wider outline-none focus:outline-none active:outline-none font-bold mx-1 xs:mx-2 sm:mx-3',
         {
           'text-default hover:text-highlight-2': !isSelected,
-          'selected bg-accent-grey-1 hover:bg-accent-grey-1': isSelected,
+          'selected bg-accent-grey-1 hover:bg-accent-grey-1': isSelected
         }
       )}
     >
@@ -67,7 +67,7 @@ export const ContentPane = ({ children, isSelected, alwaysPresent }) => {
     <div
       className={classnames({
         [hiddenClassName]: !isSelected,
-        [visibleClassName]: isSelected,
+        [visibleClassName]: isSelected
       })}
     >
       {children}

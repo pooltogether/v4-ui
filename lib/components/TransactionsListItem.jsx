@@ -36,7 +36,7 @@ export function TransactionsListItem(props) {
               <div
                 className='-l-1 -t-2'
                 style={{
-                  transform: 'scale(0.9)',
+                  transform: 'scale(0.9)'
                 }}
               >
                 <LoadingSpinner />

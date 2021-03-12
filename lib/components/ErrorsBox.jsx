@@ -10,7 +10,7 @@ export function ErrorsBox(props) {
       <div
         className='text-red'
         style={{
-          minHeight: errorMessages.length > 0 ? 24 : 0,
+          minHeight: errorMessages.length > 0 ? 24 : 0
         }}
       >
         {errorMessages.map((errorMsg) => errorMsg)}
