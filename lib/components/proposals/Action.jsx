@@ -221,7 +221,11 @@ const ContractSelect = (props) => {
         current={currentContract}
       />
       {currentContract?.custom && chainId === 1 && (
-        <CustomContractInputMainnet contract={currentContract} setContract={setContract} />
+        <CustomContractInputMainnet
+          contract={currentContract}
+          setContract={setContract}
+          contractPath={contractPath}
+        />
       )}
       {currentContract?.custom && chainId === 4 && (
         <CustomContractInputRinkeby
@@ -260,15 +264,13 @@ const CustomContractInputRinkeby = (props) => {
  * @param {*} props
  */
 const CustomContractInputMainnet = (props) => {
-  const { contract, setContract } = props
+  const { contract, setContract, contractPath } = props
 
   const { t } = useTranslation()
   const [showAbiInput, setShowAbiInput] = useState(false)
-  const addressFormName = 'contractAddress'
-  const { register, control, errors } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange'
-  })
+  const addressFormName = `${contractPath}.address`
+  const { register, control, errors } = useFormContext()
+
   const address = useWatch({ control, name: addressFormName })
 
   const {
