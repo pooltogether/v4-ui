@@ -620,8 +620,8 @@ const ExecuteButton = (props) => {
     () =>
       proposal.values.reduce(
         (totalPayableAmount, currentPayableAmount) =>
-          totalPayableAmount.add(ethers.utils.bigNumberify(currentPayableAmount)),
-        ethers.utils.bigNumberify(0)
+          totalPayableAmount.add(ethers.BigNumber.from(currentPayableAmount)),
+        ethers.BigNumber.from(0)
       ),
     [proposal.values]
   )
