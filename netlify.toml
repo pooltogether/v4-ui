@@ -23,4 +23,4 @@
   status = 451
   force = true
   conditions = {Country=["CU","IR","KP","SD","SY"]}
-  headers = {Link="<https://app.pooltogether.com>"}
+  headers = {Link="<https://vote.pooltogether.com>"}
