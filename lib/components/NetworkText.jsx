@@ -17,6 +17,9 @@ export function NetworkText(props) {
     networkName = chainIdToNetworkName(chainId)
   }
 
+  if (!networkName) {
+    return null
+  }
   return (
     <>
       <button

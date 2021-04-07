@@ -10,13 +10,16 @@ export function useReadProvider() {
 
   useEffect(() => {
     const getReadProvider = async () => {
-      const defaultReadProvider = await readProvider(networkName)
-      setDefaultReadProvider(defaultReadProvider)
+      if (networkName !== 'unknown network') {
+        const defaultReadProvider = await readProvider(networkName)
+        setDefaultReadProvider(defaultReadProvider)
+      }
     }
     getReadProvider()
   }, [networkName])
 
-  const isLoaded = Object.keys(defaultReadProvider).length > 0
-
-  return { readProvider: defaultReadProvider, isLoaded }
+  return {
+    readProvider: defaultReadProvider,
+    isLoaded: Object.keys(defaultReadProvider).length > 0
+  }
 }
