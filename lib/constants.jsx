@@ -62,6 +62,7 @@ export const QUERY_KEYS = {
   accountGovernanceDataQuery: 'accountGovernanceDataQuery',
   governorAlphaDataQuery: 'governorAlphaDataQuery',
   proposalVotesQuery: 'proposalVotesQuery',
+  coingeckoTokenInfoQuery: 'coingeckoTokenInfoQuery',
   delegateDataQuery: 'delegateDataQuery',
   delegatesQuery: 'delegatesQuery',
   tokenHolderQuery: 'tokenHolderQuery',

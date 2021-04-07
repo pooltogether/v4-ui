@@ -85,6 +85,7 @@ module.exports = {
         'highlight-1': 'var(--color-text-highlight-1)',
         'highlight-2': 'var(--color-text-highlight-2)',
         'highlight-3': 'var(--color-text-highlight-3)',
+        'highlight-4': 'var(--color-text-highlight-4)',
         'highlight-6': 'var(--color-text-highlight-6)',
         'highlight-7': 'var(--color-text-highlight-7)',
         'highlight-9': 'var(--color-text-highlight-9)',
