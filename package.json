@@ -49,7 +49,7 @@
     "3box": "^1.21.0",
     "@argent/smartwallet-utils": "^0.0.11",
     "@babel/plugin-transform-react-jsx": "^7.13.12",
-    "@pooltogether/bnc-onboard": "1.20.2",
+    "@pooltogether/bnc-onboard": "1.22.1",
     "@pooltogether/current-pool-data": "3.2.0-beta.5",
     "@pooltogether/etherplex": "^1.0.2",
     "@pooltogether/loot-box": "1.0.0",
