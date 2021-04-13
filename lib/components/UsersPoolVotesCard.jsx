@@ -357,7 +357,7 @@ const UsersPoolVotesCardConnectWallet = (props) => {
   return (
     <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
       <div className='flex flex-col sm:flex-row items-center text-center sm:text-left sm:justify-between'>
-        <h5 className='inline-block sm:mr-4'>
+        <h5 className='inline-block sm:mr-4 mb-2 sm:mb-0'>
           <Trans
             i18nKey='connectAWalletToVoteAndParticipate'
             defaults='<button>Connect a wallet</button> to vote and participate in governance'

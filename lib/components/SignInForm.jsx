@@ -25,9 +25,7 @@ export function SignInForm(props) {
     <>
       <div className='text-inverse'>
         {!hideImg && (
-          <>
-            <img src={PoolTogetherTrophyDetailed} className='mx-auto mb-6 w-16 xs:w-1/12' />
-          </>
+          <img src={PoolTogetherTrophyDetailed} className='mx-auto mb-6 w-16 xs:w-1/12' />
         )}
 
         <h5 className={descriptionClassName}>{t('connectAWalletToManageTicketsAndRewards')}</h5>
