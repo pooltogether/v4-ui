@@ -472,19 +472,11 @@ const ProposalTransactionModal = (props) => {
       await tx.ethersTx.wait()
       const receipt = await provider.getTransactionReceipt(hash)
       const governorAlphaInterface = new ethers.utils.Interface(GovernorAlphaABI)
-      const governorAlphaEventLog = receipt.logs.reduce((events, log) => {
-        try {
-          const event = governorAlphaInterface.parseLog(log)
-          if (event) {
-            events.push(event)
-          }
-        } catch (e) {}
-        return events
-      }, [])
-      const proposalCreatedEvent = governorAlphaEventLog.find(
-        (event) => event.name === 'ProposalCreated'
-      )
-      setProposalId(proposalCreatedEvent.values[0])
+      const proposalCreatedEvent = receipt.logs.map((log) =>
+        governorAlphaInterface.decodeEventLog('ProposalCreated', log.data)
+      )[0]
+
+      setProposalId(proposalCreatedEvent.id)
     }
 
     if (tx && tx.completed && !tx.error && !tx.cancelled) {
@@ -576,9 +568,11 @@ const getProposeParamsFromForm = (formData, t) => {
       }
 
       const contractInterface = new ethers.utils.Interface(action.contract.abi)
-      const fn = contractInterface.functions[action.contract.fn.name]
+      const fnFragment = contractInterface.fragments.find(
+        (fragment) => fragment.name === action.contract.fn.name
+      )
 
-      signatures.push(fn.signature)
+      signatures.push(fnFragment.format())
 
       const fnParameters = action.contract.fn.inputs.map((input) => {
         const rawData = action.contract.fn.values[input.name]
@@ -598,8 +592,8 @@ const getProposeParamsFromForm = (formData, t) => {
 
         return rawData
       })
-      const fullCalldata = fn.encode(fnParameters)
-      const calldata = fullCalldata.replace(fn.sighash, '0x')
+      const fullCalldata = contractInterface.encodeFunctionData(fnFragment, fnParameters)
+      const calldata = fullCalldata.replace(contractInterface.getSighash(fnFragment), '0x')
 
       calldatas.push(calldata)
     })
