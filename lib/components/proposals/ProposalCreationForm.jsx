@@ -474,9 +474,9 @@ const ProposalTransactionModal = (props) => {
       const governorAlphaInterface = new ethers.utils.Interface(GovernorAlphaABI)
       const proposalCreatedEvent = receipt.logs.map((log) =>
         governorAlphaInterface.decodeEventLog('ProposalCreated', log.data)
-      )
+      )[0]
 
-      setProposalId(proposalCreatedEvent[0].id)
+      setProposalId(proposalCreatedEvent.id)
     }
 
     if (tx && tx.completed && !tx.error && !tx.cancelled) {
