@@ -50,11 +50,11 @@ export const ProposalsUI = (props) => {
 
       <div className='flex flex-col sm:flex-row mb-8 sm:mb-12'>
         <ButtonLink
-          a={`/proposals/create`}
+          as={`/proposals/create`}
           href={`/proposals/create`}
           disabled
           textSize='xxs'
-          className='w-full sm:w-auto mb-4 sm:mb-0 '
+          className='w-full sm:w-auto mb-2 sm:mb-0 '
           tertiary
         >
           {t('createAProposal')}

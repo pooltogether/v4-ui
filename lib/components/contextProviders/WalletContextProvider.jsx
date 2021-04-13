@@ -54,7 +54,7 @@ export function WalletContextProvider(props) {
 
           Cookies.set(SELECTED_WALLET_COOKIE_KEY, wallet.name, COOKIE_OPTIONS)
 
-          provider = new ethers.providers.Web3Provider(wallet.provider)
+          provider = new ethers.providers.Web3Provider(wallet.provider, 'any')
 
           // postConnectCallback()
         } else {
