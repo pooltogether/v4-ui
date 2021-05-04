@@ -38,7 +38,7 @@ export const UsersPoolVotesCard = (props) => {
 
   if (!tokenHolder || !tokenHolderIsFetched) return null
 
-  if (!tokenHolder.hasDelegated && !tokenHolder.canVote && tokenHolder.tokenBalance === '0') {
+  if (!tokenHolder.isDelegating && !tokenHolder.canVote && tokenHolder.tokenBalance === '0') {
     return (
       <UsersPoolVotesCardNoPool
         {...props}
@@ -47,77 +47,27 @@ export const UsersPoolVotesCard = (props) => {
     )
   }
 
-  const votingPower = numberWithCommas(tokenHolder.votes, {
-    precision: getPrecision(tokenHolder.votes)
-  })
   const usersPoolBalance = numberWithCommas(tokenHolder.tokenBalance, {
     precision: getPrecision(tokenHolder.tokenBalance)
   })
-  const holderHasDelegatedToAnotherUser = tokenHolder.hasDelegated && !tokenHolder.selfDelegated
-  const holderHasBeenDelegatedTo = tokenHolder.canVote && votingPower !== usersPoolBalance
 
   return (
     <Banner
       className={classnames('flex flex-col mb-8 sm:mb-10', className)}
       style={{ color: 'white' }}
     >
-      <div className='flex flex-col-reverse xs:flex-row'>
-        <div className='flex w-full xs:w-1/4 '>
-          <div className='flex-col w-full xs:w-1/2 mb-4 sm:mb-0 '>
-            <h5 className='font-normal mb-0 sm:mb-3'>{t('myVotes')}</h5>
-            <h2
-              className={classnames('leading-none mr-0 sm:mr-4', {
-                'opacity-30': !tokenHolder.hasDelegated
-              })}
-            >
-              {usersPoolBalance}
-            </h2>
-          </div>
+      {isDataFromBeforeCurrentBlock && (
+        <div className='ml-auto mb-4 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
+          <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
+          {t('votingPowerIsLockedFromBlock', { blockNumber })}
         </div>
-
-        {(holderHasDelegatedToAnotherUser || holderHasBeenDelegatedTo) && (
-          <div className='flex-col w-full xs:w-1/4 mb-4 sm:mb-0 '>
-            <h5 className='font-normal mb-0 sm:mb-3'>
-              {holderHasDelegatedToAnotherUser ? t('myDelegatesVotes') : t('myTotalVotes')}
-              <div className='inline-block mt-auto ml-2'>
-                <PTHint
-                  tip={
-                    <div className='my-2 text-xs sm:text-sm break-words max-w-full'>
-                      <Trans
-                        i18nKey='allVotesThatHaveBeenDelegatedToUser'
-                        defaults='All votes that have been delegated to <delegate></delegate>'
-                        components={{
-                          delegate: (
-                            <DelegateAddress
-                              className='font-bold'
-                              address={
-                                tokenHolder.canVote ? usersAddress : tokenHolder.delegateAddress
-                              }
-                            />
-                          )
-                        }}
-                      />
-                    </div>
-                  }
-                >
-                  <FeatherIcon icon='info' className='text-inverse w-4 h-4' />
-                </PTHint>
-              </div>
-            </h5>
-            <h2 className={classnames('leading-none mr-0 sm:mr-4')}>{votingPower}</h2>
-          </div>
-        )}
-
-        <div className='flex xs:ml-auto'>
-          {isDataFromBeforeCurrentBlock && (
-            <div className='ml-auto mb-4 sm:mb-0 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
-              <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
-              {t('votingPowerIsLockedFromBlock', { blockNumber })}
-            </div>
-          )}
-        </div>
+      )}
+      <div className='flex flex-col sm:flex-row'>
+        <UsersVotes tokenHolder={tokenHolder} usersAddress={usersAddress} />
+        <UsersTotalVotes tokenHolder={tokenHolder} usersAddress={usersAddress} />
+        <UsersDelegatesVotes tokenHolder={tokenHolder} />
       </div>
-      <DelegatedVotes
+      <DelegatedVotesBottom
         tokenHolder={tokenHolder}
         refetchTokenHolderData={refetchTokenHolderData}
         usersPoolBalance={usersPoolBalance}
@@ -128,7 +78,94 @@ export const UsersPoolVotesCard = (props) => {
   )
 }
 
-const DelegatedVotes = (props) => {
+// Vote Count Items
+
+const VotingPowerItem = (props) => (
+  <div className='flex-col mr-8 last:mr-0 mb-4 sm:mb-0 last:mb-0'>
+    <h5 className='font-normal mb-0 sm:mb-3 capitalize'>
+      {props.title}
+      {props.tooltip && (
+        <div className='inline-block mt-auto ml-2'>
+          <PTHint tip={props.tooltip}>
+            <FeatherIcon
+              icon={props.icon ? props.icon : 'info'}
+              className={classnames('w-4 h-4', props.iconClassName)}
+            />
+          </PTHint>
+        </div>
+      )}
+    </h5>
+    <h2 className={classnames('leading-none', { 'opacity-30': props.inactive })}>
+      {props.votingPower}
+    </h2>
+  </div>
+)
+
+const UsersVotes = (props) => {
+  const { tokenHolder, usersAddress } = props
+  const { t } = useTranslation()
+
+  const usersPoolBalance = numberWithCommas(tokenHolder.tokenBalance, {
+    precision: getPrecision(tokenHolder.tokenBalance)
+  })
+
+  return (
+    <VotingPowerItem
+      inactive={!tokenHolder.isDelegating}
+      votingPower={usersPoolBalance}
+      title={t('myPool')}
+      tooltip={t('poolBalanceOfUser', { address: usersAddress })}
+    />
+  )
+}
+
+const UsersTotalVotes = (props) => {
+  const { tokenHolder, usersAddress } = props
+  const { t } = useTranslation()
+
+  const votingPower = numberWithCommas(tokenHolder.delegatedVotes, {
+    precision: getPrecision(tokenHolder.delegatedVotes)
+  })
+  const holderHasBeenDelegatedTo = tokenHolder.canVote
+
+  if (!holderHasBeenDelegatedTo) {
+    return null
+  }
+
+  return (
+    <VotingPowerItem
+      votingPower={votingPower}
+      title={t('myVotingPower')}
+      tooltip={t('votingPowerInfo', { address: usersAddress })}
+    />
+  )
+}
+
+const UsersDelegatesVotes = (props) => {
+  const { tokenHolder } = props
+  const { t } = useTranslation()
+
+  const votingPower = numberWithCommas(tokenHolder?.delegate?.delegatedVotes, {
+    precision: getPrecision(tokenHolder?.delegate?.delegatedVotes)
+  })
+  const holderHasDelegatedToAnotherUser = tokenHolder.isDelegating && !tokenHolder.isSelfDelegated
+
+  if (!holderHasDelegatedToAnotherUser) {
+    return null
+  }
+
+  return (
+    <VotingPowerItem
+      votingPower={votingPower}
+      title={t('myDelegatesVotes')}
+      tooltip={t('delegateVotesInfo', { address: tokenHolder.delegate.id })}
+    />
+  )
+}
+
+// Extra Info Items
+
+const DelegatedVotesBottom = (props) => {
   const {
     tokenHolder,
     refetchTokenHolderData,
@@ -141,8 +178,9 @@ const DelegatedVotes = (props) => {
   const { usersAddress, chainId } = useContext(AuthControllerContext)
   const {
     data: tokenHolderCurrentData,
-    isFetched: tokenHolderCurrentDataIsFetched
-  } = useTokenHolder(usersAddress, blockNumber)
+    isFetched: tokenHolderCurrentDataIsFetched,
+    refetch: refetchTokenHolderCurrentData
+  } = useTokenHolder(usersAddress)
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
   const tx = useTransaction(txId)
@@ -159,11 +197,20 @@ const DelegatedVotes = (props) => {
       method: 'delegate',
       params,
       callbacks: {
-        refetch: refetchTokenHolderData
+        refetch: () => {
+          refetchTokenHolderData()
+          refetchTokenHolderCurrentData()
+        }
       }
     })
     setTxId(id)
   }
+
+  useEffect(() => {
+    setTxId(0)
+  }, [usersAddress])
+
+  console.log(tokenHolderCurrentData)
 
   // Transaction states
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
@@ -178,51 +225,76 @@ const DelegatedVotes = (props) => {
     return <TxText className='mt-2 xs:mt-4'>{t('waitingForConfirmations')}...</TxText>
   }
 
-  // User has self delegated
-  if (tokenHolder.selfDelegated) {
-    if (tokenHolder.tokenHoldersRepresentedAmount > 1) {
-      return (
-        <p className='text-accent-1 mt-2 xs:mt-4'>
+  return (
+    <div className='flex flex-col mt-2 xs:mt-4 text-accent-1'>
+      {tokenHolder.isDelegating && !tokenHolder.isSelfDelegated && (
+        <p>
+          <Trans
+            i18nKey='youAreDelegatingXVotesToY'
+            defaults='You are delegating <b>{{amount}}</b> votes to <address></address>'
+            components={{
+              b: <b />,
+              bold: <b />,
+              address: <DelegateAddress className='font-bold' address={tokenHolder.delegate.id} />
+            }}
+            values={{
+              amount: usersPoolBalance
+            }}
+          />
+        </p>
+      )}
+      {tokenHolder.tokenHoldersRepresentedAmount > 1 && (
+        <p>
           <Trans
             i18nKey='youAreVotingOnBehalfOfXUsers'
             defaults='You are voting on behalf of <b>{{amount}}</b> PoolTogether users'
             components={{
-              b: <b />
+              b: <b />,
+              bold: <b />
             }}
             values={{
               amount: tokenHolder.tokenHoldersRepresentedAmount
             }}
           />
         </p>
-      )
-    } else {
-      return null
-    }
-  }
+      )}
+      {tokenHolderCurrentDataIsFetched && !tokenHolderCurrentData?.isDelegating && (
+        <div className='mt-4'>
+          <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
+          <button
+            type='button'
+            className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
+            onClick={handleDelegate}
+          >
+            {isDataFromBeforeCurrentBlock
+              ? t('activateMyVotesForFutureProposals')
+              : t('activateMyVotes')}
+          </button>
+          <Trans
+            i18nKey='orDelegateOnSybil'
+            components={{
+              a: (
+                <a
+                  href='https://sybil.org/#/delegates/pool'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  title='Sybil'
+                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
+                />
+              )
+            }}
+          />
+        </div>
+      )}
+    </div>
+  )
 
   // User has delegated to someone else
-  if (tokenHolder.hasDelegated) {
-    return (
-      <p className='text-accent-1 mt-2 xs:mt-4'>
-        <Trans
-          i18nKey='youAreDelegatingXVotesToY'
-          defaults='You are delegating <b>{{amount}}</b> votes to <address></address>'
-          components={{
-            b: <b />,
-            address: <DelegateAddress className='font-bold' address={tokenHolder.delegateAddress} />
-          }}
-          values={{
-            amount: usersPoolBalance
-          }}
-        />
-      </p>
-    )
-  }
 
   // Looking in the past
   // User didn't delegate at that time, but did after that time
   if (
-    (isDataFromBeforeCurrentBlock && tokenHolderCurrentData?.hasDelegated) ||
+    (isDataFromBeforeCurrentBlock && tokenHolderCurrentData?.isDelegating) ||
     !tokenHolderCurrentDataIsFetched
   ) {
     return null
@@ -357,18 +429,12 @@ const UsersPoolVotesCardConnectWallet = (props) => {
   return (
     <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
       <div className='flex flex-col sm:flex-row items-center text-center sm:text-left sm:justify-between'>
-        <h5 className='inline-block sm:mr-4 mb-2 sm:mb-0'>
+        <h5 className='inline-block sm:mr-4 mb-4 sm:mb-0'>
           <Trans
             i18nKey='connectAWalletToVoteAndParticipate'
             defaults='<button>Connect a wallet</button> to vote and participate in governance'
             components={{
-              button: (
-                <button
-                  type='button'
-                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mt-auto font-bold'
-                  onClick={() => connectWallet()}
-                />
-              )
+              button: <span />
             }}
           />
         </h5>
