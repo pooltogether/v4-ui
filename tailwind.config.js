@@ -270,7 +270,7 @@ module.exports = {
     backgroundColor: ['hover', 'focus', 'active', 'responsive'],
     borderRadius: ['responsive'],
     opacity: ['hover', 'focus'],
-    margin: ['responsive', 'first']
+    margin: ['responsive', 'first', 'last']
   },
   plugins: [],
   purge: false

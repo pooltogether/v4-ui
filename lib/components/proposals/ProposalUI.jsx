@@ -358,6 +358,8 @@ const ProposalVoteCard = (props) => {
     id
   )
 
+  console.log(voteData, tokenHolderData)
+
   const refetchData = () => {
     refetchVoteData()
     refetchProposalData()
