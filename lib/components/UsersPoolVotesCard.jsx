@@ -234,6 +234,7 @@ const DelegatedVotesBottom = (props) => {
             defaults='You are delegating <b>{{amount}}</b> votes to <address></address>'
             components={{
               b: <b />,
+              bold: <b />,
               address: <DelegateAddress className='font-bold' address={tokenHolder.delegate.id} />
             }}
             values={{
@@ -248,7 +249,8 @@ const DelegatedVotesBottom = (props) => {
             i18nKey='youAreVotingOnBehalfOfXUsers'
             defaults='You are voting on behalf of <b>{{amount}}</b> PoolTogether users'
             components={{
-              b: <b />
+              b: <b />,
+              bold: <b />
             }}
             values={{
               amount: tokenHolder.tokenHoldersRepresentedAmount
