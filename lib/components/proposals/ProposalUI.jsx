@@ -354,7 +354,7 @@ const ProposalVoteCard = (props) => {
   const { usersAddress } = useContext(AuthControllerContext)
   const { data: tokenHolderData } = useTokenHolder(usersAddress, blockNumber)
   const { data: voteData, isFetched: voteDataIsFetched, refetch: refetchVoteData } = useVoteData(
-    tokenHolderData?.delegateAddress,
+    tokenHolderData?.delegate?.id,
     id
   )
 

@@ -51,8 +51,6 @@ export const UsersPoolVotesCard = (props) => {
     precision: getPrecision(tokenHolder.tokenBalance)
   })
 
-  console.log(tokenHolder)
-
   return (
     <Banner
       className={classnames('flex flex-col mb-8 sm:mb-10', className)}
