@@ -84,7 +84,7 @@ export const UsersPoolVotesCard = (props) => {
 
 const VotingPowerItem = (props) => (
   <div className='flex-col mr-8 last:mr-0 mb-4 sm:mb-0 last:mb-0'>
-    <h5 className='font-normal mb-0 sm:mb-3'>
+    <h5 className='font-normal mb-0 sm:mb-3 capitalize'>
       {props.title}
       {props.tooltip && (
         <div className='inline-block mt-auto ml-2'>
@@ -111,22 +111,12 @@ const UsersVotes = (props) => {
     precision: getPrecision(tokenHolder.tokenBalance)
   })
 
-  if (!tokenHolder.isDelegating) {
-    return (
-      <VotingPowerItem
-        inactive
-        votingPower={usersPoolBalance}
-        title={'My POOL'}
-        tooltip={`The POOL token balance of ${usersAddress}.`}
-      />
-    )
-  }
-
   return (
     <VotingPowerItem
+      inactive={!tokenHolder.isDelegating}
       votingPower={usersPoolBalance}
-      title={'My POOL'}
-      tooltip={`The POOL token balance of ${usersAddress}.`}
+      title={t('myPool')}
+      tooltip={t('poolBalanceOfUser', { address: usersAddress })}
     />
   )
 }
@@ -147,8 +137,8 @@ const UsersTotalVotes = (props) => {
   return (
     <VotingPowerItem
       votingPower={votingPower}
-      title={'My Voting Power'}
-      tooltip={`Your voting power is the number of votes delegated to ${usersAddress}.`}
+      title={t('myVotingPower')}
+      tooltip={t('votingPowerInfo', { address: usersAddress })}
     />
   )
 }
@@ -169,8 +159,8 @@ const UsersDelegatesVotes = (props) => {
   return (
     <VotingPowerItem
       votingPower={votingPower}
-      title={'My Delegates Votes'}
-      tooltip={`The total number of votes your delegate ${tokenHolder.delegate.id} has.`}
+      title={t('myDelegatesVotes')}
+      tooltip={t('delegateVotesInfo', { address: tokenHolder.delegate.id })}
     />
   )
 }
