@@ -281,52 +281,20 @@ const DelegatedVotesBottom = (props) => {
                   title='Sybil'
                   className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
                 />
+              ),
+              link: (
+                <a
+                  href='https://sybil.org/#/delegates/pool'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  title='Sybil'
+                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
+                />
               )
             }}
           />
         </div>
       )}
-    </div>
-  )
-
-  // User has delegated to someone else
-
-  // Looking in the past
-  // User didn't delegate at that time, but did after that time
-  if (
-    (isDataFromBeforeCurrentBlock && tokenHolderCurrentData?.isDelegating) ||
-    !tokenHolderCurrentDataIsFetched
-  ) {
-    return null
-  }
-
-  // User has not delegated their votes
-  return (
-    <div className='mt-4'>
-      <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
-      <button
-        type='button'
-        className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
-        onClick={handleDelegate}
-      >
-        {isDataFromBeforeCurrentBlock
-          ? t('activateMyVotesForFutureProposals')
-          : t('activateMyVotes')}
-      </button>
-      <Trans
-        i18nKey='orDelegateOnSybil'
-        components={{
-          a: (
-            <a
-              href='https://sybil.org/#/delegates/pool'
-              target='_blank'
-              rel='noopener noreferrer'
-              title='Sybil'
-              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
-            />
-          )
-        }}
-      />
     </div>
   )
 }
