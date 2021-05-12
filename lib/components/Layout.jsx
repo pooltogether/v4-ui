@@ -14,10 +14,10 @@ import { Nav } from 'lib/components/Nav'
 import { PendingTxButton } from 'lib/components/PendingTxButton'
 import { LanguagePicker } from 'lib/components/LanguagePicker'
 import { Settings } from 'lib/components/Settings'
-import { SignInFormContainer } from 'lib/components/SignInFormContainer'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
+import { Button } from 'lib/components/Button'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -26,7 +26,7 @@ const onlyUnique = (value, index, self) => {
 export function Layout(props) {
   const { children } = props
 
-  const { usersAddress, chainId, walletName } = useContext(AuthControllerContext)
+  const { usersAddress, chainId, walletName, connectWallet } = useContext(AuthControllerContext)
 
   const [yScrollPosition, setYScrollPosition] = useState()
   const { scrollY } = useViewportScroll()
@@ -60,8 +60,6 @@ export function Layout(props) {
     <>
       <Meta />
 
-      <AnimatePresence>{signIn && <SignInFormContainer />}</AnimatePresence>
-
       <WrongNetworkModal />
 
       <div
@@ -86,11 +84,15 @@ export function Layout(props) {
 
               <NavPoolBalance />
 
-              {/* {!usersAddress && (
-                <Button onClick={() => connectWallet()} textSize='xxxs'>
+              {!usersAddress && (
+                <Button
+                  padding='px-4 sm:px-6 py-1 '
+                  onClick={() => connectWallet()}
+                  textSize='xxxs'
+                >
                   Connect Wallet
                 </Button>
-              )} */}
+              )}
 
               {usersAddress && (
                 <NavAccount
