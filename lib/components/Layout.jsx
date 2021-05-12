@@ -51,8 +51,6 @@ export function Layout(props) {
 
   const router = useRouter()
 
-  const signIn = router.query.signIn
-
   let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((chainId) => chainIdToNetworkName(chainId))
   supportedNetworkNames = supportedNetworkNames.filter(onlyUnique)
 
@@ -85,11 +83,7 @@ export function Layout(props) {
               <NavPoolBalance />
 
               {!usersAddress && (
-                <Button
-                  padding='px-4 sm:px-6 py-1 '
-                  onClick={() => connectWallet()}
-                  textSize='xxxs'
-                >
+                <Button padding='px-4 sm:px-6 py-1' onClick={() => connectWallet()} textSize='xxxs'>
                   Connect Wallet
                 </Button>
               )}
