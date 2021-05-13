@@ -84,7 +84,7 @@ export function Layout(props) {
 
               {!usersAddress && (
                 <Button padding='px-4 sm:px-6 py-1' onClick={() => connectWallet()} textSize='xxxs'>
-                  Connect Wallet
+                  Connect wallet
                 </Button>
               )}
 
