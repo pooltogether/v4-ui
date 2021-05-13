@@ -210,8 +210,6 @@ const DelegatedVotesBottom = (props) => {
     setTxId(0)
   }, [usersAddress])
 
-  console.log(tokenHolderCurrentData)
-
   // Transaction states
   if (tx?.completed && !tx?.error && !tx?.cancelled) {
     return (
