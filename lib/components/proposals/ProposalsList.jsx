@@ -6,6 +6,7 @@ import { DateTime } from 'luxon'
 import { useTranslation } from 'lib/../i18n'
 import { PROPOSAL_STATUS } from 'lib/constants'
 import { Card, InnerCard } from 'lib/components/Card'
+import { CountBadge } from 'lib/components/CountBadge'
 import { CountDown } from 'lib/components/CountDown'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
@@ -17,7 +18,7 @@ import ChatBubble from 'assets/images/chat-bubble.svg'
 export const ProposalsList = (props) => {
   const { t } = useTranslation()
 
-  const { isFetched, data: proposals, sortedProposals } = useAllProposalsSorted()
+  const { data: proposals, sortedProposals } = useAllProposalsSorted()
 
   if (!proposals || Object.keys(proposals)?.length === 0) {
     return (
@@ -32,10 +33,27 @@ export const ProposalsList = (props) => {
 
   return (
     <>
+      {active.length > 0 && (
+        <>
+          <h5 className='text-inverse mb-4 flex items-center'>
+            {t('activeProposals')}{' '}
+            <CountBadge
+              backgroundClass='bg-red'
+              sizeClasses='w-3 h-3 sm:w-5 sm:h-5 text-xxs sm:text-xs'
+              count={active.length}
+            />
+          </h5>
+          <ol className='mb-8 sm:mb-16'>
+            {active.map((p) => (
+              <ProposalItem key={p.id} proposal={p} />
+            ))}
+          </ol>
+        </>
+      )}
       {executable.length > 0 && (
         <>
-          <h6 className='text-inverse mb-4'>{t('executableProposals')}</h6>
-          <ol>
+          <h5 className='text-inverse mb-4'>{t('executableProposals')}</h5>
+          <ol className='mb-8 sm:mb-16'>
             {executable.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
             ))}
@@ -44,19 +62,9 @@ export const ProposalsList = (props) => {
       )}
       {approved.length > 0 && (
         <>
-          <h6 className='text-inverse mb-4'>{t('approvedProposals')}</h6>
-          <ol>
+          <h5 className='text-inverse mb-4'>{t('approvedProposals')}</h5>
+          <ol className='mb-8 sm:mb-16'>
             {approved.map((p) => (
-              <ProposalItem key={p.id} proposal={p} />
-            ))}
-          </ol>
-        </>
-      )}
-      {active.length > 0 && (
-        <>
-          <h6 className='text-inverse mb-4'>{t('activeProposals')}</h6>
-          <ol>
-            {active.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
             ))}
           </ol>
@@ -64,8 +72,8 @@ export const ProposalsList = (props) => {
       )}
       {pending.length > 0 && (
         <>
-          <h6 className='text-inverse mb-4'>{t('pendingProposals')}</h6>
-          <ol>
+          <h5 className='text-inverse mb-4'>{t('pendingProposals')}</h5>
+          <ol className='mb-8 sm:mb-16'>
             {pending.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
             ))}
@@ -74,8 +82,8 @@ export const ProposalsList = (props) => {
       )}
       {past.length > 0 && (
         <>
-          <h6 className='text-inverse mb-4'>{t('pastProposals')}</h6>
-          <ol>
+          <h5 className='text-inverse mb-4'>{t('pastProposals')}</h5>
+          <ol className='mb-8 sm:mb-16'>
             {past.map((p) => (
               <ProposalItem key={p.id} proposal={p} />
             ))}
@@ -91,17 +99,7 @@ const ProposalItem = (props) => {
 
   const { t } = useTranslation()
 
-  const {
-    status,
-    description,
-    startBlock,
-    endBlock,
-    proposer,
-    forVotes,
-    againstVotes,
-    title,
-    id
-  } = proposal
+  const { title, id } = proposal
 
   return (
     <li>

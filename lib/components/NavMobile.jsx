@@ -4,10 +4,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'lib/../i18n'
+import { CountBadge } from 'lib/components/CountBadge'
+import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 
 export function NavMobile(props) {
   const { t } = useTranslation()
   const router = useRouter()
+
+  const { sortedProposals } = useAllProposalsSorted()
+  const activeCount = sortedProposals?.active?.length
 
   const accountPage = false
   const votePage = router.pathname.match('')
@@ -76,6 +81,15 @@ export function NavMobile(props) {
               'text-highlight-9 hover:text-highlight-9': votePage
             })}
           >
+            {activeCount > 0 && (
+              <div className='absolute' style={{ top: 14, right: 66 }}>
+                <CountBadge
+                  backgroundClass='bg-tertiary'
+                  sizeClasses='w-5 h-5 text-xs'
+                  count={activeCount}
+                />
+              </div>
+            )}
             <svg
               className='fill-current stroke-current'
               width='20'

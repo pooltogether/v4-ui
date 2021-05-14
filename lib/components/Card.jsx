@@ -10,7 +10,7 @@ export const Card = (props) => {
       <div
         style={style}
         className={classnames(
-          'bg-default py-4 px-4 sm:py-6 sm:px-10 rounded-xl w-full mb-7 sm:mb-10 trans',
+          'bg-default py-4 px-4 sm:py-6 sm:px-10 rounded-xl w-full mb-6 trans',
           className,
           { 'opacity-40': disabled }
         )}
