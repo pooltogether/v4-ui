@@ -3,14 +3,19 @@ import classnames from 'classnames'
 import Link from 'next/link'
 
 import { useTranslation } from 'lib/../i18n'
+import { CountBadge } from 'lib/components/CountBadge'
+import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 
 export function Nav(props) {
   const { t } = useTranslation()
 
+  const { sortedProposals } = useAllProposalsSorted()
+  const activeCount = sortedProposals?.active?.length
+
   const votePage = true
 
   const navParentClasses =
-    'leading-none rounded-full hover:bg-accent-grey-1 w-8/12 flex justify-start items-center text-lg lg:text-xl py-3 px-6 lg:px-8 trans tracking-wider outline-none focus:outline-none active:outline-none my-3 font-bold ml-3 lg:ml-0 h-10'
+    'relative leading-none rounded-full hover:bg-accent-grey-1 w-8/12 flex justify-start items-center text-lg lg:text-xl py-3 px-6 lg:px-8 trans tracking-wider outline-none focus:outline-none active:outline-none my-3 font-bold ml-3 lg:ml-0 h-10'
 
   return (
     <>
@@ -75,6 +80,15 @@ export function Nav(props) {
               'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage
             })}
           >
+            {activeCount > 0 && (
+              <div className='absolute' style={{ top: 8, right: 50 }}>
+                <CountBadge
+                  backgroundClass='bg-tertiary'
+                  sizeClasses='w-6 h-6 text-xs'
+                  count={activeCount}
+                />
+              </div>
+            )}
             <div className='flex items-center justify-center'>
               <svg
                 style={{
@@ -95,7 +109,6 @@ export function Nav(props) {
                 />
               </svg>
             </div>
-
             <span className='pl-3 capitalize'>{t('vote')}</span>
           </a>
         </Link>
