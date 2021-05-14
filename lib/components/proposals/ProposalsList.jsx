@@ -38,8 +38,10 @@ export const ProposalsList = (props) => {
           <h5 className='text-inverse mb-4 flex items-center'>
             {t('activeProposals')}{' '}
             <CountBadge
+              textLeftPos={-1}
+              textTopPos={-1}
               backgroundClass='bg-red'
-              sizeClasses='w-3 h-3 sm:w-5 sm:h-5 text-xxs sm:text-xs'
+              sizeClasses='w-4 h-4 sm:w-5 sm:h-5 text-xxs sm:text-xs'
               count={active.length}
             />
           </h5>

@@ -19,7 +19,7 @@ export function NavMobile(props) {
   const poolPage = false
 
   const mobileNavClasses =
-    'h-full w-full flex flex-col justify-center items-center px-2 text-xs pb-1 pt-2 px-3 trans outline-none focus:outline-none active:outline-none tracking-normal'
+    'relative font-bold h-full w-full flex flex-col justify-center items-center px-2 text-xs pb-1 pt-2 px-3 trans outline-none focus:outline-none active:outline-none tracking-normal'
 
   return (
     <>
@@ -82,7 +82,7 @@ export function NavMobile(props) {
             })}
           >
             {activeCount > 0 && (
-              <div className='absolute' style={{ top: 14, right: 66 }}>
+              <div className='absolute' style={{ top: 14, right: 56 }}>
                 <CountBadge
                   backgroundClass='bg-tertiary'
                   sizeClasses='w-5 h-5 text-xs'
