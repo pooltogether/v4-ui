@@ -53,7 +53,7 @@ export const PoolPoolProposalCard = (props) => {
           <Tooltip className='my-auto ml-2 text-inverse' tip={t('depositIntoPoolPoolTooltip')} />
         </span>
 
-        {poolPoolBalanceIsFetched && !poolPoolBalance.isZero() && (
+        {poolPoolBalanceIsFetched && poolPoolBalance && !poolPoolBalance.isZero() && (
           <span className='text-accent-1 mt-2'>
             <span className='mr-2'>{t('myPoolPoolVotingPower')}</span>
             <b>{poolPoolBalance.toString()}</b>
