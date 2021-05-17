@@ -19,12 +19,12 @@ export function NavMobile(props) {
   const poolPage = false
 
   const mobileNavClasses =
-    'relative font-bold h-full w-full flex flex-col justify-center items-center px-2 text-xs pb-1 pt-2 px-3 trans outline-none focus:outline-none active:outline-none tracking-normal'
+    'relative font-bold w-32 h-full flex flex-col justify-center items-center px-2 text-xs pb-1 pt-2 px-3 trans outline-none focus:outline-none active:outline-none tracking-normal'
 
   return (
     <>
       <nav
-        className='w-screen flex justify-between items-center fixed b-0 l-0 r-0 bg-card-purple sm:hidden z-20'
+        className='w-screen flex justify-center items-center fixed b-0 l-0 r-0 bg-card-purple sm:hidden z-20'
         style={{
           height: 76
         }}
