@@ -15,6 +15,7 @@ import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 import { TimeCountDown } from 'lib/components/TimeCountDown'
 import { Tooltip } from 'lib/components/Tooltip'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
+import { ethers } from 'ethers'
 
 const POOLPOOL_PROPOSAL_STATES = Object.freeze({
   active: 'active',
@@ -28,8 +29,8 @@ export const PoolPoolProposalCard = (props) => {
   const { chainId, usersAddress } = useContext(AuthControllerContext)
   const poolPoolSnapShotId = getPoolPoolSnapshotId(chainId, id)
   const { data, isFetched: isFetched } = usePoolPoolProposal(chainId, id)
-  // const { data: poolPoolBalance, isFetched: poolPoolBalanceIsFetched } =
-  //   usePoolPoolBalance(usersAddress)
+  const { data: poolPoolBalance, isFetched: poolPoolBalanceIsFetched } =
+    usePoolPoolBalance(usersAddress)
 
   if (!poolPoolSnapShotId) {
     return null
@@ -42,7 +43,6 @@ export const PoolPoolProposalCard = (props) => {
   }
 
   const { state, end } = data.proposal
-  console.log('usePoolPoolProposal', data.proposal)
 
   return (
     <Card className='flex flex-col xs:flex-row xs:justify-between'>
@@ -52,6 +52,13 @@ export const PoolPoolProposalCard = (props) => {
           <h6>{t('poolPoolGasFreeVote')}</h6>
           <Tooltip className='my-auto ml-2 text-inverse' tip={t('depositIntoPoolPoolTooltip')} />
         </span>
+
+        {poolPoolBalanceIsFetched && !poolPoolBalance.isZero() && (
+          <span className='text-accent-1 mt-2'>
+            <span className='mr-2'>{t('myPoolPoolVotingPower')}</span>
+            <b>{poolPoolBalance.toString()}</b>
+          </span>
+        )}
         <SnapshotVoteTime end={end} />
       </div>
       <div className='mt-4 xs:mt-0 flex flex-row xs:flex-col'>
@@ -97,7 +104,7 @@ const SnapshotVoteTime = (props) => {
 
   const endDate = new Date(end * 1000)
   return (
-    <span className='text-accent-1'>
+    <span className='text-accent-1 my-2'>
       {t('endedOn')} {`${endDate.toLocaleString()}`}
     </span>
   )
