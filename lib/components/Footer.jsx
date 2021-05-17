@@ -7,6 +7,7 @@ import MediumFooterLogo from 'assets/images/medium-footer.svg'
 import GithubFooterLogo from 'assets/images/github-footer.svg'
 import DiscordLogo from 'assets/images/discord-footer.svg'
 import TwitterFooterLogo from 'assets/images/twitter-footer.svg'
+import { DISCORD_INVITE_URL } from 'lib/constants'
 
 export const Footer = () => {
   const [t] = useTranslation()
@@ -70,7 +71,7 @@ export const Footer = () => {
 
               <a
                 className='img-link inline-block trans mr-3 lg:mr-0 lg:ml-4 w-5 h-5 '
-                href='https://discord.gg/hxPhPDW'
+                href={DISCORD_INVITE_URL}
                 target='_blank'
                 rel='noreferrer noopener'
               >

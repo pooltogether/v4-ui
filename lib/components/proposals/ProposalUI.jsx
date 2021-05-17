@@ -22,6 +22,7 @@ import { shorten } from 'lib/utils/shorten'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { ProposalVoteCard } from 'lib/components/proposals/ProposalVoteCard'
+import { PoolPoolProposalCard } from 'lib/components/proposals/PoolPoolProposalCard'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -49,11 +50,6 @@ export const ProposalUI = (props) => {
           {
             href: '/',
             as: '/',
-            name: t('vote')
-          },
-          {
-            href: '/',
-            as: '/',
             name: t('proposals')
           },
           {
@@ -67,6 +63,7 @@ export const ProposalUI = (props) => {
         proposal={proposal}
         refetchProposalData={refetchProposalData}
       />
+      <PoolPoolProposalCard proposal={proposal} />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
       <ProposalAuthorCard proposal={proposal} />

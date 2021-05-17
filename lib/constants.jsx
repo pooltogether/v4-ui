@@ -75,7 +75,8 @@ export const QUERY_KEYS = {
   prizePoolContractAddresses: 'prizePoolContractAddresses',
   etherscanContractAbi: 'etherscanContractAbi',
   useProposalVotesTotalPages: 'useProposalVotesTotalPages',
-  poolPoolBalance: 'poolPoolBalance'
+  poolPoolBalance: 'poolPoolBalance',
+  poolPoolProposal: 'poolPoolProposal'
 }
 
 export const ETHERSCAN_API_KEY = process.env.NEXT_JS_ETHERSCAN_API_KEY
@@ -115,3 +116,9 @@ export const PROPOSAL_STATES = [
 
 export const VOTERS_PER_PAGE = 10
 export const DELEGATES_PER_PAGE = 15
+
+export const POOLPOOL_SNAPSHOT_URL = 'https://snapshot.org/#/poolpool.pooltogether.eth'
+export const POOLTOGETHER_SNAPSHOT_URL = 'https://snapshot.org/#/pooltogether.eth'
+export const POOLTOGETHER_GOV_FORUM_URL = 'https://gov.pooltogether.com'
+export const DISCORD_INVITE_URL = 'https://discord.gg/hxPhPDW'
+export const POOLPOOL_URL = 'https://app.pooltogether.com/pools/mainnet/PT-stPOOL'

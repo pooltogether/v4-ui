@@ -6,7 +6,7 @@ import { useTranslation } from 'lib/../i18n'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
-import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
+import { CONTRACT_ADDRESSES, POOLPOOL_SNAPSHOT_URL, PROPOSAL_STATUS } from 'lib/constants'
 import { Card } from 'lib/components/Card'
 import classnames from 'classnames'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
@@ -22,10 +22,6 @@ import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 import { useInterval } from 'lib/hooks/useInterval'
 import { ethers } from 'ethers'
 import { TimeCountDown } from 'lib/components/TimeCountDown'
-import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
-import { ButtonLink } from 'lib/components/ButtonLink'
-
-const SNAPSHOT_URL = 'https://snapshot.org/#/poolpool.pooltogether.eth/proposal/'
 
 export const ProposalVoteCard = (props) => {
   const { proposal, refetchProposalData, blockNumber } = props
@@ -112,9 +108,6 @@ const VoteButtons = (props) => {
   const { refetch: refetchTotalVotesPages } = useProposalVotesTotalPages(id)
   const { refetch: refetchVoterTable } = useProposalVotes(id, page)
 
-  const { data: poolPoolBalance, isFetched: poolPoolBalanceIsFetched } =
-    usePoolPoolBalance(usersAddress)
-
   const { t } = useTranslation()
 
   const { chainId } = useContext(AuthControllerContext)
@@ -160,26 +153,7 @@ const VoteButtons = (props) => {
     setTxId(txId)
   }
 
-  if (poolPoolBalanceIsFetched && !poolPoolBalance.isZero() && !canVote) {
-    // TODO: Get the POOL Pool vote id
-    return (
-      <div className='flex justify-end mt-2'>
-        <ButtonLink
-          border='green'
-          text='primary'
-          bg='green'
-          hoverBorder='green'
-          hoverText='primary'
-          hoverBg='green'
-          href={`${SNAPSHOT_URL}${'QmfDcwyhMyhiTmszt8EX1a2vGfJzAN5TcXGMUwm7W7G7rq'}`}
-        >
-          Vote On Snapshot
-        </ButtonLink>
-      </div>
-    )
-  }
-
-  if (!canVote || alreadyVoted || !poolPoolBalanceIsFetched) {
+  if (!canVote || alreadyVoted) {
     return null
   }
 
