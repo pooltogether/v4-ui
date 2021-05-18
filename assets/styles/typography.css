@@ -55,6 +55,14 @@ h1 {
   @apply text-2xl;
 }
 
+.description li {
+  @apply ml-6;
+}
+
+.description ul {
+  @apply list-disc;
+}
+
 .description h1 {
   @apply text-xl;
 }
