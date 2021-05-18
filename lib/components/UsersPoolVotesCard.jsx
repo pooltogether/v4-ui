@@ -19,6 +19,7 @@ import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { numberWithCommas, getPrecision } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
 import { useTransaction } from 'lib/hooks/useTransaction'
+import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
 
 export const UsersPoolVotesCard = (props) => {
   const { blockNumber, className } = props
@@ -74,6 +75,7 @@ export const UsersPoolVotesCard = (props) => {
         isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
         blockNumber={blockNumber}
       />
+      <PoolPoolLink usersAddress={usersAddress} tokenHolder={tokenHolder} />
     </Banner>
   )
 }
@@ -256,43 +258,45 @@ const DelegatedVotesBottom = (props) => {
           />
         </p>
       )}
-      {tokenHolderCurrentDataIsFetched && !tokenHolderCurrentData?.isDelegating && (
-        <div className='mt-4'>
-          <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
-          <button
-            type='button'
-            className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
-            onClick={handleDelegate}
-          >
-            {isDataFromBeforeCurrentBlock
-              ? t('activateMyVotesForFutureProposals')
-              : t('activateMyVotes')}
-          </button>
-          <Trans
-            i18nKey='orDelegateOnSybil'
-            components={{
-              a: (
-                <a
-                  href='https://sybil.org/#/delegates/pool'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  title='Sybil'
-                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
-                />
-              ),
-              link: (
-                <a
-                  href='https://sybil.org/#/delegates/pool'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  title='Sybil'
-                  className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
-                />
-              )
-            }}
-          />
-        </div>
-      )}
+      {tokenHolderCurrentDataIsFetched &&
+        !tokenHolderCurrentData?.isDelegating &&
+        tokenHolderCurrentData?.tokenBalance !== '0' && (
+          <div className='mt-4'>
+            <NotDelegatedWarning isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock} />
+            <button
+              type='button'
+              className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
+              onClick={handleDelegate}
+            >
+              {isDataFromBeforeCurrentBlock
+                ? t('activateMyVotesForFutureProposals')
+                : t('activateMyVotes')}
+            </button>
+            <Trans
+              i18nKey='orDelegateOnSybil'
+              components={{
+                a: (
+                  <a
+                    href='https://sybil.org/#/delegates/pool'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    title='Sybil'
+                    className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
+                  />
+                ),
+                link: (
+                  <a
+                    href='https://sybil.org/#/delegates/pool'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    title='Sybil'
+                    className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans font-bold ml-1'
+                  />
+                )
+              }}
+            />
+          </div>
+        )}
     </div>
   )
 }
@@ -395,7 +399,7 @@ const UsersPoolVotesCardConnectWallet = (props) => {
   return (
     <Banner className={classnames('mb-8 sm:mb-10', className)} style={{ color: 'white' }}>
       <div className='flex flex-col sm:flex-row items-center text-center sm:text-left sm:justify-between'>
-        <h5 className='inline-block sm:mr-4 mb-4 sm:mb-0'>
+        <p className='inline-block mb-0 text-accent-1'>
           <Trans
             i18nKey='connectAWalletToVoteAndParticipate'
             defaults='<button>Connect a wallet</button> to vote and participate in governance'
@@ -403,11 +407,33 @@ const UsersPoolVotesCardConnectWallet = (props) => {
               button: <span />
             }}
           />
-        </h5>
-        <Button textSize='xxs' type='button' onClick={() => connectWallet()}>
-          {t('connectWallet')}
-        </Button>
+        </p>
       </div>
     </Banner>
   )
+}
+
+const PoolPoolLink = (props) => {
+  const { usersAddress, tokenHolder } = props
+  const { data: poolPoolBalance, isFetched } = usePoolPoolBalance(usersAddress)
+
+  console.log(tokenHolder)
+
+  if (!isFetched || !poolPoolBalance || !usersAddress) {
+    return null
+  } else if (poolPoolBalance.isZero() && !tokenHolder.isBeingDelegatedTo) {
+    return (
+      <span className='text-accent-1'>
+        Want to vote gas free? Check out the <a className='font-bold underline'>POOL Pool</a>!
+      </span>
+    )
+  } else if (!poolPoolBalance.isZero()) {
+    return (
+      <span className='text-accent-1'>
+        Vote now on the <a className='font-bold underline'>POOL Pool snapshot</a>!
+      </span>
+    )
+  }
+
+  return null
 }

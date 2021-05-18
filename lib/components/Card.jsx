@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 
 export const Card = (props) => {
-  const { children, className, disabled, title, style } = props
+  const { children, className, disabled, title, style, noMargin } = props
 
   return (
     <>
@@ -10,9 +10,9 @@ export const Card = (props) => {
       <div
         style={style}
         className={classnames(
-          'bg-default py-4 px-4 sm:py-6 sm:px-10 rounded-xl w-full mb-6 trans',
+          'bg-default py-4 px-4 sm:py-6 sm:px-10 rounded-xl w-full trans',
           className,
-          { 'opacity-40': disabled }
+          { 'opacity-40': disabled, 'mb-6': !noMargin }
         )}
       >
         {children}
@@ -29,4 +29,6 @@ export const InnerCard = (props) => (
   </div>
 )
 
-export const CardTitle = (props) => <h6 className='mb-4 text-accent-2'>{props.children}</h6>
+export const CardTitle = (props) => (
+  <h6 className='mb-4 text-accent-2 capitalize'>{props.children}</h6>
+)

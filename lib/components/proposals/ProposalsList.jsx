@@ -102,13 +102,15 @@ const ProposalItem = (props) => {
   const { title, id } = proposal
 
   return (
-    <li>
-      <Card>
+    <li className='mb-6 last:mb-0'>
+      <Card noMargin>
         <div className='flex justify-between flex-col-reverse sm:flex-row'>
-          <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{t('proposalId', { id })}</h6>
+          <div>
+            <h6 className='leading-none mb-2 mt-2 sm:mt-0'>{title}</h6>
+            <p className='mb-4'>{t('proposalId', { id })}</p>
+          </div>
           <ProposalStatus proposal={proposal} />
         </div>
-        <p className='mb-4'>{title}</p>
         <ViewProposalButton proposal={proposal} />
       </Card>
     </li>

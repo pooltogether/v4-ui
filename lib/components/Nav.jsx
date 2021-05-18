@@ -80,15 +80,6 @@ export function Nav(props) {
               'text-highlight-2 hover:text-highlight-2 bg-accent-grey-1': votePage
             })}
           >
-            {activeCount > 0 && (
-              <div className='absolute' style={{ top: 8, left: 110 }}>
-                <CountBadge
-                  backgroundClass='bg-tertiary'
-                  sizeClasses='w-6 h-6 text-xs'
-                  count={activeCount}
-                />
-              </div>
-            )}
             <div className='flex items-center justify-center'>
               <svg
                 style={{
@@ -109,7 +100,18 @@ export function Nav(props) {
                 />
               </svg>
             </div>
-            <span className='pl-3 capitalize'>{t('vote')}</span>
+            <span className='pl-3 capitalize flex'>
+              <span className='my-auto'>{t('vote')}</span>
+              {activeCount > 0 && (
+                <div className='my-auto'>
+                  <CountBadge
+                    backgroundClass='bg-tertiary'
+                    sizeClasses='w-6 h-6 text-xs'
+                    count={activeCount}
+                  />
+                </div>
+              )}
+            </span>
           </a>
         </Link>
       </nav>
