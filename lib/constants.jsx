@@ -122,3 +122,5 @@ export const POOLTOGETHER_SNAPSHOT_URL = 'https://snapshot.org/#/pooltogether.et
 export const POOLTOGETHER_GOV_FORUM_URL = 'https://gov.pooltogether.com'
 export const DISCORD_INVITE_URL = 'https://discord.gg/hxPhPDW'
 export const POOLPOOL_URL = 'https://app.pooltogether.com/pools/mainnet/PT-stPOOL'
+
+export const POOLPOOL_TICKET_CREATED_BLOCK = 11987787

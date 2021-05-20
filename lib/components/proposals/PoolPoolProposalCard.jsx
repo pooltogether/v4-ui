@@ -16,6 +16,7 @@ import { TimeCountDown } from 'lib/components/TimeCountDown'
 import { Tooltip } from 'lib/components/Tooltip'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { ethers } from 'ethers'
+import { getPrecision, numberWithCommas } from 'lib/utils/numberWithCommas'
 
 const POOLPOOL_PROPOSAL_STATES = Object.freeze({
   active: 'active',
@@ -23,18 +24,20 @@ const POOLPOOL_PROPOSAL_STATES = Object.freeze({
 })
 
 export const PoolPoolProposalCard = (props) => {
-  const { proposal } = props
+  const { proposal, snapshotBlockNumber } = props
   const { id } = proposal
   const { t } = useTranslation()
   const { chainId, usersAddress } = useContext(AuthControllerContext)
   const poolPoolSnapShotId = getPoolPoolSnapshotId(chainId, id)
-  const { data, isFetched: isFetched } = usePoolPoolProposal(chainId, id)
-  const { data: poolPoolBalance, isFetched: poolPoolBalanceIsFetched } =
-    usePoolPoolBalance(usersAddress)
+  const { data: poolPoolProposal, isFetched: isFetched } = usePoolPoolProposal(chainId, id)
+  const { data: poolPoolData, isFetched: poolPoolDataIsFetched } = usePoolPoolBalance(
+    usersAddress,
+    snapshotBlockNumber
+  )
 
   if (!poolPoolSnapShotId) {
     return null
-  } else if (!isFetched) {
+  } else if (!isFetched || !poolPoolDataIsFetched) {
     return (
       <Card>
         <V3LoadingDots />
@@ -42,7 +45,11 @@ export const PoolPoolProposalCard = (props) => {
     )
   }
 
-  const { state, end } = data.proposal
+  const { state, end } = poolPoolProposal.proposal
+
+  const votingPower = numberWithCommas(poolPoolData.amount, {
+    precision: getPrecision(poolPoolData.amount)
+  })
 
   return (
     <Card className='flex flex-col xs:flex-row xs:justify-between'>
@@ -53,35 +60,41 @@ export const PoolPoolProposalCard = (props) => {
           <Tooltip className='my-auto ml-2 text-inverse' tip={t('depositIntoPoolPoolTooltip')} />
         </span>
 
-        {poolPoolBalanceIsFetched && poolPoolBalance && !poolPoolBalance.isZero() && (
+        {poolPoolDataIsFetched && poolPoolData && poolPoolData.hasBalance && (
           <span className='text-accent-1 mt-2'>
             <span className='mr-2'>{t('myPoolPoolVotingPower')}</span>
-            <b>{poolPoolBalance.toString()}</b>
+            <b>{votingPower}</b>
           </span>
         )}
         <SnapshotVoteTime end={end} />
       </div>
-      <div className='mt-4 xs:mt-0 flex flex-row xs:flex-col'>
-        <PoolPoolSnapshotLinkButton state={state} snapShotId={poolPoolSnapShotId} />
-        <ButtonLink
-          target='_blank'
-          rel='noopener noreferrer'
-          border='transparent'
-          text='green'
-          hoverText='primary'
-          hoverBg='green'
-          hoverBorder='transparent'
-          padding='px-2 xs:px-4 sm:px-6 lg:px-8 py-1'
-          textSize='xs'
-          href={POOLPOOL_URL}
-          className='flex justify-center'
-        >
-          <span className='my-auto'>{t('goToPoolPool')}</span>
-          <FeatherIcon
-            icon={'external-link'}
-            className='relative w-4 h-4 inline-block my-auto ml-2'
-          />
-        </ButtonLink>
+      <div className='mt-4 xs:mt-0 flex flex-col'>
+        <div className='mb-4 flex rounded px-4 py-1 w-fit-content h-fit-content bg-tertiary font-bold'>
+          <FeatherIcon icon='alert-circle' className='mr-2 my-auto w-4 h-4' />
+          {t('votingPowerIsLockedFromBlock', { blockNumber: snapshotBlockNumber })}
+        </div>
+        <div className='flex flex-row xs:flex-col'>
+          <PoolPoolSnapshotLinkButton state={state} snapShotId={poolPoolSnapShotId} />
+          <ButtonLink
+            target='_blank'
+            rel='noopener noreferrer'
+            border='transparent'
+            text='green'
+            hoverText='primary'
+            hoverBg='green'
+            hoverBorder='transparent'
+            padding='px-2 xs:px-4 sm:px-6 lg:px-8 py-1'
+            textSize='xs'
+            href={POOLPOOL_URL}
+            className='flex justify-center'
+          >
+            <span className='my-auto'>{t('goToPoolPool')}</span>
+            <FeatherIcon
+              icon={'external-link'}
+              className='relative w-4 h-4 inline-block my-auto ml-2'
+            />
+          </ButtonLink>
+        </div>
       </div>
     </Card>
   )

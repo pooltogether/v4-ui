@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import ReactMarkdown from 'react-markdown'
 import classnames from 'classnames'
@@ -23,6 +23,8 @@ import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { ProposalVoteCard } from 'lib/components/proposals/ProposalVoteCard'
 import { PoolPoolProposalCard } from 'lib/components/proposals/PoolPoolProposalCard'
+import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { usePoolPoolProposal } from 'lib/hooks/usePoolPoolProposal'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -36,11 +38,22 @@ export const ProposalUI = (props) => {
     window.scrollTo(0, 0)
   }, [])
 
+  const { chainId } = useContext(AuthControllerContext)
+
   const { refetch: refetchProposalData, proposal, isFetched, error } = useProposalData(id)
+  const { data: poolPoolData, isFetched: poolPoolProposalIsFetched } = usePoolPoolProposal(
+    chainId,
+    id
+  )
 
   if (!proposal || (!proposal && !isFetched)) {
     return null
   }
+
+  const blockNumber = Number(proposal.startBlock)
+  const snapshotBlockNumber = Boolean(poolPoolData?.proposal?.snapshot)
+    ? Number(poolPoolData.proposal.snapshot)
+    : null
 
   return (
     <>
@@ -57,13 +70,21 @@ export const ProposalUI = (props) => {
           }
         ]}
       />
-      <UsersPoolVotesCard blockNumber={Number(proposal.startBlock)} className='mb-8' />
+      <UsersPoolVotesCard
+        blockNumber={blockNumber}
+        snapshotBlockNumber={snapshotBlockNumber}
+        className='mb-8'
+      />
       <ProposalVoteCard
-        blockNumber={Number(proposal.startBlock)}
+        blockNumber={blockNumber}
         proposal={proposal}
         refetchProposalData={refetchProposalData}
       />
-      <PoolPoolProposalCard proposal={proposal} />
+      <PoolPoolProposalCard
+        proposal={proposal}
+        blockNumber={blockNumber}
+        snapshotBlockNumber={snapshotBlockNumber}
+      />
       <ProposalDescriptionCard proposal={proposal} />
       <ProposalActionsCard proposal={proposal} />
       <ProposalAuthorCard proposal={proposal} />
