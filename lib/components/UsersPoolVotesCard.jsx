@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
 import { Trans, useTranslation } from 'lib/../i18n'
-import { CONTRACT_ADDRESSES } from 'lib/constants'
+import { CONTRACT_ADDRESSES, POOLPOOL_SNAPSHOT_URL, POOLPOOL_URL } from 'lib/constants'
 import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { WalletContext } from 'lib/components/contextProviders/WalletContextProvider'
 import { Banner } from 'lib/components/Banner'
@@ -22,7 +22,7 @@ import { useTransaction } from 'lib/hooks/useTransaction'
 import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
 
 export const UsersPoolVotesCard = (props) => {
-  const { blockNumber, className } = props
+  const { blockNumber, snapshotBlockNumber, className } = props
   const { t } = useTranslation()
   const { usersAddress, connectWallet } = useContext(AuthControllerContext)
 
@@ -65,6 +65,11 @@ export const UsersPoolVotesCard = (props) => {
       )}
       <div className='flex flex-col sm:flex-row'>
         <UsersVotes tokenHolder={tokenHolder} usersAddress={usersAddress} />
+        <UsersPOOLPoolVotes
+          tokenHolder={tokenHolder}
+          usersAddress={usersAddress}
+          snapshotBlockNumber={snapshotBlockNumber}
+        />
         <UsersTotalVotes tokenHolder={tokenHolder} usersAddress={usersAddress} />
         <UsersDelegatesVotes tokenHolder={tokenHolder} />
       </div>
@@ -75,7 +80,11 @@ export const UsersPoolVotesCard = (props) => {
         isDataFromBeforeCurrentBlock={isDataFromBeforeCurrentBlock}
         blockNumber={blockNumber}
       />
-      <PoolPoolLink usersAddress={usersAddress} tokenHolder={tokenHolder} />
+      <PoolPoolLink
+        usersAddress={usersAddress}
+        tokenHolder={tokenHolder}
+        snapshotBlockNumber={snapshotBlockNumber}
+      />
     </Banner>
   )
 }
@@ -161,6 +170,33 @@ const UsersDelegatesVotes = (props) => {
       votingPower={votingPower}
       title={t('myDelegatesVotes')}
       tooltip={t('delegateVotesInfo', { address: tokenHolder.delegate.id })}
+    />
+  )
+}
+
+const UsersPOOLPoolVotes = (props) => {
+  const { usersAddress, snapshotBlockNumber } = props
+  const { t } = useTranslation()
+
+  const { data: poolPoolData, isFetched } = usePoolPoolBalance(usersAddress, snapshotBlockNumber)
+
+  if (!isFetched || !poolPoolData || !poolPoolData.hasBalance) {
+    return null
+  }
+
+  const votingPower = numberWithCommas(poolPoolData.amount, {
+    precision: getPrecision(poolPoolData.amount)
+  })
+
+  return (
+    <VotingPowerItem
+      votingPower={votingPower}
+      title={t('myPoolPoolVotes')}
+      tooltip={
+        snapshotBlockNumber
+          ? t('poolPoolVotesLockedFromBlock', { blockNumber: snapshotBlockNumber })
+          : undefined
+      }
     />
   )
 }
@@ -414,23 +450,41 @@ const UsersPoolVotesCardConnectWallet = (props) => {
 }
 
 const PoolPoolLink = (props) => {
-  const { usersAddress, tokenHolder } = props
-  const { data: poolPoolBalance, isFetched } = usePoolPoolBalance(usersAddress)
+  const { usersAddress, tokenHolder, snapshotBlockNumber } = props
+  const { data: poolPoolData, isFetched } = usePoolPoolBalance(usersAddress, snapshotBlockNumber)
 
-  console.log(tokenHolder)
-
-  if (!isFetched || !poolPoolBalance || !usersAddress) {
+  if (!isFetched || !poolPoolData || !poolPoolData.hasBalance || !usersAddress) {
     return null
-  } else if (poolPoolBalance.isZero() && !tokenHolder.isBeingDelegatedTo) {
+  } else if (
+    isFetched &&
+    !poolPoolData.hasBalance &&
+    !tokenHolder.isBeingDelegatedTo &&
+    tokenHolder.hasBalance
+  ) {
     return (
       <span className='text-accent-1'>
-        Want to vote gas free? Check out the <a className='font-bold underline'>POOL Pool</a>!
-      </span>
-    )
-  } else if (!poolPoolBalance.isZero()) {
-    return (
-      <span className='text-accent-1'>
-        Vote now on the <a className='font-bold underline'>POOL Pool snapshot</a>!
+        <Trans
+          i18nKey='depositIntoPoolPoolToVoteGasFree'
+          defaults='Deposit into the <poolPoolLink>POOL Pool</poolPoolLink> to vote without transaction fees on <snapshotLink>Snapshot</snapshotLink>.'
+          components={{
+            poolPoolLink: (
+              <a
+                href={POOLPOOL_URL}
+                target='_blank'
+                rel='noreferrer noopener'
+                className='font-bold underline trans-fast'
+              />
+            ),
+            snapshotLink: (
+              <a
+                href={POOLPOOL_SNAPSHOT_URL}
+                target='_blank'
+                rel='noreferrer noopener'
+                className='font-bold underline trans-fast'
+              />
+            )
+          }}
+        />
       </span>
     )
   }
