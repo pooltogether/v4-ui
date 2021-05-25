@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import ReactMarkdown from 'react-markdown'
 import classnames from 'classnames'
@@ -23,7 +23,7 @@ import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { ProposalVoteCard } from 'lib/components/proposals/ProposalVoteCard'
 import { PoolPoolProposalCard } from 'lib/components/proposals/PoolPoolProposalCard'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { usePoolPoolProposal } from 'lib/hooks/usePoolPoolProposal'
 
 const SMALL_DESCRIPTION_LENGTH = 500
@@ -38,7 +38,7 @@ export const ProposalUI = (props) => {
     window.scrollTo(0, 0)
   }, [])
 
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
 
   const { refetch: refetchProposalData, proposal, isFetched, error } = useProposalData(id)
   const { data: poolPoolData, isFetched: poolPoolProposalIsFetched } = usePoolPoolProposal(

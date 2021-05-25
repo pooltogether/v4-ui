@@ -46,6 +46,7 @@ import 'assets/styles/tickets.css'
 import 'assets/styles/bnc-onboard--custom.css'
 import 'assets/styles/reach--custom.css'
 import 'assets/styles/vx--custom.css'
+import { useInitializeOnboard } from '@pooltogether/hooks'
 
 const queryCache = new QueryCache()
 
@@ -62,6 +63,8 @@ if (process.env.NEXT_JS_SENTRY_DSN) {
 }
 
 function MyApp({ Component, pageProps, router }) {
+  useInitializeOnboard()
+
   const [initialized, setInitialized] = useState(false)
 
   // ChunkLoadErrors happen when someone has the app loaded, then we deploy a

@@ -1,8 +1,8 @@
 import FeatherIcon from 'feather-icons-react'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from 'react-loader-spinner'
 
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { Banner } from 'lib/components/Banner'
 import { EtherscanTxLink } from 'lib/components/EtherscanTxLink'
 import { shorten } from 'lib/utils/shorten'
@@ -13,7 +13,7 @@ export const TxStatus = (props) => {
   const { hideOnInWallet, hideOnSent, hideOnSuccess, hideOnError } = props
   const { inWalletMessage, sentMessage, successMessage, errorMessage } = props
   const [showExtraMessage, setShowExtraMessage] = useState(false)
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
   const { t } = useTranslation()
 
   const txCancelled = tx?.cancelled

@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
+import { useUsersAddress } from '@pooltogether/hooks'
 
 import { useTranslation } from 'lib/../i18n'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { Banner } from 'lib/components/Banner'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { useRetroactivePoolClaimData } from 'lib/hooks/useRetroactivePoolClaimData'
@@ -11,7 +11,7 @@ import Bell from 'assets/images/bell@2x.png'
 export const RetroactivePoolClaimBanner = () => {
   const { t } = useTranslation()
 
-  const { usersAddress } = useContext(AuthControllerContext)
+  const usersAddress = useUsersAddress()
   const { data, isFetched } = useRetroactivePoolClaimData()
 
   if (!isFetched || data?.isMissing || data?.isClaimed) {

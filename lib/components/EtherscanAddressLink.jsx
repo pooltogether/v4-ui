@@ -1,13 +1,13 @@
 import FeatherIcon from 'feather-icons-react'
-import React, { useContext } from 'react'
+import React from 'react'
 
 import { formatEtherscanAddressUrl } from 'lib/utils/formatEtherscanAddressUrl'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 
 export function EtherscanAddressLink(props) {
   const { address, children, className } = props
 
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
 
   const url = formatEtherscanAddressUrl(address, chainId)
 
