@@ -1,6 +1,6 @@
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
-import React, { useContext, useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useController, useForm, useFormContext, useWatch } from 'react-hook-form'
 import { ClipLoader } from 'react-spinners'
 import { isBrowser } from 'react-device-detect'
@@ -10,7 +10,7 @@ import { isValidAddress } from 'lib/utils/isValidAddress'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
 import { CONTRACT_ADDRESSES } from 'lib/constants'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { useEtherscanAbi } from 'lib/hooks/useEtherscanAbi'
 import { EMPTY_CONTRACT, EMPTY_FN } from 'lib/components/proposals/ProposalCreationForm'
 import { isValidSolidityData } from 'lib/utils/isValidSolidityData'
@@ -114,7 +114,7 @@ const ContractSelect = (props) => {
 
   const { t } = useTranslation()
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
 
   const options = useMemo(() => {
     const options = []
@@ -273,10 +273,8 @@ const CustomContractInputMainnet = (props) => {
 
   const address = useWatch({ control, name: addressFormName })
 
-  const {
-    data: etherscanAbiUseQueryResponse,
-    isFetching: etherscanAbiIsFetching
-  } = useEtherscanAbi(address, showAbiInput)
+  const { data: etherscanAbiUseQueryResponse, isFetching: etherscanAbiIsFetching } =
+    useEtherscanAbi(address, showAbiInput)
 
   useEffect(() => {
     if (showAbiInput) return

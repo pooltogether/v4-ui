@@ -1,9 +1,9 @@
-import { useEffect, useContext } from 'react'
+import { useEffect } from 'react'
 import { useAtom } from 'jotai'
 
 import { TRANSACTIONS_KEY } from 'lib/constants'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { checkTransactionStatuses } from 'lib/utils/checkTransactionStatuses'
 
 // bring in new list of tx's from localStorage and check
@@ -32,7 +32,7 @@ const readTransactions = (transactions, setTransactions, chainId, usersAddress, 
 
 export function TransactionStatusChecker(props) {
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const { chainId, usersAddress, provider } = useContext(AuthControllerContext)
+  const { network: chainId, address: usersAddress, provider } = useOnboard()
 
   useEffect(() => {
     if (chainId && usersAddress && provider) {

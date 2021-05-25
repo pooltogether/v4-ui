@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 
 import { Card } from 'lib/components/Card'
@@ -6,7 +6,7 @@ import { useTranslation } from 'lib/../i18n'
 import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
 import { getPoolPoolSnapshotId } from 'lib/utils/getPoolPoolSnapshotId'
 import { usePoolPoolProposal } from 'lib/hooks/usePoolPoolProposal'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { POOLPOOL_SNAPSHOT_URL, POOLPOOL_URL } from 'lib/constants'
 import PoolIcon from 'assets/images/pool-icon.svg'
@@ -27,7 +27,7 @@ export const PoolPoolProposalCard = (props) => {
   const { proposal, snapshotBlockNumber } = props
   const { id } = proposal
   const { t } = useTranslation()
-  const { chainId, usersAddress } = useContext(AuthControllerContext)
+  const { network: chainId, address: usersAddress } = useOnboard()
   const poolPoolSnapShotId = getPoolPoolSnapshotId(chainId, id)
   const { data: poolPoolProposal, isFetched: isFetched } = usePoolPoolProposal(chainId, id)
   const { data: poolPoolData, isFetched: poolPoolDataIsFetched } = usePoolPoolBalance(

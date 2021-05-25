@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import classnames from 'classnames'
 
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { networkTextColorClassname } from 'lib/utils/networkColorClassnames'
 
@@ -10,10 +10,10 @@ import IconNetwork from 'assets/images/icon-network.svg'
 export function NetworkText(props) {
   const { openTransactions } = props
 
-  const { supportedNetwork, chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
 
   let networkName = null
-  if (chainId && supportedNetwork) {
+  if (chainId) {
     networkName = chainIdToNetworkName(chainId)
   }
 

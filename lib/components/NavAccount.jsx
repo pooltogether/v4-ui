@@ -1,18 +1,18 @@
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import VisuallyHidden from '@reach/visually-hidden'
 import FeatherIcon from 'feather-icons-react'
 import { motion } from 'framer-motion'
 import { Dialog } from '@reach/dialog'
 
 import { AccountButton } from 'lib/components/AccountButton'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useUsersAddress } from '@pooltogether/hooks'
 import { TransactionsList } from 'lib/components/TransactionsList'
 import { WalletInfo } from 'lib/components/WalletInfo'
 
 export function NavAccount(props) {
   const { openTransactions, closeTransactions, showTransactionsDialog } = props
 
-  const { usersAddress } = useContext(AuthControllerContext)
+  const usersAddress = useUsersAddress()
 
   return (
     <>

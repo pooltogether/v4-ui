@@ -1,17 +1,16 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
 import { ethers } from 'ethers'
 import classnames from 'classnames'
 
 import { useTranslation } from 'lib/../i18n'
 import { DEFAULT_TOKEN_PRECISION } from 'lib/constants'
-import { WalletContext } from 'lib/components/contextProviders/WalletContextProvider'
 import { Banner } from 'lib/components/Banner'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 import { ProposalCreationForm } from 'lib/components/proposals/ProposalCreationForm'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { Button } from 'lib/components/Button'
 
 export const ProposalCreationUI = (props) => {
@@ -52,15 +51,9 @@ export const ProposalCreationUI = (props) => {
 const ProposalCreationMinimumRequirementBanner = () => {
   const { t } = useTranslation()
 
-  const { handleLoadOnboard } = useContext(WalletContext)
-
-  const { usersAddress, connectWallet } = useContext(AuthControllerContext)
+  const { address: usersAddress, connectWallet } = useOnboard()
   const { isFetched, userCanCreateProposal } = useUserCanCreateProposal()
   const { data: governorAlpha } = useGovernorAlpha()
-
-  useEffect(() => {
-    handleLoadOnboard()
-  }, [])
 
   // TODO: Add links for 'more about token'
 

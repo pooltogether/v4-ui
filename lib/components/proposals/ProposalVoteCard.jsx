@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 
 import { useTranslation } from 'lib/../i18n'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard, useUsersAddress } from '@pooltogether/hooks'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
-import { CONTRACT_ADDRESSES, POOLPOOL_SNAPSHOT_URL, PROPOSAL_STATUS } from 'lib/constants'
+import { CONTRACT_ADDRESSES, PROPOSAL_STATUS } from 'lib/constants'
 import { Card } from 'lib/components/Card'
 import classnames from 'classnames'
 import { ProposalStatus } from 'lib/components/proposals/ProposalsList'
@@ -29,7 +29,7 @@ export const ProposalVoteCard = (props) => {
   const { t } = useTranslation()
   const { id, title, status } = proposal
 
-  const { usersAddress } = useContext(AuthControllerContext)
+  const usersAddress = useUsersAddress()
   const { data: tokenHolderData } = useTokenHolder(usersAddress, blockNumber)
   const {
     data: voteData,
@@ -110,7 +110,7 @@ const VoteButtons = (props) => {
 
   const { t } = useTranslation()
 
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const [votingFor, setVotingFor] = useState()
@@ -218,7 +218,7 @@ const QueueButton = (props) => {
   const { id, refetchData } = props
 
   const { t } = useTranslation()
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
@@ -284,7 +284,7 @@ const ExecuteButton = (props) => {
   const { id, refetchData, executionETA, proposal } = props
 
   const { t } = useTranslation()
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha

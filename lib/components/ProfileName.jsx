@@ -1,6 +1,6 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { useUsersAddress } from '@pooltogether/hooks'
 
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
 import { shorten } from 'lib/utils/shorten'
 
 const { getProfile } = require('3box/lib/api')
@@ -8,7 +8,7 @@ const { getProfile } = require('3box/lib/api')
 export function ProfileName(props) {
   const [profile, setProfile] = useState()
 
-  const { usersAddress } = useContext(AuthControllerContext)
+  const usersAddress = useUsersAddress()
 
   useEffect(() => {
     const get3BoxProfile = async () => {

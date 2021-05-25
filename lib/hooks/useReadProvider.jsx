@@ -1,22 +1,24 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { readProvider } from 'lib/services/readProvider'
+import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 
 export function useReadProvider() {
-  const { networkName } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
 
   const [defaultReadProvider, setDefaultReadProvider] = useState({})
 
   useEffect(() => {
     const getReadProvider = async () => {
+      const networkName = chainIdToNetworkName(chainId)
       if (networkName !== 'unknown network') {
         const defaultReadProvider = await readProvider(networkName)
         setDefaultReadProvider(defaultReadProvider)
       }
     }
     getReadProvider()
-  }, [networkName])
+  }, [chainId])
 
   return {
     readProvider: defaultReadProvider,

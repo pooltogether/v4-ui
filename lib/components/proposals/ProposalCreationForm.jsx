@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form'
@@ -18,7 +18,7 @@ import { shorten } from 'lib/utils/shorten'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTransaction } from 'lib/hooks/useTransaction'
 import { CONTRACT_ADDRESSES, DEFAULT_TOKEN_PRECISION } from 'lib/constants'
-import { AuthControllerContext } from 'lib/components/contextProviders/AuthControllerContextProvider'
+import { useOnboard } from '@pooltogether/hooks'
 import { TxStatus } from 'lib/components/TxStatus'
 import { Banner } from 'lib/components/Banner'
 import { poolToast } from 'lib/utils/poolToast'
@@ -76,7 +76,7 @@ export const ProposalCreationForm = () => {
   const [validFormData, setValidFormData] = useState()
   const [showModal, setShowModal] = useState(false)
 
-  const { chainId } = useContext(AuthControllerContext)
+  const { network: chainId } = useOnboard()
   const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
@@ -460,7 +460,7 @@ const ProposalTransactionModal = (props) => {
   const { isOpen, closeModal, tx } = props
 
   const { t } = useTranslation()
-  const { provider } = useContext(AuthControllerContext)
+  const { provider } = useOnboard()
   const [proposalId, setProposalId] = useState()
 
   const showClose = tx && (tx.error || tx.cancelled)
