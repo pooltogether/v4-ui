@@ -2,10 +2,10 @@ import React from 'react'
 import classnames from 'classnames'
 
 import { useOnboard } from '@pooltogether/hooks'
-import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { networkTextColorClassname } from 'lib/utils/networkColorClassnames'
 
 import IconNetwork from 'assets/images/icon-network.svg'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 export function NetworkText(props) {
   const { openTransactions } = props
@@ -14,7 +14,7 @@ export function NetworkText(props) {
 
   let networkName = null
   if (chainId) {
-    networkName = chainIdToNetworkName(chainId)
+    networkName = getNetworkNameAliasByChainId(chainId)
   }
 
   if (!networkName) {

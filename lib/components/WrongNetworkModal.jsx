@@ -4,9 +4,9 @@ import { useTranslation } from 'lib/../i18n'
 import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
 import { useOnboard, useIsWalletOnSupportedNetwork } from '@pooltogether/hooks'
 import { Modal } from 'lib/components/Modal'
-import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { networkBgColorClassname } from 'lib/utils/networkColorClassnames'
 import { networkNameToChainId } from 'lib/utils/networkNameToChainId'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -19,9 +19,11 @@ export function WrongNetworkModal(props) {
 
   const { network } = useOnboard()
   const isWalletOnSupportedNetwork = useIsWalletOnSupportedNetwork(SUPPORTED_CHAIN_IDS)
-  const networkName = chainIdToNetworkName(network)
+  const networkName = getNetworkNameAliasByChainId(network) || ''
 
-  let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((_chainId) => chainIdToNetworkName(_chainId))
+  let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((_chainId) =>
+    getNetworkNameAliasByChainId(_chainId)
+  )
   supportedNetworkNames = supportedNetworkNames
     .filter(onlyUnique)
     .filter((name) => name !== 'localhost')

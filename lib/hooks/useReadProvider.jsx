@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useOnboard } from '@pooltogether/hooks'
 import { readProvider } from 'lib/services/readProvider'
-import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 export function useReadProvider() {
   const { network: chainId } = useOnboard()
@@ -11,7 +11,7 @@ export function useReadProvider() {
 
   useEffect(() => {
     const getReadProvider = async () => {
-      const networkName = chainIdToNetworkName(chainId)
+      const networkName = getNetworkNameAliasByChainId(chainId)
       if (networkName !== 'unknown network') {
         const defaultReadProvider = await readProvider(networkName)
         setDefaultReadProvider(defaultReadProvider)

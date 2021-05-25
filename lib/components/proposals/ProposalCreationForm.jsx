@@ -77,7 +77,7 @@ export const ProposalCreationForm = () => {
   const [showModal, setShowModal] = useState(false)
 
   const { network: chainId } = useOnboard()
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
   const tx = useTransaction(txId)

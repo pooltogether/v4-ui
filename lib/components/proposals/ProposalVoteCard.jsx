@@ -114,7 +114,7 @@ const VoteButtons = (props) => {
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const [votingFor, setVotingFor] = useState()
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const tx = useTransaction(txId)
 
   const handleVoteFor = (e) => {
@@ -221,7 +221,7 @@ const QueueButton = (props) => {
   const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const tx = useTransaction(txId)
 
   const handleQueueProposal = async (e) => {
@@ -287,7 +287,7 @@ const ExecuteButton = (props) => {
   const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
-  const governanceAddress = CONTRACT_ADDRESSES[chainId].GovernorAlpha
+  const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const tx = useTransaction(txId)
 
   const [currentTime, setCurrentTime] = useState(getSecondsSinceEpoch())

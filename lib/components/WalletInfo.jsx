@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useTranslation } from 'lib/../i18n'
 import { useOnboard } from '@pooltogether/hooks'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
-import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { shorten } from 'lib/utils/shorten'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 export function WalletInfo(props) {
   const { t } = useTranslation()
@@ -17,7 +17,7 @@ export function WalletInfo(props) {
   let networkName = null
 
   if (chainId) {
-    networkName = <span className={'inline-block'}>{chainIdToNetworkName(chainId)}</span>
+    networkName = <span className={'inline-block'}>{getNetworkNameAliasByChainId(chainId)}</span>
   }
 
   if (usersAddress && walletName) {

@@ -16,8 +16,8 @@ import { LanguagePicker } from 'lib/components/LanguagePicker'
 import { Settings } from 'lib/components/Settings'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
-import { chainIdToNetworkName } from 'lib/utils/chainIdToNetworkName'
 import { Button } from 'lib/components/Button'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -51,7 +51,9 @@ export function Layout(props) {
 
   const router = useRouter()
 
-  let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((chainId) => chainIdToNetworkName(chainId))
+  let supportedNetworkNames = SUPPORTED_CHAIN_IDS.map((chainId) =>
+    getNetworkNameAliasByChainId(chainId)
+  )
   supportedNetworkNames = supportedNetworkNames.filter(onlyUnique)
 
   return (
