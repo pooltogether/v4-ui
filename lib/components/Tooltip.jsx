@@ -34,17 +34,19 @@ export const Tooltip = (props) => {
           return { top, left }
         }}
       >
-        <button
-          onClick={() => {
-            const current = ref.current
-            current.tooltipRef = null
-            ReactTooltip.hide()
-          }}
-          className='ml-auto mb-2 block xs:hidden'
-        >
-          <FeatherIcon icon='x' className='w-4 h-4 text-inverse' />
-        </button>
-        {tip}
+        <>
+          <button
+            onClick={() => {
+              const current = ref.current
+              current.tooltipRef = null
+              ReactTooltip.hide()
+            }}
+            className='ml-auto mb-2 block xs:hidden'
+          >
+            <FeatherIcon icon='x' className='w-4 h-4 text-inverse' />
+          </button>
+          {tip}
+        </>
       </ReactTooltip>
     </>
   )

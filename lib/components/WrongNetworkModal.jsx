@@ -34,7 +34,7 @@ export function WrongNetworkModal(props) {
     setBypassed(true)
   }
 
-  if (isWalletOnSupportedNetwork) {
+  if (!network || isWalletOnSupportedNetwork) {
     return null
   }
 
