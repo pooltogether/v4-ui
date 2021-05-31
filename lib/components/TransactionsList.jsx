@@ -1,18 +1,20 @@
 import React from 'react'
 import { useAtom } from 'jotai'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { useOnboard } from '@pooltogether/hooks'
 import { TransactionsListItem } from 'lib/components/TransactionsListItem'
 import { clearPreviousTransactions } from 'lib/services/clearPreviousTransactions'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 export function TransactionsList(props) {
   const { t } = useTranslation()
 
   const [transactions, setTransactions] = useAtom(transactionsAtom)
 
-  const { network: chainId, address: usersAddress } = useOnboard()
+  const { address: usersAddress } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const notCancelledTransactions = transactions.filter((t) => !t.cancelled).reverse()
 
@@ -23,7 +25,7 @@ export function TransactionsList(props) {
   const handleClearPrevious = (e) => {
     e.preventDefault()
 
-    if ((usersAddress, chainId)) {
+    if (usersAddress && chainId) {
       clearPreviousTransactions(transactions, setTransactions, usersAddress, chainId)
     }
   }

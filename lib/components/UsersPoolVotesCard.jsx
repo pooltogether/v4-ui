@@ -4,7 +4,7 @@ import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 
 import DelegateableERC20ABI from 'abis/DelegateableERC20ABI'
-import { Trans, useTranslation } from 'lib/../i18n'
+import { Trans, useTranslation } from 'react-i18next'
 import { CONTRACT_ADDRESSES, POOLPOOL_SNAPSHOT_URL, POOLPOOL_URL } from 'lib/constants'
 import { useOnboard } from '@pooltogether/hooks'
 import { Banner } from 'lib/components/Banner'
@@ -18,6 +18,7 @@ import { numberWithCommas, getPrecision } from 'lib/utils/numberWithCommas'
 import { shorten } from 'lib/utils/shorten'
 import { useTransaction } from 'lib/hooks/useTransaction'
 import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
+import { useIsWalletOnProperNetwork } from 'lib/hooks/useIsWalletOnProperNetwork'
 
 export const UsersPoolVotesCard = (props) => {
   const { blockNumber, snapshotBlockNumber, className } = props
@@ -211,7 +212,7 @@ const DelegatedVotesBottom = (props) => {
   } = props
 
   const { t } = useTranslation()
-  const { usersAddress, chainId } = useOnboard()
+  const { address: usersAddress, network: chainId } = useOnboard()
   const {
     data: tokenHolderCurrentData,
     isFetched: tokenHolderCurrentDataIsFetched,
@@ -219,6 +220,7 @@ const DelegatedVotesBottom = (props) => {
   } = useTokenHolder(usersAddress)
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
+  const isWalletOnProperNetwork = useIsWalletOnProperNetwork()
   const tx = useTransaction(txId)
 
   const handleDelegate = async (e) => {
@@ -301,6 +303,7 @@ const DelegatedVotesBottom = (props) => {
               type='button'
               className='hover:opacity-70 text-highlight-9 hover:text-highlight-9 underline trans mr-1 font-bold'
               onClick={handleDelegate}
+              disabled={!isWalletOnProperNetwork}
             >
               {isDataFromBeforeCurrentBlock
                 ? t('activateMyVotesForFutureProposals')

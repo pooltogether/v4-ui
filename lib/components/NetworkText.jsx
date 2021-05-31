@@ -5,21 +5,22 @@ import { useOnboard } from '@pooltogether/hooks'
 import { networkTextColorClassname } from 'lib/utils/networkColorClassnames'
 
 import IconNetwork from 'assets/images/icon-network.svg'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 export function NetworkText(props) {
   const { openTransactions } = props
 
-  const { network: chainId } = useOnboard()
+  const { network: chainId, address: usersAddress } = useOnboard()
 
   let networkName = null
   if (chainId) {
-    networkName = getNetworkNameAliasByChainId(chainId)
+    networkName = getNetworkNiceNameByChainId(chainId)
   }
 
-  if (!networkName) {
+  if (!chainId || !usersAddress || !networkName) {
     return null
   }
+
   return (
     <>
       <button
@@ -28,7 +29,7 @@ export function NetworkText(props) {
           'tracking-wide flex items-center capitalize trans trans-fast',
           `bg-default hover:bg-body text-${networkTextColorClassname(
             chainId
-          )} hover:text-inverse border border-accent-4 hover:border-primary`,
+          )} font-bold hover:text-inverse border border-accent-4 hover:border-primary`,
           'text-xxs sm:text-xs px-2 xs:px-4 rounded-full mr-2 h-8'
         )}
       >

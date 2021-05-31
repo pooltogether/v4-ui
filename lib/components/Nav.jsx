@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import Link from 'next/link'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { CountBadge } from 'lib/components/CountBadge'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
 

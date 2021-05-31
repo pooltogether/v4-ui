@@ -5,13 +5,14 @@ import FeatherIcon from 'feather-icons-react'
 import VisuallyHidden from '@reach/visually-hidden'
 import { motion } from 'framer-motion'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { COOKIE_OPTIONS, SHOW_MANAGE_LINKS } from 'lib/constants'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { CheckboxInputGroup } from 'lib/components/CheckboxInputGroup'
 import { QuestionMarkCircle } from 'lib/components/QuestionMarkCircle'
 import { PTHint } from 'lib/components/PTHint'
 import { ThemeSwitcher } from 'lib/components/ThemeSwitcher'
+import { APP_ENVIRONMENT, useAppEnv } from '@pooltogether/hooks'
 
 export function Settings(props) {
   const { t } = useTranslation()
@@ -173,7 +174,36 @@ export function Settings(props) {
             {t('openPoolClaim')}
           </ButtonLink>
         </div>
+
+        <div className='mt-10'>
+          <label className='uppercase text-accent-1 font-bold text-xxs mb-4 mr-2'>
+            {t('developmentMode')}
+          </label>
+          <TestnetToggle />
+        </div>
       </motion.div>
     </>
+  )
+}
+
+const TestnetToggle = () => {
+  const { appEnv, setAppEnv } = useAppEnv()
+  const { t } = useTranslation()
+
+  return (
+    <CheckboxInputGroup
+      large
+      id='testnets-view-toggle'
+      name='testnets-view-toggle'
+      label={t('showTestnets')}
+      checked={appEnv === APP_ENVIRONMENT.testnets}
+      handleClick={() => {
+        if (appEnv === APP_ENVIRONMENT.testnets) {
+          setAppEnv(APP_ENVIRONMENT.mainnets)
+        } else {
+          setAppEnv(APP_ENVIRONMENT.testnets)
+        }
+      }}
+    />
   )
 }

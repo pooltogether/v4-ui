@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
 import { useOnboard, useIsWalletOnSupportedNetwork } from '@pooltogether/hooks'
 import { Modal } from 'lib/components/Modal'

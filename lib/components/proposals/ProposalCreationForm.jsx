@@ -6,12 +6,12 @@ import ReactMarkdown from 'react-markdown'
 import gfm from 'remark-gfm'
 import { Dialog } from '@reach/dialog'
 import { ethers } from 'ethers'
+import { useTranslation } from 'react-i18next'
 
 import { Card } from 'lib/components/Card'
 import { ActionsCard } from 'lib/components/proposals/ActionsCard'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
-import { useTranslation } from 'lib/../i18n'
 import { Button } from 'lib/components/Button'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'
@@ -25,18 +25,12 @@ import { poolToast } from 'lib/utils/poolToast'
 import { useAllProposals } from 'lib/hooks/useAllProposals'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { getEmptySolidityDataTypeValue } from 'lib/utils/getEmptySolidityDataTypeValue'
-
-import GovernorAlphaABI from 'abis/GovernorAlphaABI'
-import { PTHint } from 'lib/components/PTHint'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
-import {
-  arrayRegex,
-  dataArrayRegex,
-  fixedArrayRegex,
-  isValidSolidityData,
-  tupleRegex
-} from 'lib/utils/isValidSolidityData'
+import { arrayRegex, dataArrayRegex, fixedArrayRegex } from 'lib/utils/isValidSolidityData'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
+import GovernorAlphaABI from 'abis/GovernorAlphaABI'
+import { useIsWalletOnProperNetwork } from 'lib/hooks/useIsWalletOnProperNetwork'
 
 export const EMPTY_INPUT = {
   type: null,
@@ -76,7 +70,7 @@ export const ProposalCreationForm = () => {
   const [validFormData, setValidFormData] = useState()
   const [showModal, setShowModal] = useState(false)
 
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
   const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction()
@@ -342,6 +336,7 @@ const ProposalSummary = (props) => {
   const { t } = useTranslation()
   const { showForm, getValues, submitTransaction } = props
 
+  const isWalletOnProperNetwork = useIsWalletOnProperNetwork()
   const { actions, title, description } = getValues()
 
   return (
@@ -375,6 +370,7 @@ const ProposalSummary = (props) => {
           e.preventDefault()
           submitTransaction()
         }}
+        disabled={!isWalletOnProperNetwork}
       >
         {t('submitProposal')}
       </Button>

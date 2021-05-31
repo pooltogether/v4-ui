@@ -3,7 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { DateTime } from 'luxon'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { PROPOSAL_STATUS } from 'lib/constants'
 import { Card, InnerCard } from 'lib/components/Card'
 import { CountBadge } from 'lib/components/CountBadge'

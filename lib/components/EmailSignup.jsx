@@ -4,7 +4,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useForm } from 'react-hook-form'
 
 import { axiosInstance } from 'lib/axiosInstance'
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { poolToast } from 'lib/utils/poolToast'
 

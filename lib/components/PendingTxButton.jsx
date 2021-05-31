@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAtom } from 'jotai'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 // import { LoadingSpinner } from 'lib/components/LoadingSpinner'
 import ClipLoader from 'react-spinners/ClipLoader'

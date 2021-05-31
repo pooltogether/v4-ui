@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import GovernorAlphaABI from 'abis/GovernorAlphaABI'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { useOnboard, useUsersAddress } from '@pooltogether/hooks'
 import { useTokenHolder } from 'lib/hooks/useTokenHolder'
 import { useVoteData } from 'lib/hooks/useVoteData'
@@ -22,6 +22,8 @@ import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 import { useInterval } from 'lib/hooks/useInterval'
 import { ethers } from 'ethers'
 import { TimeCountDown } from 'lib/components/TimeCountDown'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
+import { useIsWalletOnProperNetwork } from 'lib/hooks/useIsWalletOnProperNetwork'
 
 export const ProposalVoteCard = (props) => {
   const { proposal, refetchProposalData, blockNumber } = props
@@ -107,10 +109,11 @@ const VoteButtons = (props) => {
   const page = router?.query?.page ? parseInt(router.query.page, 10) : 1
   const { refetch: refetchTotalVotesPages } = useProposalVotesTotalPages(id)
   const { refetch: refetchVoterTable } = useProposalVotes(id, page)
+  const isWalletOnProperNetwork = useIsWalletOnProperNetwork()
 
   const { t } = useTranslation()
 
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const [votingFor, setVotingFor] = useState()
@@ -190,6 +193,7 @@ const VoteButtons = (props) => {
         hoverBg='green'
         onClick={handleVoteFor}
         className='mr-4'
+        disabled={!isWalletOnProperNetwork}
       >
         <div className='flex'>
           <FeatherIcon icon='check-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
@@ -204,6 +208,7 @@ const VoteButtons = (props) => {
         hoverText='red'
         hoverBg='transparent'
         onClick={handleVoteAgainst}
+        disabled={!isWalletOnProperNetwork}
       >
         <div className='flex'>
           <FeatherIcon icon='x-circle' className='my-auto mr-2 h-4 w-4 sm:h-6 sm:w-6' />
@@ -220,6 +225,7 @@ const QueueButton = (props) => {
   const { t } = useTranslation()
   const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
+  const isWalletOnProperNetwork = useIsWalletOnProperNetwork()
   const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const tx = useTransaction(txId)
@@ -275,7 +281,9 @@ const QueueButton = (props) => {
           />
         </PTHint>
       )}
-      <Button onClick={handleQueueProposal}>{t('queueProposal')}</Button>
+      <Button onClick={handleQueueProposal} disabled={!isWalletOnProperNetwork}>
+        {t('queueProposal')}
+      </Button>
     </div>
   )
 }
@@ -286,6 +294,7 @@ const ExecuteButton = (props) => {
   const { t } = useTranslation()
   const { network: chainId } = useOnboard()
   const sendTx = useSendTransaction()
+  const isWalletOnProperNetwork = useIsWalletOnProperNetwork()
   const [txId, setTxId] = useState(0)
   const governanceAddress = CONTRACT_ADDRESSES[chainId]?.GovernorAlpha
   const tx = useTransaction(txId)
@@ -387,7 +396,7 @@ const ExecuteButton = (props) => {
           hoverText='primary'
           hoverBg='green'
           onClick={handleExecuteProposal}
-          disabled={currentTime < executionETA}
+          disabled={currentTime < executionETA || !isWalletOnProperNetwork}
         >
           {t('executeProposal')}
         </Button>

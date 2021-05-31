@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { useOnboard } from '@pooltogether/hooks'
 import { readProvider } from 'lib/services/readProvider'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 export function useReadProvider() {
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const [defaultReadProvider, setDefaultReadProvider] = useState({})
 

@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import gfm from 'remark-gfm'
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_TOKEN_PRECISION } from 'lib/constants'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
@@ -23,8 +23,8 @@ import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { ProposalVoteCard } from 'lib/components/proposals/ProposalVoteCard'
 import { PoolPoolProposalCard } from 'lib/components/proposals/PoolPoolProposalCard'
-import { useOnboard } from '@pooltogether/hooks'
 import { usePoolPoolProposal } from 'lib/hooks/usePoolPoolProposal'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 const SMALL_DESCRIPTION_LENGTH = 500
 
@@ -34,11 +34,7 @@ export const ProposalUI = (props) => {
   const router = useRouter()
   const { id } = router.query
 
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const { refetch: refetchProposalData, proposal, isFetched, error } = useProposalData(id)
   const { data: poolPoolData, isFetched: poolPoolProposalIsFetched } = usePoolPoolProposal(

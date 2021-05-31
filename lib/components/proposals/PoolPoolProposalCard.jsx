@@ -2,7 +2,7 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 
 import { Card } from 'lib/components/Card'
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { usePoolPoolBalance } from 'lib/hooks/usePoolPoolBalance'
 import { getPoolPoolSnapshotId } from 'lib/utils/getPoolPoolSnapshotId'
 import { usePoolPoolProposal } from 'lib/hooks/usePoolPoolProposal'
@@ -15,8 +15,8 @@ import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'
 import { TimeCountDown } from 'lib/components/TimeCountDown'
 import { Tooltip } from 'lib/components/Tooltip'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
-import { ethers } from 'ethers'
 import { getPrecision, numberWithCommas } from 'lib/utils/numberWithCommas'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 const POOLPOOL_PROPOSAL_STATES = Object.freeze({
   active: 'active',
@@ -27,7 +27,8 @@ export const PoolPoolProposalCard = (props) => {
   const { proposal, snapshotBlockNumber } = props
   const { id } = proposal
   const { t } = useTranslation()
-  const { network: chainId, address: usersAddress } = useOnboard()
+  const { address: usersAddress } = useOnboard()
+  const chainId = useGovernanceChainId()
   const poolPoolSnapShotId = getPoolPoolSnapshotId(chainId, id)
   const { data: poolPoolProposal, isFetched: isFetched } = usePoolPoolProposal(chainId, id)
   const { data: poolPoolData, isFetched: poolPoolDataIsFetched } = usePoolPoolBalance(

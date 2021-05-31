@@ -5,6 +5,7 @@ import { TRANSACTIONS_KEY } from 'lib/constants'
 import { transactionsAtom } from 'lib/atoms/transactionsAtom'
 import { useOnboard } from '@pooltogether/hooks'
 import { checkTransactionStatuses } from 'lib/utils/checkTransactionStatuses'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 // bring in new list of tx's from localStorage and check
 // if any are ongoing & what their status is
@@ -32,7 +33,8 @@ const readTransactions = (transactions, setTransactions, chainId, usersAddress, 
 
 export function TransactionStatusChecker(props) {
   const [transactions, setTransactions] = useAtom(transactionsAtom)
-  const { network: chainId, address: usersAddress, provider } = useOnboard()
+  const { address: usersAddress, provider } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   useEffect(() => {
     if (chainId && usersAddress && provider) {

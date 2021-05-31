@@ -2,7 +2,7 @@ import React, { useState, cloneElement } from 'react'
 import classnames from 'classnames'
 import { useTooltip, TooltipPopup } from '@reach/tooltip'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { Button } from 'lib/components/Button'
 import { QuestionMarkCircle } from 'lib/components/QuestionMarkCircle'
 

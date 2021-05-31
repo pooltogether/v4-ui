@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/hooks'
 import { EtherscanAddressLink } from 'lib/components/EtherscanAddressLink'
 import { shorten } from 'lib/utils/shorten'

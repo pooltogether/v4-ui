@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import classnames from 'classnames'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 
 const addPageQueryParam = (path, pageNum) => `${path}?page=${pageNum}`
 

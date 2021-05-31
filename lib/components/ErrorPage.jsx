@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { HeaderLogo } from 'lib/components/HeaderLogo'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'
 

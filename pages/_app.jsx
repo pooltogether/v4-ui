@@ -24,29 +24,11 @@ import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-import 'assets/styles/utils.css'
 import 'assets/styles/index.css'
-import 'assets/styles/toast-blur.css'
-import 'assets/styles/layout.css'
-import 'assets/styles/loader.css'
-import 'assets/styles/themes.css'
-
-import 'assets/styles/typography.css'
-import 'assets/styles/tables.css'
-import 'assets/styles/pool.css'
-import 'assets/styles/pool-toast.css'
-import 'assets/styles/animations.css'
-import 'assets/styles/transitions.css'
-
-import 'assets/styles/interactable-cards.css'
-import 'assets/styles/forms.css'
-import 'assets/styles/tabs.css'
-import 'assets/styles/tickets.css'
-
-import 'assets/styles/bnc-onboard--custom.css'
-import 'assets/styles/reach--custom.css'
-import 'assets/styles/vx--custom.css'
+import '@pooltogether/pooltogether-react-tailwind-ui/dist/index.css'
 import { useInitializeOnboard } from '@pooltogether/hooks'
+import '../i18n'
+import { useTranslation } from 'react-i18next'
 
 const queryCache = new QueryCache()
 
@@ -64,8 +46,7 @@ if (process.env.NEXT_JS_SENTRY_DSN) {
 
 function MyApp({ Component, pageProps, router }) {
   useInitializeOnboard()
-
-  const [initialized, setInitialized] = useState(false)
+  const { i18n } = useTranslation()
 
   // ChunkLoadErrors happen when someone has the app loaded, then we deploy a
   // new release, and the user's app points to previous chunks that no longer exist
@@ -124,24 +105,13 @@ function MyApp({ Component, pageProps, router }) {
     }
   }, [])
 
-  useEffect(() => {
-    const initi18next = async () => {
-      await i18next.initPromise.then(() => {
-        setInitialized(true)
-      })
-    }
-    initi18next()
-  }, [])
+  if (!i18n.isInitialized) return <LoadingScreen initialized={false} />
 
   return (
     <>
       <Provider>
         <ReactQueryCacheProvider queryCache={queryCache}>
           <BodyClasses />
-
-          {/* <GraphErrorModal /> */}
-
-          <LoadingScreen initialized={initialized} />
 
           <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { ethers } from 'ethers'
 import classnames from 'classnames'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { DEFAULT_TOKEN_PRECISION } from 'lib/constants'
 import { Banner } from 'lib/components/Banner'
 import { PageTitleAndBreadcrumbs } from 'lib/components/PageTitleAndBreadcrumbs'

@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { poolToast } from 'lib/utils/poolToast'
 
 export const PTCopyToClipboard = (props) => {

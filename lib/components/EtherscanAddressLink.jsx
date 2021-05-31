@@ -2,12 +2,12 @@ import FeatherIcon from 'feather-icons-react'
 import React from 'react'
 
 import { formatEtherscanAddressUrl } from 'lib/utils/formatEtherscanAddressUrl'
-import { useOnboard } from '@pooltogether/hooks'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 export function EtherscanAddressLink(props) {
   const { address, children, className } = props
 
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const url = formatEtherscanAddressUrl(address, chainId)
 

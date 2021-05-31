@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { useTimeCountdown } from 'lib/hooks/useTimeCountdown'
 import { SECONDS_PER_DAY, SECONDS_PER_HOUR } from 'lib/constants'
 import { getSecondsSinceEpoch } from 'lib/utils/getCurrentSecondsSinceEpoch'

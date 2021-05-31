@@ -1,7 +1,7 @@
 import React from 'react'
 import { useUsersAddress } from '@pooltogether/hooks'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { Banner } from 'lib/components/Banner'
 import { ButtonLink } from 'lib/components/ButtonLink'
 import { useRetroactivePoolClaimData } from 'lib/hooks/useRetroactivePoolClaimData'

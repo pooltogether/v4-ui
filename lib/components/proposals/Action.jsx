@@ -5,7 +5,7 @@ import { useController, useForm, useFormContext, useWatch } from 'react-hook-for
 import { ClipLoader } from 'react-spinners'
 import { isBrowser } from 'react-device-detect'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { isValidAddress } from 'lib/utils/isValidAddress'
 import { usePrizePools } from 'lib/hooks/usePrizePools'
 import { DropdownList } from 'lib/components/DropdownList'
@@ -21,6 +21,7 @@ import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import ReserveAbi from '@pooltogether/pooltogether-contracts/abis/Reserve'
 import TokenFaucetAbi from '@pooltogether/pooltogether-contracts/abis/TokenFaucet'
 import MultipleWinnersPrizeStrategyAbi from '@pooltogether/pooltogether-contracts/abis/MultipleWinners'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 export const Action = (props) => {
   const { deleteAction, actionPath, index, hideRemoveButton } = props
@@ -114,7 +115,7 @@ const ContractSelect = (props) => {
 
   const { t } = useTranslation()
   const { data: prizePools, isFetched: prizePoolsIsFetched } = usePrizePools()
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const options = useMemo(() => {
     const options = []

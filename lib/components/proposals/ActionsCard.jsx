@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { Button } from 'lib/components/Button'
 import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
@@ -17,7 +17,11 @@ export const ActionsCard = (props) => {
   const name = 'actions'
 
   const { control } = useFormContext()
-  const { fields: actions, append, remove } = useFieldArray({
+  const {
+    fields: actions,
+    append,
+    remove
+  } = useFieldArray({
     control,
     name
   })

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useTable } from 'react-table'
 
 import { VOTERS_PER_PAGE } from 'lib/constants'
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 import { BasicTable } from 'lib/components/BasicTable'
 import { BlankStateMessage } from 'lib/components/BlankStateMessage'
 import { DefaultPaginationButtons, PaginationUI } from 'lib/components/PaginationUI'

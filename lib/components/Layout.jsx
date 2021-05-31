@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import classnames from 'classnames'
 import { useRouter } from 'next/router'
 import { motion, useViewportScroll } from 'framer-motion'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { useOnboard } from '@pooltogether/hooks'
 
 import { SUPPORTED_CHAIN_IDS } from 'lib/constants'
-import { useOnboard } from '@pooltogether/hooks'
 import { NavAccount } from 'lib/components/NavAccount'
 import { HeaderLogo } from 'lib/components/HeaderLogo'
 import { NavMobile } from 'lib/components/NavMobile'
@@ -17,7 +18,7 @@ import { Settings } from 'lib/components/Settings'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
 import { NavPoolBalance } from 'lib/components/NavPoolBalance'
 import { Button } from 'lib/components/Button'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 
 const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
@@ -26,7 +27,8 @@ const onlyUnique = (value, index, self) => {
 export function Layout(props) {
   const { children } = props
 
-  const { address: usersAddress, network: chainId, connectWallet } = useOnboard()
+  const { address: usersAddress, connectWallet } = useOnboard()
+  const chainId = useGovernanceChainId()
 
   const [yScrollPosition, setYScrollPosition] = useState()
   const { scrollY } = useViewportScroll()
@@ -78,9 +80,7 @@ export function Layout(props) {
                 lineHeight: 0
               }}
             >
-              {usersAddress && chainId && chainId !== 1 && (
-                <NetworkText openTransactions={openTransactions} />
-              )}
+              <NetworkText openTransactions={openTransactions} />
 
               <NavPoolBalance />
 

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 
 export function Tagline(props) {
   const { t } = useTranslation()

@@ -2,9 +2,8 @@ import React, { useLayoutEffect } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 
-import { Trans, useTranslation } from 'lib/../i18n'
+import { Trans, useTranslation } from 'react-i18next'
 import { AddGovernanceTokenToMetaMask } from 'lib/components/AddGovernanceTokenToMetaMask'
-import { Button } from 'lib/components/Button'
 import { ProposalsList } from 'lib/components/proposals/ProposalsList'
 import { RetroactivePoolClaimBanner } from 'lib/components/RetroactivePoolClaimBanner'
 import { UsersPoolVotesCard } from 'lib/components/UsersPoolVotesCard'
@@ -25,10 +24,6 @@ export const ProposalsUI = (props) => {
   const { t } = useTranslation()
 
   const screenSize = useScreenSize()
-
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
 
   const { error, isFetched, sortedProposals } = useAllProposalsSorted()
 

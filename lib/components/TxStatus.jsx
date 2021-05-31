@@ -2,18 +2,18 @@ import FeatherIcon from 'feather-icons-react'
 import React, { useEffect, useState } from 'react'
 import Loader from 'react-loader-spinner'
 
-import { useOnboard } from '@pooltogether/hooks'
+import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 import { Banner } from 'lib/components/Banner'
 import { EtherscanTxLink } from 'lib/components/EtherscanTxLink'
 import { shorten } from 'lib/utils/shorten'
-import { useTranslation } from 'lib/../i18n'
+import { useTranslation } from 'react-i18next'
 
 export const TxStatus = (props) => {
   const { tx } = props
   const { hideOnInWallet, hideOnSent, hideOnSuccess, hideOnError } = props
   const { inWalletMessage, sentMessage, successMessage, errorMessage } = props
   const [showExtraMessage, setShowExtraMessage] = useState(false)
-  const { network: chainId } = useOnboard()
+  const chainId = useGovernanceChainId()
   const { t } = useTranslation()
 
   const txCancelled = tx?.cancelled

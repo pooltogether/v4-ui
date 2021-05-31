@@ -2,9 +2,6 @@ const chalk = require('chalk')
 const express = require('express')
 const next = require('next')
 
-const i18next = require('./i18n/server')
-const nextI18NextMiddleware = require('next-i18next/middleware').default
-
 var os = require('os')
 var ifaces = os.networkInterfaces()
 var ip = ''
@@ -61,9 +58,6 @@ app
         server.use(createProxyMiddleware(context, devProxy[context]))
       })
     }
-
-    await i18next.initPromise
-    server.use(nextI18NextMiddleware(i18next))
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res))
