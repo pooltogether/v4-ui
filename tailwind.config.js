@@ -1,2 +1,2 @@
-const pooltogetherTheme = require('@pooltogether/pooltogether-react-tailwind-ui/config')
+const pooltogetherTheme = require('@pooltogether/react-components/config')
 module.exports = pooltogetherTheme({})
