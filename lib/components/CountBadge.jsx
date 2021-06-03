@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 
 export function CountBadge(props) {
-  const { backgroundClass, count, sizeClasses, textTopPos, textLeftPos } = props
+  const { backgroundClass, count, sizeClasses } = props
 
   return (
     <span
@@ -13,12 +13,7 @@ export function CountBadge(props) {
         backgroundClass
       )}
     >
-      <span
-        className='relative'
-        style={{ top: textTopPos ? textTopPos : 0, left: textLeftPos ? textLeftPos : 0 }}
-      >
-        {count}
-      </span>
+      <span className='relative'>{count}</span>
     </span>
   )
 }
