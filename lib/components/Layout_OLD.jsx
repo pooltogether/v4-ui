@@ -24,7 +24,7 @@ const onlyUnique = (value, index, self) => {
   return self.indexOf(value) === index
 }
 
-export function Layout(props) {
+export function Layout_OLD(props) {
   const { children } = props
 
   const { address: usersAddress, connectWallet } = useOnboard()

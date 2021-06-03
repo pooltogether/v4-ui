@@ -8,6 +8,16 @@ import PoolTogetherMark from 'assets/images/pooltogether-white-mark.svg'
 export function LoadingScreen(props) {
   const { initialized } = props
 
+  // TODO: Add back motion
+  return (
+    <div>
+      <img src={PoolTogetherMark} className='w-8 outline-none -mt-20' style={{ borderWidth: 0 }} />
+      <div className='overflow-hidden'>
+        <V3LoadingDots />
+      </div>
+    </div>
+  )
+
   return (
     <motion.div
       animate={!initialized ? 'enter' : 'exit'}

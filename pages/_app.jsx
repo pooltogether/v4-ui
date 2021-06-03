@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import i18next from '../i18n'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { ethers } from 'ethers'
 import { ToastContainer } from 'react-toastify'
 import { ReactQueryDevtools } from 'react-query-devtools'
-import { motion, AnimatePresence } from 'framer-motion'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
-import { Layout } from '@pooltogether/react-components'
 
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { BodyClasses } from 'lib/components/BodyClasses'
@@ -121,7 +118,7 @@ function MyApp({ Component, pageProps, router }) {
               <TransactionStatusChecker />
 
               <TxRefetchListener />
-              <Layout pageProps={pageProps} Component={<h1>TEST</h1>} router={router} />
+              <Component {...pageProps} />
 
               <ReactQueryDevtools />
             </CustomErrorBoundary>
