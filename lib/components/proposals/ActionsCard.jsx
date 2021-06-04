@@ -2,7 +2,7 @@ import React from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { useTranslation } from 'react-i18next'
-import { Button } from 'lib/components/Button'
+import { Button } from '@pooltogether/react-components'
 import { Card } from 'lib/components/Card'
 import { Action } from 'lib/components/proposals/Action'
 import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'

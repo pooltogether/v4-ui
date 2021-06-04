@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next'
 import { NavPoolBalance } from 'lib/components/Layout/NavPoolBalance'
 import { NetworkText } from 'lib/components/Layout/NetworkText'
 import { useOnboard } from '@pooltogether/hooks'
+import { NavAccount } from 'lib/components/NavAccount'
 
 export const PageHeader = (props) => (
   <PageHeaderContainer Link={Link} as='/' href='/'>
@@ -60,6 +61,7 @@ const UsersAccount = () => {
     <>
       <NetworkText />
       <NavPoolBalance />
+      {/* <NavAccount /> */}
     </>
   )
 }

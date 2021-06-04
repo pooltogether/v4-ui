@@ -3,7 +3,7 @@ import { useUsersAddress } from '@pooltogether/hooks'
 
 import { useTranslation } from 'react-i18next'
 import { Banner } from 'lib/components/Banner'
-import { ButtonLink } from 'lib/components/ButtonLink'
+import { ButtonLink } from '@pooltogether/react-components'
 import { useRetroactivePoolClaimData } from 'lib/hooks/useRetroactivePoolClaimData'
 
 import Bell from 'assets/images/bell@2x.png'

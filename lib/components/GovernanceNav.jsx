@@ -1,4 +1,4 @@
-import { ButtonLink } from 'lib/components/ButtonLink'
+import { ButtonLink } from '@pooltogether/react-components'
 import React from 'react'
 
 export const GovernanceNav = (props) => {

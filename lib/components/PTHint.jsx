@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import { useTooltip, TooltipPopup } from '@reach/tooltip'
 
 import { useTranslation } from 'react-i18next'
-import { Button } from 'lib/components/Button'
+import { Button } from '@pooltogether/react-components'
 import { QuestionMarkCircle } from 'lib/components/QuestionMarkCircle'
 
 // Center the tooltip, but collisions will win

@@ -2,8 +2,8 @@ import React from 'react'
 import { omit } from 'lodash'
 import { useRouter } from 'next/router'
 
-import { Button } from 'lib/components/Button'
-import { ButtonLink } from 'lib/components/ButtonLink'
+import { Button } from '@pooltogether/react-components'
+import { ButtonLink } from '@pooltogether/react-components'
 import { PTHint } from 'lib/components/PTHint'
 
 export function ButtonTx(props) {

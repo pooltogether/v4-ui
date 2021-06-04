@@ -11,7 +11,7 @@ import { useGovernorAlpha } from 'lib/hooks/useGovernorAlpha'
 import { useUserCanCreateProposal } from 'lib/hooks/useUserCanCreateProposal'
 import { numberWithCommas } from 'lib/utils/numberWithCommas'
 import { useOnboard } from '@pooltogether/hooks'
-import { Button } from 'lib/components/Button'
+import { Button } from '@pooltogether/react-components'
 
 export const ProposalCreationUI = (props) => {
   const { t } = useTranslation()

@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 
 import { useTranslation } from 'react-i18next'
 import { COOKIE_OPTIONS, SHOW_MANAGE_LINKS } from 'lib/constants'
-import { ButtonLink } from 'lib/components/ButtonLink'
+import { ButtonLink } from '@pooltogether/react-components'
 import { CheckboxInputGroup } from 'lib/components/CheckboxInputGroup'
 import { QuestionMarkCircle } from 'lib/components/QuestionMarkCircle'
 import { PTHint } from 'lib/components/PTHint'

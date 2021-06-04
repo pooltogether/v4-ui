@@ -9,7 +9,7 @@ import { RetroactivePoolClaimBanner } from 'lib/components/RetroactivePoolClaimB
 import { UsersPoolVotesCard } from 'lib/components/UsersPoolVotesCard'
 import { V3LoadingDots } from 'lib/components/V3LoadingDots'
 import { useAllProposalsSorted } from 'lib/hooks/useAllProposalsSorted'
-import { ButtonLink } from 'lib/components/ButtonLink'
+import { ButtonLink } from '@pooltogether/react-components'
 import {
   DISCORD_INVITE_URL,
   POOLPOOL_SNAPSHOT_URL,
