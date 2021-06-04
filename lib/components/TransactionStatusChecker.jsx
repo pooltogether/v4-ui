@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useAtom } from 'jotai'
 
 import { TRANSACTIONS_KEY } from 'lib/constants'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { transactionsAtom } from '@pooltogether/react-components'
 import { useOnboard } from '@pooltogether/hooks'
 import { checkTransactionStatuses } from 'lib/utils/checkTransactionStatuses'
 import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'

@@ -2,7 +2,7 @@ import React from 'react'
 import { useAtom } from 'jotai'
 
 import { useTranslation } from 'react-i18next'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { transactionsAtom } from '@pooltogether/react-components'
 import { useOnboard } from '@pooltogether/hooks'
 import { TransactionsListItem } from 'lib/components/TransactionsListItem'
 import { clearPreviousTransactions } from 'lib/services/clearPreviousTransactions'

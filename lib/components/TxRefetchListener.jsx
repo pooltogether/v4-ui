@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAtom } from 'jotai'
-import { transactionsAtom } from 'lib/atoms/transactionsAtom'
+import { transactionsAtom } from '@pooltogether/react-components'
 
 const debug = require('debug')('pool-app:TxRefetchListener')
 
