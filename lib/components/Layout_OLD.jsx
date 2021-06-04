@@ -16,7 +16,7 @@ import { PendingTxButton } from 'lib/components/PendingTxButton'
 import { LanguagePicker } from 'lib/components/LanguagePicker'
 import { Settings } from 'lib/components/Settings'
 import { WrongNetworkModal } from 'lib/components/WrongNetworkModal'
-import { NavPoolBalance } from 'lib/components/NavPoolBalance'
+import { NavPoolBalance } from 'lib/components/Layout/NavPoolBalance'
 import { Button } from 'lib/components/Button'
 import { useGovernanceChainId } from 'lib/hooks/useGovernanceChainId'
 

@@ -11,7 +11,6 @@ import { Provider } from 'jotai'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { BodyClasses } from 'lib/components/BodyClasses'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { LoadingScreen } from 'lib/components/LoadingScreen'
 import { TransactionStatusChecker } from 'lib/components/TransactionStatusChecker'
 import { TxRefetchListener } from 'lib/components/TxRefetchListener'
 import { SocialDataFetcher } from 'lib/components/SocialDataFetcher'
@@ -24,6 +23,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'assets/styles/index.css'
 import '@pooltogether/react-components/dist/index.css'
 import { useInitializeOnboard } from '@pooltogether/hooks'
+import { LoadingScreen } from '@pooltogether/react-components'
 import '../i18n'
 import { useTranslation } from 'react-i18next'
 
@@ -101,8 +101,6 @@ function MyApp({ Component, pageProps, router }) {
     }
   }, [])
 
-  if (!i18n.isInitialized) return <LoadingScreen initialized={false} />
-
   return (
     <Provider>
       <QueryClientProvider client={queryClient}>
@@ -118,7 +116,9 @@ function MyApp({ Component, pageProps, router }) {
               <TransactionStatusChecker />
 
               <TxRefetchListener />
-              <Component {...pageProps} />
+              <LoadingScreen isInitialized={i18n.isInitialized}>
+                <Component {...pageProps} />
+              </LoadingScreen>
 
               <ReactQueryDevtools />
             </CustomErrorBoundary>
