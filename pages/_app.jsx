@@ -8,11 +8,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
 
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
-import { BodyClasses } from 'lib/components/BodyClasses'
-import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { TransactionStatusChecker } from 'lib/components/TransactionStatusChecker'
-import { TxRefetchListener } from 'lib/components/TxRefetchListener'
-import { SocialDataFetcher } from 'lib/components/SocialDataFetcher'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -21,9 +16,15 @@ import '@reach/tooltip/styles.css'
 import 'assets/styles/index.css'
 import '@pooltogether/react-components/dist/index.css'
 import { useInitializeOnboard } from '@pooltogether/hooks'
-import { ToastContainer, LoadingScreen } from '@pooltogether/react-components'
+import {
+  ToastContainer,
+  LoadingScreen,
+  TransactionStatusChecker
+} from '@pooltogether/react-components'
 import '../i18n'
 import { useTranslation } from 'react-i18next'
+import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
+import { TxRefetchListener } from 'lib/components/TxRefetchListener'
 
 const queryClient = new QueryClient()
 
@@ -103,11 +104,7 @@ function MyApp({ Component, pageProps, router }) {
     <Provider>
       <QueryClientProvider client={queryClient}>
         <InitializeOnboard>
-          <BodyClasses />
-
           <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
-
-          <SocialDataFetcher />
 
           <AllContextProviders>
             <CustomErrorBoundary>

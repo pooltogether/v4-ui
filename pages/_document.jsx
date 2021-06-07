@@ -12,7 +12,7 @@ class MyDocument extends Document {
   }
 
   render() {
-    const title = 'PoolTogether Vote'
+    const title = 'PoolTogether'
     const url = `https://vote.pooltogether.com`
     const description = `Direct the future of the PoolTogether protocol.`
     const keywords = 'ethereum'
