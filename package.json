@@ -22,8 +22,8 @@
     "unlink-hooks": "cd node_modules/react && yarn unlink && cd ../react-query && yarn unlink && cd ../react-dom && yarn unlink && cd ../jotai && yarn unlink && cd ../.. && yarn unlink @pooltogether/hooks && yarn install --force",
     "link-components": "cd node_modules/react && yarn link && cd ../react-dom && yarn link && cd ../feather-icons-react && yarn link && cd ../jotai && yarn link && cd ../framer-motion && yarn link  && cd ../lodash && yarn link && cd ../tailwindcss && yarn link && cd ../eth-revert-reason && yarn link && cd ../@pooltogether && cd hooks && yarn link && cd ../utilities && yarn link && cd ../evm-chains-extended && yarn link && cd .. && cd ../.. && yarn link @pooltogether/react-components",
     "unlink-components": "cd node_modules/react && yarn unlink && cd ../react-dom && yarn unlink && cd ../jotai && yarn unlink && cd ../feather-icons-react && yarn unlink && cd ../eth-revert-reason && yarn unlink && cd ../framer-motion  && yarn unlink && cd ../lodash  && yarn unlink && cd ../tailwindcss && yarn unlink && cd ../@pooltogether && cd hooks && yarn unlink && cd ../utilities && yarn unlink && cd ../evm-chains-extended && yarn unlink && cd .. && cd ../.. && yarn unlink @pooltogether/react-components && yarn install --force",
-    "link-components-and-hooks": "cd node_modules/react && yarn link && yarn link && cd ../eth-revert-reason && cd ../react-dom && yarn link && cd ../jotai && yarn link && cd ../feather-icons-react && yarn link && cd ../framer-motion && yarn link && cd ../lodash && yarn link && cd ../tailwindcss && yarn link && cd ../@pooltogether && cd ../utilities && yarn link && cd ../evm-chains-extended && yarn link  && cd .. cd ../.. && yarn link @pooltogether/react-components && yarn link @pooltogether/hooks",
-    "unlink-components-and-hooks": "cd node_modules/react && yarn unlink && cd ../eth-revert-reason && yarn unlink && cd ../react-dom && yarn unlink && cd ../jotai && yarn unlink && cd ../feather-icons-react && yarn unlink && cd ../framer-motion  && yarn unlink && cd ../lodash  && yarn unlink && cd ../tailwindcss && yarn unlink && cd ../@pooltogether && cd utilities && yarn unlink && cd ../evm-chains-extended && yarn unlink  && cd .. && cd ../.. && yarn unlink @pooltogether/react-components && yarn unlink @pooltogether/hooks && yarn install --force"
+    "link-components-and-hooks": "cd node_modules/react && yarn link && cd ../react-query && yarn link  && cd ../eth-revert-reason && yarn link && cd ../react-dom && yarn link && cd ../jotai && yarn link && cd ../feather-icons-react && yarn link && cd ../framer-motion && yarn link && cd ../lodash && yarn link && cd ../tailwindcss && yarn link && cd ../@pooltogether && cd utilities && yarn link && cd ../evm-chains-extended && yarn link  && cd .. cd ../.. && yarn link @pooltogether/react-components && yarn link @pooltogether/hooks",
+    "unlink-components-and-hooks": "cd node_modules/react && yarn unlink && cd ../react-query && yarn unlink  && cd ../eth-revert-reason && yarn unlink && cd ../react-dom && yarn unlink && cd ../jotai && yarn unlink && cd ../feather-icons-react && yarn unlink && cd ../framer-motion  && yarn unlink && cd ../lodash  && yarn unlink && cd ../tailwindcss && yarn unlink && cd ../@pooltogether && cd utilities && yarn unlink && cd ../evm-chains-extended && yarn unlink && cd .. && cd ../.. && yarn unlink @pooltogether/react-components && yarn unlink @pooltogether/hooks && yarn install --force"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -113,7 +113,7 @@
     "react-query": "^3.16.0",
     "react-query-devtools": "^2.6.1",
     "react-spinners": "^0.9.0",
-    "react-table": "^7.5.0",
+    "react-table": "^7.7.0",
     "react-test-renderer": "16.13.1",
     "react-toastify": "^6.0.8",
     "react-tooltip": "^4.2.19",
