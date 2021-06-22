@@ -6,25 +6,29 @@ import { ethers } from 'ethers'
 import { ReactQueryDevtools } from 'react-query-devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
-
-import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
-
-import '@reach/dialog/styles.css'
-import '@reach/menu-button/styles.css'
-import '@reach/tooltip/styles.css'
-
-import 'assets/styles/index.css'
-import '@pooltogether/react-components/dist/index.css'
-import { useInitializeOnboard } from '@pooltogether/hooks'
+import {
+  useInitCookieOptions,
+  useInitializeOnboard,
+  useInitInfuraId,
+  useInitReducedMotion
+} from '@pooltogether/hooks'
 import {
   ToastContainer,
   LoadingScreen,
   TransactionStatusChecker
 } from '@pooltogether/react-components'
-import '../i18n'
 import { useTranslation } from 'react-i18next'
+
+import '../i18n'
+import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
 import { TxRefetchListener } from 'lib/components/TxRefetchListener'
+
+import '@reach/dialog/styles.css'
+import '@reach/menu-button/styles.css'
+import '@reach/tooltip/styles.css'
+import 'assets/styles/index.css'
+import '@pooltogether/react-components/dist/index.css'
 
 const queryClient = new QueryClient()
 
@@ -103,7 +107,7 @@ function MyApp({ Component, pageProps, router }) {
   return (
     <Provider>
       <QueryClientProvider client={queryClient}>
-        <InitializeOnboard>
+        <InitPoolTogetherHooks>
           <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
 
           <AllContextProviders>
@@ -118,15 +122,23 @@ function MyApp({ Component, pageProps, router }) {
               <ReactQueryDevtools />
             </CustomErrorBoundary>
           </AllContextProviders>
-        </InitializeOnboard>
+        </InitPoolTogetherHooks>
       </QueryClientProvider>
     </Provider>
   )
 }
 
-const InitializeOnboard = (props) => {
-  useInitializeOnboard()
-  return props.children
+const InitPoolTogetherHooks = ({ children }) => {
+  useInitInfuraId(process.env.NEXT_JS_INFURA_ID)
+  useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
+  useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
+  useInitializeOnboard({
+    infuraId: process.env.NEXT_JS_INFURA_ID,
+    fortmaticKey: process.env.NEXT_JS_FORTMATIC_API_KEY,
+    portisKey: process.env.NEXT_JS_PORTIS_API_KEY,
+    defaultNetworkName: process.env.NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME
+  })
+  return children
 }
 
 export default MyApp
