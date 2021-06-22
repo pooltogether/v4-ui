@@ -28,6 +28,12 @@ To run the local server, run:
 $ yarn dev
 ```
 
+# Usage
+
+- Choose what layout you want (`DefaultLayout` or `SimpleLayout`)
+- Add supported networks to `useSupportedNetworks`
+- Remember to wrap your pages with `<Layout>`
+
 #### Developer Tools
 
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
