@@ -11,10 +11,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 const nextConfig = {
-  future: {
-    webpack5: true,
-    strictPostcssConfiguration: true
-  },
   compress: false,
   inlineImageLimit: 48, // make it tiny so that it doesn't inline,
 }
