@@ -51,6 +51,7 @@ const LanguagePicker = () => {
 const UsersAccount = () => {
   const { isWalletConnected, connectWallet, isOnboardReady } = useOnboard()
   const supportedNetworks = useSupportedNetworks()
+  const { t } = useTranslation()
 
   if (!isOnboardReady) return null
 
@@ -62,7 +63,7 @@ const UsersAccount = () => {
         textSize='xxxs'
         className='mx-1 my-auto'
       >
-        Connect wallet
+        {t('connectWallet')}
       </Button>
     )
   }
