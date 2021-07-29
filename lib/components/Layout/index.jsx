@@ -1,18 +1,15 @@
 import React from 'react'
 
-import { DefaultLayout } from '@pooltogether/react-components'
+import { SimpleLayout } from '@pooltogether/react-components'
 import { BottomNav } from 'lib/components/Layout/BottomNav'
 import { Footer } from 'lib/components/Layout/Footer'
 import { PageHeader } from 'lib/components/Layout/PageHeader'
-import { SideNav } from 'lib/components/Layout/SideNav'
 
 const Layout = (props) => (
-  <DefaultLayout
+  <SimpleLayout
     banner={null}
     header={<PageHeader />}
     content={props.children}
-    sideNav={<SideNav />}
-    bottomNav={<BottomNav />}
     footer={<Footer />}
   />
 )
