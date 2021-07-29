@@ -3,6 +3,8 @@ import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
+import { DepositAmount } from 'lib/components/DepositAmount'
+
 const bn = ethers.BigNumber.from
 
 const CONTENT_PANE_STATES = {
@@ -16,6 +18,12 @@ const TAB_DESELECTED_CLASS_NAMES =
   'text-accent-1 hover:text-inverse border-transparent hover:border-highlight-2 hover:bg-card-selected'
 const TAB_SELECTED_CLASS_NAMES = 'text-accent-3 border-default bg-card-selected'
 
+const DEFAULT_TAB_PROPS = {
+  tabDeselectedClassName: TAB_DESELECTED_CLASS_NAMES,
+  tabSelectedClassName: TAB_SELECTED_CLASS_NAMES,
+  className: TAB_CLASS_NAMES
+}
+
 export const DefaultPage = (props) => {
   const [selected, setSelected] = useState(CONTENT_PANE_STATES.deposit)
 
@@ -23,17 +31,24 @@ export const DefaultPage = (props) => {
   const prizesSelected = selected === CONTENT_PANE_STATES.prizes
   const holdingsSelected = selected === CONTENT_PANE_STATES.holdings
 
-  const defaultTabProps = {
-    tabDeselectedClassName: TAB_DESELECTED_CLASS_NAMES,
-    tabSelectedClassName: TAB_SELECTED_CLASS_NAMES,
-    className: TAB_CLASS_NAMES
-  }
+  const selectedProps = { depositSelected, prizesSelected, holdingsSelected }
 
   return (
     <div className='flex flex-col items-center'>
+      <NavTabs {...selectedProps} setSelected={setSelected} />
+      <ContentPanes {...selectedProps} />
+    </div>
+  )
+}
+
+const NavTabs = (props) => {
+  const { depositSelected, prizesSelected, holdingsSelected, setSelected } = props
+
+  return (
+    <>
       <Tabs>
         <Tab
-          {...defaultTabProps}
+          {...DEFAULT_TAB_PROPS}
           onClick={() => {
             setSelected(CONTENT_PANE_STATES.deposit)
           }}
@@ -42,7 +57,7 @@ export const DefaultPage = (props) => {
           deposit
         </Tab>
         <Tab
-          {...defaultTabProps}
+          {...DEFAULT_TAB_PROPS}
           onClick={() => {
             setSelected(CONTENT_PANE_STATES.prizes)
           }}
@@ -51,7 +66,7 @@ export const DefaultPage = (props) => {
           prizes
         </Tab>
         <Tab
-          {...defaultTabProps}
+          {...DEFAULT_TAB_PROPS}
           onClick={() => {
             setSelected(CONTENT_PANE_STATES.holdings)
           }}
@@ -60,6 +75,15 @@ export const DefaultPage = (props) => {
           holdings
         </Tab>
       </Tabs>
+    </>
+  )
+}
+
+const ContentPanes = (props) => {
+  const { depositSelected, prizesSelected, holdingsSelected } = props
+
+  return (
+    <>
       <ContentPane className='w-full' isSelected={depositSelected}>
         <Content>
           <DepositUI />
@@ -75,13 +99,13 @@ export const DefaultPage = (props) => {
           <HoldingsUI />
         </Content>
       </ContentPane>
-    </div>
+    </>
   )
 }
 
 const DepositUI = (props) => {
   return (
-    <div className='my-4 flex flex-col w-full'>
+    <div className='mx-auto my-4 flex flex-col w-full sm:max-w-3xl'>
       <UpcomingPrizeDetails />
       <DepositSwap />
       <PrizeBreakdown />
@@ -103,19 +127,38 @@ const UpcomingPrizeDetails = (props) => {
   return (
     <>
       <div className='bg-secondary rounded-lg w-full p-10 flex flex-col items-center'>
-        <h6 className='uppercase'>{t('weeklyPrize')}</h6>
-        <h1>$100,000.23</h1>
-        <h6>{t('awardIn')}</h6>
-        <h6>
-          <PrizeCountdown prizePeriodSeconds={bn(86400)} prizePeriodStartedAt={bn(1627514627)} />
-        </h6>
+        <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
+        <div className='font-bold text-9xl'>$100,000.23</div>
+        <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
+        <PrizeCountdown
+          textSize='text-xl'
+          prizePeriodSeconds={bn(86400)}
+          prizePeriodStartedAt={bn(1627514627)}
+        />
       </div>
     </>
   )
 }
 
 const DepositSwap = (props) => {
-  return <>swap</>
+  return (
+    <>
+      <div className='w-full p-10 flex flex-col items-center'>
+        {/* <DepositAmount
+          {...DepositAmountProps}
+          nextStep={nextStep}
+          key={0}
+          tokenAddress={tokenAddress}
+          contractAddress={contractAddress}
+          quantity={quantity}
+          prevTicketBalance={prevTicketBalance}
+          prevUnderlyingBalance={prevUnderlyingBalance}
+          chainId={chainId}
+          form={form}
+        /> */}
+      </div>
+    </>
+  )
 }
 
 const PrizeBreakdown = (props) => {
