@@ -54,6 +54,7 @@
   "dependencies": {
     "@argent/smartwallet-utils": "^0.0.12",
     "@babel/plugin-transform-react-jsx": "^7.14.5",
+    "@download/blockies": "^1.0.3",
     "@pooltogether/bnc-onboard": "1.25.0-c",
     "@pooltogether/current-pool-data": "3.5.14",
     "@pooltogether/etherplex": "^1.1.1",
