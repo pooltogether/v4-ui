@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
-import { Button, SimpleInput, TextInputGroup } from '@pooltogether/react-components'
+import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
 
 import { ErrorsBox } from 'lib/components/ErrorsBox'
@@ -69,7 +69,7 @@ export const DepositAmount = (props) => {
       <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
         <div className='w-full mx-auto'>
           <TextInputGroup
-            Input={SimpleInput}
+            Input={TsunamiInput}
             validate={depositValidationRules}
             unsignedNumber
             autoFocus
@@ -112,6 +112,18 @@ export const DepositAmount = (props) => {
         </div>
 
         <img src={DownArrow} className='mx-auto my-2' />
+
+        <div className='w-full mx-auto'>
+          <TextInputGroup
+            Input={TsunamiInput}
+            readonly
+            placeholder='0.0'
+            id='result'
+            name='result'
+            register={register}
+            label={null}
+          />
+        </div>
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <Button
