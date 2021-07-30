@@ -47,7 +47,7 @@ const NavTabs = (props) => {
 
   return (
     <>
-      <Tabs>
+      <Tabs className='mb-4'>
         <Tab
           {...DEFAULT_TAB_PROPS}
           onClick={() => {
@@ -106,7 +106,7 @@ const ContentPanes = (props) => {
 
 const DepositUI = (props) => {
   return (
-    <div className='mx-auto my-4 flex flex-col w-full sm:max-w-3xl'>
+    <div className='mx-auto my-4 flex flex-col w-full max-w-xl'>
       <UpcomingPrizeDetails />
       <DepositSwap />
       <PrizeBreakdown />
@@ -127,7 +127,7 @@ const UpcomingPrizeDetails = (props) => {
 
   return (
     <>
-      <div className='bg-secondary rounded-lg w-full p-10 flex flex-col items-center'>
+      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col items-center'>
         <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
         <div className='font-bold text-9xl'>$100,000.23</div>
         <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
@@ -156,7 +156,7 @@ const DepositSwap = (props) => {
 
   return (
     <>
-      <div className='w-full flex flex-col items-center my-4'>
+      <div className='bg-card rounded-lg w-full flex flex-col items-center my-4 p-10'>
         <DepositAmount
           key={0}
           tokenAddress={tokenAddress}
