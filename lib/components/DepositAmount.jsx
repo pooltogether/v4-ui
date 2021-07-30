@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
-import { Button, TextInputGroup } from '@pooltogether/react-components'
+import { Button, SimpleInput, TextInputGroup } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
 
 import { ErrorsBox } from 'lib/components/ErrorsBox'
@@ -21,14 +21,15 @@ export const DepositAmount = (props) => {
     label,
     tokenSymbol,
     tokenAddress,
-    nextStep,
+    // nextStep,
     form
   } = props
 
   const { t } = useTranslation()
   const router = useRouter()
 
-  const { handleSubmit, register, errors, formState, setValue } = form
+  const { handleSubmit, register, formState, setValue } = form
+  const { errors } = formState
 
   // Set quantity from the query parameter
   useEffect(() => {
@@ -44,7 +45,7 @@ export const DepositAmount = (props) => {
         prevUnderlyingBalance: usersUnderlyingBalance,
         prevTicketBalance: usersTicketBalance
       })
-      nextStep()
+      // nextStep()
     }
   }
 
@@ -65,17 +66,19 @@ export const DepositAmount = (props) => {
     <>
       {/* <WithdrawAndDepositPaneTitle label={label} symbol={tokenSymbol} address={tokenAddress} /> */}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
         <div className='w-full mx-auto'>
           <TextInputGroup
+            Input={SimpleInput}
             validate={depositValidationRules}
             unsignedNumber
             autoFocus
             large
+            placeholder='0.0'
             id='quantity'
             name='quantity'
             register={register}
-            label={t('amount')}
+            label={t('swap')}
             required={t('ticketQuantityRequired')}
             autoComplete='off'
             rightLabel={
@@ -108,7 +111,7 @@ export const DepositAmount = (props) => {
           {Object.values(errors).length > 0 && <ErrorsBox errors={errors} />}
         </div>
 
-        <img src={DownArrow} />
+        <img src={DownArrow} className='mx-auto my-2' />
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <Button

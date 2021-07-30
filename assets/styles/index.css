@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* TODO: Find out why this doesn't work? It's a default in Tailwind */
+.bg-transparent {
+  background: transparent;
+}

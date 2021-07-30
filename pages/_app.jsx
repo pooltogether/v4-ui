@@ -27,8 +27,9 @@ import { TxRefetchListener } from 'lib/components/TxRefetchListener'
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
-import 'assets/styles/index.css'
 import '@pooltogether/react-components/dist/index.css'
+
+import 'assets/styles/index.css'
 
 const queryClient = new QueryClient()
 

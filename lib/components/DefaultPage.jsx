@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ethers } from 'ethers'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
@@ -141,12 +142,22 @@ const UpcomingPrizeDetails = (props) => {
 }
 
 const DepositSwap = (props) => {
+  const chainId = 1
+  const tokenAddress = '0xface'
+  const contractAddress = '0xface'
+  const quantity = '2'
+  const prevTicketBalance = '20'
+  const prevUnderlyingBalance = '40'
+
+  const form = useForm({
+    mode: 'all',
+    reValidateMode: 'onChange'
+  })
+
   return (
     <>
-      <div className='w-full p-10 flex flex-col items-center'>
-        {/* <DepositAmount
-          {...DepositAmountProps}
-          nextStep={nextStep}
+      <div className='w-full flex flex-col items-center my-4'>
+        <DepositAmount
           key={0}
           tokenAddress={tokenAddress}
           contractAddress={contractAddress}
@@ -155,7 +166,7 @@ const DepositSwap = (props) => {
           prevUnderlyingBalance={prevUnderlyingBalance}
           chainId={chainId}
           form={form}
-        /> */}
+        />
       </div>
     </>
   )
