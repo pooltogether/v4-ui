@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
 import { DepositAmount } from 'lib/components/DepositAmount'
+
+import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 
 const bn = ethers.BigNumber.from
 
@@ -127,7 +130,7 @@ const UpcomingPrizeDetails = (props) => {
 
   return (
     <>
-      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col items-center'>
+      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
         <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
         <div className='font-bold text-9xl'>$100,000.23</div>
         <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
@@ -156,7 +159,7 @@ const DepositSwap = (props) => {
 
   return (
     <>
-      <div className='bg-card rounded-lg w-full flex flex-col items-center my-4 p-10'>
+      <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
         <DepositAmount
           key={0}
           tokenAddress={tokenAddress}
@@ -173,5 +176,95 @@ const DepositSwap = (props) => {
 }
 
 const PrizeBreakdown = (props) => {
-  return <>break it down</>
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 px-20 p-10'>
+        <img
+          src={PrizeWLaurels}
+          alt='trophy icon w/ laurels'
+          height={60}
+          width={88}
+          className='mx-auto'
+        />
+        <div className='font-inter font-semibold text-sm capitalize text-accent-1 my-3'>
+          {t('prizeBreakdown')}
+        </div>
+
+        <hr className='border-accent-3' style={{ width: '100%' }} />
+
+        <div className='flex flex-col w-full'>
+          <div className='flex justify-between'>
+            {/* <PrizeTableHeader>{t('prize')}</PrizeTableHeader> */}
+            <PrizeTableHeader widthClasses='w-32'>{t('amount')}</PrizeTableHeader>
+            <PrizeTableHeader widthClasses='w-32'>{t('winners')}</PrizeTableHeader>
+            <PrizeTableHeader widthClasses='w-24'>{t('odds')}</PrizeTableHeader>
+          </div>
+          <div className='flex justify-between '>
+            {/* <PrizeTableCell>{t('')}</PrizeTableCell> */}
+            <PrizeTableCell
+              className='font-inter font-bold text-lg capitalize text-accent-1 my-1 opacity-60 w-32'
+              isFlashy
+            >
+              $50,000
+            </PrizeTableCell>
+            <PrizeTableCell
+              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 opacity-60 w-32'
+              isFlashy
+            >
+              1
+            </PrizeTableCell>
+            <PrizeTableCell
+              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 opacity-60 w-24'
+              isFlashy
+            >
+              1/50,000
+            </PrizeTableCell>
+          </div>
+          <div className='flex justify-between'>
+            {/* <PrizeTableCell>{t('')}</PrizeTableCell> */}
+            <PrizeTableCell widthClasses='w-32'>$2,500</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-32'>10</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-24'>1/1,000</PrizeTableCell>
+          </div>
+          <div className='flex justify-between '>
+            {/* <PrizeTableCell widthClasses='w-32'>{t('')}</PrizeTableCell> */}
+            <PrizeTableCell widthClasses='w-32'>$250</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-32'>100</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-24'>1/100</PrizeTableCell>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const PrizeTableHeader = (props) => {
+  return (
+    <div
+      className={classnames(
+        'font-inter text-xxs capitalize text-accent-1 mt-8 mb-2 opacity-60',
+        props.widthClasses
+      )}
+    >
+      {props.children}
+    </div>
+  )
+}
+
+const PrizeTableCell = (props) => {
+  return (
+    <div
+      className={classnames(props.className, props.widthClasses, {
+        'text-flashy': props.isFlashy
+      })}
+    >
+      {props.children}
+    </div>
+  )
+}
+
+PrizeTableCell.defaultProps = {
+  className: 'font-inter text-lg capitalize text-accent-1 my-1 opacity-60'
 }
