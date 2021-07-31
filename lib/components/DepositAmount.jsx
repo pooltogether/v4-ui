@@ -139,14 +139,17 @@ export const DepositAmount = (props) => {
         </div>
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
-          <Button
-            textSize='lg'
+          <button
+            className='new-btn rounded-lg w-full text-xl py-3 mt-2'
             disabled={!formState.isValid}
             onClick={handleSubmit(onSubmit)}
-            className={'mx-auto'}
           >
-            {t('continue')}
-          </Button>
+            {t('connectWalletToDeposit')}
+          </button>
+        </div>
+
+        <div className='font-bold gradient-new text-center py-2 mt-4 text-xxs rounded-lg text-white'>
+          {t('chancesToWinAreProportional')}
         </div>
       </form>
     </>
