@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
@@ -162,7 +163,7 @@ export const DepositAmount = (props) => {
           {t('chancesToWinAreProportional')}
         </div>
 
-        <FormStepper activeStep={2} totalSteps={3} />
+        <FormStepper activeStep={4} totalSteps={3} />
       </form>
     </>
   )
@@ -200,48 +201,8 @@ const FormStepper = (props) => {
   const activeBarClassNames = 'bg-highlight-1'
   const inactiveBarClassNames = 'bg-transparent'
 
-  return (
-    <>
-      <div
-        className='bg-card-selected w-2/3 flex justify-between items-center mt-10 relative mx-auto'
-        style={{ height: 2 }}
-      >
-        <div className='w-full flex justify-between items-center absolute t-0 l-0 r-0 b-0 z-20'>
-          <div
-            className={classnames(defaultCircleClassNames, {
-              [activeCircleClassNames]: activeStep >= 1,
-              [inactiveCircleClassNames]: activeStep < 1
-            })}
-          ></div>
-          <div
-            className={classnames(defaultCircleClassNames, {
-              [activeCircleClassNames]: activeStep >= 2,
-              [inactiveCircleClassNames]: activeStep < 2
-            })}
-          ></div>
-          <div
-            className={classnames(defaultCircleClassNames, {
-              [activeCircleClassNames]: activeStep >= 3,
-              [inactiveCircleClassNames]: activeStep < 3
-            })}
-          ></div>
-        </div>
-
-        <div
-          className={classnames(defaultBarClassNames, {
-            [activeBarClassNames]: activeStep > 1,
-            [inactiveBarClassNames]: activeStep <= 1
-          })}
-          style={{ height: 2, left: 2 }}
-        ></div>
-        <div
-          className={classnames(defaultBarClassNames, {
-            [activeBarClassNames]: activeStep > 2,
-            [inactiveBarClassNames]: activeStep <= 2
-          })}
-          style={{ height: 2, right: 2 }}
-        ></div>
-      </div>
+  const Labels = () => {
+    return (
       <div className='w-2/3 flex justify-between items-center mt-2 relative mx-auto'>
         <div
           className={classnames(defaultLabelClassNames, {
@@ -270,6 +231,97 @@ const FormStepper = (props) => {
         >
           Confirm Order
         </div>
+      </div>
+    )
+  }
+
+  const Bars = () => {
+    return (
+      <>
+        <div
+          className={classnames(defaultBarClassNames, {
+            [activeBarClassNames]: activeStep > 1,
+            [inactiveBarClassNames]: activeStep <= 1
+          })}
+          style={{ height: 2, left: 2 }}
+        ></div>
+        <div
+          className={classnames(defaultBarClassNames, {
+            [activeBarClassNames]: activeStep > 2,
+            [inactiveBarClassNames]: activeStep <= 2
+          })}
+          style={{ height: 2, right: 2 }}
+        ></div>
+      </>
+    )
+  }
+
+  const Circles = () => {
+    return (
+      <>
+        <div
+          className={classnames(defaultCircleClassNames, {
+            [activeCircleClassNames]: activeStep >= 1,
+            [inactiveCircleClassNames]: activeStep < 1
+          })}
+        ></div>
+        <div
+          className={classnames(defaultCircleClassNames, {
+            [activeCircleClassNames]: activeStep >= 2,
+            [inactiveCircleClassNames]: activeStep < 2
+          })}
+        ></div>
+        <div
+          className={classnames(defaultCircleClassNames, {
+            [activeCircleClassNames]: activeStep >= 3,
+            [inactiveCircleClassNames]: activeStep < 3
+          })}
+        ></div>
+      </>
+    )
+  }
+
+  const DepositCompleteMessage = (props) => {
+    return (
+      <div
+        className={classnames('absolute flex flex-col w-full trans', activeLabelClassNames)}
+        style={{ top: -6 }}
+      >
+        <FeatherIcon icon='check-circle' className={classnames('w-4 h-4 mx-auto stroke-current')} />
+        <div className={classnames('text-center', defaultLabelClassNames)}>Deposit complete!</div>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className='relative w-full mt-10'>
+        <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto' style={{ height: 2 }}>
+          <span
+            className={classnames({
+              'inline-block opacity-0 trans': activeStep !== 4
+            })}
+          >
+            <DepositCompleteMessage />
+          </span>
+        </div>
+        <span
+          className={classnames({
+            'inline-block opacity-0 trans': activeStep > 3
+          })}
+        >
+          <div
+            className='bg-card-selected w-2/3 flex justify-between items-center mt-10 relative mx-auto'
+            style={{ height: 2 }}
+          >
+            <div className='w-full flex justify-between items-center absolute t-0 l-0 r-0 b-0 z-20'>
+              <Circles />
+            </div>
+
+            <Bars />
+          </div>
+          <Labels />
+        </span>
       </div>
     </>
   )
