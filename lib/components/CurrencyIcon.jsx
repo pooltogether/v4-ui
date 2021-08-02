@@ -11,11 +11,9 @@ const CoingeckoOrPlaceholder = (props) => {
 
   let src
 
-  console.log(address)
   // Check Coingecko for img
   const { data: tokenInfo } = useCoingeckoTokenInfoQuery(address)
   src = tokenInfo?.image?.small
-  console.log(tokenInfo)
 
   // Fallback to placeholder
   if (!src) {
@@ -34,13 +32,15 @@ const CoingeckoOrPlaceholder = (props) => {
 }
 
 export const CurrencyIcon = (props) => {
-  const { className, noMediaQueries, sm, md, lg, xl, xs, address } = props
+  const { className, noMediaQueries, sm, md, lg, xl, xs, xxs, address } = props
   let { sizeClasses } = props
 
   const noMargin = props.noMargin || false
 
   if (!sizeClasses && isUndefined(noMediaQueries)) {
-    if (xs) {
+    if (xxs) {
+      sizeClasses = 'w-5 h-5'
+    } else if (xs) {
       sizeClasses = 'w-3 h-3 sm:w-5 sm:h-5 lg:w-6 lg:h-6'
     } else if (sm) {
       sizeClasses = 'w-4 h-4 sm:w-6 sm:h-6 lg:w-8 lg:h-8'

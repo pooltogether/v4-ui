@@ -204,19 +204,19 @@ const PrizeBreakdown = (props) => {
           <div className='flex justify-between '>
             {/* <PrizeTableCell>{t('')}</PrizeTableCell> */}
             <PrizeTableCell
-              className='font-inter font-bold text-lg capitalize text-accent-1 my-1 opacity-60 w-32'
+              className='font-inter font-bold text-lg capitalize text-accent-1 my-1 w-32'
               isFlashy
             >
               $50,000
             </PrizeTableCell>
             <PrizeTableCell
-              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 opacity-60 w-32'
+              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 w-32'
               isFlashy
             >
               1
             </PrizeTableCell>
             <PrizeTableCell
-              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 opacity-60 w-24'
+              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 w-24'
               isFlashy
             >
               1/50,000

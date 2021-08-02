@@ -89,7 +89,10 @@ export const DepositAmount = (props) => {
             type='number'
             tickerUpcased={
               <>
-                <CurrencyIcon xs address={tokenAddress} /> {tickerUpcased}
+                <span className='relative' style={{ top: -3 }}>
+                  <CurrencyIcon xxs address={tokenAddress} />{' '}
+                </span>
+                {tickerUpcased}
               </>
             }
             Input={TsunamiInput}
