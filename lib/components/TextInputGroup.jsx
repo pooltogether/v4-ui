@@ -26,8 +26,22 @@ export const TextInputGroup = (props) => {
     isSuccess,
     large,
     unit,
+    unsignedNumber,
+    unsignedWholeNumber,
     ...classAndInputProps
   } = props
+
+  let inputMode = 'text'
+  let pattern = ''
+  let patternForHookForm = {}
+  if (unsignedNumber) {
+    inputMode = 'decimal'
+    pattern = '^[0-9]*[.,]?[0-9]*$'
+    patternForHookForm = {
+      value: /^\d*\.?\d*$/,
+      message: 'please enter a positive number'
+    }
+  }
 
   let {
     containerTextClasses,
@@ -126,7 +140,15 @@ export const TextInputGroup = (props) => {
         {rightLabel && <span className={rightLabelClassName}>{rightLabel}</span>}
       </div>
       <div className='flex justify-between'>
-        <Input {...inputProps} id={id} disabled={disabled} readOnly={readOnly} />
+        <Input
+          {...inputProps}
+          inputMode={inputMode}
+          id={id}
+          disabled={disabled}
+          readOnly={readOnly}
+          pattern={pattern}
+          patternForHookForm={patternForHookForm}
+        />
         {(unit || icon) && (
           <div className='pl-1'>
             {unit && <span className={unitsClassName}>{unit}</span>}

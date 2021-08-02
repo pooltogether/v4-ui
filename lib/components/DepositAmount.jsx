@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
+import { useOnboard } from '@pooltogether/hooks'
 import { Button } from '@pooltogether/react-components'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
@@ -33,6 +34,8 @@ export const DepositAmount = (props) => {
   const { handleSubmit, register, formState, setValue } = form
   const { errors } = formState
 
+  const { isWalletConnected, connectWallet } = useOnboard()
+
   // Set quantity from the query parameter
   useEffect(() => {
     if (queryQuantity) {
@@ -48,6 +51,14 @@ export const DepositAmount = (props) => {
         prevTicketBalance: usersTicketBalance
       })
       // nextStep()
+    }
+  }
+
+  const handleDepositButtonClick = () => {
+    if (isWalletConnected) {
+      handleSubmit(onSubmit)
+    } else {
+      connectWallet()
     }
   }
 
@@ -73,6 +84,7 @@ export const DepositAmount = (props) => {
           <TextInputGroup
             autoFocus
             unsignedNumber
+            type='number'
             tickerUpcased='USDC'
             Input={TsunamiInput}
             validate={depositValidationRules}
@@ -83,15 +95,11 @@ export const DepositAmount = (props) => {
             id='quantity'
             name='quantity'
             register={register}
-            label={
-              <>
-                <div className='font-semibold text-accent-3'>{t('swap')}</div>
-              </>
-            }
+            label={<div className='font-semibold text-accent-3'>{t('swap')}</div>}
             required={t('ticketQuantityRequired')}
             autoComplete='off'
             rightLabel={
-              usersAddress &&
+              isWalletConnected &&
               usersUnderlyingBalance && (
                 <>
                   <button
@@ -126,6 +134,7 @@ export const DepositAmount = (props) => {
             name='result'
             register={register}
             label={null}
+            value={console.log(formState)}
           />
         </div>
 
@@ -141,14 +150,14 @@ export const DepositAmount = (props) => {
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <button
             className='new-btn rounded-lg w-full text-xl py-3 mt-2'
-            disabled={!formState.isValid}
-            onClick={handleSubmit(onSubmit)}
+            disabled={isWalletConnected && !formState.isValid}
+            onClick={handleDepositButtonClick}
           >
-            {t('connectWalletToDeposit')}
+            {isWalletConnected ? t('reviewDeposit') : t('connectWalletToDeposit')}
           </button>
         </div>
 
-        <div className='font-bold gradient-new text-center py-2 mt-4 text-xxs rounded-lg text-white'>
+        <div className='font-bold gradient-new text-center py-1 mt-4 text-xxs rounded-lg text-white'>
           {t('chancesToWinAreProportional')}
         </div>
       </form>

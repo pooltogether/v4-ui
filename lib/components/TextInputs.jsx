@@ -25,6 +25,7 @@ const sanitizeProps = (props) => {
     'register',
     'required', // required is consumed by the register func but we don't want it on the <input />
     'pattern',
+    'tickerUpcased',
     'validate',
     'unsignedNumber',
     'unsignedWholeNumber',
@@ -91,7 +92,16 @@ RoundInput.defaultProps = {
 }
 
 export const TsunamiInput = (props) => {
-  let { autoFocus, pattern, required, register, validate, tickerUpcased, readOnly } = props
+  let {
+    autoFocus,
+    pattern,
+    patternForHookForm,
+    required,
+    register,
+    validate,
+    tickerUpcased,
+    readOnly
+  } = props
 
   const className = collectClassNames(props)
 
@@ -108,9 +118,10 @@ export const TsunamiInput = (props) => {
       <input
         {...sanitizeProps(props)}
         autoFocus={autoFocus && isBrowser}
+        pattern={pattern}
         ref={register({
           required,
-          pattern,
+          pattern: patternForHookForm,
           validate
         })}
         className={className}
