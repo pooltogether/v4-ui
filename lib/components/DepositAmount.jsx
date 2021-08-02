@@ -10,6 +10,7 @@ import { Button } from '@pooltogether/react-components'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
 import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
+import { CurrencyIcon } from 'lib/components/CurrencyIcon'
 
 import { ErrorsBox } from 'lib/components/ErrorsBox'
 // import { WithdrawAndDepositPaneTitle } from 'lib/components/WithdrawAndDepositPaneTitle'
@@ -19,7 +20,6 @@ import WalletIcon from 'assets/images/icon-wallet.svg'
 export const DepositAmount = (props) => {
   const {
     quantity: queryQuantity,
-    usersAddress,
     usersUnderlyingBalance,
     usersTicketBalance,
     decimals,
@@ -77,17 +77,21 @@ export const DepositAmount = (props) => {
     }
   }
 
+  const tickerUpcased = 'USDC'
+
   return (
     <>
-      {/* <WithdrawAndDepositPaneTitle label={label} symbol={tokenSymbol} address={tokenAddress} /> */}
-
       <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
         <div className='w-full mx-auto'>
           <TextInputGroup
             autoFocus
             unsignedNumber
             type='number'
-            tickerUpcased='USDC'
+            tickerUpcased={
+              <>
+                <CurrencyIcon xs address={tokenAddress} /> {tickerUpcased}
+              </>
+            }
             Input={TsunamiInput}
             validate={depositValidationRules}
             containerBgClasses={'bg-transparent'}
@@ -114,7 +118,7 @@ export const DepositAmount = (props) => {
                     }}
                   >
                     <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
-                    {numberWithCommas(usersUnderlyingBalance)} {tokenSymbol}
+                    {numberWithCommas(usersUnderlyingBalance)} {tickerUpcased}
                   </button>
                 </>
               )
@@ -127,6 +131,7 @@ export const DepositAmount = (props) => {
         <div className='w-full mx-auto'>
           <TextInputGroup
             readOnly
+            disabled
             tickerUpcased='PRZUSDC'
             Input={TsunamiInput}
             roundedClasses={'rounded-lg'}
@@ -136,7 +141,7 @@ export const DepositAmount = (props) => {
             name='result'
             register={register}
             label={null}
-            value={console.log(formState)}
+            value={form.watch('quantity')}
           />
         </div>
 
@@ -163,7 +168,7 @@ export const DepositAmount = (props) => {
           {t('chancesToWinAreProportional')}
         </div>
 
-        <FormStepper activeStep={4} totalSteps={3} />
+        <FormStepper activeStep={2} />
       </form>
     </>
   )
@@ -187,7 +192,7 @@ const DownArrow = (props) => {
 }
 
 const FormStepper = (props) => {
-  const { totalSteps, activeStep } = props
+  const { activeStep } = props
 
   const defaultCircleClassNames = 'border-2 h-4 w-4 rounded-full trans'
   const activeCircleClassNames = 'bg-card border-highlight-1'

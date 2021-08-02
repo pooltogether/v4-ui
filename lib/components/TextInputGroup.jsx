@@ -62,7 +62,7 @@ export const TextInputGroup = (props) => {
         'font-bold text-3xl': large,
         'text-xs': !large,
         'text-red-500': isError,
-        'text-whitesmoke': disabled
+        'text-accent-1': disabled
       })
 
   containerRoundedClasses = containerRoundedClasses ? containerRoundedClasses : 'rounded-full'
@@ -88,14 +88,14 @@ export const TextInputGroup = (props) => {
   labelClassName = labelClassName
     ? labelClassName
     : classnames(DEFAULT_INPUT_LABEL_CLASSES, {
-        'cursor-not-allowed font-whitesmoke': disabled,
+        'cursor-not-allowed text-accent-2': disabled,
         'text-accent-1': !disabled
       })
 
   rightLabelClassName = rightLabelClassName
     ? rightLabelClassName
     : classnames(DEFAULT_INPUT_LABEL_CLASSES, 'text-right', {
-        'cursor-not-allowed font-whitesmoke': disabled,
+        'cursor-not-allowed text-accent-2': disabled,
         'text-accent-1': !disabled
       })
 

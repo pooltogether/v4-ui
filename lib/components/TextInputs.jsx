@@ -3,9 +3,8 @@ import classnames from 'classnames'
 import { omit } from 'lodash'
 import { isBrowser } from 'react-device-detect'
 
-// import { DEFAULT_INPUT_CLASSES } from '../../constants'
 const DEFAULT_INPUT_CLASSES =
-  'w-full py-2 px-5 text-inverse trans outline-none focus:outline-none active:outline-none leading-none'
+  'w-full py-2 px-5 trans outline-none focus:outline-none active:outline-none leading-none'
 
 const sanitizeProps = (props) => {
   return omit(props, [
@@ -124,7 +123,9 @@ export const TsunamiInput = (props) => {
           pattern: patternForHookForm,
           validate
         })}
-        className={className}
+        className={classnames(className, {
+          'text-default opacity-50': readOnly
+        })}
         style={{
           backgroundColor: readOnly ? 'rgba(173, 153, 216, 0.03)' : '',
           borderColor: readOnly ? 'rgba(173, 153, 216, 0.1)' : ''
