@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
+import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
@@ -17,18 +18,21 @@ import { ErrorsBox } from 'lib/components/ErrorsBox'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
 
+const bn = ethers.BigNumber.from
+
 export const DepositAmount = (props) => {
   const {
     quantity: queryQuantity,
     usersUnderlyingBalance,
-    usersTicketBalance,
+    // usersTicketBalance,
     decimals,
-    label,
-    tokenSymbol,
     tokenAddress,
     // nextStep,
     form
   } = props
+
+  console.log(usersUnderlyingBalance)
+  const usersTicketBalance = bn(100)
 
   const { t } = useTranslation()
   const router = useRouter()
@@ -57,6 +61,7 @@ export const DepositAmount = (props) => {
   }
 
   const handleDepositButtonClick = () => {
+    console.log('hi')
     if (isWalletConnected) {
       handleSubmit(onSubmit)
     } else {
@@ -69,10 +74,10 @@ export const DepositAmount = (props) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
       if (!usersUnderlyingBalance) return false
-      if (!usersTicketBalance) return false
-      if (getMaxPrecision(v) > decimals) return false
-      if (parseUnits(usersUnderlyingBalance, decimals).lt(parseUnits(v, decimals))) return false
-      if (parseUnits(v, decimals).isZero()) return false
+      // if (!usersTicketBalance) return false
+      // if (getMaxPrecision(v) > decimals) return false
+      // if (parseUnits(usersUnderlyingBalance, decimals).lt(parseUnits(v, decimals))) return false
+      // if (parseUnits(v, decimals).isZero()) return false
       return true
     }
   }

@@ -3,6 +3,8 @@ import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { NETWORK } from '@pooltogether/utilities'
+import { useTokenBalances, useUsersAddress } from '@pooltogether/hooks'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
 import { DepositAmount } from 'lib/components/DepositAmount'
@@ -145,12 +147,24 @@ const UpcomingPrizeDetails = (props) => {
 }
 
 const DepositSwap = (props) => {
-  const chainId = 1
+  const chainId = NETWORK.mainnet
   const tokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
   const contractAddress = '0xface'
   const quantity = '2'
   const prevTicketBalance = '20'
   const prevUnderlyingBalance = '40'
+
+  const usersAddress = useUsersAddress()
+  console.log({ usersAddress })
+  console.log({ chainId })
+  const { data: usersBalance, isFetched: isUsersBalanceFetched } = useTokenBalances(
+    chainId,
+    usersAddress,
+    [tokenAddress]
+    // [tokenAddress, przusdcTicketAddress]
+  )
+  console.log({ usersBalance })
+  console.log({ isUsersBalanceFetched })
 
   const form = useForm({
     mode: 'all',
@@ -162,6 +176,8 @@ const DepositSwap = (props) => {
       <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
         <DepositAmount
           key={0}
+          // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
+          usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
           tokenAddress={tokenAddress}
           contractAddress={contractAddress}
           quantity={quantity}
