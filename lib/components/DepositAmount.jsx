@@ -61,11 +61,37 @@ export const DepositAmount = (props) => {
     }
   }
 
+  const needsApproval = true
+
+  const depositButtonLabel = () => {
+    if (!isWalletConnected) return t('connectWalletToDeposit')
+    if (isWalletConnected && needsApproval)
+      return t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })
+    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
+
+    return '...'
+  }
+  const handleApprove = () => {
+    alert('implement')
+  }
+
+  const isDepositButtonDisabled = () => {
+    if (isWalletConnected && needsApproval) return false
+
+    if (isWalletConnected && !formState.isValid) return true
+  }
+
   const handleDepositButtonClick = () => {
-    if (isWalletConnected) {
-      handleSubmit(onSubmit)
-    } else {
+    if (!isWalletConnected) {
       connectWallet()
+    }
+
+    if (isWalletConnected && needsApproval) {
+      handleApprove()
+    }
+
+    if (isWalletConnected && !needsApproval) {
+      handleSubmit(onSubmit)
     }
   }
 
@@ -163,10 +189,10 @@ export const DepositAmount = (props) => {
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <button
             className='new-btn rounded-lg w-full text-xl py-3 mt-2'
-            disabled={isWalletConnected && !formState.isValid}
+            disabled={isDepositButtonDisabled()}
             onClick={handleDepositButtonClick}
           >
-            {isWalletConnected ? t('reviewDeposit') : t('connectWalletToDeposit')}
+            {depositButtonLabel()}
           </button>
         </div>
 
