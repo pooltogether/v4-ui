@@ -91,47 +91,28 @@ RoundInput.defaultProps = {
 }
 
 export const TsunamiInput = (props) => {
-  let {
-    autoFocus,
-    pattern,
-    patternForHookForm,
-    required,
-    register,
-    validate,
-    tickerUpcased,
-    readOnly
-  } = props
+  let { autoFocus, pattern, patternForHookForm, required, register, validate, readOnly } = props
 
   const className = collectClassNames(props)
 
   return (
-    <div className='relative w-full'>
-      <div
-        className={classnames('font-inter absolute font-semibold text-lg cursor-default', {
-          'text-default opacity-50': readOnly
-        })}
-        style={{ top: 18, left: 24 }}
-      >
-        {tickerUpcased}
-      </div>
-      <input
-        {...sanitizeProps(props)}
-        autoFocus={autoFocus && isBrowser}
-        pattern={pattern}
-        ref={register({
-          required,
-          pattern: patternForHookForm,
-          validate
-        })}
-        className={classnames(className, {
-          'text-default opacity-50': readOnly
-        })}
-        style={{
-          backgroundColor: readOnly ? 'rgba(173, 153, 216, 0.03)' : '',
-          borderColor: readOnly ? 'rgba(173, 153, 216, 0.1)' : ''
-        }}
-      />
-    </div>
+    <input
+      {...sanitizeProps(props)}
+      autoFocus={autoFocus && isBrowser}
+      pattern={pattern}
+      ref={register({
+        required,
+        pattern: patternForHookForm,
+        validate
+      })}
+      className={classnames(className, {
+        'text-default opacity-50': readOnly
+      })}
+      style={{
+        backgroundColor: readOnly ? 'rgba(173, 153, 216, 0.03)' : '',
+        borderColor: readOnly ? 'rgba(173, 153, 216, 0.1)' : ''
+      }}
+    />
   )
 }
 

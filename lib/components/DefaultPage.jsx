@@ -148,23 +148,20 @@ const UpcomingPrizeDetails = (props) => {
 
 const DepositSwap = (props) => {
   const chainId = NETWORK.mainnet
-  const tokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+  const tokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' // dai
+  // const tokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' // usdc
   const contractAddress = '0xface'
   const quantity = '2'
   const prevTicketBalance = '20'
   const prevUnderlyingBalance = '40'
 
   const usersAddress = useUsersAddress()
-  console.log({ usersAddress })
-  console.log({ chainId })
   const { data: usersBalance, isFetched: isUsersBalanceFetched } = useTokenBalances(
     chainId,
     usersAddress,
     [tokenAddress]
     // [tokenAddress, przusdcTicketAddress]
   )
-  console.log({ usersBalance })
-  console.log({ isUsersBalanceFetched })
 
   const form = useForm({
     mode: 'all',
@@ -178,6 +175,7 @@ const DepositSwap = (props) => {
           key={0}
           // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
           usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
+          tokenSymbol={usersBalance?.[tokenAddress].symbol}
           tokenAddress={tokenAddress}
           contractAddress={contractAddress}
           quantity={quantity}

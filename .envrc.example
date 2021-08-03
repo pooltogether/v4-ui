@@ -16,6 +16,8 @@ export NEXT_JS_SUBGRAPH_URI_RINKEBY=https://api.thegraph.com/subgraphs/name/pool
 export NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME=
 
 export NEXT_JS_INFURA_ID=
+export NEXT_JS_QUICKNODE_ID=
+
 export NEXT_JS_DOMAIN_NAME=
 
 export NEXT_JS_ETHERSCAN_API_KEY=

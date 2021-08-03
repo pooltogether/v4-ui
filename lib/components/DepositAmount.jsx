@@ -27,6 +27,7 @@ export const DepositAmount = (props) => {
     // usersTicketBalance,
     decimals,
     tokenAddress,
+    tokenSymbol,
     // nextStep,
     form
   } = props
@@ -61,7 +62,6 @@ export const DepositAmount = (props) => {
   }
 
   const handleDepositButtonClick = () => {
-    console.log('hi')
     if (isWalletConnected) {
       handleSubmit(onSubmit)
     } else {
@@ -74,15 +74,13 @@ export const DepositAmount = (props) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
       if (!usersUnderlyingBalance) return false
-      // if (!usersTicketBalance) return false
-      // if (getMaxPrecision(v) > decimals) return false
-      // if (parseUnits(usersUnderlyingBalance, decimals).lt(parseUnits(v, decimals))) return false
-      // if (parseUnits(v, decimals).isZero()) return false
+      if (!usersTicketBalance) return false
+      if (getMaxPrecision(v) > decimals) return false
+      if (parseUnits(usersUnderlyingBalance, decimals).lt(parseUnits(v, decimals))) return false
+      if (parseUnits(v, decimals).isZero()) return false
       return true
     }
   }
-
-  const tickerUpcased = 'USDC'
 
   return (
     <>
@@ -92,12 +90,12 @@ export const DepositAmount = (props) => {
             autoFocus
             unsignedNumber
             type='number'
-            tickerUpcased={
+            symbolAndIcon={
               <>
                 <span className='relative' style={{ top: -3 }}>
                   <CurrencyIcon xxs address={tokenAddress} />{' '}
                 </span>
-                {tickerUpcased}
+                {tokenSymbol}
               </>
             }
             Input={TsunamiInput}
@@ -126,7 +124,7 @@ export const DepositAmount = (props) => {
                     }}
                   >
                     <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
-                    {numberWithCommas(usersUnderlyingBalance)} {tickerUpcased}
+                    {numberWithCommas(usersUnderlyingBalance)} {tokenSymbol}
                   </button>
                 </>
               )
@@ -140,7 +138,7 @@ export const DepositAmount = (props) => {
           <TextInputGroup
             readOnly
             disabled
-            tickerUpcased='PRZUSDC'
+            symbolAndIcon='PRZUSDC'
             Input={TsunamiInput}
             roundedClasses={'rounded-lg'}
             containerRoundedClasses={'rounded-lg'}

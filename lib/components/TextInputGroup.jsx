@@ -14,6 +14,7 @@ export const TextInputGroupType = Object.freeze({
 
 export const TextInputGroup = (props) => {
   const {
+    symbolAndIcon,
     // Input Props
     Input,
     id,
@@ -124,6 +125,18 @@ export const TextInputGroup = (props) => {
     iconColor = 'stroke-current text-red'
   }
 
+  const input = (
+    <Input
+      {...inputProps}
+      inputMode={inputMode}
+      id={id}
+      disabled={disabled}
+      readOnly={readOnly}
+      pattern={pattern}
+      patternForHookForm={patternForHookForm}
+    />
+  )
+
   return (
     <div className={containerClassName}>
       <div
@@ -140,15 +153,24 @@ export const TextInputGroup = (props) => {
         {rightLabel && <span className={rightLabelClassName}>{rightLabel}</span>}
       </div>
       <div className='flex justify-between'>
-        <Input
-          {...inputProps}
-          inputMode={inputMode}
-          id={id}
-          disabled={disabled}
-          readOnly={readOnly}
-          pattern={pattern}
-          patternForHookForm={patternForHookForm}
-        />
+        {symbolAndIcon ? (
+          <>
+            <div className='relative w-full'>
+              <div
+                className={classnames('font-inter absolute font-semibold text-lg cursor-default', {
+                  'text-default opacity-50': readOnly
+                })}
+                style={{ top: 18, left: 24 }}
+              >
+                {symbolAndIcon}
+              </div>
+              {input}
+            </div>
+          </>
+        ) : (
+          input
+        )}
+
         {(unit || icon) && (
           <div className='pl-1'>
             {unit && <span className={unitsClassName}>{unit}</span>}
