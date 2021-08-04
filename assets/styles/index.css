@@ -16,3 +16,7 @@
     rgba(255, 241, 119, 0.8) 120%
   );
 }
+
+.new-btn .lds-dual-ring:after {
+  border-color: #6747a7 transparent #6747a7 transparent;
+}

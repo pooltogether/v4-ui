@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
+import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
-import { useOnboard } from '@pooltogether/hooks'
-import { Button } from '@pooltogether/react-components'
+import { useOnboard, useTransaction, useSendTransaction } from '@pooltogether/hooks'
+
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
 import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
@@ -20,22 +21,45 @@ import WalletIcon from 'assets/images/icon-wallet.svg'
 
 const bn = ethers.BigNumber.from
 
+// // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
+// usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
+// tokenSymbol={usersBalance?.[tokenAddress].symbol}
+// tokenAddress={tokenAddress}
+// contractAddress={contractAddress}
+// quantity={quantity}
+// prevTicketBalance={prevTicketBalance}
+// prevUnderlyingBalance={prevUnderlyingBalance}
+
 export const DepositAmount = (props) => {
   const {
-    quantity: queryQuantity,
     usersUnderlyingBalance,
+    usersTokenAllowance,
+    tokenAllowancesIsFetched,
+    tokenSymbol,
+    tokenAddress,
+    usersAddress,
+    contractAddress,
     // usersTicketBalance,
     decimals,
-    tokenAddress,
-    tokenSymbol,
     // nextStep,
+    quantity: queryQuantity,
+    chainId,
     form
   } = props
 
-  console.log(usersUnderlyingBalance)
+  const { t } = useTranslation()
+
+  const txName = t(`allowTickerPool`, { ticker: tokenSymbol })
+  const method = 'approve'
+  const [txId, setTxId] = useState(0)
+  const sendTx = useSendTransaction(t)
+  const tx = useTransaction(txId)
+
+  const unlockTxInFlight = !tx?.cancelled && (tx?.inWallet || tx?.sent)
+  console.log({ unlockTxInFlight })
+
   const usersTicketBalance = bn(100)
 
-  const { t } = useTranslation()
   const router = useRouter()
 
   const { handleSubmit, register, formState, setValue } = form
@@ -61,9 +85,12 @@ export const DepositAmount = (props) => {
     }
   }
 
-  const needsApproval = true
+  const quantity = form.watch('quantity') || '0'
+  const quantityBN = parseUnits(quantity, decimals)
+  const needsApproval = quantityBN.gte(0) && !usersTokenAllowance?.gte(quantityBN)
 
   const depositButtonLabel = () => {
+    if (!tokenAllowancesIsFetched) return <ThemedClipSpinner />
     if (!isWalletConnected) return t('connectWalletToDeposit')
     if (isWalletConnected && needsApproval)
       return t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })
@@ -71,8 +98,19 @@ export const DepositAmount = (props) => {
 
     return '...'
   }
-  const handleApprove = () => {
-    alert('implement')
+
+  const handleApprove = async (e) => {
+    e.preventDefault()
+
+    if (!decimals) {
+      return
+    }
+
+    const params = [poolAddress, ethers.utils.parseUnits('9999999999', Number(decimals))]
+
+    const id = await sendTx(txName, ControlledTokenAbi, tokenAddress, method, params, refetch)
+
+    setTxId(id)
   }
 
   const isDepositButtonDisabled = () => {
@@ -133,7 +171,11 @@ export const DepositAmount = (props) => {
             id='quantity'
             name='quantity'
             register={register}
-            label={<div className='font-semibold text-accent-3'>{t('swap')}</div>}
+            label={
+              <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+                {t('depositTicker', { ticker: tokenSymbol })}
+              </div>
+            }
             required={t('ticketQuantityRequired')}
             autoComplete='off'
             rightLabel={

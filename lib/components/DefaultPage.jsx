@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { NETWORK } from '@pooltogether/utilities'
-import { useTokenBalances, useUsersAddress } from '@pooltogether/hooks'
+import { useTokenAllowances, useTokenBalances, useUsersAddress } from '@pooltogether/hooks'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
 import { DepositAmount } from 'lib/components/DepositAmount'
@@ -148,9 +148,10 @@ const UpcomingPrizeDetails = (props) => {
 
 const DepositSwap = (props) => {
   const chainId = NETWORK.mainnet
+  const pool = { prizePool: { address: '0xEBfb47A7ad0FD6e57323C8A42B2E5A6a4F68fc1a' } }
   const tokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' // dai
   // const tokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' // usdc
-  const contractAddress = '0xface'
+  const contractAddress = pool?.prizePool?.address
   const quantity = '2'
   const prevTicketBalance = '20'
   const prevUnderlyingBalance = '40'
@@ -168,6 +169,13 @@ const DepositSwap = (props) => {
     reValidateMode: 'onChange'
   })
 
+  const { data: tokenAllowances, isFetched: tokenAllowancesIsFetched } = useTokenAllowances(
+    chainId,
+    usersAddress,
+    contractAddress,
+    [tokenAddress]
+  )
+
   return (
     <>
       <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
@@ -175,7 +183,10 @@ const DepositSwap = (props) => {
           key={0}
           // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
           usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
+          usersTokenAllowance={tokenAllowances?.[tokenAddress]?.allowanceUnformatted}
+          tokenAllowancesIsFetched={tokenAllowancesIsFetched}
           tokenSymbol={usersBalance?.[tokenAddress].symbol}
+          usersAddress={usersAddress}
           tokenAddress={tokenAddress}
           contractAddress={contractAddress}
           quantity={quantity}
