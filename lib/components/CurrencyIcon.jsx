@@ -17,7 +17,7 @@ const CoingeckoOrPlaceholder = (props) => {
 
   // Fallback to placeholder
   if (!src) {
-    src = '/eth-placeholder.png'
+    src = '/pt-placeholder.svg'
   }
 
   return (

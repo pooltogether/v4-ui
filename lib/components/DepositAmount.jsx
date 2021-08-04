@@ -242,7 +242,7 @@ export const DepositAmount = (props) => {
           {t('chancesToWinAreProportional')}
         </div>
 
-        <FormStepper activeStep={2} />
+        <FormStepper activeStep={4} />
       </form>
     </>
   )
@@ -375,32 +375,40 @@ const FormStepper = (props) => {
   return (
     <>
       <div className='relative w-full mt-10'>
-        <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto' style={{ height: 2 }}>
-          <span
-            className={classnames({
-              'inline-block opacity-0 trans': activeStep !== 4
-            })}
-          >
-            <DepositCompleteMessage />
-          </span>
-        </div>
-        <span
-          className={classnames({
-            'inline-block opacity-0 trans': activeStep > 3
+        <div
+          className={classnames('trans', {
+            'opacity-0': activeStep !== 4
           })}
+          style={{
+            height: activeStep === 4 ? 40 : 1
+          }}
         >
-          <div
-            className='bg-card-selected w-2/3 flex justify-between items-center mt-10 relative mx-auto'
-            style={{ height: 2 }}
-          >
-            <div className='w-full flex justify-between items-center absolute t-0 l-0 r-0 b-0 z-20'>
-              <Circles />
-            </div>
-
-            <Bars />
+          <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto'>
+            <DepositCompleteMessage />
           </div>
-          <Labels />
-        </span>
+        </div>
+        <div
+          className={classnames('trans', {
+            'opacity-0': activeStep > 3
+          })}
+          style={{
+            height: activeStep !== 4 ? 40 : 1
+          }}
+        >
+          <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto'>
+            <div
+              className='bg-card-selected w-2/3 flex justify-between items-center relative mx-auto'
+              style={{ height: 2 }}
+            >
+              <div className='w-full flex justify-between items-center absolute t-0 l-0 r-0 b-0 z-20'>
+                <Circles />
+              </div>
+
+              <Bars />
+            </div>
+            <Labels />
+          </div>
+        </div>
       </div>
     </>
   )
