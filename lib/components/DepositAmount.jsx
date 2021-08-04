@@ -231,7 +231,7 @@ export const DepositAmount = (props) => {
           </button>
         </div>
 
-        <div className='font-bold gradient-new text-center py-1 mt-4 text-xxs rounded-lg text-white'>
+        <div className='font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white'>
           {t('chancesToWinAreProportional')}
         </div>
 
