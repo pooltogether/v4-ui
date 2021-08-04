@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
+import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 import { useOnboard, useTransaction, useSendTransaction } from '@pooltogether/hooks'
 
 import { TextInputGroup } from 'lib/components/TextInputGroup'
@@ -32,15 +33,15 @@ const bn = ethers.BigNumber.from
 
 export const DepositAmount = (props) => {
   const {
+    underlyingToken,
     usersUnderlyingBalance,
+    // usersTicketBalance,
     usersTokenAllowance,
     tokenAllowancesIsFetched,
+    tokenAllowancesRefetch,
     tokenSymbol,
     tokenAddress,
-    usersAddress,
     contractAddress,
-    // usersTicketBalance,
-    decimals,
     // nextStep,
     quantity: queryQuantity,
     chainId,
@@ -49,14 +50,11 @@ export const DepositAmount = (props) => {
 
   const { t } = useTranslation()
 
-  const txName = t(`allowTickerPool`, { ticker: tokenSymbol })
-  const method = 'approve'
   const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction(t)
   const tx = useTransaction(txId)
 
-  const unlockTxInFlight = !tx?.cancelled && (tx?.inWallet || tx?.sent)
-  console.log({ unlockTxInFlight })
+  const approveTxInFlight = !tx?.cancelled && !tx?.completed && (tx?.inWallet || tx?.sent)
 
   const usersTicketBalance = bn(100)
 
@@ -86,31 +84,46 @@ export const DepositAmount = (props) => {
   }
 
   const quantity = form.watch('quantity') || '0'
-  const quantityBN = parseUnits(quantity, decimals)
+  const quantityBN = parseUnits(quantity, underlyingToken.decimals)
   const needsApproval = quantityBN.gte(0) && !usersTokenAllowance?.gte(quantityBN)
 
   const depositButtonLabel = () => {
+    const needsApproveMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
+    const approveTxInFlightMsg = (
+      <>
+        <ThemedClipSpinner className='mr-2' size={16} />
+        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
+      </>
+    )
+
+    if (approveTxInFlight) return approveTxInFlightMsg
+    if (isWalletConnected && needsApproval) return needsApproveMsg
     if (!tokenAllowancesIsFetched) return <ThemedClipSpinner />
     if (!isWalletConnected) return t('connectWalletToDeposit')
-    if (isWalletConnected && needsApproval)
-      return t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })
     if (isWalletConnected && !needsApproval) return t('reviewDeposit')
 
     return '...'
   }
 
   const handleApprove = async (e) => {
-    e.preventDefault()
+    const params = [
+      contractAddress,
+      ethers.utils.parseUnits('9999999999', Number(underlyingToken.decimals))
+    ]
 
-    if (!decimals) {
-      return
-    }
+    const name = t(`allowTickerPool`, { ticker: tokenSymbol })
 
-    const params = [poolAddress, ethers.utils.parseUnits('9999999999', Number(decimals))]
-
-    const id = await sendTx(txName, ControlledTokenAbi, tokenAddress, method, params, refetch)
-
-    setTxId(id)
+    const txId = await sendTx({
+      name,
+      contractAbi: ControlledTokenAbi,
+      contractAddress: tokenAddress,
+      method: 'approve',
+      params,
+      callbacks: {
+        refetch: tokenAllowancesRefetch
+      }
+    })
+    setTxId(txId)
   }
 
   const isDepositButtonDisabled = () => {
@@ -119,7 +132,9 @@ export const DepositAmount = (props) => {
     if (isWalletConnected && !formState.isValid) return true
   }
 
-  const handleDepositButtonClick = () => {
+  const handleDepositButtonClick = (e) => {
+    e.preventDefault()
+
     if (!isWalletConnected) {
       connectWallet()
     }
@@ -139,9 +154,14 @@ export const DepositAmount = (props) => {
       if (isNotANumber) return false
       if (!usersUnderlyingBalance) return false
       if (!usersTicketBalance) return false
-      if (getMaxPrecision(v) > decimals) return false
-      if (parseUnits(usersUnderlyingBalance, decimals).lt(parseUnits(v, decimals))) return false
-      if (parseUnits(v, decimals).isZero()) return false
+      if (getMaxPrecision(v) > underlyingToken.decimals) return false
+      if (
+        parseUnits(usersUnderlyingBalance, underlyingToken.decimals).lt(
+          parseUnits(v, underlyingToken.decimals)
+        )
+      )
+        return false
+      if (parseUnits(v, underlyingToken.decimals).isZero()) return false
       return true
     }
   }
@@ -215,11 +235,11 @@ export const DepositAmount = (props) => {
             name='result'
             register={register}
             label={null}
-            value={form.watch('quantity')}
+            value={form.watch('quantity') || '0'}
           />
         </div>
 
-        {Object.values(errors).length > 0 && <ErrorsBox errors={errors} />}
+        <ErrorsBox errors={errors} />
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <button

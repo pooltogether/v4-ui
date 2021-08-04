@@ -13,6 +13,17 @@ import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 
 const bn = ethers.BigNumber.from
 
+const MOCK_POOL = {
+  config: { chainId: NETWORK.rinkeby },
+  prizePool: { address: '0x4706856fa8bb747d50b4ef8547fe51ab5edc4ac2' },
+  tokens: {
+    underlyingToken: {
+      decimals: 18,
+      address: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea'
+    }
+  }
+}
+
 const CONTENT_PANE_STATES = {
   deposit: 'deposit',
   prizes: 'prizes',
@@ -147,11 +158,11 @@ const UpcomingPrizeDetails = (props) => {
 }
 
 const DepositSwap = (props) => {
-  const chainId = NETWORK.mainnet
-  const pool = { prizePool: { address: '0xEBfb47A7ad0FD6e57323C8A42B2E5A6a4F68fc1a' } }
-  const tokenAddress = '0x6b175474e89094c44da98b954eedeac495271d0f' // dai
-  // const tokenAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' // usdc
-  const contractAddress = pool?.prizePool?.address
+  const contractAddress = MOCK_POOL?.prizePool?.address
+  const chainId = MOCK_POOL?.config?.chainId
+  const underlyingToken = MOCK_POOL?.tokens?.underlyingToken
+  const tokenAddress = underlyingToken.address
+
   const quantity = '2'
   const prevTicketBalance = '20'
   const prevUnderlyingBalance = '40'
@@ -169,12 +180,11 @@ const DepositSwap = (props) => {
     reValidateMode: 'onChange'
   })
 
-  const { data: tokenAllowances, isFetched: tokenAllowancesIsFetched } = useTokenAllowances(
-    chainId,
-    usersAddress,
-    contractAddress,
-    [tokenAddress]
-  )
+  const {
+    data: tokenAllowances,
+    isFetched: tokenAllowancesIsFetched,
+    refetch: tokenAllowancesRefetch
+  } = useTokenAllowances(chainId, usersAddress, contractAddress, [tokenAddress])
 
   return (
     <>
@@ -182,11 +192,12 @@ const DepositSwap = (props) => {
         <DepositAmount
           key={0}
           // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
+          underlyingToken={underlyingToken}
           usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
           usersTokenAllowance={tokenAllowances?.[tokenAddress]?.allowanceUnformatted}
+          tokenAllowancesRefetch={tokenAllowancesRefetch}
           tokenAllowancesIsFetched={tokenAllowancesIsFetched}
           tokenSymbol={usersBalance?.[tokenAddress].symbol}
-          usersAddress={usersAddress}
           tokenAddress={tokenAddress}
           contractAddress={contractAddress}
           quantity={quantity}

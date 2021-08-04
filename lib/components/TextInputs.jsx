@@ -23,7 +23,7 @@ const sanitizeProps = (props) => {
     'isLight',
     'register',
     'required', // required is consumed by the register func but we don't want it on the <input />
-    'pattern',
+    'patternForHookForm',
     'tickerUpcased',
     'validate',
     'unsignedNumber',
@@ -99,7 +99,6 @@ export const TsunamiInput = (props) => {
     <input
       {...sanitizeProps(props)}
       autoFocus={autoFocus && isBrowser}
-      pattern={pattern}
       ref={register({
         required,
         pattern: patternForHookForm,

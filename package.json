@@ -60,7 +60,7 @@
     "@pooltogether/etherplex": "^1.1.1",
     "@pooltogether/hooks": "^0.1.8",
     "@pooltogether/loot-box": "1.1.0",
-    "@pooltogether/pooltogether-contracts": "3.4.4",
+    "@pooltogether/pooltogether-contracts": "^3.4.4",
     "@pooltogether/react-components": "^0.1.18",
     "@pooltogether/utilities": "^0.0.27",
     "@reach/dialog": "^0.15.3",
