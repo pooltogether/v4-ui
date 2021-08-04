@@ -185,7 +185,7 @@ export const DepositAmount = (props) => {
                   <button
                     id='_setMaxDepositAmount'
                     type='button'
-                    className='font-bold inline-flex items-center'
+                    className='font-bold inline-flex items-center text-accent-4'
                     onClick={(e) => {
                       e.preventDefault()
                       setValue('quantity', usersUnderlyingBalance, { shouldValidate: true })
@@ -219,14 +219,7 @@ export const DepositAmount = (props) => {
           />
         </div>
 
-        <div
-          className='text-sm text-highlight-1 font-bold mb-2'
-          style={{
-            minHeight: 26
-          }}
-        >
-          {Object.values(errors).length > 0 && <ErrorsBox errors={errors} />}
-        </div>
+        {Object.values(errors).length > 0 && <ErrorsBox errors={errors} />}
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <button

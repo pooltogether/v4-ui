@@ -6,15 +6,13 @@ export function ErrorsBox(props) {
   const errorMessages = Object.values(errors).map((error) => error.message)
 
   return (
-    <>
-      <div
-        className='text-red'
-        style={{
-          minHeight: errorMessages.length > 0 ? 24 : 0
-        }}
-      >
-        {errorMessages.map((errorMsg) => errorMsg)}
-      </div>
-    </>
+    <div
+      className='font-semibold font-inter text-red text-center mb-2'
+      style={{
+        minHeight: errorMessages.length > 0 ? 24 : 0
+      }}
+    >
+      {errorMessages.map((errorMsg) => errorMsg)}
+    </div>
   )
 }
