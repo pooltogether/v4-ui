@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'

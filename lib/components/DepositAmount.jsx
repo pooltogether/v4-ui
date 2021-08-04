@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
+import { ThemedClipSpinner, poolToast } from '@pooltogether/react-components'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
-import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 import { useOnboard, useTransaction, useSendTransaction } from '@pooltogether/hooks'
+import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
+import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
-import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
 import { CurrencyIcon } from 'lib/components/CurrencyIcon'
 
 import { ErrorsBox } from 'lib/components/ErrorsBox'
@@ -51,7 +51,7 @@ export const DepositAmount = (props) => {
   const { t } = useTranslation()
 
   const [txId, setTxId] = useState(0)
-  const sendTx = useSendTransaction(t)
+  const sendTx = useSendTransaction(t, poolToast)
   const tx = useTransaction(txId)
 
   const approveTxInFlight = !tx?.cancelled && !tx?.completed && (tx?.inWallet || tx?.sent)
@@ -98,7 +98,7 @@ export const DepositAmount = (props) => {
 
     if (approveTxInFlight) return approveTxInFlightMsg
     if (isWalletConnected && needsApproval) return needsApproveMsg
-    if (!tokenAllowancesIsFetched) return <ThemedClipSpinner />
+    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
     if (!isWalletConnected) return t('connectWalletToDeposit')
     if (isWalletConnected && !needsApproval) return t('reviewDeposit')
 
