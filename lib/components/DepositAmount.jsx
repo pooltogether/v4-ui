@@ -7,7 +7,12 @@ import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
 import { ThemedClipSpinner, poolToast } from '@pooltogether/react-components'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
-import { useOnboard, useTransaction, useSendTransaction } from '@pooltogether/hooks'
+import {
+  useUsersAddress,
+  useOnboard,
+  useTransaction,
+  useSendTransaction
+} from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
 import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 
@@ -22,20 +27,11 @@ import WalletIcon from 'assets/images/icon-wallet.svg'
 
 const bn = ethers.BigNumber.from
 
-// // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
-// usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
-// tokenSymbol={usersBalance?.[tokenAddress].symbol}
-// tokenAddress={tokenAddress}
-// contractAddress={contractAddress}
-// quantity={quantity}
-// prevTicketBalance={prevTicketBalance}
-// prevUnderlyingBalance={prevUnderlyingBalance}
-
 export const DepositAmount = (props) => {
   const {
     underlyingToken,
     usersUnderlyingBalance,
-    // usersTicketBalance,
+    usersTicketBalance,
     usersTokenAllowance,
     tokenAllowancesIsFetched,
     tokenAllowancesRefetch,
@@ -48,6 +44,8 @@ export const DepositAmount = (props) => {
     form
   } = props
 
+  const usersAddress = useUsersAddress()
+
   const { t } = useTranslation()
 
   const [txId, setTxId] = useState(0)
@@ -55,8 +53,6 @@ export const DepositAmount = (props) => {
   const tx = useTransaction(txId)
 
   const approveTxInFlight = !tx?.cancelled && !tx?.completed && (tx?.inWallet || tx?.sent)
-
-  const usersTicketBalance = bn(100)
 
   const router = useRouter()
 
@@ -152,16 +148,18 @@ export const DepositAmount = (props) => {
     isValid: (v) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
-      if (!usersUnderlyingBalance) return false
-      if (!usersTicketBalance) return false
-      if (getMaxPrecision(v) > underlyingToken.decimals) return false
-      if (
-        parseUnits(usersUnderlyingBalance, underlyingToken.decimals).lt(
-          parseUnits(v, underlyingToken.decimals)
-        )
-      )
-        return false
-      if (parseUnits(v, underlyingToken.decimals).isZero()) return false
+
+      const decimals = underlyingToken.decimals
+
+      if (usersAddress) {
+        if (!usersUnderlyingBalance) return false
+        if (!usersTicketBalance) return false
+        if (parseUnits(usersUnderlyingBalance).lt(parseUnits(v, decimals)))
+          return t('insufficientFunds')
+      }
+
+      if (getMaxPrecision(v) > decimals) return false
+      if (parseUnits(v, decimals).isZero()) return false
       return true
     }
   }

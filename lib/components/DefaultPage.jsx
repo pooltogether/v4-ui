@@ -4,7 +4,12 @@ import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { NETWORK } from '@pooltogether/utilities'
-import { useTokenAllowances, useTokenBalances, useUsersAddress } from '@pooltogether/hooks'
+import {
+  useTokenAllowances,
+  useTokenBalances,
+  useUsersAddress,
+  useIsWalletOnNetwork
+} from '@pooltogether/hooks'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
 import { DepositAmount } from 'lib/components/DepositAmount'
@@ -17,6 +22,10 @@ const MOCK_POOL = {
   config: { chainId: NETWORK.rinkeby },
   prizePool: { address: '0x4706856fa8bb747d50b4ef8547fe51ab5edc4ac2' },
   tokens: {
+    ticket: {
+      decimals: 18,
+      address: '0x4fb19557fbd8d73ac884efbe291626fd5641c778'
+    },
     underlyingToken: {
       decimals: 18,
       address: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea'
@@ -158,21 +167,25 @@ const UpcomingPrizeDetails = (props) => {
 }
 
 const DepositSwap = (props) => {
+  const { t } = useTranslation()
+
   const contractAddress = MOCK_POOL?.prizePool?.address
   const chainId = MOCK_POOL?.config?.chainId
   const underlyingToken = MOCK_POOL?.tokens?.underlyingToken
   const tokenAddress = underlyingToken.address
+  const ticketAddress = MOCK_POOL?.tokens?.ticket.address
 
   const quantity = '2'
   const prevTicketBalance = '20'
   const prevUnderlyingBalance = '40'
 
+  const walletOnWrongNetwork = useIsWalletOnNetwork(chainId)
+
   const usersAddress = useUsersAddress()
-  const { data: usersBalance, isFetched: isUsersBalanceFetched } = useTokenBalances(
+  const { data: tokenBalances, isFetched: isTokenBalancesFetched } = useTokenBalances(
     chainId,
     usersAddress,
-    [tokenAddress]
-    // [tokenAddress, przusdcTicketAddress]
+    [tokenAddress, ticketAddress]
   )
 
   const form = useForm({
@@ -188,17 +201,36 @@ const DepositSwap = (props) => {
 
   return (
     <>
-      <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
+      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
+        <div
+          className={classnames(
+            'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-20 trans bg-blur flex items-center justify-center p-20 text-center',
+            {
+              'opacity-0 pointer-events-none': walletOnWrongNetwork
+            }
+          )}
+          style={{
+            textShadow: '2px 2px 20px black'
+          }}
+        >
+          <div className='text-lg -mt-10'>
+            {t(
+              'tsunamiWrongNetworkMsg',
+              `To use Tsunami please set your wallet's network to Rinkeby`
+            )}
+          </div>
+        </div>
+
         <DepositAmount
           key={0}
-          // usersTicketBalance={usersBalance?.[przusdcTicketAddress].amount}
           underlyingToken={underlyingToken}
-          usersUnderlyingBalance={usersBalance?.[tokenAddress].amount}
+          tokenAddress={tokenAddress}
+          tokenSymbol={tokenBalances?.[tokenAddress].symbol}
+          usersTicketBalance={tokenBalances?.[ticketAddress].amount}
+          usersUnderlyingBalance={tokenBalances?.[tokenAddress].amount}
           usersTokenAllowance={tokenAllowances?.[tokenAddress]?.allowanceUnformatted}
           tokenAllowancesRefetch={tokenAllowancesRefetch}
           tokenAllowancesIsFetched={tokenAllowancesIsFetched}
-          tokenSymbol={usersBalance?.[tokenAddress].symbol}
-          tokenAddress={tokenAddress}
           contractAddress={contractAddress}
           quantity={quantity}
           prevTicketBalance={prevTicketBalance}
