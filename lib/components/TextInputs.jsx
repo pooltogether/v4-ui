@@ -108,8 +108,8 @@ export const TsunamiInput = (props) => {
         'text-default opacity-50': readOnly
       })}
       style={{
-        backgroundColor: readOnly ? 'rgba(173, 153, 216, 0.03)' : '',
-        borderColor: readOnly ? 'rgba(173, 153, 216, 0.1)' : ''
+        backgroundColor: readOnly ? 'var(--color-bg-readonly-tsunami)' : '',
+        borderColor: readOnly ? 'var(--color-border-readonly-tsunami)' : ''
       }}
     />
   )

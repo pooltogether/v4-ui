@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  --color-bg-readonly-tsunami: rgba(173, 153, 216, 0.03);
+  --color-border-readonly-tsunami: rgba(173, 153, 216, 0.1);
+}
+
 /* TODO: Find out why this doesn't work? It's a default in Tailwind */
 .bg-transparent {
   background: transparent;
@@ -19,4 +24,12 @@
 
 .new-btn .lds-dual-ring:after {
   border-color: #3f198b transparent #3f198b transparent;
+}
+
+.confirm-modal {
+  background: var(--color-bg-purple) !important;
+}
+
+[data-reach-dialog-overlay] {
+  background: var(--color-bg-light-purple-10) !important;
 }

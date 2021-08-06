@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { NETWORK } from '@pooltogether/utilities'
 import {
@@ -175,9 +176,10 @@ const DepositSwap = (props) => {
   const tokenAddress = underlyingToken.address
   const ticketAddress = MOCK_POOL?.tokens?.ticket.address
 
-  const quantity = '2'
-  const prevTicketBalance = '20'
-  const prevUnderlyingBalance = '40'
+  const router = useRouter()
+  const quantity = router.query.quantity || '10'
+  // const prevTicketBalance = '20'
+  // const prevUnderlyingBalance = '40'
 
   const walletOnWrongNetwork = useIsWalletOnNetwork(chainId)
 
@@ -223,6 +225,7 @@ const DepositSwap = (props) => {
 
         <DepositAmount
           key={0}
+          ticketAddress={ticketAddress}
           underlyingToken={underlyingToken}
           tokenAddress={tokenAddress}
           tokenSymbol={tokenBalances?.[tokenAddress].symbol}
@@ -233,8 +236,8 @@ const DepositSwap = (props) => {
           tokenAllowancesIsFetched={tokenAllowancesIsFetched}
           contractAddress={contractAddress}
           quantity={quantity}
-          prevTicketBalance={prevTicketBalance}
-          prevUnderlyingBalance={prevUnderlyingBalance}
+          // prevTicketBalance={prevTicketBalance}
+          // prevUnderlyingBalance={prevUnderlyingBalance}
           chainId={chainId}
           form={form}
         />

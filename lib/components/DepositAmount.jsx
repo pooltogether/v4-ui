@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
-import { ThemedClipSpinner, poolToast } from '@pooltogether/react-components'
+import { Modal, ThemedClipSpinner, poolToast } from '@pooltogether/react-components'
 // import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
@@ -13,8 +13,9 @@ import {
   useTransaction,
   useSendTransaction
 } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas, queryParamUpdater } from '@pooltogether/utilities'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
+import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
@@ -24,8 +25,6 @@ import { ErrorsBox } from 'lib/components/ErrorsBox'
 // import { WithdrawAndDepositPaneTitle } from 'lib/components/WithdrawAndDepositPaneTitle'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
-
-const bn = ethers.BigNumber.from
 
 export const DepositAmount = (props) => {
   const {
@@ -37,6 +36,7 @@ export const DepositAmount = (props) => {
     tokenAllowancesRefetch,
     tokenSymbol,
     tokenAddress,
+    ticketAddress,
     contractAddress,
     // nextStep,
     quantity: queryQuantity,
@@ -44,7 +44,11 @@ export const DepositAmount = (props) => {
     form
   } = props
 
+  const router = useRouter()
+
   const usersAddress = useUsersAddress()
+
+  const [showConfirmModal, setShowConfirmModal] = useState(router.query.showConfirmModal, false)
 
   const { t } = useTranslation()
 
@@ -54,12 +58,14 @@ export const DepositAmount = (props) => {
 
   const approveTxInFlight = !tx?.cancelled && !tx?.completed && (tx?.inWallet || tx?.sent)
 
-  const router = useRouter()
-
   const { handleSubmit, register, formState, setValue } = form
   const { errors } = formState
 
   const { isWalletConnected, connectWallet } = useOnboard()
+
+  const quantity = form.watch('quantity') || '0'
+  const quantityBN = parseUnits(quantity, underlyingToken.decimals)
+  const needsApproval = quantityBN.gte(0) && !usersTokenAllowance?.gte(quantityBN)
 
   // Set quantity from the query parameter
   useEffect(() => {
@@ -68,20 +74,37 @@ export const DepositAmount = (props) => {
     }
   }, [])
 
-  const onSubmit = (values) => {
-    if (formState.isValid) {
-      queryParamUpdater.add(router, {
-        quantity: values.quantity,
-        prevUnderlyingBalance: usersUnderlyingBalance,
-        prevTicketBalance: usersTicketBalance
-      })
-      // nextStep()
+  useEffect(() => {
+    if (!needsApproval) {
+      setActiveStep(2)
     }
+  }, [needsApproval])
+
+  const [activeStep, setActiveStep] = useState(1)
+
+  const onSubmit = (values) => {
+    // for some reason the form is always invalid? Need to debug why
+    // if (formState.isValid) {
+    console.log('wtf')
+    console.log(values.quantity)
+    setReviewDeposit(values)
+    // }
   }
 
-  const quantity = form.watch('quantity') || '0'
-  const quantityBN = parseUnits(quantity, underlyingToken.decimals)
-  const needsApproval = quantityBN.gte(0) && !usersTokenAllowance?.gte(quantityBN)
+  // const setReviewDeposit = (values) => {
+  const setReviewDeposit = (quantity) => {
+    const { query, pathname } = router
+
+    query.quantity = quantity
+    // query.quantity = values.quantity
+    query.prevUnderlyingBalance = usersUnderlyingBalance
+    query.prevTicketBalance = usersTicketBalance
+    query.showConfirmModal = 1
+
+    router.replace({ pathname, query })
+    // nextStep()
+    setShowConfirmModal(true)
+  }
 
   const depositButtonLabel = () => {
     const needsApproveMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
@@ -125,21 +148,27 @@ export const DepositAmount = (props) => {
   const isDepositButtonDisabled = () => {
     if (isWalletConnected && needsApproval) return false
 
-    if (isWalletConnected && !formState.isValid) return true
+    // for some reason the form is always invalid? Need to debug why
+    // if (isWalletConnected && !formState.isValid) return true
   }
 
   const handleDepositButtonClick = (e) => {
     e.preventDefault()
 
+    console.log('1')
     if (!isWalletConnected) {
       connectWallet()
     }
 
+    console.log('2')
     if (isWalletConnected && needsApproval) {
       handleApprove()
     }
 
+    console.log('3')
     if (isWalletConnected && !needsApproval) {
+      console.log('inside!')
+      setReviewDeposit(quantity)
       handleSubmit(onSubmit)
     }
   }
@@ -164,22 +193,53 @@ export const DepositAmount = (props) => {
     }
   }
 
+  const closeModal = () => {
+    setShowConfirmModal(false)
+  }
+
+  const handleConfirmClick = async (e) => {
+    e.preventDefault()
+
+    console.log('confirm')
+
+    const params = [usersAddress, quantityBN, ticketAddress, ethers.constants.AddressZero]
+
+    const quantityFormatted = numberWithCommas(quantity)
+    const name = `${t('deposit')} ${quantityFormatted} ${tokenSymbol}`
+
+    // const id = await sendTx(txName, PrizePoolAbi, poolAddress, method, params)
+
+    const txId = await sendTx({
+      name,
+      contractAbi: PrizePoolAbi,
+      contractAddress,
+      method: 'depositTo',
+      params,
+      callbacks: {
+        onSent: closeModal,
+        refetch: tokenAllowancesRefetch
+      }
+    })
+    setTxId(txId)
+  }
+
   return (
     <>
+      <ConfirmModal
+        {...props}
+        handleConfirmClick={handleConfirmClick}
+        isOpen={showConfirmModal}
+        closeModal={closeModal}
+        showConfirmModal={showConfirmModal}
+      />
+
       <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
         <div className='w-full mx-auto'>
           <TextInputGroup
             autoFocus
             unsignedNumber
             type='number'
-            symbolAndIcon={
-              <>
-                <span className='relative' style={{ top: -3 }}>
-                  <CurrencyIcon xxs address={tokenAddress} />{' '}
-                </span>
-                {tokenSymbol}
-              </>
-            }
+            symbolAndIcon={<TokenSymbolAndIcon {...props} />}
             Input={TsunamiInput}
             validate={depositValidationRules}
             containerBgClasses={'bg-transparent'}
@@ -241,7 +301,7 @@ export const DepositAmount = (props) => {
 
         <div className='flex flex-col mx-auto w-full items-center justify-center'>
           <button
-            className='new-btn rounded-lg w-full text-xl py-3 mt-2'
+            className='new-btn rounded-lg w-full text-xl py-2 mt-2'
             disabled={isDepositButtonDisabled()}
             onClick={handleDepositButtonClick}
           >
@@ -253,7 +313,7 @@ export const DepositAmount = (props) => {
           {t('chancesToWinAreProportional')}
         </div>
 
-        <FormStepper activeStep={4} />
+        <FormStepper activeStep={activeStep} />
       </form>
     </>
   )
@@ -261,7 +321,7 @@ export const DepositAmount = (props) => {
 
 const DownArrow = (props) => {
   return (
-    <div className='text-default opacity-40'>
+    <div className={props.className || 'text-default opacity-40'}>
       <svg
         width='16'
         height='16'
@@ -421,6 +481,101 @@ const FormStepper = (props) => {
           </div>
         </div>
       </div>
+    </>
+  )
+}
+
+const ConfirmModal = (props) => {
+  const { handleConfirmClick } = props
+  const { t } = useTranslation()
+  const router = useRouter()
+  const quantity = router.query.quantity
+
+  // 'h-full sm:h-auto sm:max-w-sm': !noSize,
+  return (
+    <Modal
+      noSize
+      className='confirm-modal h-full sm:h-auto sm:max-w-md shadow-3xl'
+      label={`Confirm Deposit Modal`}
+      isOpen={props.isOpen}
+      closeModal={props.closeModal}
+    >
+      <div className='relative text-inverse p-6 h-screen sm:h-auto rounded-none sm:rounded-sm mx-auto flex flex-col'>
+        <div className='flex flex-col justify-center items-center'>
+          <div className='text-lg font-bold mt-8 mb-4 text-white'>
+            {t('depositConfirmation', 'Deposit confirmation')}
+          </div>
+          <div className='w-full mx-auto mt-8'>
+            <TextInputGroup
+              readOnly
+              disabled
+              symbolAndIcon={<TokenSymbolAndIcon {...props} />}
+              Input={TsunamiInput}
+              textClasses={'text-xl text-right text-inverse'}
+              className={'font-inter font-semibold opacity-100'}
+              containerBgClasses={'bg-body'}
+              containerRoundedClasses={'rounded-lg'}
+              bgClasses={'bg-body'}
+              id='quantity-confirm-modal'
+              name='quantity-confirm-modal'
+              register={() => {}}
+              value={quantity}
+            />
+
+            <DownArrow className='text-white' />
+
+            <TextInputGroup
+              readOnly
+              disabled
+              symbolAndIcon='PRZUSDC'
+              Input={TsunamiInput}
+              roundedClasses={'rounded-lg'}
+              containerRoundedClasses={'rounded-lg'}
+              placeholder='0.0'
+              register={() => {}}
+              id='result-confirm-modal'
+              name='result-confirm-modal'
+              label={null}
+              value={quantity}
+            />
+
+            <div className='bg-accent-grey-5 text-xxs font-inter font-semibold p-5 rounded-lg mt-10'>
+              <div className='flex-col'>
+                <div className='flex justify-between mb-1'>
+                  {/* <div className=''>{t('winningOddsPerTicker', { ticker: 'PRZUSDC' })}</div> */}
+                  <div className=''>{t('tickerToReceive', { ticker: 'PRZUSDC' })}</div>
+                  <div className=''>{quantity}</div>
+                </div>
+                <div className='flex justify-between mt-1'>
+                  {/* <div className=''>{t('winningOddsPerTicker', { ticker: 'PRZUSDC' })}</div> */}
+                  <div className=''>{t('exitFee')}</div>
+                  <div className='text-orange'>~1% before 10 days</div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              className='new-btn rounded-lg w-full text-xl py-2 mt-8'
+              disabled={false}
+              onClick={handleConfirmClick}
+            >
+              {'confirmDeposit'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+const TokenSymbolAndIcon = (props) => {
+  const { tokenAddress, tokenSymbol } = props
+  return (
+    <>
+      <span className='relative' style={{ top: -3 }}>
+        <CurrencyIcon xxs address={tokenAddress} />{' '}
+      </span>
+      {tokenSymbol}
     </>
   )
 }
