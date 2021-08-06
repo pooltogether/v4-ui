@@ -16,14 +16,14 @@ import {
 import {
   ToastContainer,
   LoadingScreen,
-  TransactionStatusChecker
+  TransactionStatusChecker,
+  TxRefetchListener
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
 import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { TxRefetchListener } from 'lib/components/TxRefetchListener'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -104,8 +104,8 @@ function MyApp({ Component, pageProps, router }) {
           <AllContextProviders>
             <CustomErrorBoundary>
               <TransactionStatusChecker />
-
               <TxRefetchListener />
+
               <LoadingScreen isInitialized={i18n.isInitialized}>
                 <Component {...pageProps} />
               </LoadingScreen>

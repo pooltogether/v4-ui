@@ -1,30 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { parseUnits } from '@ethersproject/units'
-import { Modal, ThemedClipSpinner, poolToast } from '@pooltogether/react-components'
-// import { Button, TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
+import {
+  BlockExplorerLink,
+  ErrorsBox,
+  Modal,
+  ThemedClipSpinner,
+  poolToast
+} from '@pooltogether/react-components'
+// import { TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
   useTransaction,
   useSendTransaction
 } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { getMaxPrecision, numberWithCommas, shorten } from '@pooltogether/utilities'
 import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 
+import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { TsunamiInput } from 'lib/components/TextInputs'
 import { CurrencyIcon } from 'lib/components/CurrencyIcon'
-
-import { ErrorsBox } from 'lib/components/ErrorsBox'
-// import { WithdrawAndDepositPaneTitle } from 'lib/components/WithdrawAndDepositPaneTitle'
+// import { ErrorsBox } from 'lib/components/'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
+
+export const DEPOSIT_STATES = {
+  approving: 1,
+  depositing: 2,
+  confirming: 3,
+  complete: 4
+}
 
 export const DepositAmount = (props) => {
   const {
@@ -46,26 +56,34 @@ export const DepositAmount = (props) => {
 
   const router = useRouter()
 
+  const { isWalletConnected, connectWallet } = useOnboard()
   const usersAddress = useUsersAddress()
 
   const [showConfirmModal, setShowConfirmModal] = useState(router.query.showConfirmModal, false)
 
   const { t } = useTranslation()
 
-  const [txId, setTxId] = useState(0)
   const sendTx = useSendTransaction(t, poolToast)
-  const tx = useTransaction(txId)
 
-  const approveTxInFlight = !tx?.cancelled && !tx?.completed && (tx?.inWallet || tx?.sent)
+  const [approveTxId, setApproveTxId] = useState(0)
+  const approveTx = useTransaction(approveTxId)
+
+  const [depositTxId, setDepositTxId] = useState(0)
+  const depositTx = useTransaction(depositTxId)
+
+  const depositTxInFlight = !depositTx?.cancelled && !depositTx?.completed && depositTx?.sent
+  const approveTxInFlight = !approveTx?.cancelled && !approveTx?.completed && approveTx?.sent
+
+  const depositTxSuccess = router.query.success
 
   const { handleSubmit, register, formState, setValue } = form
   const { errors } = formState
 
-  const { isWalletConnected, connectWallet } = useOnboard()
-
   const quantity = form.watch('quantity') || '0'
   const quantityBN = parseUnits(quantity, underlyingToken.decimals)
-  const needsApproval = quantityBN.gte(0) && !usersTokenAllowance?.gte(quantityBN)
+  const quantityFormatted = numberWithCommas(quantity)
+
+  const needsApproval = quantityBN.gte(0) && usersTokenAllowance?.lte(quantityBN)
 
   // Set quantity from the query parameter
   useEffect(() => {
@@ -75,12 +93,26 @@ export const DepositAmount = (props) => {
   }, [])
 
   useEffect(() => {
-    if (!needsApproval) {
-      setActiveStep(2)
+    if (needsApproval) {
+      setActiveStep(DEPOSIT_STATES.approving)
+    } else {
+      setActiveStep(DEPOSIT_STATES.depositing)
     }
   }, [needsApproval])
 
-  const [activeStep, setActiveStep] = useState(1)
+  useEffect(() => {
+    if (showConfirmModal || depositTxInFlight) {
+      setActiveStep(DEPOSIT_STATES.confirming)
+    }
+  }, [showConfirmModal, depositTxInFlight])
+
+  useEffect(() => {
+    if (depositTxSuccess) {
+      setActiveStep(DEPOSIT_STATES.complete)
+    }
+  }, [depositTxSuccess])
+
+  const [activeStep, setActiveStep] = useState(DEPOSIT_STATES.approving)
 
   const onSubmit = (values) => {
     // for some reason the form is always invalid? Need to debug why
@@ -99,15 +131,14 @@ export const DepositAmount = (props) => {
     // query.quantity = values.quantity
     query.prevUnderlyingBalance = usersUnderlyingBalance
     query.prevTicketBalance = usersTicketBalance
-    query.showConfirmModal = 1
+    query.showConfirmModal = '1'
 
     router.replace({ pathname, query })
-    // nextStep()
     setShowConfirmModal(true)
   }
 
   const depositButtonLabel = () => {
-    const needsApproveMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
+    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
     const approveTxInFlightMsg = (
       <>
         <ThemedClipSpinner className='mr-2' size={16} />
@@ -115,8 +146,24 @@ export const DepositAmount = (props) => {
       </>
     )
 
+    const depositTxInFlightMsg = (
+      <>
+        <ThemedClipSpinner className='mr-2' size={16} />
+        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
+      </>
+    )
+
+    if (depositTxInFlight) return depositTxInFlightMsg
     if (approveTxInFlight) return approveTxInFlightMsg
-    if (isWalletConnected && needsApproval) return needsApproveMsg
+
+    if (
+      usersUnderlyingBalance &&
+      parseUnits(usersUnderlyingBalance).lt(parseUnits(quantity, underlyingToken.decimals))
+    )
+      return t('insufficientTickerBalance', { ticker: tokenSymbol })
+
+    if (isWalletConnected && quantityBN.isZero()) return t('enterAnAmountToDeposit')
+    if (isWalletConnected && needsApproval) return approvingMsg
     if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
     if (!isWalletConnected) return t('connectWalletToDeposit')
     if (isWalletConnected && !needsApproval) return t('reviewDeposit')
@@ -142,7 +189,7 @@ export const DepositAmount = (props) => {
         refetch: tokenAllowancesRefetch
       }
     })
-    setTxId(txId)
+    setApproveTxId(txId)
   }
 
   const isDepositButtonDisabled = () => {
@@ -155,19 +202,15 @@ export const DepositAmount = (props) => {
   const handleDepositButtonClick = (e) => {
     e.preventDefault()
 
-    console.log('1')
     if (!isWalletConnected) {
       connectWallet()
     }
 
-    console.log('2')
     if (isWalletConnected && needsApproval) {
       handleApprove()
     }
 
-    console.log('3')
     if (isWalletConnected && !needsApproval) {
-      console.log('inside!')
       setReviewDeposit(quantity)
       handleSubmit(onSubmit)
     }
@@ -194,17 +237,32 @@ export const DepositAmount = (props) => {
   }
 
   const closeModal = () => {
+    const { query, pathname } = router
+    delete query.showConfirmModal
+    router.replace({ pathname, query })
     setShowConfirmModal(false)
+  }
+
+  const onDepositTxSuccess = () => {
+    const { query, pathname } = router
+    delete query.quantity
+    query.success = '1'
+    router.replace({ pathname, query })
+
+    setTimeout(() => {
+      const { query, pathname } = router
+      delete query.success
+      router.replace({ pathname, query })
+
+      setActiveStep(DEPOSIT_STATES.depositing)
+    }, 10000)
   }
 
   const handleConfirmClick = async (e) => {
     e.preventDefault()
 
-    console.log('confirm')
-
     const params = [usersAddress, quantityBN, ticketAddress, ethers.constants.AddressZero]
 
-    const quantityFormatted = numberWithCommas(quantity)
     const name = `${t('deposit')} ${quantityFormatted} ${tokenSymbol}`
 
     // const id = await sendTx(txName, PrizePoolAbi, poolAddress, method, params)
@@ -217,10 +275,11 @@ export const DepositAmount = (props) => {
       params,
       callbacks: {
         onSent: closeModal,
+        onSuccess: onDepositTxSuccess,
         refetch: tokenAllowancesRefetch
       }
     })
-    setTxId(txId)
+    setDepositTxId(txId)
   }
 
   return (
@@ -238,6 +297,7 @@ export const DepositAmount = (props) => {
           <TextInputGroup
             autoFocus
             unsignedNumber
+            readOnly={depositTxInFlight}
             type='number'
             symbolAndIcon={<TokenSymbolAndIcon {...props} />}
             Input={TsunamiInput}
@@ -309,13 +369,61 @@ export const DepositAmount = (props) => {
           </button>
         </div>
 
-        <div className='font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white'>
-          {t('chancesToWinAreProportional')}
-        </div>
+        <GradientBanner
+          {...props}
+          approveTxInFlight={approveTxInFlight}
+          depositTxInFlight={depositTxInFlight}
+          depositTxSuccess={depositTxSuccess}
+          depositTx={depositTx}
+          approveTx={approveTx}
+        />
 
         <FormStepper activeStep={activeStep} />
       </form>
     </>
+  )
+}
+
+const TxStatus = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className='flex justify-between items-center w-2/3 mx-auto'>
+      <div>
+        {t('status')} <span className='font-semibold'>Pending ...</span>
+      </div>
+      <div>
+        {t('explorer')}{' '}
+        <BlockExplorerLink className='text-xxxs' chainId={props.chainId} txHash={props.txHash}>
+          <span className='font-semibold'>{shorten(props.txHash)}</span>
+        </BlockExplorerLink>
+      </div>
+    </div>
+  )
+}
+
+const GradientBanner = (props) => {
+  const { approveTxInFlight, depositTxInFlight, depositTx, depositTxSuccess, approveTx } = props
+  const { t } = useTranslation()
+
+  let contents = null
+  if (depositTxSuccess) {
+    contents = t('disclaimerComeBackRegularlyToClaimWinnings')
+  } else {
+    if (depositTxInFlight) {
+      contents = <TxStatus {...props} txHash={depositTx.hash} />
+    } else if (approveTxInFlight) {
+      contents = <TxStatus {...props} txHash={approveTx.hash} />
+    } else {
+      contents = t('chancesToWinAreProportional')
+    }
+  }
+
+  return (
+    <div className='font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white'>
+      {/* <div className='font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white h-6'> */}
+      {contents}
+    </div>
   )
 }
 
@@ -336,155 +444,6 @@ const DownArrow = (props) => {
   )
 }
 
-const FormStepper = (props) => {
-  const { activeStep } = props
-
-  const defaultCircleClassNames = 'border-2 h-4 w-4 rounded-full trans'
-  const activeCircleClassNames = 'bg-card border-highlight-1'
-  const inactiveCircleClassNames = 'bg-card-selected border-transparent'
-
-  const defaultLabelClassNames = 'font-inter text-xxs font-semibold mt-2 relative trans'
-  const activeLabelClassNames = 'text-highlight-1'
-  const inactiveLabelClassNames = 'text-primary-soft opacity-60'
-
-  const defaultBarClassNames = 'h-1 w-1/2 relative trans'
-  const activeBarClassNames = 'bg-highlight-1'
-  const inactiveBarClassNames = 'bg-transparent'
-
-  const Labels = () => {
-    return (
-      <div className='w-2/3 flex justify-between items-center mt-2 relative mx-auto'>
-        <div
-          className={classnames(defaultLabelClassNames, {
-            [activeLabelClassNames]: activeStep >= 1,
-            [inactiveLabelClassNames]: activeStep < 1
-          })}
-          style={{ left: -34 }}
-        >
-          Allow USDC
-        </div>
-        <div
-          className={classnames(defaultLabelClassNames, {
-            [activeLabelClassNames]: activeStep >= 2,
-            [inactiveLabelClassNames]: activeStep < 2
-          })}
-          style={{ right: -10 }}
-        >
-          Deposit USDC
-        </div>
-        <div
-          className={classnames(defaultLabelClassNames, {
-            [activeLabelClassNames]: activeStep >= 3,
-            [inactiveLabelClassNames]: activeStep < 3
-          })}
-          style={{ right: -44 }}
-        >
-          Confirm Order
-        </div>
-      </div>
-    )
-  }
-
-  const Bars = () => {
-    return (
-      <>
-        <div
-          className={classnames(defaultBarClassNames, {
-            [activeBarClassNames]: activeStep > 1,
-            [inactiveBarClassNames]: activeStep <= 1
-          })}
-          style={{ height: 2, left: 2 }}
-        ></div>
-        <div
-          className={classnames(defaultBarClassNames, {
-            [activeBarClassNames]: activeStep > 2,
-            [inactiveBarClassNames]: activeStep <= 2
-          })}
-          style={{ height: 2, right: 2 }}
-        ></div>
-      </>
-    )
-  }
-
-  const Circles = () => {
-    return (
-      <>
-        <div
-          className={classnames(defaultCircleClassNames, {
-            [activeCircleClassNames]: activeStep >= 1,
-            [inactiveCircleClassNames]: activeStep < 1
-          })}
-        ></div>
-        <div
-          className={classnames(defaultCircleClassNames, {
-            [activeCircleClassNames]: activeStep >= 2,
-            [inactiveCircleClassNames]: activeStep < 2
-          })}
-        ></div>
-        <div
-          className={classnames(defaultCircleClassNames, {
-            [activeCircleClassNames]: activeStep >= 3,
-            [inactiveCircleClassNames]: activeStep < 3
-          })}
-        ></div>
-      </>
-    )
-  }
-
-  const DepositCompleteMessage = (props) => {
-    return (
-      <div
-        className={classnames('absolute flex flex-col w-full trans', activeLabelClassNames)}
-        style={{ top: -6 }}
-      >
-        <FeatherIcon icon='check-circle' className={classnames('w-4 h-4 mx-auto stroke-current')} />
-        <div className={classnames('text-center', defaultLabelClassNames)}>Deposit complete!</div>
-      </div>
-    )
-  }
-
-  return (
-    <>
-      <div className='relative w-full mt-10'>
-        <div
-          className={classnames('trans', {
-            'opacity-0': activeStep !== 4
-          })}
-          style={{
-            height: activeStep === 4 ? 40 : 1
-          }}
-        >
-          <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto'>
-            <DepositCompleteMessage />
-          </div>
-        </div>
-        <div
-          className={classnames('trans', {
-            'opacity-0': activeStep > 3
-          })}
-          style={{
-            height: activeStep !== 4 ? 40 : 1
-          }}
-        >
-          <div className='absolute w-full t-0 l-0 b-0 r-0 mx-auto'>
-            <div
-              className='bg-card-selected w-2/3 flex justify-between items-center relative mx-auto'
-              style={{ height: 2 }}
-            >
-              <div className='w-full flex justify-between items-center absolute t-0 l-0 r-0 b-0 z-20'>
-                <Circles />
-              </div>
-
-              <Bars />
-            </div>
-            <Labels />
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
 const ConfirmModal = (props) => {
   const { handleConfirmClick } = props
   const { t } = useTranslation()
@@ -497,12 +456,12 @@ const ConfirmModal = (props) => {
       noSize
       className='confirm-modal h-full sm:h-auto sm:max-w-md shadow-3xl'
       label={`Confirm Deposit Modal`}
-      isOpen={props.isOpen}
+      isOpen={Boolean(props.isOpen)}
       closeModal={props.closeModal}
     >
       <div className='relative text-inverse p-6 h-screen sm:h-auto rounded-none sm:rounded-sm mx-auto flex flex-col'>
-        <div className='flex flex-col justify-center items-center'>
-          <div className='text-lg font-bold mt-8 mb-4 text-white'>
+        <div className='flex flex-col justify-center items-center pb-6'>
+          <div className='text-xl font-bold mt-8 text-white'>
             {t('depositConfirmation', 'Deposit confirmation')}
           </div>
           <div className='w-full mx-auto mt-8'>
@@ -559,7 +518,7 @@ const ConfirmModal = (props) => {
               disabled={false}
               onClick={handleConfirmClick}
             >
-              {'confirmDeposit'}
+              {t('confirmDeposit', 'Confirm deposit')}
             </button>
           </div>
         </div>

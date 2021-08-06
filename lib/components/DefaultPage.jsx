@@ -6,10 +6,11 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { NETWORK } from '@pooltogether/utilities'
 import {
+  useOnboard,
+  useIsWalletOnNetwork,
   useTokenAllowances,
   useTokenBalances,
-  useUsersAddress,
-  useIsWalletOnNetwork
+  useUsersAddress
 } from '@pooltogether/hooks'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
@@ -170,6 +171,8 @@ const UpcomingPrizeDetails = (props) => {
 const DepositSwap = (props) => {
   const { t } = useTranslation()
 
+  const { isWalletConnected } = useOnboard()
+
   const contractAddress = MOCK_POOL?.prizePool?.address
   const chainId = MOCK_POOL?.config?.chainId
   const underlyingToken = MOCK_POOL?.tokens?.underlyingToken
@@ -177,11 +180,9 @@ const DepositSwap = (props) => {
   const ticketAddress = MOCK_POOL?.tokens?.ticket.address
 
   const router = useRouter()
-  const quantity = router.query.quantity || '10'
-  // const prevTicketBalance = '20'
-  // const prevUnderlyingBalance = '40'
+  const quantity = router.query.quantity || ''
 
-  const walletOnWrongNetwork = useIsWalletOnNetwork(chainId)
+  const walletOnCorrectNetwork = useIsWalletOnNetwork(chainId)
 
   const usersAddress = useUsersAddress()
   const { data: tokenBalances, isFetched: isTokenBalancesFetched } = useTokenBalances(
@@ -201,6 +202,9 @@ const DepositSwap = (props) => {
     refetch: tokenAllowancesRefetch
   } = useTokenAllowances(chainId, usersAddress, contractAddress, [tokenAddress])
 
+  const hideWrongNetworkOverlay =
+    !isWalletConnected || (isWalletConnected && walletOnCorrectNetwork)
+
   return (
     <>
       <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
@@ -208,7 +212,7 @@ const DepositSwap = (props) => {
           className={classnames(
             'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-20 trans bg-blur flex items-center justify-center p-20 text-center',
             {
-              'opacity-0 pointer-events-none': walletOnWrongNetwork
+              'opacity-0 pointer-events-none': hideWrongNetworkOverlay
             }
           )}
           style={{
