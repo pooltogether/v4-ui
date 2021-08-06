@@ -40,7 +40,6 @@ export const DepositAmount = (props) => {
   const {
     underlyingToken,
     usersUnderlyingBalance,
-    usersTicketBalance,
     usersTokenAllowance,
     tokenAllowancesIsFetched,
     tokenAllowancesRefetch,
@@ -49,14 +48,12 @@ export const DepositAmount = (props) => {
     ticketAddress,
     contractAddress,
     // nextStep,
-    quantity: queryQuantity,
     chainId,
     form
   } = props
 
   const router = useRouter()
 
-  const { isWalletConnected, connectWallet } = useOnboard()
   const usersAddress = useUsersAddress()
 
   const [showConfirmModal, setShowConfirmModal] = useState(router.query.showConfirmModal, false)
@@ -76,21 +73,11 @@ export const DepositAmount = (props) => {
 
   const depositTxSuccess = router.query.success
 
-  const { handleSubmit, register, formState, setValue } = form
-  const { errors } = formState
-
   const quantity = form.watch('quantity') || '0'
   const quantityBN = parseUnits(quantity, underlyingToken.decimals)
   const quantityFormatted = numberWithCommas(quantity)
 
   const needsApproval = quantityBN.gte(0) && usersTokenAllowance?.lte(quantityBN)
-
-  // Set quantity from the query parameter
-  useEffect(() => {
-    if (queryQuantity) {
-      setValue('quantity', queryQuantity, { shouldValidate: true })
-    }
-  }, [])
 
   useEffect(() => {
     if (needsApproval) {
@@ -114,128 +101,6 @@ export const DepositAmount = (props) => {
 
   const [activeStep, setActiveStep] = useState(DEPOSIT_STATES.approving)
 
-  const onSubmit = (values) => {
-    // for some reason the form is always invalid? Need to debug why
-    // if (formState.isValid) {
-    console.log('wtf')
-    console.log(values.quantity)
-    setReviewDeposit(values)
-    // }
-  }
-
-  // const setReviewDeposit = (values) => {
-  const setReviewDeposit = (quantity) => {
-    const { query, pathname } = router
-
-    query.quantity = quantity
-    // query.quantity = values.quantity
-    query.prevUnderlyingBalance = usersUnderlyingBalance
-    query.prevTicketBalance = usersTicketBalance
-    query.showConfirmModal = '1'
-
-    router.replace({ pathname, query })
-    setShowConfirmModal(true)
-  }
-
-  const depositButtonLabel = () => {
-    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
-    const approveTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
-      </>
-    )
-
-    const depositTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
-      </>
-    )
-
-    if (depositTxInFlight) return depositTxInFlightMsg
-    if (approveTxInFlight) return approveTxInFlightMsg
-
-    if (
-      usersUnderlyingBalance &&
-      parseUnits(usersUnderlyingBalance).lt(parseUnits(quantity, underlyingToken.decimals))
-    )
-      return t('insufficientTickerBalance', { ticker: tokenSymbol })
-
-    if (isWalletConnected && quantityBN.isZero()) return t('enterAnAmountToDeposit')
-    if (isWalletConnected && needsApproval) return approvingMsg
-    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
-    if (!isWalletConnected) return t('connectWalletToDeposit')
-    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
-
-    return '...'
-  }
-
-  const handleApprove = async (e) => {
-    const params = [
-      contractAddress,
-      ethers.utils.parseUnits('9999999999', Number(underlyingToken.decimals))
-    ]
-
-    const name = t(`allowTickerPool`, { ticker: tokenSymbol })
-
-    const txId = await sendTx({
-      name,
-      contractAbi: ControlledTokenAbi,
-      contractAddress: tokenAddress,
-      method: 'approve',
-      params,
-      callbacks: {
-        refetch: tokenAllowancesRefetch
-      }
-    })
-    setApproveTxId(txId)
-  }
-
-  const isDepositButtonDisabled = () => {
-    if (isWalletConnected && needsApproval) return false
-
-    // for some reason the form is always invalid? Need to debug why
-    // if (isWalletConnected && !formState.isValid) return true
-  }
-
-  const handleDepositButtonClick = (e) => {
-    e.preventDefault()
-
-    if (!isWalletConnected) {
-      connectWallet()
-    }
-
-    if (isWalletConnected && needsApproval) {
-      handleApprove()
-    }
-
-    if (isWalletConnected && !needsApproval) {
-      setReviewDeposit(quantity)
-      handleSubmit(onSubmit)
-    }
-  }
-
-  const depositValidationRules = {
-    isValid: (v) => {
-      const isNotANumber = isNaN(v)
-      if (isNotANumber) return false
-
-      const decimals = underlyingToken.decimals
-
-      if (usersAddress) {
-        if (!usersUnderlyingBalance) return false
-        if (!usersTicketBalance) return false
-        if (parseUnits(usersUnderlyingBalance).lt(parseUnits(v, decimals)))
-          return t('insufficientFunds')
-      }
-
-      if (getMaxPrecision(v) > decimals) return false
-      if (parseUnits(v, decimals).isZero()) return false
-      return true
-    }
-  }
-
   const closeModal = () => {
     const { query, pathname } = router
     delete query.showConfirmModal
@@ -256,6 +121,27 @@ export const DepositAmount = (props) => {
 
       setActiveStep(DEPOSIT_STATES.depositing)
     }, 10000)
+  }
+
+  const handleApprove = async () => {
+    const params = [
+      contractAddress,
+      ethers.utils.parseUnits('9999999999', Number(underlyingToken.decimals))
+    ]
+
+    const name = t(`allowTickerPool`, { ticker: tokenSymbol })
+
+    const txId = await sendTx({
+      name,
+      contractAbi: ControlledTokenAbi,
+      contractAddress: tokenAddress,
+      method: 'approve',
+      params,
+      callbacks: {
+        refetch: tokenAllowancesRefetch
+      }
+    })
+    setApproveTxId(txId)
   }
 
   const handleConfirmClick = async (e) => {
@@ -292,98 +178,237 @@ export const DepositAmount = (props) => {
         showConfirmModal={showConfirmModal}
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
-        <div className='w-full mx-auto'>
-          <TextInputGroup
-            autoFocus
-            unsignedNumber
-            readOnly={depositTxInFlight}
-            type='number'
-            symbolAndIcon={<TokenSymbolAndIcon {...props} />}
-            Input={TsunamiInput}
-            validate={depositValidationRules}
-            containerBgClasses={'bg-transparent'}
-            containerRoundedClasses={'rounded-lg'}
-            bgClasses={'bg-body'}
-            placeholder='0.0'
-            id='quantity'
-            name='quantity'
-            register={register}
-            label={
-              <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-                {t('depositTicker', { ticker: tokenSymbol })}
-              </div>
-            }
-            required={t('ticketQuantityRequired')}
-            autoComplete='off'
-            rightLabel={
-              isWalletConnected &&
-              usersUnderlyingBalance && (
-                <>
-                  <button
-                    id='_setMaxDepositAmount'
-                    type='button'
-                    className='font-bold inline-flex items-center text-accent-4'
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setValue('quantity', usersUnderlyingBalance, { shouldValidate: true })
-                    }}
-                  >
-                    <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
-                    {numberWithCommas(usersUnderlyingBalance)} {tokenSymbol}
-                  </button>
-                </>
-              )
-            }
-          />
-        </div>
-
-        <DownArrow />
-
-        <div className='w-full mx-auto'>
-          <TextInputGroup
-            readOnly
-            disabled
-            symbolAndIcon='PRZUSDC'
-            Input={TsunamiInput}
-            roundedClasses={'rounded-lg'}
-            containerRoundedClasses={'rounded-lg'}
-            placeholder='0.0'
-            id='result'
-            name='result'
-            register={register}
-            label={null}
-            value={form.watch('quantity') || '0'}
-          />
-        </div>
-
-        <ErrorsBox errors={errors} />
-
-        <div className='flex flex-col mx-auto w-full items-center justify-center'>
-          <button
-            className='new-btn rounded-lg w-full text-xl py-2 mt-2'
-            disabled={isDepositButtonDisabled()}
-            onClick={handleDepositButtonClick}
-          >
-            {depositButtonLabel()}
-          </button>
-        </div>
-
-        <GradientBanner
-          {...props}
-          approveTxInFlight={approveTxInFlight}
-          depositTxInFlight={depositTxInFlight}
-          depositTxSuccess={depositTxSuccess}
-          depositTx={depositTx}
-          approveTx={approveTx}
-        />
-
-        <FormStepper activeStep={activeStep} />
-      </form>
+      <DepositForm
+        {...props}
+        form={form}
+        handleApprove={handleApprove}
+        approveTxInFlight={approveTxInFlight}
+        depositTxInFlight={depositTxInFlight}
+        usersUnderlyingBalance={usersUnderlyingBalance}
+      />
     </>
   )
 }
 
+const DepositForm = (props) => {
+  const {
+    form,
+    approveTxInFlight,
+    depositTxInFlight,
+    setShowConfirmModal,
+    handleApprove,
+    quantity
+  } = props
+  // const { usersTicketBalance, usersTicketBalance } = props
+
+  const { isWalletConnected, connectWallet } = useOnboard()
+
+  const { handleSubmit, register, formState, setValue } = form
+  const { errors } = formState
+
+  const router = useRouter()
+
+  // Set quantity from the query parameter
+  useEffect(() => {
+    if (quantity) {
+      setValue('quantity', quantity, { shouldValidate: true })
+    }
+  }, [])
+
+  const onSubmit = (values) => {
+    // for some reason the form is always invalid? Need to debug why
+    // if (formState.isValid) {
+    console.log('wtf')
+    console.log(values.quantity)
+    setReviewDeposit(values)
+    // }
+  }
+
+  const depositButtonLabel = () => {
+    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
+    const approveTxInFlightMsg = (
+      <>
+        <ThemedClipSpinner className='mr-2' size={16} />
+        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
+      </>
+    )
+
+    const depositTxInFlightMsg = (
+      <>
+        <ThemedClipSpinner className='mr-2' size={16} />
+        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
+      </>
+    )
+
+    if (depositTxInFlight) return depositTxInFlightMsg
+    if (approveTxInFlight) return approveTxInFlightMsg
+
+    if (
+      usersUnderlyingBalance &&
+      parseUnits(usersUnderlyingBalance).lt(parseUnits(quantity, underlyingToken.decimals))
+    )
+      return t('insufficientTickerBalance', { ticker: tokenSymbol })
+
+    if (isWalletConnected && quantityBN.isZero()) return t('enterAnAmountToDeposit')
+    if (isWalletConnected && needsApproval) return approvingMsg
+    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
+    if (!isWalletConnected) return t('connectWalletToDeposit')
+    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
+
+    return '...'
+  }
+
+  // const setReviewDeposit = (values) => {
+  const setReviewDeposit = (quantity) => {
+    const { query, pathname } = router
+
+    query.quantity = quantity
+    // query.quantity = values.quantity
+    query.prevUnderlyingBalance = props.usersUnderlyingBalance
+    query.prevTicketBalance = props.usersTicketBalance
+    query.showConfirmModal = '1'
+
+    router.replace({ pathname, query })
+    setShowConfirmModal(true)
+  }
+
+  const isDepositButtonDisabled = () => {
+    if (isWalletConnected && needsApproval) return false
+
+    // for some reason the form is always invalid? Need to debug why
+    // if (isWalletConnected && !formState.isValid) return true
+  }
+
+  const handleDepositButtonClick = (e) => {
+    e.preventDefault()
+
+    if (!isWalletConnected) {
+      connectWallet()
+    }
+
+    if (isWalletConnected && needsApproval) {
+      handleApprove()
+    }
+
+    if (isWalletConnected && !needsApproval) {
+      setReviewDeposit(quantity)
+      handleSubmit(onSubmit)
+    }
+  }
+
+  const usersAddress = useUsersAddress()
+
+  const depositValidationRules = {
+    isValid: (v) => {
+      const isNotANumber = isNaN(v)
+      if (isNotANumber) return false
+
+      const decimals = underlyingToken.decimals
+
+      if (usersAddress) {
+        if (!props.usersUnderlyingBalance) return false
+        if (!props.usersTicketBalance) return false
+        if (parseUnits(props.usersUnderlyingBalance).lt(parseUnits(v, decimals)))
+          return t('insufficientFunds')
+      }
+
+      if (getMaxPrecision(v) > decimals) return false
+      if (parseUnits(v, decimals).isZero()) return false
+      return true
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
+      <div className='w-full mx-auto'>
+        <TextInputGroup
+          autoFocus
+          unsignedNumber
+          readOnly={depositTxInFlight}
+          type='number'
+          symbolAndIcon={<TokenSymbolAndIcon {...props} />}
+          Input={TsunamiInput}
+          validate={depositValidationRules}
+          containerBgClasses={'bg-transparent'}
+          containerRoundedClasses={'rounded-lg'}
+          bgClasses={'bg-body'}
+          placeholder='0.0'
+          id='quantity'
+          name='quantity'
+          register={register}
+          label={
+            <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+              {t('depositTicker', { ticker: tokenSymbol })}
+            </div>
+          }
+          required={t('ticketQuantityRequired')}
+          autoComplete='off'
+          rightLabel={
+            isWalletConnected &&
+            usersUnderlyingBalance && (
+              <>
+                <button
+                  id='_setMaxDepositAmount'
+                  type='button'
+                  className='font-bold inline-flex items-center text-accent-4'
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setValue('quantity', usersUnderlyingBalance, { shouldValidate: true })
+                  }}
+                >
+                  <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
+                  {numberWithCommas(usersUnderlyingBalance)} {tokenSymbol}
+                </button>
+              </>
+            )
+          }
+        />
+      </div>
+
+      <DownArrow />
+
+      <div className='w-full mx-auto'>
+        <TextInputGroup
+          readOnly
+          disabled
+          symbolAndIcon='PRZUSDC'
+          Input={TsunamiInput}
+          roundedClasses={'rounded-lg'}
+          containerRoundedClasses={'rounded-lg'}
+          placeholder='0.0'
+          id='result'
+          name='result'
+          register={register}
+          label={null}
+          value={form.watch('quantity') || '0'}
+        />
+      </div>
+
+      <ErrorsBox errors={errors} />
+
+      <div className='flex flex-col mx-auto w-full items-center justify-center'>
+        <button
+          className='new-btn rounded-lg w-full text-xl py-2 mt-2'
+          disabled={isDepositButtonDisabled()}
+          onClick={handleDepositButtonClick}
+        >
+          {depositButtonLabel()}
+        </button>
+      </div>
+
+      <GradientBanner
+        {...props}
+        approveTxInFlight={approveTxInFlight}
+        depositTxInFlight={depositTxInFlight}
+        depositTxSuccess={depositTxSuccess}
+        depositTx={depositTx}
+        approveTx={approveTx}
+      />
+
+      <FormStepper activeStep={activeStep} />
+    </form>
+  )
+}
 const TxStatus = (props) => {
   const { t } = useTranslation()
 
