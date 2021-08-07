@@ -2,7 +2,7 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 
-import { DEPOSIT_STATES } from 'lib/components/DepositAmount'
+import { DEPOSIT_STATES } from 'lib/components/Deposit'
 
 export const FormStepper = (props) => {
   const { activeStep } = props

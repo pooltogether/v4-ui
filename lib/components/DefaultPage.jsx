@@ -14,7 +14,7 @@ import {
 } from '@pooltogether/hooks'
 import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
 
-import { DepositAmount } from 'lib/components/DepositAmount'
+import { Deposit } from 'lib/components/Deposit'
 
 import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 
@@ -35,7 +35,7 @@ const MOCK_POOL = {
   }
 }
 
-const CONTENT_PANE_STATES = {
+export const CONTENT_PANE_STATES = {
   deposit: 'deposit',
   prizes: 'prizes',
   holdings: 'holdings'
@@ -53,7 +53,15 @@ const DEFAULT_TAB_PROPS = {
 }
 
 export const DefaultPage = (props) => {
-  const [selected, setSelected] = useState(CONTENT_PANE_STATES.deposit)
+  // const [selected, setSelected] = useState(CONTENT_PANE_STATES.deposit)
+  const router = useRouter()
+
+  const setSelected = (newTab) => {
+    const { query, pathname } = router
+    query.tab = newTab
+    router.replace({ pathname, query })
+  }
+  const selected = router.query.tab || CONTENT_PANE_STATES.deposit
 
   const depositSelected = selected === CONTENT_PANE_STATES.deposit
   const prizesSelected = selected === CONTENT_PANE_STATES.prizes
@@ -64,7 +72,7 @@ export const DefaultPage = (props) => {
   return (
     <div className='flex flex-col items-center'>
       <NavTabs {...selectedProps} setSelected={setSelected} />
-      <ContentPanes {...selectedProps} />
+      <ContentPanes {...selectedProps} setSelected={setSelected} />
     </div>
   )
 }
@@ -114,7 +122,7 @@ const ContentPanes = (props) => {
     <>
       <ContentPane className='w-full' isSelected={depositSelected}>
         <Content>
-          <DepositUI />
+          <DepositUI {...props} />
         </Content>
       </ContentPane>
       <ContentPane isSelected={prizesSelected}>
@@ -135,7 +143,7 @@ const DepositUI = (props) => {
   return (
     <div className='mx-auto my-4 flex flex-col w-full max-w-xl'>
       <UpcomingPrizeDetails />
-      <DepositSwap />
+      <DepositPane {...props} />
       <PrizeBreakdown />
     </div>
   )
@@ -168,7 +176,7 @@ const UpcomingPrizeDetails = (props) => {
   )
 }
 
-const DepositSwap = (props) => {
+const DepositPane = (props) => {
   const { t } = useTranslation()
 
   const { isWalletConnected } = useOnboard()
@@ -227,7 +235,8 @@ const DepositSwap = (props) => {
           </div>
         </div>
 
-        <DepositAmount
+        <Deposit
+          {...props}
           key={0}
           ticketAddress={ticketAddress}
           underlyingToken={underlyingToken}
