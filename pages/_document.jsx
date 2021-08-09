@@ -12,10 +12,10 @@ class MyDocument extends Document {
   }
 
   render() {
-    const title = 'PoolTogether'
-    const url = `https://vote.pooltogether.com`
-    const description = `Direct the future of the PoolTogether protocol.`
-    const keywords = 'ethereum'
+    const title = 'Tsunami - PoolTogether'
+    const url = `https://pooltogether.com`
+    const description = `A new way for more winners to to pool and save with their friends.`
+    const keywords = 'ethereum polygon bsc binance'
     const twitterHandle = '@PoolTogether_'
 
     return (
@@ -24,6 +24,10 @@ class MyDocument extends Document {
         <Head>
           <>
             <link rel='icon' href='/favicon.png' type='image/x-icon' />
+
+            <title name='theme-color' content='#1e0b43'>
+              {title}
+            </title>
 
             <meta name='theme-color' content='#1e0b43' />
             <meta name='description' content={description} />

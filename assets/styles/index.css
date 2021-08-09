@@ -23,7 +23,8 @@
 }
 
 .new-btn .lds-dual-ring:after {
-  border-color: #3f198b transparent #3f198b transparent;
+  border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
+  /* border-color: #3f198b transparent #3f198b transparent; */
 }
 
 .confirm-modal {

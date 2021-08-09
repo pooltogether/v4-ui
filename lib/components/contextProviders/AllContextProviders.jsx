@@ -1,7 +1,7 @@
 import React from 'react'
+import { ThemeContextProvider } from '@pooltogether/react-components'
 
 import { ConfettiContextProvider } from 'lib/components/contextProviders/ConfettiContextProvider'
-import { ThemeContextProvider } from '@pooltogether/react-components'
 
 export function AllContextProviders(props) {
   const { children } = props

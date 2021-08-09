@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
@@ -12,11 +12,21 @@ import {
   useTokenBalances,
   useUsersAddress
 } from '@pooltogether/hooks'
-import { PrizeCountdown, Tabs, Tab, Content, ContentPane } from '@pooltogether/react-components'
+import {
+  ThemeContext,
+  PrizeCountdown,
+  Tabs,
+  Tab,
+  Content,
+  ContentPane,
+  ThemedClipSpinner
+} from '@pooltogether/react-components'
 
 import { Deposit } from 'lib/components/Deposit'
 
 import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
+import IconSwim from 'assets/images/icon-swim.png'
+import IconLeaf from 'assets/images/icon-leaf.png'
 
 const bn = ethers.BigNumber.from
 
@@ -41,6 +51,13 @@ export const CONTENT_PANE_STATES = {
   holdings: 'holdings'
 }
 
+export const PRIZE_PANE_STATES = {
+  initialState: 'initialState',
+  loading: 'loading',
+  won: 'won',
+  didNotWin: 'didNotWin'
+}
+
 const TAB_CLASS_NAMES = 'mx-4 px-10 py-2 bg-card rounded-full border'
 const TAB_DESELECTED_CLASS_NAMES =
   'text-accent-1 hover:text-inverse border-transparent hover:border-highlight-2 hover:bg-card-selected'
@@ -53,7 +70,6 @@ const DEFAULT_TAB_PROPS = {
 }
 
 export const DefaultPage = (props) => {
-  // const [selected, setSelected] = useState(CONTENT_PANE_STATES.deposit)
   const router = useRouter()
 
   const setSelected = (newTab) => {
@@ -78,6 +94,7 @@ export const DefaultPage = (props) => {
 }
 
 const NavTabs = (props) => {
+  const { t } = useTranslation()
   const { depositSelected, prizesSelected, holdingsSelected, setSelected } = props
 
   return (
@@ -90,7 +107,7 @@ const NavTabs = (props) => {
           }}
           isSelected={depositSelected}
         >
-          deposit
+          {t('deposit')}
         </Tab>
         <Tab
           {...DEFAULT_TAB_PROPS}
@@ -99,7 +116,7 @@ const NavTabs = (props) => {
           }}
           isSelected={prizesSelected}
         >
-          prizes
+          {t('prizes')}
         </Tab>
         <Tab
           {...DEFAULT_TAB_PROPS}
@@ -108,7 +125,7 @@ const NavTabs = (props) => {
           }}
           isSelected={holdingsSelected}
         >
-          holdings
+          {t('holdings')}
         </Tab>
       </Tabs>
     </>
@@ -127,7 +144,7 @@ const ContentPanes = (props) => {
       </ContentPane>
       <ContentPane isSelected={prizesSelected}>
         <Content>
-          <PrizesUI />
+          <PrizesUI {...props} />
         </Content>
       </ContentPane>
       <ContentPane isSelected={holdingsSelected}>
@@ -150,7 +167,173 @@ const DepositUI = (props) => {
 }
 
 const PrizesUI = (props) => {
-  return <>prizes</>
+  const { setSelected } = props
+
+  const { t } = useTranslation()
+
+  const [prizePane, setPrizePane] = useState(PRIZE_PANE_STATES.initialState)
+
+  const { theme } = useContext(ThemeContext)
+
+  const checkPrizesButtonLabel = () => {
+    if (prizePane === PRIZE_PANE_STATES.loading) {
+      return (
+        <>
+          <ThemedClipSpinner className='mr-2' size={16} />{' '}
+          {t('checkingPrizeResults', 'Checking prize results')} ...
+        </>
+      )
+    } else if (prizePane === PRIZE_PANE_STATES.didNotWin) {
+      return <>{t('depositFunds', 'Deposit funds')}</>
+    } else {
+      return <>{t('checkIfIWon', 'Check if I won')}</>
+    }
+  }
+
+  const simulateNextState = () => {
+    if (Math.random() > 0.5) {
+      setPrizePane(PRIZE_PANE_STATES.won)
+    } else {
+      setPrizePane(PRIZE_PANE_STATES.didNotWin)
+    }
+  }
+
+  const handleCheckPrizesClick = (e) => {
+    e.preventDefault()
+
+    if (prizePane === PRIZE_PANE_STATES.didNotWin) {
+      setSelected(CONTENT_PANE_STATES.deposit)
+      setPrizePane(PRIZE_PANE_STATES.initialState)
+    } else if (prizePane === PRIZE_PANE_STATES.initialState) {
+      setPrizePane(PRIZE_PANE_STATES.loading)
+      setTimeout(simulateNextState, 3500)
+    }
+  }
+
+  const initialOrLoadingState =
+    prizePane === PRIZE_PANE_STATES.initialState || prizePane === PRIZE_PANE_STATES.loading
+
+  return (
+    <>
+      <div className='flex flex-col'>
+        <div
+          className='relative pt-12'
+          style={{
+            background:
+              theme === 'light'
+                ? ''
+                : 'radial-gradient(rgba(76, 36, 159, 0.7) 0,  rgba(76, 36, 159, 0) 70%)',
+            width: 579,
+            height: 382
+          }}
+        >
+          {initialOrLoadingState && (
+            <div
+              className='absolute w-full h-full t-0 l-0 r-0 b-0 z-10'
+              style={{
+                backgroundImage: `url('/prizes-ui-illustration.png')`
+              }}
+            />
+          )}
+
+          <div className='relative font-inter  mt-4 flex flex-col items-center text-center z-20'>
+            {prizePane === PRIZE_PANE_STATES.initialState && <InitialPrizePane />}
+
+            {prizePane === PRIZE_PANE_STATES.loading && <LoadingPrizePane />}
+
+            {prizePane === PRIZE_PANE_STATES.didNotWin && <DidNotWinPrizePane />}
+
+            {prizePane === PRIZE_PANE_STATES.won && <WonPrizePane />}
+          </div>
+        </div>
+
+        {prizePane !== PRIZE_PANE_STATES.won && (
+          <button
+            className='new-btn rounded-lg w-full text-xl mt-4 py-2 '
+            onClick={handleCheckPrizesClick}
+            disabled={prizePane === PRIZE_PANE_STATES.loading}
+          >
+            {checkPrizesButtonLabel()}
+          </button>
+        )}
+      </div>
+    </>
+  )
+}
+
+const LoadingPrizePane = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className='text-lg max-w-xs'>
+      <div className='mt-4 mb-16'>
+        {t(
+          'swimmingAcrossPacificOceanToCheckTheResultForYou',
+          `Swimming across the Pacific to check prize results for you.`
+        )}
+      </div>
+
+      <img
+        src={IconSwim}
+        alt='swimming stick man icon'
+        height={92}
+        width={92}
+        className='mx-auto'
+      />
+    </div>
+  )
+}
+
+const DidNotWinPrizePane = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className='text-sm max-w-sm'>
+      <div className='mt-4 mb-16'>
+        {t(
+          'youDidntWinButYouAlsoDidntLose',
+          `You didn't win, but you also didn't lose! Deposit more savings to increase your odds for next time.`
+        )}
+      </div>
+
+      <img src={IconLeaf} alt='icon of a tree leaf' height={76} width={73} className='mx-auto' />
+    </div>
+  )
+}
+
+const WonPrizePane = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      {t('itsPartyTime', `It's party time!`)}
+      <br />
+      {t('youWonAmountOverThisPeriod', `You won total prizes of {{amount}}!`)}
+    </>
+  )
+}
+
+const InitialPrizePane = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <div>
+      <div className='text-xs'>{t('theResultOfPrizePeriod', 'The result of prize period:')}</div>
+      <div className='text-xl text-highlight-1 my-1'>
+        Week of August 21<sup>st</sup>, 2021
+      </div>
+      <div className='text-xs'>
+        {t('theResultOfPrizePeriodisAvailable', 'is available. Check if you won!')}
+      </div>
+      <img
+        src={PrizeWLaurels}
+        alt='trophy icon w/ laurels'
+        height={133}
+        width={205}
+        className='mx-auto mt-12'
+      />
+    </div>
+  )
 }
 
 const HoldingsUI = (props) => {
