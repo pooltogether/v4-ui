@@ -10,7 +10,7 @@ import {
   ThemedClipSpinner,
   poolToast
 } from '@pooltogether/react-components'
-// import { TsunamiInput, TextInputGroup } from '@pooltogether/react-components'
+// import { RectangularInput, TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
@@ -24,7 +24,7 @@ import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { TsunamiInput } from 'lib/components/TextInputs'
+import { RectangularInput } from 'lib/components/TextInputs'
 import { CurrencyIcon } from 'lib/components/CurrencyIcon'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
@@ -409,13 +409,13 @@ const DepositForm = (props) => {
         <TextInputGroup
           unsignedNumber
           readOnly={depositTxInFlight || showConfirmModal}
-          Input={TsunamiInput}
+          Input={RectangularInput}
           type='number'
           symbolAndIcon={<TokenSymbolAndIcon {...props} />}
           validate={depositValidationRules}
-          containerBgClasses={'bg-transparent'}
-          containerRoundedClasses={'rounded-lg'}
-          bgClasses={'bg-body'}
+          containerBgClassName={'bg-transparent'}
+          containerRoundedClassName={'rounded-lg'}
+          bgClassName={'bg-body'}
           placeholder='0.0'
           id='quantity'
           name='quantity'
@@ -438,9 +438,9 @@ const DepositForm = (props) => {
           readOnly
           disabled
           symbolAndIcon='PRZUSDC'
-          Input={TsunamiInput}
-          roundedClasses={'rounded-lg'}
-          containerRoundedClasses={'rounded-lg'}
+          Input={RectangularInput}
+          roundedClassName={'rounded-lg'}
+          containerRoundedClassName={'rounded-lg'}
           placeholder='0.0'
           id='result'
           name='result'
@@ -548,12 +548,12 @@ const ConfirmModal = (props) => {
               readOnly
               disabled
               symbolAndIcon={<TokenSymbolAndIcon {...props} />}
-              Input={TsunamiInput}
-              textClasses={'text-xl text-right text-inverse'}
+              Input={RectangularInput}
+              textClassName={'text-xl text-right text-inverse'}
               className={'font-inter font-semibold opacity-100'}
-              containerBgClasses={'bg-body'}
-              containerRoundedClasses={'rounded-lg'}
-              bgClasses={'bg-body'}
+              containerBgClassName={'bg-body'}
+              containerRoundedClassName={'rounded-lg'}
+              bgClassName={'bg-body'}
               id='quantity-confirm-modal'
               name='quantity-confirm-modal'
               register={() => {}}
@@ -566,9 +566,9 @@ const ConfirmModal = (props) => {
               readOnly
               disabled
               symbolAndIcon='PRZUSDC'
-              Input={TsunamiInput}
-              roundedClasses={'rounded-lg'}
-              containerRoundedClasses={'rounded-lg'}
+              Input={RectangularInput}
+              roundedClassName={'rounded-lg'}
+              containerRoundedClassName={'rounded-lg'}
               placeholder='0.0'
               register={() => {}}
               id='result-confirm-modal'

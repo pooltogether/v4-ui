@@ -3,9 +3,9 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 
 import { RoundInput } from './TextInputs'
-// import { DEFAULT_INPUT_GROUP_CLASSES, DEFAULT_INPUT_LABEL_CLASSES } from '../../constants'
-const DEFAULT_INPUT_LABEL_CLASSES = 'mt-0 mb-1 text-xs'
-const DEFAULT_INPUT_GROUP_CLASSES = 'trans'
+// import { DEFAULT_INPUT_GROUP_CLASS_NAME, DEFAULT_INPUT_LABEL_CLASS_NAME } from '../../constants'
+const DEFAULT_INPUT_LABEL_CLASS_NAME = 'mt-0 mb-1 text-xs'
+const DEFAULT_INPUT_GROUP_CLASS_NAME = 'trans'
 
 export const TextInputGroupType = Object.freeze({
   text: 'text',
@@ -45,11 +45,11 @@ export const TextInputGroup = (props) => {
   }
 
   let {
-    containerTextClasses,
-    containerRoundedClasses,
-    containerMarginClasses,
-    containerBorderClasses,
-    containerBgClasses,
+    containerTextClassName,
+    containerRoundedClassName,
+    containerMarginClassName,
+    containerBorderClassName,
+    containerBgClassName,
     containerClassName,
     labelClassName,
     rightLabelClassName,
@@ -57,8 +57,8 @@ export const TextInputGroup = (props) => {
     ...inputProps
   } = classAndInputProps
 
-  containerTextClasses = containerTextClasses
-    ? containerTextClasses
+  containerTextClassName = containerTextClassName
+    ? containerTextClassName
     : classnames({
         'font-bold text-3xl': large,
         'text-xs': !large,
@@ -66,12 +66,12 @@ export const TextInputGroup = (props) => {
         'text-accent-1': disabled
       })
 
-  containerRoundedClasses = containerRoundedClasses ? containerRoundedClasses : 'rounded-full'
+  containerRoundedClassName = containerRoundedClassName ? containerRoundedClassName : 'rounded-full'
 
-  containerMarginClasses = containerMarginClasses ? containerMarginClasses : 'mb-2'
+  containerMarginClassName = containerMarginClassName ? containerMarginClassName : 'mb-2'
 
-  containerBorderClasses = containerBorderClasses
-    ? containerBorderClasses
+  containerBorderClassName = containerBorderClassName
+    ? containerBorderClassName
     : classnames('border', {
         'border-red': isError,
         'border-green-2': isSuccess,
@@ -79,23 +79,23 @@ export const TextInputGroup = (props) => {
         'hover:border-accent-3 focus-within:border-accent-3 focus-within:shadow-green': !disabled
       })
 
-  containerBgClasses = containerBgClasses
-    ? containerBgClasses
-    : classnames(containerBgClasses, {
+  containerBgClassName = containerBgClassName
+    ? containerBgClassName
+    : classnames(containerBgClassName, {
         'bg-grey': disabled,
         'bg-card': readOnly
       })
 
   labelClassName = labelClassName
     ? labelClassName
-    : classnames(DEFAULT_INPUT_LABEL_CLASSES, {
+    : classnames(DEFAULT_INPUT_LABEL_CLASS_NAME, {
         'cursor-not-allowed text-accent-2': disabled,
         'text-accent-1': !disabled
       })
 
   rightLabelClassName = rightLabelClassName
     ? rightLabelClassName
-    : classnames(DEFAULT_INPUT_LABEL_CLASSES, 'text-right', {
+    : classnames(DEFAULT_INPUT_LABEL_CLASS_NAME, 'text-right', {
         'cursor-not-allowed text-accent-2': disabled,
         'text-accent-1': !disabled
       })
@@ -108,12 +108,12 @@ export const TextInputGroup = (props) => {
       })
 
   containerClassName = classnames(
-    DEFAULT_INPUT_GROUP_CLASSES,
+    DEFAULT_INPUT_GROUP_CLASS_NAME,
     containerClassName,
-    containerTextClasses,
-    containerRoundedClasses,
-    containerMarginClasses,
-    containerBgClasses
+    containerTextClassName,
+    containerRoundedClassName,
+    containerMarginClassName,
+    containerBgClassName
   )
 
   let icon, iconColor
