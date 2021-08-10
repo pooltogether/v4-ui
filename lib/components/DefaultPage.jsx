@@ -26,6 +26,7 @@ import { Deposit } from 'lib/components/Deposit'
 
 import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 import IconSwim from 'assets/images/icon-swim.png'
+import IconParty from 'assets/images/icon-party.png'
 import IconLeaf from 'assets/images/icon-leaf.png'
 
 const bn = ethers.BigNumber.from
@@ -206,12 +207,17 @@ const PrizesUI = (props) => {
       setPrizePane(PRIZE_PANE_STATES.initialState)
     } else if (prizePane === PRIZE_PANE_STATES.initialState) {
       setPrizePane(PRIZE_PANE_STATES.loading)
-      setTimeout(simulateNextState, 3500)
+      setTimeout(simulateNextState, 1500)
     }
   }
 
   const initialOrLoadingState =
     prizePane === PRIZE_PANE_STATES.initialState || prizePane === PRIZE_PANE_STATES.loading
+
+  const background =
+    theme === 'dark' &&
+    prizePane !== PRIZE_PANE_STATES.won &&
+    'radial-gradient(rgba(76, 36, 159, 0.7) 0,  rgba(76, 36, 159, 0) 70%)'
 
   return (
     <>
@@ -219,10 +225,7 @@ const PrizesUI = (props) => {
         <div
           className='relative pt-12'
           style={{
-            background:
-              theme === 'light'
-                ? ''
-                : 'radial-gradient(rgba(76, 36, 159, 0.7) 0,  rgba(76, 36, 159, 0) 70%)',
+            background,
             width: 579,
             height: 382
           }}
@@ -304,11 +307,35 @@ const DidNotWinPrizePane = (props) => {
 const WonPrizePane = (props) => {
   const { t } = useTranslation()
 
+  const claiming = false
+
   return (
     <>
-      {t('itsPartyTime', `It's party time!`)}
-      <br />
-      {t('youWonAmountOverThisPeriod', `You won total prizes of {{amount}}!`)}
+      <div className='bg-card px-20 py-12 rounded-lg w-full'>
+        <div className='w-full mx-auto'>
+          <img
+            src={IconParty}
+            alt='icon of party confetti makers'
+            height={76}
+            width={205}
+            className='mx-auto mb-6'
+          />
+
+          <div className='text-lg'>{t('itsPartyTime', `It's party time!`)}</div>
+          <div className='text-lg font-semibold'>
+            {t('youWonAmountOverThisPeriod', { amount: '$32,948.54' })}
+          </div>
+          <button
+            className='new-btn rounded-lg w-full text-xl mt-4 py-2 '
+            onClick={() => {}}
+            disabled={claiming}
+          >
+            {t('claimAllPrizes', 'Claim all prizes')}
+          </button>
+
+          <div className='text-sm font-semibold mt-10'>prz table go here</div>
+        </div>
+      </div>
     </>
   )
 }
