@@ -27,10 +27,6 @@
   /* border-color: #3f198b transparent #3f198b transparent; */
 }
 
-.confirm-modal {
-  background: var(--color-bg-purple) !important;
-}
-
 [data-reach-dialog-overlay] {
   background: var(--color-bg-light-purple-10) !important;
 }

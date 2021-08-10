@@ -71,6 +71,16 @@ export const Deposit = (props) => {
 
   const depositTxSuccess = router.query.success
 
+  const { setValue } = form
+
+  // Set quantity from the query parameter
+  useEffect(() => {
+    const queryQuantity = router.query.quantity
+    if (queryQuantity) {
+      setValue('quantity', queryQuantity, { shouldValidate: true })
+    }
+  }, [])
+
   const quantity = form.watch('quantity') || ''
   const quantityBN = parseUnits(quantity || '0', underlyingToken.decimals)
   const quantityFormatted = numberWithCommas(quantity)
@@ -284,17 +294,11 @@ const DepositForm = (props) => {
 
   const { isWalletConnected, connectWallet } = useOnboard()
 
-  const { handleSubmit, register, formState, setValue } = form
+  const { handleSubmit, register, formState } = form
+
   const { errors } = formState
 
   const router = useRouter()
-
-  // Set quantity from the query parameter
-  useEffect(() => {
-    if (quantity) {
-      setValue('quantity', quantity, { shouldValidate: true })
-    }
-  }, [])
 
   const onSubmit = (values) => {
     // for some reason the form is always invalid? Need to debug why
@@ -533,7 +537,8 @@ const ConfirmModal = (props) => {
   return (
     <Modal
       noSize
-      className='confirm-modal h-full sm:h-auto sm:max-w-md shadow-3xl'
+      noBgColor
+      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal'
       label={`Confirm Deposit Modal`}
       isOpen={Boolean(props.isOpen)}
       closeModal={props.closeModal}
@@ -577,7 +582,7 @@ const ConfirmModal = (props) => {
               value={quantity}
             />
 
-            <div className='bg-accent-grey-5 text-xxs font-inter font-semibold p-5 rounded-lg mt-10'>
+            <div className='bg-light-purple-70 text-xxs font-inter font-semibold p-5 rounded-lg mt-10 text-white'>
               <div className='flex-col'>
                 {/* <div className='flex justify-between mb-1'> */}
                 {/* <div className=''>{t('winningOddsPerTicker', { ticker: 'PRZUSDC' })}</div> */}
@@ -589,6 +594,7 @@ const ConfirmModal = (props) => {
                 </div>
                 <div className='flex justify-between mt-1'>
                   <div className=''>{t('exitFee')}</div>
+                  {/* TODO: Don't hard-code this: */}
                   <div className='text-orange'>~1% before 10 days</div>
                 </div>
               </div>
