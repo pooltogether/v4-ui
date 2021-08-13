@@ -28,23 +28,10 @@ import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 import IconSwim from 'assets/images/icon-swim.png'
 import IconParty from 'assets/images/icon-party.png'
 import IconLeaf from 'assets/images/icon-leaf.png'
+import { HoldingsUI } from 'lib/components/Holdings/HoldingsUI'
+import { usePrizePool } from 'lib/hooks/usePrizePool'
 
 const bn = ethers.BigNumber.from
-
-const MOCK_POOL = {
-  config: { chainId: NETWORK.rinkeby },
-  prizePool: { address: '0x4706856fa8bb747d50b4ef8547fe51ab5edc4ac2' },
-  tokens: {
-    ticket: {
-      decimals: 18,
-      address: '0x4fb19557fbd8d73ac884efbe291626fd5641c778'
-    },
-    underlyingToken: {
-      decimals: 18,
-      address: '0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea'
-    }
-  }
-}
 
 export const CONTENT_PANE_STATES = {
   deposit: 'deposit',
@@ -87,7 +74,7 @@ export const DefaultPage = (props) => {
   const selectedProps = { depositSelected, prizesSelected, holdingsSelected }
 
   return (
-    <div className='flex flex-col items-center'>
+    <div className='max-w-xl mx-auto'>
       <NavTabs {...selectedProps} setSelected={setSelected} />
       <ContentPanes {...selectedProps} setSelected={setSelected} />
     </div>
@@ -133,22 +120,24 @@ const NavTabs = (props) => {
   )
 }
 
+const CONTENT_PANE_CLASSNAME = 'pt-4'
+
 const ContentPanes = (props) => {
   const { depositSelected, prizesSelected, holdingsSelected } = props
 
   return (
     <>
-      <ContentPane className='w-full' isSelected={depositSelected}>
+      <ContentPane className={CONTENT_PANE_CLASSNAME} isSelected={depositSelected}>
         <Content>
           <DepositUI {...props} />
         </Content>
       </ContentPane>
-      <ContentPane isSelected={prizesSelected}>
+      <ContentPane className={CONTENT_PANE_CLASSNAME} isSelected={prizesSelected}>
         <Content>
           <PrizesUI {...props} />
         </Content>
       </ContentPane>
-      <ContentPane isSelected={holdingsSelected}>
+      <ContentPane className={CONTENT_PANE_CLASSNAME} isSelected={holdingsSelected}>
         <Content>
           <HoldingsUI />
         </Content>
@@ -159,11 +148,11 @@ const ContentPanes = (props) => {
 
 const DepositUI = (props) => {
   return (
-    <div className='mx-auto my-4 flex flex-col w-full max-w-xl'>
+    <>
       <UpcomingPrizeDetails />
       <DepositPane {...props} />
       <PrizeBreakdown />
-    </div>
+    </>
   )
 }
 
@@ -221,45 +210,43 @@ const PrizesUI = (props) => {
 
   return (
     <>
-      <div className='flex flex-col'>
-        <div
-          className='relative pt-12'
-          style={{
-            background,
-            width: 579,
-            height: 382
-          }}
-        >
-          {initialOrLoadingState && (
-            <div
-              className='absolute w-full h-full t-0 l-0 r-0 b-0 z-10'
-              style={{
-                backgroundImage: `url('/prizes-ui-illustration.png')`
-              }}
-            />
-          )}
-
-          <div className='relative font-inter  mt-4 flex flex-col items-center text-center z-20'>
-            {prizePane === PRIZE_PANE_STATES.initialState && <InitialPrizePane />}
-
-            {prizePane === PRIZE_PANE_STATES.loading && <LoadingPrizePane />}
-
-            {prizePane === PRIZE_PANE_STATES.didNotWin && <DidNotWinPrizePane />}
-
-            {prizePane === PRIZE_PANE_STATES.won && <WonPrizePane />}
-          </div>
-        </div>
-
-        {prizePane !== PRIZE_PANE_STATES.won && (
-          <button
-            className='new-btn rounded-lg w-full text-xl mt-4 py-2 '
-            onClick={handleCheckPrizesClick}
-            disabled={prizePane === PRIZE_PANE_STATES.loading}
-          >
-            {checkPrizesButtonLabel()}
-          </button>
+      <div
+        className='relative pt-12'
+        style={{
+          background,
+          width: 579,
+          height: 382
+        }}
+      >
+        {initialOrLoadingState && (
+          <div
+            className='absolute w-full h-full t-0 l-0 r-0 b-0 z-10'
+            style={{
+              backgroundImage: `url('/prizes-ui-illustration.png')`
+            }}
+          />
         )}
+
+        <div className='relative font-inter  mt-4 flex flex-col items-center text-center z-20'>
+          {prizePane === PRIZE_PANE_STATES.initialState && <InitialPrizePane />}
+
+          {prizePane === PRIZE_PANE_STATES.loading && <LoadingPrizePane />}
+
+          {prizePane === PRIZE_PANE_STATES.didNotWin && <DidNotWinPrizePane />}
+
+          {prizePane === PRIZE_PANE_STATES.won && <WonPrizePane />}
+        </div>
       </div>
+
+      {prizePane !== PRIZE_PANE_STATES.won && (
+        <button
+          className='new-btn rounded-lg w-full text-xl mt-4 py-2 '
+          onClick={handleCheckPrizesClick}
+          disabled={prizePane === PRIZE_PANE_STATES.loading}
+        >
+          {checkPrizesButtonLabel()}
+        </button>
+      )}
     </>
   )
 }
@@ -363,10 +350,6 @@ const InitialPrizePane = (props) => {
   )
 }
 
-const HoldingsUI = (props) => {
-  return <>holdings</>
-}
-
 const UpcomingPrizeDetails = (props) => {
   const { t } = useTranslation()
 
@@ -391,11 +374,13 @@ const DepositPane = (props) => {
 
   const { isWalletConnected } = useOnboard()
 
-  const contractAddress = MOCK_POOL?.prizePool?.address
-  const chainId = MOCK_POOL?.config?.chainId
-  const underlyingToken = MOCK_POOL?.tokens?.underlyingToken
+  const prizePool = usePrizePool()
+
+  const contractAddress = prizePool?.prizePool?.address
+  const chainId = prizePool?.config?.chainId
+  const underlyingToken = prizePool?.tokens?.underlyingToken
   const tokenAddress = underlyingToken.address
-  const ticketAddress = MOCK_POOL?.tokens?.ticket.address
+  const ticketAddress = prizePool?.tokens?.ticket.address
 
   const router = useRouter()
   const quantity = router.query.quantity || ''
@@ -428,7 +413,7 @@ const DepositPane = (props) => {
       <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
         <div
           className={classnames(
-            'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-20 trans bg-blur flex items-center justify-center p-20 text-center',
+            'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-30 trans bg-blur flex items-center justify-center p-20 text-center',
             {
               'opacity-0 pointer-events-none': hideWrongNetworkOverlay
             }
@@ -454,6 +439,7 @@ const DepositPane = (props) => {
           tokenSymbol={tokenBalances?.[tokenAddress].symbol}
           usersTicketBalance={tokenBalances?.[ticketAddress].amount}
           usersUnderlyingBalance={tokenBalances?.[tokenAddress].amount}
+          userHasUnderlyingBalance={tokenBalances?.[tokenAddress].hasBalance}
           usersTokenAllowance={tokenAllowances?.[tokenAddress]?.allowanceUnformatted}
           tokenAllowancesRefetch={tokenAllowancesRefetch}
           tokenAllowancesIsFetched={tokenAllowancesIsFetched}
