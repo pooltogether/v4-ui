@@ -592,11 +592,6 @@ const ConfirmModal = (props) => {
                   <div className=''>{t('tickerToReceive', { ticker: 'PRZUSDC' })}</div>
                   <div className=''>{quantityFormatted}</div>
                 </div>
-                <div className='flex justify-between mt-1'>
-                  <div className=''>{t('exitFee')}</div>
-                  {/* TODO: Don't hard-code this: */}
-                  <div className='text-orange'>~1% before 10 days</div>
-                </div>
               </div>
             </div>
 
