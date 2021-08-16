@@ -29,6 +29,10 @@ import { CurrencyIcon } from 'lib/components/CurrencyIcon'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
 import SuccessIcon from 'assets/images/success@2x.png'
+import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
+import { usePoolChainId } from 'lib/hooks/usePoolChainId'
+import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
+import { DownArrow } from 'lib/components/DownArrow'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -277,15 +281,19 @@ const DepositForm = (props) => {
     form,
     txs,
     needsApproval,
+    tokenAddress,
     tokenSymbol,
     underlyingToken,
     quantityDetails,
     usersUnderlyingBalance,
+    userHasUnderlyingBalance,
     handleApprove,
     showConfirmModal,
     setShowConfirmModal,
     tokenAllowancesIsFetched
   } = props
+
+  const chainId = usePoolChainId()
 
   const { depositTxInFlight, approveTxInFlight } = txs
   const { quantity, quantityBN, quantityFormatted } = quantityDetails
@@ -294,7 +302,7 @@ const DepositForm = (props) => {
 
   const { isWalletConnected, connectWallet } = useOnboard()
 
-  const { handleSubmit, register, formState } = form
+  const { handleSubmit, register, formState, setValue } = form
 
   const { errors } = formState
 
@@ -415,7 +423,9 @@ const DepositForm = (props) => {
           readOnly={depositTxInFlight || showConfirmModal}
           Input={RectangularInput}
           type='number'
-          symbolAndIcon={<TokenSymbolAndIcon {...props} />}
+          symbolAndIcon={
+            <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
+          }
           validate={depositValidationRules}
           containerBgClassName={'bg-transparent'}
           containerRoundedClassName={'rounded-lg'}
@@ -426,7 +436,16 @@ const DepositForm = (props) => {
           autoComplete='off'
           register={register}
           required={t('ticketQuantityRequired')}
-          rightLabel={<TextInputRightLabel {...props} />}
+          rightLabel={
+            <MaxAmountTextInputRightLabel
+              valueKey='quantity'
+              disabled={false}
+              setValue={setValue}
+              amount={usersUnderlyingBalance}
+              tokenSymbol={tokenSymbol}
+              isAmountZero={!userHasUnderlyingBalance}
+            />
+          }
           label={
             <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
               {t('depositTicker', { ticker: tokenSymbol })}
@@ -511,26 +530,11 @@ const GradientBanner = (props) => {
   )
 }
 
-const DownArrow = (props) => {
-  return (
-    <div className={props.className || 'text-default opacity-40'}>
-      <svg
-        width='16'
-        height='16'
-        viewBox='0 0 16 16'
-        fill='none'
-        xmlns='http://www.w3.org/2000/svg'
-        className='fill-current mx-auto mb-2'
-      >
-        <path d='M7 1V12.17L2.12 7.29C1.73 6.9 1.09 6.9 0.700001 7.29C0.310001 7.68 0.310001 8.31 0.700001 8.7L7.29 15.29C7.68 15.68 8.31 15.68 8.7 15.29L15.29 8.7C15.68 8.31 15.68 7.68 15.29 7.29C14.9 6.9 14.27 6.9 13.88 7.29L9 12.17V1C9 0.45 8.55 0 8 0C7.45 0 7 0.45 7 1Z' />
-      </svg>
-    </div>
-  )
-}
-
 const ConfirmModal = (props) => {
-  const { handleConfirmClick, quantityDetails } = props
+  const { handleConfirmClick, quantityDetails, tokenAddress, tokenSymbol } = props
   const { quantity, quantityFormatted } = quantityDetails
+
+  const chainId = usePoolChainId()
 
   const { t } = useTranslation()
 
@@ -552,7 +556,9 @@ const ConfirmModal = (props) => {
             <TextInputGroup
               readOnly
               disabled
-              symbolAndIcon={<TokenSymbolAndIcon {...props} />}
+              symbolAndIcon={
+                <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
+              }
               Input={RectangularInput}
               textClassName={'text-xl text-right text-inverse'}
               className={'font-inter font-semibold opacity-100'}
@@ -606,44 +612,5 @@ const ConfirmModal = (props) => {
         </div>
       </div>
     </Modal>
-  )
-}
-
-const TokenSymbolAndIcon = (props) => {
-  const { tokenAddress, tokenSymbol } = props
-  return (
-    <>
-      <span className='relative' style={{ top: -3 }}>
-        <CurrencyIcon xxs address={tokenAddress} />{' '}
-      </span>
-      {tokenSymbol}
-    </>
-  )
-}
-
-const TextInputRightLabel = (props) => {
-  const { txs, form, usersUnderlyingBalance, tokenSymbol } = props
-  const { setValue } = form
-  const { depositTxInFlight, approveTxInFlight } = txs
-
-  const { isWalletConnected } = useOnboard()
-
-  if (!isWalletConnected || !usersUnderlyingBalance) return null
-
-  return (
-    <button
-      id='_setMaxDepositAmount'
-      type='button'
-      className='font-bold inline-flex items-center text-accent-4'
-      disabled={depositTxInFlight || approveTxInFlight}
-      onClick={(e) => {
-        e.preventDefault()
-
-        setValue('quantity', usersUnderlyingBalance, { shouldValidate: true })
-      }}
-    >
-      <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
-      {numberWithCommas(usersUnderlyingBalance)} {tokenSymbol}
-    </button>
   )
 }
