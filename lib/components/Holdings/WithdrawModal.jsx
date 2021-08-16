@@ -258,7 +258,7 @@ const WithdrawReviewStep = (props) => {
     const txId = await sendTx({
       name: `${t('withdraw')} ${amountPretty} ${tokenSymbol}`,
       contractAbi: PrizePoolAbi,
-      prizePoolAddress,
+      contractAddress: prizePoolAddress,
       method: 'withdrawInstantlyFrom',
       params: [usersAddress, amountUnformatted, ticketAddress, ethers.constants.Zero],
       callbacks: {
@@ -269,7 +269,7 @@ const WithdrawReviewStep = (props) => {
     setTxId(txId)
   }
 
-  const isTxInWallet = tx?.inWallet && !tx?.error
+  const isTxInWallet = tx?.inWallet && !tx?.error && !tx.cancelled
 
   return (
     <>
@@ -289,8 +289,7 @@ const WithdrawReviewStep = (props) => {
         address={underlyingToken.address}
       />
       <UpdatedStats amount={amount} underlyingToken={underlyingToken} ticket={ticket} />
-      {/* TODO: Uncomment actual button */}
-      {/* <SquareButton
+      <SquareButton
         className='w-full mb-4'
         theme={SquareButtonTheme.orange}
         onClick={onClick}
@@ -298,21 +297,22 @@ const WithdrawReviewStep = (props) => {
       >
         {isTxInWallet ? (
           <>
-            <ThemedClipSpinner sizeClassName='w-3 h-3 mr-1 my-auto' />
+            <ThemedClipSpinner sizeClassName='w-3 h-3 mr-2 my-auto' />
             <span>{t('confirmWithdrawInYourWallet')}</span>
           </>
         ) : (
           <span>{t('confirmWithdrawal')}</span>
         )}
-      </SquareButton> */}
-      <SquareButton
+      </SquareButton>
+      {/* TODO: Test going to next step. Delete this */}
+      {/* <SquareButton
         className='w-full mb-4'
         theme={SquareButtonTheme.orange}
         onClick={() => setCurrentStep(STEPS.viewTxReceipt)}
         disabled={isTxInWallet}
       >
         <span>{t('confirmWithdrawal')}</span>
-      </SquareButton>
+      </SquareButton> */}
     </>
   )
 }
