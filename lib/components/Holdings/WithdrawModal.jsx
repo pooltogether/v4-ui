@@ -3,25 +3,19 @@ import {
   Modal,
   ThemedClipSpinner,
   LoadingDots,
-  TokenIcon,
   SquareButton,
   SquareButtonTheme,
   Tooltip,
   poolToast,
   formatBlockExplorerTxUrl
 } from '@pooltogether/react-components'
-import {
-  useOnboard,
-  useSendTransaction,
-  useTokenBalances,
-  useTransaction,
-  useUsersAddress
-} from '@pooltogether/hooks'
+import { useSendTransaction, useTransaction, useUsersAddress } from '@pooltogether/hooks'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import { useForm } from 'react-hook-form'
-import { getMaxPrecision, getMinPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
+import Link from 'next/link'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 
@@ -34,7 +28,6 @@ import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
-import Link from 'next/link'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -463,6 +456,7 @@ const UpdatedStats = (props) => {
   )
 }
 
+// TODO: Figure out what to actually show here
 const Stat = (props) => {
   const { label, value } = props
 

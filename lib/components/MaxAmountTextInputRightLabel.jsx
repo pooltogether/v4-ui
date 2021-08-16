@@ -1,6 +1,7 @@
 import React from 'react'
+import { numberWithCommas } from '@pooltogether/utilities'
+
 import WalletIcon from 'assets/images/icon-wallet.svg'
-import { numberWithCommas } from '.yalc/@pooltogether/utilities/dist'
 
 export const MaxAmountTextInputRightLabel = (props) => {
   const { valueKey, disabled, setValue, isAmountZero, amount, tokenSymbol } = props

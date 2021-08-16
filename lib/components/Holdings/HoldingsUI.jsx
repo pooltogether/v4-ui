@@ -34,16 +34,19 @@ export const HoldingsUI = (props) => {
 const HoldingsCard = (props) => {
   const { data: usersTokens, isFetched } = useUsersTokenHoldings()
   const prizePool = usePrizePool()
+  const { t } = useTranslation()
 
   const balance = usersTokens?.[prizePool.tokens.ticket.address].amountPretty
   const symbol = usersTokens?.[prizePool.tokens.ticket.address].symbol
 
+  // TODO: Get the USD value of the users deposits
+
   return (
     <Card>
       <Piggy />
-      <span className='text-xxs font-semibold text-accent-1'>My balance</span>
+      <span className='text-xxs font-semibold text-accent-1'>{t('myBalance')}</span>
       <Balance balance={balance} symbol={symbol} isFetched={isFetched} />
-      <span className='text-xxs text-accent-1'>Value: $1,000</span>
+      <span className='text-xxs text-accent-1'>{t('value')}: $1,000</span>
     </Card>
   )
 }
@@ -66,6 +69,7 @@ const Balance = (props) => {
 
 const ManageDepositButtons = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { t } = useTranslation()
 
   return (
     <>
@@ -76,12 +80,12 @@ const ManageDepositButtons = (props) => {
           theme={SquareButtonTheme.purple}
           onClick={() => setIsModalOpen(true)}
         >
-          Withdraw
+          {t('withdraw')}
         </SquareButton>
         <Link href='/?tab=deposit'>
           <a className='w-full ml-2'>
             <SquareButton className='w-full' theme={SquareButtonTheme.teal}>
-              Increase my odds
+              {t('increaseMyOdds')}
             </SquareButton>
           </a>
         </Link>
