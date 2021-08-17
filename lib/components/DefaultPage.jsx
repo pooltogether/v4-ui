@@ -45,7 +45,7 @@ export const PRIZE_PANE_STATES = {
   didNotWin: 'didNotWin'
 }
 
-const TAB_CLASS_NAMES = 'mx-4 px-10 py-2 bg-card rounded-full border'
+const TAB_CLASS_NAMES = 'px-10 py-2 bg-card rounded-full border'
 const TAB_DESELECTED_CLASS_NAMES =
   'text-accent-1 hover:text-inverse border-transparent hover:border-highlight-2 hover:bg-card-selected'
 const TAB_SELECTED_CLASS_NAMES = 'text-accent-3 border-default bg-card-selected'
@@ -86,7 +86,7 @@ const NavTabs = (props) => {
 
   return (
     <>
-      <Tabs className='mb-4'>
+      <Tabs className='mb-4 justify-evenly'>
         <Tab
           {...DEFAULT_TAB_PROPS}
           onClick={() => {
