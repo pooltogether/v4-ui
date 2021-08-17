@@ -524,7 +524,7 @@ const GradientBanner = (props) => {
   }
 
   return (
-    <div className='w-full font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white'>
+    <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 mt-4 text-xxxs rounded-lg text-white'>
       {contents}
     </div>
   )
