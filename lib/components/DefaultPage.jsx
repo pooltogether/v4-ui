@@ -45,7 +45,7 @@ export const PRIZE_PANE_STATES = {
   didNotWin: 'didNotWin'
 }
 
-const TAB_CLASS_NAMES = 'px-10 py-2 bg-card rounded-full border'
+const TAB_CLASS_NAMES = 'px-5 xs:px-10 py-2 bg-card rounded-full border'
 const TAB_DESELECTED_CLASS_NAMES =
   'text-accent-1 hover:text-inverse border-transparent hover:border-highlight-2 hover:bg-card-selected'
 const TAB_SELECTED_CLASS_NAMES = 'text-accent-3 border-default bg-card-selected'
@@ -213,7 +213,6 @@ const PrizesUI = (props) => {
         className='relative pt-12'
         style={{
           background,
-          width: 579,
           height: 382
         }}
       >
@@ -297,7 +296,7 @@ const WonPrizePane = (props) => {
 
   return (
     <>
-      <div className='bg-card px-20 py-12 rounded-lg w-full'>
+      <div className='bg-card px-10 xs:px-20 py-12 rounded-lg w-full'>
         <div className='w-full mx-auto'>
           <img
             src={IconParty}
@@ -342,7 +341,6 @@ const InitialPrizePane = (props) => {
         src={PrizeWLaurels}
         alt='trophy icon w/ laurels'
         height={133}
-        width={205}
         className='mx-auto mt-12'
       />
     </div>
@@ -354,9 +352,9 @@ const UpcomingPrizeDetails = (props) => {
 
   return (
     <>
-      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
+      <div className='bg-card hover:bg-secondary trans rounded-lg w-full px-4 py-10 xs:p-10 flex flex-col mb-4 items-center'>
         <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
-        <div className='font-bold text-9xl'>$100,000.23</div>
+        <div className='font-bold text-7xl xs:text-9xl'>$100,000.23</div>
         <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
         <PrizeCountdown
           textSize='text-xl'
@@ -409,7 +407,7 @@ const DepositPane = (props) => {
 
   return (
     <>
-      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 p-10'>
+      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 px-8 py-10 xs:p-10'>
         <div
           className={classnames(
             'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-30 trans bg-blur flex items-center justify-center p-20 text-center',
@@ -459,7 +457,7 @@ const PrizeBreakdown = (props) => {
 
   return (
     <>
-      <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 px-20 p-10'>
+      <div className='bg-card rounded-lg w-full flex flex-col items-center mb-4 px-8 xs:px-20 p-10'>
         <img
           src={PrizeWLaurels}
           alt='trophy icon w/ laurels'
@@ -476,26 +474,26 @@ const PrizeBreakdown = (props) => {
         <div className='flex flex-col w-full'>
           <div className='flex justify-between'>
             {/* <PrizeTableHeader>{t('prize')}</PrizeTableHeader> */}
-            <PrizeTableHeader widthClasses='w-32'>{t('amount')}</PrizeTableHeader>
-            <PrizeTableHeader widthClasses='w-32'>{t('winners')}</PrizeTableHeader>
+            <PrizeTableHeader widthClasses='w-1/3 xs:w-32'>{t('amount')}</PrizeTableHeader>
+            <PrizeTableHeader widthClasses='w-1/3 xs:w-32'>{t('winners')}</PrizeTableHeader>
             <PrizeTableHeader widthClasses='w-24'>{t('odds')}</PrizeTableHeader>
           </div>
           <div className='flex justify-between '>
             {/* <PrizeTableCell>{t('')}</PrizeTableCell> */}
             <PrizeTableCell
-              className='font-inter font-bold text-lg capitalize text-accent-1 my-1 w-32'
+              className='font-inter font-bold text-sm xs:text-lg capitalize text-accent-1 my-1 w-1/3 xs:w-32'
               isFlashy
             >
               $50,000
             </PrizeTableCell>
             <PrizeTableCell
-              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 w-32'
+              className='font-inter font-semibold text-sm xs:text-lg capitalize text-accent-1 my-1 w-1/3 xs:w-32'
               isFlashy
             >
               1
             </PrizeTableCell>
             <PrizeTableCell
-              className='font-inter font-semibold text-lg capitalize text-accent-1 my-1 w-24'
+              className='font-inter font-semibold text-sm xs:text-lg capitalize text-accent-1 my-1 w-24'
               isFlashy
             >
               1/50,000
@@ -503,14 +501,14 @@ const PrizeBreakdown = (props) => {
           </div>
           <div className='flex justify-between'>
             {/* <PrizeTableCell>{t('')}</PrizeTableCell> */}
-            <PrizeTableCell widthClasses='w-32'>$2,500</PrizeTableCell>
-            <PrizeTableCell widthClasses='w-32'>10</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-1/3 xs:w-32'>$2,500</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-1/3 xs:w-32'>10</PrizeTableCell>
             <PrizeTableCell widthClasses='w-24'>1/1,000</PrizeTableCell>
           </div>
           <div className='flex justify-between '>
-            {/* <PrizeTableCell widthClasses='w-32'>{t('')}</PrizeTableCell> */}
-            <PrizeTableCell widthClasses='w-32'>$250</PrizeTableCell>
-            <PrizeTableCell widthClasses='w-32'>100</PrizeTableCell>
+            {/* <PrizeTableCell widthClasses='w-1/3 xs:w-32'>{t('')}</PrizeTableCell> */}
+            <PrizeTableCell widthClasses='w-1/3 xs:w-32'>$250</PrizeTableCell>
+            <PrizeTableCell widthClasses='w-1/3 xs:w-32'>100</PrizeTableCell>
             <PrizeTableCell widthClasses='w-24'>1/100</PrizeTableCell>
           </div>
         </div>
@@ -545,5 +543,5 @@ const PrizeTableCell = (props) => {
 }
 
 PrizeTableCell.defaultProps = {
-  className: 'font-inter text-lg capitalize text-accent-1 my-1 opacity-60'
+  className: 'font-inter text-sm xs:text-lg capitalize text-accent-1 my-1 opacity-60'
 }

@@ -259,7 +259,7 @@ const SuccessPane = (props) => {
           resetState()
           setSelected(CONTENT_PANE_STATES.account)
         }}
-        className='new-btn rounded-lg w-full text-xl py-2 mt-2 text-center'
+        className='new-btn rounded-lg w-full text-sm xs:text-xl py-2 mt-2 text-center'
       >
         {t('viewMyAccount', 'View my account')}
       </button>
@@ -477,7 +477,7 @@ const DepositForm = (props) => {
 
       <div className='flex flex-col mx-auto w-full items-center justify-center'>
         <button
-          className='new-btn rounded-lg w-full text-xl py-2 mt-2'
+          className='new-btn rounded-lg w-full text-base xs:text-xl py-2 mt-2 text-center'
           disabled={depositButtonDisabled()}
           onClick={handleDepositButtonClick}
         >
