@@ -397,7 +397,7 @@ const WithdrawForm = (props) => {
 
   const withdrawValidationRules = {
     isValid: (v) => {
-      console.log('Validating', v)
+      // console.log('Validating', v)
       if (!v) return false
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
@@ -446,7 +446,6 @@ const WithdrawForm = (props) => {
 
 const SquaredTokenAmountContainer = (props) => {
   const { chainId, amount, symbol, address } = props
-  console.log({ amount })
 
   const quantity = isNaN(amount) ? '0' : amount || '0'
   const amountFormatted = numberWithCommas(quantity, { precision: getMaxPrecision(quantity) })
