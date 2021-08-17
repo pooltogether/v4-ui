@@ -257,11 +257,11 @@ const SuccessPane = (props) => {
         onClick={(e) => {
           e.preventDefault()
           resetState()
-          setSelected(CONTENT_PANE_STATES.holdings)
+          setSelected(CONTENT_PANE_STATES.account)
         }}
         className='new-btn rounded-lg w-full text-xl py-2 mt-2 text-center'
       >
-        {t('viewMyHoldings', 'View my holdings')}
+        {t('viewMyAccount', 'View my account')}
       </button>
       <button
         className='font-inter text-xxxs py-1 mt-1 text-center text-accent-1 hover:text-highlight-1 trans opacity-60 hover:opacity-100'

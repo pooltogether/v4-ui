@@ -8,16 +8,16 @@ import Link from 'next/link'
 
 import { useUsersTokenHoldings } from 'lib/hooks/useUsersTokenHoldings'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
-import { WithdrawModal } from 'lib/components/Holdings/WithdrawModal'
+import { WithdrawModal } from 'lib/components/Account/WithdrawModal'
 import PiggyBank from 'assets/images/piggy-bank.svg'
 
-export const HoldingsUI = (props) => {
+export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
   if (!isWalletConnected) {
     return (
       <>
-        <HoldingsCard />
+        <AccountCard />
         <ConnectWalletButton />
       </>
     )
@@ -25,13 +25,13 @@ export const HoldingsUI = (props) => {
 
   return (
     <>
-      <HoldingsCard />
+      <AccountCard />
       <ManageDepositButtons />
     </>
   )
 }
 
-const HoldingsCard = (props) => {
+const AccountCard = (props) => {
   const { data: usersTokens, isFetched } = useUsersTokenHoldings()
   const prizePool = usePrizePool()
   const { t } = useTranslation()

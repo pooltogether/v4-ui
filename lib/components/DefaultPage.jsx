@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
-import { NETWORK } from '@pooltogether/utilities'
 import {
   useOnboard,
   useIsWalletOnNetwork,
@@ -28,7 +27,7 @@ import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 import IconSwim from 'assets/images/icon-swim.png'
 import IconParty from 'assets/images/icon-party.png'
 import IconLeaf from 'assets/images/icon-leaf.png'
-import { HoldingsUI } from 'lib/components/Holdings/HoldingsUI'
+import { AccountUI } from 'lib/components/Account/AccountUI'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
 
 const bn = ethers.BigNumber.from
@@ -36,7 +35,7 @@ const bn = ethers.BigNumber.from
 export const CONTENT_PANE_STATES = {
   deposit: 'deposit',
   prizes: 'prizes',
-  holdings: 'holdings'
+  account: 'account'
 }
 
 export const PRIZE_PANE_STATES = {
@@ -69,9 +68,9 @@ export const DefaultPage = (props) => {
 
   const depositSelected = selected === CONTENT_PANE_STATES.deposit
   const prizesSelected = selected === CONTENT_PANE_STATES.prizes
-  const holdingsSelected = selected === CONTENT_PANE_STATES.holdings
+  const accountSelected = selected === CONTENT_PANE_STATES.account
 
-  const selectedProps = { depositSelected, prizesSelected, holdingsSelected }
+  const selectedProps = { depositSelected, prizesSelected, accountSelected }
 
   return (
     <div className='max-w-xl mx-auto'>
@@ -83,7 +82,7 @@ export const DefaultPage = (props) => {
 
 const NavTabs = (props) => {
   const { t } = useTranslation()
-  const { depositSelected, prizesSelected, holdingsSelected, setSelected } = props
+  const { depositSelected, prizesSelected, accountSelected, setSelected } = props
 
   return (
     <>
@@ -109,11 +108,11 @@ const NavTabs = (props) => {
         <Tab
           {...DEFAULT_TAB_PROPS}
           onClick={() => {
-            setSelected(CONTENT_PANE_STATES.holdings)
+            setSelected(CONTENT_PANE_STATES.account)
           }}
-          isSelected={holdingsSelected}
+          isSelected={accountSelected}
         >
-          {t('holdings')}
+          {t('account')}
         </Tab>
       </Tabs>
     </>
@@ -123,7 +122,7 @@ const NavTabs = (props) => {
 const CONTENT_PANE_CLASSNAME = 'pt-4'
 
 const ContentPanes = (props) => {
-  const { depositSelected, prizesSelected, holdingsSelected } = props
+  const { depositSelected, prizesSelected, accountSelected } = props
 
   return (
     <>
@@ -137,9 +136,9 @@ const ContentPanes = (props) => {
           <PrizesUI {...props} />
         </Content>
       </ContentPane>
-      <ContentPane className={CONTENT_PANE_CLASSNAME} isSelected={holdingsSelected}>
+      <ContentPane className={CONTENT_PANE_CLASSNAME} isSelected={accountSelected}>
         <Content>
-          <HoldingsUI />
+          <AccountUI />
         </Content>
       </ContentPane>
     </>
