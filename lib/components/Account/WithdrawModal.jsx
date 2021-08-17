@@ -1,4 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
+import classnames from 'classnames'
+import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import {
   Modal,
   ThemedClipSpinner,
@@ -10,13 +13,10 @@ import {
   formatBlockExplorerTxUrl
 } from '@pooltogether/react-components'
 import { useSendTransaction, useTransaction, useUsersAddress } from '@pooltogether/hooks'
-import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
-import { useForm } from 'react-hook-form'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { useForm } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
-import Link from 'next/link'
-import classNames from 'classnames'
 import { ethers } from 'ethers'
 
 import { usePrizePool } from 'lib/hooks/usePrizePool'
@@ -39,6 +39,7 @@ const STEPS = Object.freeze({
 
 export const WithdrawModal = (props) => {
   const { isOpen, closeModal } = props
+  const { t } = useTranslation()
 
   const [currentStep, setCurrentStep] = useState(STEPS.input)
   const [amount, setAmount] = useState()
@@ -64,17 +65,43 @@ export const WithdrawModal = (props) => {
     reset()
   }, [isOpen])
 
+  const receiptStep = currentStep === STEPS.viewTxReceipt
+
   return (
-    <Modal isOpen={isOpen} closeModal={closeModalAndMaybeReset} label='withdrawal modal'>
-      <div className='pt-8'>
-        <BackButton resetForm={reset} currentStep={currentStep} setCurrentStep={setCurrentStep} />
-        <WithdrawStepContent
-          form={form}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          amount={amount}
-          setAmount={setAmount}
-        />
+    <Modal
+      noSize
+      noBgColor
+      isOpen={isOpen}
+      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal'
+      label='withdrawal modal'
+      closeModal={closeModalAndMaybeReset}
+    >
+      <div className='relative text-inverse px-4 py-6 h-screen sm:h-auto rounded-none sm:rounded-sm mx-auto flex flex-col'>
+        <div
+          className={classnames('flex flex-col justify-center items-center', {
+            'pb-6': !receiptStep
+          })}
+        >
+          <BackButton resetForm={reset} currentStep={currentStep} setCurrentStep={setCurrentStep} />
+
+          {!receiptStep && (
+            <div className='text-xl font-bold mt-8 text-white'>
+              {currentStep === STEPS.input
+                ? t('withdraw')
+                : t('withdrawConfirmation', 'Withdraw confirmation')}
+            </div>
+          )}
+
+          <div className='w-full mx-auto mt-8'>
+            <WithdrawStepContent
+              form={form}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              amount={amount}
+              setAmount={setAmount}
+            />
+          </div>
+        </div>
       </div>
     </Modal>
   )
@@ -88,7 +115,7 @@ const BackButton = (props) => {
 
   return (
     <button
-      className='text-accent-1 absolute top-2 left-4 text-xxs underline'
+      className='text-accent-1 absolute top-2 left-4 text-xxs border-b opacity-50 hover:opacity-100 trans'
       onClick={() => {
         const newStep = currentStep - 1
         if (newStep === STEPS.input) {
@@ -170,9 +197,11 @@ const WithdrawStepContent = (props) => {
 const WithdrawInputStep = (props) => {
   const { chainId, form, underlyingToken, ticket, setCurrentStep, setAmount } = props
 
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
-    formState: { isDirty, isValid },
+    formState: { isValid },
     watch
   } = form
 
@@ -192,22 +221,22 @@ const WithdrawInputStep = (props) => {
         underlyingToken={underlyingToken}
         ticket={ticket}
       />
+
       <DownArrow />
-      <SquaredTokenAmountContainer
-        className='mb-8'
-        chainId={chainId}
-        amount={amount}
-        symbol={underlyingToken.symbol}
-        address={underlyingToken.address}
-      />
-      <SquareButton
-        disabled={!isDirty || !isValid}
-        type='submit'
-        className='w-full mb-8'
-        theme={SquareButtonTheme.purple}
-      >
-        Review withdrawal
+
+      <div className='mb-8'>
+        <SquaredTokenAmountContainer
+          chainId={chainId}
+          amount={amount}
+          symbol={underlyingToken.symbol}
+          address={underlyingToken.address}
+        />
+      </div>
+
+      <SquareButton disabled={!isValid} type='submit' className='w-full mb-8'>
+        {t('reviewWithdrawal')}
       </SquareButton>
+
       <WithdrawWarning />
     </form>
   )
@@ -267,13 +296,16 @@ const WithdrawReviewStep = (props) => {
   return (
     <>
       <WithdrawLabel symbol={ticket.symbol} />
+
       <SquaredTokenAmountContainer
         chainId={chainId}
         amount={amount}
         symbol={ticket.symbol}
         address={ticket.address}
       />
+
       <DownArrow />
+
       <SquaredTokenAmountContainer
         className='mb-8'
         chainId={chainId}
@@ -281,7 +313,11 @@ const WithdrawReviewStep = (props) => {
         symbol={underlyingToken.symbol}
         address={underlyingToken.address}
       />
-      <UpdatedStats amount={amount} underlyingToken={underlyingToken} ticket={ticket} />
+
+      <div className='my-8'>
+        <UpdatedStats amount={amount} underlyingToken={underlyingToken} ticket={ticket} />
+      </div>
+
       <SquareButton
         className='w-full mb-4'
         theme={SquareButtonTheme.orange}
@@ -310,6 +346,16 @@ const WithdrawReviewStep = (props) => {
   )
 }
 
+const WithdrawLabel = (props) => {
+  const { symbol } = props
+  const { t } = useTranslation()
+  return (
+    <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+      {t('withdrawTicker', { ticker: symbol })}
+    </div>
+  )
+}
+
 /**
  * The final step in the withdrawal flow.
  * The user can view a link transaction hash on a block explorer.
@@ -329,7 +375,7 @@ const WithdrawReceiptStep = (props) => {
       <Link href={url}>
         <a className='w-full' target='_blank' rel='noreferrer'>
           <SquareButton className='w-full' theme={SquareButtonTheme.purple}>
-            {t('viewRecepit')}
+            {t('viewReceipt', 'View receipt')}
           </SquareButton>
         </a>
       </Link>
@@ -368,68 +414,58 @@ const WithdrawForm = (props) => {
   const { t } = useTranslation()
 
   return (
-    <>
-      <TextInputGroup
-        unsignedNumber
-        readOnly={disabled}
-        Input={RectangularInput}
-        symbolAndIcon={
-          <TokenSymbolAndIcon chainId={chainId} address={ticketAddress} symbol={ticketSymbol} />
-        }
-        validate={withdrawValidationRules}
-        containerBgClassName={'bg-transparent'}
-        containerRoundedClassName={'rounded-lg'}
-        bgClassName={'bg-body'}
-        placeholder='0.0'
-        id={WITHDRAWAL_QUANTITY_KEY}
-        name={WITHDRAWAL_QUANTITY_KEY}
-        autoComplete='off'
-        register={register}
-        required={t('ticketQuantityRequired')}
-        rightLabel={
-          <MaxAmountTextInputRightLabel
-            valueKey={WITHDRAWAL_QUANTITY_KEY}
-            setValue={setValue}
-            amount={amount}
-            tokenSymbol={ticketSymbol}
-            isAmountZero={!hasBalance}
-          />
-        }
-        label={<WithdrawLabel symbol={ticketSymbol} />}
-      />
-    </>
-  )
-}
-
-const WithdrawLabel = (props) => {
-  const { symbol } = props
-  const { t } = useTranslation()
-  return (
-    <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-      {t('withdrawTicker', { ticker: symbol })}
-    </div>
+    <TextInputGroup
+      unsignedNumber
+      readOnly={disabled}
+      Input={RectangularInput}
+      symbolAndIcon={
+        <TokenSymbolAndIcon chainId={chainId} address={ticketAddress} symbol={ticketSymbol} />
+      }
+      validate={withdrawValidationRules}
+      containerBgClassName={'bg-transparent'}
+      containerRoundedClassName={'rounded-lg'}
+      bgClassName={'bg-body'}
+      placeholder='0.0'
+      id={WITHDRAWAL_QUANTITY_KEY}
+      name={WITHDRAWAL_QUANTITY_KEY}
+      autoComplete='off'
+      register={register}
+      required={t('ticketQuantityRequired')}
+      rightLabel={
+        <MaxAmountTextInputRightLabel
+          valueKey={WITHDRAWAL_QUANTITY_KEY}
+          setValue={setValue}
+          amount={amount}
+          tokenSymbol={ticketSymbol}
+          isAmountZero={!hasBalance}
+        />
+      }
+    />
   )
 }
 
 const SquaredTokenAmountContainer = (props) => {
-  const { className, chainId, amount, symbol, address, borderClassName } = props
+  const { chainId, amount, symbol, address } = props
+  console.log({ amount })
 
   const quantity = isNaN(amount) ? '0' : amount || '0'
   const amountFormatted = numberWithCommas(quantity, { precision: getMaxPrecision(quantity) })
+
   return (
-    <div
-      className={classNames(
-        className,
-        'px-8 py-4 rounded-lg trans bg-body border-2 text-lg font-inter font-semibold text-accent-1 flex justify-between',
-        borderClassName
-      )}
-      // To match the inputs, we need to hardcode this.
-      // line-height can't be set on inputs.
-      style={{ lineHeight: '29.5px' }}
-    >
-      <TokenSymbolAndIcon chainId={chainId} symbol={symbol} address={address} />
-      <span className='overflow-y-hidden overflow-x-auto text-xl ml-2'>{amountFormatted}</span>
-    </div>
+    <TextInputGroup
+      readOnly
+      disabled
+      symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} symbol={symbol} address={address} />}
+      Input={RectangularInput}
+      roundedClassName={'rounded-lg'}
+      containerRoundedClassName={'rounded-lg'}
+      placeholder='0.0'
+      id='result'
+      name='result'
+      register={() => {}}
+      label={null}
+      value={amountFormatted}
+    />
   )
 }
 
@@ -438,9 +474,14 @@ SquaredTokenAmountContainer.defaultProps = {
 }
 
 const WithdrawWarning = () => {
+  const { t } = useTranslation()
+
   return (
     <div className='w-full p-1 text-xxxs text-center rounded bg-orange-darkened text-orange mb-4'>
-      Withdrawing funds will decrease your chances to win a prize!
+      {t(
+        'withdrawingWillReduceYourOddsToWin',
+        'Withdrawing funds will decrease your chances to win prizes!'
+      )}
     </div>
   )
 }
@@ -449,9 +490,17 @@ const UpdatedStats = (props) => {
   const { className, amount, underlyingToken, ticket } = props
 
   return (
-    <ul className={classNames('rounded py-4 px-8 bg-body mb-4', className)}>
+    <StatList className={className}>
       <FinalTicketBalanceStat amount={amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amount} underlyingToken={underlyingToken} />
+    </StatList>
+  )
+}
+
+const StatList = (props) => {
+  return (
+    <ul className={classnames('rounded py-4 px-8 bg-body mb-4', props.className)}>
+      {props.children}
     </ul>
   )
 }
@@ -462,7 +511,7 @@ const Stat = (props) => {
 
   return (
     <li className='flex justify-between text-xxs'>
-      <span className='text-accent-1'>{label}:</span>
+      <span className='text-accent-1'>{label}</span>
       <span className='text-right'>{value}</span>
     </li>
   )
@@ -481,9 +530,9 @@ const FinalTicketBalanceStat = (props) => {
 
   return (
     <Stat
-      label={'Final ticket balance'}
+      label={`${t('finalDepositBalance', 'Final deposit balance')}:`}
       value={
-        <Tooltip id='Final ticket balance' tip={`${fullFinalBalancePretty} ${ticket.symbol}`}>
+        <Tooltip id='final-ticket-balance' tip={`${fullFinalBalancePretty} ${ticket.symbol}`}>
           <div className='flex flex-wrap justify-end'>
             <span>{finalBalancePretty}</span>
             <span className='ml-1'>{ticket.symbol}</span>
@@ -505,10 +554,10 @@ const UnderlyingReceivedStat = (props) => {
 
   return (
     <Stat
-      label={`${underlyingToken.symbol} received`}
+      label={t('tickerToReceive', { ticker: underlyingToken.symbol })}
       value={
         <Tooltip
-          id={`${underlyingToken.symbol} received`}
+          id={`${underlyingToken.symbol}-to-receive`}
           tip={`${fullFinalBalancePretty} ${underlyingToken.symbol}`}
         >
           <div className='flex flex-wrap justify-end'>

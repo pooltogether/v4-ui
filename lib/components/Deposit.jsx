@@ -542,16 +542,14 @@ const ConfirmModal = (props) => {
     <Modal
       noSize
       noBgColor
+      isOpen={Boolean(props.isOpen)}
       className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal'
       label={`Confirm Deposit Modal`}
-      isOpen={Boolean(props.isOpen)}
       closeModal={props.closeModal}
     >
-      <div className='relative text-inverse p-6 h-screen sm:h-auto rounded-none sm:rounded-sm mx-auto flex flex-col'>
+      <div className='relative text-inverse px-4 py-6 h-screen sm:h-auto rounded-none sm:rounded-sm mx-auto flex flex-col'>
         <div className='flex flex-col justify-center items-center pb-6'>
-          <div className='text-xl font-bold mt-8 text-white'>
-            {t('depositConfirmation', 'Deposit confirmation')}
-          </div>
+          <div className='text-xl font-bold mt-8 text-white'>{t('depositConfirmation')}</div>
           <div className='w-full mx-auto mt-8'>
             <TextInputGroup
               readOnly
@@ -590,11 +588,11 @@ const ConfirmModal = (props) => {
 
             <div className='bg-light-purple-70 text-xxs font-inter font-semibold p-5 rounded-lg mt-10 text-white'>
               <div className='flex-col'>
-                {/* <div className='flex justify-between mb-1'> */}
+                {/* <div className='flex justify-between'> */}
                 {/* <div className=''>{t('winningOddsPerTicker', { ticker: 'PRZUSDC' })}</div> */}
                 {/* <div className=''>{odds}</div> */}
                 {/* </div> */}
-                <div className='flex justify-between mb-1'>
+                <div className='flex justify-between'>
                   <div className=''>{t('tickerToReceive', { ticker: 'PRZUSDC' })}</div>
                   <div className=''>{quantityFormatted}</div>
                 </div>

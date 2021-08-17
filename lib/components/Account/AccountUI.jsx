@@ -44,9 +44,11 @@ const AccountCard = (props) => {
   return (
     <Card>
       <Piggy />
-      <span className='text-xxs font-semibold text-accent-1'>{t('myBalance')}</span>
+      <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
+        {t('myBalance')}
+      </span>
       <Balance balance={balance} symbol={symbol} isFetched={isFetched} />
-      <span className='text-xxs text-accent-1'>{t('value')}: $1,000</span>
+      <span className='text-xxs text-accent-1 font-inter'>{t('value')}: $1,000</span>
     </Card>
   )
 }
