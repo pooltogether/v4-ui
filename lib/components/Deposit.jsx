@@ -9,8 +9,7 @@ import {
   SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner,
-  poolToast,
-  SquareButton
+  poolToast
 } from '@pooltogether/react-components'
 // import { TextInputGroup } from '@pooltogether/react-components'
 import {
