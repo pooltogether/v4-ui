@@ -463,6 +463,8 @@ const DepositForm = (props) => {
           Input={RectangularInput}
           roundedClassName={'rounded-lg'}
           containerRoundedClassName={'rounded-lg'}
+          bgClassName={'bg-readonly-tsunami'}
+          bgVarName='var(--color-bg-readonly-tsunami)'
           placeholder='0.0'
           id='result'
           name='result'
@@ -557,11 +559,10 @@ const ConfirmModal = (props) => {
                 <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
               }
               Input={RectangularInput}
-              textClassName={'text-xl text-right text-inverse'}
+              textClassName={'text-xl text-right'}
               className={'font-inter font-semibold opacity-100'}
               containerBgClassName={'bg-body'}
               containerRoundedClassName={'rounded-lg'}
-              bgClassName={'bg-body'}
               id='quantity-confirm-modal'
               name='quantity-confirm-modal'
               register={() => {}}
@@ -577,11 +578,10 @@ const ConfirmModal = (props) => {
               Input={RectangularInput}
               roundedClassName={'rounded-lg'}
               containerRoundedClassName={'rounded-lg'}
-              placeholder='0.0'
-              register={() => {}}
+              bgVarName='var(--color-bg-readonly-tsunami)'
               id='result-confirm-modal'
               name='result-confirm-modal'
-              label={null}
+              register={() => {}}
               value={quantity}
             />
 
