@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import { parseUnits } from '@ethersproject/units'
 import {
   BlockExplorerLink,
   ErrorsBox,
@@ -17,7 +16,7 @@ import {
   useTransaction,
   useSendTransaction
 } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas, shorten } from '@pooltogether/utilities'
+import { getMaxPrecision, numberWithCommas, safeParseUnits, shorten } from '@pooltogether/utilities'
 import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 
@@ -25,9 +24,7 @@ import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { RectangularInput } from 'lib/components/TextInputs'
-import { CurrencyIcon } from 'lib/components/CurrencyIcon'
 
-import WalletIcon from 'assets/images/icon-wallet.svg'
 import SuccessIcon from 'assets/images/success@2x.png'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
 import { usePoolChainId } from 'lib/hooks/usePoolChainId'
@@ -86,10 +83,10 @@ export const Deposit = (props) => {
   }, [])
 
   const quantity = form.watch('quantity') || ''
-  const quantityBN = parseUnits(quantity || '0', underlyingToken.decimals)
+  const quantityBN = safeParseUnits(quantity || '0', underlyingToken.decimals)
   const quantityFormatted = numberWithCommas(quantity)
 
-  const needsApproval = quantityBN.gte(0) && usersTokenAllowance?.lte(quantityBN)
+  const needsApproval = quantityBN?.gte(0) && usersTokenAllowance?.lte(quantityBN)
 
   const [activeStep, setActiveStep] = useState(DEPOSIT_STATES.approving)
 
@@ -259,7 +256,7 @@ const SuccessPane = (props) => {
           resetState()
           setSelected(CONTENT_PANE_STATES.account)
         }}
-        className='new-btn rounded-lg w-full text-xl py-2 mt-2 text-center'
+        className='new-btn rounded-lg w-full text-sm xs:text-xl py-2 mt-2 text-center'
       >
         {t('viewMyAccount', 'View my account')}
       </button>
@@ -338,11 +335,12 @@ const DepositForm = (props) => {
 
     if (
       usersUnderlyingBalance &&
-      parseUnits(usersUnderlyingBalance).lt(parseUnits(quantity || '0', underlyingToken.decimals))
+      quantityBN &&
+      safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
     )
       return t('insufficientTickerBalance', { ticker: tokenSymbol })
 
-    if (isWalletConnected && quantityBN.isZero()) return t('enterAnAmountToDeposit')
+    if (isWalletConnected && quantityBN?.isZero()) return t('enterAnAmountToDeposit')
     if (isWalletConnected && needsApproval) return approvingMsg
     if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
     if (!isWalletConnected) return t('connectWalletToDeposit')
@@ -401,16 +399,17 @@ const DepositForm = (props) => {
       if (isNotANumber) return false
 
       const decimals = underlyingToken.decimals
+      const quantityBN = safeParseUnits(v, decimals)
 
       if (usersAddress) {
         if (!props.usersUnderlyingBalance) return false
         if (!props.usersTicketBalance) return false
-        if (parseUnits(props.usersUnderlyingBalance).lt(parseUnits(v, decimals)))
+        if (quantityBN && safeParseUnits(props.usersUnderlyingBalance).lt(quantityBN))
           return t('insufficientFunds')
       }
 
       if (getMaxPrecision(v) > decimals) return false
-      if (parseUnits(v, decimals).isZero()) return false
+      if (quantityBN && quantityBN.isZero()) return false
       return true
     }
   }
@@ -477,7 +476,7 @@ const DepositForm = (props) => {
 
       <div className='flex flex-col mx-auto w-full items-center justify-center'>
         <button
-          className='new-btn rounded-lg w-full text-xl py-2 mt-2'
+          className='new-btn rounded-lg w-full text-base xs:text-xl py-2 mt-2 text-center'
           disabled={depositButtonDisabled()}
           onClick={handleDepositButtonClick}
         >
@@ -524,7 +523,7 @@ const GradientBanner = (props) => {
   }
 
   return (
-    <div className='w-full font-inter gradient-new text-center py-1 mt-4 text-xxxs rounded-lg text-white'>
+    <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 mt-4 text-xxxs rounded-lg text-white'>
       {contents}
     </div>
   )

@@ -23,11 +23,11 @@ class MyDocument extends Document {
         <Head />
         <Head>
           <>
+            <title>{title}</title>
+
             <link rel='icon' href='/favicon.png' type='image/x-icon' />
 
-            <title name='theme-color' content='#1e0b43'>
-              {title}
-            </title>
+            <meta name='viewport' content='width=device-width, initial-scale=1' />
 
             <meta name='theme-color' content='#1e0b43' />
             <meta name='description' content={description} />
@@ -57,8 +57,6 @@ class MyDocument extends Document {
             />
             <meta property='twitter:url' content={url} />
             <meta property='twitter:creator' content={twitterHandle} />
-
-            <script type='text/javascript' src='/graph-error-modal.js' />
           </>
         </Head>
         <body className='bg-body'>
@@ -66,9 +64,6 @@ class MyDocument extends Document {
 
           <Main />
           <NextScript />
-          <script src='/confetti.js'></script>
-
-          <canvas className='confettiCanvas' width='1' height='1' />
         </body>
       </Html>
     )

@@ -21,9 +21,6 @@ export const SHOW_MANAGE_LINKS = 'showManageLinks'
 export const MAGIC_EMAIL = 'magicEmail'
 export const SELECTED_WALLET_COOKIE_KEY = 'selectedWallet'
 
-// strings
-export const CONFETTI_DURATION_MS = 12000
-
 const domain = process.env.NEXT_JS_DOMAIN_NAME && `.${process.env.NEXT_JS_DOMAIN_NAME}`
 export const COOKIE_OPTIONS = {
   sameSite: 'strict',
