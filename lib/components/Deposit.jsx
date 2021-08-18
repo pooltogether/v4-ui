@@ -10,7 +10,7 @@ import {
   poolToast,
   SquareButton
 } from '@pooltogether/react-components'
-// import { RectangularInput, TextInputGroup } from '@pooltogether/react-components'
+// import { TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
@@ -25,12 +25,12 @@ import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { RectangularInput } from 'lib/components/TextInputs'
-
-import SuccessIcon from 'assets/images/success@2x.png'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
-import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
+import { usePoolChainId } from 'lib/hooks/usePoolChainId'
+
+import SuccessIcon from 'assets/images/success@2x.png'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -312,53 +312,14 @@ const DepositForm = (props) => {
   const router = useRouter()
 
   const onSubmit = (values) => {
-    console.log(values.quantity)
     setReviewDeposit(values)
   }
 
-  const depositButtonLabel = () => {
-    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
-    const approveTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
-      </>
-    )
-
-    const depositTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
-      </>
-    )
-
-    if (depositTxInFlight) return depositTxInFlightMsg
-    if (approveTxInFlight) return approveTxInFlightMsg
-
-    if (
-      isWalletConnected &&
-      usersUnderlyingBalance &&
-      quantityBN &&
-      safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
-    ) {
-      return t('insufficientTickerBalance', { ticker: tokenSymbol })
-    }
-
-    if (isWalletConnected && quantityBN?.isZero()) return t('enterAnAmountToDeposit')
-    if (isWalletConnected && needsApproval) return approvingMsg
-    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
-    if (!isWalletConnected) return t('connectWalletToDeposit')
-    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
-
-    return '...'
-  }
-
-  // const setReviewDeposit = (values) => {
-  const setReviewDeposit = (quantity) => {
+  const setReviewDeposit = (values) => {
     const { query, pathname } = router
+    const { quantity } = values
 
     query.quantity = quantity
-    // query.quantity = values.quantity
     query.prevUnderlyingBalance = props.usersUnderlyingBalance
     query.prevTicketBalance = props.usersTicketBalance
     query.showConfirmModal = '1'
