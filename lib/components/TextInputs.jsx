@@ -16,6 +16,7 @@ const sanitizeProps = (props) => {
     'paddingClassName',
     'borderClassName',
     'bgClassName',
+    'bgVarName',
     'inlineButton',
     'roundedClassName',
     'textClassName',
