@@ -9,7 +9,8 @@ import {
   useIsWalletOnNetwork,
   useTokenAllowances,
   useTokenBalances,
-  useUsersAddress
+  useUsersAddress,
+  usePrizePeriod
 } from '@pooltogether/hooks'
 import {
   ThemeContext,
@@ -18,7 +19,8 @@ import {
   Tab,
   Content,
   ContentPane,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  LoadingDots
 } from '@pooltogether/react-components'
 
 import { Deposit } from 'lib/components/Deposit'
@@ -29,6 +31,7 @@ import IconParty from 'assets/images/icon-party.png'
 import IconLeaf from 'assets/images/icon-leaf.png'
 import { AccountUI } from 'lib/components/Account/AccountUI'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
+import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 
 const bn = ethers.BigNumber.from
 
@@ -349,20 +352,33 @@ const InitialPrizePane = (props) => {
 
 const UpcomingPrizeDetails = (props) => {
   const { t } = useTranslation()
+  const prizePool = usePrizePool()
+  const chainId = usePoolChainId()
+  const { data, isFetched } = usePrizePeriod(chainId, prizePool.prizeStrategy.address)
+
+  if (!isFetched) {
+    return (
+      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
+        <LoadingDots className='mx-auto my-20' />
+      </div>
+    )
+  }
 
   return (
-    <>
-      <div className='bg-card hover:bg-secondary trans rounded-lg w-full px-4 py-10 xs:p-10 flex flex-col mb-4 items-center'>
-        <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
-        <div className='font-bold text-7xl xs:text-9xl'>$100,000.23</div>
-        <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
-        <PrizeCountdown
-          textSize='text-xl'
-          prizePeriodSeconds={bn(86400)}
-          prizePeriodStartedAt={bn(1627514627)}
-        />
-      </div>
-    </>
+    <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
+      <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
+      <div className='font-bold text-9xl'>$100,000.23</div>
+      <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
+      <PrizeCountdown
+        textSize='text-xl'
+        t={t}
+        prizePeriodSeconds={data.prizePeriodSeconds}
+        prizePeriodStartedAt={data.prizePeriodStartedAt}
+        isRngRequested={data.isRngRequested}
+        canStartAward={data.canStartAward}
+        canCompleteAward={data.canCompleteAward}
+      />
+    </div>
   )
 }
 
