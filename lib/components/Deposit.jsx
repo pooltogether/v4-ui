@@ -6,6 +6,8 @@ import {
   BlockExplorerLink,
   ErrorsBox,
   Modal,
+  SquareButton,
+  SquareButtonTheme,
   ThemedClipSpinner,
   poolToast
 } from '@pooltogether/react-components'
@@ -245,29 +247,34 @@ const SuccessPane = (props) => {
 
   return (
     <>
-      <img src={SuccessIcon} className='w-24' />
-      <p className='font-inter max-w-xs mx-auto opacity-70 text-center my-4'>
-        {t('successfullyDepositedAmountTickerGoodLuck', { amount: quantity, ticker: tokenSymbol })}
+      <img src={SuccessIcon} className='h-16' />
+
+      <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl mt-4'>
+        {t('successfullyDeposited', { amount: quantity, ticker: tokenSymbol })}
+      </p>
+      <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl'>
+        {quantity} {tokenSymbol}
       </p>
 
+      <SquareButton
+        className='w-full mt-10'
+        theme={SquareButtonTheme.tealOutline}
+        onClick={(e) => {
+          e.preventDefault()
+          resetState()
+        }}
+      >
+        {t('depositMoreToIncreaseOdds', 'Deposit more to increase odds')}
+      </SquareButton>
       <button
         onClick={(e) => {
           e.preventDefault()
           resetState()
           setSelected(CONTENT_PANE_STATES.account)
         }}
-        className='new-btn rounded-lg w-full text-sm xs:text-xl py-2 mt-2 text-center'
-      >
-        {t('viewMyAccount', 'View my account')}
-      </button>
-      <button
         className='font-inter text-xxxs py-1 mt-1 text-center text-accent-1 hover:text-highlight-1 trans opacity-60 hover:opacity-100'
-        onClick={(e) => {
-          e.preventDefault()
-          resetState()
-        }}
       >
-        {t('depositAgain', 'Deposit again')}
+        {t('viewYourAccount', 'View your account')}
       </button>
     </>
   )
