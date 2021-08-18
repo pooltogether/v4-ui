@@ -309,10 +309,6 @@ const DepositForm = (props) => {
     trigger
   } = form
 
-  useEffect(() => {
-    console.log((!isValid && isDirty) || depositTxInFlight)
-  }, [isValid, isDirty, depositTxInFlight])
-
   const router = useRouter()
 
   const onSubmit = (values) => {
@@ -375,7 +371,6 @@ const DepositForm = (props) => {
 
   const depositValidationRules = {
     isValid: (v) => {
-      console.log('Validate', v)
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
 
@@ -548,10 +543,6 @@ const DepositButton = (props) => {
   } else {
     label = t('reviewDeposit')
   }
-
-  // if (isWalletConnected && quantityBN?.isZero()) return t('enterAnAmountToDeposit')
-
-  // if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
 
   return (
     <TransactionButton
