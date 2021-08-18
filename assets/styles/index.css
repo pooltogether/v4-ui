@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  --color-bg-readonly-tsunami: rgba(173, 153, 216, 0.03);
+  --color-bg-readonly-tsunami: #321a60;
   --color-border-readonly-tsunami: rgba(173, 153, 216, 0.1);
 }
 
