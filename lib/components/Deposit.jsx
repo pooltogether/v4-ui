@@ -402,7 +402,6 @@ const DepositForm = (props) => {
           unsignedNumber
           readOnly={depositTxInFlight}
           Input={RectangularInput}
-          type='number'
           symbolAndIcon={
             <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
           }
