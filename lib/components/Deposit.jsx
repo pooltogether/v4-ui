@@ -11,7 +11,7 @@ import {
   ThemedClipSpinner,
   poolToast
 } from '@pooltogether/react-components'
-// import { RectangularInput, TextInputGroup } from '@pooltogether/react-components'
+// import { TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
@@ -26,12 +26,12 @@ import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { RectangularInput } from 'lib/components/TextInputs'
-
-import SuccessIcon from 'assets/images/success@2x.png'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
-import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
+import { usePoolChainId } from 'lib/hooks/usePoolChainId'
+
+import SuccessIcon from 'assets/images/success@2x.png'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -232,7 +232,7 @@ export const Deposit = (props) => {
         approveTx={approveTx}
       />
 
-      <FormStepper activeStep={activeStep} />
+      <FormStepper activeStep={activeStep} tokenSymbol={tokenSymbol} />
     </>
   )
 }
@@ -289,6 +289,7 @@ const DepositForm = (props) => {
     tokenSymbol,
     underlyingToken,
     quantityDetails,
+    usersTicketBalance,
     usersUnderlyingBalance,
     userHasUnderlyingBalance,
     handleApprove,
@@ -306,96 +307,31 @@ const DepositForm = (props) => {
 
   const { isWalletConnected, connectWallet } = useOnboard()
 
-  const { handleSubmit, register, formState, setValue } = form
-
-  const { errors } = formState
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isValid, isDirty },
+    setValue,
+    trigger
+  } = form
 
   const router = useRouter()
 
   const onSubmit = (values) => {
-    // for some reason the form is always invalid? Need to debug why
-    // if (formState.isValid) {
-    console.log('wtf')
-    console.log(values.quantity)
     setReviewDeposit(values)
-    // }
   }
 
-  const depositButtonLabel = () => {
-    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
-    const approveTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
-      </>
-    )
-
-    const depositTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
-      </>
-    )
-
-    if (depositTxInFlight) return depositTxInFlightMsg
-    if (approveTxInFlight) return approveTxInFlightMsg
-
-    if (
-      usersUnderlyingBalance &&
-      quantityBN &&
-      safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
-    )
-      return t('insufficientTickerBalance', { ticker: tokenSymbol })
-
-    if (isWalletConnected && quantityBN?.isZero()) return t('enterAnAmountToDeposit')
-    if (isWalletConnected && needsApproval) return approvingMsg
-    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
-    if (!isWalletConnected) return t('connectWalletToDeposit')
-    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
-
-    return '...'
-  }
-
-  // const setReviewDeposit = (values) => {
-  const setReviewDeposit = (quantity) => {
+  const setReviewDeposit = (values) => {
     const { query, pathname } = router
+    const { quantity } = values
 
     query.quantity = quantity
-    // query.quantity = values.quantity
     query.prevUnderlyingBalance = props.usersUnderlyingBalance
     query.prevTicketBalance = props.usersTicketBalance
     query.showConfirmModal = '1'
 
     router.replace({ pathname, query })
     setShowConfirmModal(true)
-  }
-
-  const depositButtonDisabled = () => {
-    if (isWalletConnected && needsApproval) return false
-
-    if (showConfirmModal) return true
-    if (isWalletConnected && !quantity) return true
-    if (depositTxInFlight || approveTxInFlight) return true
-
-    // for some reason the form is always invalid? Need to debug why
-    // if (isWalletConnected && !formState.isValid) return true
-  }
-
-  const handleDepositButtonClick = (e) => {
-    e.preventDefault()
-
-    if (!isWalletConnected) {
-      connectWallet()
-    }
-
-    if (isWalletConnected && needsApproval) {
-      handleApprove()
-    }
-
-    if (isWalletConnected && !needsApproval) {
-      setReviewDeposit(quantity)
-      handleSubmit(onSubmit)
-    }
   }
 
   const usersAddress = useUsersAddress()
@@ -408,10 +344,10 @@ const DepositForm = (props) => {
       const decimals = underlyingToken.decimals
       const quantityBN = safeParseUnits(v, decimals)
 
-      if (usersAddress) {
-        if (!props.usersUnderlyingBalance) return false
-        if (!props.usersTicketBalance) return false
-        if (quantityBN && safeParseUnits(props.usersUnderlyingBalance).lt(quantityBN))
+      if (isWalletConnected) {
+        if (!usersUnderlyingBalance) return false
+        if (!usersTicketBalance) return false
+        if (quantityBN && safeParseUnits(usersUnderlyingBalance, decimals).lt(quantityBN))
           return t('insufficientFunds')
       }
 
@@ -421,14 +357,18 @@ const DepositForm = (props) => {
     }
   }
 
+  // If the user input a larger amount than their wallet balance before connecting a wallet
+  useEffect(() => {
+    trigger('quantity')
+  }, [usersAddress, usersUnderlyingBalance])
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
       <div className='w-full mx-auto'>
         <TextInputGroup
           unsignedNumber
-          readOnly={depositTxInFlight || showConfirmModal}
+          readOnly={depositTxInFlight}
           Input={RectangularInput}
-          type='number'
           symbolAndIcon={
             <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
           }
@@ -481,18 +421,125 @@ const DepositForm = (props) => {
         />
       </div>
 
-      <ErrorsBox errors={errors} />
+      <ErrorsBox errors={isDirty ? errors : null} />
 
-      <div className='flex flex-col mx-auto w-full items-center justify-center'>
-        <button
-          className='new-btn rounded-lg w-full text-base xs:text-xl py-2 mt-2 text-center'
-          disabled={depositButtonDisabled()}
-          onClick={handleDepositButtonClick}
-        >
-          {depositButtonLabel()}
-        </button>
-      </div>
+      <DynamicBottomButton
+        className='mt-2 w-full'
+        isDepositDisabled={(!isValid && isDirty) || depositTxInFlight}
+        isApproveDisabled={approveTxInFlight}
+        isDepositTxInFlight={depositTxInFlight}
+        isApproveTxInFlight={approveTxInFlight}
+        isWalletConnected={isWalletConnected}
+        needsApproval={needsApproval}
+        handleApprove={handleApprove}
+        usersUnderlyingBalance={usersUnderlyingBalance}
+        quantityBN={quantityBN}
+        tokenAllowancesIsFetched={tokenAllowancesIsFetched}
+        tokenSymbol={tokenSymbol}
+      />
     </form>
+  )
+}
+
+const DynamicBottomButton = (props) => {
+  const { isWalletConnected, needsApproval } = props
+
+  if (!isWalletConnected) {
+    return <ConnectWalletButton {...props} />
+  }
+
+  if (isWalletConnected && needsApproval) {
+    return <ApproveButton {...props} />
+  }
+
+  return <DepositButton {...props} />
+}
+
+const ConnectWalletButton = (props) => {
+  const { className } = props
+  const { connectWallet } = useOnboard()
+  const { t } = useTranslation()
+  return (
+    <SquareButton className={className} onClick={connectWallet} type='button'>
+      {t('connectWalletToDeposit')}
+    </SquareButton>
+  )
+}
+
+const ApproveButton = (props) => {
+  const { className, tokenSymbol, isApproveTxInFlight, handleApprove, isApproveDisabled } = props
+  const { t } = useTranslation()
+
+  return (
+    <TransactionButton
+      disabled={isApproveDisabled}
+      onClick={handleApprove}
+      className={className}
+      inFlight={isApproveTxInFlight}
+      label={t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}
+      inFlightLabel={t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
+      type='button'
+    />
+  )
+}
+
+const DepositButton = (props) => {
+  const {
+    isWalletConnected,
+    className,
+    tokenSymbol,
+    isDepositTxInFlight,
+    isDepositDisabled,
+    usersUnderlyingBalance,
+    quantityBN,
+    tokenAllowancesIsFetched
+  } = props
+  const { t } = useTranslation()
+
+  let label
+  if (
+    isWalletConnected &&
+    usersUnderlyingBalance &&
+    quantityBN &&
+    safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
+  ) {
+    label = t('insufficientTickerBalance', { ticker: tokenSymbol })
+  } else if (isWalletConnected && quantityBN?.isZero()) {
+    label = t('enterAnAmountToDeposit')
+  } else if (isWalletConnected && !tokenAllowancesIsFetched) {
+    label = <ThemedClipSpinner className='mx-auto' />
+  } else {
+    label = t('reviewDeposit')
+  }
+
+  return (
+    <TransactionButton
+      disabled={isDepositDisabled}
+      className={className}
+      inFlight={isDepositTxInFlight}
+      label={label}
+      inFlightLabel={t('depositingAmountTicker', { ticker: tokenSymbol })}
+      type='submit'
+    />
+  )
+}
+
+const TransactionButton = (props) => {
+  const { onClick, label, inFlight, inFlightLabel, className, type, disabled } = props
+
+  if (inFlight) {
+    return (
+      <SquareButton disabled onClick={onClick} type={type} className={className}>
+        <ThemedClipSpinner className='mr-2' size={16} />
+        {inFlightLabel}
+      </SquareButton>
+    )
+  }
+
+  return (
+    <SquareButton disabled={disabled} onClick={onClick} type={type} className={className}>
+      {label}
+    </SquareButton>
   )
 }
 

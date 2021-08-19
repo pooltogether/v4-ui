@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
@@ -8,7 +8,6 @@ import {
   useOnboard,
   useIsWalletOnNetwork,
   useTokenAllowances,
-  useTokenBalances,
   useUsersAddress,
   usePrizePeriod
 } from '@pooltogether/hooks'
@@ -32,6 +31,7 @@ import IconLeaf from 'assets/images/icon-leaf.png'
 import { AccountUI } from 'lib/components/Account/AccountUI'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
 import { usePoolChainId } from 'lib/hooks/usePoolChainId'
+import { usePrizePoolTokens } from 'lib/hooks/usePrizePoolTokens'
 
 const bn = ethers.BigNumber.from
 
@@ -401,14 +401,11 @@ const DepositPane = (props) => {
   const walletOnCorrectNetwork = useIsWalletOnNetwork(chainId)
 
   const usersAddress = useUsersAddress()
-  const { data: tokenBalances, isFetched: isTokenBalancesFetched } = useTokenBalances(
-    chainId,
-    usersAddress,
-    [tokenAddress, ticketAddress]
-  )
+  const { data: tokenBalances, isFetched: isTokenBalancesFetched } =
+    usePrizePoolTokens(usersAddress)
 
   const form = useForm({
-    mode: 'all',
+    mode: 'onChange',
     reValidateMode: 'onChange'
   })
 

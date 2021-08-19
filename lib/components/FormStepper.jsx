@@ -5,7 +5,7 @@ import classnames from 'classnames'
 import { DEPOSIT_STATES } from 'lib/components/Deposit'
 
 export const FormStepper = (props) => {
-  const { activeStep } = props
+  const { activeStep, tokenSymbol } = props
 
   const defaultCircleClassNames = 'border-2 h-4 w-4 rounded-full trans'
   const completedCircleClassNames = 'bg-highlight-1 border-highlight-1'
@@ -30,7 +30,7 @@ export const FormStepper = (props) => {
           })}
           style={{ left: -34 }}
         >
-          Allow USDC
+          Allow {tokenSymbol}
         </div>
         <div
           className={classnames(defaultLabelClassNames, {
@@ -39,7 +39,7 @@ export const FormStepper = (props) => {
           })}
           style={{ right: -10 }}
         >
-          Deposit USDC
+          Deposit {tokenSymbol}
         </div>
         <div
           className={classnames(defaultLabelClassNames, {
