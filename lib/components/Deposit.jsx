@@ -6,11 +6,12 @@ import {
   BlockExplorerLink,
   ErrorsBox,
   Modal,
+  SquareButton,
+  SquareButtonTheme,
   ThemedClipSpinner,
-  poolToast,
-  SquareButton
+  poolToast
 } from '@pooltogether/react-components'
-// import { RectangularInput, TextInputGroup } from '@pooltogether/react-components'
+// import { TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
@@ -25,12 +26,12 @@ import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { RectangularInput } from 'lib/components/TextInputs'
-
-import SuccessIcon from 'assets/images/success@2x.png'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
-import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
+import { usePoolChainId } from 'lib/hooks/usePoolChainId'
+
+import SuccessIcon from 'assets/images/success@2x.png'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -246,29 +247,34 @@ const SuccessPane = (props) => {
 
   return (
     <>
-      <img src={SuccessIcon} className='w-24' />
-      <p className='font-inter max-w-xs mx-auto opacity-70 text-center my-4'>
-        {t('successfullyDepositedAmountTickerGoodLuck', { amount: quantity, ticker: tokenSymbol })}
+      <img src={SuccessIcon} className='h-16' />
+
+      <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl mt-4'>
+        {t('successfullyDeposited', { amount: quantity, ticker: tokenSymbol })}
+      </p>
+      <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl'>
+        {quantity} {tokenSymbol}
       </p>
 
+      <SquareButton
+        className='w-full mt-10'
+        theme={SquareButtonTheme.tealOutline}
+        onClick={(e) => {
+          e.preventDefault()
+          resetState()
+        }}
+      >
+        {t('depositMoreToIncreaseOdds', 'Deposit more to increase odds')}
+      </SquareButton>
       <button
         onClick={(e) => {
           e.preventDefault()
           resetState()
           setSelected(CONTENT_PANE_STATES.account)
         }}
-        className='new-btn rounded-lg w-full text-sm xs:text-xl py-2 mt-2 text-center'
-      >
-        {t('viewMyAccount', 'View my account')}
-      </button>
-      <button
         className='font-inter text-xxxs py-1 mt-1 text-center text-accent-1 hover:text-highlight-1 trans opacity-60 hover:opacity-100'
-        onClick={(e) => {
-          e.preventDefault()
-          resetState()
-        }}
       >
-        {t('depositAgain', 'Deposit again')}
+        {t('viewYourAccount', 'View your account')}
       </button>
     </>
   )
@@ -312,53 +318,14 @@ const DepositForm = (props) => {
   const router = useRouter()
 
   const onSubmit = (values) => {
-    console.log(values.quantity)
     setReviewDeposit(values)
   }
 
-  const depositButtonLabel = () => {
-    const approvingMsg = <>{t('allowPoolTogetherToUseTicker', { ticker: tokenSymbol })}</>
-    const approveTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('allowingPoolTogetherToUseTicker', { ticker: tokenSymbol })}
-      </>
-    )
-
-    const depositTxInFlightMsg = (
-      <>
-        <ThemedClipSpinner className='mr-2' size={16} />
-        {t('depositingAmountTicker', { amount: quantityFormatted, ticker: tokenSymbol })}
-      </>
-    )
-
-    if (depositTxInFlight) return depositTxInFlightMsg
-    if (approveTxInFlight) return approveTxInFlightMsg
-
-    if (
-      isWalletConnected &&
-      usersUnderlyingBalance &&
-      quantityBN &&
-      safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
-    ) {
-      return t('insufficientTickerBalance', { ticker: tokenSymbol })
-    }
-
-    if (isWalletConnected && quantityBN?.isZero()) return t('enterAnAmountToDeposit')
-    if (isWalletConnected && needsApproval) return approvingMsg
-    if (isWalletConnected && !tokenAllowancesIsFetched) return <ThemedClipSpinner />
-    if (!isWalletConnected) return t('connectWalletToDeposit')
-    if (isWalletConnected && !needsApproval) return t('reviewDeposit')
-
-    return '...'
-  }
-
-  // const setReviewDeposit = (values) => {
-  const setReviewDeposit = (quantity) => {
+  const setReviewDeposit = (values) => {
     const { query, pathname } = router
+    const { quantity } = values
 
     query.quantity = quantity
-    // query.quantity = values.quantity
     query.prevUnderlyingBalance = props.usersUnderlyingBalance
     query.prevTicketBalance = props.usersTicketBalance
     query.showConfirmModal = '1'
@@ -443,6 +410,8 @@ const DepositForm = (props) => {
           Input={RectangularInput}
           roundedClassName={'rounded-lg'}
           containerRoundedClassName={'rounded-lg'}
+          bgClassName={'bg-readonly-tsunami'}
+          bgVarName='var(--color-bg-readonly-tsunami)'
           placeholder='0.0'
           id='result'
           name='result'
@@ -644,11 +613,10 @@ const ConfirmModal = (props) => {
                 <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
               }
               Input={RectangularInput}
-              textClassName={'text-xl text-right text-inverse'}
+              textClassName={'text-xl text-right'}
               className={'font-inter font-semibold opacity-100'}
               containerBgClassName={'bg-body'}
               containerRoundedClassName={'rounded-lg'}
-              bgClassName={'bg-body'}
               id='quantity-confirm-modal'
               name='quantity-confirm-modal'
               register={() => {}}
@@ -664,11 +632,10 @@ const ConfirmModal = (props) => {
               Input={RectangularInput}
               roundedClassName={'rounded-lg'}
               containerRoundedClassName={'rounded-lg'}
-              placeholder='0.0'
-              register={() => {}}
+              bgVarName='var(--color-bg-readonly-tsunami)'
               id='result-confirm-modal'
               name='result-confirm-modal'
-              label={null}
+              register={() => {}}
               value={quantity}
             />
 
