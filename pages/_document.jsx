@@ -27,8 +27,6 @@ class MyDocument extends Document {
 
             <link rel='icon' href='/favicon.png' type='image/x-icon' />
 
-            <meta name='viewport' content='width=device-width, initial-scale=1' />
-
             <meta name='theme-color' content='#1e0b43' />
             <meta name='description' content={description} />
             <meta name='keywords' content={keywords} />

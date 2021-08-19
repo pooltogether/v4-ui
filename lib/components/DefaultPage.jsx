@@ -122,7 +122,7 @@ const NavTabs = (props) => {
   )
 }
 
-const CONTENT_PANE_CLASSNAME = 'pt-4'
+const CONTENT_PANE_CLASSNAME = 'pt-4 w-full'
 
 const ContentPanes = (props) => {
   const { depositSelected, prizesSelected, accountSelected } = props
@@ -367,7 +367,7 @@ const UpcomingPrizeDetails = (props) => {
   return (
     <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
       <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
-      <div className='font-bold text-9xl'>$100,000.23</div>
+      <div className='font-bold text-5xl xs:text-9xl'>$100,000.23</div>
       <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div>
       <PrizeCountdown
         textSize='text-xl'

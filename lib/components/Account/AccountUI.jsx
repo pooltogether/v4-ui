@@ -85,8 +85,8 @@ const ManageDepositButtons = (props) => {
           {t('withdraw')}
         </SquareButton>
         <Link href='/?tab=deposit'>
-          <a className='w-full'>
-            <SquareButton className='w-full ml-2' theme={SquareButtonTheme.teal}>
+          <a className='w-full ml-2'>
+            <SquareButton className='w-full' theme={SquareButtonTheme.teal}>
               {t('increaseMyOdds')}
             </SquareButton>
           </a>
