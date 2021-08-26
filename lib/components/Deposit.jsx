@@ -238,7 +238,7 @@ export const Deposit = (props) => {
 }
 
 const SuccessPane = (props) => {
-  const { resetState, tokenSymbol, setSelected } = props
+  const { resetState, tokenSymbol, setSelectedPage } = props
 
   const { t } = useTranslation()
   const router = useRouter()
@@ -270,7 +270,7 @@ const SuccessPane = (props) => {
         onClick={(e) => {
           e.preventDefault()
           resetState()
-          setSelected(CONTENT_PANE_STATES.account)
+          setSelectedPage(CONTENT_PANE_STATES.account)
         }}
         className='font-inter text-xxxs py-1 mt-1 text-center text-accent-1 hover:text-highlight-1 trans opacity-60 hover:opacity-100'
       >

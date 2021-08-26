@@ -1977,10 +1977,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-0.1.18.tgz#fd9ec4b9ac18501b09956dda77dd45e5010c49bd"
-  integrity sha512-2AujcvZL/86tZgN+9u1Wa4QoAnaMPwPPXus5rExuqyX5qdKockgoCOp1AveKKrdUMyL5qZxJe/w8hH6BIOlKug==
+"@pooltogether/hooks@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-0.2.0.tgz#14f7ca778d316b45d28757344e593de247e3cbd4"
+  integrity sha512-kmu1sHXXuyKRYHD6bP4OpX/Yjaow8h7GsksmW0esbvEBK03P5xmFs5cfYyzrbwLjR+QiH+B81P0biShnzRn5Xw==
 
 "@pooltogether/loot-box@1.1.0":
   version "1.1.0"
@@ -2050,10 +2050,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/uniform-random-number/-/uniform-random-number-1.0.0-beta.1.tgz#72257401fe8536e95f9f812f1d249262659084a7"
   integrity sha512-V4iqLOpNFNhnUqfKRlvqUeRwvKaODdz+qn4Qi65C3iMOnDb0J31tBvyhwKbhP4wauNuUN64WfepqkkxET9U7EQ==
 
-"@pooltogether/utilities@^0.0.37":
-  version "0.0.37"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.0.37.tgz#ada3d644c042f520d06e7aaf618461c420db7e7b"
-  integrity sha512-sKCDd7Dyb/CpDsSnXskkp9quDtdhrTG3AOgeFPY4emeNe+SEiqH2mJc53AL6llll8TZH9YECvDjgAXv7GJ2h2w==
+"@pooltogether/utilities@^0.0.42":
+  version "0.0.42"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.0.42.tgz#243dc5abcdb5ded06b94932d92d62fe563d5c7dc"
+  integrity sha512-huxJRKcvxnK/lYzRROwjznxtLN4jWDHwp2I+iFcatKu926Inbin8hXTLSBI3PmF2jINVOrrg6Quwu70L8AutAA==
 
 "@pooltogether/yield-source-interface@^1.0.1":
   version "1.0.2"
@@ -11906,6 +11906,11 @@ optionator@^0.8.1:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
     word-wrap "~1.2.3"
+
+ordinal@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ordinal/-/ordinal-1.0.3.tgz#1a3c7726a61728112f50944ad7c35c06ae3a0d4d"
+  integrity sha512-cMddMgb2QElm8G7vdaa02jhUNbTSrhsgAGUz1OokD83uJTwSUn+nKoNoKVVaRa08yF6sgfO7Maou1+bgLd9rdQ==
 
 os-browserify@0.3.0, os-browserify@^0.3.0:
   version "0.3.0"
