@@ -10,6 +10,9 @@ import { useUsersTokenHoldings } from 'lib/hooks/useUsersTokenHoldings'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
 import { WithdrawModal } from 'lib/components/Account/WithdrawModal'
 import PiggyBank from 'assets/images/piggy-bank.svg'
+import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
+import { getUsdAmount } from 'lib/components/Prizes/PrizesUI'
+import { numberWithCommas } from '@pooltogether/utilities'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -31,15 +34,23 @@ export const AccountUI = (props) => {
   )
 }
 
+// TODO: Balances across chains?
 const AccountCard = (props) => {
-  const { data: usersTokens, isFetched } = useUsersTokenHoldings()
+  const { data: usersTokens, isFetched: isTokenHoldingsFetched } = useUsersTokenHoldings()
+  const { data: tokensWithUsd, isFetched: isTokensWithUsdFetched } = usePrizePoolTokensWithUsd()
   const prizePool = usePrizePool()
   const { t } = useTranslation()
 
-  const balance = usersTokens?.[prizePool.tokens.ticket.address].amountPretty
-  const symbol = usersTokens?.[prizePool.tokens.ticket.address].symbol
-
-  // TODO: Get the USD value of the users deposits
+  let balance,
+    symbol,
+    usd = '--'
+  if (isTokensWithUsdFetched && isTokenHoldingsFetched) {
+    const ticketToken = usersTokens[prizePool.tokens.ticket.address]
+    const usdAmount = getUsdAmount(ticketToken.amountUnformatted, tokensWithUsd.ticket)
+    usd = `$${numberWithCommas(usdAmount)}`
+    balance = ticketToken.amountPretty
+    symbol = ticketToken.symbol
+  }
 
   return (
     <Card>
@@ -47,8 +58,10 @@ const AccountCard = (props) => {
       <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
         {t('myBalance')}
       </span>
-      <Balance balance={balance} symbol={symbol} isFetched={isFetched} />
-      <span className='text-xxs text-accent-1 font-inter'>{t('value')}: $1,000</span>
+      <Balance balance={balance} symbol={symbol} isFetched={isTokenHoldingsFetched} />
+      <span className='text-xxs text-accent-1 font-inter'>
+        {t('value')}: {usd}
+      </span>
     </Card>
   )
 }
@@ -87,7 +100,7 @@ const ManageDepositButtons = (props) => {
         <Link href='/?tab=deposit'>
           <a className='w-full ml-2'>
             <SquareButton className='w-full' theme={SquareButtonTheme.teal}>
-              {t('increaseMyOdds')}
+              {t('deposit')}
             </SquareButton>
           </a>
         </Link>
