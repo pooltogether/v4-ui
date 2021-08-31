@@ -2,6 +2,8 @@ import { BigNumber, Contract } from 'ethers'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Provider, TransactionResponse } from '@ethersproject/abstract-provider'
 
+// TODO: USE THE SDK. THIS IS ALL TEMPORARY.
+
 // Simulation specific
 
 export interface User {
