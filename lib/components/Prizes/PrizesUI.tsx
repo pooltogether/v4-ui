@@ -17,7 +17,7 @@ import { ethers } from 'ethers'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
 import ordinal from 'ordinal'
-import { ScreenSize, TokenBalanceWithUsd, useScreenSize } from '@pooltogether/hooks'
+import { ScreenSize, TokenBalanceWithUsd, useOnboard, useScreenSize } from '@pooltogether/hooks'
 import classNames from 'classnames'
 import { usePrizePoolTokens } from 'lib/hooks/usePrizePoolTokens'
 import { useCurrentPrizePeriod } from 'lib/hooks/useCurrentPrizePeriod'
@@ -36,6 +36,7 @@ export const PRIZE_UI_STATES = {
 
 export const PrizesUI = (props) => {
   // Kick off loading everything immediately
+  const { isWalletConnected, connectWallet, address: usersAddress } = useOnboard()
   const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes()
   usePrizePoolTokensWithUsd()
   useCurrentPrizePeriod()
@@ -46,6 +47,21 @@ export const PrizesUI = (props) => {
 
   const [prizesUIState, setPrizesUIState] = useState(PRIZE_UI_STATES.initialState)
   const [hasUserClickedCheck, setHasUserClickedCheck] = useState(false)
+
+  // Reset on wallet change
+  useEffect(() => {
+    setPrizesUIState(PRIZE_UI_STATES.initialState)
+    setHasUserClickedCheck(false)
+  }, [usersAddress])
+
+  if (!isWalletConnected) {
+    return (
+      <>
+        <LatestPrizeToCheck className='mb-8' />
+        <ConnectWalletButton connectWallet={connectWallet} />
+      </>
+    )
+  }
 
   return (
     <>
@@ -460,6 +476,16 @@ const LargeShapesContainer = (props) => (
 const SmallShapesContainer = (props) => (
   <ShapesContainer {...props} backgroundImage={`url('/small-shapes-illustration.svg')`} />
 )
+
+const ConnectWalletButton = (props) => {
+  const { connectWallet } = props
+  const { t } = useTranslation()
+  return (
+    <SquareButton className='w-full mb-8' onClick={connectWallet}>
+      {t('connectWallet')}
+    </SquareButton>
+  )
+}
 
 export const getUsdAmount = (amount, prizeToken) => {
   return ethers.utils.formatUnits(
