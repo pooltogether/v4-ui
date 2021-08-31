@@ -1,8 +1,13 @@
-import { useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenBalanceWithUsd, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 import { usePrizePool } from 'lib/hooks/usePrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/usePrizePoolTokens'
 import { useMemo } from 'react'
+
+interface PrizePoolTokensWithUsd {
+  ticket: TokenBalanceWithUsd
+  underlyingToken: TokenBalanceWithUsd
+}
 
 export const usePrizePoolTokensWithUsd = () => {
   const chainId = usePoolChainId()
@@ -14,30 +19,29 @@ export const usePrizePoolTokensWithUsd = () => {
     tokenAddresses
   )
 
-  return useMemo(() => {
+  return useMemo<{ isFetched: boolean; data: PrizePoolTokensWithUsd }>(() => {
     const isFetched = isTokenPricesFetched && isPrizePoolTokensFetched
-    const data = {}
-
-    console.log(isPrizePoolTokensFetched, isTokenPricesFetched, prizePoolTokens, tokenPrices)
 
     if (!isFetched) {
       return {
-        isFetched,
-        data
+        isFetched: false,
+        data: undefined
       }
     }
 
-    data[prizePool.tokens.ticket.address] = {
-      ...prizePoolTokens[prizePool.tokens.ticket.address],
-      ...tokenPrices[prizePool.tokens.underlyingToken.address]
-    }
-    data[prizePool.tokens.underlyingToken.address] = {
-      ...prizePoolTokens[prizePool.tokens.underlyingToken.address],
-      ...tokenPrices[prizePool.tokens.underlyingToken.address]
+    const data: PrizePoolTokensWithUsd = {
+      ticket: {
+        ...prizePoolTokens[prizePool.tokens.ticket.address],
+        ...tokenPrices[prizePool.tokens.underlyingToken.address]
+      },
+      underlyingToken: {
+        ...prizePoolTokens[prizePool.tokens.underlyingToken.address],
+        ...tokenPrices[prizePool.tokens.underlyingToken.address]
+      }
     }
 
     return {
-      isFetched,
+      isFetched: true,
       data
     }
   }, [isPrizePoolTokensFetched, isTokenPricesFetched, prizePoolTokens, tokenPrices])

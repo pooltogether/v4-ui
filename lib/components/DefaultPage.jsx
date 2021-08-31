@@ -188,7 +188,7 @@ const DepositPane = (props) => {
 
   return (
     <>
-      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 px-8 py-10 xs:p-10'>
+      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 px-4 sm:px-8 py-10 xs:p-10'>
         <div
           className={classnames(
             'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-30 trans bg-blur flex items-center justify-center p-20 text-center',
