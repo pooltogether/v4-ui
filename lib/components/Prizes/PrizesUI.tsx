@@ -1,12 +1,10 @@
 import {
   ThemedClipSpinner,
-  ThemeContext,
   LoadingDots,
   SimpleCountDown,
   SquareButton
 } from '@pooltogether/react-components'
-import { useInterval, useTimeout } from 'beautiful-react-hooks'
-import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
+import { useTimeout } from 'beautiful-react-hooks'
 import React, { useEffect, useState } from 'react'
 import IconSwim from 'assets/images/icon-swim.png'
 import IconParty from 'assets/images/icon-party.png'
@@ -15,11 +13,9 @@ import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
 import { useUsersClaimablePrizes } from 'lib/hooks/useUsersClaimablePrizes'
 import { ethers } from 'ethers'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
-import { usePrizePool } from 'lib/hooks/usePrizePool'
 import ordinal from 'ordinal'
 import { ScreenSize, TokenBalanceWithUsd, useOnboard, useScreenSize } from '@pooltogether/hooks'
 import classNames from 'classnames'
-import { usePrizePoolTokens } from 'lib/hooks/usePrizePoolTokens'
 import { useCurrentPrizePeriod } from 'lib/hooks/useCurrentPrizePeriod'
 import { useLatestDraw } from 'lib/hooks/useLatestDraw'
 import { Trans, useTranslation } from 'react-i18next'
@@ -155,7 +151,7 @@ const ClaimableAmount = (props) => {
     return <div className='animate-pulse rounded-lg h-4 w-20' />
   }
 
-  const claimableAmountUnformatted = claimablePrizes.reduce(
+  const claimableAmountUnformatted = claimablePrizes.claimablePrizes.reduce(
     (claimableAmount, prize) => claimableAmount.add(prize.amountUnformatted),
     ethers.constants.Zero
   )

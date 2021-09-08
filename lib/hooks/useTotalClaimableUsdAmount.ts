@@ -1,12 +1,12 @@
 import { ethers } from 'ethers'
 import { getUsdAmount } from 'lib/components/Prizes/PrizesUI'
-import { useAllUsersClaimablePrizes } from 'lib/hooks/useUsersClaimablePrizes'
+import { useUsersClaimablePrizes } from 'lib/hooks/useUsersClaimablePrizes'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
 
 export const useTotalClaimableUsdAmount = () => {
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokensWithUsd()
   const { data: claimablePrizesData, isFetched: isAllClaimablePrizesFetched } =
-    useAllUsersClaimablePrizes()
+    useUsersClaimablePrizes()
 
   if (!isAllClaimablePrizesFetched || !isTokensFetched) {
     return {
