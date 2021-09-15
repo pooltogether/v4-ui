@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import {
@@ -9,20 +9,24 @@ import {
   SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner,
-  poolToast
+  poolToast,
+  LoadingDots,
+  ModalProps
 } from '@pooltogether/react-components'
 // import { TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
   useTransaction,
-  useSendTransaction
+  TokenBalance,
+  Transaction,
+  Token
 } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas, safeParseUnits, shorten } from '@pooltogether/utilities'
 import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
 import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 
-import { CONTENT_PANE_STATES } from 'lib/components/DefaultPage'
+import { ContentPaneState, ContentPanesProps, QuantityDetails } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/TextInputGroup'
 import { RectangularInput } from 'lib/components/TextInputs'
@@ -32,6 +36,15 @@ import { DownArrow } from 'lib/components/DownArrow'
 import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 
 import SuccessIcon from 'assets/images/success@2x.png'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import {
+  DepositAllowance,
+  usePlayersDepositAllowance
+} from 'lib/hooks/Tsunami/Player/usePlayersDepositAllowance'
+import { Player } from '.yalc/@pooltogether/v4-js-client/dist'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -40,28 +53,52 @@ export const DEPOSIT_STATES = {
   complete: 4
 }
 
-export const Deposit = (props) => {
+interface DepositProps extends ContentPanesProps {
+  player: Player
+  form: UseFormReturn<FieldValues, object>
+  isPrizePoolFetched: boolean
+  isPrizePoolTokensFetched: boolean
+  isPlayerFetched: boolean
+  isPlayersBalancesFetched: boolean
+  isPlayersDepositAllowanceFetched: boolean
+  token: Token
+  ticket: Token
+  tokenWithBalance: TokenBalance
+  ticketWithBalance: TokenBalance
+  depositAllowance: DepositAllowance
+  quantityDetails: QuantityDetails
+  refetchOnApprove: () => void
+  refetchOnDeposit: () => void
+}
+
+interface DepositTransactions {
+  approveTx: Transaction
+  depositTx: Transaction
+  approveTxInFlight: boolean
+  depositTxInFlight: boolean
+  depositTxSuccess: string | string[]
+}
+
+export const Deposit = (props: DepositProps) => {
   const {
-    underlyingToken,
-    usersUnderlyingBalance,
-    usersTokenAllowance,
-    tokenAllowancesRefetch,
-    tokenSymbol,
-    tokenAddress,
-    ticketAddress,
-    contractAddress,
-    form
+    player,
+    form,
+    token,
+    depositAllowance,
+    quantityDetails,
+    refetchOnApprove,
+    refetchOnDeposit
   } = props
 
   const router = useRouter()
 
-  const usersAddress = useUsersAddress()
-
-  const [showConfirmModal, setShowConfirmModal] = useState(router.query.showConfirmModal, false)
+  const [showConfirmModal, setShowConfirmModal] = useState<boolean>(
+    Boolean(router.query.showConfirmModal) || false
+  )
 
   const { t } = useTranslation()
 
-  const sendTx = useSendTransaction(t, poolToast)
+  const sendTx = useSendTransaction()
 
   const [approveTxId, setApproveTxId] = useState(0)
   const approveTx = useTransaction(approveTxId)
@@ -84,11 +121,9 @@ export const Deposit = (props) => {
     }
   }, [])
 
-  const quantity = form.watch('quantity') || ''
-  const quantityBN = safeParseUnits(quantity || '0', underlyingToken.decimals)
-  const quantityFormatted = numberWithCommas(quantity)
-
-  const needsApproval = quantityBN?.gte(0) && usersTokenAllowance?.lte(quantityBN)
+  const needsApproval =
+    quantityDetails.quantityUnformatted?.gte(0) &&
+    depositAllowance?.allowanceUnformatted.lte(quantityDetails.quantityUnformatted)
 
   const [activeStep, setActiveStep] = useState(DEPOSIT_STATES.approving)
 
@@ -126,62 +161,48 @@ export const Deposit = (props) => {
   }
 
   const handleApprove = async () => {
-    const params = [
-      contractAddress,
-      ethers.utils.parseUnits('9999999999', Number(underlyingToken.decimals))
-    ]
-
-    const name = t(`allowTickerPool`, { ticker: tokenSymbol })
+    const name = t(`allowTickerPool`, { ticker: token.symbol })
 
     const txId = await sendTx({
       name,
-      contractAbi: ControlledTokenAbi,
-      contractAddress: tokenAddress,
       method: 'approve',
-      params,
+      callTransaction: async () => player.approveDeposits(),
       callbacks: {
-        refetch: tokenAllowancesRefetch
+        refetch: refetchOnApprove
       }
     })
     setApproveTxId(txId)
   }
 
-  const handleConfirmClick = async (e) => {
-    e.preventDefault()
-
-    const params = [usersAddress, quantityBN, ticketAddress, ethers.constants.AddressZero]
-
-    const name = `${t('deposit')} ${quantityFormatted} ${tokenSymbol}`
+  const handleConfirmClick = async () => {
+    const name = `${t('deposit')} ${quantityDetails.quantityPretty} ${token.symbol}`
 
     // const id = await sendTx(txName, PrizePoolAbi, poolAddress, method, params)
 
     const txId = await sendTx({
       name,
-      contractAbi: PrizePoolAbi,
-      contractAddress,
       method: 'depositTo',
-      params,
+      callTransaction: async () => {
+        console.log('pre submit')
+        const response = await player.depositTicket(quantityDetails.quantityUnformatted)
+        console.log('post submit', response)
+        return response
+      },
       callbacks: {
         onSent: closeModal,
         onSuccess: onDepositTxSuccess,
-        refetch: tokenAllowancesRefetch
+        refetch: refetchOnDeposit
       }
     })
     setDepositTxId(txId)
   }
 
-  const txs = {
+  const txs: DepositTransactions = {
     approveTx,
     depositTx,
     approveTxInFlight,
     depositTxInFlight,
     depositTxSuccess
-  }
-
-  const quantityDetails = {
-    quantity,
-    quantityBN,
-    quantityFormatted
   }
 
   const resetState = () => {
@@ -215,30 +236,25 @@ export const Deposit = (props) => {
             txs={txs}
             needsApproval={needsApproval}
             quantityDetails={quantityDetails}
-            usersUnderlyingBalance={usersUnderlyingBalance}
-            showConfirmModal={showConfirmModal}
             setShowConfirmModal={setShowConfirmModal}
             handleApprove={handleApprove}
           />
         </>
       )}
 
-      <GradientBanner
-        {...props}
-        approveTxInFlight={approveTxInFlight}
-        depositTxInFlight={depositTxInFlight}
-        depositTxSuccess={depositTxSuccess}
-        depositTx={depositTx}
-        approveTx={approveTx}
-      />
+      <GradientBanner {...props} txs={txs} chainId={player?.chainId} />
 
-      <FormStepper activeStep={activeStep} tokenSymbol={tokenSymbol} />
+      <FormStepper activeStep={activeStep} tokenSymbol={token.symbol} />
     </>
   )
 }
 
-const SuccessPane = (props) => {
-  const { resetState, tokenSymbol, setSelectedPage } = props
+interface SuccessPaneProps extends DepositProps {
+  resetState: () => void
+}
+
+const SuccessPane = (props: SuccessPaneProps) => {
+  const { resetState, token, setSelectedPage } = props
 
   const { t } = useTranslation()
   const router = useRouter()
@@ -250,10 +266,10 @@ const SuccessPane = (props) => {
       <img src={SuccessIcon} className='h-16' />
 
       <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl mt-4'>
-        {t('successfullyDeposited', { amount: quantity, ticker: tokenSymbol })}
+        {t('successfullyDeposited', { amount: quantity, ticker: token.symbol })}
       </p>
       <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl'>
-        {quantity} {tokenSymbol}
+        {quantity} {token.symbol}
       </p>
 
       <SquareButton
@@ -270,7 +286,7 @@ const SuccessPane = (props) => {
         onClick={(e) => {
           e.preventDefault()
           resetState()
-          setSelectedPage(CONTENT_PANE_STATES.account)
+          setSelectedPage(ContentPaneState.account)
         }}
         className='font-inter text-xxxs py-1 mt-1 text-center text-accent-1 hover:text-highlight-1 trans opacity-60 hover:opacity-100'
       >
@@ -280,32 +296,37 @@ const SuccessPane = (props) => {
   )
 }
 
-const DepositForm = (props) => {
+interface DepositFormProps extends DepositProps {
+  txs: DepositTransactions
+  quantityDetails: QuantityDetails
+  needsApproval: boolean
+  setShowConfirmModal: (show: boolean) => void
+  handleApprove: () => void
+}
+
+const DepositForm = (props: DepositFormProps) => {
   const {
     form,
     txs,
     needsApproval,
-    tokenAddress,
-    tokenSymbol,
-    underlyingToken,
+    token,
+    ticket,
+    tokenWithBalance,
+    ticketWithBalance,
     quantityDetails,
-    usersTicketBalance,
-    usersUnderlyingBalance,
-    userHasUnderlyingBalance,
     handleApprove,
-    showConfirmModal,
     setShowConfirmModal,
-    tokenAllowancesIsFetched
+    isPlayersDepositAllowanceFetched
   } = props
 
   const chainId = usePoolChainId()
 
   const { depositTxInFlight, approveTxInFlight } = txs
-  const { quantity, quantityBN, quantityFormatted } = quantityDetails
+  const decimals = token.decimals
 
   const { t } = useTranslation()
 
-  const { isWalletConnected, connectWallet } = useOnboard()
+  const { isWalletConnected } = useOnboard()
 
   const {
     handleSubmit,
@@ -326,8 +347,8 @@ const DepositForm = (props) => {
     const { quantity } = values
 
     query.quantity = quantity
-    query.prevUnderlyingBalance = props.usersUnderlyingBalance
-    query.prevTicketBalance = props.usersTicketBalance
+    query.prevUnderlyingBalance = tokenWithBalance.amount
+    query.prevTicketBalance = ticketWithBalance.amount
     query.showConfirmModal = '1'
 
     router.replace({ pathname, query })
@@ -341,18 +362,17 @@ const DepositForm = (props) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
 
-      const decimals = underlyingToken.decimals
-      const quantityBN = safeParseUnits(v, decimals)
+      const quantityUnformatted = safeParseUnits(v, decimals)
 
       if (isWalletConnected) {
-        if (!usersUnderlyingBalance) return false
-        if (!usersTicketBalance) return false
-        if (quantityBN && safeParseUnits(usersUnderlyingBalance, decimals).lt(quantityBN))
+        if (!tokenWithBalance) return false
+        if (!ticketWithBalance) return false
+        if (quantityUnformatted && tokenWithBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
       }
 
-      if (getMaxPrecision(v) > decimals) return false
-      if (quantityBN && quantityBN.isZero()) return false
+      if (getMaxPrecision(v) > Number(decimals)) return false
+      if (quantityUnformatted && quantityUnformatted.isZero()) return false
       return true
     }
   }
@@ -360,7 +380,7 @@ const DepositForm = (props) => {
   // If the user input a larger amount than their wallet balance before connecting a wallet
   useEffect(() => {
     trigger('quantity')
-  }, [usersAddress, usersUnderlyingBalance])
+  }, [usersAddress, tokenWithBalance, ticketWithBalance])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
@@ -370,7 +390,7 @@ const DepositForm = (props) => {
           readOnly={depositTxInFlight}
           Input={RectangularInput}
           symbolAndIcon={
-            <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
+            <TokenSymbolAndIcon chainId={chainId} address={token.address} symbol={token.symbol} />
           }
           validate={depositValidationRules}
           containerBgClassName={'bg-transparent'}
@@ -387,14 +407,14 @@ const DepositForm = (props) => {
               valueKey='quantity'
               disabled={false}
               setValue={setValue}
-              amount={usersUnderlyingBalance}
-              tokenSymbol={tokenSymbol}
-              isAmountZero={!userHasUnderlyingBalance}
+              amount={tokenWithBalance?.amount}
+              tokenSymbol={token.symbol}
+              isAmountZero={!tokenWithBalance?.hasBalance}
             />
           }
           label={
             <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-              {t('depositTicker', { ticker: tokenSymbol })}
+              {t('depositTicker', { ticker: token.symbol })}
             </div>
           }
         />
@@ -406,7 +426,7 @@ const DepositForm = (props) => {
         <TextInputGroup
           readOnly
           disabled
-          symbolAndIcon='PRZUSDC'
+          symbolAndIcon={ticket.symbol}
           Input={RectangularInput}
           roundedClassName={'rounded-lg'}
           containerRoundedClassName={'rounded-lg'}
@@ -432,10 +452,11 @@ const DepositForm = (props) => {
         isWalletConnected={isWalletConnected}
         needsApproval={needsApproval}
         handleApprove={handleApprove}
-        usersUnderlyingBalance={usersUnderlyingBalance}
-        quantityBN={quantityBN}
-        tokenAllowancesIsFetched={tokenAllowancesIsFetched}
-        tokenSymbol={tokenSymbol}
+        usersUnderlyingBalance={tokenWithBalance?.amount}
+        decimals={decimals}
+        quantityDetails={quantityDetails}
+        tokenAllowancesIsFetched={isPlayersDepositAllowanceFetched}
+        tokenSymbol={token.symbol}
       />
     </form>
   )
@@ -491,20 +512,23 @@ const DepositButton = (props) => {
     isDepositTxInFlight,
     isDepositDisabled,
     usersUnderlyingBalance,
-    quantityBN,
+    quantityDetails,
+    decimals,
     tokenAllowancesIsFetched
   } = props
   const { t } = useTranslation()
+
+  const { quantityUnformatted } = quantityDetails
 
   let label
   if (
     isWalletConnected &&
     usersUnderlyingBalance &&
-    quantityBN &&
-    safeParseUnits(usersUnderlyingBalance)?.lt(quantityBN)
+    quantityUnformatted &&
+    safeParseUnits(usersUnderlyingBalance, decimals)?.lt(quantityUnformatted)
   ) {
     label = t('insufficientTickerBalance', { ticker: tokenSymbol })
-  } else if (isWalletConnected && quantityBN?.isZero()) {
+  } else if (isWalletConnected && quantityUnformatted?.isZero()) {
     label = t('enterAnAmountToDeposit')
   } else if (isWalletConnected && !tokenAllowancesIsFetched) {
     label = <ThemedClipSpinner className='mx-auto' />
@@ -543,7 +567,42 @@ const TransactionButton = (props) => {
   )
 }
 
-const TxStatus = (props) => {
+interface GradientBannerProps extends DepositProps {
+  txs: DepositTransactions
+  chainId: number
+}
+
+const GradientBanner = (props: GradientBannerProps) => {
+  const { txs, chainId } = props
+  const { approveTxInFlight, depositTxInFlight, depositTx, depositTxSuccess, approveTx } = txs
+  const { t } = useTranslation()
+
+  let contents = null
+  if (depositTxSuccess) {
+    contents = t('disclaimerComeBackRegularlyToClaimWinnings')
+  } else {
+    if (depositTxInFlight) {
+      contents = <TxStatus {...props} chainId={chainId} txHash={depositTx.hash} />
+    } else if (approveTxInFlight) {
+      contents = <TxStatus {...props} chainId={chainId} txHash={approveTx.hash} />
+    } else {
+      contents = t('chancesToWinAreProportional')
+    }
+  }
+
+  return (
+    <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 mt-4 text-xxxs rounded-lg text-white'>
+      {contents}
+    </div>
+  )
+}
+
+interface TxStatusProps extends GradientBannerProps {
+  txHash: string
+  chainId: number
+}
+
+const TxStatus = (props: TxStatusProps) => {
   const { t } = useTranslation()
 
   return (
@@ -561,33 +620,15 @@ const TxStatus = (props) => {
   )
 }
 
-const GradientBanner = (props) => {
-  const { approveTxInFlight, depositTxInFlight, depositTx, depositTxSuccess, approveTx } = props
-  const { t } = useTranslation()
-
-  let contents = null
-  if (depositTxSuccess) {
-    contents = t('disclaimerComeBackRegularlyToClaimWinnings')
-  } else {
-    if (depositTxInFlight) {
-      contents = <TxStatus {...props} txHash={depositTx.hash} />
-    } else if (approveTxInFlight) {
-      contents = <TxStatus {...props} txHash={approveTx.hash} />
-    } else {
-      contents = t('chancesToWinAreProportional')
-    }
-  }
-
-  return (
-    <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 mt-4 text-xxxs rounded-lg text-white'>
-      {contents}
-    </div>
-  )
+interface ConfirmModalProps extends DepositProps {
+  isOpen: boolean
+  closeModal: () => void
+  handleConfirmClick: () => Promise<void>
 }
 
-const ConfirmModal = (props) => {
-  const { handleConfirmClick, quantityDetails, tokenAddress, tokenSymbol } = props
-  const { quantity, quantityFormatted } = quantityDetails
+const ConfirmModal = (props: ConfirmModalProps) => {
+  const { handleConfirmClick, quantityDetails, token, ticket } = props
+  const { quantity, quantityPretty } = quantityDetails
 
   const chainId = usePoolChainId()
 
@@ -610,7 +651,11 @@ const ConfirmModal = (props) => {
               readOnly
               disabled
               symbolAndIcon={
-                <TokenSymbolAndIcon chainId={chainId} address={tokenAddress} symbol={tokenSymbol} />
+                <TokenSymbolAndIcon
+                  chainId={chainId}
+                  address={token.address}
+                  symbol={token.symbol}
+                />
               }
               Input={RectangularInput}
               textClassName={'text-xl text-right'}
@@ -628,7 +673,7 @@ const ConfirmModal = (props) => {
             <TextInputGroup
               readOnly
               disabled
-              symbolAndIcon='PRZUSDC'
+              symbolAndIcon={ticket.symbol}
               Input={RectangularInput}
               roundedClassName={'rounded-lg'}
               containerRoundedClassName={'rounded-lg'}
@@ -642,12 +687,12 @@ const ConfirmModal = (props) => {
             <div className='bg-light-purple-70 text-xxs font-inter font-semibold p-5 rounded-lg mt-10 text-white'>
               <div className='flex-col'>
                 {/* <div className='flex justify-between'> */}
-                {/* <div className=''>{t('winningOddsPerTicker', { ticker: 'PRZUSDC' })}</div> */}
+                {/* <div className=''>{t('winningOddsPerTicker', { ticker: ticket.symbol })}</div> */}
                 {/* <div className=''>{odds}</div> */}
                 {/* </div> */}
                 <div className='flex justify-between'>
-                  <div className=''>{t('tickerToReceive', { ticker: 'PRZUSDC' })}</div>
-                  <div className=''>{quantityFormatted}</div>
+                  <div className=''>{t('tickerToReceive', { ticker: ticket.symbol })}</div>
+                  <div className=''>{quantityPretty}</div>
                 </div>
               </div>
             </div>

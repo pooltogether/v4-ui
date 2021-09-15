@@ -2,7 +2,14 @@ import React from 'react'
 import { TokenIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
 
-export const TokenSymbolAndIcon = (props) => {
+interface TokenSymbolAndIconProps {
+  className?: string
+  chainId: number
+  address: string
+  symbol: string
+}
+
+export const TokenSymbolAndIcon = (props: TokenSymbolAndIconProps) => {
   const { className, chainId, address, symbol } = props
   return (
     <div className={classNames('flex', className)}>

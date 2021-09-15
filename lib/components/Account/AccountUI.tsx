@@ -13,14 +13,20 @@ import PiggyBank from 'assets/images/piggy-bank.svg'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
 import { getUsdAmount } from 'lib/components/Prizes/PrizesUI'
 import { numberWithCommas } from '@pooltogether/utilities'
+import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import { usePlayersBalances } from 'lib/hooks/Tsunami/Player/usePlayersBalances'
+import { Player } from '.yalc/@pooltogether/v4-js-client/dist'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
+  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+
   if (!isWalletConnected) {
     return (
       <>
-        <AccountCard />
+        <NoWalletAccountCard />
         <ConnectWalletButton />
       </>
     )
@@ -28,28 +34,35 @@ export const AccountUI = (props) => {
 
   return (
     <>
-      <AccountCard />
+      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
       <ManageDepositButtons />
     </>
   )
 }
 
-// TODO: Balances across chains?
-const AccountCard = (props) => {
-  const { data: usersTokens, isFetched: isTokenHoldingsFetched } = useUsersTokenHoldings()
-  const { data: tokensWithUsd, isFetched: isTokensWithUsdFetched } = usePrizePoolTokensWithUsd()
-  const prizePool = usePrizePool()
+interface AccountCardProps {
+  player: Player
+  isPlayerFetched: boolean
+}
+
+const AccountCard = (props: AccountCardProps) => {
+  const { player, isPlayerFetched } = props
   const { t } = useTranslation()
+
+  const {
+    data: playersBalances,
+    isFetched: isPlayersBalancesFetched,
+    refetch: refetchPlayersBalances
+  } = usePlayersBalances(player)
 
   let balance,
     symbol,
     usd = '--'
-  if (isTokensWithUsdFetched && isTokenHoldingsFetched) {
-    const ticketToken = usersTokens[prizePool.tokens.ticket.address]
-    const usdAmount = getUsdAmount(ticketToken.amountUnformatted, tokensWithUsd.ticket)
-    usd = `$${numberWithCommas(usdAmount)}`
-    balance = ticketToken.amountPretty
-    symbol = ticketToken.symbol
+  if (isPlayersBalancesFetched) {
+    const { ticket } = playersBalances
+    usd = `$--`
+    balance = ticket.amountPretty
+    symbol = ticket.symbol
   }
 
   return (
@@ -58,9 +71,22 @@ const AccountCard = (props) => {
       <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
         {t('myBalance')}
       </span>
-      <Balance balance={balance} symbol={symbol} isFetched={isTokenHoldingsFetched} />
+      <Balance balance={balance} symbol={symbol} isFetched={isPlayersBalancesFetched} />
       <span className='text-xxs text-accent-1 font-inter'>
         {t('value')}: {usd}
+      </span>
+    </Card>
+  )
+}
+
+const NoWalletAccountCard = () => {
+  const { t } = useTranslation()
+
+  return (
+    <Card>
+      <Piggy />
+      <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
+        Connect a wallet to view your balances and manage deposits
       </span>
     </Card>
   )
@@ -86,9 +112,15 @@ const ManageDepositButtons = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation()
 
+  const { data: player } = useSelectedNetworkPlayer()
+
   return (
     <>
-      <WithdrawModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)} />
+      <WithdrawModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        player={player}
+      />
       <div className='flex'>
         <SquareButton
           className='w-full mr-2'

@@ -51,20 +51,27 @@ const collectClassNames = (props) => {
 }
 
 export const SimpleInput = (props) => {
-  const { autoFocus, value, ...inputProps } = props
+  const { id, autoFocus, value, register, patternForHookForm, required, validate, ...inputProps } =
+    props
 
   return (
     <input
       {...inputProps}
+      id={id}
       autoFocus={autoFocus && isBrowser}
       value={value}
       className={DEFAULT_INPUT_CLASS_NAME}
+      {...register(id, {
+        required,
+        pattern,
+        validate
+      })}
     />
   )
 }
 
 export const RoundInput = (props) => {
-  let { autoFocus, pattern, required, register, validate } = props
+  let { id, autoFocus, pattern, required, register, validate } = props
 
   const className = collectClassNames(props)
 
@@ -72,12 +79,12 @@ export const RoundInput = (props) => {
     <input
       {...sanitizeProps(props)}
       autoFocus={autoFocus && isBrowser}
-      ref={register({
+      className={classnames(className, 'focus:outline-none')}
+      {...register(id, {
         required,
         pattern,
         validate
       })}
-      className={classnames(className, 'focus:outline-none')}
     />
   )
 }
@@ -92,7 +99,7 @@ RoundInput.defaultProps = {
 }
 
 export const RectangularInput = (props) => {
-  let { autoFocus, pattern, patternForHookForm, required, register, validate, readOnly } = props
+  let { id, autoFocus, pattern, patternForHookForm, required, register, validate, readOnly } = props
 
   const className = collectClassNames(props)
 
@@ -100,11 +107,6 @@ export const RectangularInput = (props) => {
     <input
       {...sanitizeProps(props)}
       autoFocus={autoFocus && isBrowser}
-      ref={register({
-        required,
-        pattern: patternForHookForm,
-        validate
-      })}
       className={classnames(className, {
         'text-default opacity-50': readOnly
       })}
@@ -112,6 +114,11 @@ export const RectangularInput = (props) => {
         backgroundColor: readOnly ? 'var(--color-bg-readonly-tsunami)' : '',
         borderColor: readOnly ? 'var(--color-border-readonly-tsunami)' : ''
       }}
+      {...register(id, {
+        required,
+        pattern: patternForHookForm,
+        validate
+      })}
     />
   )
 }

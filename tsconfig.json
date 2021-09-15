@@ -19,13 +19,15 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
+  "exclude": [
+    "node_modules",
+    ".yalc",
+    "out"
+  ],
+  "baseUrl": ".",
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "baseUrl": "."
+  ]
 }
