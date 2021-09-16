@@ -4,22 +4,15 @@ import { BigNumber, ethers } from 'ethers'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
+import { useOnboard, useIsWalletOnNetwork, usePrizePeriod } from '@pooltogether/hooks'
 import {
-  useOnboard,
-  useIsWalletOnNetwork,
-  useTokenAllowances,
-  useUsersAddress,
-  usePrizePeriod
-} from '@pooltogether/hooks'
-import {
-  ThemeContext,
   PrizeCountdown,
   Tabs,
   Tab,
   Content,
   ContentPane,
-  ThemedClipSpinner,
-  LoadingDots
+  LoadingDots,
+  NetworkIcon
 } from '@pooltogether/react-components'
 
 import { Deposit } from 'lib/components/Deposit'
@@ -31,13 +24,13 @@ import { usePrizePool } from 'lib/hooks/usePrizePool'
 import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 import { PrizesUI } from 'lib/components/Prizes/PrizesUI'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
-import { usePlayersDepositAllowance } from 'lib/hooks/Tsunami/Player/usePlayersDepositAllowance'
+import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { usePlayersBalances } from 'lib/hooks/Tsunami/Player/usePlayersBalances'
+import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { numberWithCommas, safeParseUnits } from '@pooltogether/utilities'
-
-const bn = ethers.BigNumber.from
+import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
+import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -65,18 +58,16 @@ export const DefaultPage = (props) => {
 
   const setSelectedPage = (newTab: ContentPaneState) => {
     const { query, pathname } = router
-    query.tab = newTab
+    query[URL_QUERY_KEY.tab] = newTab
     router.replace({ pathname, query })
   }
-  const selected = router.query.tab || ContentPaneState.deposit
+  const selected = router.query[URL_QUERY_KEY.tab] || ContentPaneState.deposit
 
   const depositSelected = selected === ContentPaneState.deposit
   const prizesSelected = selected === ContentPaneState.prizes
   const accountSelected = selected === ContentPaneState.account
 
   const selectedProps = { depositSelected, prizesSelected, accountSelected }
-
-  console.log(prizePool)
 
   if (!isPrizePoolFetched || !isPrizePoolTokensFetched) {
     return (
@@ -87,49 +78,57 @@ export const DefaultPage = (props) => {
   }
 
   return (
-    <div className='max-w-xl mx-auto'>
-      <NavTabs {...selectedProps} setSelectedPage={setSelectedPage} />
-      <ContentPanes {...selectedProps} setSelectedPage={setSelectedPage} />
-    </div>
+    <>
+      <NavTabs {...selectedProps} setSelectedPage={setSelectedPage} className='mx-auto mb-6' />
+      <div className='max-w-xl mx-auto'>
+        <ContentPanes {...selectedProps} setSelectedPage={setSelectedPage} />
+      </div>
+    </>
   )
 }
 
 const NavTabs = (props) => {
   const { t } = useTranslation()
-  const { depositSelected, prizesSelected, accountSelected, setSelectedPage } = props
+  const { className, depositSelected, prizesSelected, accountSelected, setSelectedPage } = props
 
   return (
-    <>
-      <Tabs className='mb-4 justify-evenly'>
-        <Tab
-          {...DEFAULT_TAB_PROPS}
-          onClick={() => {
-            setSelectedPage(ContentPaneState.deposit)
-          }}
-          isSelected={depositSelected}
-        >
-          {t('deposit')}
-        </Tab>
-        <Tab
-          {...DEFAULT_TAB_PROPS}
-          onClick={() => {
-            setSelectedPage(ContentPaneState.prizes)
-          }}
-          isSelected={prizesSelected}
-        >
-          {t('prizes')}
-        </Tab>
-        <Tab
-          {...DEFAULT_TAB_PROPS}
-          onClick={() => {
-            setSelectedPage(ContentPaneState.account)
-          }}
-          isSelected={accountSelected}
-        >
-          {t('account')}
-        </Tab>
-      </Tabs>
-    </>
+    <nav className={classnames(className, 'max-w-max flex flex-row rounded bg-darkened px-2 py-1')}>
+      <NavTab
+        setSelectedPage={setSelectedPage}
+        page={ContentPaneState.deposit}
+        isSelected={depositSelected}
+      >
+        {t('deposit')}
+      </NavTab>
+      <NavTab
+        setSelectedPage={setSelectedPage}
+        page={ContentPaneState.prizes}
+        isSelected={prizesSelected}
+      >
+        {t('prizes')}
+      </NavTab>
+      <NavTab
+        setSelectedPage={setSelectedPage}
+        page={ContentPaneState.account}
+        isSelected={accountSelected}
+      >
+        {t('account')}
+      </NavTab>
+    </nav>
+  )
+}
+
+const NavTab = (props) => {
+  const { setSelectedPage, page, isSelected, ...buttonProps } = props
+  return (
+    <a
+      {...buttonProps}
+      className={classnames(
+        'transition mx-1 first:ml-0 last:mr-0 rounded px-2 flex flex-row hover:bg-light-purple-10 active:bg-tertiary',
+        { 'bg-tertiary': isSelected }
+      )}
+      onClick={() => setSelectedPage(page)}
+    />
   )
 }
 
@@ -190,15 +189,15 @@ const DepositPane = (props: ContentPanesProps) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
-    data: playersBalances,
-    refetch: refetchPlayersBalance,
-    isFetched: isPlayersBalancesFetched
-  } = usePlayersBalances(player)
+    data: usersBalances,
+    refetch: refetchUsersBalances,
+    isFetched: isUsersBalancesFetched
+  } = useUsersPrizePoolBalances(prizePool)
   const {
-    data: playersDepositAllowance,
-    refetch: refetchPlayersDepositAllowance,
-    isFetched: isPlayersDepositAllowanceFetched
-  } = usePlayersDepositAllowance(player)
+    data: usersDepositAllowance,
+    refetch: refetchUsersDepositAllowance,
+    isFetched: isUsersDepositAllowanceFetched
+  } = useUsersDepositAllowance(prizePool)
 
   const { isWalletConnected } = useOnboard()
   const walletOnCorrectNetwork = useIsWalletOnNetwork(prizePool?.chainId)
@@ -208,8 +207,8 @@ const DepositPane = (props: ContentPanesProps) => {
     reValidateMode: 'onChange'
   })
 
-  const refetchOnApprove = () => refetchPlayersDepositAllowance()
-  const refetchOnDeposit = () => refetchPlayersBalance()
+  const refetchOnApprove = () => refetchUsersDepositAllowance()
+  const refetchOnDeposit = () => refetchUsersBalances()
   const hideWrongNetworkOverlay =
     !isWalletConnected || (isWalletConnected && walletOnCorrectNetwork)
 
@@ -223,39 +222,21 @@ const DepositPane = (props: ContentPanesProps) => {
   return (
     <>
       <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 px-4 sm:px-8 py-10 xs:p-10'>
-        <div
-          className={classnames(
-            'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-30 trans bg-blur flex items-center justify-center p-20 text-center',
-            {
-              'opacity-0 pointer-events-none': hideWrongNetworkOverlay
-            }
-          )}
-          style={{
-            textShadow: '2px 2px 20px black'
-          }}
-        >
-          <div className='text-lg -mt-10'>
-            {t(
-              'tsunamiWrongNetworkMsg',
-              `To use Tsunami please set your wallet's network to Rinkeby`
-            )}
-          </div>
-        </div>
-
         <Deposit
           {...props}
           player={player}
+          prizePool={prizePool}
           form={form}
           isPrizePoolFetched={isPrizePoolFetched}
           isPrizePoolTokensFetched={isPrizePoolTokensFetched}
           isPlayerFetched={isPlayerFetched}
-          isPlayersBalancesFetched={isPlayersBalancesFetched}
-          isPlayersDepositAllowanceFetched={isPlayersDepositAllowanceFetched}
-          tokenWithBalance={playersBalances?.token}
-          ticketWithBalance={playersBalances?.ticket}
+          isUsersBalancesFetched={isUsersBalancesFetched}
+          isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
+          tokenBalance={usersBalances?.token}
+          ticketBalance={usersBalances?.ticket}
           token={prizePoolTokens?.token}
           ticket={prizePoolTokens?.ticket}
-          depositAllowance={playersDepositAllowance}
+          depositAllowance={usersDepositAllowance}
           quantityDetails={quantityDetails}
           refetchOnApprove={refetchOnApprove}
           refetchOnDeposit={refetchOnDeposit}
@@ -389,4 +370,25 @@ const UpcomingPrizeDetails = (props) => {
       />
     </div>
   )
+}
+
+{
+  /* <div
+className={classnames(
+  'rounded-lg bg-overlay w-full h-full absolute t-0 b-0 l-0 r-0 z-30 trans bg-blur flex items-center justify-center p-20 text-center',
+  {
+    'opacity-0 pointer-events-none': hideWrongNetworkOverlay
+  }
+)}
+style={{
+  textShadow: '2px 2px 20px black'
+}}
+>
+<div className='text-lg -mt-10'>
+  {t(
+    'tsunamiWrongNetworkMsg',
+    `To use Tsunami please set your wallet's network to Rinkeby`
+  )}
+</div>
+</div> */
 }

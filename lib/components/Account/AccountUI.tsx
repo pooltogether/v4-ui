@@ -1,8 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { SquareButton, SquareButtonTheme, ThemedClipSpinner } from '@pooltogether/react-components'
-import { useOnboard } from '@pooltogether/hooks'
+import {
+  LoadingDots,
+  NetworkIcon,
+  SquareButton,
+  SquareButtonSize,
+  SquareButtonTheme,
+  ThemedClipSpinner
+} from '@pooltogether/react-components'
+import { useOnboard, useUsersAddress } from '@pooltogether/hooks'
 import React from 'react'
 import Link from 'next/link'
 
@@ -12,11 +19,13 @@ import { WithdrawModal } from 'lib/components/Account/WithdrawModal'
 import PiggyBank from 'assets/images/piggy-bank.svg'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
 import { getUsdAmount } from 'lib/components/Prizes/PrizesUI'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
-import { usePlayersBalances } from 'lib/hooks/Tsunami/Player/usePlayersBalances'
-import { Player } from '.yalc/@pooltogether/v4-js-client/dist'
+import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
+import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -24,20 +33,10 @@ export const AccountUI = (props) => {
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
 
   if (!isWalletConnected) {
-    return (
-      <>
-        <NoWalletAccountCard />
-        <ConnectWalletButton />
-      </>
-    )
+    return <NoWalletAccountCard />
   }
 
-  return (
-    <>
-      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
-      <ManageDepositButtons />
-    </>
-  )
+  return <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
 }
 
 interface AccountCardProps {
@@ -49,21 +48,9 @@ const AccountCard = (props: AccountCardProps) => {
   const { player, isPlayerFetched } = props
   const { t } = useTranslation()
 
-  const {
-    data: playersBalances,
-    isFetched: isPlayersBalancesFetched,
-    refetch: refetchPlayersBalances
-  } = usePlayersBalances(player)
+  const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
 
-  let balance,
-    symbol,
-    usd = '--'
-  if (isPlayersBalancesFetched) {
-    const { ticket } = playersBalances
-    usd = `$--`
-    balance = ticket.amountPretty
-    symbol = ticket.symbol
-  }
+  const isFetched = isPlayerFetched && isLinkedPrizePoolFetched
 
   return (
     <Card>
@@ -71,11 +58,118 @@ const AccountCard = (props: AccountCardProps) => {
       <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
         {t('myBalance')}
       </span>
-      <Balance balance={balance} symbol={symbol} isFetched={isPlayersBalancesFetched} />
-      <span className='text-xxs text-accent-1 font-inter'>
-        {t('value')}: {usd}
-      </span>
+      <PrizePoolList
+        className='mt-4'
+        player={player}
+        isFetched={isFetched}
+        prizePools={linkedPrizePool?.prizePools}
+      />
     </Card>
+  )
+}
+
+interface PrizePoolListProps {
+  className?: string
+  prizePools: PrizePool[]
+  player: Player
+  isFetched: boolean
+}
+
+const PrizePoolList = (props: PrizePoolListProps) => {
+  const { player, prizePools, isFetched, className } = props
+
+  if (!isFetched) {
+    return (
+      <div className={className}>
+        <LoadingDots />
+      </div>
+    )
+  }
+
+  return (
+    <ul className={classNames(className, 'w-full')}>
+      {prizePools.map((prizePool) => (
+        <PrizePoolRow key={prizePool.id()} player={player} prizePool={prizePool} />
+      ))}
+    </ul>
+  )
+}
+
+interface PrizePoolRowProps {
+  prizePool: PrizePool
+  player: Player
+}
+
+const PrizePoolRow = (props: PrizePoolRowProps) => {
+  const { prizePool, player } = props
+  const { data: usersBalances, isFetched: isUsersBalancesFetched } =
+    useUsersPrizePoolBalances(prizePool)
+  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
+    usePrizePoolTokens(prizePool)
+
+  const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
+
+  return (
+    <li className='w-full flex flex-col pb-4 mb-4 last:pb-0 last:mb-0 border-primary border-b last:border-transparent'>
+      <div className='w-full flex flex-row justify-between'>
+        <div>
+          <div className='flex flex-row'>
+            <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
+            <span className='ml-2 text-lg'>{`${getNetworkNiceNameByChainId(
+              prizePool.chainId
+            )} Prize Pool`}</span>
+          </div>
+        </div>
+        <Balance
+          isFetched={isFetched}
+          balance={usersBalances?.ticket}
+          ticket={prizePoolTokens?.ticket}
+          token={prizePoolTokens?.token}
+        />
+      </div>
+      <ManageDepositButtons player={player} prizePool={prizePool} />
+    </li>
+  )
+}
+
+interface ManageDepositButtonsProps extends PrizePoolRowProps {}
+
+const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
+  const { player, prizePool } = props
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <WithdrawModal
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        player={player}
+        prizePool={prizePool}
+      />
+      <div className='flex'>
+        <SquareButton
+          className='w-full mr-2'
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.purple}
+          onClick={() => setIsModalOpen(true)}
+        >
+          {t('withdraw')}
+        </SquareButton>
+        <Link href={`/?tab=deposit&network=${prizePool.chainId}`}>
+          <a className='w-full ml-2'>
+            <SquareButton
+              className='w-full'
+              size={SquareButtonSize.sm}
+              theme={SquareButtonTheme.teal}
+            >
+              {t('deposit')}
+            </SquareButton>
+          </a>
+        </Link>
+      </div>
+    </>
   )
 }
 
@@ -88,57 +182,50 @@ const NoWalletAccountCard = () => {
       <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
         Connect a wallet to view your balances and manage deposits
       </span>
+      <ConnectWalletButton />
     </Card>
   )
 }
 
 const Balance = (props) => {
-  const { isFetched, balance, symbol } = props
+  const { isFetched, balance, ticket, token, className } = props
   const { isWalletConnected } = useOnboard()
 
   if (!isFetched) {
-    return <ThemedClipSpinner className='my-1' />
+    return (
+      <BalanceContainer>
+        <ThemedClipSpinner className='my-1' />
+      </BalanceContainer>
+    )
   } else if (!isWalletConnected) {
-    return <span className='text-lg font-bold'>-- {symbol}</span>
+    return (
+      <BalanceContainer>
+        <span className='text-lg font-bold'>--</span>
+      </BalanceContainer>
+    )
   }
+
   return (
-    <span className='text-lg font-bold'>
-      {balance} {symbol}
-    </span>
+    <BalanceContainer>
+      <span className='ml-auto text-lg font-bold'>
+        {balance.amountPretty} {ticket.symbol}
+      </span>
+      <BalanceUsdValue className='ml-auto' balance={balance} token={token} />
+    </BalanceContainer>
   )
 }
 
-const ManageDepositButtons = (props) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const { t } = useTranslation()
+const BalanceContainer = (props) => <div {...props} className='flex flex-col mb-4' />
 
-  const { data: player } = useSelectedNetworkPlayer()
+const BalanceUsdValue = (props) => {
+  const { balance, token } = props
 
-  return (
-    <>
-      <WithdrawModal
-        isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
-        player={player}
-      />
-      <div className='flex'>
-        <SquareButton
-          className='w-full mr-2'
-          theme={SquareButtonTheme.purple}
-          onClick={() => setIsModalOpen(true)}
-        >
-          {t('withdraw')}
-        </SquareButton>
-        <Link href='/?tab=deposit'>
-          <a className='w-full ml-2'>
-            <SquareButton className='w-full' theme={SquareButtonTheme.teal}>
-              {t('deposit')}
-            </SquareButton>
-          </a>
-        </Link>
-      </div>
-    </>
-  )
+  // TODO: Fetch token USD price
+
+  if (!balance) {
+    return <span className={classNames(props.className, 'font-light')}>$--</span>
+  }
+  return <span className={classNames(props.className, 'font-light')}>$1,000</span>
 }
 
 const Piggy = () => (
@@ -148,7 +235,7 @@ const Card = (props) => (
   <div
     {...props}
     className={classNames(
-      'bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center',
+      'bg-card shadow trans rounded-lg w-full py-10 px-4 sm:p-10 flex flex-col mb-4 items-center',
       props.className
     )}
   />
@@ -158,7 +245,7 @@ const ConnectWalletButton = () => {
   const { connectWallet } = useOnboard()
   const { t } = useTranslation()
   return (
-    <SquareButton className='w-full' onClick={() => connectWallet()}>
+    <SquareButton className='w-full' onClick={() => connectWallet(null)}>
       {t('connectWallet')}
     </SquareButton>
   )

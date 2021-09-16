@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import classnames from 'classnames'
-import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
 import {
   Modal,
   ThemedClipSpinner,
@@ -9,15 +8,14 @@ import {
   SquareButton,
   SquareButtonTheme,
   Tooltip,
-  poolToast,
   formatBlockExplorerTxUrl
 } from '@pooltogether/react-components'
 import {
   PreTransactionDetails,
+  Token,
   TokenBalance,
   Transaction,
-  useTransaction,
-  useUsersAddress
+  useTransaction
 } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
@@ -25,18 +23,19 @@ import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 
-import { usePrizePool } from 'lib/hooks/usePrizePool'
-import { useUsersTokenHoldings } from 'lib/hooks/useUsersTokenHoldings'
-import { usePoolChainId } from 'lib/hooks/usePoolChainId'
-import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { RectangularInput } from 'lib/components/TextInputs'
+import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
+import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { Player } from '.yalc/@pooltogether/v4-js-client/dist'
-import { PlayersBalances, usePlayersBalances } from 'lib/hooks/Tsunami/Player/usePlayersBalances'
+import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import {
+  UsersPrizePoolBalances,
+  useUsersPrizePoolBalances
+} from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -50,20 +49,24 @@ interface WithdrawModalProps {
   isOpen: boolean
   closeModal: () => void
   player: Player
+  prizePool: PrizePool
 }
 
 export const WithdrawModal = (props: WithdrawModalProps) => {
-  const { isOpen, closeModal, player } = props
+  const { isOpen, closeModal, player, prizePool } = props
   const { t } = useTranslation()
 
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
   const [amount, setAmount] = useState<string>('')
 
   const {
-    data: playersBalances,
-    isFetched: isPlayersBalancesFetched,
-    refetch: refetchPlayersBalances
-  } = usePlayersBalances(player)
+    data: usersBalances,
+    isFetched: isUsersBalancesFetched,
+    refetch: refetchUsersBalances
+  } = useUsersPrizePoolBalances(prizePool)
+
+  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
+    usePrizePoolTokens(prizePool)
 
   const form = useForm({
     mode: 'onChange',
@@ -119,9 +122,11 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
               player={player}
-              playersBalances={playersBalances}
-              isPlayersBalancesFetched={isPlayersBalancesFetched}
-              refetchPlayersBalances={refetchPlayersBalances}
+              usersBalances={usersBalances}
+              prizePoolTokens={prizePoolTokens}
+              isUsersBalancesFetched={isUsersBalancesFetched}
+              isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+              refetchUsersBalances={refetchUsersBalances}
               amount={amount}
               setAmount={setAmount}
             />
@@ -160,24 +165,27 @@ interface WithdrawStepContentProps {
   currentStep: WithdrawalSteps
   amount: string
   player: Player
-  playersBalances: PlayersBalances
-  isPlayersBalancesFetched: boolean
+  usersBalances: UsersPrizePoolBalances
+  prizePoolTokens: PrizePoolTokens
+  isUsersBalancesFetched: boolean
+  isPrizePoolTokensFetched: boolean
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmount: (amount: string) => void
-  refetchPlayersBalances: () => void
+  refetchUsersBalances: () => void
 }
 
 const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
     player,
-    playersBalances,
-    isPlayersBalancesFetched,
+    usersBalances,
+    prizePoolTokens,
+    isUsersBalancesFetched,
     currentStep,
     amount,
     setCurrentStep,
     setAmount,
-    refetchPlayersBalances
+    refetchUsersBalances
   } = props
   const { t } = useTranslation()
 
@@ -188,7 +196,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
 
   const sendTx = useSendTransaction()
 
-  if (!isPlayersBalancesFetched) {
+  if (!isUsersBalancesFetched) {
     return (
       <div className='h-full sm:h-28 flex flex-col justify-center'>
         <LoadingDots className='mx-auto' />
@@ -196,7 +204,8 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     )
   }
 
-  const { ticket, token } = playersBalances
+  const { ticket: ticketBalance, token: tokenBalance } = usersBalances
+  const { ticket, token } = prizePoolTokens
 
   if (currentStep === WithdrawalSteps.review) {
     return (
@@ -206,11 +215,13 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
         amount={amount}
         token={token}
         ticket={ticket}
+        tokenBalance={tokenBalance}
+        ticketBalance={ticketBalance}
         setCurrentStep={setCurrentStep}
         sendTx={sendTx}
         setTxId={setWithdrawTxId}
         tx={withdrawTx}
-        refetch={refetchPlayersBalances}
+        refetchUsersBalances={refetchUsersBalances}
       />
     )
   } else if (currentStep === WithdrawalSteps.viewTxReceipt) {
@@ -223,6 +234,8 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
       form={form}
       token={token}
       ticket={ticket}
+      tokenBalance={tokenBalance}
+      ticketBalance={ticketBalance}
       setCurrentStep={setCurrentStep}
       setAmount={setAmount}
     />
@@ -232,8 +245,10 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
 interface WithdrawInputStepProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  token: TokenBalance
-  ticket: TokenBalance
+  tokenBalance: TokenBalance
+  ticketBalance: TokenBalance
+  token: Token
+  ticket: Token
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmount: (amount: string) => void
 }
@@ -245,7 +260,8 @@ interface WithdrawInputStepProps {
  * @returns
  */
 const WithdrawInputStep = (props: WithdrawInputStepProps) => {
-  const { chainId, form, token, ticket, setCurrentStep, setAmount } = props
+  const { chainId, form, token, ticket, tokenBalance, ticketBalance, setCurrentStep, setAmount } =
+    props
 
   const { t } = useTranslation()
 
@@ -265,7 +281,14 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <WithdrawForm chainId={chainId} form={form} token={token} ticket={ticket} />
+      <WithdrawForm
+        chainId={chainId}
+        form={form}
+        token={token}
+        ticket={ticket}
+        tokenBalance={tokenBalance}
+        ticketBalance={ticketBalance}
+      />
 
       <DownArrow />
 
@@ -291,13 +314,15 @@ interface WithdrawReviewStepProps {
   player: Player
   chainId: number
   amount: string
-  token: TokenBalance
-  ticket: TokenBalance
+  tokenBalance: TokenBalance
+  ticketBalance: TokenBalance
+  token: Token
+  ticket: Token
   setCurrentStep: (step: WithdrawalSteps) => void
   sendTx: (txDetails: PreTransactionDetails) => Promise<number>
   setTxId: (txId: number) => void
   tx: Transaction
-  refetch: () => void
+  refetchUsersBalances: () => void
 }
 
 /**
@@ -307,9 +332,18 @@ interface WithdrawReviewStepProps {
  * @returns
  */
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
-  const { player, chainId, amount, token, ticket, setCurrentStep, sendTx, setTxId, refetch, tx } =
-    props
-  const usersAddress = useUsersAddress()
+  const {
+    player,
+    chainId,
+    amount,
+    token,
+    ticket,
+    setCurrentStep,
+    sendTx,
+    setTxId,
+    refetchUsersBalances,
+    tx
+  } = props
 
   const { t } = useTranslation()
 
@@ -327,13 +361,10 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
     const txId = await sendTx({
       name: `${t('withdraw')} ${amountPretty} ${tokenSymbol}`,
       method: 'withdrawInstantlyFrom',
-      callTransaction: () => {
-        console.log(player)
-        return player.withdrawTicket(amountUnformatted)
-      },
+      callTransaction: () => player.withdrawTicket(amountUnformatted),
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
-        refetch
+        refetch: refetchUsersBalances
       }
     })
     setTxId(txId)
@@ -423,24 +454,21 @@ const WithdrawReceiptStep = (props) => {
 }
 
 interface WithdrawFormProps {
-  disabled: boolean
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  token: TokenBalance
-  ticket: TokenBalance
+  tokenBalance: TokenBalance
+  ticketBalance: TokenBalance
+  token: Token
+  ticket: Token
+  disabled?: boolean
 }
 
 const WithdrawForm = (props: WithdrawFormProps) => {
-  const { disabled, chainId, form, token, ticket } = props
+  const { disabled, chainId, form, token, ticket, ticketBalance } = props
   const { register, setValue } = form
 
-  const {
-    address: ticketAddress,
-    symbol: ticketSymbol,
-    amount,
-    amountUnformatted,
-    hasBalance
-  } = ticket
+  const { address: ticketAddress, symbol: ticketSymbol } = ticket
+  const { amount, amountUnformatted, hasBalance } = ticketBalance
 
   const withdrawValidationRules = {
     isValid: (v) => {
@@ -489,6 +517,10 @@ const WithdrawForm = (props: WithdrawFormProps) => {
       }
     />
   )
+}
+
+WithdrawForm.defaultProps = {
+  disabled: false
 }
 
 const SquaredTokenAmountContainer = (props) => {

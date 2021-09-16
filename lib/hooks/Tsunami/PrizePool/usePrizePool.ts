@@ -8,7 +8,7 @@ export const usePrizePool = (address: string, chainId: number) => {
   const enabled =
     isLinkedPrizePoolFetched && Boolean(linkedPrizePool) && Boolean(address) && Boolean(chainId)
   return useQuery(
-    'usePrizePool',
+    ['usePrizePool', address, chainId],
     async () => {
       if (!linkedPrizePool) return null
       return linkedPrizePool.prizePools.find(

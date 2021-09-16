@@ -4,12 +4,11 @@ import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export const usePlayer = (prizePool: PrizePool) => {
-  const { isWalletConnected, provider, address } = useOnboard()
+  const { isWalletConnected, provider, address, network: walletChainId } = useOnboard()
   const enabled = isWalletConnected && Boolean(address) && Boolean(prizePool)
   return useQuery(
-    ['usePlayer', prizePool?.id(), address],
+    ['usePlayer', prizePool?.id(), address, walletChainId],
     async () => {
-      if (!isWalletConnected || !prizePool) return null
       const signer = provider.getSigner()
       const player = new Player(signer, prizePool)
       return player

@@ -3,7 +3,7 @@ import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery, UseQueryOptions } from 'react-query'
 
-interface PrizePoolTokens {
+export interface PrizePoolTokens {
   token: Token
   ticket: Token
 }

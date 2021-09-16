@@ -32,6 +32,7 @@ import '@reach/tooltip/styles.css'
 import '@pooltogether/react-components/dist/index.css'
 
 import 'assets/styles/index.css'
+import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 
 const queryClient = new QueryClient()
 
@@ -121,6 +122,7 @@ function MyApp({ Component, pageProps, router }) {
 }
 
 const InitPoolTogetherHooks = ({ children }) => {
+  useSelectedNetworkWatcher()
   useInitInfuraId(process.env.NEXT_JS_INFURA_ID)
   useInitQuickNodeId(process.env.NEXT_JS_QUICKNODE_ID)
   useInitTheGraphApiKey(process.env.NEXT_JS_THE_GRAPH_API_KEY)

@@ -20,7 +20,7 @@ import { usePlayersBalances } from 'lib/hooks/Tsunami/Player/usePlayersBalances'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { usePlayersDepositAllowance } from 'lib/hooks/Tsunami/Player/usePlayersDepositAllowance'
+import { usePlayersDepositAllowance } from 'lib/hooks/Tsunami/Player/useUsersDepositAllowance'
 
 export const TestPage = () => {
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
@@ -69,8 +69,6 @@ const ApproveBtn = (props: ApproveBtnProps) => {
     usePlayersDepositAllowance(player)
 
   if (!isAllowanceFetched) return <LoadingDots />
-
-  console.log(playersDepositAllowance)
 
   return (
     <div className='flex justify-between w-full'>

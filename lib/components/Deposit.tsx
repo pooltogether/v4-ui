@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { BigNumber, ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import {
@@ -8,28 +7,23 @@ import {
   Modal,
   SquareButton,
   SquareButtonTheme,
-  ThemedClipSpinner,
-  poolToast,
-  LoadingDots,
-  ModalProps
+  ThemedClipSpinner
 } from '@pooltogether/react-components'
-// import { TextInputGroup } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useOnboard,
   useTransaction,
   TokenBalance,
   Transaction,
-  Token
+  Token,
+  useIsWalletOnNetwork
 } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas, safeParseUnits, shorten } from '@pooltogether/utilities'
-import ControlledTokenAbi from '@pooltogether/pooltogether-contracts/abis/ControlledToken'
-import PrizePoolAbi from '@pooltogether/pooltogether-contracts/abis/PrizePool'
+import { getMaxPrecision, safeParseUnits, shorten } from '@pooltogether/utilities'
 
 import { ContentPaneState, ContentPanesProps, QuantityDetails } from 'lib/components/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
-import { TextInputGroup } from 'lib/components/TextInputGroup'
-import { RectangularInput } from 'lib/components/TextInputs'
+import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
+import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
@@ -37,14 +31,12 @@ import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 
 import SuccessIcon from 'assets/images/success@2x.png'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
-import {
-  DepositAllowance,
-  usePlayersDepositAllowance
-} from 'lib/hooks/Tsunami/Player/usePlayersDepositAllowance'
-import { Player } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+import { TransactionButton } from 'lib/components/Input/TransactionButton'
+import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -55,16 +47,17 @@ export const DEPOSIT_STATES = {
 
 interface DepositProps extends ContentPanesProps {
   player: Player
+  prizePool: PrizePool
   form: UseFormReturn<FieldValues, object>
   isPrizePoolFetched: boolean
   isPrizePoolTokensFetched: boolean
   isPlayerFetched: boolean
-  isPlayersBalancesFetched: boolean
-  isPlayersDepositAllowanceFetched: boolean
+  isUsersBalancesFetched: boolean
+  isUsersDepositAllowanceFetched: boolean
   token: Token
   ticket: Token
-  tokenWithBalance: TokenBalance
-  ticketWithBalance: TokenBalance
+  tokenBalance: TokenBalance
+  ticketBalance: TokenBalance
   depositAllowance: DepositAllowance
   quantityDetails: QuantityDetails
   refetchOnApprove: () => void
@@ -162,6 +155,8 @@ export const Deposit = (props: DepositProps) => {
 
   const handleApprove = async () => {
     const name = t(`allowTickerPool`, { ticker: token.symbol })
+
+    console.log('handleApprove', player)
 
     const txId = await sendTx({
       name,
@@ -311,15 +306,15 @@ const DepositForm = (props: DepositFormProps) => {
     needsApproval,
     token,
     ticket,
-    tokenWithBalance,
-    ticketWithBalance,
+    tokenBalance,
+    ticketBalance,
     quantityDetails,
     handleApprove,
     setShowConfirmModal,
-    isPlayersDepositAllowanceFetched
+    isUsersDepositAllowanceFetched
   } = props
 
-  const chainId = usePoolChainId()
+  const [chainId] = useSelectedNetwork()
 
   const { depositTxInFlight, approveTxInFlight } = txs
   const decimals = token.decimals
@@ -347,8 +342,8 @@ const DepositForm = (props: DepositFormProps) => {
     const { quantity } = values
 
     query.quantity = quantity
-    query.prevUnderlyingBalance = tokenWithBalance.amount
-    query.prevTicketBalance = ticketWithBalance.amount
+    query.prevUnderlyingBalance = tokenBalance.amount
+    query.prevTicketBalance = ticketBalance.amount
     query.showConfirmModal = '1'
 
     router.replace({ pathname, query })
@@ -365,9 +360,9 @@ const DepositForm = (props: DepositFormProps) => {
       const quantityUnformatted = safeParseUnits(v, decimals)
 
       if (isWalletConnected) {
-        if (!tokenWithBalance) return false
-        if (!ticketWithBalance) return false
-        if (quantityUnformatted && tokenWithBalance.amountUnformatted.lt(quantityUnformatted))
+        if (!tokenBalance) return false
+        if (!ticketBalance) return false
+        if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
       }
 
@@ -380,85 +375,89 @@ const DepositForm = (props: DepositFormProps) => {
   // If the user input a larger amount than their wallet balance before connecting a wallet
   useEffect(() => {
     trigger('quantity')
-  }, [usersAddress, tokenWithBalance, ticketWithBalance])
+  }, [usersAddress, ticketBalance, tokenBalance])
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
-      <div className='w-full mx-auto'>
-        <TextInputGroup
-          unsignedNumber
-          readOnly={depositTxInFlight}
-          Input={RectangularInput}
-          symbolAndIcon={
-            <TokenSymbolAndIcon chainId={chainId} address={token.address} symbol={token.symbol} />
-          }
-          validate={depositValidationRules}
-          containerBgClassName={'bg-transparent'}
-          containerRoundedClassName={'rounded-lg'}
-          bgClassName={'bg-body'}
-          placeholder='0.0'
-          id='quantity'
-          name='quantity'
-          autoComplete='off'
-          register={register}
-          required={t('ticketQuantityRequired')}
-          rightLabel={
-            <MaxAmountTextInputRightLabel
-              valueKey='quantity'
-              disabled={false}
-              setValue={setValue}
-              amount={tokenWithBalance?.amount}
-              tokenSymbol={token.symbol}
-              isAmountZero={!tokenWithBalance?.hasBalance}
-            />
-          }
-          label={
-            <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-              {t('depositTicker', { ticker: token.symbol })}
-            </div>
-          }
+    <>
+      <SelectedNetworkToggle className='mb-6' />
+      <form onSubmit={handleSubmit(onSubmit)} className='w-full'>
+        <div className='w-full mx-auto'>
+          <TextInputGroup
+            unsignedNumber
+            readOnly={depositTxInFlight}
+            Input={RectangularInput}
+            symbolAndIcon={
+              <TokenSymbolAndIcon chainId={chainId} address={token.address} symbol={token.symbol} />
+            }
+            validate={depositValidationRules}
+            containerBgClassName={'bg-transparent'}
+            containerRoundedClassName={'rounded-lg'}
+            bgClassName={'bg-body'}
+            placeholder='0.0'
+            id='quantity'
+            name='quantity'
+            autoComplete='off'
+            register={register}
+            required={t('ticketQuantityRequired')}
+            rightLabel={
+              <MaxAmountTextInputRightLabel
+                valueKey='quantity'
+                disabled={false}
+                setValue={setValue}
+                amount={tokenBalance?.amount}
+                tokenSymbol={token.symbol}
+                isAmountZero={!tokenBalance?.hasBalance}
+              />
+            }
+            label={
+              <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+                {t('depositTicker', { ticker: token.symbol })}
+              </div>
+            }
+          />
+        </div>
+
+        <DownArrow />
+
+        <div className='w-full mx-auto'>
+          <TextInputGroup
+            readOnly
+            disabled
+            symbolAndIcon={ticket.symbol}
+            Input={RectangularInput}
+            roundedClassName={'rounded-lg'}
+            containerRoundedClassName={'rounded-lg'}
+            bgClassName={'bg-readonly-tsunami'}
+            bgVarName='var(--color-bg-readonly-tsunami)'
+            placeholder='0.0'
+            id='result'
+            name='result'
+            register={register}
+            label={null}
+            value={form.watch('quantity') || ''}
+          />
+        </div>
+
+        <ErrorsBox errors={isDirty ? errors : null} />
+
+        <DynamicBottomButton
+          chainId={chainId}
+          className='mt-2 w-full'
+          isDepositDisabled={(!isValid && isDirty) || depositTxInFlight}
+          isApproveDisabled={approveTxInFlight}
+          isDepositTxInFlight={depositTxInFlight}
+          isApproveTxInFlight={approveTxInFlight}
+          isWalletConnected={isWalletConnected}
+          needsApproval={needsApproval}
+          handleApprove={handleApprove}
+          usersUnderlyingBalance={tokenBalance?.amount}
+          decimals={decimals}
+          quantityDetails={quantityDetails}
+          tokenAllowancesIsFetched={isUsersDepositAllowanceFetched}
+          tokenSymbol={token.symbol}
         />
-      </div>
-
-      <DownArrow />
-
-      <div className='w-full mx-auto'>
-        <TextInputGroup
-          readOnly
-          disabled
-          symbolAndIcon={ticket.symbol}
-          Input={RectangularInput}
-          roundedClassName={'rounded-lg'}
-          containerRoundedClassName={'rounded-lg'}
-          bgClassName={'bg-readonly-tsunami'}
-          bgVarName='var(--color-bg-readonly-tsunami)'
-          placeholder='0.0'
-          id='result'
-          name='result'
-          register={register}
-          label={null}
-          value={form.watch('quantity') || ''}
-        />
-      </div>
-
-      <ErrorsBox errors={isDirty ? errors : null} />
-
-      <DynamicBottomButton
-        className='mt-2 w-full'
-        isDepositDisabled={(!isValid && isDirty) || depositTxInFlight}
-        isApproveDisabled={approveTxInFlight}
-        isDepositTxInFlight={depositTxInFlight}
-        isApproveTxInFlight={approveTxInFlight}
-        isWalletConnected={isWalletConnected}
-        needsApproval={needsApproval}
-        handleApprove={handleApprove}
-        usersUnderlyingBalance={tokenWithBalance?.amount}
-        decimals={decimals}
-        quantityDetails={quantityDetails}
-        tokenAllowancesIsFetched={isPlayersDepositAllowanceFetched}
-        tokenSymbol={token.symbol}
-      />
-    </form>
+      </form>
+    </>
   )
 }
 
@@ -488,11 +487,13 @@ const ConnectWalletButton = (props) => {
 }
 
 const ApproveButton = (props) => {
-  const { className, tokenSymbol, isApproveTxInFlight, handleApprove, isApproveDisabled } = props
+  const { chainId, className, tokenSymbol, isApproveTxInFlight, handleApprove, isApproveDisabled } =
+    props
   const { t } = useTranslation()
 
   return (
-    <TransactionButton
+    <DynamicTransactionButton
+      chainId={chainId}
       disabled={isApproveDisabled}
       onClick={handleApprove}
       className={className}
@@ -506,6 +507,7 @@ const ApproveButton = (props) => {
 
 const DepositButton = (props) => {
   const {
+    chainId,
     isWalletConnected,
     className,
     tokenSymbol,
@@ -537,7 +539,8 @@ const DepositButton = (props) => {
   }
 
   return (
-    <TransactionButton
+    <DynamicTransactionButton
+      chainId={chainId}
       disabled={isDepositDisabled}
       className={className}
       inFlight={isDepositTxInFlight}
@@ -548,8 +551,8 @@ const DepositButton = (props) => {
   )
 }
 
-const TransactionButton = (props) => {
-  const { onClick, label, inFlight, inFlightLabel, className, type, disabled } = props
+const DynamicTransactionButton = (props) => {
+  const { chainId, onClick, label, inFlight, inFlightLabel, className, type, disabled } = props
 
   if (inFlight) {
     return (
@@ -561,9 +564,16 @@ const TransactionButton = (props) => {
   }
 
   return (
-    <SquareButton disabled={disabled} onClick={onClick} type={type} className={className}>
+    <TransactionButton
+      toolTipId={'dynamic-tx-button'}
+      chainId={chainId}
+      disabled={disabled}
+      onClick={onClick}
+      type={type}
+      className={className}
+    >
       {label}
-    </SquareButton>
+    </TransactionButton>
   )
 }
 
@@ -630,7 +640,7 @@ const ConfirmModal = (props: ConfirmModalProps) => {
   const { handleConfirmClick, quantityDetails, token, ticket } = props
   const { quantity, quantityPretty } = quantityDetails
 
-  const chainId = usePoolChainId()
+  const [chainId] = useSelectedNetwork()
 
   const { t } = useTranslation()
 
@@ -697,13 +707,14 @@ const ConfirmModal = (props: ConfirmModalProps) => {
               </div>
             </div>
 
-            <button
-              className='new-btn rounded-lg w-full text-xl py-2 mt-8'
-              disabled={false}
+            <TransactionButton
+              className='mt-8 w-full'
+              chainId={chainId}
+              toolTipId={`deposit-tx-${chainId}`}
               onClick={handleConfirmClick}
             >
               {t('confirmDeposit', 'Confirm deposit')}
-            </button>
+            </TransactionButton>
           </div>
         </div>
       </div>
