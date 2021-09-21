@@ -31,6 +31,7 @@ import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersP
 import { numberWithCommas, safeParseUnits } from '@pooltogether/utilities'
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+import { useClaimableDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useClaimableDraws'
 
 export enum ContentPaneState {
   deposit = 'deposit',

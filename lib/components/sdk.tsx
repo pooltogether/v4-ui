@@ -91,7 +91,7 @@ const WithdrawForm = (props: { player: Player; decimals: string }) => {
   const onSubmit = async (data) => {
     const amount = data[inputKey]
     const amountUnformatted = parseUnits(amount, decimals)
-    const txResponse = await player.withdrawTicket(amountUnformatted)
+    const txResponse = await player.withdraw(amountUnformatted)
     console.log(txResponse)
     const txRecepit = await txResponse.wait()
     console.log(txRecepit)
@@ -107,7 +107,7 @@ const DepositForm = (props: { player: Player; decimals: string }) => {
   const onSubmit = async (data) => {
     const amount = data[inputKey]
     const amountUnformatted = parseUnits(amount, decimals)
-    const txResponse = await player.depositTicket(amountUnformatted)
+    const txResponse = await player.deposit(amountUnformatted)
     console.log(txResponse)
     const txRecepit = await txResponse.wait()
     console.log(txRecepit)

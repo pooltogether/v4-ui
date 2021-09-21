@@ -21,7 +21,7 @@ import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
@@ -36,6 +36,9 @@ import {
   useUsersPrizePoolBalances
 } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
+import { useWithdrawGasEstimate } from 'lib/hooks/Tsunami/PrizePool/useWithdrawGasEstimate'
+import { TransactionButton } from 'lib/components/Input/TransactionButton'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -122,6 +125,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
               player={player}
+              prizePool={prizePool}
               usersBalances={usersBalances}
               prizePoolTokens={prizePoolTokens}
               isUsersBalancesFetched={isUsersBalancesFetched}
@@ -165,6 +169,7 @@ interface WithdrawStepContentProps {
   currentStep: WithdrawalSteps
   amount: string
   player: Player
+  prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
   prizePoolTokens: PrizePoolTokens
   isUsersBalancesFetched: boolean
@@ -178,6 +183,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
     player,
+    prizePool,
     usersBalances,
     prizePoolTokens,
     isUsersBalancesFetched,
@@ -211,6 +217,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     return (
       <WithdrawReviewStep
         player={player}
+        prizePool={prizePool}
         chainId={chainId}
         amount={amount}
         token={token}
@@ -312,6 +319,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
 interface WithdrawReviewStepProps {
   player: Player
+  prizePool: PrizePool
   chainId: number
   amount: string
   tokenBalance: TokenBalance
@@ -334,10 +342,12 @@ interface WithdrawReviewStepProps {
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
   const {
     player,
+    prizePool,
     chainId,
     amount,
     token,
     ticket,
+    ticketBalance,
     setCurrentStep,
     sendTx,
     setTxId,
@@ -361,7 +371,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
     const txId = await sendTx({
       name: `${t('withdraw')} ${amountPretty} ${tokenSymbol}`,
       method: 'withdrawInstantlyFrom',
-      callTransaction: () => player.withdrawTicket(amountUnformatted),
+      callTransaction: () => player.withdraw(amountUnformatted),
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: refetchUsersBalances
@@ -394,10 +404,18 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
       />
 
       <div className='my-8'>
-        <UpdatedStats amount={amount} token={token} ticket={ticket} />
+        <UpdatedStats
+          prizePool={prizePool}
+          amount={amount}
+          token={token}
+          ticket={ticket}
+          ticketBalance={ticketBalance}
+        />
       </div>
 
-      <SquareButton
+      <TransactionButton
+        chainId={prizePool.chainId}
+        toolTipId='withdrawal-tx'
         className='w-full mb-4'
         theme={SquareButtonTheme.orange}
         onClick={onClick}
@@ -411,7 +429,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         ) : (
           <span>{t('confirmWithdrawal')}</span>
         )}
-      </SquareButton>
+      </TransactionButton>
     </>
   )
 }
@@ -565,12 +583,13 @@ const WithdrawWarning = () => {
 }
 
 const UpdatedStats = (props) => {
-  const { className, amount, token, ticket } = props
+  const { className, prizePool, amount, token, ticket, ticketBalance } = props
 
   return (
     <StatList className={className}>
-      <FinalTicketBalanceStat amount={amount} ticket={ticket} />
+      <FinalTicketBalanceStat amount={amount} ticket={ticket} ticketBalance={ticketBalance} />
       <UnderlyingReceivedStat amount={amount} token={token} />
+      <EstimatedGasStat prizePool={prizePool} amount={amount} />
     </StatList>
   )
 }
@@ -596,10 +615,10 @@ const Stat = (props) => {
 }
 
 const FinalTicketBalanceStat = (props) => {
-  const { amount, ticket } = props
+  const { amount, ticket, ticketBalance } = props
   const { t } = useTranslation()
   const amountUnformatted = ethers.utils.parseUnits(amount, ticket.decimals)
-  const finalBalanceUnformatted = ticket.amountUnformatted.sub(amountUnformatted)
+  const finalBalanceUnformatted = ticketBalance.amountUnformatted.sub(amountUnformatted)
   const finalBalance = ethers.utils.formatUnits(finalBalanceUnformatted, ticket.decimals)
   const finalBalancePretty = numberWithCommas(finalBalance)
   const fullFinalBalancePretty = numberWithCommas(finalBalance, {
@@ -652,3 +671,31 @@ const ClipBoardCheck = () => (
   <img src={ClipBoardCheckSvg} alt='check mark icon' width={64} className='mx-auto mb-6' />
 )
 const DownArrow = () => <DefaultDownArrow className='my-2 text-inverse' />
+
+interface EstimatedGasProps {
+  prizePool: PrizePool
+  amount: BigNumber
+}
+
+// TODO: Why are the estimate requests failing?
+const EstimatedGasStat = (props: EstimatedGasProps) => {
+  const { prizePool, amount } = props
+  const { data: gasEstimate, isFetched } = useWithdrawGasEstimate(prizePool, amount)
+  const nativeCurrency = useChainNativeCurrency(prizePool.chainId)
+
+  if (!isFetched) {
+  }
+
+  if (!gasEstimate) {
+    return (
+      <Stat label='Gas estimate:' value={<span className='opacity-50'>Error estimating</span>} />
+    )
+  }
+
+  return (
+    <Stat
+      label='Gas estimate:'
+      value={<div className=''>{`${gasEstimate.toString()} ${nativeCurrency}`}</div>}
+    />
+  )
+}

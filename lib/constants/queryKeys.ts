@@ -3,9 +3,9 @@ export const QUERY_KEYS = {
 }
 
 export const NO_REFETCH = Object.freeze({
-  refetchInterval: false,
-  refetchIntervalInBackground: false,
-  refetchOnMount: false,
-  refetchOnReconnect: false,
-  refetchOnWindowFocus: false
+  refetchInterval: false as false,
+  refetchIntervalInBackground: false as false,
+  refetchOnMount: false as false,
+  refetchOnReconnect: false as false,
+  refetchOnWindowFocus: false as false
 })

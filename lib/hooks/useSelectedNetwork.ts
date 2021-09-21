@@ -38,11 +38,8 @@ const getInitialSelectedNetwork = () => {
 
   if (urlNetwork) {
     const chainId = parseUrlNetwork(urlNetwork)
-    console.log(`URL INITIAL CHAIN ID ${chainId}`)
     return chainId
   }
-
-  console.log(`DEFAULT INITIAL CHAIN ID ${defaultNetwork}`)
   return defaultNetwork
 }
 

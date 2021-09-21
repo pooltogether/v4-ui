@@ -37,6 +37,9 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TransactionButton } from 'lib/components/Input/TransactionButton'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
+import { BigNumber } from '@ethersproject/bignumber'
+import { useDepositGasEstimate } from 'lib/hooks/Tsunami/PrizePool/useDepositGasEstimate'
+import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 
 export const DEPOSIT_STATES = {
   approving: 1,
@@ -179,7 +182,7 @@ export const Deposit = (props: DepositProps) => {
       method: 'depositTo',
       callTransaction: async () => {
         console.log('pre submit')
-        const response = await player.depositTicket(quantityDetails.quantityUnformatted)
+        const response = await player.deposit(quantityDetails.quantityUnformatted)
         console.log('post submit', response)
         return response
       },
@@ -637,8 +640,8 @@ interface ConfirmModalProps extends DepositProps {
 }
 
 const ConfirmModal = (props: ConfirmModalProps) => {
-  const { handleConfirmClick, quantityDetails, token, ticket } = props
-  const { quantity, quantityPretty } = quantityDetails
+  const { handleConfirmClick, quantityDetails, token, ticket, prizePool } = props
+  const { quantity, quantityPretty, quantityUnformatted } = quantityDetails
 
   const [chainId] = useSelectedNetwork()
 
@@ -696,14 +699,11 @@ const ConfirmModal = (props: ConfirmModalProps) => {
 
             <div className='bg-light-purple-70 text-xxs font-inter font-semibold p-5 rounded-lg mt-10 text-white'>
               <div className='flex-col'>
-                {/* <div className='flex justify-between'> */}
-                {/* <div className=''>{t('winningOddsPerTicker', { ticker: ticket.symbol })}</div> */}
-                {/* <div className=''>{odds}</div> */}
-                {/* </div> */}
                 <div className='flex justify-between'>
                   <div className=''>{t('tickerToReceive', { ticker: ticket.symbol })}</div>
                   <div className=''>{quantityPretty}</div>
                 </div>
+                <EstimatedGas amount={quantityUnformatted} prizePool={prizePool} />
               </div>
             </div>
 
@@ -719,5 +719,46 @@ const ConfirmModal = (props: ConfirmModalProps) => {
         </div>
       </div>
     </Modal>
+  )
+}
+
+interface EstimatedGasProps {
+  prizePool: PrizePool
+  amount: BigNumber
+}
+
+// TODO: Why are the estimate requests failing?
+const EstimatedGas = (props: EstimatedGasProps) => {
+  const { prizePool, amount } = props
+  const { data: gasEstimate, isFetched } = useDepositGasEstimate(prizePool, amount)
+  const nativeCurrency = useChainNativeCurrency(prizePool.chainId)
+
+  if (!isFetched) {
+    return (
+      <div className='flex justify-between'>
+        <div className=''>Gas estimate:</div>
+        <div className='flex'>
+          <ThemedClipSpinner className='my-auto' size={16} />
+        </div>
+      </div>
+    )
+  }
+
+  if (!gasEstimate) {
+    return (
+      <div className='flex justify-between'>
+        <div className=''>Gas estimate:</div>
+        <div className='flex'>
+          <span className='opacity-50'>Error estimating</span>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className='flex justify-between'>
+      <div className=''>Gas estimate:</div>
+      <div className=''>{`${gasEstimate.toString()} ${nativeCurrency}`}</div>
+    </div>
   )
 }

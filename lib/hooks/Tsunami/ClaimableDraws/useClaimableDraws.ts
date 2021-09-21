@@ -1,25 +1,18 @@
-import { initializeLinkedPrizePool, LinkedPrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { ClaimableDraw, initializeClaimableDraws } from '.yalc/@pooltogether/v4-js-client/dist'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useContractListChainIds } from 'lib/hooks/useContractListChainIds'
 import { useProvidersKeyedByNumbers } from 'lib/hooks/useProvidersKeyedbyNumbers'
 import { useQuery, UseQueryOptions } from 'react-query'
 import { useContractList } from '../useContractList'
 
-export const useLinkedPrizePool = () => {
+export const useClaimableDraws = () => {
   const linkedPrizePoolContractList = useContractList()
   const chainIds = useContractListChainIds(linkedPrizePoolContractList.contracts)
   const readProviders = useProvidersKeyedByNumbers(chainIds)
   const enabled = Boolean(readProviders)
   return useQuery(
-    'useInitializeLinkedPrizePool',
-    async () => {
-      const linkedPrizePool = await initializeLinkedPrizePool(
-        readProviders,
-        linkedPrizePoolContractList
-      )
-      console.log('linkedPrizePool', linkedPrizePool)
-      return linkedPrizePool
-    },
-    { ...NO_REFETCH, enabled } as UseQueryOptions<LinkedPrizePool>
+    ['useClaimableDraws', chainIds],
+    async () => initializeClaimableDraws(readProviders, linkedPrizePoolContractList),
+    { ...NO_REFETCH, enabled } as UseQueryOptions<ClaimableDraw[]>
   )
 }

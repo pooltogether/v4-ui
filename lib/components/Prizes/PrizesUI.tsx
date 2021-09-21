@@ -10,7 +10,7 @@ import IconSwim from 'assets/images/icon-swim.png'
 import IconParty from 'assets/images/icon-party.png'
 import IconLeaf from 'assets/images/icon-leaf.png'
 import PrizeWLaurels from 'assets/images/prize-w-laurels@2x.png'
-import { useUsersClaimablePrizes } from 'lib/hooks/useUsersClaimablePrizes'
+import { useUsersClaimablePrizes as useUsersClaimablePrizes_OLD } from 'lib/hooks/useUsersClaimablePrizes'
 import { ethers } from 'ethers'
 import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
 import ordinal from 'ordinal'
@@ -20,8 +20,14 @@ import { useCurrentPrizePeriod } from 'lib/hooks/useCurrentPrizePeriod'
 import { useLatestDraw } from 'lib/hooks/useLatestDraw'
 import { Trans, useTranslation } from 'react-i18next'
 import { ClaimablePickPrize, Draw } from 'lib/types/TsunamiTypes'
-import { useClaimableDraws } from 'lib/hooks/useClaimableDraws'
+import { useClaimableDraws as useClaimableDraws_OLD } from 'lib/hooks/useClaimableDraws'
 import { numberWithCommas } from '@pooltogether/utilities'
+import { useClaimableDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useClaimableDraws'
+import { useUsersClaimablePrizes } from 'lib/hooks/Tsunami/ClaimableDraws/useUsersClaimablePrizes'
+import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
+import { useSelectedNetworkClaimableDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useSelectedNetworkClaimableDraws'
+import { ClaimableDraw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { useDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useDraws'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -31,12 +37,71 @@ export const PRIZE_UI_STATES = {
 }
 
 export const PrizesUI = (props) => {
+  const { data: claimableDraws, isFetched } = useSelectedNetworkClaimableDraws()
+  const { isWalletConnected, connectWallet } = useOnboard()
+
+  if (!isWalletConnected) {
+    return <ConnectWalletButton connectWallet={connectWallet} />
+  }
+
+  if (!isFetched) {
+    return <LoadingDots />
+  }
+
+  return (
+    <div>
+      {claimableDraws.map((claimableDraw) => (
+        <ClaimableDrawDrawsList key={claimableDraw.id()} claimableDraw={claimableDraw} />
+      ))}
+    </div>
+  )
+}
+
+interface ClaimableDrawProps {
+  claimableDraw: ClaimableDraw
+}
+
+const ClaimableDrawDrawsList = (props: ClaimableDrawProps) => {
+  const { claimableDraw } = props
+  useUsersClaimablePrizes(claimableDraw)
+  const { data: draws, isFetched } = useDraws(claimableDraw)
+
+  if (!isFetched) {
+    return <LoadingDots />
+  }
+
+  return (
+    <div>
+      {claimableDraw.id()}
+      {draws.map((draw) => (
+        <DrawPeriod
+          key={`${claimableDraw.id()}_${draw.drawId}`}
+          claimableDraw={claimableDraw}
+          draw={draw}
+        />
+      ))}
+    </div>
+  )
+}
+
+interface DrawPeriodProps extends ClaimableDrawProps {
+  draw: Draw
+}
+
+const DrawPeriod = (props: DrawPeriodProps) => {
+  const { draw } = props
+  return <div>{draw.drawId}</div>
+}
+
+/////////////////////////////////////
+
+export const PrizesUI_OLD = (props) => {
   // Kick off loading everything immediately
   const { isWalletConnected, connectWallet, address: usersAddress } = useOnboard()
-  const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes()
+  const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes_OLD()
   usePrizePoolTokensWithUsd()
   useCurrentPrizePeriod()
-  useClaimableDraws()
+  useClaimableDraws_OLD()
 
   const claimablePrizes = data?.claimablePrizes
   const totalClaimableAmountUnformatted = data?.totalAmountUnformatted
@@ -61,6 +126,7 @@ export const PrizesUI = (props) => {
 
   return (
     <>
+      <SelectedNetworkToggle />
       <PrizesToCheckPrompt
         claimablePrizes={claimablePrizes}
         isClaimablePrizesFetched={isClaimablePrizesFetched}
@@ -144,7 +210,7 @@ const ClaimablePrizes = (props) => {
 
 const ClaimableAmount = (props) => {
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokensWithUsd()
-  const { data: claimablePrizes, isFetched } = useUsersClaimablePrizes()
+  const { data: claimablePrizes, isFetched } = useUsersClaimablePrizes_OLD()
   const { t } = useTranslation()
 
   if (!isFetched || !isTokensFetched) {
@@ -352,8 +418,8 @@ const CheckPrizesButton = (props) => {
 
 const PrizeList = (props) => {
   const { prizePoolTokens, isPrizePoolTokensFetched } = props
-  const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes()
-  const { data: draws, isFetched: isDrawsFetched } = useClaimableDraws()
+  const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes_OLD()
+  const { data: draws, isFetched: isDrawsFetched } = useClaimableDraws_OLD()
   const screenSize = useScreenSize()
 
   const loading = !isPrizePoolTokensFetched || !isClaimablePrizesFetched || !isDrawsFetched

@@ -1,4 +1,4 @@
-import { useEnvPrizePoolAddresses } from 'lib/hooks/useEnvPrizePoolAddresses'
+import { useEnvPrizePoolAddresses } from 'lib/hooks/Tsunami/PrizePool/useEnvPrizePoolAddresses'
 import { usePrizePool } from './usePrizePool'
 
 export const useNetworkPrizePool = (chainId: number) => {
