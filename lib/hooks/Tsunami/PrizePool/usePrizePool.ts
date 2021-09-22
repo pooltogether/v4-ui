@@ -13,7 +13,8 @@ export const usePrizePool = (address: string, chainId: number) => {
       if (!linkedPrizePool) return null
       return linkedPrizePool.prizePools.find(
         (prizePool) =>
-          prizePool.prizePool.address === address && prizePool.prizePool.chainId === chainId
+          prizePool.prizePoolMetadata.address === address &&
+          prizePool.prizePoolMetadata.chainId === chainId
       )
     },
     { ...NO_REFETCH, enabled } as UseQueryOptions<PrizePool>

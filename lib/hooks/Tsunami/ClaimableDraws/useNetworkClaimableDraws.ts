@@ -5,11 +5,6 @@ import { useMemo } from 'react'
 
 export const useNetworkClaimableDraws = (chainId: number) => {
   const { data, ...useQueryResults } = useClaimableDraws()
-  console.log(
-    'useNetworkClaimableDraws',
-    data,
-    data?.filter((claimableDraw) => claimableDraw.chainId === chainId)
-  )
   const filteredClaimableDraws = useMemo(
     () => data?.filter((claimableDraw) => claimableDraw.chainId === chainId),
     [data, chainId]

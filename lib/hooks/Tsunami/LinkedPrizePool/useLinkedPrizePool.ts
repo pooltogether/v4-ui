@@ -1,7 +1,7 @@
 import { initializeLinkedPrizePool, LinkedPrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
-import { useContractListChainIds } from 'lib/hooks/useContractListChainIds'
-import { useProvidersKeyedByNumbers } from 'lib/hooks/useProvidersKeyedbyNumbers'
+import { useContractListChainIds } from 'lib/hooks/Tsunami/useContractListChainIds'
+import { useProvidersKeyedByNumbers } from 'lib/hooks/Tsunami/useProvidersKeyedbyNumbers'
 import { useQuery, UseQueryOptions } from 'react-query'
 import { useContractList } from '../useContractList'
 

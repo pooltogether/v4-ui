@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import {
@@ -9,23 +9,19 @@ import {
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { useOnboard, useUsersAddress } from '@pooltogether/hooks'
+import { Token, TokenBalance, useOnboard } from '@pooltogether/hooks'
 import React from 'react'
 import Link from 'next/link'
 
-import { useUsersTokenHoldings } from 'lib/hooks/useUsersTokenHoldings'
-import { usePrizePool } from 'lib/hooks/usePrizePool'
-import { WithdrawModal } from 'lib/components/Account/WithdrawModal'
+import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import PiggyBank from 'assets/images/piggy-bank.svg'
-import { usePrizePoolTokensWithUsd } from 'lib/hooks/usePrizePoolTokensWithUsd'
-import { getUsdAmount } from 'lib/components/Prizes/PrizesUI'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -121,6 +117,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
           </div>
         </div>
         <Balance
+          prizePool={prizePool}
           isFetched={isFetched}
           balance={usersBalances?.ticket}
           ticket={prizePoolTokens?.ticket}
@@ -187,8 +184,17 @@ const NoWalletAccountCard = () => {
   )
 }
 
-const Balance = (props) => {
-  const { isFetched, balance, ticket, token, className } = props
+interface BalanceProps {
+  className?: string
+  isFetched: boolean
+  balance: TokenBalance
+  ticket: Token
+  token: Token
+  prizePool: PrizePool
+}
+
+const Balance = (props: BalanceProps) => {
+  const { isFetched, balance, ticket } = props
   const { isWalletConnected } = useOnboard()
 
   if (!isFetched) {
@@ -210,22 +216,28 @@ const Balance = (props) => {
       <span className='ml-auto text-lg font-bold'>
         {balance.amountPretty} {ticket.symbol}
       </span>
-      <BalanceUsdValue className='ml-auto' balance={balance} token={token} />
+      <BalanceUsdValue className='ml-auto' {...props} />
     </BalanceContainer>
   )
 }
 
 const BalanceContainer = (props) => <div {...props} className='flex flex-col mb-4' />
 
-const BalanceUsdValue = (props) => {
-  const { balance, token } = props
-
-  // TODO: Fetch token USD price
+const BalanceUsdValue = (props: BalanceProps) => {
+  const { balance, token, prizePool } = props
+  const { data: tokenPrice, isFetched: tokenPrizeIsFetched } = usePrizePoolTokenValue(prizePool)
 
   if (!balance) {
     return <span className={classNames(props.className, 'font-light')}>$--</span>
+  } else if (!tokenPrizeIsFetched) {
+    return <span className={classNames(props.className, 'font-light')}>$--</span>
   }
-  return <span className={classNames(props.className, 'font-light')}>$1,000</span>
+
+  const usdValuePretty = numberWithCommas(balance.amountUnformatted.mul(tokenPrice.usd), {
+    decimals: token.decimals
+  })
+
+  return <span className={classNames(props.className, 'font-light')}>${usdValuePretty}</span>
 }
 
 const Piggy = () => (

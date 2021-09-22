@@ -1,12 +1,12 @@
 import { useUsersAddress } from '.yalc/@pooltogether/hooks/dist'
 import { ClaimableDraw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Draw } from '@pooltogether/draw-calculator-js-sdk'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
-import { useDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useDraws'
-import { Draw } from 'lib/types/TsunamiTypes'
+import { useValidDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useValidDraws'
 import { useQuery } from 'react-query'
 
 export const useUsersClaimablePrizes = (claimableDraw: ClaimableDraw) => {
-  const { data: draws, isFetched: isDrawsFetched } = useDraws(claimableDraw)
+  const { data: draws, isFetched: isDrawsFetched } = useValidDraws(claimableDraw)
   const usersAddress = useUsersAddress()
   const enabled = Boolean(claimableDraw) && Boolean(usersAddress) && Boolean(isDrawsFetched)
   return useQuery(

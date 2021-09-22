@@ -20,14 +20,13 @@ import {
 } from '@pooltogether/hooks'
 import { getMaxPrecision, safeParseUnits, shorten } from '@pooltogether/utilities'
 
-import { ContentPaneState, ContentPanesProps, QuantityDetails } from 'lib/components/DefaultPage'
+import { ContentPaneState, ContentPanesProps, QuantityDetails } from 'lib/views/DefaultPage'
 import { FormStepper } from 'lib/components/FormStepper'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
-import { MaxAmountTextInputRightLabel } from 'lib/components/MaxAmountTextInputRightLabel'
+import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
-import { usePoolChainId } from 'lib/hooks/usePoolChainId'
 
 import SuccessIcon from 'assets/images/success@2x.png'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'

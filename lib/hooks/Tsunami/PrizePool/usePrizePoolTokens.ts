@@ -19,14 +19,14 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
       const [ticketData, tokenData] = await Promise.all([ticketDataPromise, tokenDataPromise])
 
       const ticket: Token = {
-        address: prizePool.ticket.address,
+        address: prizePool.ticketMetadata.address,
         symbol: ticketData.symbol,
         name: ticketData.name,
         decimals: ticketData.decimals
       }
 
       const token: Token = {
-        address: prizePool.token.address,
+        address: prizePool.tokenMetadata.address,
         symbol: tokenData.symbol,
         name: tokenData.name,
         decimals: tokenData.decimals

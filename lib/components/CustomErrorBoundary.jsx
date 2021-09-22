@@ -2,7 +2,7 @@ import React from 'react'
 import * as Sentry from '@sentry/react'
 import { useOnboard } from '@pooltogether/hooks'
 
-import { ErrorPage } from 'lib/components/ErrorPage'
+import { ErrorPage } from 'lib/views/ErrorPage'
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
