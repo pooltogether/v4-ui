@@ -60,12 +60,13 @@ export const useSelectedNetworkWatcher = () => {
     }
   }, [networkQueryParam])
 
-  // Watch for URL query param changes
+  // Watch for atom changes
   useEffect(() => {
     const queryParamNetwork = parseUrlNetwork(networkQueryParam)
     if (selectedNetwork !== queryParamNetwork) {
       const url = new URL(window.location.href)
       url.searchParams.set(URL_QUERY_KEY.network, String(selectedNetwork))
+      router.replace(url)
     }
   }, [selectedNetwork])
 }

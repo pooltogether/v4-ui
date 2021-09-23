@@ -8,12 +8,12 @@ import ReactTooltip from 'react-tooltip'
 import React, { useRef } from 'react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-export interface TransactionButtonProps extends SquareButtonProps {
+export interface TxButtonNetworkGatedProps extends SquareButtonProps {
   chainId: number
   toolTipId: string
 }
 
-export const TransactionButton = (props: TransactionButtonProps) => {
+export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
   const { chainId, disabled, toolTipId, children, ...squareButtonProps } = props
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 

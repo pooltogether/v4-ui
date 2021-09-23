@@ -1,6 +1,5 @@
 import React from 'react'
 import classnames from 'classnames'
-import { BigNumber } from 'ethers'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { Content, ContentPane, LoadingDots } from '@pooltogether/react-components'
@@ -18,7 +17,7 @@ export enum ContentPaneState {
   account = 'account'
 }
 
-export const DefaultPage = (props) => {
+export const DefaultPage = () => {
   const router = useRouter()
 
   useSelectedNetworkPlayer()
@@ -132,10 +131,4 @@ const ContentPanes = (props: ContentPanesProps) => {
       </ContentPane>
     </>
   )
-}
-
-export interface QuantityDetails {
-  quantity: string
-  quantityUnformatted: BigNumber
-  quantityPretty: string
 }
