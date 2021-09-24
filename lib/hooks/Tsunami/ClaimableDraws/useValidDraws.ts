@@ -14,6 +14,7 @@ const getValidDrawIds = async (claimableDraw: ClaimableDraw): Promise<Draw[]> =>
   // const draws = await claimableDraw.getDraws()
   // console.log('draws', draws)
   const r = await claimableDraw.getValidDraws()
+  console.log('claimableDraw', claimableDraw)
   console.log('getDraws', r)
   return r
 }

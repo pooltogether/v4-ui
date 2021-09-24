@@ -1,5 +1,11 @@
 import { Amount, Token, Transaction, useIsWalletOnNetwork } from '.yalc/@pooltogether/hooks/dist'
-import { Modal, ModalProps, NetworkIcon } from '.yalc/@pooltogether/react-components/dist'
+import {
+  Modal,
+  ModalProps,
+  NetworkIcon,
+  SquareButton,
+  SquareButtonTheme
+} from '.yalc/@pooltogether/react-components/dist'
 import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import classNames from 'classnames'
 import { DownArrow } from 'lib/components/DownArrow'
@@ -30,6 +36,7 @@ interface ConfirmationModalProps extends ModalProps {
   depositTx: Transaction
   sendApproveTx: () => void
   sendDepositTx: () => void
+  resetState: () => void
 }
 
 export const ConfirmationModal = (props: ConfirmationModalProps) => {
@@ -44,6 +51,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
     depositTx,
     sendApproveTx,
     sendDepositTx,
+    resetState,
     isOpen,
     closeModal
   } = props
@@ -86,7 +94,29 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
     )
   }
 
-  if (depositTx && depositTx?.sent) {
+  if (depositTx && depositTx.sent) {
+    if (depositTx.error) {
+      return (
+        <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+          <ModalTitle chainId={chainId} title={'Error depositing'} />
+          <p className='my-2 text-accent-1 text-center mx-8'>😔 Oh no!</p>
+          <p className='mb-8 text-accent-1 text-center mx-8'>
+            Something went wrong while processing your transaction.
+          </p>
+          <SquareButton
+            theme={SquareButtonTheme.tealOutline}
+            className='w-full'
+            onClick={() => {
+              resetState()
+              closeModal()
+            }}
+          >
+            Try again
+          </SquareButton>
+        </ModalWithStyles>
+      )
+    }
+
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={'Deposit submitted'} />

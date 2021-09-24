@@ -1,22 +1,12 @@
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
-import { useQuery, UseQueryOptions } from 'react-query'
 import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 
+// TODO: Migrade to useMemo like useClaimableDraw
 export const usePrizePool = (address: string, chainId: number) => {
-  const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
-  const enabled =
-    isLinkedPrizePoolFetched && Boolean(linkedPrizePool) && Boolean(address) && Boolean(chainId)
-  return useQuery(
-    ['usePrizePool', address, chainId],
-    async () => {
-      if (!linkedPrizePool) return null
-      return linkedPrizePool.prizePools.find(
-        (prizePool) =>
-          prizePool.prizePoolMetadata.address === address &&
-          prizePool.prizePoolMetadata.chainId === chainId
-      )
-    },
-    { ...NO_REFETCH, enabled } as UseQueryOptions<PrizePool>
-  )
+  const { data: linkedPrizePool, ...useQueryResponse } = useLinkedPrizePool()
+  return {
+    ...useQueryResponse,
+    data: linkedPrizePool?.prizePools.find(
+      (prizePool) => prizePool.address === address && prizePool.chainId === chainId
+    )
+  }
 }

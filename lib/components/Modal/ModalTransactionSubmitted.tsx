@@ -4,11 +4,13 @@ import {
   SquareButton,
   SquareButtonTheme
 } from '.yalc/@pooltogether/react-components/dist'
-import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
+
 import classNames from 'classnames'
 import Link from 'next/link'
+import Image from 'next/image'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ClipBoardWithCheckMark } from '../Images/ClipBoardWithCheckMark'
 
 interface ModalTransactionSubmittedProps {
   className?: string
@@ -24,8 +26,8 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
 
   return (
     <div className={classNames('flex flex-col', className)}>
-      <ClipBoardCheck />
-      <span className='text-xxs text-accent-1 mb-8 mx-auto'>{t('ModalTransactionSubmitted')}</span>
+      <ClipBoardWithCheckMark className='mx-auto mb-4' />
+      <span className='text-xxs text-accent-1 mb-8 mx-auto'>{t('transactionSubmitted')}</span>
       <Link href={url}>
         <a className='w-full' target='_blank' rel='noreferrer'>
           <SquareButton className='w-full' theme={SquareButtonTheme.purpleOutline}>
@@ -36,7 +38,3 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
     </div>
   )
 }
-
-const ClipBoardCheck = () => (
-  <img src={ClipBoardCheckSvg} alt='check mark icon' width={64} className='mx-auto mb-6' />
-)

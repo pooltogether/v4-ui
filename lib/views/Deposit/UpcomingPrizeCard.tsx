@@ -1,21 +1,22 @@
 import { useTranslation } from 'react-i18next'
-import { LoadingDots } from '.yalc/@pooltogether/react-components/dist'
+import { Card, LoadingDots } from '.yalc/@pooltogether/react-components/dist'
+import React from 'react'
 
 export const UpcomingPrizeCard = (props) => {
   const { t } = useTranslation()
 
   if (false) {
     return (
-      <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
+      <Card className='hover:bg-secondary trans mb-4'>
         <LoadingDots className='mx-auto my-20' />
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className='bg-card hover:bg-secondary trans rounded-lg w-full p-10 flex flex-col mb-4 items-center'>
-      <div className='font-inter uppercase text-accent-1'>{t('weeklyPrize')}</div>
-      <div className='font-bold text-5xl xs:text-9xl'>$100,000.23</div>
+    <Card className='hover:bg-secondary trans mb-4'>
+      <div className='font-inter uppercase text-accent-1 text-center'>{t('weeklyPrize')}</div>
+      <div className='font-bold text-5xl xs:text-9xl text-center'>$100,000.23</div>
       {/* <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div> */}
       {/* <PrizeCountdown
         textSize='text-xl'
@@ -26,6 +27,6 @@ export const UpcomingPrizeCard = (props) => {
         canStartAward={data.canStartAward}
         canCompleteAward={data.canCompleteAward}
       /> */}
-    </div>
+    </Card>
   )
 }

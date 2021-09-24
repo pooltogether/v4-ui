@@ -9,6 +9,7 @@ export const useClaimableDraw = (chainId: number, address: string) => {
       (claimableDraw) => claimableDraw.chainId === chainId && claimableDraw.address === address
     )
     if (!claimableDraw) return null
+    console.log('claimableDraw', claimableDraw)
     return claimableDraw
   }, [claimableDraws])
 }

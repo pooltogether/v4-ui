@@ -1,0 +1,112 @@
+import { Token } from '.yalc/@pooltogether/hooks/dist'
+import { Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
+import { BigNumber } from '@ethersproject/bignumber'
+import { numberWithCommas } from '@pooltogether/utilities'
+import classnames from 'classnames'
+import { getPositionalPrize } from 'lib/constants/drawSettings'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { PrizeWLaurels } from './Images/PrizeWithLaurels'
+
+interface PrizeBreakdownProps {
+  drawSettings: DrawSettings
+  token: Token
+  className?: string
+  isFetched?: boolean
+}
+
+// TODO: Convert values into nice ones
+export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
+  const { drawSettings, className, token, isFetched } = props
+  const { distributions, prize, numberOfPicks } = drawSettings
+  const { t } = useTranslation()
+
+  return (
+    <div className={classnames('flex flex-col', className)}>
+      <PrizeWLaurels className='mx-auto' />
+      <div className='font-inter font-semibold text-sm capitalize text-accent-1 my-3 text-center'>
+        {t('prizeBreakdown')}
+      </div>
+
+      <hr className='border-accent-3' style={{ width: '100%' }} />
+      <div className={'flex flex-col'}>
+        <div className='flex justify-between space-x-2 sm:space-x-4'>
+          <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
+          <PrizeTableHeader>{t('winners')}</PrizeTableHeader>
+          <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader>
+        </div>
+        <div className='flex flex-col'>
+          {!isFetched ? (
+            Array.from(Array(10)).map((_, i) => <LoadingPrizeRow key={`loading-row`} />)
+          ) : (
+            <>
+              {distributions.map((distribution, i) => (
+                <PrizeTableRow
+                  key={`distribution_row_${i}`}
+                  index={i}
+                  drawSettings={drawSettings}
+                  numberOfPicks={numberOfPicks}
+                  totalPrize={prize}
+                  token={token}
+                />
+              ))}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const LoadingPrizeRow = () => <div className='h-8 rounded-lg w-full bg-body animate-pulse' />
+
+const PrizeTableHeader = (
+  props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+) => (
+  <div
+    {...props}
+    className={classnames(
+      'font-inter text-xxs capitalize text-accent-1 mt-8 mb-2 opacity-60 w-full',
+      props.className
+    )}
+  />
+)
+
+interface PrizeTableRowProps {
+  drawSettings: DrawSettings
+  index: number
+  totalPrize: BigNumber
+  numberOfPicks: BigNumber
+  token: Token
+}
+
+// TODO: Calculate number of winners w draw settings
+// Calculate prize w draw settings
+// Calculate odds
+const PrizeTableRow = (props: PrizeTableRowProps) => {
+  const { index, drawSettings, totalPrize, token } = props
+  return (
+    <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>
+      <PrizeTableCell index={index}>
+        ${getPositionalPrize(index, drawSettings, token)}
+      </PrizeTableCell>
+      <PrizeTableCell index={index}>{index}</PrizeTableCell>
+      <PrizeTableCell index={index}>--</PrizeTableCell>
+    </div>
+  )
+}
+
+interface PrizeTableCellProps
+  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  index: number
+}
+
+const PrizeTableCell = (props: PrizeTableCellProps) => (
+  <div
+    {...props}
+    className={classnames(props.className, 'font-inter text-sm xs:text-lg capitalize my-1 w-full', {
+      'text-flashy font-bold': props.index === 0,
+      'opacity-60 text-accent-1 font-semibold': props.index !== 0
+    })}
+  />
+)

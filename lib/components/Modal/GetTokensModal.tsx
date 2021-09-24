@@ -38,7 +38,7 @@ export const GetTokensModal = (props: GetTokensModalProps) => {
       closeModal={props.closeModal}
     >
       <a
-        className='absolute top-6 left-4 flex text-sm text-accent-1 transition-color hover:text-white'
+        className='absolute top-6 left-4 flex text-sm text-accent-1 transition-colors hover:text-white'
         href={url}
         target='_blank'
         rel='noopener noreferrer'

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import {
+  Card,
   LoadingDots,
   NetworkIcon,
   SquareButton,
@@ -28,10 +29,6 @@ export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
-
-  useEffect(() => {
-    console.log('player', player)
-  }, [player])
 
   if (!isWalletConnected) {
     return <NoWalletAccountCard />
@@ -250,15 +247,6 @@ const BalanceUsdValue = (props: BalanceProps) => {
 
 const Piggy = () => (
   <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto mb-6' />
-)
-const Card = (props) => (
-  <div
-    {...props}
-    className={classNames(
-      'bg-card shadow trans rounded-lg w-full py-10 px-4 sm:p-10 flex flex-col mb-4 items-center',
-      props.className
-    )}
-  />
 )
 
 const ConnectWalletButton = () => {

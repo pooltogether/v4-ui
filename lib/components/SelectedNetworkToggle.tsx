@@ -15,7 +15,7 @@ export const SelectedNetworkToggle = (props: SelectedNetworkToggleProps) => {
   const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
 
   return (
-    <div className={classNames(className, 'flex flex-row rounded bg-darkened px-2 py-1')}>
+    <div className={classNames(className, 'flex flex-row rounded bg-darkened px-2 py-1 max-w-max')}>
       {supportedNetworks.map((chainId) => (
         <NetworkToggle
           key={chainId}

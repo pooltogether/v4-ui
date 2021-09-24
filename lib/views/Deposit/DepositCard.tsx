@@ -10,7 +10,7 @@ import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
-import { getAmountFromString } from 'lib/getAmountFromString'
+import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
@@ -25,16 +25,7 @@ import React, { useCallback, useEffect, useMemo, useReducer, useState } from 're
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import BalloonsSvg from 'assets/images/success.svg'
-import Link from 'next/link'
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'reset':
-      return {}
-    case 'setTxId':
-      return { ...state, [action.key]: action.txId }
-  }
-}
+import { Card } from '.yalc/@pooltogether/react-components/dist'
 
 export const DepositCard = (props: ContentPanesProps) => {
   const { setSelectedPage } = props
@@ -73,31 +64,27 @@ export const DepositCard = (props: ContentPanesProps) => {
 
   const sendTx = useSendTransaction()
 
-  const [state, dispatch] = useReducer(reducer, {})
+  const [depositedAmount, setDepositedAmount] = useState<Amount>()
 
-  const approveTxId = state?.[`approve-${prizePool.id()}`] || 0
-  const depositTxId = state?.[`deposit-${prizePool.id()}`] || 0
-  const completedDepositTxId = state?.[`completed-deposit-${prizePool.id()}`] || 0
+  const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
+  const getKey = (prizePool: PrizePool, action: string) => `${prizePool.id()}-${action}`
+
+  const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
+  const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
+  const completedDepositTxId = transactionIds?.[getKey(prizePool, 'completed-deposit')] || 0
 
   const approveTx = useTransaction(approveTxId)
   const depositTx = useTransaction(depositTxId)
   const completedDepositTx = useTransaction(completedDepositTxId)
 
-  const [depositedAmount, setDepositedAmount] = useState<Amount>()
-
-  const setApproveTxId = useCallback(
-    (txId: number) => dispatch({ type: 'setTxId', key: `approve-${prizePool?.id()}`, txId }),
-    [prizePool?.id()]
-  )
-  const setDepositTxId = useCallback(
-    (txId: number) => dispatch({ type: 'setTxId', key: `deposit-${prizePool?.id()}`, txId }),
-    [prizePool?.id()]
-  )
-  const setCompletedDepositTxId = useCallback(
-    (txId: number) =>
-      dispatch({ type: 'setTxId', key: `completed-deposit-${prizePool?.id()}`, txId }),
-    [prizePool?.id()]
-  )
+  const setSpecificTxId = (txId: number, prizePool: PrizePool, action: string) =>
+    setTransactionIds((prevState) => ({ ...prevState, [getKey(prizePool, action)]: txId }))
+  const setApproveTxId = (txId: number, prizePool: PrizePool) =>
+    setSpecificTxId(txId, prizePool, 'approve')
+  const setDepositTxId = (txId: number, prizePool: PrizePool) =>
+    setSpecificTxId(txId, prizePool, 'deposit')
+  const setCompletedDepositTxId = (txId: number, prizePool: PrizePool) =>
+    setSpecificTxId(txId, prizePool, 'completed-deposit')
 
   const token = prizePoolTokens?.token
   const ticket = prizePoolTokens?.ticket
@@ -126,16 +113,16 @@ export const DepositCard = (props: ContentPanesProps) => {
   }, [])
 
   // Move to completed state after successful deposit
-  useEffect(() => {
-    console.log(depositTx)
-    if (depositTx?.completed && !depositTx?.error && !depositTx?.cancelled) {
-      setCompletedDepositTxId(depositTx.id)
-      setDepositedAmount(amountToDeposit)
-      setDepositTxId(0)
-      closeModal()
-      resetQueryParam()
-    }
-  }, [depositTx?.completed])
+  // useEffect(() => {
+  //   console.log('depositTx', depositTx)
+  //   if (depositTx && depositTx.completed && !depositTx.error && !depositTx.cancelled) {
+  //     setCompletedDepositTxId(depositTx.id)
+  //     setDepositedAmount(amountToDeposit)
+  //     setDepositTxId(0)
+  //     closeModal()
+  //     resetQueryParam()
+  //   }
+  // }, [depositTx?.completed])
 
   const closeModal = () => {
     const { query, pathname } = router
@@ -151,10 +138,10 @@ export const DepositCard = (props: ContentPanesProps) => {
       method: 'approve',
       callTransaction: async () => player.approveDeposits(),
       callbacks: {
-        refetch: refetchUsersDepositAllowance
+        refetch: () => refetchUsersDepositAllowance()
       }
     })
-    setApproveTxId(txId)
+    setApproveTxId(txId, prizePool)
   }
 
   const sendDepositTx = async () => {
@@ -164,10 +151,18 @@ export const DepositCard = (props: ContentPanesProps) => {
       method: 'depositTo',
       callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
       callbacks: {
-        refetch: refetchUsersBalances
+        onSuccess: (tx: Transaction) => {
+          console.log('SUCCESS', prizePool, tx)
+          setDepositedAmount(amountToDeposit)
+          setCompletedDepositTxId(tx.id, prizePool)
+          setDepositTxId(0, prizePool)
+          closeModal()
+          resetQueryParam()
+        },
+        refetch: () => refetchUsersBalances()
       }
     })
-    setDepositTxId(txId)
+    setDepositTxId(txId, prizePool)
   }
 
   const resetQueryParam = () => {
@@ -179,15 +174,15 @@ export const DepositCard = (props: ContentPanesProps) => {
   const resetState = () => {
     resetQueryParam()
     reset()
-    setApproveTxId(0)
-    setDepositTxId(0)
-    setCompletedDepositTxId(0)
+    setApproveTxId(0, prizePool)
+    setDepositTxId(0, prizePool)
+    setCompletedDepositTxId(0, prizePool)
     setDepositedAmount(undefined)
   }
 
   return (
     <>
-      <div className='relative bg-card rounded-lg w-full flex flex-col items-center mb-4 px-4 sm:px-8 pt-8 pb-4'>
+      <Card className='mb-4'>
         {completedDepositTx ? (
           <CompletedDeposit
             setSelectedPage={setSelectedPage}
@@ -199,7 +194,7 @@ export const DepositCard = (props: ContentPanesProps) => {
           />
         ) : (
           <>
-            <SelectedNetworkToggle className='mb-6' />
+            <SelectedNetworkToggle className='mb-6 mx-auto' />
             <DepositForm
               form={form}
               player={player}
@@ -225,7 +220,7 @@ export const DepositCard = (props: ContentPanesProps) => {
             </div>
           </>
         )}
-      </div>
+      </Card>
 
       <ConfirmationModal
         isOpen={showConfirmModal}
@@ -241,6 +236,7 @@ export const DepositCard = (props: ContentPanesProps) => {
         sendApproveTx={sendApproveTx}
         sendDepositTx={sendDepositTx}
         prizePool={prizePool}
+        resetState={resetState}
       />
     </>
   )
@@ -257,7 +253,7 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='underline text-accent-1 hover:text-white transition-color'
+        className='underline text-accent-1 hover:text-white transition-colors'
         onClick={() => setShowModal(true)}
       >
         Get tokens
@@ -279,7 +275,7 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='underline text-accent-1 hover:text-white transition-color'
+        className='underline text-accent-1 hover:text-white transition-colors'
         onClick={() => setShowModal(true)}
       >
         Bridge tokens

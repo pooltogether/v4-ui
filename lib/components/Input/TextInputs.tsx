@@ -63,7 +63,7 @@ export const SimpleInput = (props) => {
       className={DEFAULT_INPUT_CLASS_NAME}
       {...register(id, {
         required,
-        pattern,
+        pattern: patternForHookForm,
         validate
       })}
     />
