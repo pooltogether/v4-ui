@@ -7,7 +7,7 @@ export const CLAIMABLE_DRAWS = Object.freeze({
     [NETWORK.polygon]: ''
   },
   [APP_ENVIRONMENT.testnets]: {
-    [NETWORK.rinkeby]: ['0x780541141d3eea11ce73A73fE33Bbf84F91d9338'],
-    [NETWORK.mumbai]: ['0xcF343B23178869BE12831D4f365dd4BfbCA8066As']
+    [NETWORK.rinkeby]: ['0x29f6eF56b5767C56d7Bf41415C43796A1868f841'],
+    [NETWORK.mumbai]: ['0x9c63E8ad7f46A4ed7c1955eBF05Cbdf82fD30144']
   }
 })

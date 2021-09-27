@@ -4,13 +4,15 @@ import { ClaimableDraw, Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-cli
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
+import classNames from 'classnames'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { DECIMALS_FOR_DISTRIBUTIONS, getPositionalPrize } from 'lib/constants/drawSettings'
 import { useDrawSettings } from 'lib/hooks/Tsunami/ClaimableDraws/useDrawSettings'
+import { useUsersClaimablePrize } from 'lib/hooks/Tsunami/ClaimableDraws/useUsersClaimablePrize'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
-import { getTimestampString } from 'lib/utils/getTimestampString'
-import React, { useState } from 'react'
+import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
+import React, { useEffect, useState } from 'react'
 import { LoadingCard } from '.'
 
 interface DrawCardProps {
@@ -18,7 +20,7 @@ interface DrawCardProps {
   draw: Draw
 }
 
-interface FullDrawProps extends DrawCardProps {
+interface DrawPropsWithDetails extends DrawCardProps {
   drawSettings: DrawSettings
   token: Token
 }
@@ -26,20 +28,26 @@ interface FullDrawProps extends DrawCardProps {
 export const DrawCard = (props: DrawCardProps) => {
   const { claimableDraw, draw } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
-  const { data: drawSettings, isFetched: isDrawSettingsFetched } = useDrawSettings(
-    claimableDraw,
-    draw
-  )
+  const {
+    data: drawSettings,
+    isFetched: isDrawSettingsFetched,
+    error
+  } = useDrawSettings(claimableDraw, draw)
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
+
+  useEffect(() => {
+    if (isDrawSettingsFetched && (!drawSettings || error)) {
+      // TODO: Getting an error fetching draw settings :(
+      console.log('ERROR', draw, error)
+    }
+  }, [drawSettings, error, isDrawSettingsFetched])
 
   if (!isDrawSettingsFetched || !isPrizePoolTokensFetched) {
     return <LoadingCard />
   }
 
-  if (!drawSettings) {
-    // TODO: Getting an error fetching draw settings :(
-    console.log('ERROR', draw)
+  if (!drawSettings || error) {
     return null
   }
 
@@ -55,7 +63,7 @@ export const DrawCard = (props: DrawCardProps) => {
 
 //////////////////// Draw details ////////////////////
 
-const DrawDetails = (props: FullDrawProps) => {
+const DrawDetails = (props: DrawPropsWithDetails) => {
   return (
     <div className='w-full flex flex-col space-y-2'>
       <div className='flex flex-row space-x-2'>
@@ -70,7 +78,7 @@ const DrawDetails = (props: FullDrawProps) => {
   )
 }
 
-const DrawPrizeTotal = (props: FullDrawProps) => (
+const DrawPrizeTotal = (props: DrawPropsWithDetails) => (
   <div className='text-center sm:text-left'>
     <span className='font-bold text-center text-5xl w-full text-flashy inline'>
       ${numberWithCommas(props.drawSettings.prize, { decimals: props.token.decimals })}
@@ -79,7 +87,7 @@ const DrawPrizeTotal = (props: FullDrawProps) => (
   </div>
 )
 
-const DrawGrandPrize = (props: FullDrawProps) => (
+const DrawGrandPrize = (props: DrawPropsWithDetails) => (
   <div className='mx-auto w-full max-w-sm sm:w-auto justify-between sm:justify-start flex flex-row sm:flex-col text-center sm:text-right px-2 sm:px-0'>
     <div>
       <span className='font-bold text-center text-xl sm:text-2xl text-inverse w-full'>
@@ -91,7 +99,7 @@ const DrawGrandPrize = (props: FullDrawProps) => (
   </div>
 )
 
-const ViewPrizesTrigger = (props: FullDrawProps) => {
+const ViewPrizesTrigger = (props: DrawPropsWithDetails) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
@@ -106,19 +114,19 @@ const ViewPrizesTrigger = (props: FullDrawProps) => {
   )
 }
 
-const DrawDate = (props: FullDrawProps) => (
+const DrawDate = (props: DrawPropsWithDetails) => (
   <span className='uppercase font-bold text-accent-1 leading-none text-xxs'>
-    {getTimestampString(props.draw.timestamp)}
+    {getTimestampStringWithTime(props.draw.timestamp)}
   </span>
 )
 
-const DrawId = (props: FullDrawProps) => (
+const DrawId = (props: DrawPropsWithDetails) => (
   <span className='uppercase font-bold text-accent-2 opacity-70 leading-none text-xxs'>
     #{props.draw.drawId}
   </span>
 )
 
-const PrizeBreakdownModal = (props: FullDrawProps & Omit<ModalProps, 'label'>) => {
+const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'label'>) => {
   const { isOpen, closeModal, drawSettings } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
@@ -136,32 +144,42 @@ const PrizeBreakdownModal = (props: FullDrawProps & Omit<ModalProps, 'label'>) =
 
 //////////////////// Draw claim ////////////////////
 
-const DrawClaimSection = (props: FullDrawProps) => {
-  if (false) {
+enum ClaimSectionState {
+  loading,
+  unchecked,
+  unclaimed,
+  claimed
+}
+
+interface DrawClaimSectionProps extends DrawPropsWithDetails {
+  setClaimSectionState: (state: ClaimSectionState) => void
+}
+
+const DrawClaimSection = (props: DrawPropsWithDetails) => {
+  const [claimSectionState, setClaimSectionState] = useState<ClaimSectionState>(
+    ClaimSectionState.unchecked
+  )
+
+  if (claimSectionState === ClaimSectionState.loading) {
     return <LoadingDrawClaimSection {...props} />
   }
 
-  if (false) {
-    return <UnclaimedDrawSection {...props} />
+  if (claimSectionState === ClaimSectionState.unchecked) {
+    return <UncheckedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
   }
 
-  if (false) {
-    return <ClaimedDrawSection {...props} />
+  if (claimSectionState === ClaimSectionState.unclaimed) {
+    return <UnclaimedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
   }
 
-  return <UncheckedDrawSection {...props} />
+  if (claimSectionState === ClaimSectionState.claimed) {
+    return <ClaimedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
+  }
+
+  return null
 }
 
-const UncheckedDrawSection = (props: FullDrawProps) => {
-  return (
-    <div className='w-full flex flex-col space-y-8'>
-      <div className='h-60 w-60 bg-pt-teal-dark rounded-xl mx-auto' />
-      <SquareButton>Check for prizes</SquareButton>
-    </div>
-  )
-}
-
-const LoadingDrawClaimSection = (props: FullDrawProps) => {
+const LoadingDrawClaimSection = (props: DrawPropsWithDetails) => {
   return (
     <div className='w-full flex flex-col space-y-8'>
       <div className='h-60 w-60 bg-pt-teal-dark animate-pulse rounded-xl mx-auto' />
@@ -170,10 +188,58 @@ const LoadingDrawClaimSection = (props: FullDrawProps) => {
   )
 }
 
-const UnclaimedDrawSection = (props: FullDrawProps) => {
-  return <Card>Unclaimed</Card>
+enum UncheckedState {
+  unchecked,
+  checking
 }
 
-const ClaimedDrawSection = (props: FullDrawProps) => {
+const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
+  const { claimableDraw, draw, setClaimSectionState } = props
+  const [uncheckedState, setUncheckedState] = useState<UncheckedState>(UncheckedState.unchecked)
+  const disabled = uncheckedState === UncheckedState.unchecked
+  const { isFetched } = useUsersClaimablePrize(claimableDraw, draw, disabled)
+
+  // TODO: Make this an interval for a video loop.
+  // Make this view appear for a minimum of 1 loop.
+  // Check if claimed here? Probably do it above to skip this step.
+  useEffect(() => {
+    if (isFetched && uncheckedState) {
+      setClaimSectionState(ClaimSectionState.unclaimed)
+    }
+  }, [isFetched, uncheckedState])
+
+  return (
+    <div className='w-full flex flex-col space-y-8'>
+      <div
+        className={classNames('h-60 w-60 rounded-xl mx-auto', {
+          'bg-pt-teal-dark': uncheckedState === UncheckedState.unchecked,
+          'bg-pt-teal-light animate-pulse': uncheckedState === UncheckedState.checking
+        })}
+      />
+      <SquareButton onClick={() => setUncheckedState(UncheckedState.checking)}>
+        Check for prizes
+      </SquareButton>
+    </div>
+  )
+}
+
+const UnclaimedDrawSection = (props: DrawClaimSectionProps) => {
+  const { claimableDraw, draw, setClaimSectionState, token } = props
+  const { data: drawResults, isFetched } = useUsersClaimablePrize(claimableDraw, draw)
+
+  console.log(drawResults, isFetched)
+  const totalWinnings = numberWithCommas(drawResults.totalValue, { decimals: token.decimals })
+
+  return (
+    <Card>
+      <span>{totalWinnings}</span>
+      <SquareButton onClick={() => claimableDraw.claimPrizesByDrawResults(drawResults)}>
+        Claim
+      </SquareButton>
+    </Card>
+  )
+}
+
+const ClaimedDrawSection = (props: DrawClaimSectionProps) => {
   return <Card>Claimed</Card>
 }
