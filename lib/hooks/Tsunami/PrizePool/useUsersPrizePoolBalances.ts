@@ -1,4 +1,4 @@
-import { TokenBalance, useRefetchInterval, useUsersAddress } from '.yalc/@pooltogether/hooks/dist'
+import { TokenBalance, useRefetchInterval, useUsersAddress } from '@pooltogether/hooks'
 import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { formatUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'

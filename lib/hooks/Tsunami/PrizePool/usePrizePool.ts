@@ -1,6 +1,6 @@
 import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 
-// TODO: Migrade to useMemo like useClaimableDraw
+// TODO: Migrade to useMemo like useDrawPrize
 export const usePrizePool = (address: string, chainId: number) => {
   const { data: linkedPrizePool, ...useQueryResponse } = useLinkedPrizePool()
   return {

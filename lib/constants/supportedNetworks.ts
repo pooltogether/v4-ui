@@ -1,4 +1,4 @@
-import { APP_ENVIRONMENT } from '.yalc/@pooltogether/hooks/dist'
+import { APP_ENVIRONMENT } from '@pooltogether/hooks'
 import { NETWORK } from '@pooltogether/utilities'
 
 export const SUPPORTED_NETWORKS = Object.freeze({

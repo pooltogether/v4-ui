@@ -4,7 +4,7 @@
 //   const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes_OLD()
 //   usePrizePoolTokensWithUsd()
 //   useCurrentPrizePeriod()
-//   useClaimableDraws_OLD()
+//   useDrawPrizes_OLD()
 
 //   const claimablePrizes = data?.claimablePrizes
 //   const totalClaimableAmountUnformatted = data?.totalAmountUnformatted
@@ -322,7 +322,7 @@
 // const PrizeList = (props) => {
 //   const { prizePoolTokens, isPrizePoolTokensFetched } = props
 //   const { data, isFetched: isClaimablePrizesFetched } = useUsersClaimablePrizes_OLD()
-//   const { data: draws, isFetched: isDrawsFetched } = useClaimableDraws_OLD()
+//   const { data: draws, isFetched: isDrawsFetched } = useDrawPrizes_OLD()
 //   const screenSize = useScreenSize()
 
 //   const loading = !isPrizePoolTokensFetched || !isClaimablePrizesFetched || !isDrawsFetched

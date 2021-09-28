@@ -1,4 +1,4 @@
-import { useIsWalletOnNetwork } from '.yalc/@pooltogether/hooks/dist'
+import { useIsWalletOnNetwork } from '@pooltogether/hooks'
 import {
   SquareButton,
   SquareButtonProps,

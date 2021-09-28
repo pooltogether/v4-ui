@@ -2,9 +2,9 @@ import { SquareButton } from '@pooltogether/react-components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
-import { useSelectedNetworkClaimableDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useSelectedNetworkClaimableDraws'
-import { ClaimableDraw } from '.yalc/@pooltogether/v4-js-client/dist'
-import { useValidDraws } from 'lib/hooks/Tsunami/ClaimableDraws/useValidDraws'
+import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
+import { DrawPrize, Draw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { useValidDraws } from 'lib/hooks/Tsunami/DrawPrizes/useValidDraws'
 import { DrawCard } from './DrawCard'
 
 export const PRIZE_UI_STATES = {
@@ -15,18 +15,18 @@ export const PRIZE_UI_STATES = {
 }
 
 export const PrizesUI = (props) => {
-  const { data: claimableDraws, isFetched } = useSelectedNetworkClaimableDraws()
+  const { data: drawPrizes, isFetched } = useSelectedNetworkDrawPrizes()
   if (!isFetched) return <LoadingList />
   return (
     <>
       <SelectedNetworkToggle className='mx-auto mb-4' />
-      <ClaimableDrawDrawsList claimableDraw={claimableDraws[0]} />
+      <DrawPrizeDrawsList drawPrize={drawPrizes[0]} />
     </>
   )
 }
 
-interface ClaimableDrawProps {
-  claimableDraw: ClaimableDraw
+interface DrawPrizeProps {
+  drawPrize: DrawPrize
 }
 
 const LoadingList = () => {
@@ -41,26 +41,24 @@ const LoadingList = () => {
 
 export const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-36' />
 
-const ClaimableDrawDrawsList = (props: ClaimableDrawProps) => {
-  const { claimableDraw } = props
+const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
+  const { drawPrize } = props
   // TODO: Fetch the users claimable prizes
-  // useUsersClaimablePrizes(claimableDraw)
-  const { data: draws, isFetched } = useValidDraws(claimableDraw)
+  // useUsersClaimablePrizes(drawPrize)
+  const { data: draws, isFetched } = useValidDraws(drawPrize)
 
   if (!isFetched) return <LoadingList />
 
   return (
     <div className='space-y-4'>
-      {draws.reverse().map((draw) => (
-        <DrawCard
-          key={`${claimableDraw.id()}_${draw.drawId}`}
-          claimableDraw={claimableDraw}
-          draw={draw}
-        />
+      {draws.sort(sortById).map((draw) => (
+        <DrawCard key={`${drawPrize.id()}_${draw.drawId}`} drawPrize={drawPrize} draw={draw} />
       ))}
     </div>
   )
 }
+
+const sortById = (a: Draw, b: Draw) => b.drawId - a.drawId
 
 const ConnectWalletButton = (props) => {
   const { connectWallet } = props

@@ -1,12 +1,18 @@
-import { Token } from '.yalc/@pooltogether/hooks/dist'
-import { Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Token } from '@pooltogether/hooks'
+import {
+  calculateNumberOfPrizesForIndex,
+  calculatePrizeForDistributionIndex,
+  Draw,
+  DrawSettings
+} from '.yalc/@pooltogether/v4-js-client/dist'
 import { BigNumber } from '@ethersproject/bignumber'
-import { numberWithCommas } from '@pooltogether/utilities'
 import classnames from 'classnames'
 import { getPositionalPrize } from 'lib/constants/drawSettings'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
+import { ethers } from 'ethers'
+import { numberWithCommas } from '@pooltogether/utilities'
 
 interface PrizeBreakdownProps {
   drawSettings: DrawSettings
@@ -85,12 +91,20 @@ interface PrizeTableRowProps {
 // Calculate odds
 const PrizeTableRow = (props: PrizeTableRowProps) => {
   const { index, drawSettings, totalPrize, token } = props
+
+  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(index, drawSettings, {
+    drawId: 0,
+    timestamp: 0,
+    winningRandomNumber: ethers.constants.Zero
+  })
+  const numberOfWinners = calculateNumberOfPrizesForIndex(drawSettings.bitRangeSize, index)
+
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>
       <PrizeTableCell index={index}>
-        ${getPositionalPrize(index, drawSettings, token)}
+        ${numberWithCommas(prizeForDistributionUnformatted, { decimals: token.decimals })}
       </PrizeTableCell>
-      <PrizeTableCell index={index}>{index}</PrizeTableCell>
+      <PrizeTableCell index={index}>{numberOfWinners}</PrizeTableCell>
       <PrizeTableCell index={index}>--</PrizeTableCell>
     </div>
   )

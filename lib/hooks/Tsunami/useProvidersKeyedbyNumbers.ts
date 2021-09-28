@@ -1,4 +1,4 @@
-import { useReadProviders } from '.yalc/@pooltogether/hooks/dist'
+import { useReadProviders } from '@pooltogether/hooks'
 import { useMemo } from 'react'
 
 export const useProvidersKeyedByNumbers = (chainIds: number[]) => {

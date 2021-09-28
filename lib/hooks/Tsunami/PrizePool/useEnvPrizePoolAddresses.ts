@@ -1,4 +1,4 @@
-import { useAppEnv } from '.yalc/@pooltogether/hooks/dist'
+import { useAppEnv } from '@pooltogether/hooks'
 import { PRIZE_POOLS } from 'lib/constants/prizePools'
 
 export const useEnvPrizePoolAddresses = () => {

@@ -5,7 +5,7 @@ import {
   useIsWalletOnNetwork,
   useOnboard,
   useTransaction
-} from '.yalc/@pooltogether/hooks/dist'
+} from '@pooltogether/hooks'
 import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'

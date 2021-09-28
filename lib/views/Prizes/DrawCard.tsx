@@ -1,14 +1,14 @@
-import { Token } from '.yalc/@pooltogether/hooks/dist'
+import { Token } from '@pooltogether/hooks'
 import { Card, Modal, ModalProps, SquareButton } from '.yalc/@pooltogether/react-components/dist'
-import { ClaimableDraw, Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DrawPrize, Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { DECIMALS_FOR_DISTRIBUTIONS, getPositionalPrize } from 'lib/constants/drawSettings'
-import { useDrawSettings } from 'lib/hooks/Tsunami/ClaimableDraws/useDrawSettings'
-import { useUsersClaimablePrize } from 'lib/hooks/Tsunami/ClaimableDraws/useUsersClaimablePrize'
+import { useDrawSettings } from 'lib/hooks/Tsunami/DrawPrizes/useDrawSettings'
+import { useUsersClaimablePrize } from 'lib/hooks/Tsunami/DrawPrizes/useUsersClaimablePrize'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react'
 import { LoadingCard } from '.'
 
 interface DrawCardProps {
-  claimableDraw: ClaimableDraw
+  drawPrize: DrawPrize
   draw: Draw
 }
 
@@ -26,13 +26,13 @@ interface DrawPropsWithDetails extends DrawCardProps {
 }
 
 export const DrawCard = (props: DrawCardProps) => {
-  const { claimableDraw, draw } = props
+  const { drawPrize, draw } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const {
     data: drawSettings,
     isFetched: isDrawSettingsFetched,
     error
-  } = useDrawSettings(claimableDraw, draw)
+  } = useDrawSettings(drawPrize, draw)
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
@@ -194,10 +194,10 @@ enum UncheckedState {
 }
 
 const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
-  const { claimableDraw, draw, setClaimSectionState } = props
+  const { drawPrize, draw, setClaimSectionState } = props
   const [uncheckedState, setUncheckedState] = useState<UncheckedState>(UncheckedState.unchecked)
   const disabled = uncheckedState === UncheckedState.unchecked
-  const { isFetched } = useUsersClaimablePrize(claimableDraw, draw, disabled)
+  const { isFetched } = useUsersClaimablePrize(drawPrize, draw, disabled)
 
   // TODO: Make this an interval for a video loop.
   // Make this view appear for a minimum of 1 loop.
@@ -224,8 +224,8 @@ const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
 }
 
 const UnclaimedDrawSection = (props: DrawClaimSectionProps) => {
-  const { claimableDraw, draw, setClaimSectionState, token } = props
-  const { data: drawResults, isFetched } = useUsersClaimablePrize(claimableDraw, draw)
+  const { drawPrize, draw, setClaimSectionState, token } = props
+  const { data: drawResults, isFetched } = useUsersClaimablePrize(drawPrize, draw)
 
   console.log(drawResults, isFetched)
   const totalWinnings = numberWithCommas(drawResults.totalValue, { decimals: token.decimals })
@@ -233,7 +233,7 @@ const UnclaimedDrawSection = (props: DrawClaimSectionProps) => {
   return (
     <Card>
       <span>{totalWinnings}</span>
-      <SquareButton onClick={() => claimableDraw.claimPrizesByDrawResults(drawResults)}>
+      <SquareButton onClick={() => drawPrize.claimPrizesByDrawResults(drawResults)}>
         Claim
       </SquareButton>
     </Card>

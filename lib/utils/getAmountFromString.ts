@@ -1,4 +1,4 @@
-import { Amount } from '.yalc/@pooltogether/hooks/dist'
+import { Amount } from '@pooltogether/hooks'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 

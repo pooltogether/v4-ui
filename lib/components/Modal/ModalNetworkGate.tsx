@@ -1,4 +1,4 @@
-import { useAddNetworkToMetamask, useIsWalletMetamask } from '.yalc/@pooltogether/hooks/dist'
+import { useAddNetworkToMetamask, useIsWalletMetamask } from '@pooltogether/hooks'
 import { SquareButton } from '.yalc/@pooltogether/react-components/dist'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import classNames from 'classnames'

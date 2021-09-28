@@ -1,4 +1,4 @@
-import { APP_ENVIRONMENT, getStoredAppEnv, useAppEnv } from '.yalc/@pooltogether/hooks/dist'
+import { APP_ENVIRONMENT, getStoredAppEnv, useAppEnv } from '@pooltogether/hooks'
 import { NETWORK } from '@pooltogether/utilities'
 import { atom, useAtom } from 'jotai'
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'

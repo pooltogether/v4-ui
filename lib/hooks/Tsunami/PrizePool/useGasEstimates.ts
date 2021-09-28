@@ -1,4 +1,4 @@
-import { useUsersAddress } from '.yalc/@pooltogether/hooks/dist'
+import { useUsersAddress } from '@pooltogether/hooks'
 import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'

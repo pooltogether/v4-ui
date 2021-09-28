@@ -9,6 +9,7 @@ export const useLinkedPrizePool = () => {
   const linkedPrizePoolContractList = useContractList()
   const chainIds = useContractListChainIds(linkedPrizePoolContractList.contracts)
   const readProviders = useProvidersKeyedByNumbers(chainIds)
+
   const enabled = Boolean(readProviders)
   return useQuery(
     'useInitializeLinkedPrizePool',

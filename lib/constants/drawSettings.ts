@@ -1,12 +1,12 @@
-import { DrawSettings } from '.yalc/@pooltogether/draw-calculator-js-sdk/dist'
-import { Token } from '.yalc/@pooltogether/hooks/dist'
+import { Token } from '@pooltogether/hooks'
+import { DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 export const DECIMALS_FOR_DISTRIBUTIONS = '9'
 
-export const DRAW_SETTINGS: DrawSettings = Object.freeze({
+export const TSUNAMI_USDC_DRAW_SETTINGS: DrawSettings = Object.freeze({
   matchCardinality: 3,
   pickCost: parseUnits('1', 18),
   distributions: [
@@ -14,10 +14,10 @@ export const DRAW_SETTINGS: DrawSettings = Object.freeze({
     parseUnits('0.3', DECIMALS_FOR_DISTRIBUTIONS).toNumber(),
     parseUnits('0.2', DECIMALS_FOR_DISTRIBUTIONS).toNumber()
   ],
-  bitRangeSize: 10,
+  bitRangeSize: 2,
   maxPicksPerUser: 10,
-  numberOfPicks: BigNumber.from(10),
-  prize: BigNumber.from(1000000),
+  numberOfPicks: BigNumber.from(1000),
+  prize: BigNumber.from('100000000000000000000'),
   drawStartTimestampOffset: 0,
   drawEndTimestampOffset: 0
 })

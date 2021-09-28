@@ -1,4 +1,4 @@
-import { Token } from '.yalc/@pooltogether/hooks/dist'
+import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery, UseQueryOptions } from 'react-query'

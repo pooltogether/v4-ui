@@ -40,3 +40,6 @@ yarn-error.log*
 dist
 out
 functions-out
+
+# Local Netlify folder
+.netlify

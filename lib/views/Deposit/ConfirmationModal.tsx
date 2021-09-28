@@ -1,4 +1,4 @@
-import { Amount, Token, Transaction, useIsWalletOnNetwork } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, Token, Transaction, useIsWalletOnNetwork } from '@pooltogether/hooks'
 import {
   Modal,
   ModalProps,

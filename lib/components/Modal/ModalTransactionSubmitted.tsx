@@ -1,4 +1,4 @@
-import { Transaction } from '.yalc/@pooltogether/hooks/dist'
+import { Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareButton,
