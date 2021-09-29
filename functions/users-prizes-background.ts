@@ -1,8 +1,8 @@
 import { Handler } from '@netlify/functions'
-import { testnets } from '../.yalc/@pooltogether/v4-pool-data'
+import { testnets } from '@pooltogether/v4-pool-data'
 import { ethers } from 'ethers'
 
-import { initializeDrawPrizes } from '../.yalc/@pooltogether/v4-js-client'
+import { initializeDrawPrizes } from '@pooltogether/v4-js-client'
 
 import fetch from 'cross-fetch'
 global.fetch = fetch

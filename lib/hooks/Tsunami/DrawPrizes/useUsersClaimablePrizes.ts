@@ -1,7 +1,7 @@
-import { useUsersAddress } from '@pooltogether/hooks'
-import { DrawPrize, Draw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useValidDraws } from 'lib/hooks/Tsunami/DrawPrizes/useValidDraws'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery } from 'react-query'
 
 export const useUsersClaimablePrizes = (drawPrize: DrawPrize) => {

@@ -12,7 +12,7 @@ import {
 } from '@pooltogether/react-components'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
-import { useOnboard } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
 
@@ -23,13 +23,16 @@ export const PageHeader = (props) => (
   </PageHeaderContainer>
 )
 
-const Settings = () => (
-  <SettingsContainer className='ml-1 my-auto' title='Settings'>
-    <LanguagePicker />
-    <ThemeSettingsItem />
-    <TestnetSettingsItem />
-  </SettingsContainer>
-)
+const Settings = () => {
+  const { t } = useTranslation()
+  return (
+    <SettingsContainer t={t} className='ml-1 my-auto' title='Settings'>
+      <LanguagePicker />
+      <ThemeSettingsItem t={t} />
+      <TestnetSettingsItem t={t} />
+    </SettingsContainer>
+  )
+}
 
 const LanguagePicker = () => {
   const { i18n: i18next } = useTranslation()

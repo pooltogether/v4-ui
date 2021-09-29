@@ -1,6 +1,6 @@
-import { useUsersAddress } from '@pooltogether/hooks'
-import { DrawPrize, Draw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery } from 'react-query'
 
 // TODO: Optimize this rather than calling for each draw on render

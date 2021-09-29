@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
-import { Card, Modal, ModalProps, SquareButton } from '.yalc/@pooltogether/react-components/dist'
-import { DrawPrize, Draw, DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Card, Modal, ModalProps, SquareButton } from '@pooltogether/react-components'
+import { DrawPrize, Draw, DrawSettings } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import React from 'react'
-import { Card } from '.yalc/@pooltogether/react-components/dist'
+import { Card } from '@pooltogether/react-components'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'

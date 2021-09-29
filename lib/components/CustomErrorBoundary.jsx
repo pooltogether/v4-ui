@@ -1,6 +1,6 @@
 import React from 'react'
 import * as Sentry from '@sentry/react'
-import { useOnboard } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { ErrorPage } from 'lib/views/ErrorPage'
 

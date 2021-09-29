@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Banner, BannerTheme, Card, LoadingDots } from '.yalc/@pooltogether/react-components/dist'
+import { Banner, BannerTheme, Card, LoadingDots } from '@pooltogether/react-components'
 import React from 'react'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'

@@ -3,7 +3,7 @@ import {
   formatBlockExplorerTxUrl,
   SquareButton,
   SquareButtonTheme
-} from '.yalc/@pooltogether/react-components/dist'
+} from '@pooltogether/react-components'
 
 import classNames from 'classnames'
 import Link from 'next/link'

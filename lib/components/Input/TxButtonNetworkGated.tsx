@@ -3,7 +3,7 @@ import {
   SquareButton,
   SquareButtonProps,
   overrideToolTipPosition
-} from '.yalc/@pooltogether/react-components/dist'
+} from '@pooltogether/react-components'
 import ReactTooltip from 'react-tooltip'
 import React, { useRef } from 'react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'

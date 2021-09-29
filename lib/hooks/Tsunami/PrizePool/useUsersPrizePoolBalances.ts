@@ -1,9 +1,10 @@
-import { TokenBalance, useRefetchInterval, useUsersAddress } from '@pooltogether/hooks'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { TokenBalance, useRefetchInterval } from '@pooltogether/hooks'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { formatUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenBalance

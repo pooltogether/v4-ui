@@ -5,8 +5,8 @@ import {
   NetworkIcon,
   SquareButton,
   SquareButtonTheme
-} from '.yalc/@pooltogether/react-components/dist'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+} from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { DownArrow } from 'lib/components/DownArrow'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'

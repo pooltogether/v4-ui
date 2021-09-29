@@ -1,7 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import { useOnboard } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { networkTextColorClassname } from 'lib/utils/networkColorClassnames'
 
 import IconNetwork from 'assets/images/icon-network.svg'

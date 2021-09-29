@@ -1,12 +1,6 @@
-import {
-  Amount,
-  Token,
-  Transaction,
-  useIsWalletOnNetwork,
-  useOnboard,
-  useTransaction
-} from '@pooltogether/hooks'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Amount, Token, Transaction, useTransaction } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
@@ -25,7 +19,7 @@ import React, { useCallback, useEffect, useMemo, useReducer, useState } from 're
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import BalloonsSvg from 'assets/images/success.svg'
-import { Card } from '.yalc/@pooltogether/react-components/dist'
+import { Card } from '@pooltogether/react-components'
 
 export const DepositCard = (props: ContentPanesProps) => {
   const { setSelectedPage } = props

@@ -1,4 +1,4 @@
-import { Modal, ModalProps } from '.yalc/@pooltogether/react-components/dist'
+import { Modal, ModalProps } from '@pooltogether/react-components'
 import { NETWORK } from '@pooltogether/utilities'
 import React from 'react'
 import { useTranslation } from 'react-i18next'

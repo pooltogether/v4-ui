@@ -1,7 +1,7 @@
-import { useUsersAddress } from '@pooltogether/hooks'
-import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export interface DepositAllowance {

@@ -10,7 +10,8 @@ import {
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { Token, TokenBalance, useOnboard } from '@pooltogether/hooks'
+import { Token, TokenBalance } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import React from 'react'
 import Link from 'next/link'
 
@@ -19,7 +20,7 @@ import PiggyBank from 'assets/images/piggy-bank.svg'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'

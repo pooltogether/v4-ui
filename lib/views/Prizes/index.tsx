@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
-import { DrawPrize, Draw } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
 import { useValidDraws } from 'lib/hooks/Tsunami/DrawPrizes/useValidDraws'
 import { DrawCard } from './DrawCard'
 
@@ -56,7 +56,7 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
         ?.sort(sortById)
         .map((draw) => (
           <DrawCard key={`${drawPrize.id()}_${draw.drawId}`} drawPrize={drawPrize} draw={draw} />
-        ))[1],
+        )),
     [draws]
   )
 

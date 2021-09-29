@@ -1,4 +1,4 @@
-import { PrizePool, TokenData } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizePool, TokenData } from '@pooltogether/v4-js-client'
 import { TokenPrice, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { UseQueryResult } from 'react-query'
 

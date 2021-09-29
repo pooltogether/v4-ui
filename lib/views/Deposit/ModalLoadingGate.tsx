@@ -1,4 +1,4 @@
-import { ThemedClipSpinner } from '.yalc/@pooltogether/react-components/dist'
+import { ThemedClipSpinner } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React from 'react'
 

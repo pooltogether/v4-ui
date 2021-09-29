@@ -8,12 +8,12 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
 import {
   useInitCookieOptions,
-  useInitializeOnboard,
   useInitInfuraId,
   useInitQuickNodeId,
   useInitReducedMotion,
   useInitTheGraphApiKey
 } from '@pooltogether/hooks'
+import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   ToastContainer,
   LoadingScreen,

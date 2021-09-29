@@ -1,4 +1,4 @@
-import { NetworkIcon } from '.yalc/@pooltogether/react-components/dist'
+import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'

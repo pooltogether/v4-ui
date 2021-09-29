@@ -1,4 +1,4 @@
-import { Contract, getContractListChainIds } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Contract, getContractListChainIds } from '@pooltogether/v4-js-client'
 import { useMemo } from 'react'
 
 export const useContractListChainIds = (contracts: Contract[]) =>

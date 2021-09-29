@@ -4,7 +4,7 @@ import {
   calculatePrizeForDistributionIndex,
   Draw,
   DrawSettings
-} from '.yalc/@pooltogether/v4-js-client/dist'
+} from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import classnames from 'classnames'
 import { getPositionalPrize } from 'lib/constants/drawSettings'

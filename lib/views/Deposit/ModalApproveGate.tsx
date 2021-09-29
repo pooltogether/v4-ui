@@ -4,8 +4,8 @@ import {
   SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner
-} from '.yalc/@pooltogether/react-components/dist'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+} from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { InfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'

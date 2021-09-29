@@ -7,14 +7,8 @@ import {
   SquareButton,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import {
-  useUsersAddress,
-  useOnboard,
-  TokenBalance,
-  Transaction,
-  Token,
-  Amount
-} from '@pooltogether/hooks'
+import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { getMaxPrecision, safeParseUnits, shorten } from '@pooltogether/utilities'
 
 import { ContentPaneState } from 'lib/views/DefaultPage'
@@ -26,12 +20,13 @@ import { DownArrow } from 'lib/components/DownArrow'
 
 import SuccessIcon from 'assets/images/success@2x.png'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import classNames from 'classnames'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 

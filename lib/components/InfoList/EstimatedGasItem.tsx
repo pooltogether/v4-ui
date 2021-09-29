@@ -1,5 +1,5 @@
-import { ThemedClipSpinner } from '.yalc/@pooltogether/react-components/dist'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { ThemedClipSpinner } from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { InfoListItem } from 'lib/components/InfoList'

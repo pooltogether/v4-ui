@@ -32,7 +32,7 @@ import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountText
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import {
   UsersPrizePoolBalances,
   useUsersPrizePoolBalances

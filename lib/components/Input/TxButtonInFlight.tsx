@@ -1,8 +1,4 @@
-import {
-  SquareButton,
-  SquareButtonProps,
-  ThemedClipSpinner
-} from '.yalc/@pooltogether/react-components/dist'
+import { SquareButton, SquareButtonProps, ThemedClipSpinner } from '@pooltogether/react-components'
 import React from 'react'
 
 export interface TxInFlightButtonProps extends SquareButtonProps {

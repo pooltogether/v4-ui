@@ -1,5 +1,5 @@
 import { Token } from '@pooltogether/hooks'
-import { DrawSettings } from '.yalc/@pooltogether/v4-js-client/dist'
+import { DrawSettings } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'

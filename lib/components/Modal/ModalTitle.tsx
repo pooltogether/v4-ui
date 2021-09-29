@@ -1,4 +1,4 @@
-import { NetworkIcon } from '.yalc/@pooltogether/react-components/dist'
+import { NetworkIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React from 'react'
 

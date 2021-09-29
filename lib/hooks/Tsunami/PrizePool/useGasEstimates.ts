@@ -1,8 +1,8 @@
-import { useUsersAddress } from '@pooltogether/hooks'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { QueryKey, useQuery, UseQueryOptions } from 'react-query'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const useGasEstimate = (
   queryKey: QueryKey,

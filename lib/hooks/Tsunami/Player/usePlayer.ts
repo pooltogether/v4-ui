@@ -1,5 +1,5 @@
-import { useOnboard } from '@pooltogether/hooks'
-import { Player, PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery, UseQueryOptions } from 'react-query'
 
