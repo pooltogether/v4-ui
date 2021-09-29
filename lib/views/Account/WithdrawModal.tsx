@@ -9,13 +9,7 @@ import {
   Tooltip,
   ErrorsBox
 } from '@pooltogether/react-components'
-import {
-  Amount,
-  Token,
-  TokenBalance,
-  Transaction,
-  useTransaction
-} from '@pooltogether/hooks'
+import { Amount, Token, TokenBalance, Transaction, useTransaction } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
@@ -99,7 +93,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     reset()
   }, [isOpen])
 
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, prizePool.chainId)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
 
   if (!isWalletOnProperNetwork) {
     return (
