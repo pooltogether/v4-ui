@@ -1,6 +1,5 @@
 import classNames from 'classnames'
 import { useAddNetworkToMetamask } from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { SquareButton } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
@@ -41,8 +40,7 @@ const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
   const addNetwork = useAddNetworkToMetamask(chainId, { onSuccess })
   const networkName = getNetworkNiceNameByChainId(chainId)
 
-  const { wallet } = useOnboard()
-  const isWalletMetamask = useIsWalletMetamask(wallet)
+  const isWalletMetamask = useIsWalletMetamask()
 
   if (!isWalletMetamask) {
     return null

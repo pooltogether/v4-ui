@@ -7,7 +7,6 @@ import {
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 export interface TxButtonNetworkGatedProps extends SquareButtonProps {
   chainId: number
@@ -17,8 +16,7 @@ export interface TxButtonNetworkGatedProps extends SquareButtonProps {
 export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
   const { chainId, disabled, toolTipId, children, ...squareButtonProps } = props
 
-  const { network: walletChainId } = useOnboard()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, chainId)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   return (
     <>

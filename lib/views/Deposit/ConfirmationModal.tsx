@@ -1,6 +1,5 @@
 import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { Modal, ModalProps, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
@@ -56,8 +55,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
   const [chainId] = useSelectedNetwork()
   const { t } = useTranslation()
 
-  const { network: walletChainId } = useOnboard()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, chainId)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   if (!isWalletOnProperNetwork) {
     return (
