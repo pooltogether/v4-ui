@@ -248,7 +248,13 @@ const BalanceUsdValue = (props: BalanceProps) => {
 }
 
 const Piggy = () => (
-  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
+  <img
+    src={'assets/images/piggy-bank.svg'}
+    alt='piggy bank icon'
+    height={92}
+    width={92}
+    className='mx-auto'
+  />
 )
 
 const ConnectWalletButton = () => {

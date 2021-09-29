@@ -1,8 +1,9 @@
 import classNames from 'classnames'
-import { useAddNetworkToMetamask, useIsWalletMetamask } from '@pooltogether/hooks'
+import { useAddNetworkToMetamask } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { SquareButton } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 
 interface ModalNetworkGateProps {
   className?: string

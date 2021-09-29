@@ -1,5 +1,5 @@
 import React from 'react'
-import { Amount, Token, Transaction, useIsWalletOnNetwork } from '@pooltogether/hooks'
+import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { Modal, ModalProps, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
@@ -19,6 +19,7 @@ import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasIte
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 interface ConfirmationModalProps extends ModalProps {
   prizePool: PrizePool

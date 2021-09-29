@@ -14,7 +14,6 @@ import {
   Token,
   TokenBalance,
   Transaction,
-  useIsWalletOnNetwork,
   useTransaction
 } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
@@ -41,6 +40,7 @@ import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 

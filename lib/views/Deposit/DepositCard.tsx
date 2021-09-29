@@ -20,8 +20,6 @@ import { ContentPanesProps, ContentPaneState } from 'lib/views/DefaultPage'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
 
-import BalloonsSvg from 'assets/images/success.svg'
-
 export const DepositCard = (props: ContentPanesProps) => {
   const { setSelectedPage } = props
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
@@ -286,7 +284,12 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
 }
 
 const SuccessBalloons = (props) => (
-  <img src={BalloonsSvg} alt='check mark icon' width={64} className={props.className} />
+  <img
+    src={'assets/images/success.svg'}
+    alt='check mark icon'
+    width={64}
+    className={props.className}
+  />
 )
 
 interface CompletedDepositProps {

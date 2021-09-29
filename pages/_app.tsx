@@ -36,9 +36,10 @@ import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 
 const queryClient = new QueryClient()
 
-if (typeof window !== 'undefined') {
-  window.ethers = ethers
-}
+// TODO: Is this necessary? What is this for?
+// if (typeof window !== 'undefined') {
+//   window.ethers = ethers
+// }
 
 if (process.env.NEXT_JS_SENTRY_DSN) {
   Sentry.init({
@@ -60,7 +61,7 @@ function MyApp({ Component, pageProps, router }) {
         includedDomains: ['vote.pooltogether.com']
       })
 
-      function onRouteChangeComplete(url) {
+      const onRouteChangeComplete = (url) => {
         if (window['fathom']) {
           window['fathom'].trackPageview()
         }

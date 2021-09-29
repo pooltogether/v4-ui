@@ -1,13 +1,13 @@
-import { useIsWalletOnNetwork } from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import React from 'react'
+import ReactTooltip from 'react-tooltip'
 import {
   SquareButton,
   SquareButtonProps,
   overrideToolTipPosition
 } from '@pooltogether/react-components'
-import ReactTooltip from 'react-tooltip'
-import React from 'react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 export interface TxButtonNetworkGatedProps extends SquareButtonProps {
   chainId: number

@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { Card, Modal, ModalProps, SquareButton } from '@pooltogether/react-components'
-import { DrawPrize, Draw, DrawSettings } from '@pooltogether/v4-js-client'
+import { DrawPrize, Draw, PrizeDistributions } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
@@ -22,7 +22,7 @@ interface DrawCardProps {
 }
 
 interface DrawPropsWithDetails extends DrawCardProps {
-  drawSettings: DrawSettings
+  drawSettings: PrizeDistributions
   token: Token
 }
 
@@ -152,11 +152,6 @@ export enum ClaimSectionState {
   unclaimed,
   claimed
 }
-
-interface DrawClaimSectionProps extends DrawPropsWithDetails {
-  setClaimSectionState: (state: ClaimSectionState) => void
-}
-
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { drawPrize, draw } = props
   const [claimSectionState, setClaimSectionState] = useState<ClaimSectionState>(
@@ -199,58 +194,4 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
       Check for prizes
     </SquareButton>
   )
-}
-
-const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
-  const { drawPrize, draw, setClaimSectionState } = props
-  const [uncheckedState, setUncheckedState] = useState<UncheckedState>(UncheckedState.unchecked)
-  const disabled = uncheckedState === UncheckedState.unchecked
-  const { isFetched } = useUsersClaimablePrize(drawPrize, draw, disabled)
-
-  // TODO: Make this an interval for a video loop.
-  // Make this view appear for a minimum of 1 loop.
-  // Check if claimed here? Probably do it above to skip this step.
-  useEffect(() => {
-    if (isFetched && uncheckedState) {
-      setClaimSectionState(ClaimSectionState.unclaimed)
-    }
-  }, [isFetched, uncheckedState])
-
-  return (
-    <div className='w-full flex flex-col space-y-8'>
-      <div
-        className={classNames('h-60 w-60 rounded-xl mx-auto', {
-          'bg-pt-teal-dark': uncheckedState === UncheckedState.unchecked,
-          'bg-pt-teal-light animate-pulse': uncheckedState === UncheckedState.checking
-        })}
-      />
-    </div>
-  )
-}
-
-const UnclaimedDrawSection = (props: DrawClaimSectionProps) => {
-  const { drawPrize, draw, setClaimSectionState, token } = props
-  const { data: drawResults, isFetched, error } = useUsersClaimablePrize(drawPrize, draw)
-
-  useEffect(() => {
-    console.log(drawResults, error)
-  }, [drawResults, error])
-
-  return <>prizes</>
-
-  console.log(drawResults, isFetched)
-  const totalWinnings = numberWithCommas(drawResults.totalValue, { decimals: token.decimals })
-
-  return (
-    <Card>
-      <span>{totalWinnings}</span>
-      <SquareButton onClick={() => drawPrize.claimPrizesByDrawResults(drawResults)}>
-        Claim
-      </SquareButton>
-    </Card>
-  )
-}
-
-const ClaimedDrawSection = (props: DrawClaimSectionProps) => {
-  return <Card>Claimed</Card>
 }
