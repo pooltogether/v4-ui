@@ -21,7 +21,7 @@ const VIDEO_VERSION = 'v001'
 
 enum VideoState {
   loop = 'LOOP',
-  in = 'IN'
+  transition = 'IN'
 }
 
 enum LootVideo {
@@ -31,19 +31,54 @@ enum LootVideo {
   reveal = 'REVEAL'
 }
 
+const getVideoKey = (video: LootVideo, videoState: VideoState) => `${video}-${videoState}`
 const getVideoSource = (video: LootVideo, videoState: VideoState) =>
   `/videos/PT_LOOT_${video}_${videoState}_${VIDEO_VERSION}.mp4`
+const getNextVideo = (video: LootVideo, videoState: VideoState, noPrize?: boolean) => {
+  // After transition is loop
+  if (videoState === VideoState.transition) {
+    return { video, videoState: VideoState.loop }
+  }
+
+  // Otherwise it's the next video in the sequence
+  if (video === LootVideo.rest) {
+    return { video: LootVideo.reveal, videoState: VideoState.transition }
+  } else if (video === LootVideo.reveal) {
+    if (noPrize) {
+      return { video: LootVideo.noPrize, videoState: VideoState.transition }
+    }
+    return { video: LootVideo.prize, videoState: VideoState.transition }
+  }
+}
 
 export const PrizeAnimation = (props: PrizeAnimationProps) => {
   const { claimSectionState, totalPrizeValueUnformatted, className, ...containerProps } = props
 
-  const inVideoPlayer = useRef<HTMLVideoElement>(null)
+  const transitionVideoPlayer = useRef<HTMLVideoElement>(null)
   const loopVideoPlayer = useRef<HTMLVideoElement>(null)
 
   const [currentVideo, setCurrentVideo] = useState<LootVideo>(LootVideo.rest)
-  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.in)
+  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.transition)
 
-  // TODO: Account for theme & transitioning between themes
+  const [prefetchedVideos, setPrefetchedVideos] = useState<{ [key: string]: string }>({})
+
+  const setVideo = useCallback(
+    (video: LootVideo, videoState: VideoState) => {
+      preloadNextVideo(video, videoState)
+
+      const videoPlayer =
+        videoState === VideoState.transition ? transitionVideoPlayer : loopVideoPlayer
+      const videoSource = prefetchedVideos[getVideoKey(video, videoState)]
+      console.log('setVideo', video, videoState, videoSource)
+      videoPlayer.current.setAttribute('src', videoSource)
+      videoPlayer.current.load()
+      videoPlayer.current.play()
+      setCurrentVideo(video)
+      setCurrentVideoState(videoState)
+    },
+    [prefetchedVideos]
+  )
+
   const videoToTransitionTo = useMemo(() => {
     switch (claimSectionState) {
       case ClaimSectionState.unchecked: {
@@ -62,43 +97,60 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
     }
   }, [claimSectionState, totalPrizeValueUnformatted])
 
+  const preloadNextVideo = async (video: LootVideo, videoState: VideoState) => {
+    const nextVideo = getNextVideo(video, videoState)
+    if (nextVideo) {
+      const videoResponse = await fetch(getVideoSource(nextVideo.video, nextVideo.videoState))
+      const videoBlob = await videoResponse.blob()
+      const videoUrl = URL.createObjectURL(videoBlob)
+      console.log('preloadNextVideo', nextVideo.video, nextVideo.videoState, videoBlob)
+      setPrefetchedVideos((prefetchedVideos) => {
+        return {
+          ...prefetchedVideos,
+          [getVideoKey(nextVideo.video, nextVideo.videoState)]: videoUrl
+        }
+      })
+    }
+  }
+
+  /**
+   * Called when the loop video ends
+   */
   const onLoopEnd = useCallback(() => {
     if (currentVideo !== videoToTransitionTo && currentVideoState === VideoState.loop) {
-      // Video state has changed, set new video and transition in
-      setCurrentVideoState(VideoState.in)
-      setCurrentVideo(videoToTransitionTo)
-
-      inVideoPlayer.current.setAttribute('src', getVideoSource(videoToTransitionTo, VideoState.in))
-      loopVideoPlayer.current.setAttribute(
-        'src',
-        getVideoSource(videoToTransitionTo, VideoState.loop)
-      )
-      inVideoPlayer.current.load()
-      loopVideoPlayer.current.load()
-      inVideoPlayer.current.play()
+      setVideo(videoToTransitionTo, VideoState.transition)
     } else {
-      // Video loop ended, play loop again
+      // Video loop ended, no video to transition to, play loop again
       loopVideoPlayer.current.play()
     }
-  }, [currentVideo, currentVideoState, videoToTransitionTo])
+  }, [setVideo, currentVideo, currentVideoState, videoToTransitionTo])
 
-  const onInEnd = () => {
-    setCurrentVideoState(VideoState.loop)
-    loopVideoPlayer.current.play()
-  }
+  /**
+   * Called when the transition video ends
+   */
+  const onTransitionEnd = useCallback(() => {
+    setVideo(currentVideo, VideoState.loop)
+  }, [currentVideo, setVideo])
+
+  /**
+   * Load the initial next video on mount
+   */
+  useEffect(() => {
+    preloadNextVideo(currentVideo, currentVideoState)
+  }, [])
 
   return (
     <div className={classnames(className, 'overflow-hidden flex flex-col justify-end h-96')}>
       <video
         playsInline
-        ref={inVideoPlayer}
+        ref={transitionVideoPlayer}
         preload='auto'
         autoPlay
         muted
-        onEnded={onInEnd}
-        className={classnames({ hidden: currentVideoState !== VideoState.in })}
+        onEnded={onTransitionEnd}
+        className={classnames({ hidden: currentVideoState !== VideoState.transition })}
       >
-        <source src={getVideoSource(LootVideo.rest, VideoState.in)} type='video/mp4' />
+        <source src={getVideoSource(currentVideo, VideoState.transition)} type='video/mp4' />
       </video>
       <video
         playsInline
@@ -108,7 +160,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         onEnded={onLoopEnd}
         className={classnames({ hidden: currentVideoState !== VideoState.loop })}
       >
-        <source src={getVideoSource(LootVideo.rest, VideoState.loop)} type='video/mp4' />
+        <source src={getVideoSource(currentVideo, VideoState.loop)} type='video/mp4' />
       </video>
     </div>
   )
