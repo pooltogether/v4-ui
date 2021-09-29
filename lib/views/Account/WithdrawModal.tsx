@@ -1,19 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import Link from 'next/link'
 import classnames from 'classnames'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   Modal,
-  ThemedClipSpinner,
   LoadingDots,
   SquareButton,
   SquareButtonTheme,
   Tooltip,
-  formatBlockExplorerTxUrl,
   ErrorsBox
 } from '@pooltogether/react-components'
 import {
   Amount,
-  PreTransactionDetails,
   Token,
   TokenBalance,
   Transaction,
@@ -30,7 +27,6 @@ import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import {
@@ -38,7 +34,6 @@ import {
   useUsersPrizePoolBalances
 } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
 import { EstimatedWithdrawalGasItem } from 'lib/components/InfoList/EstimatedGasItem'
@@ -72,6 +67,8 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
 
+  const { network: walletChainId } = useOnboard()
+
   const {
     data: usersBalances,
     isFetched: isUsersBalancesFetched,
@@ -102,7 +99,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     reset()
   }, [isOpen])
 
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, prizePool.chainId)
 
   if (!isWalletOnProperNetwork) {
     return (

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import {
@@ -11,22 +12,20 @@ import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { getMaxPrecision, safeParseUnits, shorten } from '@pooltogether/utilities'
 
-import { ContentPaneState } from 'lib/views/DefaultPage'
+import SuccessIcon from 'assets/images/success@2x.png'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { DownArrow } from 'lib/components/DownArrow'
-
-import SuccessIcon from 'assets/images/success@2x.png'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
-import classNames from 'classnames'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { ContentPaneState } from 'lib/views/DefaultPage'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 

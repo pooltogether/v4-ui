@@ -26,7 +26,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
 
   return (
     <div className={classNames('flex flex-col', className)}>
-      <ClipBoardWithCheckMark className='mx-auto mb-4' />
+      {/* <ClipBoardWithCheckMark className='mx-auto mb-4' /> */}
       <span className='text-xxs text-accent-1 mb-8 mx-auto'>{t('transactionSubmitted')}</span>
       <Link href={url}>
         <a className='w-full' target='_blank' rel='noreferrer'>

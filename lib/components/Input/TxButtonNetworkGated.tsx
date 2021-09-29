@@ -1,11 +1,12 @@
 import { useIsWalletOnNetwork } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   SquareButton,
   SquareButtonProps,
   overrideToolTipPosition
 } from '@pooltogether/react-components'
 import ReactTooltip from 'react-tooltip'
-import React, { useRef } from 'react'
+import React from 'react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 export interface TxButtonNetworkGatedProps extends SquareButtonProps {
@@ -15,9 +16,9 @@ export interface TxButtonNetworkGatedProps extends SquareButtonProps {
 
 export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
   const { chainId, disabled, toolTipId, children, ...squareButtonProps } = props
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
-  const ref = useRef(null)
+  const { network: walletChainId } = useOnboard()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, chainId)
 
   return (
     <>

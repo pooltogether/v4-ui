@@ -1,7 +1,8 @@
+import classNames from 'classnames'
 import { useAddNetworkToMetamask, useIsWalletMetamask } from '@pooltogether/hooks'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { SquareButton } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import classNames from 'classnames'
 
 interface ModalNetworkGateProps {
   className?: string
@@ -35,9 +36,12 @@ interface NetworkSwitchButtonProps {
 
 const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
   const { chainId, onSuccess } = props
+
   const addNetwork = useAddNetworkToMetamask(chainId, { onSuccess })
   const networkName = getNetworkNiceNameByChainId(chainId)
-  const isWalletMetamask = useIsWalletMetamask()
+
+  const { wallet } = useOnboard()
+  const isWalletMetamask = useIsWalletMetamask(wallet)
 
   if (!isWalletMetamask) {
     return null

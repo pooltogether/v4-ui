@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import React from 'react'
+import Link from 'next/link'
 import classNames from 'classnames'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Card,
@@ -12,11 +14,8 @@ import {
 } from '@pooltogether/react-components'
 import { Token, TokenBalance } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import React from 'react'
-import Link from 'next/link'
 
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
-import PiggyBank from 'assets/images/piggy-bank.svg'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
@@ -25,6 +24,8 @@ import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedP
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+
+import PiggyBank from 'assets/images/piggy-bank.svg'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()

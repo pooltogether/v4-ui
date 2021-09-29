@@ -33,7 +33,7 @@ enum LootVideo {
 
 const getVideoKey = (video: LootVideo, videoState: VideoState) => `${video}-${videoState}`
 const getVideoSource = (video: LootVideo, videoState: VideoState) =>
-  `/videos/PT_LOOT_${video}_${videoState}_${VIDEO_VERSION}.mp4`
+  `/videos/PT_Loot_${video}_${videoState}_${VIDEO_VERSION}.mp4`
 const getNextVideo = (video: LootVideo, videoState: VideoState, noPrize?: boolean) => {
   // After transition is loop
   if (videoState === VideoState.transition) {
@@ -99,6 +99,10 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   const preloadNextVideo = async (video: LootVideo, videoState: VideoState) => {
     const nextVideo = getNextVideo(video, videoState)
+    console.log('*****************')
+    console.log(nextVideo.video)
+    console.log(nextVideo.videoState)
+    console.log(getVideoSource(nextVideo.video, nextVideo.videoState))
     if (nextVideo) {
       const videoResponse = await fetch(getVideoSource(nextVideo.video, nextVideo.videoState))
       const videoBlob = await videoResponse.blob()

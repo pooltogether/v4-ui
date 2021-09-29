@@ -1,13 +1,10 @@
+import React from 'react'
 import { Amount, Token, Transaction, useIsWalletOnNetwork } from '@pooltogether/hooks'
-import {
-  Modal,
-  ModalProps,
-  NetworkIcon,
-  SquareButton,
-  SquareButtonTheme
-} from '@pooltogether/react-components'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { Modal, ModalProps, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+
 import { DownArrow } from 'lib/components/DownArrow'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
@@ -21,8 +18,6 @@ import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
 
 interface ConfirmationModalProps extends ModalProps {
@@ -59,7 +54,9 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
 
   const [chainId] = useSelectedNetwork()
   const { t } = useTranslation()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+
+  const { network: walletChainId } = useOnboard()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(walletChainId, chainId)
 
   if (!isWalletOnProperNetwork) {
     return (
