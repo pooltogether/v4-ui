@@ -13,7 +13,7 @@
     "dist": "yarn build && netlify-lambda build functions",
     "export": "next export",
     "postexport": "node post-export.js",
-    "distrelease": "yarn dist",
+    "distrelease": "NODE_OPTIONS=\"--max_old_space_size=16384\" yarn dist",
     "start": "NODE_ENV=production PORT=80 node server.js",
     "test": "jest",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
