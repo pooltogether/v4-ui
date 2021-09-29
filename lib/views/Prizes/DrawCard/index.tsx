@@ -13,7 +13,8 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import React, { useEffect, useState } from 'react'
-import { LoadingCard } from '.'
+import { LoadingCard } from '..'
+import { PrizeAnimation } from 'lib/views/Prizes/DrawCard/PrizeAnimation'
 
 interface DrawCardProps {
   drawPrize: DrawPrize
@@ -144,9 +145,10 @@ const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'lab
 
 //////////////////// Draw claim ////////////////////
 
-enum ClaimSectionState {
+export enum ClaimSectionState {
   loading,
   unchecked,
+  checking,
   unclaimed,
   claimed
 }
@@ -156,41 +158,47 @@ interface DrawClaimSectionProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
+  const { drawPrize, draw } = props
   const [claimSectionState, setClaimSectionState] = useState<ClaimSectionState>(
-    ClaimSectionState.unchecked
+    ClaimSectionState.loading
   )
 
-  if (claimSectionState === ClaimSectionState.loading) {
-    return <LoadingDrawClaimSection {...props} />
-  }
+  const { data: drawResults, isFetched } = useUsersClaimablePrize(drawPrize, draw)
 
-  if (claimSectionState === ClaimSectionState.unchecked) {
-    return <UncheckedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
-  }
+  // TODO: Loading until we've fetched whether or not the user has already claimed
+  // Then we can show the proper state. Set to unchecked immediately for now.
+  useEffect(() => {
+    setClaimSectionState(ClaimSectionState.unchecked)
+  }, [])
 
-  if (claimSectionState === ClaimSectionState.unclaimed) {
-    return <UnclaimedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
-  }
-
-  if (claimSectionState === ClaimSectionState.claimed) {
-    return <ClaimedDrawSection {...props} setClaimSectionState={setClaimSectionState} />
-  }
-
-  return null
-}
-
-const LoadingDrawClaimSection = (props: DrawPropsWithDetails) => {
   return (
-    <div className='w-full flex flex-col space-y-8'>
-      <div className='h-60 w-60 bg-pt-teal-dark animate-pulse rounded-xl mx-auto' />
-      <SquareButton>Check for prizes</SquareButton>
-    </div>
+    <>
+      <PrizeAnimation
+        claimSectionState={claimSectionState}
+        totalPrizeValueUnformatted={drawResults?.totalValue}
+      />
+      <DrawClaimButton
+        {...props}
+        claimSectionState={claimSectionState}
+        setClaimSectionState={setClaimSectionState}
+      />
+    </>
   )
 }
 
-enum UncheckedState {
-  unchecked,
-  checking
+interface DrawClaimButtonProps extends DrawPropsWithDetails {
+  claimSectionState: ClaimSectionState
+  setClaimSectionState: (state: ClaimSectionState) => void
+}
+
+const DrawClaimButton = (props: DrawClaimButtonProps) => {
+  const { setClaimSectionState } = props
+
+  return (
+    <SquareButton onClick={() => setClaimSectionState(ClaimSectionState.checking)}>
+      Check for prizes
+    </SquareButton>
+  )
 }
 
 const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
@@ -216,16 +224,19 @@ const UncheckedDrawSection = (props: DrawClaimSectionProps) => {
           'bg-pt-teal-light animate-pulse': uncheckedState === UncheckedState.checking
         })}
       />
-      <SquareButton onClick={() => setUncheckedState(UncheckedState.checking)}>
-        Check for prizes
-      </SquareButton>
     </div>
   )
 }
 
 const UnclaimedDrawSection = (props: DrawClaimSectionProps) => {
   const { drawPrize, draw, setClaimSectionState, token } = props
-  const { data: drawResults, isFetched } = useUsersClaimablePrize(drawPrize, draw)
+  const { data: drawResults, isFetched, error } = useUsersClaimablePrize(drawPrize, draw)
+
+  useEffect(() => {
+    console.log(drawResults, error)
+  }, [drawResults, error])
+
+  return <>prizes</>
 
   console.log(drawResults, isFetched)
   const totalWinnings = numberWithCommas(drawResults.totalValue, { decimals: token.decimals })

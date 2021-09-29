@@ -177,9 +177,9 @@ const NoWalletAccountCard = () => {
   const { t } = useTranslation()
 
   return (
-    <Card>
+    <Card className='flex flex-col'>
       <Piggy />
-      <span className='text-xxs font-semibold text-accent-1 font-inter mt-2 mb-4'>
+      <span className='text-xxs font-semibold text-accent-1 font-inter max-w-xs mx-auto my-8 text-center'>
         Connect a wallet to view your balances and manage deposits
       </span>
       <ConnectWalletButton />
@@ -230,11 +230,11 @@ const BalanceContainer = (props) => <div {...props} className='flex flex-col mb-
 
 const BalanceUsdValue = (props: BalanceProps) => {
   const { balance, token, prizePool } = props
-  const { data: tokenPrice, isFetched: tokenPrizeIsFetched } = usePrizePoolTokenValue(prizePool)
+  const { data: tokenPrice, isFetched: isTokenValueFetched } = usePrizePoolTokenValue(prizePool)
 
   if (!balance) {
     return <span className={classNames(props.className, 'font-light')}>$--</span>
-  } else if (!tokenPrizeIsFetched) {
+  } else if (!isTokenValueFetched) {
     return <span className={classNames(props.className, 'font-light')}>$--</span>
   }
 
@@ -246,7 +246,7 @@ const BalanceUsdValue = (props: BalanceProps) => {
 }
 
 const Piggy = () => (
-  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto mb-6' />
+  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
 )
 
 const ConnectWalletButton = () => {

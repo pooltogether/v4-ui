@@ -11,7 +11,7 @@ export const PrizeBreakdownCard = (props) => {
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
 
   return (
-    <Card className='flex flex-col items-center mb-4' paddingClassName='px-8 xs:px-20 p-10'>
+    <Card className='flex flex-col items-center' paddingClassName='px-8 xs:px-20 p-10'>
       <PrizeBreakdown
         className='w-full'
         drawSettings={TSUNAMI_USDC_DRAW_SETTINGS}

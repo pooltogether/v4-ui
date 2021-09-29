@@ -7,7 +7,7 @@ export const DRAW_PRIZES = Object.freeze({
     [NETWORK.polygon]: ''
   },
   [APP_ENVIRONMENT.testnets]: {
-    [NETWORK.rinkeby]: ['0x728D7D11094940eF1b7296D406e96332D8cbd1B8'],
-    [NETWORK.mumbai]: ['0x19eA0E59B6C4729E1DEc5F25663962F28868F881']
+    [NETWORK.rinkeby]: ['0x439777e646acD8CF484cB8097aa4324BcEf99067'],
+    [NETWORK.mumbai]: ['0x1CFD3aAAD09E37B07523904Cd634540923a706df']
   }
 })

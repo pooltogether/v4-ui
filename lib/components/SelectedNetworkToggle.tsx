@@ -15,7 +15,7 @@ export const SelectedNetworkToggle = (props: SelectedNetworkToggleProps) => {
   const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
 
   return (
-    <div className={classNames(className, 'flex flex-row rounded bg-darkened px-2 py-1 max-w-max')}>
+    <div className={classNames(className, 'flex flex-row rounded-xl bg-body p-1 max-w-max')}>
       {supportedNetworks.map((chainId) => (
         <NetworkToggle
           key={chainId}
@@ -40,7 +40,7 @@ const NetworkToggle = (props: NetworkToggleProps) => {
   return (
     <button
       className={classNames(
-        'transition mx-1 first:ml-0 last:mr-0 rounded px-2 flex flex-row hover:bg-light-purple-10 active:bg-tertiary',
+        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-2 flex flex-row hover:bg-light-purple-10 active:bg-tertiary',
         { 'bg-tertiary': isSelected }
       )}
       onClick={() => setSelectedNetwork(chainId)}

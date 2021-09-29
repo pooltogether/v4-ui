@@ -6,11 +6,11 @@ import { UpcomingPrizeCard } from 'lib/views/Deposit/UpcomingPrizeCard'
 
 export const DepositUI = (props: ContentPanesProps) => {
   return (
-    <>
+    <div className='flex flex-col space-y-4'>
       <UpcomingPrizeCard />
       <DepositCard {...props} />
       <PrizeBreakdownCard />
-    </>
+    </div>
   )
 }
 

@@ -14,6 +14,8 @@ const CLOUDFLARE_BEARER_TOKEN = process.env.NEXT_JS_CLOUDFLARE_BEARER_TOKEN
 const AUTH_HEADERS = Object.freeze({ Authorization: `Bearer ${CLOUDFLARE_BEARER_TOKEN}` })
 // Infura
 const INFURA_ID = process.env.NEXT_JS_INFURA_ID
+// Other constants
+// const VALID_CHAIN_IDS = [NETWORK]
 
 /**
  * Path: /.netlify/functions/users-prizes-background

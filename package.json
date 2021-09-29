@@ -55,7 +55,7 @@
     "@netlify/functions": "^0.7.2",
     "@pooltogether/bnc-onboard": "1.25.0-c",
     "@pooltogether/current-pool-data": "3.5.14",
-    "@pooltogether/draw-calculator-js": "^1.0.0-beta.17",
+    "@pooltogether/draw-calculator-js": "file:.yalc/@pooltogether/draw-calculator-js",
     "@pooltogether/etherplex": "^1.1.1",
     "@pooltogether/hooks": "file:.yalc/@pooltogether/hooks",
     "@pooltogether/loot-box": "1.1.0",

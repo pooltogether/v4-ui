@@ -182,7 +182,7 @@ export const DepositCard = (props: ContentPanesProps) => {
 
   return (
     <>
-      <Card className='mb-4'>
+      <Card>
         {completedDepositTx ? (
           <CompletedDeposit
             setSelectedPage={setSelectedPage}

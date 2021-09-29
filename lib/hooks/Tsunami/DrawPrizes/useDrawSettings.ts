@@ -6,7 +6,7 @@ export const useDrawSettings = (drawPrize: DrawPrize, draw: Draw) => {
   const enabled = Boolean(drawPrize) && Boolean(draw)
   return useQuery(
     ['useDrawSettings', drawPrize?.id(), draw?.drawId],
-    async () => drawPrize.getDrawSetting(draw.drawId),
+    async () => drawPrize.getPrizeDistribution(draw.drawId),
     {
       ...NO_REFETCH,
       enabled
