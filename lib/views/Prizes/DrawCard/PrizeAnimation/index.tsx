@@ -33,7 +33,7 @@ enum LootVideo {
 
 const getVideoKey = (video: LootVideo, videoState: VideoState) => `${video}-${videoState}`
 const getVideoSource = (video: LootVideo, videoState: VideoState) =>
-  `/videos/PT_LOOT_${video}_${videoState}_${VIDEO_VERSION}.mp4`
+  `/videos/PT_Loot_${video}_${videoState}_${VIDEO_VERSION}.mp4`
 const getNextVideo = (video: LootVideo, videoState: VideoState, noPrize?: boolean) => {
   // After transition is loop
   if (videoState === VideoState.transition) {

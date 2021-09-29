@@ -18,7 +18,6 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import BalloonsSvg from 'assets/images/success.svg'
 import { Card } from '@pooltogether/react-components'
 
 export const DepositCard = (props: ContentPanesProps) => {
@@ -285,7 +284,12 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
 }
 
 const SuccessBalloons = (props) => (
-  <img src={BalloonsSvg} alt='check mark icon' width={64} className={props.className} />
+  <img
+    src={'assets/images/success.svg'}
+    alt='check mark icon'
+    width={64}
+    className={props.className}
+  />
 )
 
 interface CompletedDepositProps {

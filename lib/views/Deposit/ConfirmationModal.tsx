@@ -1,4 +1,4 @@
-import { Amount, Token, Transaction, useIsWalletOnNetwork } from '@pooltogether/hooks'
+import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
   Modal,
   ModalProps,
@@ -24,6 +24,7 @@ import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 interface ConfirmationModalProps extends ModalProps {
   prizePool: PrizePool

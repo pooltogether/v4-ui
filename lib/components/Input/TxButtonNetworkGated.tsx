@@ -1,4 +1,3 @@
-import { useIsWalletOnNetwork } from '@pooltogether/hooks'
 import {
   SquareButton,
   SquareButtonProps,
@@ -7,6 +6,7 @@ import {
 import ReactTooltip from 'react-tooltip'
 import React, { useRef } from 'react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 export interface TxButtonNetworkGatedProps extends SquareButtonProps {
   chainId: number

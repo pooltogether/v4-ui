@@ -16,7 +16,6 @@ import React from 'react'
 import Link from 'next/link'
 
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
-import PiggyBank from 'assets/images/piggy-bank.svg'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
@@ -247,7 +246,13 @@ const BalanceUsdValue = (props: BalanceProps) => {
 }
 
 const Piggy = () => (
-  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
+  <img
+    src={'assets/images/piggy-bank.svg'}
+    alt='piggy bank icon'
+    height={92}
+    width={92}
+    className='mx-auto'
+  />
 )
 
 const ConnectWalletButton = () => {

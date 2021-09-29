@@ -1,12 +1,12 @@
 import { Token } from '@pooltogether/hooks'
-import { DrawSettings } from '@pooltogether/v4-js-client'
+import { PrizeDistributions } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 export const DECIMALS_FOR_DISTRIBUTIONS = '9'
 
-export const TSUNAMI_USDC_DRAW_SETTINGS: DrawSettings = Object.freeze({
+export const TSUNAMI_USDC_DRAW_SETTINGS: PrizeDistributions = Object.freeze({
   matchCardinality: 3,
   pickCost: parseUnits('1', 18),
   distributions: [
@@ -22,7 +22,11 @@ export const TSUNAMI_USDC_DRAW_SETTINGS: DrawSettings = Object.freeze({
   drawEndTimestampOffset: 0
 })
 
-export const getPositionalPrize = (position: number, drawSettings: DrawSettings, token: Token) => {
+export const getPositionalPrize = (
+  position: number,
+  drawSettings: PrizeDistributions,
+  token: Token
+) => {
   return numberWithCommas(
     drawSettings.prize
       .mul(BigNumber.from(drawSettings.distributions[position]))

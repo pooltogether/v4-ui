@@ -5,7 +5,7 @@ export const PrizeWLaurels = (props: ImageProps) => {
   const { className, ...imageProps } = props
   return (
     <div className={className}>
-      <Image {...imageProps} />
+      <img {...imageProps} />
     </div>
   )
 }

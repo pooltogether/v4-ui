@@ -17,7 +17,6 @@ import {
   Token,
   TokenBalance,
   Transaction,
-  useIsWalletOnNetwork,
   useTransaction
 } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
@@ -30,7 +29,6 @@ import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import ClipBoardCheckSvg from 'assets/images/icon-clipboard-check.svg'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import {
@@ -46,6 +44,7 @@ import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 
