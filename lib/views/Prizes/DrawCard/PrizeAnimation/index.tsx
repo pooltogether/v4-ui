@@ -99,10 +99,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   const preloadNextVideo = async (video: LootVideo, videoState: VideoState) => {
     const nextVideo = getNextVideo(video, videoState)
-    console.log('*****************')
-    console.log(nextVideo.video)
-    console.log(nextVideo.videoState)
-    console.log(getVideoSource(nextVideo.video, nextVideo.videoState))
     if (nextVideo) {
       const videoResponse = await fetch(getVideoSource(nextVideo.video, nextVideo.videoState))
       const videoBlob = await videoResponse.blob()
