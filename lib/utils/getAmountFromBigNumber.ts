@@ -1,6 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { numberWithCommas } from '@pooltogether/utilities'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 const EMPTY_AMOUNT: Amount = {
   amount: '',
@@ -8,15 +8,15 @@ const EMPTY_AMOUNT: Amount = {
   amountPretty: ''
 }
 
-export const getAmountFromString = (amount: string, decimals: string): Amount => {
+export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: string): Amount => {
   try {
-    if (!amount || amount === undefined) {
+    if (!amountUnformatted || amountUnformatted === undefined) {
       return EMPTY_AMOUNT
     }
-
+    const amount = ethers.utils.formatUnits(amountUnformatted, decimals)
     return {
+      amountUnformatted,
       amount,
-      amountUnformatted: ethers.utils.parseUnits(amount, decimals),
       amountPretty: numberWithCommas(amount) as string
     }
   } catch (e) {
