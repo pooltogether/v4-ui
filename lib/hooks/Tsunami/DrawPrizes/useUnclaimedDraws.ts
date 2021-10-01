@@ -25,10 +25,5 @@ const getUnclaimedDraws = async (usersAddress: string, drawPrize: DrawPrize): Pr
     drawPrize.getDraws(drawIds),
     drawPrize.getUsersClaimedAmounts(usersAddress, drawIds)
   ])
-
-  console.log('draws', draws, claimedAmounts)
-  const filteredDraws = draws.filter((_, index) => claimedAmounts[index].isZero())
-  console.log(filteredDraws)
-
-  return filteredDraws
+  return draws.filter((_, index) => claimedAmounts[index].isZero())
 }

@@ -171,18 +171,18 @@ const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'lab
 //////////////////// Draw claim ////////////////////
 
 // TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
-export enum ClaimSectionState {
+export enum ClaimState {
   loading,
   unchecked,
   checking,
   unclaimed,
   claimed
 }
+
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { drawPrize, draw } = props
-  const [claimSectionState, setClaimSectionState] = useState<ClaimSectionState>(
-    ClaimSectionState.unchecked
-  )
+  const [claimState, setClaimState] = useState<ClaimState>(ClaimState.unchecked)
+
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [txId, setTxId] = useState(0)
@@ -192,23 +192,26 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { data: drawResults, isFetched: isDrawResultsFetched } = useUsersClaimablePrize(
     drawPrize,
     draw,
-    claimSectionState !== ClaimSectionState.checking
+    claimState !== ClaimState.checking
   )
 
   useEffect(() => {
-    if (claimSectionState === ClaimSectionState.checking && isDrawResultsFetched) {
-      setClaimSectionState(ClaimSectionState.unclaimed)
+    if (claimState === ClaimState.checking && isDrawResultsFetched) {
+      setClaimState(ClaimState.unclaimed)
     }
   }, [drawResults, isDrawResultsFetched])
 
   return (
     <>
-      <PrizeAnimation drawResults={drawResults} claimSectionState={claimSectionState} />
+      <PrizeAnimation
+        totalPrizeValueUnformatted={drawResults?.totalValue}
+        claimState={claimState}
+      />
       <DrawClaimButton
         {...props}
         drawResults={drawResults}
-        claimSectionState={claimSectionState}
-        setClaimSectionState={setClaimSectionState}
+        claimState={claimState}
+        setClaimState={setClaimState}
         openModal={() => setIsModalOpen(true)}
       />
       <PrizeClaimModal
@@ -225,29 +228,24 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
 }
 
 interface DrawClaimButtonProps extends DrawPropsWithDetails {
-  claimSectionState: ClaimSectionState
+  claimState: ClaimState
   drawResults: DrawResults
-  setClaimSectionState: (state: ClaimSectionState) => void
+  setClaimState: (state: ClaimState) => void
   openModal: () => void
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimSectionState, setClaimSectionState, openModal } = props
+  const { claimState, setClaimState, openModal, drawResults } = props
   const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()
 
   if (!usersAddress) {
     return null
-  } else if (
-    [ClaimSectionState.unchecked, ClaimSectionState.checking].includes(claimSectionState)
-  ) {
-    const isChecking = claimSectionState === ClaimSectionState.checking
+  } else if ([ClaimState.unchecked, ClaimState.checking].includes(claimState)) {
+    const isChecking = claimState === ClaimState.checking
     return (
-      <SquareButton
-        onClick={() => setClaimSectionState(ClaimSectionState.checking)}
-        disabled={isChecking}
-      >
+      <SquareButton onClick={() => setClaimState(ClaimState.checking)} disabled={isChecking}>
         {isChecking ? (
           <>
             <ThemedClipSpinner sizeClassName='w-4 h-4' className='mr-2' />
@@ -258,10 +256,10 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         )}
       </SquareButton>
     )
-  } else if (claimSectionState === ClaimSectionState.unclaimed) {
-    return (
-      <SquareButton onClick={() => openModal()}>{t('reviewClaim', 'Review claim')}</SquareButton>
-    )
+  } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
+    return <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
+  } else {
+    return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
   }
 
   return null

@@ -88,5 +88,3 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
     </DrawCarousel>
   )
 }
-
-const sortById = (a: Draw, b: Draw) => b.drawId - a.drawId
