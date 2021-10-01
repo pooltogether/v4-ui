@@ -7,14 +7,14 @@ import { numberWithCommas } from '@pooltogether/utilities'
 import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { getPrettyDate } from 'lib/utils/getNextDraw'
-import { useNextDraw } from 'lib/hooks/Tsunami/useNextDraw'
+import { getPrettyDate } from 'lib/utils/getNextDrawDate'
+import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 
 export const UpcomingPrizeCard = (props) => {
   const { className } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
-  const nextDraw = useNextDraw()
+  const nextDrawDate = useNextDrawDate()
 
   if (!isFetched) {
     return <Card className={classNames(className, 'flex animate-pulse h-48')} />
@@ -45,7 +45,7 @@ export const UpcomingPrizeCard = (props) => {
         >
           In weekly prizes
         </div>
-        <div className='mx-auto text-center'>Next draw is {getPrettyDate(nextDraw)}</div>
+        <div className='mx-auto text-center'>Next draw is {getPrettyDate(nextDrawDate)}</div>
       </Banner>
     </>
   )

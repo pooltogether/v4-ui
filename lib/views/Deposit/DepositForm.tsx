@@ -26,6 +26,7 @@ import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useSelectedPage, ContentPaneState } from 'lib/hooks/useSelectedPage'
+import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 
@@ -216,17 +217,6 @@ const BottomButton = (props: BottomButtonProps) => {
   }
 
   return <DepositButton {...props} />
-}
-
-const ConnectWalletButton = (props: BottomButtonProps) => {
-  const { className } = props
-  const { connectWallet } = useOnboard()
-  const { t } = useTranslation()
-  return (
-    <SquareButton className={className} onClick={connectWallet} type='button'>
-      {t('connectAWallet')}
-    </SquareButton>
-  )
 }
 
 const DepositButton = (props: BottomButtonProps) => {

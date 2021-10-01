@@ -1,4 +1,4 @@
-import { SquareButton } from '@pooltogether/react-components'
+import { Card, SquareButton } from '@pooltogether/react-components'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
@@ -9,8 +9,10 @@ import { DrawCard } from './DrawCard'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { DrawCarousel } from './DrawCarousel'
-import { getPrettyDate } from 'lib/utils/getNextDraw'
-import { useNextDraw } from 'lib/hooks/Tsunami/useNextDraw'
+import { getPrettyDate } from 'lib/utils/getNextDrawDate'
+import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -42,22 +44,33 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
   const { drawPrize, prizePool } = props
   const { data: draws, isFetched } = useUnclaimedDraws(drawPrize)
   const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
+  const usersAddress = useUsersAddress()
   const [drawIdsToHide, setDrawIdsToHide] = useState([])
-  const nextDraw = useNextDraw()
+  const nextDrawDate = useNextDrawDate()
 
   const drawsToRender = useMemo(
-    () => draws.filter((draw) => !drawIdsToHide.includes(draw.drawId)),
+    () => draws?.filter((draw) => !drawIdsToHide.includes(draw.drawId)),
     [draws, drawIdsToHide]
   )
 
+  if (!usersAddress) {
+    return (
+      <Card className='flex flex-col space-y-4 text-center'>
+        <span>Connect a wallet to check for prizes!</span>
+        <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
+        <ConnectWalletButton />
+      </Card>
+    )
+  }
+
   if (!isFetched) return <LoadingCard />
 
-  if (isFetched && draws.length === 0) {
+  if (isFetched && drawsToRender.length === 0) {
     return (
-      <div>
+      <Card>
         <span>No draws to check!</span>
-        <span>{getPrettyDate(nextDraw)}</span>
-      </div>
+        <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
+      </Card>
     )
   }
 

@@ -1,6 +1,6 @@
-import { DRAW_DAY_OF_WEEK, DRAW_HOUR_OF_DAY } from 'lib/constants/nextDraw'
+import { DRAW_DAY_OF_WEEK, DRAW_HOUR_OF_DAY } from 'lib/constants/nextDrawDate'
 
-export const getNextDraw = () => {
+export const getNextDrawDate = () => {
   let date = new Date()
   date = addDays(date, daysUntilDrawDay(date))
   date.setUTCHours(DRAW_HOUR_OF_DAY, 0, 0, 0)

@@ -30,6 +30,7 @@ import PiggyBank from 'assets/images/piggy-bank.svg'
 import { useMemo } from 'react-modal/node_modules/@types/react'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
+import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -259,13 +260,3 @@ const BalanceUsdValue = (props: BalanceProps) => {
 const Piggy = () => (
   <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
 )
-
-const ConnectWalletButton = () => {
-  const { connectWallet } = useOnboard()
-  const { t } = useTranslation()
-  return (
-    <SquareButton className='w-full' onClick={() => connectWallet(null)}>
-      {t('connectWallet')}
-    </SquareButton>
-  )
-}
