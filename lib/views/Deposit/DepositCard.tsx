@@ -145,7 +145,6 @@ export const DepositCard = (props: ContentPanesProps) => {
       callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
       callbacks: {
         onSuccess: (tx: Transaction) => {
-          console.log('SUCCESS', prizePool, tx)
           setDepositedAmount(amountToDeposit)
           setCompletedDepositTxId(tx.id, prizePool)
           setDepositTxId(0, prizePool)

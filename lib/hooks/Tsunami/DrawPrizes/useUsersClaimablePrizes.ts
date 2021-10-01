@@ -22,6 +22,5 @@ const getUsersClaimablePrizes = async (
 ) => {
   const claimablePrizesPromises = draws.map((draw) => drawPrize.getUsersPrizes(usersAddress, draw))
   const result = await Promise.all(claimablePrizesPromises)
-  console.log('getUsersClaimablePrizes', result)
   return result
 }

@@ -2262,6 +2262,14 @@
     chalk "^4.1.2"
     debug "^4.3.2"
 
+"@pooltogether/draw-calculator-js@^1.0.0-beta.25":
+  version "1.0.0-beta.25"
+  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.25.tgz#54f5984cf1e8fb647c8ecb884bb1c7ee3a7722b2"
+  integrity sha512-WwPlCGnGSUdx0EnSHTdB8oby71BuxZa3QlVHnumsFbGegq//+mfj4LZtQuqZRq5w/awRdHVOyvYf0yuwHC14eA==
+  dependencies:
+    chalk "^4.1.2"
+    debug "^4.3.2"
+
 "@pooltogether/etherplex@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.1.tgz#330f326ce8fbfd4f4aae70d5fd02d5baa3e9195e"
@@ -2372,13 +2380,13 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.0.43.tgz#ce4eb0533e9f9b6acb63300c9f75c0a10c606dcb"
   integrity sha512-aYJGisnlTG6hsEU6aF0CW7ZxHcHdvn1EEGlyy4plNE0vtZ/m8z49Z21x3g6KEk9hZ+qI5/r8JlnJGCMAo6IlVQ==
 
-"@pooltogether/v4-js-client@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.1.tgz#52fa59814713c2eec61e116063919462edc6341c"
-  integrity sha512-k3QeigGHK/3Czc7x4adMXULIS760BlnCBW05vM4PxGjZKPJ+q2gY4Mt3FsncOrPkHmmm2pI/hcqzwIlU2uOyOQ==
+"@pooltogether/v4-js-client@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.2.tgz#52d7e22d1e417e4332ee481351ff737dd7136f8b"
+  integrity sha512-CycAglSJagv+9gwZR26EESyI5uU/ui1Thl4cV203EMvqUlbS0O1i+CmebZH2Xl9tLhhK5QPoqHbSAk9r0IFedA==
   dependencies:
     "@pooltogether/contract-list-schema" "^0.1.4"
-    "@pooltogether/draw-calculator-js" "^1.0.0-beta.22"
+    "@pooltogether/draw-calculator-js" "^1.0.0-beta.25"
     "@pooltogether/etherplex" "^1.1.2"
 
 "@pooltogether/v4-pool-data@^0.1.0":
