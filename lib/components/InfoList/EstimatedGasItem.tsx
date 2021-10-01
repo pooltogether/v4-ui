@@ -1,59 +1,59 @@
+import React from 'react'
+import { BigNumber, constants } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
+import { useTranslation } from 'react-i18next'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { numberWithCommas } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
-import { InfoListItem } from 'lib/components/InfoList'
+import { useCoingeckoSimplePrices } from '@pooltogether/hooks'
+
 import {
   useApproveDepositsGasEstimate,
   useDepositGasEstimate,
   useWithdrawGasEstimate
 } from 'lib/hooks/Tsunami/PrizePool/useGasEstimates'
-
+import { InfoListItem } from 'lib/components/InfoList'
 import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 interface EstimatedGasItemProps {
   chainId: number
   gasEstimate: BigNumber
+  gasUsd: number
   isFetched: boolean
   invalidInput?: boolean
 }
 
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
-  const { gasEstimate, isFetched, invalidInput, chainId } = props
+  const { gasEstimate, gasUsd, isFetched, invalidInput, chainId } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
   const { t } = useTranslation()
+  const label = t('networkFees', 'Network fees')
 
   if (invalidInput) {
-    return <InfoListItem dimValue label={t('networkFees', 'Network fees')} value='--' />
+    return <InfoListItem dimValue label={label} value='--' />
   }
 
   if (!isFetched) {
     return (
       <InfoListItem
         dimValue
-        label={t('networkFees', 'Network fees')}
+        label={label}
         value={<ThemedClipSpinner className='my-auto' size={16} />}
       />
     )
   }
 
   if (!gasEstimate) {
-    return (
-      <InfoListItem
-        dimValue
-        label={t('networkFees', 'Network fees')}
-        value={t('errorEstimating', 'Error estimating')}
-      />
-    )
+    return <InfoListItem dimValue label={label} value={t('errorEstimating', 'Error estimating')} />
   }
 
   return (
     <InfoListItem
       dimValue
-      label={t('networkFees', 'Network fees')}
-      value={`${numberWithCommas(gasEstimate, { decimals: '18' })} ${nativeCurrency}`}
+      label={label}
+      value={`($${numberWithCommas(gasUsd)}) ${numberWithCommas(gasEstimate, {
+        decimals: '18'
+      })} ${nativeCurrency}`}
     />
   )
 }
@@ -66,14 +66,34 @@ interface EstimatedPrizePoolGasItemWithAmountProps extends EstimatedPrizePoolGas
   amountUnformatted: BigNumber
 }
 
+const SIMPLE_PRICES_CHAIN_ID_MAP = {
+  1: 'matic-network',
+  4: 'ethereum',
+  137: 'matic-network',
+  80001: 'matic-network'
+}
+
+const DEPOSIT_GAS_AMOUNT = BigNumber.from('19012830912830000')
+
 export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
   const { prizePool, amountUnformatted } = props
-  const { data: gasEstimate, isFetched } = useDepositGasEstimate(prizePool, amountUnformatted)
+  // const { data: gasEstimate, isFetched } = useDepositGasEstimate(prizePool, amountUnformatted)
+  const isFetched = true
+  const gasEstimate = DEPOSIT_GAS_AMOUNT
+
+  const { data: prices, isFetched: pricesIsFetched } = useCoingeckoSimplePrices()
+  let gasUsd
+  if (pricesIsFetched) {
+    const { usd } = prices[SIMPLE_PRICES_CHAIN_ID_MAP[prizePool.chainId]]
+    gasUsd = (gasEstimate.div(parseUnits('1', 9)).toNumber() * usd) / 1000000000
+  }
 
   return (
     <EstimatedGasItem
+      gasUsd={gasUsd}
       chainId={prizePool.chainId}
-      invalidInput={!amountUnformatted || amountUnformatted.isZero()}
+      invalidInput={false}
+      // invalidInput={!amountUnformatted || amountUnformatted.isZero()}
       gasEstimate={gasEstimate}
       isFetched={isFetched}
     />
