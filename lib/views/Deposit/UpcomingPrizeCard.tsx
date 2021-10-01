@@ -1,15 +1,15 @@
-import { useTranslation } from 'react-i18next'
-import { Banner, BannerTheme, Card, LoadingDots } from '@pooltogether/react-components'
 import React from 'react'
+import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { WeeklyPrizeAmountCard, Banner, BannerTheme, Card } from '@pooltogether/react-components'
+import { numberWithCommas } from '@pooltogether/utilities'
+
+import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
-import { numberWithCommas } from '@pooltogether/utilities'
-import classNames from 'classnames'
 
 export const UpcomingPrizeCard = (props) => {
   const { className } = props
-  const { t } = useTranslation()
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
 
@@ -24,7 +24,8 @@ export const UpcomingPrizeCard = (props) => {
 
   return (
     <>
-      <Banner
+      <WeeklyPrizeAmountCard />
+      {/* <Banner
         className={className}
         theme={BannerTheme.rainbowBorder}
         innerClassName='purple-radial-gradient'
@@ -41,8 +42,13 @@ export const UpcomingPrizeCard = (props) => {
         >
           In weekly prizes
         </div>
-        {/* <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div> */}
-        {/* <PrizeCountdown
+      </Banner> */}
+    </>
+  )
+}
+
+//  /* <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div> */
+/* <PrizeCountdown
         textSize='text-xl'
         t={t}
         prizePeriodSeconds={data.prizePeriodSeconds}
@@ -50,8 +56,4 @@ export const UpcomingPrizeCard = (props) => {
         isRngRequested={data.isRngRequested}
         canStartAward={data.canStartAward}
         canCompleteAward={data.canCompleteAward}
-      /> */}
-      </Banner>
-    </>
-  )
-}
+      /> */

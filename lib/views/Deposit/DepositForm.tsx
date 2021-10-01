@@ -25,7 +25,7 @@ import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { ContentPaneState } from 'lib/views/DefaultPage'
+import { useSelectedPage, ContentPaneState } from 'lib/hooks/useSelectedPage'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 
@@ -358,10 +358,12 @@ const TxStatus = (props) => {
 }
 
 const SuccessPane = (props) => {
-  const { resetState, token, setSelectedPage } = props
+  const { resetState, token } = props
 
   const { t } = useTranslation()
   const router = useRouter()
+
+  const { setSelectedPage } = useSelectedPage()
 
   const quantity = router.query[DEPOSIT_FORM_KEY] || ''
 

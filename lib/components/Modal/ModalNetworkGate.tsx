@@ -13,15 +13,17 @@ interface ModalNetworkGateProps {
 export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
   const { className, chainId, onSuccess } = props
 
+  const networkName = getNetworkNiceNameByChainId(chainId)
+
   return (
     <div className={classNames(className, 'flex flex-col text-accent-1')}>
       <div className='mx-4'>
         <p className='mb-4'>
-          The Prize Pool you are intertacting with lives on the Polygon network.
+          The Prize Pool you are intertacting with lives on the {networkName} network.
         </p>
         <p className='mb-10'>
-          To continue you must switch the network your wallet is on to Polygon, or connect another
-          wallet.
+          To continue you must switch the network your wallet is on to {networkName}, or connect
+          another wallet.
         </p>
       </div>
       <NetworkSwitchButton chainId={chainId} onSuccess={onSuccess} />
