@@ -15,7 +15,6 @@ export const useUsersClaimablePrize = (drawPrize: DrawPrize, draw: Draw, disable
 }
 
 const getUsersClaimablePrize = async (drawPrize: DrawPrize, draw: Draw, usersAddress: string) => {
-  console.log('getUsersClaimablePrize pre', draw.drawId)
   const result = await drawPrize.getUsersPrizes(usersAddress, draw)
   return result
 }
