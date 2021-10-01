@@ -39,7 +39,7 @@ interface DrawCardProps {
   refetchUsersBalances: () => void
 }
 
-interface DrawPropsWithDetails extends DrawCardProps {
+export interface DrawPropsWithDetails extends DrawCardProps {
   drawSettings: PrizeDistribution
   token: Token
   ticket: Token
