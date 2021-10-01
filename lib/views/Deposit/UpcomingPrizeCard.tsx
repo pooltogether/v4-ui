@@ -27,8 +27,8 @@ export const UpcomingPrizeCard = (props) => {
 
   return (
     <>
-      {/* <WeeklyPrizeAmountCard sm /> */}
-      <Banner
+      <WeeklyPrizeAmountCard sm />
+      {/* <Banner
         className={className}
         theme={BannerTheme.rainbowBorder}
         innerClassName='purple-radial-gradient'
@@ -46,7 +46,7 @@ export const UpcomingPrizeCard = (props) => {
           In weekly prizes
         </div>
         <div className='mx-auto text-center'>Next draw is {getPrettyDate(nextDrawDate)}</div>
-      </Banner>
+      </Banner> */}
     </>
   )
 }
