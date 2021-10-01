@@ -158,7 +158,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
     ClaimSectionState.loading
   )
 
-  const { data: drawResults, isFetched } = useUsersClaimablePrize(drawPrize, draw)
+  const { data: drawResults, isFetched } = useUsersClaimablePrize(drawPrize, draw, false)
 
   // TODO: Loading until we've fetched whether or not the user has already claimed
   // Then we can show the proper state. Set to unchecked immediately for now.
