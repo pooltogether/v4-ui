@@ -15,6 +15,7 @@ import {
 import { Token, TokenBalance } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
+import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
@@ -53,15 +54,20 @@ const AccountCard = (props: AccountCardProps) => {
   const isFetched = isPlayerFetched && isLinkedPrizePoolFetched
 
   return (
-    <Card>
-      <Piggy />
-      <PrizePoolList
-        className='mt-8'
-        player={player}
-        isFetched={isFetched}
-        prizePools={linkedPrizePool?.prizePools}
-      />
-    </Card>
+    <>
+      <Card>
+        <Piggy />
+        <PrizePoolList
+          className='mt-8'
+          player={player}
+          isFetched={isFetched}
+          prizePools={linkedPrizePool?.prizePools}
+        />
+      </Card>
+      <div className='mt-4'>
+        <BackToV3Banner />
+      </div>
+    </>
   )
 }
 
@@ -248,13 +254,7 @@ const BalanceUsdValue = (props: BalanceProps) => {
 }
 
 const Piggy = () => (
-  <img
-    src={'assets/images/piggy-bank.svg'}
-    alt='piggy bank icon'
-    height={92}
-    width={92}
-    className='mx-auto'
-  />
+  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
 )
 
 const ConnectWalletButton = () => {

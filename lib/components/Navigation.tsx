@@ -11,7 +11,6 @@ export const Navigation = (props) => {
       className={classnames(
         className,
         'max-w-max flex flex-row rounded-xl bg-darkened p-1 font-inter',
-        '',
         'fixed xs:static bottom-0 inset-x-0 z-20 shadow-lg'
       )}
     >
