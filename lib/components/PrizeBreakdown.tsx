@@ -7,7 +7,6 @@ import {
 } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import classnames from 'classnames'
-import { getPositionalPrize } from 'lib/constants/drawSettings'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
@@ -98,6 +97,11 @@ const PrizeTableRow = (props: PrizeTableRowProps) => {
     winningRandomNumber: ethers.constants.Zero
   })
   const numberOfWinners = calculateNumberOfPrizesForIndex(drawSettings.bitRangeSize, index)
+
+  // Hide rows that don't have a prize
+  if (prizeForDistributionUnformatted.isZero()) {
+    return null
+  }
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>

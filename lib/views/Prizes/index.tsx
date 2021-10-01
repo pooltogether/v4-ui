@@ -3,9 +3,11 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
-import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
+import { DrawPrize, Draw, PrizePool } from '@pooltogether/v4-js-client'
 import { useValidDraws } from 'lib/hooks/Tsunami/DrawPrizes/useValidDraws'
 import { DrawCard } from './DrawCard'
+import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -16,17 +18,19 @@ export const PRIZE_UI_STATES = {
 
 export const PrizesUI = (props) => {
   const { data: drawPrizes, isFetched } = useSelectedNetworkDrawPrizes()
-  if (!isFetched) return <LoadingList />
+  const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
+  if (!isFetched || !isPrizePoolFetched) return <LoadingList />
   return (
     <>
       <SelectedNetworkToggle className='mx-auto mb-4' />
-      <DrawPrizeDrawsList drawPrize={drawPrizes[0]} />
+      <DrawPrizeDrawsList drawPrize={drawPrizes[0]} prizePool={prizePool} />
     </>
   )
 }
 
 interface DrawPrizeProps {
   drawPrize: DrawPrize
+  prizePool: PrizePool
 }
 
 const LoadingList = () => {
@@ -42,10 +46,11 @@ const LoadingList = () => {
 export const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-36' />
 
 const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
-  const { drawPrize } = props
+  const { drawPrize, prizePool } = props
   // TODO: Fetch the users claimable prizes
   // useUsersClaimablePrizes(drawPrize)
   const { data: draws, isFetched } = useValidDraws(drawPrize)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
 
   // TODO: we should kick off fetching all draw settings here before rendering,
   // as well as claimed prizes
@@ -55,7 +60,12 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
       draws
         ?.sort(sortById)
         .map((draw) => (
-          <DrawCard key={`${drawPrize.id()}_${draw.drawId}`} drawPrize={drawPrize} draw={draw} />
+          <DrawCard
+            key={`${drawPrize.id()}_${draw.drawId}`}
+            drawPrize={drawPrize}
+            draw={draw}
+            refetchUsersBalances={refetchUsersBalances}
+          />
         )),
     [draws]
   )

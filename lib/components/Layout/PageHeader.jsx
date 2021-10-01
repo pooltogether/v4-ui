@@ -52,7 +52,16 @@ const LanguagePicker = () => {
 }
 
 const UsersAccount = () => {
-  const { isWalletConnected, connectWallet, isOnboardReady } = useOnboard()
+  const {
+    isWalletConnected,
+    connectWallet,
+    isOnboardReady,
+    disconnectWallet,
+    provider,
+    address,
+    walletName,
+    network
+  } = useOnboard()
   const supportedNetworks = useSupportedNetworks()
   const { t } = useTranslation()
 
@@ -74,7 +83,17 @@ const UsersAccount = () => {
   return (
     <>
       <NetworkSelector supportedNetworks={supportedNetworks} className='mx-1 my-auto' />
-      <Account className='mx-1 my-auto' />
+      <Account
+        className='mx-1 my-auto'
+        t={t}
+        isWalletConnected={isWalletConnected}
+        disconnectWallet={disconnectWallet}
+        provider={provider}
+        chainId={network}
+        usersAddress={address}
+        connectWallet={connectWallet}
+        walletName={walletName}
+      />
     </>
   )
 }

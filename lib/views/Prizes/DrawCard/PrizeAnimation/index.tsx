@@ -1,3 +1,4 @@
+import { DrawResults } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import classnames from 'classnames'
 import { ClaimSectionState } from 'lib/views/Prizes/DrawCard'
@@ -14,7 +15,7 @@ import {
 interface PrizeAnimationProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   claimSectionState: ClaimSectionState
-  totalPrizeValueUnformatted: BigNumber
+  drawResults: DrawResults
 }
 
 const VIDEO_VERSION = 'v001'
@@ -52,7 +53,7 @@ const getNextVideo = (video: LootVideo, videoState: VideoState, noPrize?: boolea
 }
 
 export const PrizeAnimation = (props: PrizeAnimationProps) => {
-  const { claimSectionState, totalPrizeValueUnformatted, className, ...containerProps } = props
+  const { claimSectionState, className, drawResults, ...containerProps } = props
 
   const transitionVideoPlayer = useRef<HTMLVideoElement>(null)
   const loopVideoPlayer = useRef<HTMLVideoElement>(null)
@@ -69,7 +70,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
       const videoPlayer =
         videoState === VideoState.transition ? transitionVideoPlayer : loopVideoPlayer
       const videoSource = prefetchedVideos[getVideoKey(video, videoState)]
-      console.log('setVideo', video, videoState, videoSource)
       videoPlayer.current.setAttribute('src', videoSource)
       videoPlayer.current.load()
       videoPlayer.current.play()
@@ -89,25 +89,20 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
       }
       case ClaimSectionState.unclaimed:
       case ClaimSectionState.claimed: {
-        if (totalPrizeValueUnformatted.isZero()) {
+        if (drawResults?.totalValue.isZero()) {
           return LootVideo.noPrize
         }
         return LootVideo.prize
       }
     }
-  }, [claimSectionState, totalPrizeValueUnformatted])
+  }, [claimSectionState, drawResults])
 
   const preloadNextVideo = async (video: LootVideo, videoState: VideoState) => {
     const nextVideo = getNextVideo(video, videoState)
-    console.log('*****************')
-    console.log(nextVideo.video)
-    console.log(nextVideo.videoState)
-    console.log(getVideoSource(nextVideo.video, nextVideo.videoState))
     if (nextVideo) {
       const videoResponse = await fetch(getVideoSource(nextVideo.video, nextVideo.videoState))
       const videoBlob = await videoResponse.blob()
       const videoUrl = URL.createObjectURL(videoBlob)
-      console.log('preloadNextVideo', nextVideo.video, nextVideo.videoState, videoBlob)
       setPrefetchedVideos((prefetchedVideos) => {
         return {
           ...prefetchedVideos,
@@ -144,7 +139,10 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
   }, [])
 
   return (
-    <div className={classnames(className, 'overflow-hidden flex flex-col justify-end h-96')}>
+    <div
+      {...containerProps}
+      className={classnames(className, 'overflow-hidden flex flex-col justify-end h-96')}
+    >
       <video
         playsInline
         ref={transitionVideoPlayer}
