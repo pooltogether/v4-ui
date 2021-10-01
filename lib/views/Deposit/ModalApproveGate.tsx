@@ -38,7 +38,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           rel='noopener noreferrer'
           href={blockExplorerUrl}
         >
-          <SquareButton className='w-full' theme={SquareButtonTheme.purpleOutline}>
+          <SquareButton className='w-full' theme={SquareButtonTheme.purple}>
             View on Explorer
           </SquareButton>
         </a>
