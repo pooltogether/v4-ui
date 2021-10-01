@@ -2,14 +2,16 @@ import { Amount } from '@pooltogether/hooks'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 
+const EMPTY_AMOUNT: Amount = {
+  amount: '',
+  amountUnformatted: undefined,
+  amountPretty: ''
+}
+
 export const getAmountFromString = (amount: string, decimals: string): Amount => {
   try {
     if (!amount || amount === undefined) {
-      return {
-        amount: '',
-        amountUnformatted: undefined,
-        amountPretty: ''
-      }
+      return EMPTY_AMOUNT
     }
 
     return {
@@ -18,10 +20,6 @@ export const getAmountFromString = (amount: string, decimals: string): Amount =>
       amountPretty: numberWithCommas(amount) as string
     }
   } catch (e) {
-    return {
-      amount,
-      amountUnformatted: undefined,
-      amountPretty: ''
-    }
+    return EMPTY_AMOUNT
   }
 }
