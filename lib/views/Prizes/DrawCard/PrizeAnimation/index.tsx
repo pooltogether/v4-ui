@@ -90,7 +90,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
   }
 
   return (
-    <div className={classnames(className, 'overflow-hidden flex flex-col justify-end h-96')}>
+    <div className={classnames(className, 'overflow-hidden flex flex-col justify-end sm:h-96')}>
       <video
         playsInline
         ref={transitionVideoPlayer}

@@ -75,7 +75,7 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
   }
 
   return (
-    <DrawCarousel>
+    <ul className='flex flex-col space-y-4'>
       {drawsToRender.map((draw) => (
         <DrawCard
           key={`${drawPrize.id()}_${draw.drawId}`}
@@ -85,6 +85,6 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
           refetchUsersBalances={refetchUsersBalances}
         />
       ))}
-    </DrawCarousel>
+    </ul>
   )
 }
