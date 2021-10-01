@@ -24,7 +24,7 @@ export const UpcomingPrizeCard = (props) => {
 
   return (
     <>
-      <WeeklyPrizeAmountCard />
+      <WeeklyPrizeAmountCard sm />
       {/* <Banner
         className={className}
         theme={BannerTheme.rainbowBorder}

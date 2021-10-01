@@ -154,7 +154,7 @@ export const DepositForm = (props: DepositFormProps) => {
           />
         </div>
 
-        <DownArrow />
+        {/* <DownArrow />
 
         <div className='w-full mx-auto'>
           <TextInputGroup
@@ -173,7 +173,7 @@ export const DepositForm = (props: DepositFormProps) => {
             label={null}
             value={form.watch(DEPOSIT_FORM_KEY) || ''}
           />
-        </div>
+        </div> */}
 
         <ErrorsBox errors={isDirty ? errors : null} />
 
