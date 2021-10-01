@@ -5,12 +5,13 @@ export const getNextDrawDate = () => {
   let daysUntilDrawDay = getDaysUntilDrawDay(date)
 
   // If it is today, compare current hour
-  if (daysUntilDrawDay === 0 && date.getUTCHours() <= DRAW_HOUR_OF_DAY) {
+  if (daysUntilDrawDay === 0 && date.getUTCHours() >= DRAW_HOUR_OF_DAY) {
     daysUntilDrawDay = 7
   }
 
   date = addDays(date, daysUntilDrawDay)
   date.setUTCHours(DRAW_HOUR_OF_DAY, 0, 0, 0)
+
   return date
 }
 

@@ -22,16 +22,13 @@ export const ClipBoardWithCheckMark = (props: ImageProps) => {
     <div className={className}>
       <span className='bg-highlight-1' {...imageProps}>
         {src}
-        {/* <Image {...imageProps} /> */}
       </span>
-      {/* <img {...imageProps} /> */}
     </div>
   )
 }
 
 ClipBoardWithCheckMark.defaultProps = {
   src: <ClipBoardWithCheckMarkSvg />,
-  // src: '../../../assets/images/icon-clipboard-check.svg',
   alt: 'check mark icon',
   width: '64',
   height: '64'

@@ -15,18 +15,13 @@
 .gradient-new {
   background-image: linear-gradient(
     130deg,
-    rgba(76, 36, 159, 0.5) -10%,
-    rgba(23, 225, 253, 0.5) 40%,
-    rgba(255, 119, 225, 0.5) 70%,
-    rgba(255, 241, 119, 0.5) 120%
+    rgba(76, 36, 159, 0.7) -10%,
+    rgba(23, 225, 253, 0.7) 40%,
+    rgba(255, 119, 225, 0.7) 70%,
+    rgba(255, 241, 119, 0.7) 120%
   );
 }
 
 .new-btn .lds-dual-ring:after {
   border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
-  /* border-color: #3f198b transparent #3f198b transparent; */
-}
-
-[data-reach-dialog-overlay] {
-  background: var(--color-bg-light-purple-10) !important;
 }

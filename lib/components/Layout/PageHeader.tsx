@@ -35,7 +35,7 @@ const Settings = () => {
 
   return (
     <SettingsContainer t={t} className='ml-1 my-auto' title='Settings'>
-      <LanguagePicker t={t} />
+      <LanguagePicker />
       <ThemeSettingsItem t={t} />
       <TestnetSettingsItem t={t} />
     </SettingsContainer>

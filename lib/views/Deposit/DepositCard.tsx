@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Card } from '@pooltogether/react-components'
+import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
@@ -20,6 +21,8 @@ import { ContentPanesProps } from 'lib/views/DefaultPage'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
 import { useSelectedPage, ContentPaneState } from 'lib/hooks/useSelectedPage'
+
+import SuccessBalloonsSvg from 'assets/images/success.svg'
 
 export const DepositCard = (props: ContentPanesProps) => {
   const router = useRouter()
@@ -285,8 +288,8 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
 
 const SuccessBalloons = (props) => (
   <img
-    src={'assets/images/success.svg'}
-    alt='check mark icon'
+    src={SuccessBalloonsSvg}
+    alt='success balloons graphic'
     width={64}
     className={props.className}
   />
@@ -318,21 +321,25 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
-      <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 my-4 text-xxxs rounded-lg text-white'>
+      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-4 py-1 my-4 text-xxxs rounded-lg text-white'>
         {t('disclaimerComeBackRegularlyToClaimWinnings')}
       </div>
-      <button
-        className='mx-auto text-xl text-accent-1 hover:text-white transition-colors mb-2'
+      <SquareButton
+        size={SquareButtonSize.md}
+        theme={SquareButtonTheme.tealOutline}
+        className='mx-auto text-xl hover:text-white transition-colors mb-2'
         onClick={resetState}
       >
-        Deposit more
-      </button>
-      <button
-        className='mx-auto text-xs text-accent-1 hover:text-white transition-colors'
+        {t('depositMore', 'Deposit more')}
+      </SquareButton>
+      <SquareButton
+        size={SquareButtonSize.sm}
+        theme={SquareButtonTheme.purpleOutline}
+        className='mx-auto text-xs hover:text-white transition-colors'
         onClick={() => setSelectedPage(ContentPaneState.account)}
       >
-        View account
-      </button>
+        {t('viewAccount', 'View account')}
+      </SquareButton>
     </div>
   )
 }

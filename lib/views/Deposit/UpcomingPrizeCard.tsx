@@ -27,7 +27,7 @@ export const UpcomingPrizeCard = (props) => {
 
   return (
     <>
-      {/* <WeeklyPrizeAmountCard /> */}
+      {/* <WeeklyPrizeAmountCard sm /> */}
       <Banner
         className={className}
         theme={BannerTheme.rainbowBorder}
@@ -50,14 +50,3 @@ export const UpcomingPrizeCard = (props) => {
     </>
   )
 }
-
-//  /* <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div> */
-/* <PrizeCountdown
-        textSize='text-xl'
-        t={t}
-        prizePeriodSeconds={data.prizePeriodSeconds}
-        prizePeriodStartedAt={data.prizePeriodStartedAt}
-        isRngRequested={data.isRngRequested}
-        canStartAward={data.canStartAward}
-        canCompleteAward={data.canCompleteAward}
-      /> */
