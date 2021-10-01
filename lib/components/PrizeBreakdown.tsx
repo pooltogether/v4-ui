@@ -3,7 +3,7 @@ import {
   calculateNumberOfPrizesForIndex,
   calculatePrizeForDistributionIndex,
   Draw,
-  PrizeDistributions
+  PrizeDistribution
 } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import classnames from 'classnames'
@@ -15,7 +15,7 @@ import { ethers } from 'ethers'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 interface PrizeBreakdownProps {
-  drawSettings: PrizeDistributions
+  drawSettings: PrizeDistribution
   token: Token
   className?: string
   isFetched?: boolean
@@ -79,7 +79,7 @@ const PrizeTableHeader = (
 )
 
 interface PrizeTableRowProps {
-  drawSettings: PrizeDistributions
+  drawSettings: PrizeDistribution
   index: number
   totalPrize: BigNumber
   numberOfPicks: BigNumber
@@ -92,11 +92,7 @@ interface PrizeTableRowProps {
 const PrizeTableRow = (props: PrizeTableRowProps) => {
   const { index, drawSettings, totalPrize, token } = props
 
-  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(index, drawSettings, {
-    drawId: 0,
-    timestamp: 0,
-    winningRandomNumber: ethers.constants.Zero
-  })
+  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(index, drawSettings)
   const numberOfWinners = calculateNumberOfPrizesForIndex(drawSettings.bitRangeSize, index)
 
   return (

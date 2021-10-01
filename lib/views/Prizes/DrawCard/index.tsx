@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { Card, Modal, ModalProps, SquareButton } from '@pooltogether/react-components'
-import { DrawPrize, Draw, PrizeDistributions } from '@pooltogether/v4-js-client'
+import { DrawPrize, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
@@ -22,7 +22,7 @@ interface DrawCardProps {
 }
 
 interface DrawPropsWithDetails extends DrawCardProps {
-  drawSettings: PrizeDistributions
+  drawSettings: PrizeDistribution
   token: Token
 }
 
