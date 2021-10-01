@@ -9,7 +9,7 @@ import {
 import {
   DrawPrize,
   Draw,
-  PrizeDistributions,
+  PrizeDistribution,
   DrawResults,
   calculatePrizeForDistributionIndex
 } from '@pooltogether/v4-js-client'
@@ -35,11 +35,12 @@ import { useTranslation } from 'react-i18next'
 interface DrawCardProps {
   drawPrize: DrawPrize
   draw: Draw
+  hideDrawCard: () => void
   refetchUsersBalances: () => void
 }
 
-export interface DrawPropsWithDetails extends DrawCardProps {
-  drawSettings: PrizeDistributions
+interface DrawPropsWithDetails extends DrawCardProps {
+  drawSettings: PrizeDistribution
   token: Token
   ticket: Token
 }
@@ -54,13 +55,6 @@ export const DrawCard = (props: DrawCardProps) => {
   } = useDrawSettings(drawPrize, draw)
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-
-  useEffect(() => {
-    if (isDrawSettingsFetched && (!drawSettings || error)) {
-      // TODO: Getting an error fetching draw settings :(
-      console.log('ERROR', draw, error)
-    }
-  }, [drawSettings, error, isDrawSettingsFetched])
 
   if (!isDrawSettingsFetched || !isPrizePoolTokensFetched) {
     return <LoadingCard />
@@ -121,7 +115,7 @@ const DrawGrandPrize = (props: DrawPropsWithDetails) => (
     <div>
       <span className='font-bold text-center text-xl sm:text-2xl text-inverse w-full'>
         $
-        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.drawSettings, props.draw), {
+        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.drawSettings), {
           decimals: props.token.decimals
         })}
       </span>
@@ -176,6 +170,7 @@ const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'lab
 
 //////////////////// Draw claim ////////////////////
 
+// TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
 export enum ClaimSectionState {
   loading,
   unchecked,
@@ -186,7 +181,7 @@ export enum ClaimSectionState {
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { drawPrize, draw } = props
   const [claimSectionState, setClaimSectionState] = useState<ClaimSectionState>(
-    ClaimSectionState.loading
+    ClaimSectionState.unchecked
   )
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -199,12 +194,6 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
     draw,
     claimSectionState !== ClaimSectionState.checking
   )
-
-  // TODO: Loading until we've fetched whether or not the user has already claimed
-  // Then we can show the proper state. Set to unchecked immediately for now.
-  useEffect(() => {
-    setClaimSectionState(ClaimSectionState.unchecked)
-  }, [])
 
   useEffect(() => {
     if (claimSectionState === ClaimSectionState.checking && isDrawResultsFetched) {

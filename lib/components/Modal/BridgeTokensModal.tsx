@@ -1,8 +1,8 @@
+import React from 'react'
+import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { NETWORK } from '@pooltogether/utilities'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import FeatherIcon from 'feather-icons-react'
 
 interface BridgeTokensModalProps extends ModalProps {
   chainId: number

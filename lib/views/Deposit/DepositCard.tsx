@@ -16,12 +16,16 @@ import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSele
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { ContentPanesProps, ContentPaneState } from 'lib/views/DefaultPage'
+import { ContentPanesProps } from 'lib/views/DefaultPage'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
+import { useSelectedPage, ContentPaneState } from 'lib/hooks/useSelectedPage'
 
 export const DepositCard = (props: ContentPanesProps) => {
-  const { setSelectedPage } = props
+  const router = useRouter()
+
+  const { setSelectedPage } = useSelectedPage()
+
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
@@ -48,8 +52,6 @@ export const DepositCard = (props: ContentPanesProps) => {
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
-
-  const router = useRouter()
 
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false)
 
@@ -145,7 +147,6 @@ export const DepositCard = (props: ContentPanesProps) => {
       callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
       callbacks: {
         onSuccess: (tx: Transaction) => {
-          console.log('SUCCESS', prizePool, tx)
           setDepositedAmount(amountToDeposit)
           setCompletedDepositTxId(tx.id, prizePool)
           setDepositTxId(0, prizePool)
@@ -178,7 +179,6 @@ export const DepositCard = (props: ContentPanesProps) => {
       <Card>
         {completedDepositTx ? (
           <CompletedDeposit
-            setSelectedPage={setSelectedPage}
             chainId={prizePool.chainId}
             resetState={resetState}
             tx={completedDepositTx}
@@ -298,12 +298,14 @@ interface CompletedDepositProps {
   depositedAmount: Amount
   tx: Transaction
   token: Token
-  setSelectedPage: (page: ContentPaneState) => void
 }
 
 const CompletedDeposit = (props: CompletedDepositProps) => {
-  const { resetState, depositedAmount, tx, token, chainId, setSelectedPage } = props
+  const { resetState, depositedAmount, tx, token, chainId } = props
   const { t } = useTranslation()
+
+  const { setSelectedPage } = useSelectedPage()
+
   return (
     <div className='flex flex-col'>
       <SuccessBalloons className='mx-auto mb-6' />

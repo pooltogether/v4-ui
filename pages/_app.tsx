@@ -31,6 +31,10 @@ import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
 import '@pooltogether/react-components/dist/index.css'
 
+// Carousel for Prizes
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
+
 import 'assets/styles/index.css'
 import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 
