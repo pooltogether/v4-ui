@@ -1,9 +1,9 @@
+import classNames from 'classnames'
 import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import classNames from 'classnames'
+
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
-import { useMemo } from 'react'
 
 interface SelectedNetworkToggleProps {
   className?: string

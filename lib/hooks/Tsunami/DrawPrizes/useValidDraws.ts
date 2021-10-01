@@ -14,7 +14,7 @@ const getValidDrawIds = async (drawPrize: DrawPrize): Promise<Draw[]> => {
   // const draws = await drawPrize.getDraws()
   // console.log('draws', draws)
   const r = await drawPrize.getValidDraws()
-  console.log('drawPrize', drawPrize)
-  console.log('getDraws', r)
+  // console.log('drawPrize', drawPrize)
+  // console.log('getDraws', r)
   return r
 }

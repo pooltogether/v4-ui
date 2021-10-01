@@ -9,7 +9,7 @@ export const useDrawPrize = (chainId: number, address: string) => {
       (drawPrize) => drawPrize.chainId === chainId && drawPrize.address === address
     )
     if (!drawPrize) return null
-    console.log('drawPrize', drawPrize)
+    // console.log('drawPrize', drawPrize)
     return drawPrize
   }, [drawPrizes])
 }

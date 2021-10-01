@@ -18,7 +18,7 @@ export const useLinkedPrizePool = () => {
         readProviders,
         linkedPrizePoolContractList
       )
-      console.log('linkedPrizePool', linkedPrizePool)
+      // console.log('linkedPrizePool', linkedPrizePool)
       return linkedPrizePool
     },
     { ...NO_REFETCH, enabled } as UseQueryOptions<LinkedPrizePool>

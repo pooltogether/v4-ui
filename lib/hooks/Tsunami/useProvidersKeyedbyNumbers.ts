@@ -10,7 +10,7 @@ export const useProvidersKeyedByNumbers = (chainIds: number[]) => {
     keys.forEach((key) => {
       providers[Number(key)] = readProviders[key]
     })
-    console.log('providers', providers)
+    // console.log('providers', providers)
     return providers
   }, [isReadProvidersReady, chainIds])
 }

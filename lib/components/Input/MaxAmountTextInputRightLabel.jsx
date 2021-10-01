@@ -15,7 +15,7 @@ export const MaxAmountTextInputRightLabel = (props) => {
       className='font-bold inline-flex items-center text-accent-4'
       disabled={disabled}
       onClick={(e) => {
-        console.log('CLICK', amount)
+        // console.log('CLICK', amount)
         e.preventDefault()
         setValue(valueKey, amount, { shouldValidate: true })
       }}

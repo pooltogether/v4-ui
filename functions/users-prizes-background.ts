@@ -31,7 +31,7 @@ const INFURA_ID = process.env.NEXT_JS_INFURA_ID
  */
 const handler: Handler = async (event, context) => {
   try {
-    console.log(INFURA_ID, event, context)
+    // console.log(INFURA_ID, event, context)
 
     const {
       usersAddress,
@@ -41,15 +41,15 @@ const handler: Handler = async (event, context) => {
     } = event.queryStringParameters
     const chainId = Number(_chainId)
     const drawId = Number(_drawId)
-    console.log('Params:', usersAddress, chainId, claimableDrawAddress, drawId)
+    // console.log('Params:', usersAddress, chainId, claimableDrawAddress, drawId)
 
     // TODO: Validate params
 
     // TODO: Check KV
     const test = await getKVItem('test')
-    console.log('TEST', test)
+    // console.log('TEST', test)
     const d = await test.text()
-    console.log('DATA', d)
+    // console.log('DATA', d)
 
     await setKVItem('iPhone', 'iPhone')
 

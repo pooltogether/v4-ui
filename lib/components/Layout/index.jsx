@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { SimpleLayout } from '@pooltogether/react-components'
-import { BottomNav } from 'lib/components/Layout/BottomNav'
 import { Footer } from 'lib/components/Layout/Footer'
 import { PageHeader } from 'lib/components/Layout/PageHeader'
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   Account,
-  Button,
   LanguagePickerDropdown,
   NetworkSelector,
   PageHeaderContainer,
@@ -14,11 +13,19 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
+import { Navigation } from 'lib/components/Navigation'
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
+
+export enum ContentPaneState {
+  deposit = 'deposit',
+  prizes = 'prizes',
+  account = 'account'
+}
 
 export const PageHeader = (props) => (
   <PageHeaderContainer Link={Link} as='/' href='/'>
     <UsersAccount />
+    <Navigation />
     <Settings />
   </PageHeaderContainer>
 )

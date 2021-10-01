@@ -69,7 +69,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
       const videoPlayer =
         videoState === VideoState.transition ? transitionVideoPlayer : loopVideoPlayer
       const videoSource = prefetchedVideos[getVideoKey(video, videoState)]
-      console.log('setVideo', video, videoState, videoSource)
+      // console.log('setVideo', video, videoState, videoSource)
       videoPlayer.current.setAttribute('src', videoSource)
       videoPlayer.current.load()
       videoPlayer.current.play()
@@ -103,7 +103,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
       const videoResponse = await fetch(getVideoSource(nextVideo.video, nextVideo.videoState))
       const videoBlob = await videoResponse.blob()
       const videoUrl = URL.createObjectURL(videoBlob)
-      console.log('preloadNextVideo', nextVideo.video, nextVideo.videoState, videoBlob)
+      // console.log('preloadNextVideo', nextVideo.video, nextVideo.videoState, videoBlob)
       setPrefetchedVideos((prefetchedVideos) => {
         return {
           ...prefetchedVideos,
