@@ -25,9 +25,10 @@ export const PageHeader = (props) => (
 
 const Settings = () => {
   const { t } = useTranslation()
+
   return (
     <SettingsContainer t={t} className='ml-1 my-auto' title='Settings'>
-      <LanguagePicker />
+      <LanguagePicker t={t} />
       <ThemeSettingsItem t={t} />
       <TestnetSettingsItem t={t} />
     </SettingsContainer>
@@ -35,10 +36,10 @@ const Settings = () => {
 }
 
 const LanguagePicker = () => {
-  const { i18n: i18next } = useTranslation()
+  const { i18n: i18next, t } = useTranslation()
   const [currentLang, setCurrentLang] = useState(i18next.language)
   return (
-    <SettingsItem label='Language'>
+    <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
         className='text-white'
         currentLang={currentLang}
@@ -68,19 +69,6 @@ const UsersAccount = () => {
   const { t } = useTranslation()
 
   if (!isOnboardReady) return null
-
-  if (!isWalletConnected) {
-    return (
-      <Button
-        padding='px-4 sm:px-6 py-1'
-        onClick={() => connectWallet()}
-        textSize='xxxs'
-        className='mx-1 my-auto'
-      >
-        {t('connectWallet')}
-      </Button>
-    )
-  }
 
   return (
     <>
