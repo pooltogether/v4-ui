@@ -6,12 +6,14 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
 import { numberWithCommas } from '@pooltogether/utilities'
 import classNames from 'classnames'
+import { getNextDraw, getPrettyDate } from 'lib/utils/getNextDraw'
 
 export const UpcomingPrizeCard = (props) => {
   const { className } = props
   const { t } = useTranslation()
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
+  const nextDraw = getNextDraw()
 
   if (!isFetched) {
     return <Card className={classNames(className, 'flex animate-pulse h-48')} />
@@ -35,16 +37,7 @@ export const UpcomingPrizeCard = (props) => {
         <div className='font-inter uppercase font-semibold text-accent-1 text-center text-xxs mb-4'>
           In weekly prizes
         </div>
-        {/* <div className='font-inter text-accent-1 my-4'>{t('awardIn')}</div> */}
-        {/* <PrizeCountdown
-        textSize='text-xl'
-        t={t}
-        prizePeriodSeconds={data.prizePeriodSeconds}
-        prizePeriodStartedAt={data.prizePeriodStartedAt}
-        isRngRequested={data.isRngRequested}
-        canStartAward={data.canStartAward}
-        canCompleteAward={data.canCompleteAward}
-      /> */}
+        <div className='text-center'>Next draw is {getPrettyDate(nextDraw)}</div>
       </Banner>
     </>
   )

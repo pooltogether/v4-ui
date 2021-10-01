@@ -36,7 +36,7 @@ interface PrizeClaimModalProps extends DrawPropsWithDetails {
   closeModal: () => void
   drawResults: DrawResults
   claimTx: Transaction
-  sendTx: (txDetails: PreTransactionDetails) => number
+  sendTx: (txDetails: PreTransactionDetails) => Promise<number>
   setTxId: (txId: number) => void
 }
 
