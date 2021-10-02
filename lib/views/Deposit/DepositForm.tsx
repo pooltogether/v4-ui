@@ -298,7 +298,7 @@ export const TxHashRow = (props: TxHashRowProps) => {
     <div className='flex flex-row justify-between'>
       <div>Transaction receipt:</div>
       <BlockExplorerLink className='text-xs' chainId={chainId} txHash={depositTx.hash}>
-        <span className='underline'>{shorten(depositTx.hash)}</span>
+        <span className='underline'>{shorten({ hash: depositTx.hash })}</span>
       </BlockExplorerLink>
     </div>
   )
@@ -340,7 +340,7 @@ const TxStatus = (props) => {
       <div>
         {t('explorer')}{' '}
         <BlockExplorerLink className='text-xxxs' chainId={props.chainId} txHash={props.txHash}>
-          <span className='font-semibold'>{shorten(props.txHash)}</span>
+          <span className='font-semibold'>{shorten({ hash: props.txHash })}</span>
         </BlockExplorerLink>
       </div>
     </div>

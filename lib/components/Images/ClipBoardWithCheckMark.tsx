@@ -4,6 +4,7 @@ const ClipBoardWithCheckMarkSvg = (props) => {
   return (
     <svg
       {...props}
+      alt='check mark icon'
       height='100%'
       viewBox='0 0 64 80'
       fill='none'
@@ -16,20 +17,15 @@ const ClipBoardWithCheckMarkSvg = (props) => {
   )
 }
 
-export const ClipBoardWithCheckMark = (props: ImageProps) => {
-  const { className, src, ...imageProps } = props
+export const ClipBoardWithCheckMark = (props) => {
+  const { className, src } = props
   return (
     <div className={className}>
-      <span className='bg-highlight-1' {...imageProps}>
-        {src}
-      </span>
+      <span className='bg-highlight-1'>{src}</span>
     </div>
   )
 }
 
 ClipBoardWithCheckMark.defaultProps = {
-  src: <ClipBoardWithCheckMarkSvg />,
-  alt: 'check mark icon',
-  width: '64',
-  height: '64'
+  src: <ClipBoardWithCheckMarkSvg />
 }

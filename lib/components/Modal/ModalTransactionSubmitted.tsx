@@ -2,7 +2,8 @@ import { Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareButton,
-  SquareButtonTheme
+  SquareButtonTheme,
+  SquareButtonSize
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
@@ -25,11 +26,18 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
 
   return (
     <div className={classNames('flex flex-col', className)}>
-      <ClipBoardWithCheckMark className='mx-auto mb-4' />
-      {/* <span className='text-xxs text-accent-1 mb-8 mx-auto'>{t('transactionSubmitted')}</span> */}
+      <ClipBoardWithCheckMark className='mx-auto mb-4 w-10' />
+      <span className='text-xxs text-accent-1 mb-8 mx-auto'>
+        {t('transactionSent', 'Transaction sent')}
+      </span>
+
       <Link href={url}>
         <a className='w-full' target='_blank' rel='noreferrer'>
-          <SquareButton className='w-full' theme={SquareButtonTheme.orangeOutline}>
+          <SquareButton
+            className='w-full'
+            theme={SquareButtonTheme.tealOutline}
+            size={SquareButtonSize.sm}
+          >
             {t('viewReceipt', 'View receipt')}
           </SquareButton>
         </a>

@@ -310,24 +310,31 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
   const { setSelectedPage } = useSelectedPage()
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col py-4'>
       <SuccessBalloons className='mx-auto mb-6' />
-      <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl'>
-        {t('successfullyDeposited', { amount: depositedAmount.amountPretty, ticker: token.symbol })}
-      </p>
-      <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4 text-white'>
-        {depositedAmount.amountPretty} {token.symbol}
-      </p>
+
+      <div className='leading-tight mb-4'>
+        <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl'>
+          {t('successfullyDeposited', {
+            amount: depositedAmount.amountPretty,
+            ticker: token.symbol
+          })}
+        </p>
+        <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4 text-white'>
+          {depositedAmount.amountPretty} {token.symbol}
+        </p>
+      </div>
+
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-4 py-1 my-4 text-xxxs rounded-lg text-white'>
+      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-1 my-4 text-xxs rounded-lg text-white'>
         {t('disclaimerComeBackRegularlyToClaimWinnings')}
       </div>
       <SquareButton
         size={SquareButtonSize.md}
         theme={SquareButtonTheme.tealOutline}
-        className='mx-auto text-xl hover:text-white transition-colors mb-2'
+        className='text-xl hover:text-white transition-colors mb-2'
         onClick={resetState}
       >
         {t('depositMore', 'Deposit more')}
@@ -335,7 +342,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <SquareButton
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}
-        className='mx-auto text-xs hover:text-white transition-colors'
+        className='text-xs hover:text-white transition-colors'
         onClick={() => setSelectedPage(ContentPaneState.account)}
       >
         {t('viewAccount', 'View account')}
