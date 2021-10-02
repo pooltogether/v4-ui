@@ -73,6 +73,7 @@ const SIMPLE_PRICES_CHAIN_ID_MAP = {
   80001: 'matic-network'
 }
 
+// Actual deposit gas used in Wei: 204527
 const DEPOSIT_GAS_AMOUNT = BigNumber.from('19012830912830000')
 
 export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
@@ -82,10 +83,13 @@ export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmou
   const gasEstimate = DEPOSIT_GAS_AMOUNT
 
   const { data: prices, isFetched: pricesIsFetched } = useCoingeckoSimplePrices()
+
+  /* TODO: Convert this to a hook */
   let gasUsd
   if (pricesIsFetched) {
     const { usd } = prices[SIMPLE_PRICES_CHAIN_ID_MAP[prizePool.chainId]]
-    gasUsd = (gasEstimate.div(parseUnits('1', 9)).toNumber() * usd) / 1000000000
+    gasUsd = (DEPOSIT_GAS_AMOUNT.div(parseUnits('1', 9)).toNumber() * usd) / 1000000000
+    /* TODO: Multiply by the standard or fast gwei gas amounts from some gas API service */
   }
 
   return (
