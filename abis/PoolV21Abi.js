@@ -517,7 +517,7 @@ export default [
         type: 'bytes32'
       }
     ],
-    name: 'openNextDraw',
+    name: 'openNextDrawDate',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
@@ -532,7 +532,7 @@ export default [
         type: 'bytes32'
       }
     ],
-    name: 'rolloverAndOpenNextDraw',
+    name: 'rolloverAndOpenNextDrawDate',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',
@@ -557,7 +557,7 @@ export default [
         type: 'bytes32'
       }
     ],
-    name: 'rewardAndOpenNextDraw',
+    name: 'rewardAndOpenNextDrawDate',
     outputs: [],
     payable: false,
     stateMutability: 'nonpayable',

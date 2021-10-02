@@ -31,8 +31,6 @@ const INFURA_ID = process.env.NEXT_JS_INFURA_ID
  */
 const handler: Handler = async (event, context) => {
   try {
-    // console.log(INFURA_ID, event, context)
-
     const {
       usersAddress,
       chainId: _chainId,

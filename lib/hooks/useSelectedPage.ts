@@ -18,8 +18,6 @@ export const useSelectedPage = () => {
 
   const setSelectedPage = (newTab: ContentPaneState) => {
     const { query, pathname } = router
-    console.log(query)
-    console.log(URL_QUERY_KEY)
     query[URL_QUERY_KEY.tab] = newTab
     router.replace({ pathname, query })
   }

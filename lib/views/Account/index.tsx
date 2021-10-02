@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import classNames from 'classnames'
 import { useState } from 'react'
@@ -20,13 +20,17 @@ import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
+import { DrawPrize, Player, PrizePool } from '@pooltogether/v4-js-client'
 import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 import PiggyBank from 'assets/images/piggy-bank.svg'
+import { useMemo } from 'react-modal/node_modules/@types/react'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
+import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -256,13 +260,3 @@ const BalanceUsdValue = (props: BalanceProps) => {
 const Piggy = () => (
   <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
 )
-
-const ConnectWalletButton = () => {
-  const { connectWallet } = useOnboard()
-  const { t } = useTranslation()
-  return (
-    <SquareButton className='w-full' onClick={() => connectWallet(null)}>
-      {t('connectWallet')}
-    </SquareButton>
-  )
-}

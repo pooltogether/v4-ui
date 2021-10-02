@@ -21,16 +21,3 @@ export const TSUNAMI_USDC_DRAW_SETTINGS: PrizeDistribution = Object.freeze({
   drawStartTimestampOffset: 0,
   drawEndTimestampOffset: 0
 })
-
-export const getPositionalPrize = (
-  position: number,
-  drawSettings: PrizeDistribution,
-  token: Token
-) => {
-  return numberWithCommas(
-    drawSettings.prize
-      .mul(BigNumber.from(drawSettings.distributions[position]))
-      .div(parseUnits('1', DECIMALS_FOR_DISTRIBUTIONS)),
-    { decimals: token.decimals }
-  )
-}

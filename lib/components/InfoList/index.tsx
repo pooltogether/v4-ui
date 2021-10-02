@@ -21,7 +21,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
   return (
     <li className={classnames('flex justify-between', className, fontSizeClassName)}>
       <span className={classnames('text-accent-1', labelClassName)}>{label}:</span>
-      <span className={classnames('text-right', valueClassName, { 'opacity-50': dimValue })}>
+      <span className={classnames('text-right', valueClassName, { 'opacity-80': dimValue })}>
         {value}
       </span>
     </li>
