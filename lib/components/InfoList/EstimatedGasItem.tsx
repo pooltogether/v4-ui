@@ -18,8 +18,8 @@ import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 interface EstimatedGasItemProps {
   chainId: number
   gasEstimate: BigNumber
-  gasUsd: number
   isFetched: boolean
+  gasUsd?: number
   invalidInput?: boolean
 }
 
