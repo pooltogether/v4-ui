@@ -15,7 +15,12 @@ export const SelectedNetworkToggle = (props: SelectedNetworkToggleProps) => {
   const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
 
   return (
-    <div className={classNames(className, 'flex flex-row rounded-lg bg-darkened p-1 max-w-max')}>
+    <div
+      className={classNames(
+        className,
+        'flex flex-row rounded-lg bg-pt-purple-bright p-1 max-w-max'
+      )}
+    >
       {supportedNetworks.map((chainId) => (
         <NetworkToggle
           key={chainId}
@@ -43,11 +48,11 @@ const NetworkToggle = (props: NetworkToggleProps) => {
         'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-2 flex flex-row',
         'text-xs hover:text-inverse active:bg-tertiary',
         { 'bg-tertiary text-inverse': isSelected },
-        { 'text-accent-1 hover:bg-light-purple-10': !isSelected }
+        { 'opacity-70 hover:opacity-100 text-accent-1 hover:bg-light-purple-10': !isSelected }
       )}
       onClick={() => setSelectedNetwork(chainId)}
     >
-      <NetworkIcon chainId={chainId} className='my-auto mr-2' sizeClassName='w-4 h-4' />
+      <NetworkIcon chainId={chainId} className='my-auto mr-1' sizeClassName='w-4 h-4' />
       <span>{getNetworkNiceNameByChainId(chainId)}</span>
     </button>
   )

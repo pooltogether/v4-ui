@@ -15,7 +15,7 @@ export const Navigation = (props) => {
         className,
         'mx-auto mb-6',
         'sm:absolute sm:-mt-1 sm:bottom-auto',
-        'max-w-max flex flex-row rounded-xl bg-darkened p-1 font-inter',
+        'max-w-max flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter',
         'fixed bottom-0 inset-x-0 z-20 shadow-lg'
       )}
     >
