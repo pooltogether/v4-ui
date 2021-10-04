@@ -1,11 +1,14 @@
 import React from 'react'
-import { BigNumber, constants } from 'ethers'
+import FeatherIcon from 'feather-icons-react'
+import { BigNumber } from 'ethers'
 import { parseUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
+import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { useCoingeckoSimplePrices } from '@pooltogether/hooks'
+
+import { useGasCosts } from 'lib/hooks/useGasCosts'
 
 import {
   useApproveDepositsGasEstimate,
@@ -17,45 +20,49 @@ import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 
 interface EstimatedGasItemProps {
   chainId: number
-  gasEstimate: BigNumber
   isFetched: boolean
-  gasUsd?: number
-  invalidInput?: boolean
+  txName: string
+  totalGasWei?: number
+  totalGasUsd?: number
 }
 
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
-  const { gasEstimate, gasUsd, isFetched, invalidInput, chainId } = props
+  const { txName, totalGasWei, totalGasUsd, isFetched, chainId } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
   const { t } = useTranslation()
-  const label = t('networkFees', 'Network fees')
+  const label = t('estimatedNetworkFees', 'Estimated network fees')
 
-  if (invalidInput) {
-    return <InfoListItem dimValue label={label} value='--' />
-  }
+  let valueJsx
 
   if (!isFetched) {
-    return (
-      <InfoListItem
-        dimValue
-        label={label}
-        value={<ThemedClipSpinner className='my-auto' size={16} />}
-      />
+    valueJsx = <ThemedClipSpinner className='my-auto' size={16} />
+  }
+
+  if (isFetched && totalGasWei) {
+    valueJsx = (
+      <>
+        <span className='opacity-60'> (${numberWithCommas(totalGasUsd)})</span>{' '}
+        {numberWithCommas(totalGasWei)} {nativeCurrency}
+      </>
     )
   }
 
-  if (!gasEstimate) {
-    return <InfoListItem dimValue label={label} value={t('errorEstimating', 'Error estimating')} />
+  if (isFetched && !totalGasWei) {
+    valueJsx = (
+      <Tooltip
+        id={`tooltip-est-gas-costs-${txName}`}
+        tip={t('errorEstimatingGasCosts', 'Error estimating gas costs')}
+      >
+        <FeatherIcon
+          icon={'help-circle'}
+          className='relative w-4 h-4 mr-1 inline-block'
+          style={{ top: -1 }}
+        />
+      </Tooltip>
+    )
   }
 
-  return (
-    <InfoListItem
-      dimValue
-      label={label}
-      value={`($${numberWithCommas(gasUsd)}) ${numberWithCommas(gasEstimate, {
-        decimals: '18'
-      })} ${nativeCurrency}`}
-    />
-  )
+  return <InfoListItem dimValue label={label} value={valueJsx} />
 }
 
 interface EstimatedPrizePoolGasItemProps {
@@ -67,38 +74,72 @@ interface EstimatedPrizePoolGasItemWithAmountProps extends EstimatedPrizePoolGas
 }
 
 const SIMPLE_PRICES_CHAIN_ID_MAP = {
-  1: 'matic-network',
+  1: 'ethereum',
   4: 'ethereum',
   137: 'matic-network',
   80001: 'matic-network'
 }
 
-// Actual deposit gas used in Wei: 204527
-const DEPOSIT_GAS_AMOUNT = BigNumber.from('19012830912830000')
+// Actual deposit gas used in Wei
+const DEPOSIT_GAS_AMOUNT = BigNumber.from('190128')
 
-export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
-  const { prizePool, amountUnformatted } = props
-  // const { data: gasEstimate, isFetched } = useDepositGasEstimate(prizePool, amountUnformatted)
-  const isFetched = true
-  const gasEstimate = DEPOSIT_GAS_AMOUNT
+const GAS_COST_CHAIN_ID_MAP = {
+  1: 1,
+  4: 1,
+  137: 137,
+  80001: 137
+}
 
+// Makes use of Coingecko for USD prices (of ether, matic, etc) and PoolTogether's gas API result
+// to calculate how much gas will probably cost in both USD and the native currency
+const useGasCostEstimate = (gasAmount, chainId) => {
   const { data: prices, isFetched: pricesIsFetched } = useCoingeckoSimplePrices()
 
-  /* TODO: Convert this to a hook */
-  let gasUsd
-  if (pricesIsFetched) {
-    const { usd } = prices[SIMPLE_PRICES_CHAIN_ID_MAP[prizePool.chainId]]
-    gasUsd = (DEPOSIT_GAS_AMOUNT.div(parseUnits('1', 9)).toNumber() * usd) / 1000000000
-    /* TODO: Multiply by the standard or fast gwei gas amounts from some gas API service */
+  const mappedChainId = GAS_COST_CHAIN_ID_MAP[chainId]
+  const { data: gasCosts, isFetched: gasCostsIsFetched } = useGasCosts(mappedChainId)
+
+  const isFetched = pricesIsFetched && gasCostsIsFetched
+
+  let totalGasUsd, totalGasWei
+  if (isFetched) {
+    totalGasWei = calculateTotalGasWei(gasCosts, gasAmount)
+    totalGasUsd = calculateTotalGasUsd(prices, chainId, totalGasWei)
   }
+
+  return { totalGasWei, totalGasUsd, isFetched }
+}
+
+const calculateTotalGasUsd = (prices, chainId, totalGasWei) => {
+  const { usd } = prices[SIMPLE_PRICES_CHAIN_ID_MAP[chainId]]
+  return totalGasWei.mul((usd * 100).toString()).div(100)
+}
+
+const calculateTotalGasWei = (gasCosts, gasAmount) => {
+  const standardGasCostGwei = gasCosts.ProposeGasPrice
+
+  // Convert gwei to wei
+  const standardGasCostWei = BigNumber.from(standardGasCostGwei).mul(parseUnits('1', 9))
+
+  return gasAmount.mul(standardGasCostWei)
+}
+
+export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
+  const { prizePool } = props
+
+  // const { prizePool, amountUnformatted } = props
+  // const { data: gasAmount, isFetched } = useDepositGasEstimate(prizePool, amountUnformatted)
+
+  const { totalGasWei, totalGasUsd, isFetched } = useGasCostEstimate(
+    DEPOSIT_GAS_AMOUNT,
+    prizePool.chainId
+  )
 
   return (
     <EstimatedGasItem
-      gasUsd={gasUsd}
+      txName='deposit'
+      totalGasWei={totalGasWei}
+      totalGasUsd={totalGasUsd}
       chainId={prizePool.chainId}
-      invalidInput={false}
-      // invalidInput={!amountUnformatted || amountUnformatted.isZero()}
-      gasEstimate={gasEstimate}
       isFetched={isFetched}
     />
   )
@@ -108,21 +149,12 @@ export const EstimatedWithdrawalGasItem = (props: EstimatedPrizePoolGasItemWithA
   const { prizePool, amountUnformatted } = props
   const { data: gasEstimate, isFetched } = useWithdrawGasEstimate(prizePool, amountUnformatted)
 
-  return (
-    <EstimatedGasItem
-      chainId={prizePool.chainId}
-      invalidInput={!amountUnformatted || amountUnformatted.isZero()}
-      gasEstimate={gasEstimate}
-      isFetched={isFetched}
-    />
-  )
+  return <EstimatedGasItem txName='withdraw' chainId={prizePool.chainId} isFetched={isFetched} />
 }
 
 export const EstimatedApproveDepositsGasItem = (props: EstimatedPrizePoolGasItemProps) => {
   const { prizePool } = props
   const { data: gasEstimate, isFetched } = useApproveDepositsGasEstimate(prizePool)
 
-  return (
-    <EstimatedGasItem chainId={prizePool.chainId} gasEstimate={gasEstimate} isFetched={isFetched} />
-  )
+  return <EstimatedGasItem txName='approve' chainId={prizePool.chainId} isFetched={isFetched} />
 }
