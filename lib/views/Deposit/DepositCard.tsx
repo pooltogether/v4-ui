@@ -4,7 +4,7 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Card } from '@pooltogether/react-components'
+import { Card, SquareLink } from '@pooltogether/react-components'
 import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
@@ -17,17 +17,14 @@ import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSele
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { ContentPanesProps } from 'lib/views/DefaultPage'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
-import { useSelectedPage, ContentPaneState } from 'lib/hooks/useSelectedPage'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
+import Link from 'next/link'
 
-export const DepositCard = (props: ContentPanesProps) => {
+export const DepositCard = () => {
   const router = useRouter()
-
-  const { setSelectedPage } = useSelectedPage()
 
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
@@ -307,8 +304,6 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
   const { resetState, depositedAmount, tx, token, chainId } = props
   const { t } = useTranslation()
 
-  const { setSelectedPage } = useSelectedPage()
-
   return (
     <div className='flex flex-col py-4'>
       <SuccessBalloons className='mx-auto mb-6' />
@@ -339,14 +334,15 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       >
         {t('depositMore', 'Deposit more')}
       </SquareButton>
-      <SquareButton
-        size={SquareButtonSize.sm}
-        theme={SquareButtonTheme.purpleOutline}
-        className='text-xs hover:text-white transition-colors'
-        onClick={() => setSelectedPage(ContentPaneState.account)}
-      >
-        {t('viewAccount', 'View account')}
-      </SquareButton>
+      <Link href='/account'>
+        <SquareLink
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.purpleOutline}
+          className='text-xs hover:text-white transition-colors'
+        >
+          {t('viewAccount', 'View account')}
+        </SquareLink>
+      </Link>
     </div>
   )
 }

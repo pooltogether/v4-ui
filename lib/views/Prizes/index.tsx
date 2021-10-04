@@ -13,6 +13,7 @@ import { getPrettyDate } from 'lib/utils/getNextDrawDate'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
+import { PagePadding } from 'lib/components/Layout/PagePadding'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -21,13 +22,19 @@ export const PRIZE_UI_STATES = {
   didNotWin: 'didNotWin'
 }
 
+// TODO: Note, this is where we are selecting a single DrawPrize from the list
 export const PrizesUI = (props) => {
   const { data: drawPrizes, isFetched } = useSelectedNetworkDrawPrizes()
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
-  if (!isFetched || !isPrizePoolFetched) return <LoadingCard />
+  if (!isFetched || !isPrizePoolFetched)
+    return (
+      <PagePadding>
+        <LoadingCard />
+      </PagePadding>
+    )
   return (
     <>
-      <SelectedNetworkToggle className='mx-auto mb-4' />
+      <SelectedNetworkToggle className='mx-auto mb-8' />
       <DrawPrizeDrawsList drawPrize={drawPrizes[0]} prizePool={prizePool} />
     </>
   )
@@ -55,36 +62,53 @@ const DrawPrizeDrawsList = (props: DrawPrizeProps) => {
 
   if (!usersAddress) {
     return (
-      <Card className='flex flex-col space-y-4 text-center'>
-        <span>Connect a wallet to check for prizes!</span>
-        <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
-        <ConnectWalletButton />
-      </Card>
+      <PagePadding>
+        <Card className='flex flex-col space-y-4 text-center'>
+          <span>Connect a wallet to check for prizes!</span>
+          <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
+          <ConnectWalletButton />
+        </Card>
+      </PagePadding>
     )
   }
 
-  if (!isFetched) return <LoadingCard />
+  if (!isFetched)
+    return (
+      <PagePadding>
+        <LoadingCard />
+      </PagePadding>
+    )
 
   if (isFetched && drawsToRender.length === 0) {
     return (
-      <Card>
-        <span>No draws to check!</span>
-        <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
-      </Card>
+      <PagePadding>
+        <Card>
+          <span>No draws to check!</span>
+          <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
+        </Card>
+      </PagePadding>
     )
   }
 
   return (
-    <ul className='flex flex-col space-y-4'>
-      {drawsToRender.map((draw) => (
-        <DrawCard
-          key={`${drawPrize.id()}_${draw.drawId}`}
-          drawPrize={drawPrize}
-          draw={draw}
-          hideDrawCard={() => setDrawIdsToHide((drawsToHide) => [...drawsToHide, draw.drawId])}
-          refetchUsersBalances={refetchUsersBalances}
-        />
-      ))}
-    </ul>
+    <div className='pb-20'>
+      <DrawCarousel>
+        {drawsToRender.map((draw) => (
+          <div className='mx-auto pb-12 flex justify-center'>
+            <div className='mx-2 sm:mx-4 max-w-xl '>
+              <DrawCard
+                key={`${drawPrize.id()}_${draw.drawId}`}
+                drawPrize={drawPrize}
+                draw={draw}
+                hideDrawCard={() =>
+                  setDrawIdsToHide((drawsToHide) => [...drawsToHide, draw.drawId])
+                }
+                refetchUsersBalances={refetchUsersBalances}
+              />
+            </div>
+          </div>
+        ))}
+      </DrawCarousel>
+    </div>
   )
 }

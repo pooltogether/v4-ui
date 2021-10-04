@@ -159,7 +159,7 @@ const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'lab
   return (
     <Modal isOpen={isOpen} closeModal={closeModal} label='Prize breakdown modal'>
       <PrizeBreakdown
-        className='mt-10'
+        className='mt-10 mx-auto'
         drawSettings={drawSettings}
         token={prizePoolTokens?.token}
         isFetched={isFetched}

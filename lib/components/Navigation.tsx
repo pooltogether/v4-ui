@@ -1,13 +1,34 @@
 import classnames from 'classnames'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { ContentPaneState, useSelectedPage } from 'lib/hooks/useSelectedPage'
+interface NavLink {
+  i18nKey: string
+  href: string
+}
+
+const NavLinks: NavLink[] = [
+  {
+    i18nKey: 'deposit',
+    href: '/deposit'
+  },
+  {
+    i18nKey: 'prizes',
+    href: '/prizes'
+  },
+  {
+    i18nKey: 'account',
+    href: '/account'
+  }
+]
 
 export const Navigation = (props) => {
   const { t } = useTranslation()
   const { className } = props
 
-  const { setSelectedPage, depositSelected, prizesSelected, accountSelected } = useSelectedPage()
+  const router = useRouter()
 
   return (
     <nav
@@ -19,43 +40,32 @@ export const Navigation = (props) => {
         'fixed bottom-0 inset-x-0 z-20 shadow-lg'
       )}
     >
-      <NavTab
-        setSelectedPage={setSelectedPage}
-        page={ContentPaneState.deposit}
-        isSelected={depositSelected}
-      >
-        {t('deposit')}
-      </NavTab>
-      <NavTab
-        setSelectedPage={setSelectedPage}
-        page={ContentPaneState.prizes}
-        isSelected={prizesSelected}
-      >
-        {t('prizes')}
-      </NavTab>
-      <NavTab
-        setSelectedPage={setSelectedPage}
-        page={ContentPaneState.account}
-        isSelected={accountSelected}
-      >
-        {t('account')}
-      </NavTab>
+      {NavLinks.map((navLink) => (
+        <NavTab key={navLink.i18nKey} isSelected={navLink.href === router.pathname} {...navLink} />
+      ))}
     </nav>
   )
 }
 
-const NavTab = (props) => {
-  const { setSelectedPage, page, isSelected, ...buttonProps } = props
+interface NavTabProps extends NavLink {
+  isSelected: boolean
+}
+
+const NavTab = (props: NavTabProps) => {
+  const { isSelected, i18nKey, href } = props
+  const { t } = useTranslation()
   return (
-    <a
-      {...buttonProps}
-      className={classnames(
-        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 py-1 flex flex-row',
-        'text-xs hover:text-inverse active:bg-tertiary',
-        { 'bg-tertiary text-inverse': isSelected },
-        { 'text-accent-1 hover:bg-light-purple-10': !isSelected }
-      )}
-      onClick={() => setSelectedPage(page)}
-    />
+    <Link href={href}>
+      <a
+        className={classnames(
+          'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 py-1 flex flex-row',
+          'text-xs hover:text-inverse active:bg-tertiary',
+          { 'bg-tertiary text-inverse': isSelected },
+          { 'text-accent-1 hover:bg-light-purple-10': !isSelected }
+        )}
+      >
+        {t(i18nKey)}
+      </a>
+    </Link>
   )
 }
