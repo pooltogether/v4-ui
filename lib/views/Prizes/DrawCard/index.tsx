@@ -20,12 +20,11 @@ import classNames from 'classnames'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { DECIMALS_FOR_DISTRIBUTIONS } from 'lib/constants/drawSettings'
 import { useDrawSettings } from 'lib/hooks/Tsunami/DrawPrizes/useDrawSettings'
-import { useUsersClaimablePrize } from 'lib/hooks/Tsunami/DrawPrizes/useUsersClaimablePrize'
+import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import React, { useEffect, useState } from 'react'
-import { LoadingCard } from '..'
 import { PrizeAnimation } from 'lib/views/Prizes/DrawCard/PrizeAnimation'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimModal } from './PrizeClaimModal'
@@ -189,7 +188,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const sendTx = useSendTransaction()
   const claimTx = useTransaction(txId)
 
-  const { data: drawResults, isFetched: isDrawResultsFetched } = useUsersClaimablePrize(
+  const { data: drawResults, isFetched: isDrawResultsFetched } = useUsersDrawResult(
     drawPrize,
     draw,
     claimState !== ClaimState.checking
@@ -258,9 +257,9 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     return <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
-  } else {
-    return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
   }
 
-  return null
+  return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
 }
+
+const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-128' />

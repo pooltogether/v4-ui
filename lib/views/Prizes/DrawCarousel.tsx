@@ -25,15 +25,22 @@ export const DrawCarousel = (props: DrawCarouselProps) => {
 
   return (
     <Carousel
-      autoPlay={false}
       centerMode
-      centerSlidePercentage={centerSlidePercentage}
+      swipeable
+      emulateTouch
       infiniteLoop
+      useKeyboardArrows
+      autoPlay={false}
       showStatus={false}
+      selectedItem={0}
+      swipeScrollTolerance={10}
+      // NOTE: Temporary work around, make auto play changes super high.
+      // Waiting to update to a version > 3.2.21.
+      interval={99999999999999}
+      centerSlidePercentage={centerSlidePercentage}
+      preventMovementUntilSwipeScrollTolerance
       renderArrowNext={ArrowNext}
       renderArrowPrev={ArrowPrev}
-      swipeable={true}
-      emulateTouch={true}
     >
       {children}
     </Carousel>
