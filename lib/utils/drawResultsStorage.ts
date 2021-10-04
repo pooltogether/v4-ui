@@ -1,14 +1,17 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 import { DrawPrize, DrawResults } from '@pooltogether/v4-js-client'
 
-export enum DrawStates {
+// TODO: What happens when a tx fails or gets overwritten or cancelled?
+// We have claimed here, but it's not actually claimed :(
+
+export enum StoredDrawStates {
   unclaimed = 'UNCLAIMED',
   claimed = 'CLAIMED'
 }
 
 interface StoredDrawResult {
   drawResults: DrawResults
-  state: DrawStates
+  state: StoredDrawStates
 }
 
 /**
@@ -38,7 +41,7 @@ export const setStoredDrawResult = (
   drawPrize: DrawPrize,
   drawId: number,
   drawResults: DrawResults,
-  state: DrawStates
+  state: StoredDrawStates
 ) => {
   localStorage.setItem(
     getKey(usersAddress, drawPrize, drawId),
@@ -59,7 +62,7 @@ export const updateStoredDrawResultState = (
   usersAddress: string,
   drawPrize: DrawPrize,
   drawId: number,
-  state: DrawStates
+  state: StoredDrawStates
 ) => {
   const results = getStoredDrawResult(usersAddress, drawPrize, drawId)
   setStoredDrawResult(

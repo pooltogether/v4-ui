@@ -30,6 +30,8 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimModal } from './PrizeClaimModal'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTranslation } from 'react-i18next'
+import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
+import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 
 interface DrawCardProps {
   drawPrize: DrawPrize
@@ -181,6 +183,7 @@ export enum ClaimState {
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { drawPrize, draw } = props
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.unchecked)
+  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -188,26 +191,43 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const sendTx = useSendTransaction()
   const claimTx = useTransaction(txId)
 
-  const { data: drawResults, isFetched: isDrawResultsFetched } = useUsersDrawResult(
+  const { data: fetchedDrawResults, isFetched: isDrawResultsFetched } = useUsersDrawResult(
     drawPrize,
     draw,
     claimState !== ClaimState.checking
   )
 
+  const [resultsState, storedDrawResults] = useStoredDrawResult(drawPrize, draw.drawId)
+
+  const drawResults = fetchedDrawResults || (storedDrawResults as DrawResults)
+
   useEffect(() => {
-    if (claimState === ClaimState.checking && isDrawResultsFetched) {
+    if (claimState === ClaimState.checking && isDrawResultsFetched && hasCheckedAnimationFinished) {
       setClaimState(ClaimState.unclaimed)
     }
-  }, [drawResults, isDrawResultsFetched])
+  }, [drawResults, isDrawResultsFetched, hasCheckedAnimationFinished])
+
+  useEffect(() => {
+    if (claimState === ClaimState.unchecked) {
+      if (resultsState === StoredDrawStates.unclaimed) {
+        setClaimState(ClaimState.unclaimed)
+      } else if (resultsState === StoredDrawStates.claimed) {
+        setClaimState(ClaimState.claimed)
+      }
+    }
+  }, [resultsState, storedDrawResults])
 
   return (
     <>
       <PrizeAnimation
+        isDrawResultsFetched={isDrawResultsFetched}
+        setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         totalPrizeValueUnformatted={drawResults?.totalValue}
         claimState={claimState}
       />
       <DrawClaimButton
         {...props}
+        hasCheckedAnimationFinished={hasCheckedAnimationFinished}
         drawResults={drawResults}
         claimState={claimState}
         setClaimState={setClaimState}
@@ -227,6 +247,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
 }
 
 interface DrawClaimButtonProps extends DrawPropsWithDetails {
+  hasCheckedAnimationFinished: boolean
   claimState: ClaimState
   drawResults: DrawResults
   setClaimState: (state: ClaimState) => void
@@ -234,7 +255,7 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults } = props
+  const { claimState, setClaimState, openModal, drawResults, hasCheckedAnimationFinished } = props
   const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()

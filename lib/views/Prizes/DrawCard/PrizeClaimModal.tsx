@@ -15,7 +15,7 @@ import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useSignerDrawPrize } from 'lib/hooks/Tsunami/DrawPrizes/useSignerDrawPrize'
-import { DrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
+import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
@@ -48,7 +48,12 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const usersAddress = useUsersAddress()
 
   const onSuccessfulClaim = (tx: Transaction) => {
-    updateStoredDrawResultState(usersAddress, drawPrize, drawResults.drawId, DrawStates.claimed)
+    updateStoredDrawResultState(
+      usersAddress,
+      drawPrize,
+      drawResults.drawId,
+      StoredDrawStates.claimed
+    )
   }
 
   const signerDrawPrize = useSignerDrawPrize(drawPrize)

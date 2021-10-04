@@ -51,16 +51,16 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   if (isFetched && drawsToRender.length === 0) {
     return (
       <PagePadding>
-        <Card>
-          <span>No draws to check!</span>
-          <span>Next draw is {getPrettyDate(nextDrawDate)}</span>
-        </Card>
+        <div className='flex flex-col purple-radial-gradient text-center text-accent-1'>
+          <span className='mt-10'>Nothing to see here!</span>
+          <span className='mb-10'>Come back on {getPrettyDate(nextDrawDate)}</span>
+        </div>
       </PagePadding>
     )
   }
 
   return (
-    <div className='pb-20'>
+    <div className='pb-20 max-w-5xl mx-auto'>
       <DrawCarousel>
         {drawsToRender.map((draw) => (
           <div

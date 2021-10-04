@@ -1,7 +1,11 @@
 import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { DrawStates, getStoredDrawResult, setStoredDrawResult } from 'lib/utils/drawResultsStorage'
+import {
+  StoredDrawStates,
+  getStoredDrawResult,
+  setStoredDrawResult
+} from 'lib/utils/drawResultsStorage'
 import { useQuery } from 'react-query'
 
 // TODO: Optimize this rather than calling for each draw on render
@@ -25,12 +29,13 @@ export const useUsersDrawResult = (drawPrize: DrawPrize, draw: Draw, disabled?: 
 
 const getUsersDrawResult = async (drawPrize: DrawPrize, draw: Draw, usersAddress: string) => {
   const storedResult = getStoredDrawResult(usersAddress, drawPrize, draw.drawId)
+  console.log('Stored result', storedResult)
   if (storedResult) {
     return storedResult.drawResults
   }
 
   const result = await drawPrize.getUsersPrizes(usersAddress, draw)
   // NOTE: Assumes draw is unclaimed.
-  setStoredDrawResult(usersAddress, drawPrize, draw.drawId, result, DrawStates.unclaimed)
+  setStoredDrawResult(usersAddress, drawPrize, draw.drawId, result, StoredDrawStates.unclaimed)
   return result
 }

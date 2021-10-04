@@ -1,7 +1,7 @@
 import { DrawPrize, Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { getStoredDrawResult } from 'lib/utils/drawResultsStorage'
+import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
 
@@ -12,9 +12,10 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * - Valid draw ids
  *  - Draws
  *  - Claimed amounts
- * Filters draws
- * - with non zero claimed amounts
- * - with stored draw results that have a prize of 0
+ * Filters draws with
+ * - non zero claimed amounts
+ * - stored draw results that have a prize of 0
+ * - stored draw results that have been claimed
  * @param drawPrize the Draw Prize to fetch unclaimed draws for
  * @returns
  */
@@ -43,9 +44,11 @@ const getUnclaimedDraws = async (usersAddress: string, drawPrize: DrawPrize): Pr
   let unclaimedDraws = draws.filter((_, index) => claimedAmounts[index].isZero())
 
   // Filter checked draws with no prize to claim
+  // Filter checked draws that are claimed
   unclaimedDraws = unclaimedDraws.filter((draw) => {
     const storedResult = getStoredDrawResult(usersAddress, drawPrize, draw.drawId)
     if (storedResult?.drawResults.totalValue.isZero()) return false
+    if (storedResult?.state === StoredDrawStates.claimed) return false
     return true
   })
 
