@@ -8,7 +8,7 @@ export const BackToV3Banner = (props) => {
   const { t } = useTranslation()
 
   return (
-    <div className='bg-body border-2 border-accent-4 flex flex-col xs:flex-row flex-col-reverse items-center text-center w-full rounded-xl px-4 py-3 xs:py-2 text-accent-1'>
+    <div className='bg-body border-2 border-accent-4 flex xs:flex-row flex-col-reverse items-center text-center w-full rounded-xl px-4 py-3 xs:py-2 text-accent-1'>
       <SquareLink
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}
@@ -22,7 +22,7 @@ export const BackToV3Banner = (props) => {
         />
         {t('backToV3', 'Back to V3')}
       </SquareLink>
-      <h6 className='w-full xs:w-9/12 xs:ml-4 mb-2 xs:mb-0'>
+      <h6 className='text-center mb-2 xs:mb-0'>
         {t('thisIsV4', 'This is V4. Previous pools are on V3.')}
       </h6>
     </div>

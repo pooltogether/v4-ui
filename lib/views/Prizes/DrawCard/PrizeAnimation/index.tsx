@@ -1,12 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import classNames from 'classnames'
 import classnames from 'classnames'
 import { ClaimState } from 'lib/views/Prizes/DrawCard'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 interface PrizeAnimationProps {
   className?: string
   claimState: ClaimState
   totalPrizeValueUnformatted: BigNumber
+  isDrawResultsFetched: boolean
+  setCheckedAnimationFinished: () => void
 }
 
 const VIDEO_VERSION = 'v001'
@@ -16,101 +19,210 @@ enum VideoState {
   transition = 'IN'
 }
 
-enum LootVideo {
+enum VideoClip {
   noPrize = 'NOPRIZE',
   prize = 'PRIZE',
   rest = 'REST',
   reveal = 'REVEAL'
 }
 
-const getVideoSource = (video: LootVideo, videoState: VideoState) =>
-  `/videos/PT_Loot_${video}_${videoState}_${VIDEO_VERSION}.mp4`
+interface Video {
+  state: VideoState
+  clip: VideoClip
+}
+
+const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
+  `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
 
 export const PrizeAnimation = (props: PrizeAnimationProps) => {
-  const { claimState, totalPrizeValueUnformatted, className } = props
+  const {
+    claimState,
+    totalPrizeValueUnformatted,
+    className,
+    isDrawResultsFetched,
+    setCheckedAnimationFinished
+  } = props
 
-  const transitionVideoPlayer = useRef<HTMLVideoElement>(null)
-  const loopVideoPlayer = useRef<HTMLVideoElement>(null)
+  const a1 = useRef<HTMLVideoElement>(null)
+  const a2 = useRef<HTMLVideoElement>(null)
+  const b1 = useRef<HTMLVideoElement>(null)
+  const b2 = useRef<HTMLVideoElement>(null)
+  const c1 = useRef<HTMLVideoElement>(null)
+  const c2 = useRef<HTMLVideoElement>(null)
+  const d1 = useRef<HTMLVideoElement>(null)
+  const d2 = useRef<HTMLVideoElement>(null)
 
-  const [videoQueue, setVideoQueue] = useState<LootVideo[]>([LootVideo.rest])
-  // const currentVideo = videoQueue[0]
-  const pushToVideoQueue = (video: LootVideo) => setVideoQueue((queue) => [...queue, video])
-  const shiftFromVideoQueue = useCallback(() => {
-    const newQueue = [...videoQueue]
-    const video = newQueue.shift()
-    setVideoQueue(newQueue)
-    return video
-  }, [videoQueue])
-
+  const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
   const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.transition)
+  const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
 
-  // Add to video queue on state change
-  useEffect(() => {
-    if (claimState === ClaimState.checking) {
-      pushToVideoQueue(LootVideo.reveal)
-    } else if (claimState === ClaimState.unclaimed || claimState === ClaimState.claimed) {
-      if (totalPrizeValueUnformatted.isZero()) {
-        pushToVideoQueue(LootVideo.noPrize)
-      } else {
-        pushToVideoQueue(LootVideo.prize)
-      }
-    }
-  }, [claimState])
-
-  const onLoopEnd = useCallback(() => {
-    const videoToTransitionTo = shiftFromVideoQueue()
-    if (
-      videoToTransitionTo &&
-      // currentVideo !== videoToTransitionTo &&
-      currentVideoState === VideoState.loop
-    ) {
-      // Video state has changed, set new video and transition in
-      setCurrentVideoState(VideoState.transition)
-
-      transitionVideoPlayer.current.setAttribute(
-        'src',
-        getVideoSource(videoToTransitionTo, VideoState.transition)
-      )
-      loopVideoPlayer.current.setAttribute(
-        'src',
-        getVideoSource(videoToTransitionTo, VideoState.loop)
-      )
-      transitionVideoPlayer.current.load()
-      loopVideoPlayer.current.load()
-      transitionVideoPlayer.current.play()
-    } else {
-      // Video loop ended, play loop again
-      loopVideoPlayer.current.play()
-    }
-  }, [currentVideoState, videoQueue, setVideoQueue])
-
-  const onTransitionEnd = () => {
-    setCurrentVideoState(VideoState.loop)
-    loopVideoPlayer.current.play()
+  const isHidden = (videoClip: VideoClip, videoState: VideoState) => {
+    if (videoClip !== currentVideoClip) return true
+    if (videoState !== currentVideoState) return true
+    return false
   }
 
   return (
-    <div className={classnames(className, 'overflow-hidden flex flex-col justify-end sm:h-96')}>
+    <div
+      className={classnames(className, 'overflow-hidden flex flex-col justify-end xs:h-96 h-80')}
+    >
+      {/* Rest */}
+      {/* Rest Transition */}
       <video
+        className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
+        ref={a1}
         playsInline
-        ref={transitionVideoPlayer}
+        width={380}
         preload='auto'
         autoPlay
         muted
-        onEnded={onTransitionEnd}
-        className={classnames({ hidden: currentVideoState !== VideoState.transition })}
+        onLoadStart={() => {
+          a2.current.load()
+        }}
+        onEnded={() => {
+          console.log('End transitiopn a1')
+          setCurrentVideoState(VideoState.loop)
+          a2.current.play()
+          b1.current.load()
+        }}
       >
-        <source src={getVideoSource(LootVideo.rest, VideoState.transition)} type='video/mp4' />
+        <source src={getVideoSource(VideoClip.rest, VideoState.transition)} type='video/mp4' />
       </video>
+      {/* Rest Loop */}
       <video
+        className={classnames({ ' h-0': isHidden(VideoClip.rest, VideoState.loop) })}
+        ref={a2}
         playsInline
-        ref={loopVideoPlayer}
+        width={380}
         preload='auto'
         muted
-        onEnded={onLoopEnd}
-        className={classnames({ hidden: currentVideoState !== VideoState.loop })}
+        onEnded={() => {
+          if (claimState === ClaimState.checking) {
+            setCurrentVideoClip(VideoClip.reveal)
+            setCurrentVideoState(VideoState.transition)
+            b1.current.play()
+            b2.current.load()
+          } else {
+            a2.current.play()
+          }
+        }}
       >
-        <source src={getVideoSource(LootVideo.rest, VideoState.loop)} type='video/mp4' />
+        <source src={getVideoSource(VideoClip.rest, VideoState.loop)} type='video/mp4' />
+      </video>
+
+      {/* Reveal */}
+      {/* Reveal Transition */}
+      <video
+        className={classnames({
+          ' h-0': isHidden(VideoClip.reveal, VideoState.transition)
+        })}
+        ref={b1}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onLoadStart={() => {
+          b2.current.load()
+        }}
+        onEnded={() => {
+          setCurrentVideoState(VideoState.loop)
+          b2.current.play()
+          c1.current.load()
+          d1.current.load()
+        }}
+      >
+        <source src={getVideoSource(VideoClip.reveal, VideoState.transition)} type='video/mp4' />
+      </video>
+      {/* Reveal Loop */}
+      <video
+        className={classnames({ ' h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
+        ref={b2}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onEnded={() => {
+          if (claimState === ClaimState.checking && !isDrawResultsFetched) {
+            b2.current.play()
+          } else {
+            setCurrentVideoClip(VideoClip.noPrize)
+            setCurrentVideoState(VideoState.transition)
+            c1.current.play()
+            c2.current.load()
+          }
+        }}
+      >
+        <source src={getVideoSource(VideoClip.reveal, VideoState.loop)} type='video/mp4' />
+      </video>
+
+      {/* No Prize */}
+      {/* No Prize Transition */}
+      <video
+        className={classnames({
+          ' h-0': isHidden(VideoClip.noPrize, VideoState.transition)
+        })}
+        ref={c1}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onPlay={() => setCheckedAnimationFinished()}
+        onEnded={() => {
+          setCurrentVideoState(VideoState.loop)
+          c2.current.play()
+        }}
+      >
+        <source src={getVideoSource(VideoClip.noPrize, VideoState.transition)} type='video/mp4' />
+      </video>
+      {/* No Prize Loop */}
+      <video
+        className={classnames({ ' h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
+        ref={c2}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onEnded={() => {
+          console.log('Loop end c2')
+          c2.current.play()
+        }}
+      >
+        <source src={getVideoSource(VideoClip.noPrize, VideoState.loop)} type='video/mp4' />
+      </video>
+
+      {/* Prize */}
+      {/* Prize Transition */}
+      <video
+        className={classnames({
+          ' h-0': isHidden(VideoClip.prize, VideoState.transition)
+        })}
+        ref={d1}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onPlay={() => setCheckedAnimationFinished()}
+        onEnded={() => {
+          setCurrentVideoState(VideoState.loop)
+          d2.current.play()
+        }}
+      >
+        <source src={getVideoSource(VideoClip.prize, VideoState.transition)} type='video/mp4' />
+      </video>
+      {/* Prize Loop */}
+      <video
+        className={classnames({ ' h-0': isHidden(VideoClip.prize, VideoState.loop) })}
+        ref={d2}
+        playsInline
+        width={380}
+        preload='auto'
+        muted
+        onEnded={() => {
+          console.log('Loop end d2')
+          d2.current.play()
+        }}
+      >
+        <source src={getVideoSource(VideoClip.prize, VideoState.loop)} type='video/mp4' />
       </video>
     </div>
   )

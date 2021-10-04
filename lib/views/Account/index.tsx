@@ -31,6 +31,7 @@ import { useMemo } from 'react-modal/node_modules/@types/react'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
+import { PagePadding } from 'lib/components/Layout/PagePadding'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -38,10 +39,18 @@ export const AccountUI = (props) => {
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
 
   if (!isWalletConnected) {
-    return <NoWalletAccountCard />
+    return (
+      <PagePadding>
+        <NoWalletAccountCard />
+      </PagePadding>
+    )
   }
 
-  return <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+  return (
+    <PagePadding>
+      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+    </PagePadding>
+  )
 }
 
 interface AccountCardProps {
