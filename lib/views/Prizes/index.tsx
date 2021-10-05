@@ -6,7 +6,6 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { DrawPrizeDrawList } from './DrawPrizeDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
-import { useValidDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useValidDrawsAndPrizeDistributions'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -28,6 +27,8 @@ export const PrizesUI = (props) => {
       </PagePadding>
     )
   }
+
+  // console.log(drawPrizes[0])
 
   if (!usersAddress) {
     return <NoAccountPrizeUI drawPrize={drawPrizes[0]} prizePool={prizePool} />

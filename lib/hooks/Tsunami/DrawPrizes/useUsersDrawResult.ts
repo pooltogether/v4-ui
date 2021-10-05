@@ -29,7 +29,6 @@ export const useUsersDrawResult = (drawPrize: DrawPrize, draw: Draw, disabled?: 
 
 const getUsersDrawResult = async (drawPrize: DrawPrize, draw: Draw, usersAddress: string) => {
   const storedResult = getStoredDrawResult(usersAddress, drawPrize, draw.drawId)
-  console.log('Stored result', storedResult)
   if (storedResult) {
     return storedResult.drawResults
   }

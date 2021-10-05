@@ -8,10 +8,9 @@ import { useNextDrawDate } from '../useNextDrawDate'
 // TODO: Check that next draw date to refetch works
 
 /**
- * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
- * - Valid draw ids
- *  - Draws
- *  - Claimed amounts
+ * Fetches claimable draw ids, fetches draws & claimed amounts, then filters out claimed draws.
+ * - Fetches claimable draw ids
+ *  - then draws and claimed amounts
  * Filters draws with
  * - non zero claimed amounts
  * - stored draw results that have a prize of 0
@@ -34,13 +33,13 @@ export const useUnclaimedDraws = (drawPrize: DrawPrize) => {
 }
 
 const getUnclaimedDraws = async (usersAddress: string, drawPrize: DrawPrize): Promise<Draw[]> => {
-  const drawIds = await drawPrize.getValidDrawIds()
+  const drawIds = await drawPrize.getClaimableDrawIds()
   const [draws, claimedAmounts] = await Promise.all([
     drawPrize.getDraws(drawIds),
     drawPrize.getUsersClaimedAmounts(usersAddress, drawIds)
   ])
   // Filter draws with claimed amounts
-  // TODO: Ensure claimed amounts are max claimable amount
+  // TODO: Ensure claimed amounts are max claimable amount, probably do this in v4-js-sdk
   let unclaimedDraws = draws.filter((_, index) => claimedAmounts[index].isZero())
 
   // Filter checked draws with no prize to claim

@@ -1,6 +1,6 @@
 import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
-import { useValidDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useValidDrawsAndPrizeDistributions'
+import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import { getPrettyDate } from 'lib/utils/getNextDrawDate'
@@ -16,7 +16,7 @@ interface DrawPrizeDrawListProps {
 export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   const { drawPrize, prizePool } = props
   const { data: drawsAndPrizeDistributions, isFetched } =
-    useValidDrawsAndPrizeDistributions(drawPrize)
+    useUnclaimedDrawsAndPrizeDistributions(drawPrize)
   const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
   const nextDrawDate = useNextDrawDate()
