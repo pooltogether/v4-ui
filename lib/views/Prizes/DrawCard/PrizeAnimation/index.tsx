@@ -64,7 +64,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   return (
     <div
-      className={classnames(className, 'overflow-hidden flex flex-col justify-end xs:h-96 h-80')}
+      className={classnames(className, 'overflow-hidden flex flex-col justify-end h-80 xs:h-96')}
     >
       {/* Rest */}
       {/* Rest Transition */}
@@ -80,6 +80,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
           a2.current.load()
         }}
         onEnded={() => {
+          console.log('End transitiopn a1')
           setCurrentVideoState(VideoState.loop)
           a2.current.play()
           b1.current.load()
@@ -182,6 +183,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         preload='auto'
         muted
         onEnded={() => {
+          console.log('Loop end c2')
           c2.current.play()
         }}
       >
@@ -216,6 +218,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         preload='auto'
         muted
         onEnded={() => {
+          console.log('Loop end d2')
           d2.current.play()
         }}
       >

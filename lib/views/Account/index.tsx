@@ -20,18 +20,16 @@ import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { DrawPrize, Player, PrizePool } from '@pooltogether/v4-js-client'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 import PiggyBank from 'assets/images/piggy-bank.svg'
-import { useMemo } from 'react-modal/node_modules/@types/react'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
+import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -41,7 +39,11 @@ export const AccountUI = (props) => {
   if (!isWalletConnected) {
     return (
       <PagePadding>
-        <NoWalletAccountCard />
+        <Piggy className='mb-8 mx-auto' />
+        <ConnectWalletCard />
+        <div className='mt-4'>
+          <BackToV3Banner />
+        </div>
       </PagePadding>
     )
   }
@@ -49,6 +51,9 @@ export const AccountUI = (props) => {
   return (
     <PagePadding>
       <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+      <div className='mt-4'>
+        <BackToV3Banner />
+      </div>
     </PagePadding>
   )
 }
@@ -68,18 +73,12 @@ const AccountCard = (props: AccountCardProps) => {
 
   return (
     <>
-      <Card>
-        <Piggy />
-        <PrizePoolList
-          className='mt-8'
-          player={player}
-          isFetched={isFetched}
-          prizePools={linkedPrizePool?.prizePools}
-        />
-      </Card>
-      <div className='mt-4'>
-        <BackToV3Banner />
-      </div>
+      <Piggy className='mb-8 mx-auto' />
+      <PrizePoolList
+        player={player}
+        isFetched={isFetched}
+        prizePools={linkedPrizePool?.prizePools}
+      />
     </>
   )
 }
@@ -126,25 +125,27 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
-    <li className='w-full flex flex-col mb-10 last:mb-0'>
-      <div className='w-full flex flex-row justify-between'>
-        <div>
-          <div className='flex flex-row'>
-            <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
-            <span className='ml-2 text-base xs:text-lg'>{`${getNetworkNiceNameByChainId(
-              prizePool.chainId
-            )} Prize Pool`}</span>
+    <li className='w-full flex flex-col mb-4 last:mb-0'>
+      <Card>
+        <div className='w-full flex flex-row justify-between'>
+          <div>
+            <div className='flex flex-row'>
+              <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
+              <span className='ml-2 text-base xs:text-lg'>{`${getNetworkNiceNameByChainId(
+                prizePool.chainId
+              )} Prize Pool`}</span>
+            </div>
           </div>
+          <Balance
+            prizePool={prizePool}
+            isFetched={isFetched}
+            balance={usersBalances?.ticket}
+            ticket={prizePoolTokens?.ticket}
+            token={prizePoolTokens?.token}
+          />
         </div>
-        <Balance
-          prizePool={prizePool}
-          isFetched={isFetched}
-          balance={usersBalances?.ticket}
-          ticket={prizePoolTokens?.ticket}
-          token={prizePoolTokens?.token}
-        />
-      </div>
-      <ManageDepositButtons player={player} prizePool={prizePool} />
+        <ManageDepositButtons player={player} prizePool={prizePool} />
+      </Card>
     </li>
   )
 }
@@ -194,20 +195,6 @@ const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
   )
 }
 
-const NoWalletAccountCard = () => {
-  const { t } = useTranslation()
-
-  return (
-    <Card className='flex flex-col'>
-      <Piggy />
-      <span className='text-xxs font-semibold text-accent-1 font-inter max-w-xs mx-auto my-8 text-center'>
-        Connect a wallet to view your balances and manage deposits
-      </span>
-      <ConnectWalletButton />
-    </Card>
-  )
-}
-
 interface BalanceProps {
   className?: string
   isFetched: boolean
@@ -242,7 +229,7 @@ const Balance = (props: BalanceProps) => {
       <span className='ml-auto text-lg font-bold'>
         {balance.amountPretty} {ticket.symbol}
       </span>
-      <BalanceUsdValue className='ml-auto' {...props} />
+      <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
     </BalanceContainer>
   )
 }
@@ -254,18 +241,18 @@ const BalanceUsdValue = (props: BalanceProps) => {
   const { data: tokenPrice, isFetched: isTokenValueFetched } = usePrizePoolTokenValue(prizePool)
 
   if (!balance) {
-    return <span className={classNames(props.className, 'font-light')}>$--</span>
+    return <span className={classNames(props.className)}>($--)</span>
   } else if (!isTokenValueFetched) {
-    return <span className={classNames(props.className, 'font-light')}>$--</span>
+    return <span className={classNames(props.className)}>($--)</span>
   }
 
   const usdValuePretty = numberWithCommas(balance.amountUnformatted.mul(tokenPrice.usd), {
     decimals: token.decimals
   })
 
-  return <span className={classNames(props.className, 'font-light')}>${usdValuePretty}</span>
+  return <span className={classNames(props.className)}>(${usdValuePretty})</span>
 }
 
-const Piggy = () => (
-  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className='mx-auto' />
+const Piggy = (props) => (
+  <img src={PiggyBank} alt='piggy bank icon' height={92} width={92} className={props.className} />
 )

@@ -24,6 +24,7 @@ const NavLinks: NavLink[] = [
   }
 ]
 
+// TODO: Add a gradient bg to a wrapping div on small screens so it dulls the content the nav covers
 export const Navigation = (props) => {
   const { t } = useTranslation()
   const { className } = props

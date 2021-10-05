@@ -18,8 +18,8 @@ import { parseUnits } from '@ethersproject/units'
 import { numberWithCommas } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
-import { DECIMALS_FOR_DISTRIBUTIONS } from 'lib/constants/drawSettings'
-import { useDrawSettings } from 'lib/hooks/Tsunami/DrawPrizes/useDrawSettings'
+import { DECIMALS_FOR_DISTRIBUTIONS } from 'lib/constants/prizeDistribution'
+import { usePrizeDistribution } from 'lib/hooks/Tsunami/DrawPrizes/usePrizeDistribution'
 import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
@@ -34,6 +34,7 @@ import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
 import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 
 interface DrawCardProps {
+  prizeDistribution: PrizeDistribution
   drawPrize: DrawPrize
   draw: Draw
   hideDrawCard: () => void
@@ -41,28 +42,18 @@ interface DrawCardProps {
 }
 
 export interface DrawPropsWithDetails extends DrawCardProps {
-  drawSettings: PrizeDistribution
   token: Token
   ticket: Token
 }
 
 export const DrawCard = (props: DrawCardProps) => {
-  const { drawPrize, draw } = props
+  const { prizeDistribution } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
-  const {
-    data: drawSettings,
-    isFetched: isDrawSettingsFetched,
-    error
-  } = useDrawSettings(drawPrize, draw)
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
-  if (!isDrawSettingsFetched || !isPrizePoolTokensFetched) {
+  if (!isPrizePoolTokensFetched) {
     return <LoadingCard />
-  }
-
-  if (!drawSettings || error) {
-    return null
   }
 
   return (
@@ -70,13 +61,12 @@ export const DrawCard = (props: DrawCardProps) => {
       <div className='flex flex-col space-y-4'>
         <DrawDetails
           {...props}
-          drawSettings={drawSettings}
+          prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
-          ticket={prizePoolTokens.ticket}
         />
         <DrawClaimSection
           {...props}
-          drawSettings={drawSettings}
+          prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
           ticket={prizePoolTokens.ticket}
         />
@@ -87,7 +77,13 @@ export const DrawCard = (props: DrawCardProps) => {
 
 //////////////////// Draw details ////////////////////
 
-const DrawDetails = (props: DrawPropsWithDetails) => {
+export interface DrawDetailsProps {
+  prizeDistribution: PrizeDistribution
+  draw: Draw
+  token: Token
+}
+
+export const DrawDetails = (props: DrawDetailsProps) => {
   return (
     <div className='w-full flex flex-col space-y-2'>
       <div className='flex flex-row space-x-2'>
@@ -102,21 +98,21 @@ const DrawDetails = (props: DrawPropsWithDetails) => {
   )
 }
 
-const DrawPrizeTotal = (props: DrawPropsWithDetails) => (
+const DrawPrizeTotal = (props: { prizeDistribution: PrizeDistribution; token: Token }) => (
   <div className='text-center sm:text-left'>
     <span className='font-bold text-center text-5xl w-full text-flashy inline'>
-      ${numberWithCommas(props.drawSettings.prize, { decimals: props.token.decimals })}
+      ${numberWithCommas(props.prizeDistribution.prize, { decimals: props.token.decimals })}
     </span>
     <span className='font-bold text-accent-1 leading-none text-xxs ml-2'>in prizes</span>
   </div>
 )
 
-const DrawGrandPrize = (props: DrawPropsWithDetails) => (
+const DrawGrandPrize = (props: { prizeDistribution: PrizeDistribution; token: Token }) => (
   <div className='mx-auto w-full max-w-sm sm:w-auto justify-between sm:justify-start flex flex-row sm:flex-col text-center sm:text-right px-2 sm:px-0'>
     <div>
       <span className='font-bold text-center text-xl sm:text-2xl text-inverse w-full'>
         $
-        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.drawSettings), {
+        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
           decimals: props.token.decimals
         })}
       </span>
@@ -126,7 +122,7 @@ const DrawGrandPrize = (props: DrawPropsWithDetails) => (
   </div>
 )
 
-const ViewPrizesTrigger = (props: DrawPropsWithDetails) => {
+const ViewPrizesTrigger = (props: { prizeDistribution: PrizeDistribution; token: Token }) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
@@ -141,33 +137,29 @@ const ViewPrizesTrigger = (props: DrawPropsWithDetails) => {
   )
 }
 
-const DrawDate = (props: DrawPropsWithDetails) => (
+const DrawDate = (props: { draw: Draw }) => (
   <span className='uppercase font-bold text-accent-1 leading-none text-xxs'>
     {getTimestampStringWithTime(props.draw.timestamp)}
   </span>
 )
 
-const DrawId = (props: DrawPropsWithDetails) => (
+const DrawId = (props: { draw: Draw }) => (
   <span className='uppercase font-bold text-accent-2 opacity-70 leading-none text-xxs'>
     #{props.draw.drawId}
   </span>
 )
 
-const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'label'>) => {
-  const { isOpen, closeModal, drawSettings } = props
-  const { data: prizePool } = useSelectedNetworkPrizePool()
-  const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
-  return (
-    <Modal isOpen={isOpen} closeModal={closeModal} label='Prize breakdown modal'>
-      <PrizeBreakdown
-        className='mt-10 mx-auto'
-        drawSettings={drawSettings}
-        token={prizePoolTokens?.token}
-        isFetched={isFetched}
-      />
-    </Modal>
-  )
-}
+const PrizeBreakdownModal = (
+  props: { prizeDistribution: PrizeDistribution; token: Token } & Omit<ModalProps, 'label'>
+) => (
+  <Modal isOpen={props.isOpen} closeModal={props.closeModal} label='Prize breakdown modal'>
+    <PrizeBreakdown
+      className='mt-10 mx-auto'
+      prizeDistribution={props.prizeDistribution}
+      token={props.token}
+    />
+  </Modal>
+)
 
 //////////////////// Draw claim ////////////////////
 

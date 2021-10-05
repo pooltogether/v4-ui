@@ -13,7 +13,11 @@ export const ConnectWalletButton = (props: ConnectWalletButtonProps) => {
   const { connectWallet } = useOnboard()
   const { t } = useTranslation()
   return (
-    <SquareButton className={className} onClick={() => connectWallet(postConnectCallback)}>
+    <SquareButton
+      className={className}
+      onClick={() => connectWallet(postConnectCallback)}
+      type='button'
+    >
       {t('connectWallet')}
     </SquareButton>
   )

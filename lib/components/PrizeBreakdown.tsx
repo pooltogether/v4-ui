@@ -10,11 +10,10 @@ import classnames from 'classnames'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
-import { ethers } from 'ethers'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 interface PrizeBreakdownProps {
-  drawSettings: PrizeDistribution
+  prizeDistribution: PrizeDistribution
   token: Token
   className?: string
   isFetched?: boolean
@@ -22,8 +21,8 @@ interface PrizeBreakdownProps {
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { drawSettings, className, token, isFetched } = props
-  const { distributions, prize, numberOfPicks } = drawSettings
+  const { prizeDistribution, className, token, isFetched } = props
+  const { distributions, prize, numberOfPicks } = prizeDistribution
   const { t } = useTranslation()
 
   return (
@@ -40,16 +39,16 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
           <PrizeTableHeader>{t('winners')}</PrizeTableHeader>
           <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader>
         </div>
-        <div className='flex flex-col'>
+        <div className='flex flex-col space-y-2'>
           {!isFetched ? (
-            Array.from(Array(10)).map((_, i) => <LoadingPrizeRow key={`loading-row`} />)
+            Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
           ) : (
             <>
               {distributions.map((distribution, i) => (
                 <PrizeTableRow
                   key={`distribution_row_${i}`}
                   index={i}
-                  drawSettings={drawSettings}
+                  prizeDistribution={prizeDistribution}
                   numberOfPicks={numberOfPicks}
                   totalPrize={prize}
                   token={token}
@@ -61,6 +60,10 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
       </div>
     </div>
   )
+}
+
+PrizeBreakdown.defaultProps = {
+  isFetched: true
 }
 
 const LoadingPrizeRow = () => <div className='h-8 rounded-lg w-full bg-body animate-pulse' />
@@ -78,7 +81,7 @@ const PrizeTableHeader = (
 )
 
 interface PrizeTableRowProps {
-  drawSettings: PrizeDistribution
+  prizeDistribution: PrizeDistribution
   index: number
   totalPrize: BigNumber
   numberOfPicks: BigNumber
@@ -89,10 +92,13 @@ interface PrizeTableRowProps {
 // Calculate prize w draw settings
 // Calculate odds
 const PrizeTableRow = (props: PrizeTableRowProps) => {
-  const { index, drawSettings, totalPrize, token } = props
+  const { index, prizeDistribution, totalPrize, token } = props
 
-  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(index, drawSettings)
-  const numberOfWinners = calculateNumberOfPrizesForIndex(drawSettings.bitRangeSize, index)
+  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(
+    index,
+    prizeDistribution
+  )
+  const numberOfWinners = calculateNumberOfPrizesForIndex(prizeDistribution.bitRangeSize, index)
 
   // Hide rows that don't have a prize
   if (prizeForDistributionUnformatted.isZero()) {

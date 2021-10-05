@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { WeeklyPrizeAmountCard, Card } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 
-import { TSUNAMI_USDC_DRAW_SETTINGS } from 'lib/constants/drawSettings'
+import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 // import { getPrettyDate } from 'lib/utils/getNextDrawDate'
@@ -19,7 +19,7 @@ export const UpcomingPrizeCard = (props) => {
     return <Card className={classNames(className, 'flex animate-pulse h-48')} />
   }
 
-  const prizeUnformatted = TSUNAMI_USDC_DRAW_SETTINGS.prize
+  const prizeUnformatted = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize
   const prizePretty = numberWithCommas(prizeUnformatted, {
     decimals: prizePoolTokens.token.decimals
   })
