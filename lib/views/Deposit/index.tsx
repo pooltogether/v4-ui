@@ -1,18 +1,18 @@
 import React from 'react'
 
-import { ContentPanesProps } from 'lib/views/DefaultPage'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { DepositCard } from 'lib/views/Deposit/DepositCard'
 import { PrizeBreakdownCard } from 'lib/views/Deposit/PrizeBreakdownCard'
-import { UpcomingPrizeCard } from 'lib/views/Deposit/UpcomingPrizeCard'
+import { PagePadding } from 'lib/components/Layout/PagePadding'
+import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 
-export const DepositUI = (props: ContentPanesProps) => {
+export const DepositUI = () => {
   return (
-    <div className='flex flex-col space-y-4'>
-      {/* <UpcomingPrizeCard /> */}
-      <DepositCard {...props} />
+    <PagePadding className='flex flex-col space-y-4'>
+      <UpcomingPrizeCard />
+      <DepositCard />
       <BackToV3Banner />
       <PrizeBreakdownCard />
-    </div>
+    </PagePadding>
   )
 }

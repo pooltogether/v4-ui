@@ -1,12 +1,12 @@
 import React from 'react'
 
 import Layout from 'lib/components/Layout'
-import { DefaultPage } from 'lib/views/DefaultPage'
+import { DepositUI } from 'lib/views/Deposit'
 
 export default function IndexPage(props) {
   return (
     <Layout>
-      <DefaultPage />
+      <DepositUI />
     </Layout>
   )
 }

@@ -28,10 +28,10 @@ const allConfig =
       async redirects() {
         return [
           {
-            source: '/prizes',
-            destination: '/prizes/PT-cDAI',
-            permanent: true,
-          }
+            source: '/',
+            destination: '/deposit',
+            permanent: false,
+          },
         ]
       },
       publicRuntimeConfig: {

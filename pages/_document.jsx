@@ -57,7 +57,7 @@ class MyDocument extends Document {
             <meta property='twitter:creator' content={twitterHandle} />
           </>
         </Head>
-        <body className='bg-body'>
+        <body className='bg-body text-inverse'>
           <Meta />
 
           <Main />

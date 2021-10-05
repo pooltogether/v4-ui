@@ -20,17 +20,18 @@ import classNames from 'classnames'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { DECIMALS_FOR_DISTRIBUTIONS } from 'lib/constants/drawSettings'
 import { useDrawSettings } from 'lib/hooks/Tsunami/DrawPrizes/useDrawSettings'
-import { useUsersClaimablePrize } from 'lib/hooks/Tsunami/DrawPrizes/useUsersClaimablePrize'
+import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import React, { useEffect, useState } from 'react'
-import { LoadingCard } from '..'
 import { PrizeAnimation } from 'lib/views/Prizes/DrawCard/PrizeAnimation'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimModal } from './PrizeClaimModal'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTranslation } from 'react-i18next'
+import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
+import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 
 interface DrawCardProps {
   drawPrize: DrawPrize
@@ -159,7 +160,7 @@ const PrizeBreakdownModal = (props: DrawPropsWithDetails & Omit<ModalProps, 'lab
   return (
     <Modal isOpen={isOpen} closeModal={closeModal} label='Prize breakdown modal'>
       <PrizeBreakdown
-        className='mt-10'
+        className='mt-10 mx-auto'
         drawSettings={drawSettings}
         token={prizePoolTokens?.token}
         isFetched={isFetched}
@@ -182,6 +183,7 @@ export enum ClaimState {
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const { drawPrize, draw } = props
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.unchecked)
+  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -189,26 +191,43 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const sendTx = useSendTransaction()
   const claimTx = useTransaction(txId)
 
-  const { data: drawResults, isFetched: isDrawResultsFetched } = useUsersClaimablePrize(
+  const { data: fetchedDrawResults, isFetched: isDrawResultsFetched } = useUsersDrawResult(
     drawPrize,
     draw,
     claimState !== ClaimState.checking
   )
 
+  const [resultsState, storedDrawResults] = useStoredDrawResult(drawPrize, draw.drawId)
+
+  const drawResults = fetchedDrawResults || (storedDrawResults as DrawResults)
+
   useEffect(() => {
-    if (claimState === ClaimState.checking && isDrawResultsFetched) {
+    if (claimState === ClaimState.checking && isDrawResultsFetched && hasCheckedAnimationFinished) {
       setClaimState(ClaimState.unclaimed)
     }
-  }, [drawResults, isDrawResultsFetched])
+  }, [drawResults, isDrawResultsFetched, hasCheckedAnimationFinished])
+
+  useEffect(() => {
+    if (claimState === ClaimState.unchecked) {
+      if (resultsState === StoredDrawStates.unclaimed) {
+        setClaimState(ClaimState.unclaimed)
+      } else if (resultsState === StoredDrawStates.claimed) {
+        setClaimState(ClaimState.claimed)
+      }
+    }
+  }, [resultsState, storedDrawResults])
 
   return (
     <>
       <PrizeAnimation
+        isDrawResultsFetched={isDrawResultsFetched}
+        setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         totalPrizeValueUnformatted={drawResults?.totalValue}
         claimState={claimState}
       />
       <DrawClaimButton
         {...props}
+        hasCheckedAnimationFinished={hasCheckedAnimationFinished}
         drawResults={drawResults}
         claimState={claimState}
         setClaimState={setClaimState}
@@ -228,6 +247,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
 }
 
 interface DrawClaimButtonProps extends DrawPropsWithDetails {
+  hasCheckedAnimationFinished: boolean
   claimState: ClaimState
   drawResults: DrawResults
   setClaimState: (state: ClaimState) => void
@@ -235,7 +255,7 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults } = props
+  const { claimState, setClaimState, openModal, drawResults, hasCheckedAnimationFinished } = props
   const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()
@@ -258,9 +278,9 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     return <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
-  } else {
-    return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
   }
 
-  return null
+  return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
 }
+
+const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-128' />

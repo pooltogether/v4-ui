@@ -1,35 +1,22 @@
-import React, { useCallback, useState } from 'react'
-import {
-  Amount,
-  PreTransactionDetails,
-  Token,
-  Transaction,
-  useTransaction
-} from '@pooltogether/hooks'
-import { Modal, ModalProps, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
-import { DrawPrize, DrawResults, PrizePool } from '@pooltogether/v4-js-client'
+import React, { useCallback } from 'react'
+import { Amount, PreTransactionDetails, Token, Transaction } from '@pooltogether/hooks'
+import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { DrawResults } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { DownArrow } from 'lib/components/DownArrow'
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
-import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
-import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import { InfoList, InfoListItem } from 'lib/components/InfoList'
+import { InfoListItem } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useSignerDrawPrize } from 'lib/hooks/Tsunami/DrawPrizes/useSignerDrawPrize'
+import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
   isOpen: boolean
@@ -58,6 +45,16 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const usersAddress = useUsersAddress()
+
+  const onSuccessfulClaim = (tx: Transaction) => {
+    updateStoredDrawResultState(
+      usersAddress,
+      drawPrize,
+      drawResults.drawId,
+      StoredDrawStates.claimed
+    )
+  }
 
   const signerDrawPrize = useSignerDrawPrize(drawPrize)
   const sendClaimTx = useCallback(async () => {
@@ -67,9 +64,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       method: 'claim',
       callTransaction: async () => signerDrawPrize.claimPrizesByDrawResults(drawResults),
       callbacks: {
-        onSuccess: (tx: Transaction) => {
-          console.log('SUCCESS', tx)
-        },
+        onSuccess: onSuccessfulClaim,
         refetch: () => refetchUsersBalances()
       }
     })

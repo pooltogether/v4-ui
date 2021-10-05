@@ -27,7 +27,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   const { t } = useTranslation()
 
   return (
-    <div className={classnames('flex flex-col', className)}>
+    <div className={classnames('flex flex-col max-w-md text-center', className)}>
       <PrizeWLaurels className='mx-auto' />
       <div className='font-inter font-semibold text-sm capitalize text-accent-1 my-3 text-center'>
         {t('prizeBreakdown')}
