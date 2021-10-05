@@ -179,17 +179,15 @@ const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
         >
           {t('withdraw')}
         </SquareButton>
-        <Link href={`/?tab=deposit&network=${prizePool.chainId}`}>
-          <a className='w-full ml-2'>
-            <SquareButton
-              className='w-full'
-              size={SquareButtonSize.sm}
-              theme={SquareButtonTheme.teal}
-            >
-              {t('deposit')}
-            </SquareButton>
-          </a>
-        </Link>
+
+        <SquareButton
+          href={`/?tab=deposit&network=${prizePool.chainId}`}
+          className='w-full text-center ml-2'
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.teal}
+        >
+          {t('deposit')}
+        </SquareButton>
       </div>
     </>
   )

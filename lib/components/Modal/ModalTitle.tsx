@@ -13,7 +13,7 @@ export const ModalTitle = (props: ModalTitleProps) => {
   return (
     <div className={classNames('flex flex-col mx-auto', className)}>
       <NetworkIcon chainId={chainId} className='mx-auto mb-2' sizeClassName='w-8 h-8' />
-      <div className='mx-auto text-xl font-bold text-white'>{title}</div>
+      <div className='mx-auto text-2xl font-bold text-white'>{title}</div>
     </div>
   )
 }

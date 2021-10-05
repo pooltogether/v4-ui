@@ -338,7 +338,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         <SquareLink
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.purpleOutline}
-          className='text-xs hover:text-white transition-colors'
+          className='text-xs hover:text-white transition-colors text-center'
         >
           {t('viewAccount', 'View account')}
         </SquareLink>
