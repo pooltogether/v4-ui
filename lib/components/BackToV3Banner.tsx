@@ -8,7 +8,7 @@ export const BackToV3Banner = (props) => {
   const { t } = useTranslation()
 
   return (
-    <div className='bg-body border-2 border-accent-4 flex flex-col xs:flex-row flex-col-reverse items-center text-center w-full rounded-xl px-4 py-3 xs:py-2 text-accent-1'>
+    <div className='bg-card border-2 border-accent-4 flex flex-col xs:flex-row flex-col-reverse items-center text-center w-full rounded-xl px-4 py-3 xs:py-2 text-accent-1'>
       <SquareLink
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}

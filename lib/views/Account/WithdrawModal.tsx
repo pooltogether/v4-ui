@@ -538,7 +538,7 @@ const WithdrawWarning = (props) => {
   return (
     <div
       className={classnames(
-        'w-full py-1 px-4 text-xxs text-center rounded bg-orange-darkened text-orange',
+        'w-full py-1 px-4 text-xxs text-center rounded-lg bg-orange-darkened text-orange',
         props.className
       )}
     >

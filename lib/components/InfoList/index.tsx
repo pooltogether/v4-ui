@@ -2,7 +2,9 @@ import classnames from 'classnames'
 
 export const InfoList = (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement>
-) => <ul className={classnames('rounded py-4 px-8 bg-body', props.className)}>{props.children}</ul>
+) => (
+  <ul className={classnames('rounded-lg py-4 px-4 bg-body', props.className)}>{props.children}</ul>
+)
 
 interface InfoListItemProps {
   className?: string

@@ -14,7 +14,7 @@ export const Navigation = (props) => {
       className={classnames(
         className,
         'mx-auto mb-6',
-        'sm:absolute sm:-mt-1 sm:bottom-auto',
+        'sm:absolute sm:bottom-auto',
         'max-w-max flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter',
         'fixed bottom-0 inset-x-0 z-20 shadow-lg'
       )}
@@ -50,10 +50,10 @@ const NavTab = (props) => {
     <a
       {...buttonProps}
       className={classnames(
-        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 py-1 flex flex-row',
-        'text-xs hover:text-inverse active:bg-tertiary',
-        { 'bg-tertiary text-inverse': isSelected },
-        { 'text-accent-1 hover:bg-light-purple-10': !isSelected }
+        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
+        'text-xs hover:text-white active:bg-purple',
+        { 'bg-purple text-white': isSelected },
+        { 'text-accent-4 hover:bg-light-purple-10': !isSelected }
       )}
       onClick={() => setSelectedPage(page)}
     />
