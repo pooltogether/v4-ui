@@ -1,49 +1,14 @@
-import { Token } from '@pooltogether/hooks'
 import { Card } from '@pooltogether/react-components'
-import {
-  Draw,
-  DrawPrize,
-  PrizeDistribution,
-  PrizePool,
-  calculatePrizeForDistributionIndex
-} from '@pooltogether/v4-js-client'
+import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
-import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
-import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
-import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
-import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useClaimableDrawsAndPrizeDistributions'
-import { usePrizeDistribution } from 'lib/hooks/Tsunami/DrawPrizes/usePrizeDistribution'
-import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { getPrettyDate } from 'lib/utils/getNextDrawDate'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { DrawDetails, DrawDetailsProps } from './DrawCard'
 
-interface NoAccountPrizeUIProps {
-  drawPrize: DrawPrize
-  prizePool: PrizePool
-}
-
-export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
-  const { drawPrize, prizePool } = props
-
-  const nextDrawDate = useNextDrawDate()
-
-  return (
-    <PagePadding className='flex flex-col space-y-4'>
-      <PrizeWLaurels className='mx-auto mb-8' />
-      <ConnectWalletCard className='mb-8' />
-      <PastPrizeList {...props} />
-    </PagePadding>
-  )
-}
-
-const PastPrizeList = (props: NoAccountPrizeUIProps) => {
+export const HistoricPrizesList = (props: { drawPrize: DrawPrize; prizePool: PrizePool }) => {
   const { prizePool, drawPrize } = props
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -53,7 +18,7 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (
       <>
-        <PastPrizesHeader />
+        <HistoricPrizesListHeader className='mb-4' />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
@@ -62,10 +27,9 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
       </>
     )
   }
-
   return (
     <>
-      <PastPrizesHeader />
+      <HistoricPrizesListHeader className='mb-4' />{' '}
       <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
           <PastPrizeListItem
@@ -87,7 +51,7 @@ const PastPrizeListItem = (props: DrawDetailsProps) => (
   </li>
 )
 
-const PastPrizesHeader = (props: { className?: string }) => {
+const HistoricPrizesListHeader = (props: { className?: string }) => {
   const { t } = useTranslation()
   return (
     <div

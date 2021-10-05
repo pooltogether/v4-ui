@@ -36,26 +36,20 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   )
 
   if (!isFetched) {
-    return (
-      <PagePadding>
-        <LoadingCard />
-      </PagePadding>
-    )
+    return <LoadingCard />
   }
 
   if (isFetched && drawsAndPrizeDistributionsToRender.length === 0) {
     return (
-      <PagePadding>
-        <div className='flex flex-col purple-radial-gradient text-center text-accent-1'>
-          <span className='mt-10'>Nothing to see here!</span>
-          <span className='mb-10'>Come back on {getPrettyDate(nextDrawDate)}</span>
-        </div>
-      </PagePadding>
+      <div className='flex flex-col purple-radial-gradient text-center text-accent-1 mx-2'>
+        <span className='mt-10'>Nothing to see here!</span>
+        <span className='mb-10'>Come back on {getPrettyDate(nextDrawDate)}</span>
+      </div>
     )
   }
 
   return (
-    <div className='pb-20 max-w-5xl mx-auto'>
+    <div className='max-w-5xl mx-auto'>
       <DrawCarousel>
         {drawsAndPrizeDistributionsToRender.map((drawAndPrizeDistribution) => (
           <div
@@ -83,4 +77,6 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   )
 }
 
-const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-128' />
+const LoadingCard = () => (
+  <div className='w-full rounded-xl animate-pulse bg-card h-128 mx-2 mb-12' />
+)
