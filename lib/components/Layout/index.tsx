@@ -1,12 +1,14 @@
 import React from 'react'
-import { LoadingDots, LoadingScreen } from '@pooltogether/react-components'
+import { LoadingLogo, LoadingScreen } from '@pooltogether/react-components'
 import classNames from 'classnames'
 
 import { PageHeader } from 'lib/components/Layout/PageHeader'
 import { useInitialLoad } from 'lib/hooks/useInitialLoad'
 
-interface LayoutProps
-  extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {}
+interface LayoutProps {
+  className?: string
+  children: React.ReactNode
+}
 
 const Layout = (props: LayoutProps) => {
   const { children, className, ...containerProps } = props
@@ -16,16 +18,18 @@ const Layout = (props: LayoutProps) => {
   // People can't see the settings to turn on testnet mode.
   if (!isInitialized) {
     return (
-      <div {...containerProps} className={classNames(className, '')}>
+      <div className={classNames(className, 'h-screen')}>
         <PageHeader />
-        <LoadingDots />
+        <div className='flex flex-col h-screen absolute top-0 w-screen'>
+          <LoadingLogo className='m-auto' />
+        </div>
       </div>
     )
   }
 
   return (
     <LoadingScreen isInitialized={isInitialized}>
-      <div {...containerProps} className={classNames(className, '')}>
+      <div className={classNames(className, 'h-screen')}>
         <PageHeader />
         {children}
       </div>
