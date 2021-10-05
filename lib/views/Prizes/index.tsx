@@ -6,6 +6,7 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { DrawPrizeDrawList } from './DrawPrizeDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
+import { HistoricPrizesList } from './HistoricPrizesList'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -28,16 +29,16 @@ export const PrizesUI = (props) => {
     )
   }
 
-  // console.log(drawPrizes[0])
-
   if (!usersAddress) {
     return <NoAccountPrizeUI drawPrize={drawPrizes[0]} prizePool={prizePool} />
   }
 
   return (
     <>
-      <SelectedNetworkToggle className='mx-auto mb-8' />
       <DrawPrizeDrawList drawPrize={drawPrizes[0]} prizePool={prizePool} />
+      <PagePadding>
+        <HistoricPrizesList drawPrize={drawPrizes[0]} prizePool={prizePool} />
+      </PagePadding>
     </>
   )
 }

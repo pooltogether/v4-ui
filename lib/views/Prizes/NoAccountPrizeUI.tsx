@@ -13,6 +13,7 @@ import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
+import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useClaimableDrawsAndPrizeDistributions'
 import { usePrizeDistribution } from 'lib/hooks/Tsunami/DrawPrizes/usePrizeDistribution'
 import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
@@ -47,7 +48,7 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useUnclaimedDrawsAndPrizeDistributions(drawPrize)
+    useClaimableDrawsAndPrizeDistributions(drawPrize)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (

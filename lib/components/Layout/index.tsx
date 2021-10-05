@@ -29,7 +29,7 @@ const Layout = (props: LayoutProps) => {
 
   return (
     <LoadingScreen isInitialized={isInitialized}>
-      <div className={classNames(className, 'h-screen')}>
+      <div className={classNames(className, '')}>
         <PageHeader />
         {children}
       </div>
