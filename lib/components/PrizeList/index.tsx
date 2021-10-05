@@ -2,6 +2,7 @@ import { Token } from '@pooltogether/hooks'
 import { PrizeAwardable } from '@pooltogether/v4-js-client'
 import classnames from 'classnames'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
+import { sortByBigNumber } from 'lib/utils/sortByBigNumber'
 import ordinal from 'ordinal'
 
 interface PrizeListProps
@@ -18,12 +19,15 @@ export const PrizeList = (props: PrizeListProps) => {
     <ul {...ulProps} className={classnames(className, 'space-y-4 max-h-80 overflow-y-auto')}>
       {!prizes &&
         Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
-      {prizes?.map((prize) => (
+      {prizes?.sort(sortByPrizeAmount).map((prize) => (
         <PrizeRow key={prize.pick.toString()} prize={prize} token={token} ticket={ticket} />
       ))}
     </ul>
   )
 }
+
+const sortByPrizeAmount = (a: PrizeAwardable, b: PrizeAwardable) =>
+  sortByBigNumber(a.amount, b.amount)
 
 interface PrizeRowProps {
   prize: PrizeAwardable

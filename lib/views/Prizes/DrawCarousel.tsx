@@ -32,6 +32,7 @@ export const DrawCarousel = (props: DrawCarouselProps) => {
       useKeyboardArrows
       autoPlay={false}
       showStatus={false}
+      showThumbs={false}
       swipeScrollTolerance={10}
       // NOTE: Temporary work around, make auto play changes super high.
       // Waiting to update to a version > 3.2.21.
@@ -65,5 +66,8 @@ const ArrowPrev = (clickHandler: () => void, hasNext: boolean, label: string) =>
 }
 
 const Arrow = (props: { icon: string }) => (
-  <FeatherIcon icon={props.icon} className='relative w-6 h-6 sm:w-8 sm:h-8 mr-1 inline-block' />
+  <FeatherIcon
+    icon={props.icon}
+    className='relative w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 mr-1 inline-block hover:opacity-70 transition'
+  />
 )

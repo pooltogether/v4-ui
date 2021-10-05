@@ -64,7 +64,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   return (
     <div
-      className={classnames(className, 'overflow-hidden flex flex-col justify-end xs:h-96 h-80')}
+      className={classnames(className, 'overflow-hidden flex flex-col justify-end h-80 xs:h-96')}
     >
       {/* Rest */}
       {/* Rest Transition */}

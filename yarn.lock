@@ -2373,9 +2373,9 @@
   integrity sha512-hxjvceBDYK0WwWYpVaRDFES17JdmgNRwZSmVEt7FFU0mI98mbxEImJk+ehRaIudm6DQfbGXWKz4RP0L8Fyf2jw==
 
 "@pooltogether/v4-js-client@^0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.3.tgz#93407b0d4916966446edb391147be65dba12ca98"
-  integrity sha512-iUqu8RIDTdAnXZPQF37RobvibX+boblC+7pYGNgFvczQpwgRH3kmcrY3Z2DeU7rjepgGa0kZX1eVGi5knuJlHA==
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.4.tgz#b21a69094a3059d545baca29c7634dbe9bdd1a08"
+  integrity sha512-39qei/+5t/dUVCavTHWe6I1X75q5+ACo9qtxvv9uIaVIG7KewueFiPWUinF1d+lyPbC+2ePQZ+VudEnos4RTWQ==
   dependencies:
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/draw-calculator-js" "^1.0.0-beta.25"
