@@ -175,7 +175,7 @@ export const DepositForm = (props: DepositFormProps) => {
           />
         </div> */}
 
-        <ErrorsBox errors={isDirty ? errors : null} />
+        <ErrorsBox errors={isDirty ? errors : null} className='h-20' />
 
         <BottomButton
           className='mt-2 w-full'

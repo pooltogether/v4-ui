@@ -1,29 +1,9 @@
 import { Token, useTransaction } from '@pooltogether/hooks'
-import {
-  Card,
-  Modal,
-  ModalProps,
-  SquareButton,
-  ThemedClipSpinner
-} from '@pooltogether/react-components'
-import {
-  DrawPrize,
-  Draw,
-  PrizeDistribution,
-  DrawResults,
-  calculatePrizeForDistributionIndex
-} from '@pooltogether/v4-js-client'
-import { BigNumber } from '@ethersproject/bignumber'
-import { parseUnits } from '@ethersproject/units'
-import { numberWithCommas } from '@pooltogether/utilities'
-import classNames from 'classnames'
-import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
-import { DECIMALS_FOR_DISTRIBUTIONS } from 'lib/constants/prizeDistribution'
-import { usePrizeDistribution } from 'lib/hooks/Tsunami/DrawPrizes/usePrizeDistribution'
+import { Card, SquareButton, ThemedClipSpinner } from '@pooltogether/react-components'
+import { DrawPrize, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
 import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
-import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import React, { useEffect, useState } from 'react'
 import { PrizeAnimation } from 'lib/views/Prizes/DrawCard/PrizeAnimation'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -32,6 +12,8 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useTranslation } from 'react-i18next'
 import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
 import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
+import { DrawDetails } from './DrawDetails'
+import FeatherIcon from 'feather-icons-react'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
@@ -57,7 +39,7 @@ export const DrawCard = (props: DrawCardProps) => {
   }
 
   return (
-    <Card>
+    <Card className='relative'>
       <div className='flex flex-col space-y-4'>
         <DrawDetails
           {...props}
@@ -75,92 +57,6 @@ export const DrawCard = (props: DrawCardProps) => {
   )
 }
 
-//////////////////// Draw details ////////////////////
-
-export interface DrawDetailsProps {
-  prizeDistribution: PrizeDistribution
-  draw: Draw
-  token: Token
-}
-
-export const DrawDetails = (props: DrawDetailsProps) => {
-  return (
-    <div className='w-full flex flex-col space-y-2'>
-      <div className='flex flex-row space-x-2'>
-        <DrawId {...props} />
-        <DrawDate {...props} />
-      </div>
-      <div className='flex flex-col sm:flex-row sm:space-x-2 justify-between'>
-        <DrawPrizeTotal {...props} />
-        <DrawGrandPrize {...props} />
-      </div>
-    </div>
-  )
-}
-
-const DrawPrizeTotal = (props: { prizeDistribution: PrizeDistribution; token: Token }) => (
-  <div className='text-center sm:text-left'>
-    <span className='font-bold text-center text-5xl w-full text-flashy inline'>
-      ${numberWithCommas(props.prizeDistribution.prize, { decimals: props.token.decimals })}
-    </span>
-    <span className='font-bold text-accent-1 leading-none text-xxs ml-2'>in prizes</span>
-  </div>
-)
-
-const DrawGrandPrize = (props: { prizeDistribution: PrizeDistribution; token: Token }) => (
-  <div className='mx-auto w-full max-w-sm sm:w-auto justify-between sm:justify-start flex flex-row sm:flex-col text-center sm:text-right px-2 sm:px-0'>
-    <div>
-      <span className='font-bold text-center text-xl sm:text-2xl text-inverse w-full'>
-        $
-        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
-          decimals: props.token.decimals
-        })}
-      </span>
-      <span className='font-bold text-accent-1 leading-none text-xxs ml-2'>grand prize</span>
-    </div>
-    <ViewPrizesTrigger {...props} />
-  </div>
-)
-
-const ViewPrizesTrigger = (props: { prizeDistribution: PrizeDistribution; token: Token }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  return (
-    <>
-      <button
-        className='text-xs ml-auto transition-colors text-accent-1 hover:text-inverse'
-        onClick={() => setIsOpen(true)}
-      >
-        View prizes
-      </button>
-      <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
-    </>
-  )
-}
-
-const DrawDate = (props: { draw: Draw }) => (
-  <span className='uppercase font-bold text-accent-1 leading-none text-xxs'>
-    {getTimestampStringWithTime(props.draw.timestamp)}
-  </span>
-)
-
-const DrawId = (props: { draw: Draw }) => (
-  <span className='uppercase font-bold text-accent-2 opacity-70 leading-none text-xxs'>
-    #{props.draw.drawId}
-  </span>
-)
-
-const PrizeBreakdownModal = (
-  props: { prizeDistribution: PrizeDistribution; token: Token } & Omit<ModalProps, 'label'>
-) => (
-  <Modal isOpen={props.isOpen} closeModal={props.closeModal} label='Prize breakdown modal'>
-    <PrizeBreakdown
-      className='mt-10 mx-auto'
-      prizeDistribution={props.prizeDistribution}
-      token={props.token}
-    />
-  </Modal>
-)
-
 //////////////////// Draw claim ////////////////////
 
 // TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
@@ -173,7 +69,7 @@ export enum ClaimState {
 }
 
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
-  const { drawPrize, draw } = props
+  const { drawPrize, draw, hideDrawCard } = props
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.unchecked)
   const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
@@ -188,7 +84,6 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
     draw,
     claimState !== ClaimState.checking
   )
-
   const [resultsState, storedDrawResults] = useStoredDrawResult(drawPrize, draw.drawId)
 
   const drawResults = fetchedDrawResults || (storedDrawResults as DrawResults)
@@ -211,6 +106,9 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
 
   return (
     <>
+      {claimState === ClaimState.unclaimed && drawResults.totalValue.isZero() && (
+        <HideCardButton hideDrawCard={hideDrawCard} />
+      )}
       <PrizeAnimation
         isDrawResultsFetched={isDrawResultsFetched}
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
@@ -237,6 +135,14 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
     </>
   )
 }
+
+const HideCardButton = (props: { hideDrawCard: () => void }) => (
+  <FeatherIcon
+    icon='x'
+    className='absolute top-0 right-4 w-6 h-6 opacity-75 hover:opacity-100 transition-opacity cursor-pointer'
+    onClick={props.hideDrawCard}
+  />
+)
 
 interface DrawClaimButtonProps extends DrawPropsWithDetails {
   hasCheckedAnimationFinished: boolean
