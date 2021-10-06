@@ -1,5 +1,6 @@
 import React from 'react'
 import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
 import { SquareLink, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
 
 import { useTranslation } from 'react-i18next'
@@ -10,10 +11,11 @@ export const BackToV3Banner = (props) => {
   return (
     <div className='bg-card flex flex-col xs:flex-row flex-col-reverse items-center text-center w-full rounded-xl px-4 py-3 xs:py-2 text-accent-1'>
       <SquareLink
+        Link={Link}
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}
         href='https://app.pooltogether.com'
-        className='items-center block xs:inline xs:mr-auto '
+        className='items-center block xs:inline xs:mr-auto'
       >
         <FeatherIcon
           icon={'arrow-left'}

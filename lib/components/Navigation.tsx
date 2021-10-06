@@ -61,10 +61,12 @@ const NavTab = (props: NavTabProps) => {
           'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
           'text-xs hover:text-white active:bg-purple',
           { 'bg-purple text-white': isSelected },
-          { 'text-accent-4 hover:bg-light-purple-10': !isSelected }
+          { 'hover:bg-tertiary': !isSelected }
         )}
       >
-        {t(i18nKey)}
+        <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
+          {t(i18nKey)}
+        </span>
       </a>
     </Link>
   )

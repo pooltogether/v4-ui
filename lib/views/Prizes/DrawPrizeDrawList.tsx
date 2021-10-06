@@ -15,12 +15,16 @@ interface DrawPrizeDrawListProps {
 
 export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   const { drawPrize, prizePool } = props
-  const { data: drawsAndPrizeDistributions, isFetched } =
-    useUnclaimedDrawsAndPrizeDistributions(drawPrize)
+  const {
+    error,
+    data: drawsAndPrizeDistributions,
+    isFetched
+  } = useUnclaimedDrawsAndPrizeDistributions(drawPrize)
   const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
   const nextDrawDate = useNextDrawDate()
 
+  console.error(error)
   // Filter out manually hidden draw ids from this session
   const drawsAndPrizeDistributionsToRender = useMemo(
     () =>

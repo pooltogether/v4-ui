@@ -1,14 +1,15 @@
 import { Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
+  SquareLink,
   SquareButton,
   SquareButtonTheme,
   SquareButtonSize
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
-import Link from 'next/link'
 import React from 'react'
+import Link from 'next/link'
 
 import { ClipBoardWithCheckMark } from 'lib/components/Images/ClipBoardWithCheckMark'
 
@@ -16,10 +17,11 @@ interface ModalTransactionSubmittedProps {
   className?: string
   chainId: number
   tx: Transaction
+  closeModal: Function
 }
 
 export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps) => {
-  const { chainId, tx, className } = props
+  const { chainId, tx, className, closeModal } = props
   const { t } = useTranslation()
 
   const url = formatBlockExplorerTxUrl(tx?.hash, chainId)
@@ -27,21 +29,29 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
   return (
     <div className={classNames('flex flex-col', className)}>
       <ClipBoardWithCheckMark className='mx-auto mb-4 w-10' />
-      <span className='text-xxs text-accent-1 mb-8 mx-auto'>
+
+      <span className='text-sm text-accent-1 mb-8 mx-auto'>
         {t('transactionSent', 'Transaction sent')}
       </span>
 
-      <Link href={url}>
-        <a className='w-full' target='_blank' rel='noreferrer'>
-          <SquareButton
-            className='w-full'
-            theme={SquareButtonTheme.tealOutline}
-            size={SquareButtonSize.sm}
-          >
-            {t('viewReceipt', 'View receipt')}
-          </SquareButton>
-        </a>
-      </Link>
+      <SquareLink
+        Link={Link}
+        target='_blank'
+        href={url}
+        theme={SquareButtonTheme.tealOutline}
+        size={SquareButtonSize.md}
+        className='w-full text-center'
+      >
+        {t('viewReceipt', 'View receipt')}
+      </SquareLink>
+      <SquareButton
+        onClick={closeModal}
+        theme={SquareButtonTheme.purpleOutline}
+        size={SquareButtonSize.sm}
+        className='w-full text-center mt-4'
+      >
+        {t('close', 'Close')}
+      </SquareButton>
     </div>
   )
 }

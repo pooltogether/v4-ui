@@ -1,7 +1,8 @@
 import { Transaction } from '@pooltogether/hooks'
+import Link from 'next/link'
 import {
   formatBlockExplorerTxUrl,
-  SquareButton,
+  SquareLink,
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
@@ -9,7 +10,6 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { InfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
-import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 import React from 'react'
 
 interface ModalApproveGateProps {
@@ -32,16 +32,15 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         <p className='mb-4 text-accent-1 text-center mx-8'>
           Once your approval transaction has finished successfully you can deposit.
         </p>
-        <a
-          className='w-full mt-6'
-          target='_blank'
-          rel='noopener noreferrer'
+        <SquareLink
+          Link={Link}
           href={blockExplorerUrl}
+          className='w-full mt-6'
+          theme={SquareButtonTheme.purple}
+          target='_blank'
         >
-          <SquareButton className='w-full' theme={SquareButtonTheme.purple}>
-            View on Explorer
-          </SquareButton>
-        </a>
+          View on Explorer
+        </SquareLink>
       </div>
     )
   }

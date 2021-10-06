@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { Amount, Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
@@ -21,7 +22,6 @@ import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
-import Link from 'next/link'
 
 export const DepositCard = () => {
   const router = useRouter()
@@ -334,15 +334,15 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       >
         {t('depositMore', 'Deposit more')}
       </SquareButton>
-      <Link href='/account'>
-        <SquareLink
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.purpleOutline}
-          className='text-xs hover:text-white transition-colors'
-        >
-          {t('viewAccount', 'View account')}
-        </SquareLink>
-      </Link>
+      <SquareLink
+        href='/account'
+        Link={Link}
+        size={SquareButtonSize.sm}
+        theme={SquareButtonTheme.purpleOutline}
+        className='text-xs hover:text-white transition-colors text-center'
+      >
+        {t('viewAccount', 'View account')}
+      </SquareLink>
     </div>
   )
 }
