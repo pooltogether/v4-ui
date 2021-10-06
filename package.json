@@ -126,7 +126,6 @@
     "react-tooltip": "^4.2.21",
     "react-wizard-primitive": "^2.5.0",
     "remark-gfm": "^1.0.0",
-    "request": "2.88.2",
     "rollup": "2.55.0",
     "scheduler": "^0.20.2",
     "solidity-validator": "^0.5.2",

@@ -17,7 +17,7 @@ interface ModalTransactionSubmittedProps {
   className?: string
   chainId: number
   tx: Transaction
-  closeModal: Function
+  closeModal: any
 }
 
 export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps) => {

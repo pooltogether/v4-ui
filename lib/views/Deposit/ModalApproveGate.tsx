@@ -3,6 +3,7 @@ import Link from 'next/link'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
+  SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
