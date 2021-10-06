@@ -1,10 +1,11 @@
+import React, { useMemo, useState } from 'react'
 import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
-import { PagePadding } from 'lib/components/Layout/PagePadding'
+import { useTranslation } from 'react-i18next'
+
 import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import { getPrettyDate } from 'lib/utils/date'
-import React, { useMemo, useState } from 'react'
 import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
 
@@ -15,6 +16,7 @@ interface DrawPrizeDrawListProps {
 
 export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   const { drawPrize, prizePool } = props
+  const { t } = useTranslation()
   const {
     error,
     data: drawsAndPrizeDistributions,
@@ -44,8 +46,12 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   if (isFetched && drawsAndPrizeDistributionsToRender.length === 0) {
     return (
       <div className='flex flex-col purple-radial-gradient text-center text-accent-1 mx-auto px-2 max-w-xl mb-12'>
-        <span className='mt-10'>No draws left to check!</span>
-        <span className='mb-10'>Come back on {getPrettyDate(nextDrawDate)}</span>
+        <span className='mt-10'>{t('noDrawsLeftToCheck', 'No draws left to check!')}</span>
+        <span className='mb-10'>
+          {t('comeBackOnDate', 'Come back on {{date}}', {
+            date: getPrettyDate(nextDrawDate)
+          })}
+        </span>
       </div>
     )
   }

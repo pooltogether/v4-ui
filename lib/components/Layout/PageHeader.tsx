@@ -24,8 +24,8 @@ export enum ContentPaneState {
 
 export const PageHeader = (props) => (
   <PageHeaderContainer Link={Link} as='/' href='/' className='z-20 sticky top-0 bg-body'>
-    <UsersAccount />
     <Navigation />
+    <UsersAccount />
     <Settings />
   </PageHeaderContainer>
 )
@@ -34,7 +34,7 @@ const Settings = () => {
   const { t } = useTranslation()
 
   return (
-    <SettingsContainer t={t} className='ml-1 my-auto' title='Settings'>
+    <SettingsContainer t={t} className='ml-1' title='Settings'>
       <LanguagePicker />
       <ThemeSettingsItem t={t} />
       <TestnetSettingsItem t={t} />
@@ -69,7 +69,8 @@ const UsersAccount = () => {
     isOnboardReady,
     address: usersAddress,
     network: chainId,
-    wallet
+    wallet,
+    network
   } = useOnboard()
 
   const supportedNetworks = useSupportedNetworks()
@@ -83,6 +84,7 @@ const UsersAccount = () => {
         supportedNetworks={supportedNetworks}
         className='mx-1 my-auto'
         t={t}
+        network={network}
         wallet={wallet}
         chainId={chainId}
         isWalletConnected={isWalletConnected}
