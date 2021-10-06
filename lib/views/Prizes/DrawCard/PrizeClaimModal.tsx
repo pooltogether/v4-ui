@@ -157,7 +157,7 @@ const ModalWithStyles = (props: ModalWithStylesProps) => (
     noSize
     noBgColor
     noPad
-    className='h-full sm:h-auto sm:max-w-sm shadow-3xl bg-new-modal px-8 py-10'
+    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-8 py-10'
     label={`Confirm Claim Modal`}
     {...props}
   />

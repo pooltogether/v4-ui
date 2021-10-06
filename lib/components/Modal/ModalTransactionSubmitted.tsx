@@ -9,6 +9,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import React from 'react'
+import Link from 'next/link'
 
 import { ClipBoardWithCheckMark } from 'lib/components/Images/ClipBoardWithCheckMark'
 
@@ -34,6 +35,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
       </span>
 
       <SquareLink
+        Link={Link}
         target='_blank'
         href={url}
         theme={SquareButtonTheme.tealOutline}
@@ -46,7 +48,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
         onClick={closeModal}
         theme={SquareButtonTheme.purpleOutline}
         size={SquareButtonSize.sm}
-        className='w-full text-center'
+        className='w-full text-center mt-4'
       >
         {t('close', 'Close')}
       </SquareButton>

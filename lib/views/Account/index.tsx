@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import Link from 'next/link'
 import classNames from 'classnames'
+import Link from 'next/link'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Card,
   LoadingDots,
   NetworkIcon,
+  SquareLink,
   SquareButton,
   SquareButtonSize,
   SquareButtonTheme,
@@ -27,7 +28,6 @@ import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePool
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 import PiggyBank from 'assets/images/piggy-bank.svg'
-import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 
@@ -180,14 +180,15 @@ const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
           {t('withdraw')}
         </SquareButton>
 
-        <SquareButton
-          href={`/?tab=deposit&network=${prizePool.chainId}`}
+        <SquareLink
+          Link={Link}
+          href={`/deposit&network=${prizePool.chainId}`}
           className='w-full text-center ml-2'
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.teal}
         >
           {t('deposit')}
-        </SquareButton>
+        </SquareLink>
       </div>
     </>
   )

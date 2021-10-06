@@ -60,7 +60,7 @@
     "@pooltogether/etherplex": "^1.1.1",
     "@pooltogether/hooks": "^1.1.9",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "^1.1.15",
+    "@pooltogether/react-components": "^1.1.16",
     "@pooltogether/utilities": "^0.1.5",
     "@pooltogether/v4-js-client": "^0.1.3",
     "@pooltogether/v4-pool-data": "^0.1.0",

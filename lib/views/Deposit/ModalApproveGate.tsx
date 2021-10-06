@@ -1,4 +1,5 @@
 import { Transaction } from '@pooltogether/hooks'
+import Link from 'next/link'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
@@ -9,7 +10,6 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { InfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
-import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 import React from 'react'
 
 interface ModalApproveGateProps {
@@ -33,6 +33,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           Once your approval transaction has finished successfully you can deposit.
         </p>
         <SquareLink
+          Link={Link}
           href={blockExplorerUrl}
           className='w-full mt-6'
           theme={SquareButtonTheme.purple}
