@@ -86,7 +86,6 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
 
   const storedDrawResult = getStoredDrawResult(usersAddress, drawPrize, draw.drawId)
 
-  console.log('storedDrawResult', storedDrawResult)
   const userHasntClaimed = amountUnformatted.isZero()
   const userHasAmountToClaim = !storedDrawResult?.drawResults.totalValue.isZero()
 

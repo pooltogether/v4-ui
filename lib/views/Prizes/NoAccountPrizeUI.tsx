@@ -1,28 +1,23 @@
-import { Token } from '@pooltogether/hooks'
 import { Card } from '@pooltogether/react-components'
-import {
-  Draw,
-  DrawPrize,
-  PrizeDistribution,
-  PrizePool,
-  calculatePrizeForDistributionIndex
-} from '@pooltogether/v4-js-client'
+import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
-import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
+import { useAtom } from 'jotai'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useClaimableDrawsAndPrizeDistributions'
-import { usePrizeDistribution } from 'lib/hooks/Tsunami/DrawPrizes/usePrizeDistribution'
-import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { getPrettyDate } from 'lib/utils/getNextDrawDate'
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { DrawDetails, DrawDetailsProps } from './DrawCard'
+import {
+  DrawDate,
+  DrawDetailsProps,
+  DrawId,
+  DrawPrizeTotal,
+  ViewPrizesTrigger
+} from './DrawCard/DrawDetails'
 
 interface NoAccountPrizeUIProps {
   drawPrize: DrawPrize
@@ -82,7 +77,14 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
 const PastPrizeListItem = (props: DrawDetailsProps) => (
   <li>
     <Card>
-      <DrawDetails {...props} />
+      <div className='flex flex-row space-x-2 mb-1'>
+        <DrawId {...props} />
+        <DrawDate {...props} />
+      </div>
+      <div className='flex justify-between'>
+        <DrawPrizeTotal {...props} numberClassName='font-bold text-xl' />
+        <ViewPrizesTrigger {...props} />
+      </div>
     </Card>
   </li>
 )

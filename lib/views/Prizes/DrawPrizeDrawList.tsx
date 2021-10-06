@@ -3,7 +3,7 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
-import { getPrettyDate } from 'lib/utils/getNextDrawDate'
+import { getPrettyDate } from 'lib/utils/date'
 import React, { useMemo, useState } from 'react'
 import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
@@ -24,7 +24,9 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
   const nextDrawDate = useNextDrawDate()
 
-  console.error(error)
+  if (error) {
+    return <div>error</div>
+  }
   // Filter out manually hidden draw ids from this session
   const drawsAndPrizeDistributionsToRender = useMemo(
     () =>

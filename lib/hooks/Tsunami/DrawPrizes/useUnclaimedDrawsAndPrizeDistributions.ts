@@ -44,6 +44,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
   drawPrize: DrawPrize
 ): Promise<{ draw: Draw; prizeDistribution: PrizeDistribution }[]> => {
   const drawIds = await drawPrize.getClaimableDrawIds()
+  console.log('drawIds', drawIds)
   const [drawsAndPrizeDistributions, claimedAmounts] = await Promise.all([
     drawPrize.getDrawsAndPrizeDistributions(drawIds),
     drawPrize.getUsersClaimedAmounts(usersAddress, drawIds)

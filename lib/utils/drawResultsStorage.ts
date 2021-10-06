@@ -12,6 +12,7 @@ export enum StoredDrawStates {
 interface StoredDrawResult {
   drawResults: DrawResults
   state: StoredDrawStates
+  _lastEdited: number
 }
 
 /**
@@ -47,7 +48,8 @@ export const setStoredDrawResult = (
     getKey(usersAddress, drawPrize, drawId),
     JSON.stringify({
       drawResults,
-      state
+      state,
+      _lastEdited: Date.now()
     })
   )
 }
