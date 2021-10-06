@@ -17,6 +17,7 @@ import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useSignerDrawPrize } from 'lib/hooks/Tsunami/DrawPrizes/useSignerDrawPrize'
 import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { usePastDrawsForUser } from 'lib/hooks/Tsunami/DrawPrizes/usePastDrawsForUser'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
   isOpen: boolean
@@ -47,6 +48,8 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
   const usersAddress = useUsersAddress()
 
+  const { refetch: refetchClaimedAmounts } = usePastDrawsForUser(drawPrize, token)
+
   const onSuccessfulClaim = (tx: Transaction) => {
     updateStoredDrawResultState(
       usersAddress,
@@ -65,7 +68,10 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       callTransaction: async () => signerDrawPrize.claimPrizesByDrawResults(drawResults),
       callbacks: {
         onSuccess: onSuccessfulClaim,
-        refetch: () => refetchUsersBalances()
+        refetch: () => {
+          refetchUsersBalances()
+          refetchClaimedAmounts()
+        }
       }
     })
     setTxId(txId)

@@ -2,6 +2,7 @@ import { DrawPrize, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
+import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
 
@@ -70,5 +71,5 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
     )
   }
 
-  return unclaimedDrawsAndPrizeDistributions
+  return unclaimedDrawsAndPrizeDistributions.sort((a, b) => sortDrawsByDrawId(a.draw, b.draw))
 }

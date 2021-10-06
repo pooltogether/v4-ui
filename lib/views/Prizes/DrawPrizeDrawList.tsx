@@ -37,8 +37,8 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
 
   if (isFetched && drawsAndPrizeDistributionsToRender.length === 0) {
     return (
-      <div className='flex flex-col purple-radial-gradient text-center text-accent-1 mx-2'>
-        <span className='mt-10'>Nothing to see here!</span>
+      <div className='flex flex-col purple-radial-gradient text-center text-accent-1 mx-auto px-2 max-w-xl mb-12'>
+        <span className='mt-10'>No draws left to check!</span>
         <span className='mb-10'>Come back on {getPrettyDate(nextDrawDate)}</span>
       </div>
     )
@@ -73,6 +73,8 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
   )
 }
 
-const LoadingCard = () => (
-  <div className='w-full rounded-xl animate-pulse bg-card h-128 mx-2 mb-12' />
+const LoadingCard = (props) => (
+  <div className='w-full max-w-xl px-2 mb-12 mx-auto'>
+    <div className='w-full rounded-xl animate-pulse bg-card h-128 mx-auto' />
+  </div>
 )

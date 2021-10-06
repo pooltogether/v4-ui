@@ -95,8 +95,8 @@ const PrizePoolList = (props: PrizePoolListProps) => {
 
   if (!isFetched) {
     return (
-      <div className={className}>
-        <LoadingDots />
+      <div className={classNames(className, 'w-full flex h-60')}>
+        <LoadingDots className='m-auto' />
       </div>
     )
   }

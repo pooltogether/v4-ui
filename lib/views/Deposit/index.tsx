@@ -11,8 +11,8 @@ export const DepositUI = () => {
     <PagePadding className='flex flex-col space-y-4'>
       <UpcomingPrizeCard />
       <DepositCard />
-      <BackToV3Banner />
       <PrizeBreakdownCard />
+      <BackToV3Banner />
     </PagePadding>
   )
 }
