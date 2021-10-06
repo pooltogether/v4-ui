@@ -108,7 +108,12 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
         <ModalTitle chainId={prizePool.chainId} title={'Withdrawal submitted'} />
-        <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={withdrawTx} />
+        <ModalTransactionSubmitted
+          className='mt-8'
+          chainId={prizePool.chainId}
+          tx={withdrawTx}
+          closeModal={closeModal}
+        />
       </ModalWithStyles>
     )
   }

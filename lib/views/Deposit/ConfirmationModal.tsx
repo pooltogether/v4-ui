@@ -116,7 +116,12 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={'Deposit submitted'} />
-        <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={depositTx} />
+        <ModalTransactionSubmitted
+          className='mt-8'
+          chainId={chainId}
+          tx={depositTx}
+          closeModal={closeModal}
+        />
       </ModalWithStyles>
     )
   }

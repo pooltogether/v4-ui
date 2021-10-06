@@ -2,6 +2,7 @@ import { Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
+  SquareButton,
   SquareButtonTheme,
   SquareButtonSize
 } from '@pooltogether/react-components'
@@ -15,10 +16,11 @@ interface ModalTransactionSubmittedProps {
   className?: string
   chainId: number
   tx: Transaction
+  closeModal: Function
 }
 
 export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps) => {
-  const { chainId, tx, className } = props
+  const { chainId, tx, className, closeModal } = props
   const { t } = useTranslation()
 
   const url = formatBlockExplorerTxUrl(tx?.hash, chainId)
@@ -40,6 +42,14 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
       >
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
+      <SquareButton
+        onClick={closeModal}
+        theme={SquareButtonTheme.purpleOutline}
+        size={SquareButtonSize.sm}
+        className='w-full text-center'
+      >
+        {t('close', 'Close')}
+      </SquareButton>
     </div>
   )
 }

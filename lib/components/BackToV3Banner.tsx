@@ -13,7 +13,7 @@ export const BackToV3Banner = (props) => {
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}
         href='https://app.pooltogether.com'
-        className='items-center block xs:inline xs:mr-auto '
+        className='items-center block xs:inline xs:mr-auto'
       >
         <FeatherIcon
           icon={'arrow-left'}

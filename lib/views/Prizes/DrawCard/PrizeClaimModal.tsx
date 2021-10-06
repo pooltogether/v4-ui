@@ -108,7 +108,12 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={'Deposit submitted'} />
-        <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
+        <ModalTransactionSubmitted
+          className='mt-8'
+          chainId={chainId}
+          tx={claimTx}
+          closeModal={closeModal}
+        />
       </ModalWithStyles>
     )
   }
