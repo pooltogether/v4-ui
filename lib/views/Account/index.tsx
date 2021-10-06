@@ -182,7 +182,7 @@ const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
 
         <SquareLink
           Link={Link}
-          href={`/deposit&network=${prizePool.chainId}`}
+          href={`/deposit?network=${prizePool.chainId}`}
           className='w-full text-center ml-2'
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.teal}
