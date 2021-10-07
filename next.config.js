@@ -32,6 +32,16 @@ const allConfig =
             destination: '/deposit',
             permanent: false,
           },
+          {
+            source: '/test',
+            destination: '/deposit',
+            permanent: false,
+          },
+          {
+            source: '/test2',
+            destination: '/',
+            permanent: false,
+          }
         ]
       },
       publicRuntimeConfig: {
