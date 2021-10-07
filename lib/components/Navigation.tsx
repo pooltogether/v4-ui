@@ -36,7 +36,7 @@ export const Navigation = (props) => {
         className,
         'nav-container',
         'sm:absolute sm:bottom-auto mx-auto',
-        'fixed bottom-0 pb-6 inset-x-0 z-20'
+        'fixed bottom-0 pb-6 sm:pb-0 inset-x-0 z-20'
       )}
     >
       <nav
