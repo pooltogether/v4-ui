@@ -1,5 +1,5 @@
 import React from 'react'
-import { LoadingLogo, LoadingScreen } from '@pooltogether/react-components'
+import { LoadingLogo } from '@pooltogether/react-components'
 import classNames from 'classnames'
 
 import { PageHeader } from 'lib/components/Layout/PageHeader'
@@ -18,7 +18,7 @@ const Layout = (props: LayoutProps) => {
   // People can't see the settings to turn on testnet mode.
   if (!isInitialized) {
     return (
-      <div className={classNames(className, 'h-screen')}>
+      <div className={classNames(className, 'min-h-screen')}>
         <PageHeader />
         <div className='flex flex-col h-screen absolute top-0 w-screen'>
           <LoadingLogo className='m-auto' />
@@ -28,12 +28,10 @@ const Layout = (props: LayoutProps) => {
   }
 
   return (
-    <LoadingScreen isInitialized={isInitialized}>
-      <div className={classNames(className, '')}>
-        <PageHeader />
-        {children}
-      </div>
-    </LoadingScreen>
+    <div className={classNames(className, 'min-h-screen')}>
+      <PageHeader />
+      {children}
+    </div>
   )
 }
 

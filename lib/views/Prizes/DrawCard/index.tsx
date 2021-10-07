@@ -139,7 +139,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
 const HideCardButton = (props: { hideDrawCard: () => void }) => (
   <FeatherIcon
     icon='x'
-    className='absolute top-0 right-4 w-6 h-6 opacity-75 hover:opacity-100 transition-opacity cursor-pointer'
+    className='absolute top-4 right-4 w-6 h-6 opacity-75 hover:opacity-100 transition-opacity cursor-pointer'
     onClick={props.hideDrawCard}
   />
 )
@@ -181,4 +181,4 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
 }
 
-const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-128' />
+const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />

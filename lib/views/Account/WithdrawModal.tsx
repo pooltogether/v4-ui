@@ -313,7 +313,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
         address={token.address}
       />
 
-      <ErrorsBox errors={isDirty ? errors : null} />
+      <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
 
       <WithdrawWarning className='mt-2' />
 

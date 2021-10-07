@@ -2,15 +2,15 @@ import { Token } from '@pooltogether/hooks'
 import {
   calculateNumberOfPrizesForIndex,
   calculatePrizeForDistributionIndex,
-  Draw,
   PrizeDistribution
 } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import classnames from 'classnames'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { numberWithCommas } from '@pooltogether/utilities'
+
+import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution

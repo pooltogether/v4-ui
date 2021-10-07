@@ -1,5 +1,5 @@
 import React from 'react'
-import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
+
 import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
@@ -43,4 +43,4 @@ export const PrizesUI = (props) => {
   )
 }
 
-const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-128' />
+const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />

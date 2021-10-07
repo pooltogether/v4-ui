@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { ethers } from 'ethers'
 import { ReactQueryDevtools } from 'react-query-devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
@@ -36,6 +35,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
 // Custom css
 import '../lib/styles/navigation.css'
+import '../lib/styles/pageHeader.css'
 
 import 'assets/styles/index.css'
 import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
@@ -119,7 +119,7 @@ function MyApp({ Component, pageProps, router }) {
                 <Component {...pageProps} />
               </LoadingScreen>
 
-              <ReactQueryDevtools />
+              {/* <ReactQueryDevtools /> */}
             </CustomErrorBoundary>
           </AllContextProviders>
         </InitPoolTogetherHooks>

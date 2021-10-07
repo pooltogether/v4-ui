@@ -1,0 +1,7 @@
+.theme-dark .bg-page-header {
+  background: linear-gradient(#2d0b5a 80%, #2d0b5a00);
+}
+
+.theme-light .bg-page-header {
+  background: linear-gradient(#f7f7f7 80%, #f7f7f700);
+}

@@ -43,8 +43,6 @@ const getPastDrawsForUser = async (usersAddress: string, drawPrize: DrawPrize, t
     })
   })
 
-  console.log(draws)
-
   return draws.sort(sortByDrawId)
 }
 
