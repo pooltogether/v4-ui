@@ -1,4 +1,4 @@
-import { Token, useTransaction } from '@pooltogether/hooks'
+import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { Card, SquareButton, ThemedClipSpinner } from '@pooltogether/react-components'
 import { DrawPrize, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
 import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
@@ -122,6 +122,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         claimState={claimState}
         setClaimState={setClaimState}
         openModal={() => setIsModalOpen(true)}
+        claimTx={claimTx}
       />
       <PrizeClaimModal
         {...props}
@@ -148,18 +149,30 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
   hasCheckedAnimationFinished: boolean
   claimState: ClaimState
   drawResults: DrawResults
+  claimTx: Transaction
   setClaimState: (state: ClaimState) => void
   openModal: () => void
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults, hasCheckedAnimationFinished } = props
+  const { claimState, setClaimState, openModal, drawResults, claimTx } = props
   const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()
 
   if (!usersAddress) {
     return null
+  } else if (claimTx?.inFlight) {
+    // TODO: Double check that this ends after completing
+    return (
+      <SquareButton disabled>
+        <ThemedClipSpinner className='mr-2' />
+        {t('claiming', 'Claiming')}
+      </SquareButton>
+    )
+  } else if (claimTx?.completed && !claimTx?.error && !claimTx?.cancelled) {
+    // TODO: Double check that this stays after claiming
+    return <SquareButton disabled>{t('viewReceipt', 'View receipt')}</SquareButton>
   } else if ([ClaimState.unchecked, ClaimState.checking].includes(claimState)) {
     const isChecking = claimState === ClaimState.checking
     return (

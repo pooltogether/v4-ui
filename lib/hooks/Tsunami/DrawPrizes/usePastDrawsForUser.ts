@@ -7,6 +7,13 @@ import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
 
+/**
+ * Returns the draws & prize distributions that are claimable along with the amount the
+ * user has claimed.
+ * @param drawPrize
+ * @param token
+ * @returns
+ */
 export const usePastDrawsForUser = (drawPrize: DrawPrize, token: Token) => {
   const nextDrawDate = useNextDrawDate()
   const usersAddress = useUsersAddress()

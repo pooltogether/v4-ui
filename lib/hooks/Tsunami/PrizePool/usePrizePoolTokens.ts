@@ -13,8 +13,8 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
   return useQuery(
     'prizePoolTokens',
     async () => {
-      const tokenDataPromise = prizePool.getTokenData()
       const ticketDataPromise = prizePool.getTicketData()
+      const tokenDataPromise = prizePool.getTokenData()
 
       const [ticketData, tokenData] = await Promise.all([ticketDataPromise, tokenDataPromise])
 

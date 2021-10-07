@@ -16,7 +16,7 @@ export const PRIZE_UI_STATES = {
 }
 
 // NOTE:, this is where we are selecting a single DrawPrize from the list
-export const PrizesUI = (props) => {
+export const PrizesUI = () => {
   const { data: drawPrizes, isFetched } = useSelectedNetworkDrawPrizes()
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
   const usersAddress = useUsersAddress()
