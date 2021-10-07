@@ -25,25 +25,6 @@ const allConfig =
   withImages(
     {
       ...nextConfig,
-      async redirects() {
-        return [
-          {
-            source: '/',
-            destination: '/deposit',
-            permanent: false,
-          },
-          {
-            source: '/test',
-            destination: '/deposit',
-            permanent: false,
-          },
-          {
-            source: '/test2',
-            destination: '/',
-            permanent: false,
-          }
-        ]
-      },
       publicRuntimeConfig: {
         locizeProjectId: process.env.NEXT_JS_LOCIZE_PROJECT_ID,
         locizeApiKey: process.env.NEXT_JS_LOCIZE_DEV_API_KEY,
