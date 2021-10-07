@@ -13,7 +13,7 @@ import {
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { Token, TokenBalance } from '@pooltogether/hooks'
+import { Amount, Token, TokenBalance, useTransaction } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
@@ -26,6 +26,7 @@ import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedP
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 
 import PiggyBank from 'assets/images/piggy-bank.svg'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
@@ -144,28 +145,86 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
             token={prizePoolTokens?.token}
           />
         </div>
-        <ManageDepositButtons player={player} prizePool={prizePool} />
+        <ManageBalanceButtons player={player} prizePool={prizePool} />
       </Card>
     </li>
   )
 }
 
-interface ManageDepositButtonsProps extends PrizePoolRowProps {}
+interface ManageBalanceButtonsProps extends PrizePoolRowProps {}
 
-const ManageDepositButtons = (props: ManageDepositButtonsProps) => {
+export enum WithdrawalSteps {
+  input,
+  review,
+  viewTxReceipt
+}
+
+const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
   const { player, prizePool } = props
+
+  const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
+
+  const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation()
   const [, setSelectedNetwork] = useSelectedNetwork()
 
+  const [withdrawTxId, setWithdrawTxId] = useState(0)
+  const withdrawTx = useTransaction(withdrawTxId)
+
+  const sendTx = useSendTransaction()
+
+  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
+    usePrizePoolTokens(prizePool)
+
+  const { token } = prizePoolTokens
+
+  const {
+    data: usersBalances,
+    isFetched: isUsersBalancesFetched,
+    refetch: refetchUsersBalances
+  } = useUsersPrizePoolBalances(prizePool)
+
+  const sendWithdrawTx = async (e) => {
+    e.preventDefault()
+
+    const tokenSymbol = token.symbol
+
+    const txId = await sendTx({
+      name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,
+      method: 'withdrawInstantlyFrom',
+      callTransaction: () => player.withdraw(amountToWithdraw?.amountUnformatted),
+      callbacks: {
+        onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
+        refetch: () => {
+          console.log('refetching users balance!')
+          refetchUsersBalances()
+        }
+      }
+    })
+    setWithdrawTxId(txId)
+  }
+
   return (
     <>
       <WithdrawModal
         isOpen={isModalOpen}
-        closeModal={() => setIsModalOpen(false)}
         player={player}
         prizePool={prizePool}
+        withdrawTx={withdrawTx}
+        currentStep={currentStep}
+        prizePoolTokens={prizePoolTokens}
+        isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+        usersBalances={usersBalances}
+        isUsersBalancesFetched={isUsersBalancesFetched}
+        amountToWithdraw={amountToWithdraw}
+        closeModal={() => setIsModalOpen(false)}
+        sendWithdrawTx={sendWithdrawTx}
+        setWithdrawTxId={setWithdrawTxId}
+        setCurrentStep={setCurrentStep}
+        refetchUsersBalances={refetchUsersBalances}
+        setAmountToWithdraw={setAmountToWithdraw}
       />
       <div className='flex'>
         <SquareButton

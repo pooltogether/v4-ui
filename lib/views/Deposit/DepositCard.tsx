@@ -19,7 +19,8 @@ import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDe
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
-import { DepositForm, DEPOSIT_FORM_KEY, TxHashRow } from 'lib/views/Deposit/DepositForm'
+import { DepositForm, DEPOSIT_FORM_KEY } from 'lib/views/Deposit/DepositForm'
+import { TxHashRow } from 'lib/components/TxHashRow'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
 

@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import classnames from 'classnames'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   Modal,
   LoadingDots,
@@ -20,13 +19,9 @@ import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
-import {
-  UsersPrizePoolBalances,
-  useUsersPrizePoolBalances
-} from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { PrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
 import { EstimatedWithdrawalGasItem } from 'lib/components/InfoList/EstimatedGasItem'
@@ -34,43 +29,50 @@ import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { WithdrawalSteps } from 'lib/views/Account'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
 const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
 
-enum WithdrawalSteps {
-  input,
-  review,
-  viewTxReceipt
-}
-
 interface WithdrawModalProps {
   isOpen: boolean
-  closeModal: () => void
   player: Player
   prizePool: PrizePool
+  withdrawTx: Transaction
+  currentStep: WithdrawalSteps
+  prizePoolTokens: PrizePoolTokens
+  isPrizePoolTokensFetched: boolean
+  usersBalances: UsersPrizePoolBalances
+  isUsersBalancesFetched: boolean
+  amountToWithdraw: Amount
+  sendWithdrawTx: (e: any) => Promise<void>
+  closeModal: () => void
+  setWithdrawTxId: (txId: number) => void
+  setCurrentStep: (step: WithdrawalSteps) => void
+  refetchUsersBalances: () => void
+  setAmountToWithdraw: (amount: Amount) => void
 }
 
 export const WithdrawModal = (props: WithdrawModalProps) => {
-  const { isOpen, closeModal, player, prizePool } = props
-  const { t } = useTranslation()
-
-  const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-  const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
-
-  const [withdrawTxId, setWithdrawTxId] = useState(0)
-  const withdrawTx = useTransaction(withdrawTxId)
-
-  const { network: walletChainId } = useOnboard()
-
   const {
-    data: usersBalances,
-    isFetched: isUsersBalancesFetched,
-    refetch: refetchUsersBalances
-  } = useUsersPrizePoolBalances(prizePool)
-
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
+    isOpen,
+    player,
+    prizePool,
+    withdrawTx,
+    currentStep,
+    prizePoolTokens,
+    isPrizePoolTokensFetched,
+    amountToWithdraw,
+    usersBalances,
+    isUsersBalancesFetched,
+    closeModal,
+    refetchUsersBalances,
+    sendWithdrawTx,
+    setWithdrawTxId,
+    setCurrentStep,
+    setAmountToWithdraw
+  } = props
+  const { t } = useTranslation()
 
   const form = useForm({
     mode: 'onChange',
@@ -138,6 +140,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
           setAmountToWithdraw={setAmountToWithdraw}
           withdrawTx={withdrawTx}
           setWithdrawTxId={setWithdrawTxId}
+          sendWithdrawTx={sendWithdrawTx}
         />
       </div>
     </ModalWithStyles>
@@ -170,7 +173,6 @@ const BackButton = (props) => {
 interface WithdrawStepContentProps {
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
-  amountToWithdraw: Amount
   player: Player
   prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
@@ -178,6 +180,8 @@ interface WithdrawStepContentProps {
   isUsersBalancesFetched: boolean
   isPrizePoolTokensFetched: boolean
   withdrawTx: Transaction
+  amountToWithdraw: Amount
+  sendWithdrawTx: (e: any) => Promise<void>
   setWithdrawTxId: (txId: number) => void
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
@@ -195,12 +199,12 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     currentStep,
     amountToWithdraw,
     withdrawTx,
+    sendWithdrawTx,
     setWithdrawTxId,
     setCurrentStep,
     setAmountToWithdraw,
     refetchUsersBalances
   } = props
-  const { t } = useTranslation()
 
   const chainId = player.chainId
 
@@ -226,9 +230,10 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
         ticket={ticket}
         tokenBalance={tokenBalance}
         ticketBalance={ticketBalance}
+        tx={withdrawTx}
+        sendWithdrawTx={sendWithdrawTx}
         setCurrentStep={setCurrentStep}
         setTxId={setWithdrawTxId}
-        tx={withdrawTx}
         refetchUsersBalances={refetchUsersBalances}
       />
     )
@@ -333,9 +338,10 @@ interface WithdrawReviewStepProps {
   ticketBalance: TokenBalance
   token: Token
   ticket: Token
+  tx: Transaction
+  sendWithdrawTx: (e: any) => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
   setTxId: (txId: number) => void
-  tx: Transaction
   refetchUsersBalances: () => void
 }
 
@@ -346,44 +352,10 @@ interface WithdrawReviewStepProps {
  * @returns
  */
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
-  const {
-    player,
-    prizePool,
-    chainId,
-    amountToWithdraw,
-    token,
-    ticket,
-    ticketBalance,
-    setCurrentStep,
-    setTxId,
-    refetchUsersBalances,
-    tx
-  } = props
+  const { prizePool, chainId, amountToWithdraw, token, ticket, ticketBalance, tx, sendWithdrawTx } =
+    props
 
   const { t } = useTranslation()
-
-  const sendTx = useSendTransaction()
-
-  const onClick = async (e) => {
-    e.preventDefault()
-    // Submit tx to wallet
-
-    // TODO: Not really sure what withdrawal will look like.
-    // Exit fee is still up in the air & might not exist.
-
-    const tokenSymbol = token.symbol
-
-    const txId = await sendTx({
-      name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,
-      method: 'withdrawInstantlyFrom',
-      callTransaction: () => player.withdraw(amountToWithdraw?.amountUnformatted),
-      callbacks: {
-        onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
-        refetch: refetchUsersBalances
-      }
-    })
-    setTxId(txId)
-  }
 
   const isTxInWallet = tx?.inWallet && !tx?.error && !tx.cancelled
 
@@ -423,7 +395,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         toolTipId='withdrawal-tx'
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
-        onClick={onClick}
+        sendWithdrawTx={sendWithdrawTx}
         disabled={isTxInWallet}
       >
         <span>{t('confirmWithdrawal')}</span>

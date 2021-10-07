@@ -2,22 +2,16 @@ import React, { useEffect } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import {
-  BlockExplorerLink,
-  ErrorsBox,
-  SquareButton,
-  SquareButtonTheme
-} from '@pooltogether/react-components'
+import { ErrorsBox } from '@pooltogether/react-components'
 import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { getMaxPrecision, safeParseUnits, shorten } from '@pooltogether/utilities'
+import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 
-import SuccessIcon from 'assets/images/success@2x.png'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { DownArrow } from 'lib/components/DownArrow'
+import { TxHashRow } from 'lib/components/TxHashRow'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
@@ -175,7 +169,7 @@ export const DepositForm = (props: DepositFormProps) => {
           />
         </div> */}
 
-        <ErrorsBox errors={isDirty ? errors : null} className='h-20' />
+        <ErrorsBox errors={isDirty ? errors : null} />
 
         <BottomButton
           className='mt-2 w-full'
@@ -277,71 +271,6 @@ export const DepositInfoBox = (props: DepositInfoProps) => {
         prizePool={prizePool}
         amountUnformatted={amountToDeposit.amountUnformatted}
       />
-    </div>
-  )
-}
-
-interface TxHashRowProps {
-  depositTx: Transaction
-  chainId: number
-}
-
-export const TxHashRow = (props: TxHashRowProps) => {
-  const { depositTx, chainId } = props
-
-  if (!depositTx) {
-    return null
-  }
-
-  return (
-    <div className='flex flex-row justify-between'>
-      <div>Transaction receipt:</div>
-      <BlockExplorerLink className='text-xs' chainId={chainId} txHash={depositTx.hash}>
-        <span className='underline'>{shorten({ hash: depositTx.hash })}</span>
-      </BlockExplorerLink>
-    </div>
-  )
-}
-
-const GradientBanner = (props) => {
-  const { txs, chainId } = props
-  const { approveTxInFlight, depositTxInFlight, depositTx, depositTxSuccess, approveTx } = txs
-  const { t } = useTranslation()
-
-  let contents = null
-  if (depositTxSuccess) {
-    contents = t('disclaimerComeBackRegularlyToClaimWinnings')
-  } else {
-    if (depositTxInFlight) {
-      contents = <TxStatus {...props} chainId={chainId} txHash={depositTx.hash} />
-    } else if (approveTxInFlight) {
-      contents = <TxStatus {...props} chainId={chainId} txHash={approveTx.hash} />
-    } else {
-      contents = t('chancesToWinAreProportional')
-    }
-  }
-
-  return (
-    <div className='w-full font-inter gradient-new text-center px-2 xs:px-4 py-1 mt-4 text-xxxs rounded-lg text-white'>
-      {contents}
-    </div>
-  )
-}
-
-const TxStatus = (props) => {
-  const { t } = useTranslation()
-
-  return (
-    <div className='flex justify-between items-center w-2/3 mx-auto'>
-      <div>
-        {t('status')} <span className='font-semibold'>Pending ...</span>
-      </div>
-      <div>
-        {t('explorer')}{' '}
-        <BlockExplorerLink className='text-xxxs' chainId={props.chainId} txHash={props.txHash}>
-          <span className='font-semibold'>{shorten({ hash: props.txHash })}</span>
-        </BlockExplorerLink>
-      </div>
     </div>
   )
 }
