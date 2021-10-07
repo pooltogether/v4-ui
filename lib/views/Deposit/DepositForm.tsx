@@ -27,6 +27,7 @@ import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasIte
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { InfoListItem } from 'lib/components/InfoList'
+import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 
@@ -63,6 +64,9 @@ export const DepositForm = (props: DepositFormProps) => {
     setShowConfirmModal
   } = props
 
+  const { data: minimumDepositAmount, isFetched: isMinimumDepositFetched } =
+    useMinimumDepositAmount(prizePool, token)
+
   const [chainId] = useSelectedNetwork()
 
   const decimals = token.decimals
@@ -95,6 +99,7 @@ export const DepositForm = (props: DepositFormProps) => {
     isValid: (v) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
+      if (!isMinimumDepositFetched) return false
 
       const quantityUnformatted = safeParseUnits(v, decimals)
 
@@ -103,6 +108,8 @@ export const DepositForm = (props: DepositFormProps) => {
         if (!ticketBalance) return false
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
+        if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
+          return `Minimum deposit of ${minimumDepositAmount.amountPretty} ${token.symbol} required`
       }
 
       if (getMaxPrecision(v) > Number(decimals)) return false
@@ -235,9 +242,12 @@ export const DepositInfoBox = (props: DepositInfoProps) => {
 
   const { t } = useTranslation()
 
-  if (errors) {
-    const messages = Object.values(errors).map((error) => (
-      <span className='text-red opacity-80'>{error.message}</span>
+  const errorMessages = errors ? Object.values(errors) : null
+  if (errorMessages && errorMessages.length > 0) {
+    const messages = errorMessages.map((error) => (
+      <span key={error.message} className='text-red opacity-80'>
+        {error.message}
+      </span>
     ))
 
     return (
