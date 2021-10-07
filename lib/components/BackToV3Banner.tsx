@@ -24,7 +24,7 @@ export const BackToV3Banner = (props) => {
         />
         {t('backToV3', 'Back to V3')}
       </SquareLink>
-      <h6 className='text-center mb-2 xs:mb-0'>
+      <h6 className='text-center mb-2 xs:mb-0 w-2/3 mx-auto'>
         {t('thisIsV4', 'This is V4. Previous pools are on V3.')}
       </h6>
     </div>

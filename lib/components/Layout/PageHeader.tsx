@@ -24,8 +24,8 @@ export enum ContentPaneState {
 
 export const PageHeader = (props) => (
   <PageHeaderContainer Link={Link} as='/' href='/' className='z-20 sticky top-0 bg-body'>
-    <UsersAccount />
     <Navigation />
+    <UsersAccount />
     <Settings />
   </PageHeaderContainer>
 )
@@ -69,7 +69,8 @@ const UsersAccount = () => {
     isOnboardReady,
     address: usersAddress,
     network: chainId,
-    wallet
+    wallet,
+    network
   } = useOnboard()
 
   const supportedNetworks = useSupportedNetworks()
@@ -83,6 +84,7 @@ const UsersAccount = () => {
         supportedNetworks={supportedNetworks}
         className='mx-1 my-auto'
         t={t}
+        network={network}
         wallet={wallet}
         chainId={chainId}
         isWalletConnected={isWalletConnected}
