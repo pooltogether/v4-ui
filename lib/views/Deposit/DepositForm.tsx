@@ -26,6 +26,7 @@ import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
+import { InfoListItem } from 'lib/components/InfoList'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 
@@ -154,29 +155,6 @@ export const DepositForm = (props: DepositFormProps) => {
           />
         </div>
 
-        {/* <DownArrow />
-
-        <div className='w-full mx-auto'>
-          <TextInputGroup
-            readOnly
-            disabled
-            symbolAndIcon={ticket.symbol}
-            Input={RectangularInput}
-            roundedClassName={'rounded-lg'}
-            containerRoundedClassName={'rounded-lg'}
-            bgClassName={'bg-readonly-tsunami'}
-            bgVarName='var(--color-bg-readonly-tsunami)'
-            placeholder='0.0'
-            id='result'
-            name='result'
-            register={register}
-            label={null}
-            value={form.watch(DEPOSIT_FORM_KEY) || ''}
-          />
-        </div> */}
-
-        <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
-
         <BottomButton
           className='mt-2 w-full'
           disabled={(!isValid && isDirty) || depositTx?.inFlight}
@@ -192,6 +170,7 @@ export const DepositForm = (props: DepositFormProps) => {
           depositTx={depositTx}
           prizePool={prizePool}
           amountToDeposit={amountToDeposit}
+          errors={isDirty ? errors : null}
         />
       </form>
     </>
@@ -248,38 +227,53 @@ interface DepositInfoProps {
   depositTx: Transaction
   amountToDeposit: Amount
   prizePool: PrizePool
+  errors?: { [x: string]: { message: string } }
 }
 
 export const DepositInfoBox = (props: DepositInfoProps) => {
-  const { className, prizePool, amountToDeposit, depositTx } = props
+  const { className, prizePool, amountToDeposit, depositTx, errors } = props
+
+  const { t } = useTranslation()
+
+  if (errors) {
+    const messages = Object.values(errors).map((error) => (
+      <span className='text-red opacity-80'>{error.message}</span>
+    ))
+
+    return (
+      <InfoBoxContainer className={className}>
+        <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
+      </InfoBoxContainer>
+    )
+  }
 
   if (depositTx?.inFlight) {
     return (
-      <div
-        className={classNames(
-          className,
-          'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
-        )}
-      >
+      <InfoBoxContainer className={className}>
         <TxHashRow depositTx={depositTx} chainId={prizePool.chainId} />
-      </div>
+      </InfoBoxContainer>
     )
   }
 
   return (
-    <div
-      className={classNames(
-        className,
-        'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
-      )}
-    >
+    <InfoBoxContainer className={className}>
       <EstimatedDepositGasItem
         prizePool={prizePool}
         amountUnformatted={amountToDeposit.amountUnformatted}
       />
-    </div>
+    </InfoBoxContainer>
   )
 }
+
+const InfoBoxContainer = (props) => (
+  <ul
+    {...props}
+    className={classNames(
+      props.className,
+      'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
+    )}
+  />
+)
 
 interface TxHashRowProps {
   depositTx: Transaction
