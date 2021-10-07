@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -132,7 +132,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
           <div>
             <div className='flex flex-row'>
               <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
-              <span className='ml-2 text-base xs:text-lg'>{`${getNetworkNiceNameByChainId(
+              <span className='ml-2 xs:text-lg'>{`${getNetworkNiceNameByChainId(
                 prizePool.chainId
               )} Prize Pool`}</span>
             </div>
@@ -269,22 +269,22 @@ const Balance = (props: BalanceProps) => {
   if (!isFetched) {
     return (
       <BalanceContainer>
-        <ThemedClipSpinner className='my-1' />
-        <BalanceUsdValue className='ml-auto' {...props} />
+        <ThemedClipSpinner className='ml-auto my-1' />
+        <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
       </BalanceContainer>
     )
   } else if (!isWalletConnected) {
     return (
       <BalanceContainer>
-        <span className='text-base sm:text-lg font-bold'>--</span>
-        <BalanceUsdValue className='ml-auto' {...props} />
+        <span className='ml-auto sm:text-lg font-bold'>--</span>
+        <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
       </BalanceContainer>
     )
   }
 
   return (
     <BalanceContainer>
-      <span className='ml-auto text-lg font-bold'>
+      <span className='ml-auto sm:text-lg font-bold'>
         {balance.amountPretty} {ticket.symbol}
       </span>
       <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />

@@ -4,6 +4,11 @@ import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
 
+/**
+ * Returns the claimable draws and prize distributions
+ * @param drawPrize
+ * @returns
+ */
 export const useClaimableDrawsAndPrizeDistributions = (drawPrize: DrawPrize) => {
   const nextDrawDate = useNextDrawDate()
   const enabled = Boolean(drawPrize)

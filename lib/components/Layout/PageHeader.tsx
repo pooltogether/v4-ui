@@ -23,7 +23,7 @@ export enum ContentPaneState {
 }
 
 export const PageHeader = (props) => (
-  <PageHeaderContainer Link={Link} as='/' href='/' className='z-20 sticky top-0 bg-body'>
+  <PageHeaderContainer Link={Link} as='/' href='/' className='z-20 sticky top-0 bg-page-header'>
     <Navigation />
     <UsersAccount />
     <Settings />

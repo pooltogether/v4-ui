@@ -2312,10 +2312,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
   integrity sha512-jQub/+qPLQwTFtbBCvvyIEqxJDEBEV/hgLKnuocBg2/GySWtHLz67WCy17bNn1hZw8nWIt8Ih8h+7iT2UJhtmQ==
 
-"@pooltogether/react-components@^1.1.18":
-  version "1.1.18"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.18.tgz#da09cd32fc77c354e8f1f357b7fcad87d7e1aa1c"
-  integrity sha512-qVyaASwVytQP1/XGF+NdMOhyZ4s1mHxBW0UptihsQ4xjmg+LbcnvnX+gNA5R28EgnzT0UATQFldQslmlRc6xTg==
+"@pooltogether/react-components@^1.1.20":
+  version "1.1.20"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.20.tgz#663fa8e936aad173ef2ed2c47b6c7d476a861714"
+  integrity sha512-AqI50bbWH78ZxAJG14r57TelgJpaeGIR1tu+L/pxhAaATbB7EhRlfdkZLM1LqiF2eC5jjcMvA//nWNuv0pA78w==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@pooltogether/evm-chains-extended" "^0.5.3"
@@ -2347,9 +2347,9 @@
   integrity sha512-hxjvceBDYK0WwWYpVaRDFES17JdmgNRwZSmVEt7FFU0mI98mbxEImJk+ehRaIudm6DQfbGXWKz4RP0L8Fyf2jw==
 
 "@pooltogether/v4-js-client@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.6.tgz#612cf9a8364b2f52a868a9c4af19125d9d85038b"
-  integrity sha512-mUtnLyt0ZyUx2OkN4y/hQCrKHcHo24KaB5VRUiFeer8osYKSW5L8rbmRPJvsf+3qkimebB7w8p0v/3UQkhcHWA==
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.1.7.tgz#d73654eea35e639b03dbee5a518bc44110647a55"
+  integrity sha512-nGHy6sWJEudeZ3r8gtzOM2xHJ/cU5n1yFgsiE3Av5W0Fkh+Cf3i5X7rvlO5xHiyLEsIuRpJLGONaxhk6U9Bd5w==
   dependencies:
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/draw-calculator-js" "^1.0.0-beta.25"

@@ -127,7 +127,7 @@ const HistoricPrizesListHeader = (props: { className?: string }) => {
     <div
       className={classNames(
         props.className,
-        'flex justify-between sticky top-20 sm:top-24 bg-body py-2 z-10'
+        'flex justify-between sticky top-12 sm:top-20 bg-body pt-4 pb-2 z-10'
       )}
     >
       <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>

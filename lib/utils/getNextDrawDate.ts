@@ -1,5 +1,5 @@
-import { DRAW_HOUR_OF_DAY } from 'lib/constants/nextDrawDate'
-import { addDays, getDaysUntilDrawDay } from './date'
+import { DRAW_DAY_OF_WEEK, DRAW_HOUR_OF_DAY } from 'lib/constants/nextDrawDate'
+import { addDays } from './date'
 
 export const getNextDrawDate = () => {
   let date = new Date()
@@ -14,4 +14,11 @@ export const getNextDrawDate = () => {
   date.setUTCHours(DRAW_HOUR_OF_DAY, 0, 0, 0)
 
   return date
+}
+
+const getDaysUntilDrawDay = (date: Date) => {
+  const dayOfWeek = date.getUTCDay()
+  // % can return a negative value, so add 7 and do it again
+  // to get the positive distance from the provided day of the week
+  return (((DRAW_DAY_OF_WEEK - dayOfWeek) % 7) + 7) % 7
 }

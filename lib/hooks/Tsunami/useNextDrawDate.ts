@@ -1,5 +1,5 @@
 import { getNextDrawDate } from 'lib/utils/getNextDrawDate'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTimeout } from 'beautiful-react-hooks'
 
 // TODO: This doesn't quite work.

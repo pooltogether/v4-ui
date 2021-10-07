@@ -31,5 +31,5 @@ export const InfoListItem = (props: InfoListItemProps) => {
 }
 
 InfoListItem.defaultProps = {
-  fontSizeClassName: 'text-xs'
+  fontSizeClassName: 'text-xxs xs:text-xs'
 }

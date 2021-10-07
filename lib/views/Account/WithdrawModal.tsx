@@ -318,7 +318,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
         address={token.address}
       />
 
-      <ErrorsBox errors={isDirty ? errors : null} />
+      <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
 
       <WithdrawWarning className='mt-2' />
 
@@ -612,7 +612,7 @@ const ModalWithStyles = (props: ModalWithStylesProps) => (
     noSize
     noBgColor
     noPad
-    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-8 py-10'
+    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
     label='Withdrawal Modal'
     {...props}
   />

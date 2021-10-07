@@ -18,6 +18,12 @@ const nextConfig = {
   },
   compress: false,
   inlineImageLimit: 48, // make it tiny so that it doesn't inline,
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  }
 }
 
 const allConfig =
@@ -25,6 +31,16 @@ const allConfig =
   withImages(
     {
       ...nextConfig,
+      // NOTE: This redirect is only for localhost. We have a _redirects file for the production deployments
+      async redirects() {
+        return [
+          {
+            source: '/',
+            destination: '/deposit',
+            permanent: false,
+          }
+        ]
+      },
       publicRuntimeConfig: {
         locizeProjectId: process.env.NEXT_JS_LOCIZE_PROJECT_ID,
         locizeApiKey: process.env.NEXT_JS_LOCIZE_DEV_API_KEY,

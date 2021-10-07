@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Amount, PreTransactionDetails, Token, Transaction } from '@pooltogether/hooks'
 import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { DrawResults } from '@pooltogether/v4-js-client'
@@ -28,6 +28,11 @@ interface PrizeClaimModalProps extends DrawPropsWithDetails {
   setTxId: (txId: number) => void
 }
 
+enum ModalState {
+  viewPrizes,
+  reviewTransaction
+}
+
 export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
     drawResults,
@@ -47,6 +52,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
   const usersAddress = useUsersAddress()
+  const [modalState, setModalState] = useState<ModalState>(ModalState.viewPrizes)
 
   const { refetch: refetchClaimedAmounts } = usePastDrawsForUser(drawPrize, token)
 
@@ -78,15 +84,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   }, [signerDrawPrize, drawResults])
 
   if (!drawResults) return null
-
-  if (!isWalletOnProperNetwork) {
-    return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={chainId} title={'Wrong network'} />
-        <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </ModalWithStyles>
-    )
-  }
 
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
@@ -126,6 +123,40 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   const { amountPretty } = getAmountFromBigNumber(drawResults.totalValue, ticket.decimals)
 
+  if (modalState === ModalState.viewPrizes) {
+    return (
+      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+        <ModalTitle chainId={drawPrize.chainId} title={t('claimPrizes', 'Claim prizes')} />
+
+        <div className='w-full mx-auto mt-4 flex flex-col'>
+          <div className='mx-auto font-bold text-flashy mb-4'>
+            <span className='text-3xl '>{amountPretty}</span>
+            <span className='text-xl ml-2'>{token.symbol}</span>
+          </div>
+
+          <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
+
+          <SquareButton
+            className='mt-8 w-full'
+            onClick={() => setModalState(ModalState.reviewTransaction)}
+            disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
+          >
+            {t('confirmClaim', 'Confirm claim')}
+          </SquareButton>
+        </div>
+      </ModalWithStyles>
+    )
+  }
+
+  if (!isWalletOnProperNetwork) {
+    return (
+      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+        <ModalTitle chainId={chainId} title={'Wrong network'} />
+        <ModalNetworkGate chainId={chainId} className='mt-8' />
+      </ModalWithStyles>
+    )
+  }
+
   return (
     <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
       <ModalTitle chainId={drawPrize.chainId} title={t('claimPrizes', 'Claim prizes')} />
@@ -163,7 +194,7 @@ const ModalWithStyles = (props: ModalWithStylesProps) => (
     noSize
     noBgColor
     noPad
-    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-8 py-10'
+    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
     label={`Confirm Claim Modal`}
     {...props}
   />

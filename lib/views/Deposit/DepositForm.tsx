@@ -20,6 +20,8 @@ import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
+import { InfoListItem } from 'lib/components/InfoList'
+import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 
 export const DEPOSIT_FORM_KEY = 'amountToDeposit'
 
@@ -56,6 +58,9 @@ export const DepositForm = (props: DepositFormProps) => {
     setShowConfirmModal
   } = props
 
+  const { data: minimumDepositAmount, isFetched: isMinimumDepositFetched } =
+    useMinimumDepositAmount(prizePool, token)
+
   const [chainId] = useSelectedNetwork()
 
   const decimals = token.decimals
@@ -88,6 +93,7 @@ export const DepositForm = (props: DepositFormProps) => {
     isValid: (v) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
+      if (!isMinimumDepositFetched) return false
 
       const quantityUnformatted = safeParseUnits(v, decimals)
 
@@ -96,6 +102,8 @@ export const DepositForm = (props: DepositFormProps) => {
         if (!ticketBalance) return false
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
+        if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
+          return `Minimum deposit of ${minimumDepositAmount.amountPretty} ${token.symbol} required`
       }
 
       if (getMaxPrecision(v) > Number(decimals)) return false
@@ -148,29 +156,6 @@ export const DepositForm = (props: DepositFormProps) => {
           />
         </div>
 
-        {/* <DownArrow />
-
-        <div className='w-full mx-auto'>
-          <TextInputGroup
-            readOnly
-            disabled
-            symbolAndIcon={ticket.symbol}
-            Input={RectangularInput}
-            roundedClassName={'rounded-lg'}
-            containerRoundedClassName={'rounded-lg'}
-            bgClassName={'bg-readonly-tsunami'}
-            bgVarName='var(--color-bg-readonly-tsunami)'
-            placeholder='0.0'
-            id='result'
-            name='result'
-            register={register}
-            label={null}
-            value={form.watch(DEPOSIT_FORM_KEY) || ''}
-          />
-        </div> */}
-
-        <ErrorsBox errors={isDirty ? errors : null} />
-
         <BottomButton
           className='mt-2 w-full'
           disabled={(!isValid && isDirty) || depositTx?.inFlight}
@@ -186,6 +171,7 @@ export const DepositForm = (props: DepositFormProps) => {
           depositTx={depositTx}
           prizePool={prizePool}
           amountToDeposit={amountToDeposit}
+          errors={isDirty ? errors : null}
         />
       </form>
     </>
@@ -242,35 +228,53 @@ interface DepositInfoProps {
   depositTx: Transaction
   amountToDeposit: Amount
   prizePool: PrizePool
+  errors?: { [x: string]: { message: string } }
 }
 
 export const DepositInfoBox = (props: DepositInfoProps) => {
-  const { className, prizePool, amountToDeposit, depositTx } = props
+  const { className, prizePool, amountToDeposit, depositTx, errors } = props
+
+  const { t } = useTranslation()
+
+  const errorMessages = errors ? Object.values(errors) : null
+  if (errorMessages && errorMessages.length > 0) {
+    const messages = errorMessages.map((error) => (
+      <span key={error.message} className='text-red opacity-80'>
+        {error.message}
+      </span>
+    ))
+
+    return (
+      <InfoBoxContainer className={className}>
+        <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
+      </InfoBoxContainer>
+    )
+  }
 
   if (depositTx?.inFlight) {
     return (
-      <div
-        className={classNames(
-          className,
-          'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
-        )}
-      >
+      <InfoBoxContainer className={className}>
         <TxHashRow depositTx={depositTx} chainId={prizePool.chainId} />
-      </div>
+      </InfoBoxContainer>
     )
   }
 
   return (
-    <div
-      className={classNames(
-        className,
-        'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
-      )}
-    >
+    <InfoBoxContainer className={className}>
       <EstimatedDepositGasItem
         prizePool={prizePool}
         amountUnformatted={amountToDeposit.amountUnformatted}
       />
-    </div>
+    </InfoBoxContainer>
   )
 }
+
+const InfoBoxContainer = (props) => (
+  <ul
+    {...props}
+    className={classNames(
+      props.className,
+      'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
+    )}
+  />
+)
