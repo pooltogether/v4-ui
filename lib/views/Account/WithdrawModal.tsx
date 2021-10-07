@@ -45,6 +45,7 @@ interface WithdrawModalProps {
   usersBalances: UsersPrizePoolBalances
   isUsersBalancesFetched: boolean
   amountToWithdraw: Amount
+  form: UseFormReturn<FieldValues, object>
   sendWithdrawTx: (e: any) => Promise<void>
   closeModal: () => void
   setWithdrawTxId: (txId: number) => void
@@ -65,6 +66,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     amountToWithdraw,
     usersBalances,
     isUsersBalancesFetched,
+    form,
     closeModal,
     refetchUsersBalances,
     sendWithdrawTx,
@@ -72,23 +74,11 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     setCurrentStep,
     setAmountToWithdraw
   } = props
-  const { t } = useTranslation()
 
-  const form = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange'
-  })
   const { reset } = form
 
   const closeModalAndMaybeReset = useCallback(() => {
-    if (currentStep === WithdrawalSteps.viewTxReceipt) {
-      reset()
-      setAmountToWithdraw(undefined)
-      closeModal()
-      setCurrentStep(WithdrawalSteps.input)
-    } else {
-      closeModal()
-    }
+    closeModal()
   }, [currentStep])
 
   useEffect(() => {
@@ -395,7 +385,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         toolTipId='withdrawal-tx'
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
-        sendWithdrawTx={sendWithdrawTx}
+        onClick={sendWithdrawTx}
         disabled={isTxInWallet}
       >
         <span>{t('confirmWithdrawal')}</span>

@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
-import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import { ErrorsBox } from '@pooltogether/react-components'
 import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
@@ -10,6 +8,7 @@ import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
+import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
@@ -23,7 +22,7 @@ import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { InfoListItem } from 'lib/components/InfoList'
 import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 
-export const DEPOSIT_FORM_KEY = 'amountToDeposit'
+export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 interface DepositFormProps {
   form: UseFormReturn<FieldValues, object>
@@ -81,8 +80,8 @@ export const DepositForm = (props: DepositFormProps) => {
 
   const setReviewDeposit = (values) => {
     const { query, pathname } = router
-    const quantity = values[DEPOSIT_FORM_KEY]
-    query[DEPOSIT_FORM_KEY] = quantity
+    const quantity = values[DEPOSIT_QUANTITY_KEY]
+    query[DEPOSIT_QUANTITY_KEY] = quantity
     router.replace({ pathname, query })
     setShowConfirmModal(true)
   }
@@ -114,7 +113,7 @@ export const DepositForm = (props: DepositFormProps) => {
 
   // If the user input a larger amount than their wallet balance before connecting a wallet
   useEffect(() => {
-    trigger(DEPOSIT_FORM_KEY)
+    trigger(DEPOSIT_QUANTITY_KEY)
   }, [usersAddress, ticketBalance, tokenBalance])
 
   return (
@@ -133,14 +132,14 @@ export const DepositForm = (props: DepositFormProps) => {
             containerRoundedClassName={'rounded-lg'}
             bgClassName={'bg-body'}
             placeholder='0.0'
-            id={DEPOSIT_FORM_KEY}
-            name={DEPOSIT_FORM_KEY}
+            id={DEPOSIT_QUANTITY_KEY}
+            name={DEPOSIT_QUANTITY_KEY}
             autoComplete='off'
             register={register}
             required={t('ticketQuantityRequired')}
             rightLabel={
               <MaxAmountTextInputRightLabel
-                valueKey={DEPOSIT_FORM_KEY}
+                valueKey={DEPOSIT_QUANTITY_KEY}
                 disabled={false}
                 setValue={setValue}
                 amount={tokenBalance?.amount}
@@ -223,7 +222,7 @@ const DepositButton = (props: BottomButtonProps) => {
   )
 }
 
-interface DepositInfoProps {
+interface DepositInfoBoxProps {
   className?: string
   depositTx: Transaction
   amountToDeposit: Amount
@@ -231,7 +230,7 @@ interface DepositInfoProps {
   errors?: { [x: string]: { message: string } }
 }
 
-export const DepositInfoBox = (props: DepositInfoProps) => {
+export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   const { className, prizePool, amountToDeposit, depositTx, errors } = props
 
   const { t } = useTranslation()
@@ -268,13 +267,3 @@ export const DepositInfoBox = (props: DepositInfoProps) => {
     </InfoBoxContainer>
   )
 }
-
-const InfoBoxContainer = (props) => (
-  <ul
-    {...props}
-    className={classNames(
-      props.className,
-      'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
-    )}
-  />
-)

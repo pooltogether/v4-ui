@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useForm } from 'react-hook-form'
 import {
   Card,
   LoadingDots,
@@ -17,6 +18,8 @@ import { Amount, Token, TokenBalance, useTransaction } from '@pooltogether/hooks
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
+import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
+import { TxHashRow } from 'lib/components/TxHashRow'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
@@ -175,6 +178,12 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
 
   const sendTx = useSendTransaction()
 
+  const form = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+  const { reset } = form
+
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
@@ -198,12 +207,27 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
-          console.log('refetching users balance!')
           refetchUsersBalances()
         }
       }
     })
     setWithdrawTxId(txId)
+  }
+
+  const resetState = () => {
+    reset()
+    setWithdrawTxId(0)
+    setAmountToWithdraw(undefined)
+    setCurrentStep(WithdrawalSteps.input)
+  }
+
+  const handleWithdrawClick = (e) => {
+    if (withdrawTx) {
+      resetState()
+    } else {
+      setSelectedNetwork(prizePool.chainId)
+      setIsModalOpen(true)
+    }
   }
 
   return (
@@ -219,6 +243,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
         usersBalances={usersBalances}
         isUsersBalancesFetched={isUsersBalancesFetched}
         amountToWithdraw={amountToWithdraw}
+        form={form}
         closeModal={() => setIsModalOpen(false)}
         sendWithdrawTx={sendWithdrawTx}
         setWithdrawTxId={setWithdrawTxId}
@@ -226,17 +251,21 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
         refetchUsersBalances={refetchUsersBalances}
         setAmountToWithdraw={setAmountToWithdraw}
       />
+
+      {withdrawTx && (
+        <InfoBoxContainer className='mb-2'>
+          <TxHashRow depositTx={withdrawTx} chainId={prizePool.chainId} />
+        </InfoBoxContainer>
+      )}
+
       <div className='flex'>
         <SquareButton
           className='w-full mr-2'
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.purple}
-          onClick={() => {
-            setSelectedNetwork(prizePool.chainId)
-            setIsModalOpen(true)
-          }}
+          onClick={handleWithdrawClick}
         >
-          {t('withdraw')}
+          {withdrawTx ? t('withdrawAgain', 'Withdraw again') : t('withdraw')}
         </SquareButton>
 
         <SquareLink
