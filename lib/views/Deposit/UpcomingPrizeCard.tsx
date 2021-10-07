@@ -1,5 +1,4 @@
 import React from 'react'
-import classNames from 'classnames'
 import { WeeklyPrizeAmountCard, Card } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 
@@ -10,19 +9,14 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 // import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 
 export const UpcomingPrizeCard = (props) => {
-  const { className } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
   // const nextDrawDate = useNextDrawDate()
 
-  if (!isFetched) {
-    return <Card className={classNames(className, 'flex animate-pulse h-48')} />
-  }
-
   const prizeUnformatted = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize
   const prizePretty = numberWithCommas(prizeUnformatted, {
-    decimals: prizePoolTokens.token.decimals
+    decimals: prizePoolTokens?.token.decimals
   })
 
-  return <WeeklyPrizeAmountCard prizePretty={prizePretty} sm />
+  return <WeeklyPrizeAmountCard isFetched={isFetched} prizePretty={prizePretty} sm />
 }

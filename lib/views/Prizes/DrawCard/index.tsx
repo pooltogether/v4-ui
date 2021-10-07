@@ -40,7 +40,7 @@ export const DrawCard = (props: DrawCardProps) => {
 
   return (
     <Card className='relative'>
-      <div className='flex flex-col space-y-4'>
+      <div className='flex flex-col'>
         <DrawDetails
           {...props}
           prizeDistribution={prizeDistribution}
