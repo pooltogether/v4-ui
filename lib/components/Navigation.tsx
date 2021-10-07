@@ -31,19 +31,30 @@ export const Navigation = (props) => {
   const router = useRouter()
 
   return (
-    <nav
+    <div
       className={classnames(
         className,
-        'mx-auto mb-6',
+        'nav-container',
         'sm:absolute sm:bottom-auto',
-        'max-w-max flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter',
-        'fixed bottom-0 inset-x-0 z-20 shadow-lg'
+        'fixed bottom-6 inset-x-0 z-20'
       )}
     >
-      {NavLinks.map((navLink) => (
-        <NavTab key={navLink.i18nKey} isSelected={navLink.href === router.pathname} {...navLink} />
-      ))}
-    </nav>
+      <nav
+        className={classnames(
+          className,
+          'mx-auto',
+          'max-w-max flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter shadow-lg'
+        )}
+      >
+        {NavLinks.map((navLink) => (
+          <NavTab
+            key={navLink.i18nKey}
+            isSelected={navLink.href === router.pathname}
+            {...navLink}
+          />
+        ))}
+      </nav>
+    </div>
   )
 }
 

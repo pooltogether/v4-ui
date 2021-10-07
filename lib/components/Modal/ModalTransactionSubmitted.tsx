@@ -45,7 +45,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
       <SquareButton
-        onClick={closeModal}
+        onClick={() => closeModal()}
         theme={SquareButtonTheme.purpleOutline}
         size={SquareButtonSize.sm}
         className='w-full text-center mt-4'

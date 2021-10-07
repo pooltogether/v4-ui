@@ -61,6 +61,9 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
   return (
     <>
       <PastPrizesHeader />
+      {drawsAndPrizeDistributions.length === 0 && (
+        <div className='opacity-70 text-center w-full mt-12'>No draws yet, check back soon</div>
+      )}
       <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
           <PastPrizeListItem
@@ -98,7 +101,7 @@ const PastPrizesHeader = (props: { className?: string }) => {
         'flex justify-between sticky top-20 sm:top-24 bg-body py-2 z-10'
       )}
     >
-      <span className='font-semibold text-accent-1 text-lg'>{t('pastPrizes', 'Past prizes')}</span>
+      <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>
       <SelectedNetworkToggle />
     </div>
   )

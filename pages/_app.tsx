@@ -34,6 +34,9 @@ import '@pooltogether/react-components/dist/index.css'
 // Carousel for Prizes
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
+// Custom css
+import '../lib/styles/navigation.css'
+
 import 'assets/styles/index.css'
 import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 

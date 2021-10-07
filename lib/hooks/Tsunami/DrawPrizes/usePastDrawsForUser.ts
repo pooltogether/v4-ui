@@ -29,14 +29,6 @@ const getPastDrawsForUser = async (usersAddress: string, drawPrize: DrawPrize, t
     drawPrize.getUsersClaimedAmounts(usersAddress, claimableDrawIds)
   ])
 
-  console.log(
-    'getPastDrawsForUser',
-    drawPrize,
-    claimableDrawIds,
-    drawsAndPrizeDistributions,
-    claimedAmounts
-  )
-
   const draws: {
     draw: Draw
     prizeDistribution: PrizeDistribution

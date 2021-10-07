@@ -246,7 +246,7 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='underline text-accent-1 hover:text-white transition-colors'
+        className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
         Get tokens
@@ -268,7 +268,7 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='underline text-accent-1 hover:text-white transition-colors'
+        className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
         Bridge tokens
