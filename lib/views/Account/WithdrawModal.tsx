@@ -76,6 +76,8 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
     setAmountToWithdraw
   } = props
 
+  const { t } = useTranslation()
+
   const { reset } = form
 
   const closeModalAndMaybeReset = useCallback(() => {
@@ -91,7 +93,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
   if (!isWalletOnProperNetwork) {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
-        <ModalTitle chainId={prizePool.chainId} title={'Wrong network'} />
+        <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
       </ModalWithStyles>
     )
@@ -100,7 +102,10 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
   if (currentStep === WithdrawalSteps.viewTxReceipt) {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
-        <ModalTitle chainId={prizePool.chainId} title={'Withdrawal submitted'} />
+        <ModalTitle
+          chainId={prizePool.chainId}
+          title={t('withdrawalSubmitted', 'Withdrawal submitted')}
+        />
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={prizePool.chainId}
@@ -114,7 +119,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
   return (
     <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
       <BackButton resetForm={reset} currentStep={currentStep} setCurrentStep={setCurrentStep} />
-      <ModalTitle chainId={prizePool.chainId} title={'Withdraw tokens'} />
+      <ModalTitle chainId={prizePool.chainId} title={t('withdrawTokens', 'Withdraw tokens')} />
       <div className='w-full mx-auto mt-8'>
         <WithdrawStepContent
           form={form}
