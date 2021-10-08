@@ -90,10 +90,12 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       return (
         <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
           <ModalTitle chainId={chainId} title={'Error depositing'} />
-          <p className='my-2 text-accent-1 text-center mx-8'>😔 Oh no!</p>
-          <p className='mb-8 text-accent-1 text-center mx-8'>
-            Something went wrong while processing your transaction.
-          </p>
+          <div className='text-white opacity-60'>
+            <p className='my-2 text-center mx-8'>😔 Oh no!</p>
+            <p className='mb-8 text-center mx-8'>
+              Something went wrong while processing your transaction.
+            </p>
+          </div>
           <SquareButton
             theme={SquareButtonTheme.tealOutline}
             className='w-full'
