@@ -43,11 +43,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         <SquareLink
           Link={Link}
           href={blockExplorerUrl}
-          className='w-full mt-6'
+          className='w-full mt-6 text-center'
           theme={SquareButtonTheme.purple}
           target='_blank'
         >
-          {t('viewOnExplorer', 'View on Explorer')}
+          {t('viewReceipt', 'View receipt')}
         </SquareLink>
       </div>
     )
