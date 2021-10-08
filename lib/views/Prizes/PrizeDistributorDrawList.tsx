@@ -1,27 +1,27 @@
 import React, { useMemo, useState } from 'react'
-import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useUnclaimedDrawsAndPrizeDistributions'
+import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawsAndPrizeDistributions'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import { getPrettyDate } from 'lib/utils/date'
 import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
 
-interface DrawPrizeDrawListProps {
-  drawPrize: DrawPrize
+interface PrizeDistributorDrawListProps {
+  prizeDistributor: PrizeDistributor
   prizePool: PrizePool
 }
 
-export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
-  const { drawPrize, prizePool } = props
+export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) => {
+  const { prizeDistributor, prizePool } = props
   const { t } = useTranslation()
   const {
     error,
     data: drawsAndPrizeDistributions,
     isFetched
-  } = useUnclaimedDrawsAndPrizeDistributions(drawPrize)
+  } = useUnclaimedDrawsAndPrizeDistributions(prizeDistributor)
   const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
   const nextDrawDate = useNextDrawDate()
@@ -32,7 +32,7 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
       drawsAndPrizeDistributions?.filter(
         (drawAndPrizeDistribution) =>
           !drawIdsToHideThisSession.includes(drawAndPrizeDistribution.draw.drawId)
-      ),
+      ) || [],
     [drawsAndPrizeDistributions, drawIdsToHideThisSession]
   )
 
@@ -59,11 +59,11 @@ export const DrawPrizeDrawList = (props: DrawPrizeDrawListProps) => {
         {drawsAndPrizeDistributionsToRender.map((drawAndPrizeDistribution) => (
           <div
             className='mx-auto pb-12 flex justify-center'
-            key={`${drawPrize.id()}_${drawAndPrizeDistribution.draw.drawId}`}
+            key={`${prizeDistributor.id()}_${drawAndPrizeDistribution.draw.drawId}`}
           >
             <div className='mx-2 sm:mx-4 max-w-xl '>
               <DrawCard
-                drawPrize={drawPrize}
+                prizeDistributor={prizeDistributor}
                 draw={drawAndPrizeDistribution.draw}
                 prizeDistribution={drawAndPrizeDistribution.prizeDistribution}
                 hideDrawCard={() =>

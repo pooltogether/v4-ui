@@ -144,7 +144,7 @@ export const DepositCard = () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const txId = await sendTx({
       name,
-      method: 'depositTo',
+      method: 'depositToAndDelegate',
       callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
       callbacks: {
         onSuccess: (tx: Transaction) => {

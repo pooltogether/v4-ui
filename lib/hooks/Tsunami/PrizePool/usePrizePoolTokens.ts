@@ -32,6 +32,11 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
         decimals: tokenData.decimals
       }
 
+      console.log({
+        ticket,
+        token
+      })
+
       return {
         ticket,
         token

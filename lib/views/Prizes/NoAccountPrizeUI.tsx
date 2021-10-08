@@ -1,12 +1,12 @@
 import { Card } from '@pooltogether/react-components'
-import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { useAtom } from 'jotai'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
-import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useClaimableDrawsAndPrizeDistributions'
+import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useClaimableDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import React, { useContext, useEffect } from 'react'
@@ -15,17 +15,17 @@ import {
   DrawDate,
   DrawDetailsProps,
   DrawId,
-  DrawPrizeTotal,
+  PrizeDistributorTotal,
   ViewPrizesTrigger
 } from './DrawCard/DrawDetails'
 
 interface NoAccountPrizeUIProps {
-  drawPrize: DrawPrize
+  prizeDistributor: PrizeDistributor
   prizePool: PrizePool
 }
 
 export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
-  const { drawPrize, prizePool } = props
+  const { prizeDistributor, prizePool } = props
 
   const nextDrawDate = useNextDrawDate()
 
@@ -39,11 +39,11 @@ export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
 }
 
 const PastPrizeList = (props: NoAccountPrizeUIProps) => {
-  const { prizePool, drawPrize } = props
+  const { prizePool, prizeDistributor } = props
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useClaimableDrawsAndPrizeDistributions(drawPrize)
+    useClaimableDrawsAndPrizeDistributions(prizeDistributor)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (
@@ -67,7 +67,7 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
       <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
           <PastPrizeListItem
-            key={`past-prize-list-${drawAndPrizeDistribution.draw.drawId}-${drawPrize.id()}`}
+            key={`past-prize-list-${drawAndPrizeDistribution.draw.drawId}-${prizeDistributor.id()}`}
             {...drawAndPrizeDistribution}
             token={prizePoolTokens.token}
           />
@@ -85,7 +85,7 @@ const PastPrizeListItem = (props: DrawDetailsProps) => (
         <DrawDate {...props} />
       </div>
       <div className='flex justify-between'>
-        <DrawPrizeTotal {...props} numberClassName='font-bold text-xl' />
+        <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
         <ViewPrizesTrigger {...props} />
       </div>
     </Card>

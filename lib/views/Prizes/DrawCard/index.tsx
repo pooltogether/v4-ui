@@ -1,7 +1,7 @@
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { Card, SquareButton, ThemedClipSpinner } from '@pooltogether/react-components'
-import { DrawPrize, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
-import { useUsersDrawResult } from 'lib/hooks/Tsunami/DrawPrizes/useUsersDrawResult'
+import { PrizeDistributor, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
+import { useUsersDrawResult } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import React, { useEffect, useState } from 'react'
@@ -17,7 +17,7 @@ import FeatherIcon from 'feather-icons-react'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
-  drawPrize: DrawPrize
+  prizeDistributor: PrizeDistributor
   draw: Draw
   hideDrawCard: () => void
   refetchUsersBalances: () => void
@@ -69,7 +69,7 @@ export enum ClaimState {
 }
 
 const DrawClaimSection = (props: DrawPropsWithDetails) => {
-  const { drawPrize, draw, hideDrawCard } = props
+  const { prizeDistributor, draw, hideDrawCard } = props
   const [claimState, setClaimState] = useState<ClaimState>(ClaimState.unchecked)
   const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
@@ -80,11 +80,11 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
   const claimTx = useTransaction(txId)
 
   const { data: fetchedDrawResults, isFetched: isDrawResultsFetched } = useUsersDrawResult(
-    drawPrize,
+    prizeDistributor,
     draw,
     claimState !== ClaimState.checking
   )
-  const [resultsState, storedDrawResults] = useStoredDrawResult(drawPrize, draw.drawId)
+  const [resultsState, storedDrawResults] = useStoredDrawResult(prizeDistributor, draw.drawId)
 
   const drawResults = fetchedDrawResults || (storedDrawResults as DrawResults)
 

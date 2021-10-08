@@ -126,6 +126,10 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
+  const { t } = useTranslation()
+
+  // console.log('prizePoolTokens', prizePoolTokens)
+
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
@@ -135,9 +139,11 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
           <div>
             <div className='flex flex-row'>
               <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
-              <span className='ml-2 xs:text-lg'>{`${getNetworkNiceNameByChainId(
-                prizePool.chainId
-              )} Prize Pool`}</span>
+              <span className='ml-2 xs:text-lg'>
+                {t('depositsOnNetwork', 'Deposits on {{ network }}', {
+                  network: getNetworkNiceNameByChainId(prizePool.chainId)
+                })}
+              </span>
             </div>
           </div>
           <Balance

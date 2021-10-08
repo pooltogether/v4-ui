@@ -24,7 +24,7 @@ export const DrawDetails = (props: DrawDetailsProps) => {
         <DrawDate {...props} />
       </div>
       <div className='flex flex-col'>
-        <DrawPrizeTotal {...props} />
+        <PrizeDistributorTotal {...props} />
         <div className='flex flex-row'>
           <DrawGrandPrize {...props} />
           <ViewPrizesTrigger {...props} />
@@ -34,7 +34,7 @@ export const DrawDetails = (props: DrawDetailsProps) => {
   )
 }
 
-export const DrawPrizeTotal = (props: {
+export const PrizeDistributorTotal = (props: {
   prizeDistribution: PrizeDistribution
   token: Token
   className?: string
@@ -49,7 +49,7 @@ export const DrawPrizeTotal = (props: {
   </div>
 )
 
-DrawPrizeTotal.defaultProps = {
+PrizeDistributorTotal.defaultProps = {
   numberClassName: 'font-bold text-5xl text-flashy',
   textClassName: 'font-bold text-accent-1 text-xxs ml-2'
 }

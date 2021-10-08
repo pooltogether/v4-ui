@@ -1,4 +1,4 @@
-import { DrawPrize, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
@@ -18,21 +18,21 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * - stored draw results that have a prize of 0
  * - stored draw results that have been claimed
  * - user had 0 average balance during the draw period
- * @param drawPrize the Draw Prize to fetch unclaimed draws for
+ * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
-export const useUnclaimedDrawsAndPrizeDistributions = (drawPrize: DrawPrize) => {
+export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
   const usersAddress = useUsersAddress()
   const nextDrawDate = useNextDrawDate()
-  const enabled = Boolean(drawPrize)
+  const enabled = Boolean(prizeDistributor)
   return useQuery(
     [
       'useUnclaimedDrawsAndPrizeDistributions',
-      drawPrize?.id(),
+      prizeDistributor?.id(),
       nextDrawDate.toISOString(),
       usersAddress
     ],
-    async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, drawPrize),
+    async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor),
     {
       ...NO_REFETCH,
       enabled
@@ -42,13 +42,13 @@ export const useUnclaimedDrawsAndPrizeDistributions = (drawPrize: DrawPrize) => 
 
 const getUnclaimedDrawsAndPrizeDistributions = async (
   usersAddress: string,
-  drawPrize: DrawPrize
+  prizeDistributor: PrizeDistributor
 ): Promise<{ draw: Draw; prizeDistribution: PrizeDistribution }[]> => {
-  const drawIds = await drawPrize.getClaimableDrawIds()
+  const drawIds = await prizeDistributor.getClaimableDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
-    drawPrize.getDrawsAndPrizeDistributions(drawIds),
-    drawPrize.getUsersClaimedAmounts(usersAddress, drawIds),
-    drawPrize.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
+    prizeDistributor.getDrawsAndPrizeDistributions(drawIds),
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds),
+    prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
   ])
 
   // TODO: Ensure claimed amounts are max claimable amount, probably do this in v4-js-sdk?
@@ -61,7 +61,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
 
       const storedResult = getStoredDrawResult(
         usersAddress,
-        drawPrize,
+        prizeDistributor,
         drawAndPrizeDistribution.draw.drawId
       )
       // Filter checked draws with no prize to claim

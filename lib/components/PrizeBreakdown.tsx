@@ -22,7 +22,7 @@ interface PrizeBreakdownProps {
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   const { prizeDistribution, className, token, isFetched } = props
-  const { distributions, prize, numberOfPicks } = prizeDistribution
+  const { tiers, prize, numberOfPicks } = prizeDistribution
   const { t } = useTranslation()
 
   return (
@@ -44,7 +44,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
             Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
           ) : (
             <>
-              {distributions.map((distribution, i) => (
+              {tiers.map((distribution, i) => (
                 <PrizeTableRow
                   key={`distribution_row_${i}`}
                   index={i}
