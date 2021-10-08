@@ -1,5 +1,3 @@
-import Image, { ImageProps } from 'next/image'
-
 const ClipBoardWithCheckMarkSvg = (props) => {
   return (
     <svg
@@ -21,7 +19,7 @@ export const ClipBoardWithCheckMark = (props) => {
   const { className, src } = props
   return (
     <div className={className}>
-      <span className='bg-highlight-1'>{src}</span>
+      <span className='text-white'>{src}</span>
     </div>
   )
 }

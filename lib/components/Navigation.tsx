@@ -1,7 +1,7 @@
-import classnames from 'classnames'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 import React from 'react'
+import Link from 'next/link'
+import classnames from 'classnames'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 
 interface NavLink {
@@ -34,7 +34,7 @@ export const Navigation = (props) => {
     <div
       className={classnames(
         className,
-        'bg-nav-container',
+        'bg-nav-container max-w-max',
         'sm:absolute sm:bottom-auto mx-auto',
         'fixed bottom-0 pb-6 sm:pb-0 inset-x-0 z-20'
       )}
@@ -43,7 +43,7 @@ export const Navigation = (props) => {
         className={classnames(
           className,
           'mx-auto',
-          'max-w-max flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter shadow-lg'
+          'flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter shadow-lg'
         )}
       >
         {NavLinks.map((navLink) => (
@@ -70,8 +70,8 @@ const NavTab = (props: NavTabProps) => {
       <a
         className={classnames(
           'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
-          'text-xs hover:text-white active:bg-purple',
-          { 'bg-purple text-white': isSelected },
+          'text-xs hover:text-white active:bg-highlight-9',
+          { 'bg-highlight-9 text-white': isSelected },
           { 'hover:bg-tertiary': !isSelected }
         )}
       >

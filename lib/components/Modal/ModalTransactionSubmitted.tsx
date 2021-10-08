@@ -30,7 +30,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
     <div className={classNames('flex flex-col', className)}>
       <ClipBoardWithCheckMark className='mx-auto mb-4 w-10' />
 
-      <span className='text-sm text-accent-1 mb-8 mx-auto'>
+      <span className='text-sm text-white mb-8 mx-auto opacity-50'>
         {t('transactionSent', 'Transaction sent')}
       </span>
 

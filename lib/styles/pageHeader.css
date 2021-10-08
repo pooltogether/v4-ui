@@ -1,7 +1,7 @@
 .theme-dark .bg-page-header {
-  background: linear-gradient(#2d0b5a 80%, #2d0b5a00);
+  background: linear-gradient(#2d0b5a 80%, rgba(45, 11, 90, 0));
 }
 
 .theme-light .bg-page-header {
-  background: linear-gradient(#f7f7f7 80%, #f7f7f700);
+  background: linear-gradient(#f7f7f7 90%, #f7f7f740 95%, #f7f7f700 98%, #f7f7f700 100%);
 }

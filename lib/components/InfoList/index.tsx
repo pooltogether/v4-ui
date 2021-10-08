@@ -3,7 +3,11 @@ import classnames from 'classnames'
 export const InfoList = (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement>
 ) => (
-  <ul className={classnames('rounded-lg py-4 px-4 bg-body', props.className)}>{props.children}</ul>
+  <ul
+    className={classnames('text-white rounded-lg py-4 px-4 bg-pt-purple-bright', props.className)}
+  >
+    {props.children}
+  </ul>
 )
 
 interface InfoListItemProps {
@@ -22,7 +26,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
 
   return (
     <li className={classnames('flex justify-between', className, fontSizeClassName)}>
-      <span className={classnames('text-accent-1', labelClassName)}>{label}:</span>
+      <span className={labelClassName}>{label}:</span>
       <span className={classnames('text-right', valueClassName, { 'opacity-80': dimValue })}>
         {value}
       </span>

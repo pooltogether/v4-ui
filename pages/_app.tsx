@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next'
 import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
+import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -38,7 +39,7 @@ import '../lib/styles/navigation.css'
 import '../lib/styles/pageHeader.css'
 
 import 'assets/styles/index.css'
-import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
+import 'assets/styles/tsunami.css'
 
 const queryClient = new QueryClient()
 

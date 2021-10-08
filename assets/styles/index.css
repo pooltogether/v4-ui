@@ -1,27 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-* {
-  --color-bg-readonly-tsunami: #321a60;
-  --color-border-readonly-tsunami: rgba(173, 153, 216, 0.1);
-}
-
-/* TODO: Find out why this doesn't work? It's a default in Tailwind */
-.bg-transparent {
-  background: transparent;
-}
-
-.gradient-new {
-  background-image: linear-gradient(
-    130deg,
-    rgba(76, 36, 159, 0.7) -10%,
-    rgba(23, 225, 253, 0.7) 40%,
-    rgba(255, 119, 225, 0.7) 70%,
-    rgba(255, 241, 119, 0.7) 120%
-  );
-}
-
-.new-btn .lds-dual-ring:after {
-  border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
-}

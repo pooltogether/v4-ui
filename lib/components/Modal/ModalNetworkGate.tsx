@@ -16,8 +16,8 @@ export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
   const networkName = getNetworkNiceNameByChainId(chainId)
 
   return (
-    <div className={classNames(className, 'flex flex-col text-accent-1')}>
-      <div className='mx-4'>
+    <div className={classNames(className, 'flex flex-col text-white')}>
+      <div className='mx-4 opacity-70'>
         <p className='mb-4'>
           The Prize Pool you are intertacting with lives on the {networkName} network.
         </p>
@@ -26,6 +26,7 @@ export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
           another wallet.
         </p>
       </div>
+
       <NetworkSwitchButton chainId={chainId} onSuccess={onSuccess} />
     </div>
   )

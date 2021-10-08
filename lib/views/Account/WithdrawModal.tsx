@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import classnames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import {
   Modal,
   LoadingDots,
@@ -8,7 +9,7 @@ import {
   Tooltip,
   ErrorsBox
 } from '@pooltogether/react-components'
-import { Amount, Token, TokenBalance, Transaction, useTransaction } from '@pooltogether/hooks'
+import { Amount, Token, TokenBalance, Transaction } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
@@ -146,7 +147,7 @@ const BackButton = (props) => {
 
   return (
     <button
-      className='text-accent-1 absolute top-6 left-6 text-xs border-b opacity-50 hover:opacity-100 trans leading-tight'
+      className='text-white hover:text-white absolute top-7 left-8 text-xs border-b opacity-30 hover:opacity-100 trans leading-tight'
       onClick={() => {
         const newStep = currentStep - 1
         if (newStep === WithdrawalSteps.input) {
@@ -155,6 +156,11 @@ const BackButton = (props) => {
         setCurrentStep(newStep)
       }}
     >
+      <FeatherIcon
+        icon={'arrow-left'}
+        className='relative w-4 h-4 inline-block'
+        style={{ top: -1 }}
+      />{' '}
       {t('back')}
     </button>
   )

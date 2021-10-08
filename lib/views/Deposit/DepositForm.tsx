@@ -130,7 +130,7 @@ export const DepositForm = (props: DepositFormProps) => {
             validate={depositValidationRules}
             containerBgClassName={'bg-transparent'}
             containerRoundedClassName={'rounded-lg'}
-            bgClassName={'bg-body'}
+            bgClassName={'bg-primary'}
             placeholder='0.0'
             id={DEPOSIT_QUANTITY_KEY}
             name={DEPOSIT_QUANTITY_KEY}
@@ -238,7 +238,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   const errorMessages = errors ? Object.values(errors) : null
   if (errorMessages && errorMessages.length > 0) {
     const messages = errorMessages.map((error) => (
-      <span key={error.message} className='text-red opacity-80'>
+      <span key={error.message} className='text-red font-semibold'>
         {error.message}
       </span>
     ))

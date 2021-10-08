@@ -158,14 +158,14 @@ export const TextInputGroup = (props) => {
             <div className='relative w-full'>
               <div
                 className={classnames(
-                  'bg-body border-2 border-card rounded-xl px-3 font-inter absolute font-semibold text-lg cursor-default z-10',
+                  'rounded-xl font-inter absolute font-semibold text-lg cursor-default z-10',
                   {
                     'text-default': readOnly
                   }
                 )}
-                style={{ top: 15, left: 24, background: props.bgVarName }}
+                style={{ top: 18, left: 30, background: props.bgVarName }}
               >
-                <span className={classnames({ 'opacity-50': readOnly })}>{symbolAndIcon}</span>
+                <span className={classnames({ '': readOnly })}>{symbolAndIcon}</span>
               </div>
               {input}
             </div>

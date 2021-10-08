@@ -108,7 +108,7 @@ export const RectangularInput = (props) => {
       {...sanitizeProps(props)}
       autoFocus={autoFocus && isBrowser}
       className={classnames(className, {
-        'text-default opacity-50': readOnly
+        'text-default': readOnly
       })}
       style={{
         backgroundColor: readOnly ? 'var(--color-bg-readonly-tsunami)' : '',

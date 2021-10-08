@@ -46,8 +46,8 @@ const NetworkToggle = (props: NetworkToggleProps) => {
     <button
       className={classnames(
         'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
-        'text-xs hover:text-white active:bg-purple',
-        { 'bg-purple text-white': isSelected },
+        'text-xs hover:text-white active:bg-highlight-9',
+        { 'bg-highlight-9 text-white': isSelected },
         { 'hover:bg-tertiary': !isSelected }
       )}
       onClick={() => setSelectedNetwork(chainId)}
