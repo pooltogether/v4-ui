@@ -4,7 +4,7 @@
   "private": true,
   "author": "PoolTogether Inc.",
   "scripts": {
-    "reinstall": "rm -rf ./node_modules && yarn",
+    "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "npm-run-all --parallel start:app start:server",
     "start:app": "PORT=3000 node --max-old-space-size=8192 server.js",
     "start:server": "netlify-lambda serve functions",
