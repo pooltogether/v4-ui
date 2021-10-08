@@ -21,8 +21,10 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
 import { TxHashRow } from 'lib/components/TxHashRow'
+import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
+import { ethers } from 'ethers'
 
 export const DepositCard = () => {
   const router = useRouter()
@@ -41,13 +43,19 @@ export const DepositCard = () => {
     refetch: refetchUsersDepositAllowance,
     isFetched: isUsersDepositAllowanceFetched
   } = useUsersDepositAllowance(prizePool)
+  const {
+    data: ticketDelegate,
+    isFetched: isTicketDelegateFetched,
+    refetch: refetchTicketDelegate
+  } = useUsersTicketDelegate(prizePool)
 
   const isDataFetched =
     isPrizePoolFetched &&
     isPlayerFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
-    isUsersDepositAllowanceFetched
+    isUsersDepositAllowanceFetched &&
+    isTicketDelegateFetched
 
   const form = useForm({
     mode: 'onChange',
@@ -140,29 +148,66 @@ export const DepositCard = () => {
     setApproveTxId(txId, prizePool)
   }
 
-  const sendDepositAndDelegateTx = async () => {
+  const onSuccess = (tx: Transaction) => {
+    setDepositedAmount(amountToDeposit)
+    setCompletedDepositTxId(tx.id, prizePool)
+    setDepositTxId(0, prizePool)
+    closeModal()
+    resetQueryParam()
+  }
+
+  const depositAndDelegate = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const txId = await sendTx({
       name,
       method: 'depositToAndDelegate',
       callTransaction: async () => player.depositAndDelegate(amountToDeposit.amountUnformatted),
       callbacks: {
-        onSuccess: (tx: Transaction) => {
-          setDepositedAmount(amountToDeposit)
-          setCompletedDepositTxId(tx.id, prizePool)
-          setDepositTxId(0, prizePool)
-          closeModal()
-          resetQueryParam()
-        },
-        refetch: () => refetchUsersBalances()
+        onSuccess,
+        refetch: () => {
+          refetchTicketDelegate()
+          refetchUsersBalances()
+        }
       }
     })
     setDepositTxId(txId, prizePool)
   }
 
-  // TODO: Check if delegated already
+  const deposit = async () => {
+    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const txId = await sendTx({
+      name,
+      method: 'depositTo',
+      callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
+      callbacks: {
+        onSuccess,
+        refetch: () => {
+          refetchUsersBalances()
+        }
+      }
+    })
+    setDepositTxId(txId, prizePool)
+  }
+
   const sendDepositTx = async () => {
-    return sendDepositAndDelegateTx()
+    const contractMethod =
+      ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'
+    const clientMethod =
+      ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
+    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    console.log(contractMethod, clientMethod)
+    const txId = await sendTx({
+      name,
+      method: contractMethod,
+      callTransaction: async () => player[clientMethod](amountToDeposit.amountUnformatted),
+      callbacks: {
+        onSuccess,
+        refetch: () => {
+          refetchUsersBalances()
+        }
+      }
+    })
+    setDepositTxId(txId, prizePool)
   }
 
   const resetQueryParam = () => {
