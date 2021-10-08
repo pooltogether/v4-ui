@@ -31,8 +31,8 @@ export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
 
   return (
     <PagePadding className='flex flex-col space-y-4'>
-      <PrizeWLaurels className='mx-auto mb-8' />
-      <ConnectWalletCard className='mb-8' />
+      <PrizeWLaurels className='mx-auto mb-4' />
+      <ConnectWalletCard />
       <PastPrizeList {...props} />
     </PagePadding>
   )

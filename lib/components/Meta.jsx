@@ -1,15 +1,15 @@
 import Head from 'next/head'
 
 export const Meta = ({ title }) => {
-  const defaultTitle = 'Tsunami - PoolTogether'
+  const defaultTitle = 'Tsunami (v4) - PoolTogether'
   title = title ? `${title} - ${defaultTitle}` : defaultTitle
 
   let url = `https://app.pooltogether.com`
   if (typeof window !== 'undefined') {
     url = window.location.href
   }
-  const description = `A new way for more winners to to pool and save with their friends.`
-  const keywords = 'ethereum polygon bsc binance'
+  const description = `PoolTogether is a crypto-powered savings protocol based on Premium Bonds. Save money and have a chance to win every week.  .`
+  const keywords = 'ethereum polygon celo bsc binance'
   const twitterHandle = '@PoolTogether_'
 
   return (
