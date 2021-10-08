@@ -102,7 +102,11 @@ export const DepositForm = (props: DepositFormProps) => {
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
         if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
-          return `Minimum deposit of ${minimumDepositAmount.amountPretty} ${token.symbol} required`
+          return t(
+            'minimumDepositOfAmountRequired',
+            `Minimum deposit of {{amount}} {{token}} required`,
+            { amount: minimumDepositAmount.amountPretty, token: token.symbol }
+          )
       }
 
       if (getMaxPrecision(v) > Number(decimals)) return false

@@ -97,7 +97,10 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
           <ModalTitle chainId={chainId} title={'Error depositing'} />
           <p className='my-2 text-accent-1 text-center mx-8'>😔 Oh no!</p>
           <p className='mb-8 text-accent-1 text-center mx-8'>
-            Something went wrong while processing your transaction.
+            {t(
+              'somethingWentWrongWhileProcessingYourTransaction',
+              'Something went wrong while processing your transaction.'
+            )}
           </p>
           <SquareButton
             theme={SquareButtonTheme.tealOutline}
@@ -107,7 +110,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
               closeModal()
             }}
           >
-            Try again
+            {t('tryAgain', 'Try again')}
           </SquareButton>
         </ModalWithStyles>
       )
@@ -115,7 +118,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
 
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={chainId} title={'Deposit submitted'} />
+        <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={chainId}
@@ -194,16 +197,19 @@ interface ModalWithStylesProps {
   children: React.ReactNode
 }
 
-const ModalWithStyles = (props: ModalWithStylesProps) => (
-  <Modal
-    noSize
-    noBgColor
-    noPad
-    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-    label={`Confirm Deposit Modal`}
-    {...props}
-  />
-)
+const ModalWithStyles = (props: ModalWithStylesProps) => {
+  const { t } = useTranslation()
+  return (
+    <Modal
+      noSize
+      noBgColor
+      noPad
+      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
+      label={t('confirmDepositModal', 'Confirm deposit - modal')}
+      {...props}
+    />
+  )
+}
 
 const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
   const { amount, ticket } = props

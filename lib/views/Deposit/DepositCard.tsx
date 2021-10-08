@@ -249,16 +249,18 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <>
       <button
         className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
-        Get tokens
+        {t('getTokens', 'Get tokens')}
       </button>
       <GetTokensModal
-        label='Decentralized exchange modal'
+        label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
         tokenAddress={prizePool.tokenMetadata.address}
         isOpen={showModal}
@@ -271,16 +273,18 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <>
       <button
         className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
-        Bridge tokens
+        {t('bridgeTokens', 'Bridge tokens')}
       </button>
       <BridgeTokensModal
-        label='Ethereum to L2 bridge modal'
+        label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
         chainId={prizePool.chainId}
         isOpen={showModal}
         closeModal={() => setShowModal(false)}
@@ -330,7 +334,10 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
       <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-1 my-4 text-xxs rounded-lg text-white'>
-        {t('disclaimerComeBackRegularlyToClaimWinnings')}
+        {t(
+          'disclaimerComeBackRegularlyToClaimWinnings',
+          'Come back regularly to claim your winnings!'
+        )}
       </div>
       <SquareButton
         size={SquareButtonSize.md}

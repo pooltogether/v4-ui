@@ -69,7 +69,6 @@ interface AccountCardProps {
 
 const AccountCard = (props: AccountCardProps) => {
   const { player, isPlayerFetched } = props
-  const { t } = useTranslation()
 
   const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
 
@@ -127,8 +126,6 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
     usePrizePoolTokens(prizePool)
 
   const { t } = useTranslation()
-
-  // console.log('prizePoolTokens', prizePoolTokens)
 
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 

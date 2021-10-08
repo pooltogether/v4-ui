@@ -180,10 +180,10 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         {isChecking ? (
           <>
             <ThemedClipSpinner sizeClassName='w-4 h-4' className='mr-2' />
-            <span>Checking for prizes</span>
+            <span>{t('checkingForPrizes', 'Checking for prizes')}</span>
           </>
         ) : (
-          <span>Check for prizes</span>
+          <span>{t('checkForPrizes', 'Check for prizes')}</span>
         )}
       </SquareButton>
     )

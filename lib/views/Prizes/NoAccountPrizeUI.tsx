@@ -1,7 +1,9 @@
+import React from 'react'
+import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@pooltogether/react-components'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
-import classNames from 'classnames'
-import { useAtom } from 'jotai'
+
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
@@ -9,8 +11,6 @@ import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useClaimableDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
-import React, { useContext, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   DrawDate,
   DrawDetailsProps,
@@ -40,6 +40,9 @@ export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
 
 const PastPrizeList = (props: NoAccountPrizeUIProps) => {
   const { prizePool, prizeDistributor } = props
+
+  const { t } = useTranslation()
+
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
@@ -62,7 +65,9 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
     <>
       <PastPrizesHeader />
       {drawsAndPrizeDistributions.length === 0 && (
-        <div className='opacity-70 text-center w-full mt-12'>No draws yet, check back soon</div>
+        <div className='opacity-70 text-center w-full mt-12'>
+          {t('noDrawsYet', 'No draws yet, check back soon')}
+        </div>
       )}
       <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
