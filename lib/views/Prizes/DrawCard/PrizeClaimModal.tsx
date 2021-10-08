@@ -14,10 +14,10 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { useSignerDrawPrize } from 'lib/hooks/Tsunami/DrawPrizes/useSignerDrawPrize'
+import { useSignerPrizeDistributor } from 'lib/hooks/Tsunami/PrizeDistributor/useSignerPrizeDistributor'
 import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { usePastDrawsForUser } from 'lib/hooks/Tsunami/DrawPrizes/usePastDrawsForUser'
+import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
   isOpen: boolean
@@ -36,7 +36,7 @@ enum ModalState {
 export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
     drawResults,
-    drawPrize,
+    prizeDistributor,
     token,
     ticket,
     isOpen,
@@ -54,24 +54,24 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const usersAddress = useUsersAddress()
   const [modalState, setModalState] = useState<ModalState>(ModalState.viewPrizes)
 
-  const { refetch: refetchClaimedAmounts } = usePastDrawsForUser(drawPrize, token)
+  const { refetch: refetchClaimedAmounts } = usePastDrawsForUser(prizeDistributor, token)
 
   const onSuccessfulClaim = (tx: Transaction) => {
     updateStoredDrawResultState(
       usersAddress,
-      drawPrize,
+      prizeDistributor,
       drawResults.drawId,
       StoredDrawStates.claimed
     )
   }
 
-  const signerDrawPrize = useSignerDrawPrize(drawPrize)
+  const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
     const name = `Claim prizes`
     const txId = await sendTx({
       name,
       method: 'claim',
-      callTransaction: async () => signerDrawPrize.claimPrizesByDrawResults(drawResults),
+      callTransaction: async () => signerPrizeDistributor.claimPrizesByDrawResults(drawResults),
       callbacks: {
         onSuccess: onSuccessfulClaim,
         refetch: () => {
@@ -81,7 +81,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       }
     })
     setTxId(txId)
-  }, [signerDrawPrize, drawResults])
+  }, [signerPrizeDistributor, drawResults])
 
   if (!drawResults) return null
 
@@ -126,7 +126,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   if (modalState === ModalState.viewPrizes) {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={drawPrize.chainId} title={t('claimPrizes', 'Claim prizes')} />
+        <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
         <div className='w-full mx-auto mt-4 flex flex-col'>
           <div className='mx-auto font-bold text-flashy mb-4'>
@@ -159,7 +159,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   return (
     <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-      <ModalTitle chainId={drawPrize.chainId} title={t('claimPrizes', 'Claim prizes')} />
+      <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
       <div className='w-full mx-auto mt-4 flex flex-col'>
         <div className='mx-auto font-bold text-flashy mb-4'>

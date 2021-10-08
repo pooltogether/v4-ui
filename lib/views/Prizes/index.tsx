@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { useSelectedNetworkDrawPrizes } from 'lib/hooks/Tsunami/DrawPrizes/useSelectedNetworkDrawPrizes'
+import { useSelectedNetworkPrizeDistributors } from 'lib/hooks/Tsunami/PrizeDistributor/useSelectedNetworkPrizeDistributors'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
-import { DrawPrizeDrawList } from './DrawPrizeDrawList'
+import { PrizeDistributorDrawList } from './PrizeDistributorDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
 import { HistoricPrizesList } from './HistoricPrizesList'
@@ -15,9 +15,9 @@ export const PRIZE_UI_STATES = {
   didNotWin: 'didNotWin'
 }
 
-// NOTE:, this is where we are selecting a single DrawPrize from the list
+// NOTE:, this is where we are selecting a single PrizeDistributor from the list
 export const PrizesUI = () => {
-  const { data: drawPrizes, isFetched } = useSelectedNetworkDrawPrizes()
+  const { data: prizeDistributors, isFetched } = useSelectedNetworkPrizeDistributors()
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
   const usersAddress = useUsersAddress()
 
@@ -30,14 +30,14 @@ export const PrizesUI = () => {
   }
 
   if (!usersAddress) {
-    return <NoAccountPrizeUI drawPrize={drawPrizes[0]} prizePool={prizePool} />
+    return <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
   }
 
   return (
     <>
-      <DrawPrizeDrawList drawPrize={drawPrizes[0]} prizePool={prizePool} />
+      <PrizeDistributorDrawList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       <PagePadding>
-        <HistoricPrizesList drawPrize={drawPrizes[0]} prizePool={prizePool} />
+        <HistoricPrizesList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       </PagePadding>
     </>
   )

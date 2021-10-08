@@ -1,10 +1,9 @@
 import { Amount } from '@pooltogether/hooks'
 import { Card } from '@pooltogether/react-components'
-import { DrawPrize, PrizePool } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
-import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/DrawPrizes/useClaimableDrawsAndPrizeDistributions'
-import { usePastDrawsForUser } from 'lib/hooks/Tsunami/DrawPrizes/usePastDrawsForUser'
+import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult } from 'lib/utils/drawResultsStorage'
@@ -15,16 +14,19 @@ import {
   DrawDate,
   DrawDetailsProps,
   DrawId,
-  DrawPrizeTotal,
+  PrizeDistributorTotal,
   ViewPrizesTrigger
 } from './DrawCard/DrawDetails'
 
-export const HistoricPrizesList = (props: { drawPrize: DrawPrize; prizePool: PrizePool }) => {
-  const { prizePool, drawPrize } = props
+export const HistoricPrizesList = (props: {
+  prizeDistributor: PrizeDistributor
+  prizePool: PrizePool
+}) => {
+  const { prizePool, prizeDistributor } = props
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: pastDraws, isFetched: isDrawsAndPrizeDistributionsFetched } = usePastDrawsForUser(
-    drawPrize,
+    prizeDistributor,
     prizePoolTokens?.token
   )
 
@@ -49,9 +51,9 @@ export const HistoricPrizesList = (props: { drawPrize: DrawPrize; prizePool: Pri
       <ul className='space-y-4'>
         {pastDraws.map((pastDraw) => (
           <PastPrizeListItem
-            key={`past-prize-list-${pastDraw.draw.drawId}-${drawPrize.id()}`}
+            key={`past-prize-list-${pastDraw.draw.drawId}-${prizeDistributor.id()}`}
             {...pastDraw}
-            drawPrize={drawPrize}
+            prizeDistributor={prizeDistributor}
             token={prizePoolTokens.token}
           />
         ))}
@@ -62,7 +64,7 @@ export const HistoricPrizesList = (props: { drawPrize: DrawPrize; prizePool: Pri
 
 interface PastPrizeListItemProps extends DrawDetailsProps {
   claimedAmount: Amount
-  drawPrize: DrawPrize
+  prizeDistributor: PrizeDistributor
 }
 
 const PastPrizeListItem = (props: PastPrizeListItemProps) => (
@@ -73,7 +75,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
         <DrawDate {...props} />
       </div>
       <div className='flex justify-between'>
-        <DrawPrizeTotal {...props} numberClassName='font-bold text-xl' />
+        <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
         <ViewPrizesTrigger {...props} />
       </div>
       <ClaimedAmountSection {...props} className='mt-2' />
@@ -82,12 +84,12 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
 )
 
 const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, drawPrize, draw, className, token } = props
+  const { claimedAmount, prizeDistributor, draw, className, token } = props
   const { amountUnformatted } = claimedAmount
 
   const usersAddress = useUsersAddress()
 
-  const storedDrawResult = getStoredDrawResult(usersAddress, drawPrize, draw.drawId)
+  const storedDrawResult = getStoredDrawResult(usersAddress, prizeDistributor, draw.drawId)
 
   const userHasntClaimed = amountUnformatted.isZero()
   const userHasAmountToClaim = !storedDrawResult?.drawResults.totalValue.isZero()

@@ -1,5 +1,5 @@
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, DrawPrize, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistributor, PrizeDistribution } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
@@ -10,18 +10,18 @@ import { useNextDrawDate } from '../useNextDrawDate'
 /**
  * Returns the draws & prize distributions that are claimable along with the amount the
  * user has claimed.
- * @param drawPrize
+ * @param prizeDistributor
  * @param token
  * @returns
  */
-export const usePastDrawsForUser = (drawPrize: DrawPrize, token: Token) => {
+export const usePastDrawsForUser = (prizeDistributor: PrizeDistributor, token: Token) => {
   const nextDrawDate = useNextDrawDate()
   const usersAddress = useUsersAddress()
-  const enabled = Boolean(drawPrize) && Boolean(usersAddress) && Boolean(token)
+  const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && Boolean(token)
 
   return useQuery(
-    ['usePastDrawsForUser', drawPrize?.id(), nextDrawDate.toISOString()],
-    () => getPastDrawsForUser(usersAddress, drawPrize, token),
+    ['usePastDrawsForUser', prizeDistributor?.id(), nextDrawDate.toISOString()],
+    () => getPastDrawsForUser(usersAddress, prizeDistributor, token),
     {
       ...NO_REFETCH,
       enabled
@@ -29,11 +29,15 @@ export const usePastDrawsForUser = (drawPrize: DrawPrize, token: Token) => {
   )
 }
 
-const getPastDrawsForUser = async (usersAddress: string, drawPrize: DrawPrize, token: Token) => {
-  const claimableDrawIds = await drawPrize.getClaimableDrawIds()
+const getPastDrawsForUser = async (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor,
+  token: Token
+) => {
+  const claimableDrawIds = await prizeDistributor.getClaimableDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts] = await Promise.all([
-    drawPrize.getDrawsAndPrizeDistributions(claimableDrawIds),
-    drawPrize.getUsersClaimedAmounts(usersAddress, claimableDrawIds)
+    prizeDistributor.getDrawsAndPrizeDistributions(claimableDrawIds),
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, claimableDrawIds)
   ])
 
   const draws: {

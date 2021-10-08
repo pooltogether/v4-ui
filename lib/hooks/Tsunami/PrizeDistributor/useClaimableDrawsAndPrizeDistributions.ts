@@ -1,4 +1,4 @@
-import { Draw, DrawPrize, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistributor, PrizeDistribution } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
@@ -6,16 +6,17 @@ import { useNextDrawDate } from '../useNextDrawDate'
 
 /**
  * Returns the claimable draws and prize distributions
- * @param drawPrize
+ * @param prizeDistributor
  * @returns
  */
-export const useClaimableDrawsAndPrizeDistributions = (drawPrize: DrawPrize) => {
+export const useClaimableDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
   const nextDrawDate = useNextDrawDate()
-  const enabled = Boolean(drawPrize)
+  const enabled = Boolean(prizeDistributor)
   return useQuery(
-    ['useClaimableDrawsAndPrizeDistributions', drawPrize?.id(), nextDrawDate.toISOString()],
+    ['useClaimableDrawsAndPrizeDistributions', prizeDistributor?.id(), nextDrawDate.toISOString()],
     async () => {
-      let drawsAndPrizeDistributions = await drawPrize.getClaimableDrawsAndPrizeDistributions()
+      let drawsAndPrizeDistributions =
+        await prizeDistributor.getClaimableDrawsAndPrizeDistributions()
       return drawsAndPrizeDistributions.sort(sortByDrawId)
     },
     {

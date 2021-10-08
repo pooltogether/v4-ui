@@ -2,7 +2,7 @@ import { Handler } from '@netlify/functions'
 import { testnets } from '@pooltogether/v4-pool-data'
 import { ethers } from 'ethers'
 
-import { initializeDrawPrizes } from '@pooltogether/v4-js-client'
+import { initializePrizeDistributors } from '@pooltogether/v4-js-client'
 
 import fetch from 'cross-fetch'
 global.fetch = fetch
@@ -57,13 +57,13 @@ const handler: Handler = async (event, context) => {
     // console.log('chainIds', chainIds)
     // const readProviders = getProviders(chainIds)
     // let r = await readProviders[4].getNetwork()
-    // const drawPrizes = await initializeDrawPrizes(readProviders, contractList)
-    // const drawPrize = drawPrizes.find(
+    // const prizeDistributors = await initializePrizeDistributors(readProviders, contractList)
+    // const prizeDistributor = prizeDistributors.find(
     //   (cd) => cd.chainId === chainId && cd.address === claimableDrawAddress
     // )
 
     // TODO: Store draw results in KV
-    // const drawResults = await drawPrize.getUsersPrizesByDrawId(usersAddress, drawId)
+    // const drawResults = await prizeDistributor.getUsersPrizesByDrawId(usersAddress, drawId)
     // console.log('drawResults', drawResults)
 
     return {
