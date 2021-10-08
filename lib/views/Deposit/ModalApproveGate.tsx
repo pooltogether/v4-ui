@@ -12,6 +12,7 @@ import classNames from 'classnames'
 import { InfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface ModalApproveGateProps {
   className?: string
@@ -23,6 +24,8 @@ interface ModalApproveGateProps {
 
 export const ModalApproveGate = (props: ModalApproveGateProps) => {
   const { prizePool, className, chainId, approveTx, sendApproveTx } = props
+
+  const { t } = useTranslation()
 
   if (approveTx?.inFlight) {
     const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx, chainId)
@@ -36,11 +39,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         <SquareLink
           Link={Link}
           href={blockExplorerUrl}
-          className='w-full mt-6'
+          className='w-full mt-6 text-center'
           theme={SquareButtonTheme.purple}
           target='_blank'
         >
-          View on Explorer
+          {t('viewReceipt', 'View receipt')}
         </SquareLink>
       </div>
     )
