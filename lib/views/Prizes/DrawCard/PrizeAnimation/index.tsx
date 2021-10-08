@@ -1,8 +1,7 @@
+import { useRef, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
-import classNames from 'classnames'
-import classnames from 'classnames'
 import { ClaimState } from 'lib/views/Prizes/DrawCard'
-import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
+import classnames from 'classnames'
 
 interface PrizeAnimationProps {
   className?: string
@@ -12,7 +11,7 @@ interface PrizeAnimationProps {
   setCheckedAnimationFinished: () => void
 }
 
-const VIDEO_VERSION = 'v001'
+const VIDEO_VERSION = 'v002'
 
 enum VideoState {
   loop = 'LOOP',
@@ -26,10 +25,10 @@ enum VideoClip {
   reveal = 'REVEAL'
 }
 
-interface Video {
-  state: VideoState
-  clip: VideoClip
-}
+// interface Video {
+//   state: VideoState
+//   clip: VideoClip
+// }
 
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
@@ -37,7 +36,7 @@ const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
 export const PrizeAnimation = (props: PrizeAnimationProps) => {
   const {
     claimState,
-    totalPrizeValueUnformatted,
+    // totalPrizeValueUnformatted,
     className,
     isDrawResultsFetched,
     setCheckedAnimationFinished
@@ -53,8 +52,8 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
   const d2 = useRef<HTMLVideoElement>(null)
 
   const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
-  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.transition)
-  const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
+  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.loop)
+  // const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
 
   const isHidden = (videoClip: VideoClip, videoState: VideoState) => {
     if (videoClip !== currentVideoClip) return true
@@ -68,7 +67,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
     >
       {/* Rest */}
       {/* Rest Transition */}
-      <video
+      {/* <video
         className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
         ref={a1}
         playsInline
@@ -86,7 +85,7 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         }}
       >
         <source src={getVideoSource(VideoClip.rest, VideoState.transition)} type='video/mp4' />
-      </video>
+      </video> */}
       {/* Rest Loop */}
       <video
         className={classnames({ ' h-0': isHidden(VideoClip.rest, VideoState.loop) })}
