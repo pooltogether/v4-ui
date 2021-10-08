@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { Amount, Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
@@ -140,12 +140,12 @@ export const DepositCard = () => {
     setApproveTxId(txId, prizePool)
   }
 
-  const sendDepositTx = async () => {
+  const sendDepositAndDelegateTx = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const txId = await sendTx({
       name,
       method: 'depositToAndDelegate',
-      callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
+      callTransaction: async () => player.depositAndDelegate(amountToDeposit.amountUnformatted),
       callbacks: {
         onSuccess: (tx: Transaction) => {
           setDepositedAmount(amountToDeposit)
@@ -158,6 +158,11 @@ export const DepositCard = () => {
       }
     })
     setDepositTxId(txId, prizePool)
+  }
+
+  // TODO: Check if delegated already
+  const sendDepositTx = async () => {
+    return sendDepositAndDelegateTx()
   }
 
   const resetQueryParam = () => {
