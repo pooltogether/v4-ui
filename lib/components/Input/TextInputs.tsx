@@ -108,11 +108,11 @@ export const RectangularInput = (props) => {
       {...sanitizeProps(props)}
       autoFocus={autoFocus && isBrowser}
       className={classnames(className, {
-        'text-default': readOnly
+        'text-accent-4': readOnly
       })}
       style={{
         backgroundColor: readOnly ? 'var(--color-bg-readonly-tsunami)' : '',
-        borderColor: readOnly ? 'var(--color-border-readonly-tsunami)' : ''
+        borderColor: readOnly ? 'transparent' : ''
       }}
       {...register(id, {
         required,

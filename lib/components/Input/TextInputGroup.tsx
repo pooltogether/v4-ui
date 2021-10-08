@@ -160,7 +160,7 @@ export const TextInputGroup = (props) => {
                 className={classnames(
                   'rounded-xl font-inter absolute font-semibold text-lg cursor-default z-10',
                   {
-                    'text-default': readOnly
+                    'text-accent-4': readOnly
                   }
                 )}
                 style={{ top: 18, left: 30, background: props.bgVarName }}

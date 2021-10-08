@@ -1,13 +1,5 @@
-.theme-dark {
+* {
   --color-bg-readonly-tsunami: #3e0a79;
-  --color-border-readonly-tsunami: rgba(173, 153, 216, 0);
-}
-
-.theme-light {
-  --color-bg-readonly-tsunami: #3e0a79;
-  --color-border-readonly-tsunami: rgba(173, 153, 216, 0);
-  /* --color-bg-readonly-tsunami: #ccc0e2;
-  --color-border-readonly-tsunami: rgba(212, 199, 238, 0.1); */
 }
 
 /* TODO: Find out why this doesn't work? It's a default in Tailwind */
