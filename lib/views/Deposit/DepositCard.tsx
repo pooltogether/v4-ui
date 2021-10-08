@@ -19,7 +19,7 @@ import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDe
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
-import { DepositForm, DEPOSIT_FORM_KEY } from 'lib/views/Deposit/DepositForm'
+import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
 import { TxHashRow } from 'lib/components/TxHashRow'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
@@ -89,7 +89,7 @@ export const DepositCard = () => {
 
   const { setValue, watch, reset } = form
 
-  const quantity = watch(DEPOSIT_FORM_KEY)
+  const quantity = watch(DEPOSIT_QUANTITY_KEY)
   const amountToDeposit = useMemo(
     () => getAmountFromString(quantity, token?.decimals),
     [quantity, token?.decimals]
@@ -98,10 +98,10 @@ export const DepositCard = () => {
   // Set quantity from the query parameter on mount
   useEffect(() => {
     try {
-      const quantity = router.query[DEPOSIT_FORM_KEY]
+      const quantity = router.query[DEPOSIT_QUANTITY_KEY]
       const quantityNum = Number(quantity)
       if (quantity && !isNaN(quantityNum)) {
-        setValue(DEPOSIT_FORM_KEY, quantity, { shouldValidate: true })
+        setValue(DEPOSIT_QUANTITY_KEY, quantity, { shouldValidate: true })
       }
     } catch (e) {
       console.warn('Invalid query parameter for quantity')
@@ -162,7 +162,7 @@ export const DepositCard = () => {
 
   const resetQueryParam = () => {
     const { query, pathname } = router
-    delete query[DEPOSIT_FORM_KEY]
+    delete query[DEPOSIT_QUANTITY_KEY]
     router.replace({ pathname, query })
   }
 

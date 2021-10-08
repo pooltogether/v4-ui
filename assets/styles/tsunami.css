@@ -15,13 +15,23 @@
   background: transparent;
 }
 
-.gradient-new {
+.theme-dark .gradient-new {
   background-image: linear-gradient(
     130deg,
     rgba(76, 36, 159, 0.7) -10%,
     rgba(23, 225, 253, 0.7) 40%,
     rgba(255, 119, 225, 0.7) 70%,
     rgba(255, 241, 119, 0.7) 120%
+  );
+}
+
+.theme-light .gradient-new {
+  background-image: linear-gradient(
+    130deg,
+    rgba(76, 36, 159, 1) -10%,
+    rgb(13, 172, 245) 40%,
+    rgb(249, 71, 210) 70%,
+    rgb(254, 220, 111) 120%
   );
 }
 

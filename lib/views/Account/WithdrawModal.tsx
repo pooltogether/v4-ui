@@ -33,7 +33,7 @@ import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransaction
 import { WithdrawalSteps } from 'lib/views/Account'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 
-const WITHDRAWAL_QUANTITY_KEY = 'withdrawal-quantity'
+const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
 interface WithdrawModalProps {
   isOpen: boolean
@@ -286,10 +286,10 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
     watch
   } = form
 
-  const amount = watch(WITHDRAWAL_QUANTITY_KEY)
+  const amount = watch(WITHDRAW_QUANTITY_KEY)
 
   const onSubmit = (data) => {
-    const amount = data[WITHDRAWAL_QUANTITY_KEY]
+    const amount = data[WITHDRAW_QUANTITY_KEY]
     setAmountToWithdraw(getAmountFromString(amount, token.decimals))
     setCurrentStep(WithdrawalSteps.review)
   }
@@ -457,15 +457,15 @@ const WithdrawForm = (props: WithdrawFormProps) => {
       containerRoundedClassName={'rounded-lg'}
       bgClassName={'bg-body'}
       placeholder='0.0'
-      id={WITHDRAWAL_QUANTITY_KEY}
-      name={WITHDRAWAL_QUANTITY_KEY}
+      id={WITHDRAW_QUANTITY_KEY}
+      name={WITHDRAW_QUANTITY_KEY}
       autoComplete='off'
       register={register}
       required={t('ticketQuantityRequired')}
       label={<WithdrawLabel symbol={ticket.symbol} />}
       rightLabel={
         <MaxAmountTextInputRightLabel
-          valueKey={WITHDRAWAL_QUANTITY_KEY}
+          valueKey={WITHDRAW_QUANTITY_KEY}
           setValue={setValue}
           amount={amount}
           tokenSymbol={ticketSymbol}
