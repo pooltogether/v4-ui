@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import ReactTooltip from 'react-tooltip'
 import {
   SquareButton,
@@ -16,7 +17,10 @@ export interface TxButtonNetworkGatedProps extends SquareButtonProps {
 export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
   const { chainId, disabled, toolTipId, children, ...squareButtonProps } = props
 
+  const { t } = useTranslation()
+
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const networkName = getNetworkNiceNameByChainId(chainId)
 
   return (
     <>
@@ -26,7 +30,7 @@ export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
         data-for={`${toolTipId}-tooltip`}
         disabled={!isWalletOnProperNetwork || disabled}
         children={
-          isWalletOnProperNetwork ? children : `Connect to ${getNetworkNiceNameByChainId(chainId)}`
+          isWalletOnProperNetwork ? children : t('connectToNetwork', 'Connect to {{networkName}}')
         }
       />
       {!isWalletOnProperNetwork && (
@@ -38,7 +42,10 @@ export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
           overridePosition={overrideToolTipPosition}
           clickable
         >
-          Please switch to chain {chainId}
+          {t('pleaseSwitchToNetwork', 'Please switch to chain {{networkName}} ({{chainId}})', {
+            networkName,
+            chainId
+          })}
         </ReactTooltip>
       )}
     </>

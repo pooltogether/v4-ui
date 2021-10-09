@@ -1,7 +1,7 @@
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { SquareButton } from '@pooltogether/react-components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { SquareButton } from '@pooltogether/react-components'
 
 interface ConnectWalletButtonProps {
   className?: string

@@ -23,6 +23,9 @@ export const HistoricPrizesList = (props: {
   prizePool: PrizePool
 }) => {
   const { prizePool, prizeDistributor } = props
+
+  const { t } = useTranslation()
+
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: pastDraws, isFetched: isDrawsAndPrizeDistributionsFetched } = usePastDrawsForUser(
@@ -42,11 +45,14 @@ export const HistoricPrizesList = (props: {
       </>
     )
   }
+
   return (
     <>
       <HistoricPrizesListHeader className='mb-4' />{' '}
       {pastDraws.length === 0 && (
-        <div className='opacity-70 text-center w-full mt-12'>No draws yet, check back soon</div>
+        <div className='opacity-70 text-center w-full mt-12'>
+          {t('noDrawsYet', 'No draws yet, check back soon')}
+        </div>
       )}
       <ul className='space-y-4'>
         {pastDraws.map((pastDraw) => (
@@ -87,6 +93,8 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
   const { claimedAmount, prizeDistributor, draw, className, token } = props
   const { amountUnformatted } = claimedAmount
 
+  const { t } = useTranslation()
+
   const usersAddress = useUsersAddress()
 
   const storedDrawResult = getStoredDrawResult(usersAddress, prizeDistributor, draw.drawId)
@@ -97,7 +105,11 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
   if (!Boolean(storedDrawResult)) {
     return null
   } else if (userHasntClaimed && !userHasAmountToClaim) {
-    return <span className={classNames('text-accent-1', className)}>No prizes won</span>
+    return (
+      <span className={classNames('text-accent-1', className)}>
+        {t('noPrizesWon', 'No prizes won')}
+      </span>
+    )
   } else if (userHasntClaimed && userHasAmountToClaim) {
     const { amountPretty } = getAmountFromBigNumber(
       storedDrawResult?.drawResults.totalValue,
@@ -105,7 +117,7 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
     )
     return (
       <div className={classNames(className, 'animate-pulse')}>
-        <span className='text-accent-1'>Unclaimed</span>
+        <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
         <span className='ml-2 font-bold'>{token.symbol}</span>
       </div>
@@ -116,7 +128,7 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
 
   return (
     <div className={classNames(className)}>
-      <span className='text-accent-1'>Claimed</span>
+      <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
       <span className='ml-2 font-bold'>{amountPretty}</span>
       <span className='ml-2 font-bold'>{token.symbol}</span>
     </div>

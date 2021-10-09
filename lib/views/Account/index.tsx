@@ -30,10 +30,11 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-
-import PiggyBank from 'assets/images/piggy-bank.svg'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
+import { DelegateTicketsSection } from './DelegateTicketsSection'
+
+import PiggyBank from 'assets/images/piggy-bank.svg'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -54,7 +55,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding>
-      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+      <AccountDeposits player={player} isPlayerFetched={isPlayerFetched} />
       <div className='mt-4'>
         <BackToV3Banner />
       </div>
@@ -62,14 +63,13 @@ export const AccountUI = (props) => {
   )
 }
 
-interface AccountCardProps {
+interface AccountDepositsProps {
   player: Player
   isPlayerFetched: boolean
 }
 
-const AccountCard = (props: AccountCardProps) => {
+const AccountDeposits = (props: AccountDepositsProps) => {
   const { player, isPlayerFetched } = props
-  const { t } = useTranslation()
 
   const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
 
@@ -128,8 +128,6 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
 
   const { t } = useTranslation()
 
-  // console.log('prizePoolTokens', prizePoolTokens)
-
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
@@ -155,6 +153,11 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
           />
         </div>
         <ManageBalanceButtons player={player} prizePool={prizePool} />
+        <DelegateTicketsSection
+          prizePool={prizePool}
+          className='mt-4'
+          balance={usersBalances?.ticket}
+        />
       </Card>
     </li>
   )

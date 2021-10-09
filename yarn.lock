@@ -2312,10 +2312,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
   integrity sha512-jQub/+qPLQwTFtbBCvvyIEqxJDEBEV/hgLKnuocBg2/GySWtHLz67WCy17bNn1hZw8nWIt8Ih8h+7iT2UJhtmQ==
 
-"@pooltogether/react-components@^1.1.22":
-  version "1.1.22"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.22.tgz#7c3e25ea4cf4149f615081f19e3a8b0a05d10680"
-  integrity sha512-64l94v0P5dMtc2iTJjZwf4MTULslhUxJ80kOxugeiD3ZfW1jvIzNbCFHslcEKvv5XGfvWdsO3zZLAWSX3+Mqkw==
+"@pooltogether/react-components@^1.1.23":
+  version "1.1.23"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.23.tgz#dda5d3ad2cbb9a9c057341236ba4d678707cf3fd"
+  integrity sha512-PeRzKQ0rhOCjlAaXkYXr6dETVbyZrhuEms+VcyyYmr7t2vZqvzMgOKwKqZTg5ahK5QgfTz9Fq7vJjVLnTImxSQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@pooltogether/evm-chains-extended" "^0.5.3"
@@ -2346,10 +2346,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.1.5.tgz#762209e46fe718baaa7f047c2dcb26187d286532"
   integrity sha512-hxjvceBDYK0WwWYpVaRDFES17JdmgNRwZSmVEt7FFU0mI98mbxEImJk+ehRaIudm6DQfbGXWKz4RP0L8Fyf2jw==
 
-"@pooltogether/v4-js-client@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.2.2.tgz#0febe4ed84e7781918f0eeaebbbb51fa125edac7"
-  integrity sha512-gXZ8g1JvTz3rcK5en2SFJcQP3uPtQSmm3uav5L3wm7SNE8GiYTX/8kOroBH1qPW5tEucClt3EziiROQMoIFb9A==
+"@pooltogether/v4-js-client@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.2.3.tgz#4704f50a66de112e49a651c5876cfaa641727783"
+  integrity sha512-zKKhcUyDxq5kMNkU5k0+G0/clX+3WkY9RYYZktnm+6sEMFd8hM5oU9AYzPRI/hjlcNLLxRUzmhKT12Lh/Mq6HA==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"

@@ -21,8 +21,10 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
 import { TxHashRow } from 'lib/components/TxHashRow'
+import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
+import { ethers } from 'ethers'
 
 export const DepositCard = () => {
   const router = useRouter()
@@ -41,13 +43,19 @@ export const DepositCard = () => {
     refetch: refetchUsersDepositAllowance,
     isFetched: isUsersDepositAllowanceFetched
   } = useUsersDepositAllowance(prizePool)
+  const {
+    data: ticketDelegate,
+    isFetched: isTicketDelegateFetched,
+    refetch: refetchTicketDelegate
+  } = useUsersTicketDelegate(prizePool)
 
   const isDataFetched =
     isPrizePoolFetched &&
     isPlayerFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
-    isUsersDepositAllowanceFetched
+    isUsersDepositAllowanceFetched &&
+    isTicketDelegateFetched
 
   const form = useForm({
     mode: 'onChange',
@@ -140,29 +148,66 @@ export const DepositCard = () => {
     setApproveTxId(txId, prizePool)
   }
 
-  const sendDepositAndDelegateTx = async () => {
+  const onSuccess = (tx: Transaction) => {
+    setDepositedAmount(amountToDeposit)
+    setCompletedDepositTxId(tx.id, prizePool)
+    setDepositTxId(0, prizePool)
+    closeModal()
+    resetQueryParam()
+  }
+
+  const depositAndDelegate = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const txId = await sendTx({
       name,
       method: 'depositToAndDelegate',
       callTransaction: async () => player.depositAndDelegate(amountToDeposit.amountUnformatted),
       callbacks: {
-        onSuccess: (tx: Transaction) => {
-          setDepositedAmount(amountToDeposit)
-          setCompletedDepositTxId(tx.id, prizePool)
-          setDepositTxId(0, prizePool)
-          closeModal()
-          resetQueryParam()
-        },
-        refetch: () => refetchUsersBalances()
+        onSuccess,
+        refetch: () => {
+          refetchTicketDelegate()
+          refetchUsersBalances()
+        }
       }
     })
     setDepositTxId(txId, prizePool)
   }
 
-  // TODO: Check if delegated already
+  const deposit = async () => {
+    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const txId = await sendTx({
+      name,
+      method: 'depositTo',
+      callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
+      callbacks: {
+        onSuccess,
+        refetch: () => {
+          refetchUsersBalances()
+        }
+      }
+    })
+    setDepositTxId(txId, prizePool)
+  }
+
   const sendDepositTx = async () => {
-    return sendDepositAndDelegateTx()
+    const contractMethod =
+      ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'
+    const clientMethod =
+      ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
+    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    console.log(contractMethod, clientMethod)
+    const txId = await sendTx({
+      name,
+      method: contractMethod,
+      callTransaction: async () => player[clientMethod](amountToDeposit.amountUnformatted),
+      callbacks: {
+        onSuccess,
+        refetch: () => {
+          refetchUsersBalances()
+        }
+      }
+    })
+    setDepositTxId(txId, prizePool)
   }
 
   const resetQueryParam = () => {
@@ -249,16 +294,18 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <>
       <button
         className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
-        Get tokens
+        {t('getTokens', 'Get tokens')}
       </button>
       <GetTokensModal
-        label='Decentralized exchange modal'
+        label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
         tokenAddress={prizePool.tokenMetadata.address}
         isOpen={showModal}
@@ -271,16 +318,18 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
 
+  const { t } = useTranslation()
+
   return (
     <>
       <button
         className=' text-white opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
-        Bridge tokens
+        {t('bridgeTokens', 'Bridge tokens')}
       </button>
       <BridgeTokensModal
-        label='Ethereum to L2 bridge modal'
+        label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
         chainId={prizePool.chainId}
         isOpen={showModal}
         closeModal={() => setShowModal(false)}
@@ -330,7 +379,10 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
       <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-1 my-4 text-xxs rounded-lg text-white'>
-        {t('disclaimerComeBackRegularlyToClaimWinnings')}
+        {t(
+          'disclaimerComeBackRegularlyToClaimWinnings',
+          'Come back regularly to claim your winnings!'
+        )}
       </div>
       <SquareButton
         size={SquareButtonSize.md}

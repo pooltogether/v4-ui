@@ -89,11 +89,14 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     if (claimTx.error) {
       return (
         <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-          <ModalTitle chainId={chainId} title={'Error depositing'} />
+          <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <div className='text-white opacity-60'>
-            <p className='my-2 text-center mx-8'>😔 Oh no!</p>
+            <p className='my-2 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
             <p className='mb-8 text-center mx-8'>
-              Something went wrong while processing your transaction.
+              {t(
+                'somethingWentWrongWithTx',
+                'Something went wrong while processing your transaction.'
+              )}
             </p>
           </div>
           <SquareButton
@@ -104,7 +107,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
               closeModal()
             }}
           >
-            Try again
+            {t('tryAgain', 'Try again')}
           </SquareButton>
         </ModalWithStyles>
       )
@@ -112,7 +115,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={chainId} title={'Deposit submitted'} />
+        <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={chainId}
@@ -153,7 +156,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   if (!isWalletOnProperNetwork) {
     return (
       <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={chainId} title={'Wrong network'} />
+        <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
       </ModalWithStyles>
     )

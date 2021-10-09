@@ -1,3 +1,5 @@
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
@@ -6,9 +8,9 @@ import {
   Draw,
   PrizeDistribution
 } from '@pooltogether/v4-js-client'
+
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
-import React, { useState } from 'react'
 
 export interface DrawDetailsProps {
   prizeDistribution: PrizeDistribution
@@ -60,17 +62,21 @@ export const DrawGrandPrize = (props: {
   className?: string
   numberClassName?: string
   textClassName?: string
-}) => (
-  <div className={props.className}>
-    <span className={props.numberClassName}>
-      $
-      {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
-        decimals: props.token.decimals
-      })}
-    </span>
-    <span className={props.textClassName}>grand prize</span>
-  </div>
-)
+}) => {
+  const { t } = useTranslation()
+
+  return (
+    <div className={props.className}>
+      <span className={props.numberClassName}>
+        $
+        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
+          decimals: props.token.decimals
+        })}
+      </span>
+      <span className={props.textClassName}>{t('grandPrize', 'Grand prize')}</span>
+    </div>
+  )
+}
 
 DrawGrandPrize.defaultProps = {
   numberClassName: 'font-bold text-xl sm:text-2xl w-full',
@@ -83,10 +89,13 @@ export const ViewPrizesTrigger = (props: {
   className?: string
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const { t } = useTranslation()
+
   return (
     <>
       <button className={props.className} onClick={() => setIsOpen(true)}>
-        View prize tiers
+        {t('viewPrizeTiers', 'View prize tiers')}
       </button>
       <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>

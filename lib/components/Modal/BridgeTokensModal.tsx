@@ -1,8 +1,10 @@
 import React from 'react'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'react-i18next'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId, NETWORK } from '@pooltogether/utilities'
-import { useTranslation } from 'react-i18next'
+
+import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 
 interface BridgeTokensModalProps extends ModalProps {
   chainId: number
@@ -38,20 +40,46 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
 
   const links = BRIDGE_URLS[chainId]
 
+  const networkName = getNetworkNiceNameByChainId(chainId)
+
+  // const ModalWithStyles = (props: ModalWithStylesProps) => (
+  //   <Modal
+  //     noSize
+  //     noBgColor
+  //     noPad
+  //     className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
+  //     label='Withdrawal Modal'
+  //     {...props}
+  //   />
+  // )
+
   return (
     <Modal
       noSize
       noBgColor
       isOpen={Boolean(props.isOpen)}
-      className='shadow-3xl py-12 bg-new-modal h-full sm:h-auto sm:max-w-md'
-      label={`Get Tokens Modal`}
+      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
+      label={t('getTokensModal', 'Get tokens - modal window')}
       closeModal={props.closeModal}
     >
       <div className='flex flex-col'>
-        <span className='text-xl'>Bridge to {getNetworkNiceNameByChainId(chainId)}</span>
-        <span className='text-accent-1 mb-4'>
-          Check out these services to move your tokens to {getNetworkNiceNameByChainId(chainId)}
-        </span>
+        <ModalTitle
+          chainId={chainId}
+          title={t('bridgeToNetwork', 'Bridge to {{networkName}}', {
+            networkName
+          })}
+        />
+
+        <p className='text-white opacity-60 mt-4 mb-6'>
+          {t(
+            'checkOutThese',
+            'Make use of one of these services to move your tokens to {{networkName}}',
+            {
+              networkName
+            }
+          )}
+          :
+        </p>
         <ul className='space-y-2'>
           {links.map((link) => (
             <BridgeLink {...link} key={link.title} />

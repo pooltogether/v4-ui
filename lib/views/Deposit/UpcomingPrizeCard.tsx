@@ -1,5 +1,6 @@
 import React from 'react'
-import { WeeklyPrizeAmountCard, Card } from '@pooltogether/react-components'
+import { useTranslation } from 'react-i18next'
+import { WeeklyPrizeAmountCard } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
@@ -9,6 +10,8 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 // import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 
 export const UpcomingPrizeCard = (props) => {
+  const { t } = useTranslation()
+
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
   // const nextDrawDate = useNextDrawDate()
@@ -18,5 +21,5 @@ export const UpcomingPrizeCard = (props) => {
     decimals: prizePoolTokens?.token.decimals
   })
 
-  return <WeeklyPrizeAmountCard isFetched={isFetched} prizePretty={prizePretty} sm />
+  return <WeeklyPrizeAmountCard t={t} isFetched={isFetched} prizePretty={prizePretty} sm />
 }

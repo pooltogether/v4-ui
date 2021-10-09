@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { DISCORD_INVITE_URL } from '../constants'
 
-export function ErrorPage() {
+export function ErrorPage () {
   const { t } = useTranslation()
 
   return (
@@ -27,7 +27,8 @@ export function ErrorPage() {
                 href={'https://pooltogether.com'}
                 className='flex'
               >
-                Home <FeatherIcon icon={'external-link'} className='w-4 h-4 ml-2 my-auto' />
+                {t('home', 'Home')}{' '}
+                <FeatherIcon icon={'external-link'} className='w-4 h-4 ml-2 my-auto' />
               </a>
               <a
                 target='_blank'
@@ -35,7 +36,8 @@ export function ErrorPage() {
                 href={'https://app.pooltogether.com'}
                 className='flex'
               >
-                App <FeatherIcon icon={'external-link'} className='w-4 h-4 ml-2 my-auto' />
+                {t('app', 'App')}
+                <FeatherIcon icon={'external-link'} className='w-4 h-4 ml-2 my-auto' />
               </a>
               <a
                 target='_blank'
