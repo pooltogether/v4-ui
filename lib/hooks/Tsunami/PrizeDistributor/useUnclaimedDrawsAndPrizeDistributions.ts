@@ -48,7 +48,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
   const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
     prizeDistributor.getDrawsAndPrizeDistributions(drawIds),
     prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
-    // prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
+    prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
   ])
 
   // TODO: Ensure claimed amounts are max claimable amount, probably do this in v4-js-sdk?
@@ -57,7 +57,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
       // Filter draws with claimed amounts
       if (!claimedAmounts[index].isZero()) return false
       // Filter draws with no normalized balance during that period
-      // if (normalizedBalances[index].isZero()) return false
+      if (normalizedBalances[index].isZero()) return false
 
       const storedResult = getStoredDrawResult(
         usersAddress,
