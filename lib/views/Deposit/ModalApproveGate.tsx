@@ -32,14 +32,16 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx, chainId)
 
     return (
-      <div className={classNames(className, 'flex flex-col text-accent-1')}>
+      <div className={classNames(className, 'flex flex-col')}>
         <ThemedClipSpinner className='mx-auto mb-8' sizeClassName='w-10 h-10' />
-        <p className='mb-4 text-accent-1 text-center mx-8'>
-          {t(
-            'onceYourApprovalTxHasFinished',
-            'Once your approval transaction has finished successfully you can deposit.'
-          )}
-        </p>
+        <div className='text-white opacity-60'>
+          <p className='mb-4 text-center mx-8'>
+            {t(
+              'onceYourApprovalTxHasFinished',
+              'Once your approval transaction has finished successfully you can deposit.'
+            )}
+          </p>
+        </div>
         <SquareLink
           Link={Link}
           href={blockExplorerUrl}
@@ -55,7 +57,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
 
   return (
     <div className={classNames(className, 'flex flex-col')}>
-      <div className='mx-4 text-accent-1'>
+      <div className='mx-4 text-white opacity-60'>
         <p className='mb-4'>
           {t(
             'prizePoolContractsRequireApprovals',

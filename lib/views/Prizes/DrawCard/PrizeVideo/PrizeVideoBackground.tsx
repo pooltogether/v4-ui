@@ -1,10 +1,9 @@
+import { useRef, useState } from 'react'
 import { BigNumber } from '@ethersproject/bignumber'
-import classNames from 'classnames'
-import classnames from 'classnames'
 import { ClaimState } from 'lib/views/Prizes/DrawCard'
-import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
+import classnames from 'classnames'
 
-interface PrizeAnimationProps {
+interface PrizeVideoBackgroundProps {
   className?: string
   claimState: ClaimState
   totalPrizeValueUnformatted: BigNumber
@@ -12,7 +11,7 @@ interface PrizeAnimationProps {
   setCheckedAnimationFinished: () => void
 }
 
-const VIDEO_VERSION = 'v001'
+const VIDEO_VERSION = 'v002'
 
 enum VideoState {
   loop = 'LOOP',
@@ -26,18 +25,18 @@ enum VideoClip {
   reveal = 'REVEAL'
 }
 
-interface Video {
-  state: VideoState
-  clip: VideoClip
-}
+// interface Video {
+//   state: VideoState
+//   clip: VideoClip
+// }
 
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
 
-export const PrizeAnimation = (props: PrizeAnimationProps) => {
+export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const {
     claimState,
-    totalPrizeValueUnformatted,
+    // totalPrizeValueUnformatted,
     className,
     isDrawResultsFetched,
     setCheckedAnimationFinished
@@ -52,9 +51,11 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
   const d1 = useRef<HTMLVideoElement>(null)
   const d2 = useRef<HTMLVideoElement>(null)
 
+  // a2?.current?.play()
+
   const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
-  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.transition)
-  const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
+  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.loop)
+  // const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
 
   const isHidden = (videoClip: VideoClip, videoState: VideoState) => {
     if (videoClip !== currentVideoClip) return true
@@ -64,15 +65,17 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   return (
     <div
-      className={classnames(className, 'overflow-hidden flex flex-col justify-end h-80 xs:h-96')}
+      className={classnames(
+        className,
+        'video-container rounded-xl absolute t-0 l-0 r-0 w-full overflow-hidden flex flex-col justify-end'
+      )}
     >
       {/* Rest */}
       {/* Rest Transition */}
-      <video
+      {/* <video
         className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
         ref={a1}
         playsInline
-        width={380}
         preload='auto'
         autoPlay
         muted
@@ -86,16 +89,22 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         }}
       >
         <source src={getVideoSource(VideoClip.rest, VideoState.transition)} type='video/mp4' />
-      </video>
+      </video> */}
       {/* Rest Loop */}
       <video
-        className={classnames({ ' h-0': isHidden(VideoClip.rest, VideoState.loop) })}
+        className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.loop) })}
         ref={a2}
         playsInline
-        width={380}
         preload='auto'
+        loop
+        autoPlay
         muted
+        onLoadStart={() => {
+          b1.current.load()
+        }}
         onEnded={() => {
+          console.log('eded')
+          console.log(claimState)
           if (claimState === ClaimState.checking) {
             setCurrentVideoClip(VideoClip.reveal)
             setCurrentVideoState(VideoState.transition)
@@ -117,13 +126,14 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={b1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onLoadStart={() => {
           b2.current.load()
         }}
         onEnded={() => {
+          console.log('2')
+          console.log(claimState)
           setCurrentVideoState(VideoState.loop)
           b2.current.play()
           c1.current.load()
@@ -137,10 +147,12 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
         ref={b2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {
+          console.log('3')
+          console.log(claimState)
+
           if (claimState === ClaimState.checking && !isDrawResultsFetched) {
             b2.current.play()
           } else {
@@ -162,7 +174,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={c1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
@@ -178,7 +189,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
         ref={c2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {
@@ -196,7 +206,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={d1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
@@ -212,7 +221,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.prize, VideoState.loop) })}
         ref={d2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {

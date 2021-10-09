@@ -30,3 +30,40 @@
 .new-btn .lds-dual-ring:after {
   border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
 }
+
+.video-container video {
+  object-fit: cover;
+  top: 0;
+  left: 0;
+}
+
+.draw-card-container {
+  @apply w-full;
+}
+
+@screen sm {
+  .draw-card-container {
+    width: 100%;
+  }
+}
+
+.draw-card {
+  min-height: 300px;
+}
+
+@media screen and (min-width: 576px) {
+  @screen xs {
+    .draw-card {
+      height: 436px;
+    }
+  }
+}
+
+.theme-dark .carousel .control-dots .dot {
+  border: 5px solid var(--color-bg-highlight-1);
+}
+
+.theme-light .carousel .control-dots .dot {
+  box-shadow: none;
+  background: var(--color-bg-secondary);
+}

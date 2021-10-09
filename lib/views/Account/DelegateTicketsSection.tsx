@@ -1,18 +1,17 @@
-import { TokenBalance, useTransaction } from '@pooltogether/hooks'
-import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import React, { useState } from 'react'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
+import { useTranslation } from 'react-i18next'
+import { PrizePool } from '@pooltogether/v4-js-client'
+import { SquareButtonSize } from '@pooltogether/react-components'
+import { TokenBalance, useTransaction } from '@pooltogether/hooks'
+
 import { InfoList } from 'lib/components/InfoList'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { usePlayer } from 'lib/hooks/Tsunami/Player/usePlayer'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool
@@ -43,7 +42,10 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
       <div className={classNames('flex mx-auto', className)}>
         <span className='text-2xl'>👋</span>
         <span className='my-auto ml-4 font-bold'>
-          To win prizes with your deposits you need to activate them
+          {t(
+            'toWinPrizesNeedToActivate',
+            'To win prizes with your deposit you first need to activate it:'
+          )}
         </span>
       </div>
       <ActivateTicketsButton
@@ -51,6 +53,10 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
         prizePool={prizePool}
         refetchDelegate={refetchDelegate}
       />
+
+      <span className='my-auto ml-4 font-bold'>
+        {t('thisIsOncePerNetwork', 'This is one-time per network.')}
+      </span>
     </>
   )
 }
@@ -63,7 +69,6 @@ interface ActivateTicketsButtonProps {
 
 const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
   const { className, refetchDelegate, prizePool } = props
-  const usersAddress = useUsersAddress()
   const sendTx = useSendTransaction()
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
@@ -102,7 +107,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
       size={SquareButtonSize.sm}
       onClick={sendDelegateTx}
     >
-      Activate tickets
+      {t('activateTickets', 'Activate tickets')}
     </TxButtonNetworkGated>
   )
 }

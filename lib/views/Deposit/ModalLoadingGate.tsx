@@ -15,21 +15,22 @@ export const ModalLoadingGate = (props: ModalLoadingGateProps) => {
   return (
     <div className={classNames(className, 'flex flex-col text-accent-1')}>
       <ThemedClipSpinner className='mx-auto mb-8' sizeClassName='w-10 h-10' />
-      <p className='mb-4 text-center mx-8'>
-        {t('wereGettingMoreData', `We're getting some more data to make sure you can deposit.`)}
-      </p>
-      <p className='text-center mx-8'>
-        <span className='block'>
+
+      <div className='text-white opacity-60'>
+        <p className='mb-4 text-center mx-8'>
+          {t('wereGettingMoreData', `We're getting some more data to make sure you can deposit.`)}
+        </p>
+        <p className='text-center mx-8'>
           {t(
             'thisMightTakeAFewSecondsAndYouMayNeedToReload',
             `This might take a few seconds, and you may need to reload the page.`
           )}
-        </span>
+        </p>
+      </div>
 
-        <button className=' underline' onClick={() => window.location.reload()}>
-          Reload page
-        </button>
-      </p>
+      <button className=' underline' onClick={() => window.location.reload()}>
+        {t('reloadPage', 'Reload page')}
+      </button>
     </div>
   )
 }

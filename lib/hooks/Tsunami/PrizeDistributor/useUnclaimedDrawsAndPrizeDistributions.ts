@@ -47,7 +47,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
   const drawIds = await prizeDistributor.getClaimableDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
     prizeDistributor.getDrawsAndPrizeDistributions(drawIds),
-    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds),
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
     prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
   ])
 
