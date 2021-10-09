@@ -16,7 +16,7 @@ import {
   DrawDetailsProps,
   DrawId,
   PrizeDistributorTotal,
-  ViewPrizesTrigger
+  ViewPrizeTiersTrigger
 } from './DrawCard/DrawDetails'
 
 interface NoAccountPrizeUIProps {
@@ -91,7 +91,7 @@ const PastPrizeListItem = (props: DrawDetailsProps) => (
       </div>
       <div className='flex justify-between'>
         <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
-        <ViewPrizesTrigger {...props} />
+        <ViewPrizeTiersTrigger {...props} />
       </div>
     </Card>
   </li>

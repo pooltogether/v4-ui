@@ -143,7 +143,11 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
           <SquareButton
             className='mt-8 w-full'
-            onClick={() => setModalState(ModalState.reviewTransaction)}
+            onClick={() => {
+              console.log('wat')
+              // setModalState(ModalState.reviewTransaction)
+              sendClaimTx()
+            }}
             disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
           >
             {t('confirmClaim', 'Confirm claim')}
@@ -162,30 +166,36 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     )
   }
 
-  return (
-    <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-      <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
+  return null
+  // return (
+  //   <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+  //     <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
-      <div className='w-full mx-auto mt-4 flex flex-col'>
-        <div className='mx-auto font-bold text-flashy mb-4'>
-          <span className='text-3xl '>{amountPretty}</span>
-          <span className='text-xl ml-2'>{token.symbol}</span>
-        </div>
+  //     <div className='w-full mx-auto mt-4 flex flex-col'>
+  //       <div className='mx-auto font-bold text-flashy mb-4'>
+  //         <span className='text-3xl '>{amountPretty}</span>
+  //         <span className='text-xl ml-2'>{token.symbol}</span>
+  //       </div>
 
-        <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
+  //       <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
 
-        <TxButtonNetworkGated
-          className='mt-8 w-full'
-          chainId={chainId}
-          toolTipId={`deposit-tx-${chainId}`}
-          onClick={() => sendClaimTx()}
-          disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
-        >
-          {t('confirmClaim', 'Confirm claim')}
-        </TxButtonNetworkGated>
-      </div>
-    </ModalWithStyles>
-  )
+  //       <TxButtonNetworkGated
+  //         className='mt-8 w-full'
+  //         chainId={chainId}
+  //         toolTipId={`deposit-tx-${chainId}`}
+  //         onClick={() => {
+  //           console.log('wat 2')
+
+  //           // from what I can tell this state isn't necessary ...
+  //           sendClaimTx()
+  //         }}
+  //         disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
+  //       >
+  //         {t('confirmClaim', 'Confirm claim')}
+  //       </TxButtonNetworkGated>
+  //     </div>
+  //   </ModalWithStyles>
+  // )
 }
 
 interface ModalWithStylesProps {
@@ -205,13 +215,13 @@ const ModalWithStyles = (props: ModalWithStylesProps) => (
   />
 )
 
-const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
-  const { amount, ticket } = props
-  const { t } = useTranslation()
-  return (
-    <InfoListItem
-      label={t('tickerToReceive', { ticker: ticket.symbol })}
-      value={amount.amountPretty}
-    />
-  )
-}
+// const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
+//   const { amount, ticket } = props
+//   const { t } = useTranslation()
+//   return (
+//     <InfoListItem
+//       label={t('tickerToReceive', { ticker: ticket.symbol })}
+//       value={amount.amountPretty}
+//     />
+//   )
+// }

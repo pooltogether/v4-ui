@@ -20,17 +20,16 @@ export interface DrawDetailsProps {
 
 export const DrawDetails = (props: DrawDetailsProps) => {
   return (
-    <div className='w-full flex flex-col space-y-2 z-20'>
-      <div className='flex flex-row space-x-2'>
-        <DrawId {...props} />
-        <DrawDate {...props} />
+    <div className='w-full flex flex-col space-y-1 z-20'>
+      <div className='flex flex-row justify-between leading-none'>
+        <span className='flex items-start'>
+          <DrawId {...props} />
+          <DrawDate {...props} />
+        </span>
+        <ViewPrizeTiersTrigger {...props} />
       </div>
-      <div className='flex flex-col'>
+      <div className='flex flex-col items-start'>
         <PrizeDistributorTotal {...props} />
-        <div className='flex flex-row'>
-          {/* <DrawGrandPrize {...props} /> */}
-          <ViewPrizesTrigger {...props} />
-        </div>
       </div>
     </div>
   )
@@ -42,50 +41,54 @@ export const PrizeDistributorTotal = (props: {
   className?: string
   numberClassName?: string
   textClassName?: string
-}) => (
-  <div className={props.className}>
-    <span className={props.numberClassName}>
-      ${numberWithCommas(props.prizeDistribution.prize, { decimals: props.token.decimals })}
-    </span>
-    <span className={props.textClassName}>in prizes</span>
-  </div>
-)
-
-PrizeDistributorTotal.defaultProps = {
-  numberClassName: 'font-bold text-xl',
-  // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
-  // numberClassName: 'font-bold text-xl text-flashy',
-  textClassName: 'font-bold text-accent-1 text-xxs ml-2'
-}
-
-export const DrawGrandPrize = (props: {
-  prizeDistribution: PrizeDistribution
-  token: Token
-  className?: string
-  numberClassName?: string
-  textClassName?: string
 }) => {
   const { t } = useTranslation()
 
   return (
     <div className={props.className}>
       <span className={props.numberClassName}>
-        $
-        {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
-          decimals: props.token.decimals
-        })}
+        ${numberWithCommas(props.prizeDistribution.prize, { decimals: props.token.decimals })}
       </span>
-      <span className={props.textClassName}>{t('grandPrize', 'Grand prize')}</span>
+      <span className={props.textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
   )
 }
 
-DrawGrandPrize.defaultProps = {
-  numberClassName: 'font-bold text-xl sm:text-2xl w-full',
-  textClassName: 'font-bold text-accent-1 text-xxs ml-2'
+PrizeDistributorTotal.defaultProps = {
+  numberClassName: 'font-bold text-xl text-white',
+  // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
+  // numberClassName: 'font-bold text-xl text-flashy',
+  textClassName: 'font-bold text-white text-xxs ml-2'
 }
 
-export const ViewPrizesTrigger = (props: {
+// export const DrawGrandPrize = (props: {
+//   prizeDistribution: PrizeDistribution
+//   token: Token
+//   className?: string
+//   numberClassName?: string
+//   textClassName?: string
+// }) => {
+//   const { t } = useTranslation()
+
+//   return (
+//     <div className={props.className}>
+//       <span className={props.numberClassName}>
+//         $
+//         {numberWithCommas(calculatePrizeForDistributionIndex(0, props.prizeDistribution), {
+//           decimals: props.token.decimals
+//         })}
+//       </span>
+//       <span className={props.textClassName}>{t('grandPrize', 'Grand prize')}</span>
+//     </div>
+//   )
+// }
+
+// DrawGrandPrize.defaultProps = {
+//   numberClassName: 'font-bold text-xl sm:text-2xl w-full',
+//   textClassName: 'font-bold text-accent-1 text-xxs ml-2'
+// }
+
+export const ViewPrizeTiersTrigger = (props: {
   prizeDistribution: PrizeDistribution
   token: Token
   className?: string
@@ -99,13 +102,17 @@ export const ViewPrizesTrigger = (props: {
       <button className={props.className} onClick={() => setIsOpen(true)}>
         {t('viewPrizeTiers', 'View prize tiers')}
       </button>
+      {/* <button className={props.className} onClick={() => setIsOpen(true)}>
+        {t('viewPrizeTiers', 'View prize tiers')}
+      </button> */}
       <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
 }
 
-ViewPrizesTrigger.defaultProps = {
-  className: 'text-xs ml-auto transition-colors text-accent-1 hover:text-inverse'
+ViewPrizeTiersTrigger.defaultProps = {
+  className:
+    'uppercase font-bold text-white text-xxs transition hover:text-green leading-none tracking-wide'
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (
@@ -113,7 +120,7 @@ export const DrawDate = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawDate.defaultProps = {
-  className: 'uppercase font-bold text-accent-1 leading-none text-xxs'
+  className: 'uppercase font-bold text-white opacity-70 text-xxs leading-none'
 }
 
 export const DrawId = (props: { draw: Draw; className?: string }) => (
@@ -121,7 +128,7 @@ export const DrawId = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawId.defaultProps = {
-  className: 'uppercase font-bold text-accent-2 opacity-70 leading-none text-xxs'
+  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xxs leading-none'
 }
 
 const PrizeBreakdownModal = (

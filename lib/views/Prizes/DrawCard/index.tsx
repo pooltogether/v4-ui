@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
-import { Card, SquareButton, ThemedClipSpinner } from '@pooltogether/react-components'
+import {
+  formatBlockExplorerTxUrl,
+  Card,
+  SquareLink,
+  SquareButton,
+  SquareButtonTheme,
+  SquareButtonSize,
+  ThemedClipSpinner
+} from '@pooltogether/react-components'
 import { PrizeDistributor, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
 
 import { useUsersDrawResult } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersDrawResult'
@@ -162,44 +171,65 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
   const { t } = useTranslation()
 
-  let btnJsx
+  let btnJsx, url
+
+  if (claimTx?.hash) {
+    url = formatBlockExplorerTxUrl(claimTx.hash, claimTx.ethersTx.chainId)
+  }
 
   if (!usersAddress) {
     return null
   } else if (claimTx?.inFlight) {
-    // TODO: Double check that this ends after completing
     btnJsx = (
-      <SquareButton disabled>
-        <ThemedClipSpinner className='mr-2' />
+      <SquareLink
+        Link={Link}
+        target='_blank'
+        href={url}
+        theme={SquareButtonTheme.teal}
+        size={SquareButtonSize.md}
+        className='text-center'
+      >
+        <ThemedClipSpinner className='mr-2' size={12} />
         {t('claiming', 'Claiming')}
-      </SquareButton>
+      </SquareLink>
     )
   } else if (claimTx?.completed && !claimTx?.error && !claimTx?.cancelled) {
-    // TODO: Double check that this stays after claiming
-    btnJsx = <SquareButton disabled>{t('viewReceipt', 'View receipt')}</SquareButton>
+    btnJsx = (
+      <SquareLink
+        Link={Link}
+        target='_blank'
+        href={url}
+        theme={SquareButtonTheme.tealOutline}
+        size={SquareButtonSize.md}
+        className='text-center'
+      >
+        {t('viewReceipt', 'View receipt')}
+      </SquareLink>
+    )
   } else if ([ClaimState.unchecked, ClaimState.checking].includes(claimState)) {
     const isChecking = claimState === ClaimState.checking
     btnJsx = (
       <SquareButton onClick={() => setClaimState(ClaimState.checking)} disabled={isChecking}>
         {isChecking ? (
           <>
-            <ThemedClipSpinner sizeClassName='w-4 h-4' className='mr-2' />
-            <span>{t('checkingForPrizes', 'Checking for prizes')}</span>
+            <ThemedClipSpinner size={12} className='mr-2' />
+            {t('checkingForPrizes', 'Checking for prizes')}
           </>
         ) : (
-          <span>{t('checkForPrizes', 'Check for prizes')}</span>
+          t('checkForPrizes', 'Check for prizes')
         )}
       </SquareButton>
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     btnJsx = (
-      <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
+      <SquareButton onClick={() => openModal()}>{t('claimPrizes', 'Claim prizes')}</SquareButton>
     )
   } else {
-    btnJsx = <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
+    // TODO: Show 'Prizes claimed' or 'No prizes to claim'
+    btnJsx = <SquareButton disabled>{t('noPrizesToClaim', 'No prizes to claim')}</SquareButton>
   }
 
-  return <div className='relative z-20'>{btnJsx}</div>
+  return <div className='flex items-start mt-2 relative z-20'>{btnJsx}</div>
 }
 
 const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />

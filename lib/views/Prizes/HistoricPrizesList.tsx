@@ -15,7 +15,7 @@ import {
   DrawDetailsProps,
   DrawId,
   PrizeDistributorTotal,
-  ViewPrizesTrigger
+  ViewPrizeTiersTrigger
 } from './DrawCard/DrawDetails'
 
 export const HistoricPrizesList = (props: {
@@ -82,7 +82,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
       </div>
       <div className='flex justify-between'>
         <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
-        <ViewPrizesTrigger {...props} />
+        <ViewPrizeTiersTrigger {...props} />
       </div>
       <ClaimedAmountSection {...props} className='mt-2' />
     </Card>

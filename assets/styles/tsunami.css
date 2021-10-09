@@ -58,3 +58,12 @@
     }
   }
 }
+
+.theme-dark .carousel .control-dots .dot {
+  border: 5px solid var(--color-bg-highlight-1);
+}
+
+.theme-light .carousel .control-dots .dot {
+  box-shadow: none;
+  background: var(--color-bg-secondary);
+}

@@ -51,6 +51,8 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const d1 = useRef<HTMLVideoElement>(null)
   const d2 = useRef<HTMLVideoElement>(null)
 
+  // a2?.current?.play()
+
   const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
   const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.loop)
   // const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
@@ -97,6 +99,9 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         loop
         autoPlay
         muted
+        onLoadStart={() => {
+          b1.current.load()
+        }}
         onEnded={() => {
           console.log('eded')
           console.log(claimState)
@@ -127,6 +132,8 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b2.current.load()
         }}
         onEnded={() => {
+          console.log('2')
+          console.log(claimState)
           setCurrentVideoState(VideoState.loop)
           b2.current.play()
           c1.current.load()
@@ -143,6 +150,9 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         preload='auto'
         muted
         onEnded={() => {
+          console.log('3')
+          console.log(claimState)
+
           if (claimState === ClaimState.checking && !isDrawResultsFetched) {
             b2.current.play()
           } else {
