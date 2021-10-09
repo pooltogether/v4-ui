@@ -1,11 +1,13 @@
+import React, { useEffect, useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { Card, SquareButton, ThemedClipSpinner } from '@pooltogether/react-components'
 import { PrizeDistributor, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
+
 import { useUsersDrawResult } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersDrawResult'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
-import React, { useEffect, useState } from 'react'
-import { PrizeAnimation } from 'lib/views/Prizes/DrawCard/PrizeAnimation'
+import { PrizeVideoBackground } from 'lib/views/Prizes/DrawCard/PrizeVideo/PrizeVideoBackground'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimModal } from './PrizeClaimModal'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -13,7 +15,6 @@ import { useTranslation } from 'react-i18next'
 import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
 import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
-import FeatherIcon from 'feather-icons-react'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
@@ -39,19 +40,25 @@ export const DrawCard = (props: DrawCardProps) => {
   }
 
   return (
-    <Card className='relative'>
+    <Card className='relative h-80 xs:h-96'>
+      <DrawClaimSection
+        {...props}
+        prizeDistribution={prizeDistribution}
+        token={prizePoolTokens.token}
+        ticket={prizePoolTokens.ticket}
+      />
       <div className='flex flex-col'>
         <DrawDetails
           {...props}
           prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
         />
-        <DrawClaimSection
+        {/* <DrawClaimSection
           {...props}
           prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
           ticket={prizePoolTokens.ticket}
-        />
+        /> */}
       </div>
     </Card>
   )
@@ -109,7 +116,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
       {claimState === ClaimState.unclaimed && drawResults.totalValue.isZero() && (
         <HideCardButton hideDrawCard={hideDrawCard} />
       )}
-      <PrizeAnimation
+      <PrizeVideoBackground
         isDrawResultsFetched={isDrawResultsFetched}
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         totalPrizeValueUnformatted={drawResults?.totalValue}

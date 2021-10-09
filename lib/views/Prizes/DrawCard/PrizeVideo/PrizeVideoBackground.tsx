@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { ClaimState } from 'lib/views/Prizes/DrawCard'
 import classnames from 'classnames'
 
-interface PrizeAnimationProps {
+interface PrizeVideoBackgroundProps {
   className?: string
   claimState: ClaimState
   totalPrizeValueUnformatted: BigNumber
@@ -33,7 +33,7 @@ enum VideoClip {
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
 
-export const PrizeAnimation = (props: PrizeAnimationProps) => {
+export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const {
     claimState,
     // totalPrizeValueUnformatted,
@@ -63,7 +63,10 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
 
   return (
     <div
-      className={classnames(className, 'overflow-hidden flex flex-col justify-end h-80 xs:h-96')}
+      className={classnames(
+        className,
+        'video-container rounded-xl absolute t-0 l-0 r-0 b-0 w-full overflow-hidden flex flex-col justify-end'
+      )}
     >
       {/* Rest */}
       {/* Rest Transition */}
@@ -71,7 +74,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
         ref={a1}
         playsInline
-        width={380}
         preload='auto'
         autoPlay
         muted
@@ -91,8 +93,8 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.rest, VideoState.loop) })}
         ref={a2}
         playsInline
-        width={380}
         preload='auto'
+        loop
         muted
         onEnded={() => {
           if (claimState === ClaimState.checking) {
@@ -116,7 +118,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={b1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onLoadStart={() => {
@@ -136,7 +137,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
         ref={b2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {
@@ -161,7 +161,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={c1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
@@ -177,7 +176,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
         ref={c2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {
@@ -195,7 +193,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         })}
         ref={d1}
         playsInline
-        width={380}
         preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
@@ -211,7 +208,6 @@ export const PrizeAnimation = (props: PrizeAnimationProps) => {
         className={classnames({ ' h-0': isHidden(VideoClip.prize, VideoState.loop) })}
         ref={d2}
         playsInline
-        width={380}
         preload='auto'
         muted
         onEnded={() => {

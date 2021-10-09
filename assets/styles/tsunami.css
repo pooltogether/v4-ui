@@ -30,3 +30,12 @@
 .new-btn .lds-dual-ring:after {
   border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
 }
+
+.video-container video {
+  object-fit: cover;
+  /* width: 100vw; */
+  /* height: 100vh; */
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+}
