@@ -61,7 +61,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
             className='mx-auto pb-12 flex justify-center'
             key={`${prizeDistributor.id()}_${drawAndPrizeDistribution.draw.drawId}`}
           >
-            <div className='mx-2 sm:mx-4 max-w-xl '>
+            <div className='draw-card-container max-w-xl px-2'>
               <DrawCard
                 prizeDistributor={prizeDistributor}
                 draw={drawAndPrizeDistribution.draw}

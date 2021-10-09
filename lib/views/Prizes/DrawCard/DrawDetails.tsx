@@ -20,7 +20,7 @@ export interface DrawDetailsProps {
 
 export const DrawDetails = (props: DrawDetailsProps) => {
   return (
-    <div className='w-full flex flex-col space-y-2'>
+    <div className='w-full flex flex-col space-y-2 z-20'>
       <div className='flex flex-row space-x-2'>
         <DrawId {...props} />
         <DrawDate {...props} />
@@ -28,7 +28,7 @@ export const DrawDetails = (props: DrawDetailsProps) => {
       <div className='flex flex-col'>
         <PrizeDistributorTotal {...props} />
         <div className='flex flex-row'>
-          <DrawGrandPrize {...props} />
+          {/* <DrawGrandPrize {...props} /> */}
           <ViewPrizesTrigger {...props} />
         </div>
       </div>
@@ -52,7 +52,9 @@ export const PrizeDistributorTotal = (props: {
 )
 
 PrizeDistributorTotal.defaultProps = {
-  numberClassName: 'font-bold text-5xl text-flashy',
+  numberClassName: 'font-bold text-xl',
+  // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
+  // numberClassName: 'font-bold text-xl text-flashy',
   textClassName: 'font-bold text-accent-1 text-xxs ml-2'
 }
 

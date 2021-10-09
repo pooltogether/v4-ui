@@ -65,7 +65,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
     <div
       className={classnames(
         className,
-        'video-container rounded-xl absolute t-0 l-0 r-0 b-0 w-full overflow-hidden flex flex-col justify-end'
+        'video-container rounded-xl absolute t-0 l-0 r-0 w-full overflow-hidden flex flex-col justify-end'
       )}
     >
       {/* Rest */}
@@ -90,13 +90,16 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       </video> */}
       {/* Rest Loop */}
       <video
-        className={classnames({ ' h-0': isHidden(VideoClip.rest, VideoState.loop) })}
+        className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.loop) })}
         ref={a2}
         playsInline
         preload='auto'
         loop
+        autoPlay
         muted
         onEnded={() => {
+          console.log('eded')
+          console.log(claimState)
           if (claimState === ClaimState.checking) {
             setCurrentVideoClip(VideoClip.reveal)
             setCurrentVideoState(VideoState.transition)

@@ -33,9 +33,28 @@
 
 .video-container video {
   object-fit: cover;
-  /* width: 100vw; */
-  /* height: 100vh; */
-  /* position: fixed; */
   top: 0;
   left: 0;
+}
+
+.draw-card-container {
+  @apply w-full;
+}
+
+@screen sm {
+  .draw-card-container {
+    width: 100%;
+  }
+}
+
+.draw-card {
+  min-height: 300px;
+}
+
+@media screen and (min-width: 576px) {
+  @screen xs {
+    .draw-card {
+      height: 436px;
+    }
+  }
 }

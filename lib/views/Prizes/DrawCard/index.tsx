@@ -40,25 +40,20 @@ export const DrawCard = (props: DrawCardProps) => {
   }
 
   return (
-    <Card className='relative h-80 xs:h-96'>
-      <DrawClaimSection
-        {...props}
-        prizeDistribution={prizeDistribution}
-        token={prizePoolTokens.token}
-        ticket={prizePoolTokens.ticket}
-      />
+    <Card className='draw-card relative'>
+      {/* style={{ height: 436 }} */}
       <div className='flex flex-col'>
         <DrawDetails
           {...props}
           prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
         />
-        {/* <DrawClaimSection
+        <DrawClaimSection
           {...props}
           prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
           ticket={prizePoolTokens.ticket}
-        /> */}
+        />
       </div>
     </Card>
   )
@@ -167,11 +162,13 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
   const { t } = useTranslation()
 
+  let btnJsx
+
   if (!usersAddress) {
     return null
   } else if (claimTx?.inFlight) {
     // TODO: Double check that this ends after completing
-    return (
+    btnJsx = (
       <SquareButton disabled>
         <ThemedClipSpinner className='mr-2' />
         {t('claiming', 'Claiming')}
@@ -179,10 +176,10 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   } else if (claimTx?.completed && !claimTx?.error && !claimTx?.cancelled) {
     // TODO: Double check that this stays after claiming
-    return <SquareButton disabled>{t('viewReceipt', 'View receipt')}</SquareButton>
+    btnJsx = <SquareButton disabled>{t('viewReceipt', 'View receipt')}</SquareButton>
   } else if ([ClaimState.unchecked, ClaimState.checking].includes(claimState)) {
     const isChecking = claimState === ClaimState.checking
-    return (
+    btnJsx = (
       <SquareButton onClick={() => setClaimState(ClaimState.checking)} disabled={isChecking}>
         {isChecking ? (
           <>
@@ -195,10 +192,14 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
       </SquareButton>
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
-    return <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
+    btnJsx = (
+      <SquareButton onClick={() => openModal()}>{t('viewPrizes', 'View prizes')}</SquareButton>
+    )
+  } else {
+    btnJsx = <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
   }
 
-  return <SquareButton disabled>{t('noPrizes', 'No prizes')}</SquareButton>
+  return <div className='relative z-20'>{btnJsx}</div>
 }
 
 const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />

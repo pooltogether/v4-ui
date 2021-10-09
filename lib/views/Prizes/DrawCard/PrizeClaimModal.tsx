@@ -134,7 +134,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
         <div className='w-full mx-auto mt-4 flex flex-col'>
-          <div className='mx-auto font-bold text-flashy mb-4'>
+          <div className='mx-auto font-bold  mb-4'>
             <span className='text-3xl '>{amountPretty}</span>
             <span className='text-xl ml-2'>{token.symbol}</span>
           </div>
