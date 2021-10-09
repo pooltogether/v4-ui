@@ -34,7 +34,7 @@ export const Navigation = (props) => {
     <div
       className={classnames(
         className,
-        'bg-nav-container max-w-max',
+        'bg-nav-container',
         'sm:absolute sm:bottom-auto mx-auto',
         'fixed bottom-0 pb-6 sm:pb-0 inset-x-0 z-20'
       )}
@@ -42,7 +42,7 @@ export const Navigation = (props) => {
       <nav
         className={classnames(
           className,
-          'mx-auto',
+          'mx-auto  max-w-max',
           'flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter shadow-lg'
         )}
       >
