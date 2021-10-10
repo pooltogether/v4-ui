@@ -26,8 +26,8 @@ enum VideoClip {
   reveal = 'REVEAL'
 }
 
-const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
-  `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
+const getVideoSource = (videoClip: VideoClip, videoState: VideoState, extension: string) =>
+  `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}`
 
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const { claimState, drawResults, className, setCheckedAnimationFinished } = props
@@ -85,7 +85,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
         ref={a1}
         playsInline
-        preload='auto'
+        
         autoPlay
         muted
         onLoadStart={() => {
@@ -97,31 +97,34 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b1.current.load()
         }}
       >
-        <source src={getVideoSource(VideoClip.rest, VideoState.transition)} type='video/mp4' />
+      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'webm')} type='video/webm' />
+      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'mp4')} type='video/mp4' />
       </video> */}
       {/* Rest Loop */}
       <video
         className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.loop) })}
         ref={a2}
         playsInline
-        preload='auto'
         autoPlay
         muted
+        preload='auto'
         onLoadStart={() => {
           b1.current.load()
+          console.log('loaded!')
         }}
         onEnded={() => {
           if (claimState === ClaimState.checking) {
-            setCurrentVideoClip(VideoClip.reveal)
-            setCurrentVideoState(VideoState.transition)
             b1.current.play()
             b2.current.load()
+            setCurrentVideoClip(VideoClip.reveal)
+            setCurrentVideoState(VideoState.transition)
           } else {
             a2.current.play()
           }
         }}
       >
-        <source src={getVideoSource(VideoClip.rest, VideoState.loop)} type='video/mp4' />
+        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
+        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'mp4')} type='video/mp4' />
       </video>
 
       {/* Reveal */}
@@ -131,7 +134,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           'h-0': isHidden(VideoClip.reveal, VideoState.transition)
         })}
         ref={b1}
-        preload='auto'
+        playsInline
         muted
         onLoadStart={() => {
           b2.current.load()
@@ -143,14 +146,20 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           d1.current.load()
         }}
       >
-        <source src={getVideoSource(VideoClip.reveal, VideoState.transition)} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'webm')}
+          type='video/webm'
+        />
+        <source
+          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'mp4')}
+          type='video/mp4'
+        />
       </video>
       {/* Reveal Loop */}
       <video
         className={classnames({ 'h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
         ref={b2}
         playsInline
-        preload='auto'
         muted
         onEnded={() => {
           if (claimState === ClaimState.checking && !drawResults) {
@@ -160,7 +169,8 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           }
         }}
       >
-        <source src={getVideoSource(VideoClip.reveal, VideoState.loop)} type='video/mp4' />
+        <source src={getVideoSource(VideoClip.reveal, VideoState.loop, 'webm')} type='video/webm' />
+        <source src={getVideoSource(VideoClip.reveal, VideoState.loop, 'mp4')} type='video/mp4' />
       </video>
 
       {/* No Prize */}
@@ -171,7 +181,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         })}
         ref={c1}
         playsInline
-        preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
         onEnded={() => {
@@ -179,20 +188,30 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           c2.current.play()
         }}
       >
-        <source src={getVideoSource(VideoClip.noPrize, VideoState.transition)} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'webm')}
+          type='video/webm'
+        />
+        <source
+          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'mp4')}
+          type='video/mp4'
+        />
       </video>
       {/* No Prize Loop */}
       <video
         className={classnames({ 'h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
         ref={c2}
         playsInline
-        preload='auto'
         muted
         onEnded={() => {
           c2.current.play()
         }}
       >
-        <source src={getVideoSource(VideoClip.noPrize, VideoState.loop)} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'webm')}
+          type='video/webm'
+        />
+        <source src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'mp4')} type='video/mp4' />
       </video>
 
       {/* Prize */}
@@ -203,7 +222,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         })}
         ref={d1}
         playsInline
-        preload='auto'
         muted
         onPlay={() => setCheckedAnimationFinished()}
         onEnded={() => {
@@ -211,20 +229,27 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           d2.current.play()
         }}
       >
-        <source src={getVideoSource(VideoClip.prize, VideoState.transition)} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.prize, VideoState.transition, 'webm')}
+          type='video/webm'
+        />
+        <source
+          src={getVideoSource(VideoClip.prize, VideoState.transition, 'mp4')}
+          type='video/mp4'
+        />
       </video>
       {/* Prize Loop */}
       <video
         className={classnames({ 'h-0': isHidden(VideoClip.prize, VideoState.loop) })}
         ref={d2}
         playsInline
-        preload='auto'
         muted
         onEnded={() => {
           d2.current.play()
         }}
       >
-        <source src={getVideoSource(VideoClip.prize, VideoState.loop)} type='video/mp4' />
+        <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')} type='video/webm' />
+        <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'mp4')} type='video/mp4' />
       </video>
     </div>
   )
