@@ -90,7 +90,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
       return (
-        <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+        <ModalWithStyles label='Error depositing modal' isOpen={isOpen} closeModal={closeModal}>
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <div className='text-white opacity-60'>
             <p className='my-2 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -116,8 +116,8 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     }
 
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
+      <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+        <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={chainId}
@@ -132,7 +132,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   if (modalState === ModalState.viewPrizes) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
         <div className='w-full mx-auto mt-4 flex flex-col'>
@@ -146,7 +146,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           <SquareButton
             className='mt-8 w-full'
             onClick={() => {
-              console.log('wat')
               // setModalState(ModalState.reviewTransaction)
               sendClaimTx()
             }}
@@ -161,7 +160,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   if (!isWalletOnProperNetwork) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <ModalWithStyles label='Wrong network modal' isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
       </ModalWithStyles>
@@ -170,7 +169,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   return null
   // return (
-  //   <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+  //   <ModalWithStyles label='Network gated modal' isOpen={isOpen} closeModal={closeModal}>
   //     <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
   //     <div className='w-full mx-auto mt-4 flex flex-col'>

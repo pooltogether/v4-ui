@@ -1,13 +1,14 @@
-import { useRef, useState } from 'react'
-import { BigNumber } from '@ethersproject/bignumber'
-import { ClaimState } from 'lib/views/Prizes/DrawCard'
+import React, { useEffect, useRef, useState } from 'react'
 import classnames from 'classnames'
+import { BigNumber } from '@ethersproject/bignumber'
+import { DrawResults } from '@pooltogether/v4-js-client'
+
+import { ClaimState } from 'lib/views/Prizes/DrawCard'
 
 interface PrizeVideoBackgroundProps {
   className?: string
   claimState: ClaimState
-  totalPrizeValueUnformatted: BigNumber
-  isDrawResultsFetched: boolean
+  drawResults: DrawResults
   setCheckedAnimationFinished: () => void
 }
 
@@ -25,24 +26,13 @@ enum VideoClip {
   reveal = 'REVEAL'
 }
 
-// interface Video {
-//   state: VideoState
-//   clip: VideoClip
-// }
-
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.mp4`
 
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
-  const {
-    claimState,
-    totalPrizeValueUnformatted,
-    className,
-    isDrawResultsFetched,
-    setCheckedAnimationFinished
-  } = props
+  const { claimState, drawResults, className, setCheckedAnimationFinished } = props
 
-  const a1 = useRef<HTMLVideoElement>(null)
+  // const a1 = useRef<HTMLVideoElement>(null)
   const a2 = useRef<HTMLVideoElement>(null)
   const b1 = useRef<HTMLVideoElement>(null)
   const b2 = useRef<HTMLVideoElement>(null)
@@ -50,8 +40,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const c2 = useRef<HTMLVideoElement>(null)
   const d1 = useRef<HTMLVideoElement>(null)
   const d2 = useRef<HTMLVideoElement>(null)
-
-  // a2?.current?.play()
 
   const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
   const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.loop)
@@ -62,6 +50,27 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
     if (videoState !== currentVideoState) return true
     return false
   }
+
+  const showPrizeOrNoPrize = () => {
+    setCurrentVideoState(VideoState.transition)
+
+    if (drawResults?.totalValue?.isZero()) {
+      setCurrentVideoClip(VideoClip.noPrize)
+      c1.current.play()
+      c2.current.load()
+    } else {
+      setCurrentVideoClip(VideoClip.prize)
+      d1.current.play()
+      d2.current.load()
+    }
+  }
+
+  // If draw results are stored but they still haven't claimed
+  useEffect(() => {
+    if (drawResults) {
+      showPrizeOrNoPrize()
+    }
+  }, [])
 
   return (
     <div
@@ -122,7 +131,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           'h-0': isHidden(VideoClip.reveal, VideoState.transition)
         })}
         ref={b1}
-        playsInline
         preload='auto'
         muted
         onLoadStart={() => {
@@ -145,20 +153,10 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         preload='auto'
         muted
         onEnded={() => {
-          if (claimState === ClaimState.checking && !isDrawResultsFetched) {
+          if (claimState === ClaimState.checking && !drawResults) {
             b2.current.play()
           } else {
-            setCurrentVideoState(VideoState.transition)
-
-            if (totalPrizeValueUnformatted?.isZero()) {
-              setCurrentVideoClip(VideoClip.noPrize)
-              c1.current.play()
-              c2.current.load()
-            } else {
-              setCurrentVideoClip(VideoClip.prize)
-              d1.current.play()
-              d2.current.load()
-            }
+            showPrizeOrNoPrize()
           }
         }}
       >

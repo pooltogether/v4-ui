@@ -43,7 +43,9 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
   if (isFetched && drawsAndPrizeDistributionsToRender.length === 0) {
     return (
       <div className='flex flex-col justify-center purple-radial-gradient text-center text-accent-1 mx-auto px-2 max-w-xl mb-12 h-112'>
-        <span className='mt-10 text-xl'>{t('noDrawsToCheck', 'No draws to check!')}</span>
+        <span className='mt-10 text-xl text-white'>
+          {t('noDrawsToCheck', 'No draws to check!')}
+        </span>
         <span className='mb-10'>
           {t('comeBackOnDate', 'Come back on {{date}}', {
             date: getPrettyDate(nextDrawDate)

@@ -121,9 +121,8 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         <HideCardButton hideDrawCard={hideDrawCard} />
       )}
       <PrizeVideoBackground
-        isDrawResultsFetched={isDrawResultsFetched}
+        drawResults={drawResults}
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
-        totalPrizeValueUnformatted={drawResults?.totalValue}
         claimState={claimState}
       />
       <DrawClaimButton

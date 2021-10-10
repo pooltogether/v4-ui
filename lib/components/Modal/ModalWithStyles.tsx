@@ -10,6 +10,7 @@ interface ModalWithStylesProps {
 export const ModalWithStyles = (props: ModalWithStylesProps) => (
   <Modal
     {...props}
+    label={props.label}
     noSize
     noBgColor
     noPad

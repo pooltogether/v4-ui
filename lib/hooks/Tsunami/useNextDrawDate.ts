@@ -1,6 +1,7 @@
-import { getNextDrawDate } from 'lib/utils/getNextDrawDate'
 import { useState } from 'react'
 import { useTimeout } from 'beautiful-react-hooks'
+
+import { getNextDrawDate } from 'lib/utils/getNextDrawDate'
 
 // TODO: This doesn't quite work.
 // If draw date is Friday 8pm, but draws are ready at 6pm, anyone who visits from 6-8 will see
