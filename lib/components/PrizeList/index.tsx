@@ -16,7 +16,7 @@ export const PrizeList = (props: PrizeListProps) => {
   const { prizes, ticket, token, className, ...ulProps } = props
 
   return (
-    <ul {...ulProps} className={classnames(className, 'space-y-4 max-h-80 overflow-y-auto')}>
+    <ul {...ulProps} className={classnames(className, 'text-white max-h-80 overflow-y-auto pr-2')}>
       {!prizes &&
         Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
       {prizes?.sort(sortByPrizeAmount).map((prize) => (
@@ -43,13 +43,10 @@ const PrizeRow = (props: PrizeRowProps) => {
 
   return (
     <li
-      className={classnames(
-        'flex flex-row text-center p-px bg-light-purple-10 rounded-lg mb-2 last:mb-0 text-xxs',
-        {
-          'bg-light-purple-10': distributionIndex !== 0,
-          'pool-gradient-3 ': distributionIndex === 0
-        }
-      )}
+      className={classnames('flex mb-2 flex-row text-center rounded-lg last:mb-0 text-xxs', {
+        'bg-light-purple-10': distributionIndex !== 0,
+        'pool-gradient-3 ': distributionIndex === 0
+      })}
     >
       <div
         className={classnames(
