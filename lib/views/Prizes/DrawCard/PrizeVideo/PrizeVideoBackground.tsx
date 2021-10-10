@@ -36,7 +36,7 @@ const getVideoSource = (videoClip: VideoClip, videoState: VideoState) =>
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const {
     claimState,
-    // totalPrizeValueUnformatted,
+    totalPrizeValueUnformatted,
     className,
     isDrawResultsFetched,
     setCheckedAnimationFinished
@@ -96,15 +96,12 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         ref={a2}
         playsInline
         preload='auto'
-        loop
         autoPlay
         muted
         onLoadStart={() => {
           b1.current.load()
         }}
         onEnded={() => {
-          console.log('eded')
-          console.log(claimState)
           if (claimState === ClaimState.checking) {
             setCurrentVideoClip(VideoClip.reveal)
             setCurrentVideoState(VideoState.transition)
@@ -122,7 +119,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       {/* Reveal Transition */}
       <video
         className={classnames({
-          ' h-0': isHidden(VideoClip.reveal, VideoState.transition)
+          'h-0': isHidden(VideoClip.reveal, VideoState.transition)
         })}
         ref={b1}
         playsInline
@@ -132,8 +129,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b2.current.load()
         }}
         onEnded={() => {
-          console.log('2')
-          console.log(claimState)
           setCurrentVideoState(VideoState.loop)
           b2.current.play()
           c1.current.load()
@@ -144,22 +139,26 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       </video>
       {/* Reveal Loop */}
       <video
-        className={classnames({ ' h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
+        className={classnames({ 'h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
         ref={b2}
         playsInline
         preload='auto'
         muted
         onEnded={() => {
-          console.log('3')
-          console.log(claimState)
-
           if (claimState === ClaimState.checking && !isDrawResultsFetched) {
             b2.current.play()
           } else {
-            setCurrentVideoClip(VideoClip.noPrize)
             setCurrentVideoState(VideoState.transition)
-            c1.current.play()
-            c2.current.load()
+
+            if (totalPrizeValueUnformatted?.isZero()) {
+              setCurrentVideoClip(VideoClip.noPrize)
+              c1.current.play()
+              c2.current.load()
+            } else {
+              setCurrentVideoClip(VideoClip.prize)
+              d1.current.play()
+              d2.current.load()
+            }
           }
         }}
       >
@@ -170,7 +169,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       {/* No Prize Transition */}
       <video
         className={classnames({
-          ' h-0': isHidden(VideoClip.noPrize, VideoState.transition)
+          'h-0': isHidden(VideoClip.noPrize, VideoState.transition)
         })}
         ref={c1}
         playsInline
@@ -186,7 +185,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       </video>
       {/* No Prize Loop */}
       <video
-        className={classnames({ ' h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
+        className={classnames({ 'h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
         ref={c2}
         playsInline
         preload='auto'
@@ -202,7 +201,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       {/* Prize Transition */}
       <video
         className={classnames({
-          ' h-0': isHidden(VideoClip.prize, VideoState.transition)
+          'h-0': isHidden(VideoClip.prize, VideoState.transition)
         })}
         ref={d1}
         playsInline
@@ -218,7 +217,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
       </video>
       {/* Prize Loop */}
       <video
-        className={classnames({ ' h-0': isHidden(VideoClip.prize, VideoState.loop) })}
+        className={classnames({ 'h-0': isHidden(VideoClip.prize, VideoState.loop) })}
         ref={d2}
         playsInline
         preload='auto'

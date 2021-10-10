@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react'
-import { Amount, PreTransactionDetails, Token, Transaction } from '@pooltogether/hooks'
+import { PreTransactionDetails, Transaction } from '@pooltogether/hooks'
+// import { Amount, PreTransactionDetails, Token, Transaction } from '@pooltogether/hooks'
 import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { DrawResults } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
+// import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
+import { ModalWithStyles } from 'lib/components/Modal/ModalWithStyles'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { InfoListItem } from 'lib/components/InfoList'
+// import { InfoListItem } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
@@ -197,23 +199,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   //   </ModalWithStyles>
   // )
 }
-
-interface ModalWithStylesProps {
-  isOpen: boolean
-  closeModal: () => void
-  children: React.ReactNode
-}
-
-const ModalWithStyles = (props: ModalWithStylesProps) => (
-  <Modal
-    noSize
-    noBgColor
-    noPad
-    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-    label={`Confirm Claim Modal`}
-    {...props}
-  />
-)
 
 // const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
 //   const { amount, ticket } = props

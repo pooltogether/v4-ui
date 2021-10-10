@@ -11,6 +11,7 @@ import {
 
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
+import { ModalWithStyles } from 'lib/components/Modal/ModalWithStyles'
 
 export interface DrawDetailsProps {
   prizeDistribution: PrizeDistribution
@@ -102,9 +103,6 @@ export const ViewPrizeTiersTrigger = (props: {
       <button className={props.className} onClick={() => setIsOpen(true)}>
         {t('viewPrizeTiers', 'View prize tiers')}
       </button>
-      {/* <button className={props.className} onClick={() => setIsOpen(true)}>
-        {t('viewPrizeTiers', 'View prize tiers')}
-      </button> */}
       <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
@@ -134,11 +132,15 @@ DrawId.defaultProps = {
 const PrizeBreakdownModal = (
   props: { prizeDistribution: PrizeDistribution; token: Token } & Omit<ModalProps, 'label'>
 ) => (
-  <Modal isOpen={props.isOpen} closeModal={props.closeModal} label='Prize breakdown modal'>
+  <ModalWithStyles
+    isOpen={props.isOpen}
+    closeModal={props.closeModal}
+    label='Prize breakdown modal'
+  >
     <PrizeBreakdown
       className='mt-10 mx-auto'
       prizeDistribution={props.prizeDistribution}
       token={props.token}
     />
-  </Modal>
+  </ModalWithStyles>
 )

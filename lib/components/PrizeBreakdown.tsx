@@ -28,11 +28,11 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   return (
     <div className={classnames('flex flex-col max-w-md text-center', className)}>
       <PrizeWLaurels className='mx-auto' />
-      <div className='font-inter font-semibold text-sm capitalize text-accent-1 my-3 text-center'>
-        {t('prizeBreakdown')}
+      <div className='font-inter font-semibold text-sm capitalize text-white my-3 text-center'>
+        {t('prizeBreakdown', 'Prize breakdown')}
       </div>
 
-      <hr className='border-accent-3' style={{ width: '100%' }} />
+      <hr className='opacity-10 border-white w-full' />
       <div className={'flex flex-col'}>
         <div className='flex justify-between space-x-2 sm:space-x-4'>
           <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
