@@ -76,13 +76,21 @@ interface PastPrizeListItemProps extends DrawDetailsProps {
 const PastPrizeListItem = (props: PastPrizeListItemProps) => (
   <li>
     <Card>
-      <div className='flex flex-row space-x-2 mb-1'>
-        <DrawId {...props} />
-        <DrawDate {...props} />
+      <div className='flex flex-row justify-between leading-none'>
+        <span className='flex items-start'>
+          <DrawId
+            className='uppercase font-bold text-accent-2 opacity-50 text-xxs leading-none mr-2'
+            {...props}
+          />
+          <DrawDate
+            className='uppercase font-bold text-accent-1 opacity-80 text-xxs leading-none'
+            {...props}
+          />
+        </span>
+        <ViewPrizeTiersTrigger {...props} />
       </div>
       <div className='flex justify-between'>
         <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
-        <ViewPrizeTiersTrigger {...props} />
       </div>
       <ClaimedAmountSection {...props} className='mt-2' />
     </Card>
