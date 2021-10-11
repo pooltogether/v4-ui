@@ -9,14 +9,16 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * @param prizeDistributor
  * @returns
  */
-export const useClaimableDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
+export const useValidDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
   const nextDrawDate = useNextDrawDate()
   const enabled = Boolean(prizeDistributor)
   return useQuery(
-    ['useClaimableDrawsAndPrizeDistributions', prizeDistributor?.id(), nextDrawDate.toISOString()],
+    ['useValidDrawsAndPrizeDistributions', prizeDistributor?.id(), nextDrawDate.toISOString()],
     async () => {
-      let drawsAndPrizeDistributions =
-        await prizeDistributor.getClaimableDrawsAndPrizeDistributions()
+      const validDrawIds = await prizeDistributor.getValidDrawIds()
+      let drawsAndPrizeDistributions = await prizeDistributor.getDrawsAndPrizeDistributions(
+        validDrawIds
+      )
       return drawsAndPrizeDistributions.sort(sortByDrawId)
     },
     {

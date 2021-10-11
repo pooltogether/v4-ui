@@ -5,6 +5,7 @@ import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStor
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
+import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
 
 // TODO: Check that next draw date to refetch works
 
@@ -18,13 +19,15 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * - stored draw results that have a prize of 0
  * - stored draw results that have been claimed
  * - user had 0 average balance during the draw period
+ * Appends draws with timelock data if available
  * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
 export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
   const usersAddress = useUsersAddress()
   const nextDrawDate = useNextDrawDate()
-  const enabled = Boolean(prizeDistributor)
+  const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
+  const enabled = Boolean(prizeDistributor) && isDrawUnlockTimesFetched
   return useQuery(
     [
       'useUnclaimedDrawsAndPrizeDistributions',
@@ -32,7 +35,7 @@ export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDi
       nextDrawDate.toISOString(),
       usersAddress
     ],
-    async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor),
+    async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor, drawLocks),
     {
       ...NO_REFETCH,
       enabled
@@ -40,15 +43,27 @@ export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDi
   )
 }
 
+// TODO: Add back normalized balance checks
 const getUnclaimedDrawsAndPrizeDistributions = async (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
-): Promise<{ draw: Draw; prizeDistribution: PrizeDistribution }[]> => {
-  const drawIds = await prizeDistributor.getClaimableDrawIds()
-  const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
+  prizeDistributor: PrizeDistributor,
+  drawLocks: DrawLocks
+): Promise<
+  {
+    draw: Draw
+    prizeDistribution: PrizeDistribution
+    timelock?: DrawLock
+  }[]
+> => {
+  const drawIds = await prizeDistributor.getValidDrawIds()
+  const [
+    drawsAndPrizeDistributions,
+    claimedAmounts
+    // , normalizedBalances
+  ] = await Promise.all([
     prizeDistributor.getDrawsAndPrizeDistributions(drawIds),
-    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds),
-    prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
+    // prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
   ])
 
   // TODO: Ensure claimed amounts are max claimable amount, probably do this in v4-js-sdk?
@@ -57,7 +72,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
       // Filter draws with claimed amounts
       if (!claimedAmounts[index].isZero()) return false
       // Filter draws with no normalized balance during that period
-      if (normalizedBalances[index].isZero()) return false
+      // if (normalizedBalances[index].isZero()) return false
 
       const storedResult = getStoredDrawResult(
         usersAddress,
@@ -69,6 +84,13 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
       // Filter checked draws that are claimed
       if (storedResult?.state === StoredDrawStates.claimed) return false
       return true
+    })
+    .map((drawAndPrizeDistribution) => {
+      const timelock = drawLocks[drawAndPrizeDistribution.draw.drawId]
+      return {
+        ...drawAndPrizeDistribution,
+        timelock
+      }
     })
     .sort((a, b) => sortDrawsByDrawId(a.draw, b.draw))
 

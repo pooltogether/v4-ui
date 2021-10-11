@@ -8,7 +8,6 @@ import { PrizeDistributorDrawList } from './PrizeDistributorDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
 import { HistoricPrizesList } from './HistoricPrizesList'
-import { useDrawUnlockTime } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawUnlockTime'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -22,8 +21,6 @@ export const PrizesUI = () => {
   const { data: prizeDistributors, isFetched } = useSelectedNetworkPrizeDistributors()
   const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
   const usersAddress = useUsersAddress()
-
-  useDrawUnlockTime()
 
   if (!isFetched || !isPrizePoolFetched) {
     return (

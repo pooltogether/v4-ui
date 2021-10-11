@@ -67,6 +67,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
               <DrawCard
                 prizeDistributor={prizeDistributor}
                 draw={drawAndPrizeDistribution.draw}
+                timelock={drawAndPrizeDistribution.timelock}
                 prizeDistribution={drawAndPrizeDistribution.prizeDistribution}
                 hideDrawCard={() =>
                   setDrawIdsToHideThisSession((drawsToHide) => [

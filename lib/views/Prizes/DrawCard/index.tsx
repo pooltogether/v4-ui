@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
-import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
+import { Token, Transaction, useTimeCountdown, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   Card,
@@ -24,11 +24,14 @@ import { useTranslation } from 'react-i18next'
 import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
 import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
+import { DrawLock } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
   prizeDistributor: PrizeDistributor
   draw: Draw
+  drawLock: DrawLock
   hideDrawCard: () => void
   refetchUsersBalances: () => void
 }
@@ -166,8 +169,11 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults, claimTx } = props
+  const { claimState, setClaimState, openModal, drawResults, claimTx, drawLock } = props
   const usersAddress = useUsersAddress()
+
+  const countdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
+  console.log(drawLock, countdown)
 
   const { t } = useTranslation()
 
@@ -179,6 +185,8 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
   if (!usersAddress) {
     return null
+  } else if (drawLock && countdown.secondsLeft) {
+    btnJsx = <div>Not redy</div>
   } else if (claimTx?.inFlight) {
     btnJsx = (
       <SquareLink

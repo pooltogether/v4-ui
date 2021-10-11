@@ -8,7 +8,7 @@ import { useQuery } from 'react-query'
 import { useNextDrawDate } from '../useNextDrawDate'
 
 /**
- * Returns the draws & prize distributions that are claimable along with the amount the
+ * Returns the draws & prize distributions that are valid along with the amount the
  * user has claimed.
  * @param prizeDistributor
  * @param token
@@ -34,10 +34,10 @@ const getPastDrawsForUser = async (
   prizeDistributor: PrizeDistributor,
   token: Token
 ) => {
-  const claimableDrawIds = await prizeDistributor.getClaimableDrawIds()
+  const validDrawIds = await prizeDistributor.getValidDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts] = await Promise.all([
-    prizeDistributor.getDrawsAndPrizeDistributions(claimableDrawIds),
-    prizeDistributor.getUsersClaimedAmounts(usersAddress, claimableDrawIds)
+    prizeDistributor.getDrawsAndPrizeDistributions(validDrawIds),
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, validDrawIds)
   ])
 
   const draws: {

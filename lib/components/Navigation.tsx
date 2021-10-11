@@ -45,6 +45,7 @@ export const Navigation = (props) => {
           'mx-auto p-1 py-4 sm:py-1',
           'flex flex-row justify-center sm:rounded-xl bg-pt-purple-bright font-inter shadow-lg'
         )}
+        style={{ width: 'max-content' }}
       >
         {NavLinks.map((navLink) => (
           <NavTab

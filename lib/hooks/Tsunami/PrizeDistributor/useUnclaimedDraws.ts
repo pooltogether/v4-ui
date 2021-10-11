@@ -8,8 +8,8 @@ import { useNextDrawDate } from '../useNextDrawDate'
 // TODO: Check that next draw date to refetch works
 
 /**
- * Fetches claimable draw ids, fetches draws & claimed amounts, then filters out claimed draws.
- * - Fetches claimable draw ids
+ * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
+ * - Fetches valid draw ids
  *  - then draws and claimed amounts
  * Filters draws with
  * - non zero claimed amounts
@@ -36,7 +36,7 @@ const getUnclaimedDraws = async (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
 ): Promise<Draw[]> => {
-  const drawIds = await prizeDistributor.getClaimableDrawIds()
+  const drawIds = await prizeDistributor.getValidDrawIds()
   const [draws, claimedAmounts] = await Promise.all([
     prizeDistributor.getDraws(drawIds),
     prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
