@@ -7,7 +7,7 @@ export const PRIZE_POOLS = Object.freeze({
     [NETWORK.polygon]: ''
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [NETWORK.rinkeby]: '0x0e4BBece5Cf94c09Bc168fFbe3b6DF8a43a94446',
-    [NETWORK.mumbai]: '0xbCc954625cB734872E2b67bbbE2155963a41C1Ca'
+    [NETWORK.rinkeby]: '0x19bfA054Dc6A1F428a9Eb840DeBbab01D61950aB',
+    [NETWORK.mumbai]: '0x91017Aa153702617FD4361776212081884f0CEf8'
   }
 })
