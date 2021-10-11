@@ -36,14 +36,14 @@ export const Navigation = (props) => {
         className,
         'bg-nav-container',
         'sm:absolute sm:bottom-auto mx-auto',
-        'fixed bottom-0 pb-6 sm:pb-0 inset-x-0 z-20'
+        'fixed bottom-0 pb-0 inset-x-0 z-20'
       )}
     >
       <nav
         className={classnames(
           className,
-          'mx-auto  max-w-max',
-          'flex flex-row rounded-xl bg-pt-purple-bright p-1 font-inter shadow-lg'
+          'mx-auto sm:max-w-max p-1 py-4 sm:py-1',
+          'flex flex-row justify-center sm:rounded-xl bg-pt-purple-bright font-inter shadow-lg'
         )}
       >
         {NavLinks.map((navLink) => (
@@ -69,7 +69,7 @@ const NavTab = (props: NavTabProps) => {
     <Link href={href}>
       <a
         className={classnames(
-          'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
+          'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-2 sm:py-0 px-3 flex flex-row',
           'text-xs hover:text-white active:bg-highlight-9',
           { 'bg-highlight-9 text-white': isSelected },
           { 'hover:bg-tertiary': !isSelected }
