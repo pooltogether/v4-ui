@@ -4,6 +4,7 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
+import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 import { useNextDrawDate } from '../useNextDrawDate'
 import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
 
@@ -27,12 +28,14 @@ export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDi
   const usersAddress = useUsersAddress()
   const nextDrawDate = useNextDrawDate()
   const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
-  const enabled = Boolean(prizeDistributor) && isDrawUnlockTimesFetched
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const enabled = Boolean(prizeDistributor) && isDrawUnlockTimesFetched && isDrawBeaconFetched
   return useQuery(
     [
       'useUnclaimedDrawsAndPrizeDistributions',
       prizeDistributor?.id(),
       nextDrawDate.toISOString(),
+      drawBeaconPeriod?.startedAtSeconds.toString(),
       usersAddress
     ],
     async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor, drawLocks),
@@ -52,7 +55,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
   {
     draw: Draw
     prizeDistribution: PrizeDistribution
-    timelock?: DrawLock
+    drawLock?: DrawLock
   }[]
 > => {
   const drawIds = await prizeDistributor.getValidDrawIds()
@@ -86,10 +89,11 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
       return true
     })
     .map((drawAndPrizeDistribution) => {
-      const timelock = drawLocks[drawAndPrizeDistribution.draw.drawId]
+      const drawLock = drawLocks[drawAndPrizeDistribution.draw.drawId]
+
       return {
         ...drawAndPrizeDistribution,
-        timelock
+        drawLock
       }
     })
     .sort((a, b) => sortDrawsByDrawId(a.draw, b.draw))

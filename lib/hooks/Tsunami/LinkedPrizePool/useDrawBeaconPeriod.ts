@@ -6,13 +6,15 @@ import { useQuery } from 'react-query'
 import { useLinkedPrizePool } from './useLinkedPrizePool'
 
 /**
- *
+ * // TODO: Rather than polling could we just listen for an event then trigger a refetch?
  * @returns
  */
 export const useDrawBeaconPeriod = () => {
   const { data: linkedPrizePool, isFetched } = useLinkedPrizePool()
   const [refetchIntervalMs, setRefetchIntervalMs] = useState<number | false>(false)
   const enabled = isFetched
+
+  console.log(refetchIntervalMs)
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber

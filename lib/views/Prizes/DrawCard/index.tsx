@@ -173,7 +173,9 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   const usersAddress = useUsersAddress()
 
   const countdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
-  console.log(drawLock, countdown)
+  if (drawLock) {
+    console.log(countdown)
+  }
 
   const { t } = useTranslation()
 
