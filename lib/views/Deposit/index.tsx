@@ -6,7 +6,6 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 
 export const DepositUI = () => {
-  throw new Error('hi')
   return (
     <PagePadding className='flex flex-col space-y-4'>
       <UpcomingPrizeCard />
