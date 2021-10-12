@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
 
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
@@ -11,12 +12,14 @@ import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountText
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
+import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
-import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import {
+  EstimatedApproveAndDepositGasItem,
+  EstimatedDepositGasItem
+} from 'lib/components/InfoList/EstimatedGasItem'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { InfoListItem } from 'lib/components/InfoList'
@@ -239,6 +242,8 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   const { t } = useTranslation()
 
+  const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
+
   const errorMessages = errors ? Object.values(errors) : null
   if (errorMessages && errorMessages.length > 0) {
     const messages = errorMessages.map((error) => (
@@ -264,10 +269,17 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   return (
     <InfoBoxContainer className={className}>
-      <EstimatedDepositGasItem
-        prizePool={prizePool}
-        amountUnformatted={amountToDeposit.amountUnformatted}
-      />
+      {depositAllowance?.isApproved ? (
+        <EstimatedDepositGasItem
+          prizePool={prizePool}
+          amountUnformatted={amountToDeposit.amountUnformatted}
+        />
+      ) : (
+        <EstimatedApproveAndDepositGasItem
+          prizePool={prizePool}
+          amountUnformatted={amountToDeposit.amountUnformatted}
+        />
+      )}
     </InfoBoxContainer>
   )
 }
