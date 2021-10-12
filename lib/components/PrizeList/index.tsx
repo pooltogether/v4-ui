@@ -43,6 +43,7 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { amount: amountUnformatted, distributionIndex } = prize
 
   const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
+  const { t } = useTranslation()
 
   return (
     <li
