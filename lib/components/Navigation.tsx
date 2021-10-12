@@ -42,7 +42,7 @@ export const Navigation = (props) => {
       <nav
         className={classnames(
           className,
-          'mx-auto sm:max-w-max p-1 py-4 sm:py-1',
+          'mx-auto p-1 py-4 sm:py-1',
           'flex flex-row justify-center sm:rounded-xl bg-pt-purple-bright font-inter shadow-lg'
         )}
       >
