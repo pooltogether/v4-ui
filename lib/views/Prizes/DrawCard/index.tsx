@@ -124,7 +124,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         claimState={claimState}
       />
-      <div className='absolute xs:relative mx-auto xs:mx-0 left-0 xs:left-auto right-0 xs:right-auto bottom-4 xs:bottom-auto xs:-top-6 text-center'>
+      <div className='absolute xs:relative mx-auto xs:mx-0 left-0 xs:left-auto right-0 xs:right-auto bottom-4 xs:bottom-auto xs:-top-6 text-center z-20'>
         <DrawClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
@@ -228,6 +228,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     btnJsx = (
       <SquareButton
+        theme={SquareButtonTheme.rainbow}
         size={SquareButtonSize.sm}
         onClick={() => openModal()}
         className='text-center mx-auto xs:mx-0'

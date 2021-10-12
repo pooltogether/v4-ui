@@ -149,6 +149,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
               // setModalState(ModalState.reviewTransaction)
               sendClaimTx()
             }}
+            theme={SquareButtonTheme.rainbow}
             disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
           >
             {t('confirmClaim', 'Confirm claim')}

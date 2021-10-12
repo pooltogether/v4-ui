@@ -2312,10 +2312,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
   integrity sha512-jQub/+qPLQwTFtbBCvvyIEqxJDEBEV/hgLKnuocBg2/GySWtHLz67WCy17bNn1hZw8nWIt8Ih8h+7iT2UJhtmQ==
 
-"@pooltogether/react-components@^1.1.25":
-  version "1.1.25"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.25.tgz#377dfccd84172e0db6e4cec09dd622898b506cd9"
-  integrity sha512-AJsb4NZd+aq21JbivQdlw6nSW0InOK0jVuraFarxIZ0K1g/tP+8yYQtUHeMI22JPfu1Vo62fl1LNzqaKV6v9ag==
+"@pooltogether/react-components@^1.1.26":
+  version "1.1.26"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.1.26.tgz#13bdab15bf78aa510e0bb3793616d23c9a3291e1"
+  integrity sha512-FxBlWK9pQm4fsXbMduvWiIkxW2RgruuCx0HyrZg/aHIylFmyL1PBdUB0Y5y0R3g6ZDDe/7uqMap/CO8dSvrCiA==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@pooltogether/evm-chains-extended" "^0.5.3"
