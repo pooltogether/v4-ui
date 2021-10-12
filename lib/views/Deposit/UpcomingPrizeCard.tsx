@@ -40,13 +40,11 @@ export const UpcomingPrizeCard = (props) => {
             {isFetched ? amount : '--'}
           </h1>
           <div className='uppercase font-semibold text-default-soft text-xxs xs:text-lg mt-2'>
-            {t?.('inWeeklyPrizes', 'In weekly prizes') || 'In weekly prizes'}
+            {t?.('inPrizes', 'In prizes') || 'In prizes'}
           </div>
         </div>
         <div className='uppercase font-semibold text-highlight-6 text-xxs xs:text-lg w-2/3 xs:w-1/2 mx-auto'>
-          {t?.('awardedEveryXDay', {
-            day: AWARD_DAY
-          }) || `Awarded every ${AWARD_DAY}!`}
+          {t?.('awardedEveryDay', 'Awarded every day!') || `Awarded every day!`}
         </div>
         <ViewPrizeBreakdownTrigger />
       </div>
