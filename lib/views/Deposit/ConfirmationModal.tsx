@@ -14,10 +14,7 @@ import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import {
-  EstimatedDepositGasItem,
-  EstimatedApproveAndDepositGasItem
-} from 'lib/components/InfoList/EstimatedGasItem'
+import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
@@ -177,15 +174,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
 
         <InfoList className='mt-8'>
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-
-          {depositAllowance?.isApproved ? (
-            <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
-          ) : (
-            <EstimatedApproveAndDepositGasItem
-              prizePool={prizePool}
-              amountUnformatted={amountUnformatted}
-            />
-          )}
+          <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
         </InfoList>
 
         <TxButtonNetworkGated

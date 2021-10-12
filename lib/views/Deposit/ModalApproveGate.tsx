@@ -68,8 +68,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         <p className='mb-10'>
           {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
           <a
+            target='_blank'
             className='underline'
-            href='https://docs.pooltogether.com/how-to/deposit-with-metamask'
+            href='https://docs.pooltogether.com/how-to/how-to-deposit'
           >
             {t('howToDeposit', 'How to deposit')}
           </a>
