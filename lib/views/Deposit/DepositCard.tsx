@@ -156,39 +156,6 @@ export const DepositCard = () => {
     resetQueryParam()
   }
 
-  const depositAndDelegate = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const txId = await sendTx({
-      name,
-      method: 'depositToAndDelegate',
-      callTransaction: async () => player.depositAndDelegate(amountToDeposit.amountUnformatted),
-      callbacks: {
-        onSuccess,
-        refetch: () => {
-          refetchTicketDelegate()
-          refetchUsersBalances()
-        }
-      }
-    })
-    setDepositTxId(txId, prizePool)
-  }
-
-  const deposit = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const txId = await sendTx({
-      name,
-      method: 'depositTo',
-      callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
-      callbacks: {
-        onSuccess,
-        refetch: () => {
-          refetchUsersBalances()
-        }
-      }
-    })
-    setDepositTxId(txId, prizePool)
-  }
-
   const sendDepositTx = async () => {
     const contractMethod =
       ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'

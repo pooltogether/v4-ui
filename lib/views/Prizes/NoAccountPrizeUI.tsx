@@ -9,7 +9,6 @@ import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { useValidDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useValidDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import {
   DrawDate,
   DrawDetailsProps,
@@ -25,8 +24,6 @@ interface NoAccountPrizeUIProps {
 
 export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
   const { prizeDistributor, prizePool } = props
-
-  const nextDrawDate = useNextDrawDate()
 
   return (
     <PagePadding className='flex flex-col space-y-4'>

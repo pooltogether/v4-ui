@@ -34,7 +34,7 @@ export const Navigation = (props) => {
     <div
       className={classnames(
         className,
-        'bg-nav-container',
+        'bg-pt-purple-bright shadow-lg w-fill sm:w-max sm:rounded-xl',
         'sm:absolute sm:bottom-auto mx-auto',
         'fixed bottom-0 pb-0 inset-x-0 z-20'
       )}
@@ -43,7 +43,7 @@ export const Navigation = (props) => {
         className={classnames(
           className,
           'mx-auto p-1 py-4 sm:py-1',
-          'flex flex-row justify-center sm:rounded-xl bg-pt-purple-bright font-inter shadow-lg'
+          'flex flex-row justify-center font-inter'
         )}
         style={{ width: 'max-content' }}
       >

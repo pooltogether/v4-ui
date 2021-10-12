@@ -5,7 +5,7 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
-import { useNextDrawDate } from '../useNextDrawDate'
+import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 
 /**
  * Returns the draws & prize distributions that are valid along with the amount the
@@ -15,15 +15,15 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * @returns
  */
 export const usePastDrawsForUser = (prizeDistributor: PrizeDistributor, token: Token) => {
-  const nextDrawDate = useNextDrawDate()
   const usersAddress = useUsersAddress()
-  const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && Boolean(token)
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const enabled =
+    Boolean(prizeDistributor) && Boolean(usersAddress) && Boolean(token) && isDrawBeaconFetched
 
   return useQuery(
-    ['usePastDrawsForUser', prizeDistributor?.id(), nextDrawDate.toISOString()],
+    ['usePastDrawsForUser', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
     () => getPastDrawsForUser(usersAddress, prizeDistributor, token),
     {
-      ...NO_REFETCH,
       enabled
     }
   )

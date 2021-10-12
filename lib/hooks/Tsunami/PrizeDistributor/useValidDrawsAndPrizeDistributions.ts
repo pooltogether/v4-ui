@@ -2,7 +2,7 @@ import { Draw, PrizeDistributor, PrizeDistribution } from '@pooltogether/v4-js-c
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
-import { useNextDrawDate } from '../useNextDrawDate'
+import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 
 /**
  * Returns the claimable draws and prize distributions
@@ -10,10 +10,14 @@ import { useNextDrawDate } from '../useNextDrawDate'
  * @returns
  */
 export const useValidDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
-  const nextDrawDate = useNextDrawDate()
-  const enabled = Boolean(prizeDistributor)
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const enabled = Boolean(prizeDistributor) && isDrawBeaconFetched
   return useQuery(
-    ['useValidDrawsAndPrizeDistributions', prizeDistributor?.id(), nextDrawDate.toISOString()],
+    [
+      'useValidDrawsAndPrizeDistributions',
+      prizeDistributor?.id(),
+      drawBeaconPeriod?.startedAtSeconds.toString()
+    ],
     async () => {
       const validDrawIds = await prizeDistributor.getValidDrawIds()
       let drawsAndPrizeDistributions = await prizeDistributor.getDrawsAndPrizeDistributions(

@@ -1,11 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { sToMs } from '@pooltogether/utilities'
-import { atom, useAtom } from 'jotai'
+import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useLinkedPrizePool } from './useLinkedPrizePool'
-
-// Refetch every 5 minutes (the time for the defender)
-const refetchIntervalMsAtom = atom<number>(sToMs(60 * 5))
 
 /**
  * // TODO: Rather than polling could we just listen for an event then trigger a refetch?
@@ -13,13 +10,14 @@ const refetchIntervalMsAtom = atom<number>(sToMs(60 * 5))
  */
 export const useDrawBeaconPeriod = () => {
   const { data: linkedPrizePool, isFetched } = useLinkedPrizePool()
-  const [refetchIntervalMs, setRefetchIntervalMs] = useAtom(refetchIntervalMsAtom)
+  const [refetchIntervalMs, setRefetchIntervalMs] = useState(sToMs(60 * 2.5))
   const enabled = isFetched
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber
     periodSeconds: number
     endsAtSeconds: BigNumber
+    drawId: number
   }) => {
     const { endsAtSeconds } = drawBeaconPeriod
     let refetchIntervalMs = sToMs(endsAtSeconds.toNumber()) - Date.now()
@@ -28,8 +26,8 @@ export const useDrawBeaconPeriod = () => {
     if (refetchIntervalMs > 0) {
       setRefetchIntervalMs(refetchIntervalMs)
     } else {
-      // Otherwise, refetch every 5 minutes (the time for the defender)
-      setRefetchIntervalMs(sToMs(60 * 5))
+      // Otherwise, refetch every 2.5 minutes (1/2 the time for the defender cron job)
+      setRefetchIntervalMs(sToMs(60 * 2.5))
     }
   }
 

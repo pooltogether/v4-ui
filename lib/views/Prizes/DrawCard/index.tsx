@@ -27,24 +27,6 @@ import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
 import { DrawLock } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
-import { getPrettyDate } from 'lib/utils/date'
-
-const useDataFetch = (prizeDistributor: PrizeDistributor) => {
-  useEffect(() => {
-    console.log('SET EVENT LISTENERS')
-    prizeDistributor.drawBufferContract.on('DrawSet', (...args) => {
-      console.log('EVENT', 'DrawSet', args)
-    })
-    prizeDistributor.prizeDistributionsBufferContract.on('PrizeDistributionSet', (...args) => {
-      console.log('EVENT', 'PrizeDistributionSet', args)
-    })
-
-    return () => {
-      prizeDistributor.drawBufferContract.removeAllListeners('DrawSet')
-      prizeDistributor.prizeDistributionsBufferContract.removeAllListeners('PrizeDistributionSet')
-    }
-  }, [prizeDistributor])
-}
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
@@ -65,8 +47,6 @@ export const DrawCard = (props: DrawCardProps) => {
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-
-  useDataFetch(prizeDistributor)
 
   if (!isPrizePoolTokensFetched) {
     return <LoadingCard />
@@ -207,9 +187,9 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     return null
   } else if (drawLock && countdown.secondsLeft) {
     btnJsx = (
-      <div className='flex flex-col'>
-        <SquareButton disabled className='flex'>
-          <FeatherIcon icon='lock' className='w-5 h-5 my-auto mr-2' />
+      <div className='flex flex-col mx-auto xs:mx-0 text-center'>
+        <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.sm}>
+          <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
           {t('checkForPrizes', 'Check for prizes')}
         </SquareButton>
         <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
@@ -286,12 +266,9 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   return <div className='flex items-start relative'>{btnJsx}</div>
 }
 
-<<<<<<< HEAD
 const LoadingCard = () => (
   <div className='w-full rounded-xl animate-pulse bg-card mb-4 h-48 xs:h-112' />
 )
-=======
-const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />
 
 const CountdownString = (props: {
   countdown: {
@@ -325,4 +302,3 @@ const CountdownString = (props: {
     </>
   )
 }
->>>>>>> a208051 (refetching draws)

@@ -1,11 +1,9 @@
 import { PrizeDistributor, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
-import { useNextDrawDate } from '../useNextDrawDate'
 import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
 
 // TODO: Check that next draw date to refetch works
@@ -21,24 +19,24 @@ import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
  * - stored draw results that have been claimed
  * - user had 0 average balance during the draw period
  * Appends draws with timelock data if available
- * Refetches when the draw beacon period changes
- * - A new draw is pushed onto the drawBuffer at this time
+ * Refetches
+ * - When the draw beacon period is updated
  * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
 export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
   const usersAddress = useUsersAddress()
-  const nextDrawDate = useNextDrawDate()
   const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const enabled = Boolean(prizeDistributor) && isDrawUnlockTimesFetched && isDrawBeaconFetched
+
   return useQuery(
     [
       'useUnclaimedDrawsAndPrizeDistributions',
       prizeDistributor?.id(),
-      nextDrawDate.toISOString(),
       drawBeaconPeriod?.startedAtSeconds.toString(),
-      usersAddress
+      usersAddress,
+      drawLocks
     ],
     async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor, drawLocks),
     {
@@ -61,14 +59,10 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
 > => {
   console.log('getUnclaimedDrawsAndPrizeDistributions', new Date().toLocaleString())
   const drawIds = await prizeDistributor.getValidDrawIds()
-  const [
-    drawsAndPrizeDistributions,
-    claimedAmounts
-    // , normalizedBalances
-  ] = await Promise.all([
+  const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
     prizeDistributor.getDrawsAndPrizeDistributions(drawIds),
-    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
-    // prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds),
+    prizeDistributor.getUsersNormalizedBalancesForDrawIds(usersAddress, drawIds)
   ])
 
   // TODO: Ensure claimed amounts are max claimable amount, probably do this in v4-js-sdk?
@@ -77,7 +71,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
       // Filter draws with claimed amounts
       if (!claimedAmounts[index].isZero()) return false
       // Filter draws with no normalized balance during that period
-      // if (normalizedBalances[index].isZero()) return false
+      if (normalizedBalances[index].isZero()) return false
 
       const storedResult = getStoredDrawResult(
         usersAddress,

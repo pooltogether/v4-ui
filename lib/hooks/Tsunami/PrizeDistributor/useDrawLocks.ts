@@ -1,4 +1,5 @@
 import { PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
+import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery } from 'react-query'
@@ -24,17 +25,21 @@ export const useDrawLocks = () => {
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const enabled = Boolean(prizeDistributors) && isFetched && isDrawBeaconFetched
   return useQuery(
-    ['useDrawUnlockTime', drawBeaconPeriod?.startedAtSeconds.toString()],
+    [
+      'useDrawUnlockTime',
+      drawBeaconPeriod?.startedAtSeconds.toString(),
+      prizeDistributors?.map((pd) => pd.id())
+    ],
     () => getDrawLocks(prizeDistributors),
     {
-      ...NO_REFETCH,
-      enabled
+      enabled,
+      refetchInterval: sToMs(60 * 5)
     }
   )
 }
 
 const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<DrawLocks> => {
-  console.log('Fetching unlock time')
+  console.log('getDrawLocks', new Date().toLocaleString())
   const lockedDraws = await Promise.all(
     prizeDistributors.map((prizeDistributor) => prizeDistributor.getTimelockDrawId())
   )
@@ -56,7 +61,7 @@ const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<Draw
     }
   })
 
-  console.log(new Date().toUTCString(), Date.now(), drawLocks)
+  console.log('drawLocks', drawLocks, new Date().toLocaleString())
 
   return drawLocks
 }

@@ -9,8 +9,6 @@ import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSele
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/LinkedPrizePool/useDrawBeaconPeriod'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
-// import { getPrettyDate } from 'lib/utils/getNextDrawDate'
-// import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 
 const AWARD_DAY = 'Friday'
 
@@ -19,7 +17,7 @@ export const UpcomingPrizeCard = (props) => {
 
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
-  const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconPeriodFetched } = useDrawBeaconPeriod()
 
   const countdown = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
 
@@ -56,10 +54,12 @@ export const UpcomingPrizeCard = (props) => {
           <ViewPrizeBreakdownTrigger />
         </div>
       </div>
-      {countdown.secondsLeft === 0 && 'Eligibility for tomorrows draw is ending now'}
-      {countdown.secondsLeft > 0 && (
+      {isDrawBeaconPeriodFetched && countdown.secondsLeft === 0 && (
+        <span>Eligibility for draw #{drawBeaconPeriod.drawId} is ending now</span>
+      )}
+      {isDrawBeaconPeriodFetched && countdown.secondsLeft > 0 && (
         <div className='flex space-x-2'>
-          <span>Eligibility for the next draw ends in </span>
+          <span>Eligibility for draw #{drawBeaconPeriod.drawId} ends in </span>
           {Boolean(countdown.days) && <span>{countdown.days} days</span>}
           {Boolean(countdown.hours) && <span>{countdown.hours} hours</span>}
           {Boolean(countdown.minutes) && <span>{countdown.minutes} minutes</span>}

@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next'
 
 import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawsAndPrizeDistributions'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import { getPrettyDate } from 'lib/utils/date'
 import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
+import { SquareButtonSize, SquareLink } from '@pooltogether/react-components'
+import Link from 'next/link'
 
 interface PrizeDistributorDrawListProps {
   prizeDistributor: PrizeDistributor
@@ -22,9 +23,12 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
     data: drawsAndPrizeDistributions,
     isFetched
   } = useUnclaimedDrawsAndPrizeDistributions(prizeDistributor)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(prizePool)
+  const {
+    data: usersBalances,
+    refetch: refetchUsersBalances,
+    isFetched: isUsersBalancesFetched
+  } = useUsersPrizePoolBalances(prizePool)
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
-  const nextDrawDate = useNextDrawDate()
 
   // Filter out manually hidden draw ids from this session
   const drawsAndPrizeDistributionsToRender = useMemo(
@@ -36,7 +40,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
     [drawsAndPrizeDistributions, drawIdsToHideThisSession]
   )
 
-  if (!isFetched) {
+  if (!isFetched || !isUsersBalancesFetched) {
     return <LoadingCard />
   }
 
@@ -46,11 +50,24 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
         <span className='mt-10 text-xl text-white'>
           {t('noDrawsToCheck', 'No draws to check!')}
         </span>
-        <span className='mb-10'>
-          {t('comeBackOnDate', 'Come back on {{date}}', {
-            date: getPrettyDate(nextDrawDate)
-          })}
-        </span>
+        {usersBalances.ticket.hasBalance && (
+          <span className='mb-10'>{t('comeBackSoon', 'Come back soon')}</span>
+        )}
+        {!usersBalances.ticket.hasBalance && (
+          <>
+            <span className='mb-2'>
+              {t('depositToBeEligible', 'Make a deposit for a chance to win')}
+            </span>
+            <SquareLink
+              Link={Link}
+              size={SquareButtonSize.sm}
+              href='/deposit'
+              className='mb-8 items-center block xs:inline mx-auto w-32'
+            >
+              Deposit
+            </SquareLink>
+          </>
+        )}
       </div>
     )
   }
