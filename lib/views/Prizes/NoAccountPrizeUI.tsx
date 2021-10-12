@@ -7,7 +7,6 @@ import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
-import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useClaimableDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
@@ -107,7 +106,6 @@ const PastPrizesHeader = (props: { className?: string }) => {
       )}
     >
       <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>
-      <SelectedNetworkToggle />
     </div>
   )
 }

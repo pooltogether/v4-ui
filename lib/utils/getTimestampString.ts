@@ -11,7 +11,7 @@ export const getTimestampStringWithTime = (
   timestamp: number,
   options: Intl.DateTimeFormatOptions = {
     weekday: 'long',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
     //
     hour: 'numeric',

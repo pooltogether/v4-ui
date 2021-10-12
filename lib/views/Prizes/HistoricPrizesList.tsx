@@ -1,8 +1,7 @@
+import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
 import { Card } from '@pooltogether/react-components'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
-import classNames from 'classnames'
-import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -36,7 +35,7 @@ export const HistoricPrizesList = (props: {
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (
       <>
-        <HistoricPrizesListHeader className='mb-4' />
+        <HistoricPrizesListHeader className='mb-1' />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
@@ -48,7 +47,7 @@ export const HistoricPrizesList = (props: {
 
   return (
     <>
-      <HistoricPrizesListHeader className='mb-4' />{' '}
+      <HistoricPrizesListHeader className='mb-1' />{' '}
       {pastDraws.length === 0 && (
         <div className='opacity-70 text-center w-full mt-12'>
           {t('noDrawsYet', 'No draws yet, check back soon')}
@@ -153,7 +152,6 @@ const HistoricPrizesListHeader = (props: { className?: string }) => {
       )}
     >
       <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>
-      <SelectedNetworkToggle />
     </div>
   )
 }

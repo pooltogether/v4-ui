@@ -27,10 +27,10 @@ export const DrawDetails = (props: DrawDetailsProps) => {
           <DrawId {...props} />
           <DrawDate {...props} />
         </span>
-        <ViewPrizeTiersTrigger {...props} />
-      </div>
-      <div className='flex flex-col items-start'>
-        <PrizeDistributorTotal {...props} />
+        <span className='flex flex-col space-y-2 items-end'>
+          <ViewPrizeTiersTrigger {...props} />
+          <PrizeDistributorTotal {...props} />
+        </span>
       </div>
     </div>
   )

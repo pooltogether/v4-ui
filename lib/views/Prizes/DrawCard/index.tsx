@@ -125,15 +125,17 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         claimState={claimState}
       />
-      <DrawClaimButton
-        {...props}
-        hasCheckedAnimationFinished={hasCheckedAnimationFinished}
-        drawResults={drawResults}
-        claimState={claimState}
-        setClaimState={setClaimState}
-        openModal={() => setIsModalOpen(true)}
-        claimTx={claimTx}
-      />
+      <div className='relative -t-8'>
+        <DrawClaimButton
+          {...props}
+          hasCheckedAnimationFinished={hasCheckedAnimationFinished}
+          drawResults={drawResults}
+          claimState={claimState}
+          setClaimState={setClaimState}
+          openModal={() => setIsModalOpen(true)}
+          claimTx={claimTx}
+        />
+      </div>
       <PrizeClaimModal
         {...props}
         setTxId={setTxId}
@@ -185,7 +187,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         target='_blank'
         href={url}
         theme={SquareButtonTheme.teal}
-        size={SquareButtonSize.md}
+        size={SquareButtonSize.sm}
         className='text-center'
       >
         <ThemedClipSpinner className='mr-2' size={12} />
@@ -199,7 +201,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         target='_blank'
         href={url}
         theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.md}
+        size={SquareButtonSize.sm}
         className='text-center'
       >
         {t('viewReceipt', 'View receipt')}
@@ -208,7 +210,11 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   } else if ([ClaimState.unchecked, ClaimState.checking].includes(claimState)) {
     const isChecking = claimState === ClaimState.checking
     btnJsx = (
-      <SquareButton onClick={() => setClaimState(ClaimState.checking)} disabled={isChecking}>
+      <SquareButton
+        size={SquareButtonSize.sm}
+        onClick={() => setClaimState(ClaimState.checking)}
+        disabled={isChecking}
+      >
         {isChecking ? (
           <>
             <ThemedClipSpinner size={12} className='mr-2' />
@@ -221,11 +227,17 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     btnJsx = (
-      <SquareButton onClick={() => openModal()}>{t('claimPrizes', 'Claim prizes')}</SquareButton>
+      <SquareButton size={SquareButtonSize.sm} onClick={() => openModal()}>
+        {t('claimPrizes', 'Claim prizes')}
+      </SquareButton>
     )
   } else {
     // TODO: Show 'Prizes claimed' or 'No prizes to claim'
-    btnJsx = <SquareButton disabled>{t('noPrizesToClaim', 'No prizes to claim')}</SquareButton>
+    btnJsx = (
+      <SquareButton size={SquareButtonSize.sm} disabled>
+        {t('noPrizesToClaim', 'No prizes to claim')}
+      </SquareButton>
+    )
   }
 
   return <div className='flex items-start mt-2 relative z-20'>{btnJsx}</div>

@@ -36,7 +36,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
       <div className={'flex flex-col'}>
         <div className='flex justify-between space-x-2 sm:space-x-4'>
           <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
-          <PrizeTableHeader>{t('winners')}</PrizeTableHeader>
+          <PrizeTableHeader>{t('prizes', 'Prizes')}</PrizeTableHeader>
           <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader>
         </div>
         <div className='flex flex-col space-y-2'>

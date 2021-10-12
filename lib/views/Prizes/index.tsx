@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useSelectedNetworkPrizeDistributors } from 'lib/hooks/Tsunami/PrizeDistributor/useSelectedNetworkPrizeDistributors'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { PrizeDistributorDrawList } from './PrizeDistributorDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -24,17 +25,24 @@ export const PrizesUI = () => {
   if (!isFetched || !isPrizePoolFetched) {
     return (
       <PagePadding>
+        <SelectedNetworkToggleWithPadding />
         <LoadingCard />
       </PagePadding>
     )
   }
 
   if (!usersAddress) {
-    return <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
+    return (
+      <>
+        <SelectedNetworkToggleWithPadding />
+        <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
+      </>
+    )
   }
 
   return (
     <>
+      <SelectedNetworkToggleWithPadding />
       <PrizeDistributorDrawList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       <PagePadding>
         <HistoricPrizesList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
@@ -42,5 +50,11 @@ export const PrizesUI = () => {
     </>
   )
 }
+
+const SelectedNetworkToggleWithPadding = () => (
+  <div className='mb-4 mx-auto text-center max-w-max'>
+    <SelectedNetworkToggle />
+  </div>
+)
 
 const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />
