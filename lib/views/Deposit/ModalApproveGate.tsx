@@ -29,7 +29,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
   const { t } = useTranslation()
 
   if (approveTx?.inFlight) {
-    const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx, chainId)
+    const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx?.hash, chainId)
 
     return (
       <div className={classNames(className, 'flex flex-col')}>
