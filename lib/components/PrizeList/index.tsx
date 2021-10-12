@@ -5,6 +5,7 @@ import { Token } from '@pooltogether/hooks'
 import { PrizeAwardable } from '@pooltogether/v4-js-client'
 
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { sortByBigNumber } from 'lib/utils/sortByBigNumber'
 
 interface PrizeListProps
@@ -41,9 +42,7 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { prize, ticket, token } = props
   const { amount: amountUnformatted, distributionIndex } = prize
 
-  const { t } = useTranslation()
-
-  const { amountPretty } = getAmountFromBigNumber(amountUnformatted, ticket.decimals)
+  const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
 
   return (
     <li

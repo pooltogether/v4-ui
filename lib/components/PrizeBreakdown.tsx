@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
+import { formatUnits } from '@ethersproject/units'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution
@@ -105,11 +107,11 @@ const PrizeTableRow = (props: PrizeTableRowProps) => {
     return null
   }
 
+  const { amountPretty } = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals)
+
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>
-      <PrizeTableCell index={index}>
-        ${numberWithCommas(prizeForDistributionUnformatted, { decimals: token.decimals })}
-      </PrizeTableCell>
+      <PrizeTableCell index={index}>${amountPretty}</PrizeTableCell>
       <PrizeTableCell index={index}>{numberOfWinners}</PrizeTableCell>
       {/* <PrizeTableCell index={index}>--</PrizeTableCell> */}
     </div>

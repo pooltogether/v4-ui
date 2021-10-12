@@ -35,6 +35,7 @@ import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 
 import PiggyBank from 'assets/images/piggy-bank.svg'
+import { useRouter } from 'next/router'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -187,6 +188,8 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
 
   const sendTx = useSendTransaction()
 
+  const router = useRouter()
+
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -279,7 +282,13 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
 
         <SquareLink
           Link={Link}
-          href={`/deposit?network=${prizePool.chainId}`}
+          href={{
+            pathname: '/deposit',
+            query: {
+              ...router.query,
+              network: prizePool.chainId
+            }
+          }}
           className='w-full text-center ml-2'
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.teal}

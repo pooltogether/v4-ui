@@ -9,7 +9,8 @@ import {
   SquareButton,
   SquareButtonTheme,
   SquareButtonSize,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  Tooltip
 } from '@pooltogether/react-components'
 import { PrizeDistributor, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
 
@@ -24,11 +25,15 @@ import { useTranslation } from 'react-i18next'
 import { useStoredDrawResult } from 'lib/hooks/Tsunami/useStoredDrawResult'
 import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
+import { DrawLock } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { useTimeUntil } from 'lib/hooks/useTimeUntil'
+import { CountdownString } from 'lib/components/CountdownString'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
   prizeDistributor: PrizeDistributor
   draw: Draw
+  drawLock: DrawLock
   hideDrawCard: () => void
   refetchUsersBalances: () => void
 }
@@ -39,7 +44,7 @@ export interface DrawPropsWithDetails extends DrawCardProps {
 }
 
 export const DrawCard = (props: DrawCardProps) => {
-  const { prizeDistribution } = props
+  const { prizeDistribution, prizeDistributor } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -166,8 +171,10 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults, claimTx } = props
+  const { claimState, setClaimState, openModal, drawResults, claimTx, drawLock, draw } = props
   const usersAddress = useUsersAddress()
+
+  const countdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
   const { t } = useTranslation()
 
@@ -179,6 +186,31 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
   if (!usersAddress) {
     return null
+  } else if (drawLock && countdown.secondsLeft) {
+    const { weeks, days, hours, minutes } = countdown
+
+    const thereIsWeeks = weeks > 0
+    const thereIsDays = thereIsWeeks || days > 0
+    const thereIsHours = thereIsDays || hours > 0
+    const thereIsMinutes = thereIsHours || minutes > 0
+
+    btnJsx = (
+      <div className='flex flex-col mx-auto xs:mx-0 text-center'>
+        <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.sm}>
+          <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
+          {t('checkForPrizes', 'Check for prizes')}
+        </SquareButton>
+        <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
+          Draw #{draw.drawId} unlocks in{' '}
+          <CountdownString
+            {...countdown}
+            hideHours={thereIsWeeks}
+            hideMinutes={thereIsDays}
+            hideSeconds={thereIsMinutes}
+          />
+        </div>
+      </div>
+    )
   } else if (claimTx?.inFlight) {
     btnJsx = (
       <SquareLink

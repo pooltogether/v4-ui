@@ -16,6 +16,7 @@ import {
   PrizeDistributorTotal,
   ViewPrizeTiersTrigger
 } from './DrawCard/DrawDetails'
+import { useAllDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useAllDrawsAndPrizeDistributions'
 
 export const HistoricPrizesList = (props: {
   prizeDistributor: PrizeDistributor
@@ -27,10 +28,9 @@ export const HistoricPrizesList = (props: {
 
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-  const { data: pastDraws, isFetched: isDrawsAndPrizeDistributionsFetched } = usePastDrawsForUser(
-    prizeDistributor,
-    prizePoolTokens?.token
-  )
+
+  const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
+    useAllDrawsAndPrizeDistributions(prizeDistributor)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (
@@ -48,16 +48,16 @@ export const HistoricPrizesList = (props: {
   return (
     <>
       <HistoricPrizesListHeader className='mb-1' />{' '}
-      {pastDraws.length === 0 && (
+      {drawsAndPrizeDistributions.length === 0 && (
         <div className='opacity-70 text-center w-full mt-12'>
           {t('noDrawsYet', 'No draws yet, check back soon')}
         </div>
       )}
       <ul className='space-y-4'>
-        {pastDraws.map((pastDraw) => (
+        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
           <PastPrizeListItem
-            key={`past-prize-list-${pastDraw.draw.drawId}-${prizeDistributor.id()}`}
-            {...pastDraw}
+            key={`past-prize-list-${drawAndPrizeDistribution.draw.drawId}-${prizeDistributor.id()}`}
+            {...drawAndPrizeDistribution}
             prizeDistributor={prizeDistributor}
             token={prizePoolTokens.token}
           />
@@ -68,7 +68,7 @@ export const HistoricPrizesList = (props: {
 }
 
 interface PastPrizeListItemProps extends DrawDetailsProps {
-  claimedAmount: Amount
+  // claimedAmount: Amount
   prizeDistributor: PrizeDistributor
 }
 
@@ -91,7 +91,8 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
       <div className='flex justify-between'>
         <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
       </div>
-      <ClaimedAmountSection {...props} className='mt-2' />
+      {/* TODO: Commenting out for a few minutes */}
+      {/* <ClaimedAmountSection {...props} className='mt-2' /> */}
     </Card>
   </li>
 )

@@ -156,46 +156,12 @@ export const DepositCard = () => {
     resetQueryParam()
   }
 
-  const depositAndDelegate = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const txId = await sendTx({
-      name,
-      method: 'depositToAndDelegate',
-      callTransaction: async () => player.depositAndDelegate(amountToDeposit.amountUnformatted),
-      callbacks: {
-        onSuccess,
-        refetch: () => {
-          refetchTicketDelegate()
-          refetchUsersBalances()
-        }
-      }
-    })
-    setDepositTxId(txId, prizePool)
-  }
-
-  const deposit = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const txId = await sendTx({
-      name,
-      method: 'depositTo',
-      callTransaction: async () => player.deposit(amountToDeposit.amountUnformatted),
-      callbacks: {
-        onSuccess,
-        refetch: () => {
-          refetchUsersBalances()
-        }
-      }
-    })
-    setDepositTxId(txId, prizePool)
-  }
-
   const sendDepositTx = async () => {
     const contractMethod =
       ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'
     const clientMethod =
       ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    console.log(contractMethod, clientMethod)
     const txId = await sendTx({
       name,
       method: contractMethod,
@@ -358,6 +324,7 @@ interface CompletedDepositProps {
 const CompletedDeposit = (props: CompletedDepositProps) => {
   const { resetState, depositedAmount, tx, token, chainId } = props
   const { t } = useTranslation()
+  const router = useRouter()
 
   return (
     <div className='flex flex-col py-4'>
@@ -393,7 +360,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         {t('depositMore', 'Deposit more')}
       </SquareButton>
       <SquareLink
-        href='/account'
+        href={{ pathname: '/account', query: router.query }}
         Link={Link}
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}

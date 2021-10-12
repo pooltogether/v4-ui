@@ -73,6 +73,8 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
 
+  const { t } = useTranslation()
+
   const { data: player } = usePlayer(prizePool)
 
   const sendDelegateTx = async (e) => {

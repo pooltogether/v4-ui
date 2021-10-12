@@ -110,7 +110,6 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         preload='auto'
         onLoadStart={() => {
           b1.current.load()
-          console.log('loaded!')
         }}
         onEnded={() => {
           if (claimState === ClaimState.checking) {

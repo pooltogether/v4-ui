@@ -5,25 +5,25 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
-import { useNextDrawDate } from '../useNextDrawDate'
+import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 
 /**
- * Returns the draws & prize distributions that are claimable along with the amount the
+ * Returns the draws & prize distributions that are valid along with the amount the
  * user has claimed.
  * @param prizeDistributor
  * @param token
  * @returns
  */
 export const usePastDrawsForUser = (prizeDistributor: PrizeDistributor, token: Token) => {
-  const nextDrawDate = useNextDrawDate()
   const usersAddress = useUsersAddress()
-  const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && Boolean(token)
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const enabled =
+    Boolean(prizeDistributor) && Boolean(usersAddress) && Boolean(token) && isDrawBeaconFetched
 
   return useQuery(
-    ['usePastDrawsForUser', prizeDistributor?.id(), nextDrawDate.toISOString()],
+    ['usePastDrawsForUser', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
     () => getPastDrawsForUser(usersAddress, prizeDistributor, token),
     {
-      ...NO_REFETCH,
       enabled
     }
   )
@@ -34,10 +34,10 @@ const getPastDrawsForUser = async (
   prizeDistributor: PrizeDistributor,
   token: Token
 ) => {
-  const claimableDrawIds = await prizeDistributor.getClaimableDrawIds()
+  const validDrawIds = await prizeDistributor.getValidDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts] = await Promise.all([
-    prizeDistributor.getDrawsAndPrizeDistributions(claimableDrawIds),
-    prizeDistributor.getUsersClaimedAmounts(usersAddress, claimableDrawIds)
+    prizeDistributor.getDrawsAndPrizeDistributions(validDrawIds),
+    prizeDistributor.getUsersClaimedAmounts(usersAddress, validDrawIds)
   ])
 
   const draws: {
