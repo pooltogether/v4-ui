@@ -22,13 +22,15 @@ export interface DrawDetailsProps {
 export const DrawDetails = (props: DrawDetailsProps) => {
   return (
     <div className='w-full flex flex-col space-y-1 z-20'>
-      <div className='flex flex-row justify-between leading-none'>
+      <div className='flex flex-col xs:flex-row justify-between leading-none'>
         <span className='flex items-start'>
           <DrawId {...props} />
           <DrawDate {...props} />
         </span>
-        <span className='flex flex-col space-y-2 items-end'>
-          <ViewPrizeTiersTrigger {...props} />
+        <span className='flex xs:flex-col flex-col-reverse pt-1 xs:pt-0 space-y-2 items-start xs:items-end '>
+          <span className='mt-1 xs:mt-0'>
+            <ViewPrizeTiersTrigger {...props} />
+          </span>
           <PrizeDistributorTotal {...props} />
         </span>
       </div>

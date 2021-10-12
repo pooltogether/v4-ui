@@ -32,9 +32,9 @@
 }
 
 .video-container video {
-  object-fit: cover;
+  /* object-fit: cover;
   top: 0;
-  left: 0;
+  left: 0; */
 }
 
 .draw-card-container {
@@ -47,8 +47,9 @@
   }
 }
 
+/* scale the height by the view width, maintains aspect ratio */
 .draw-card {
-  min-height: 300px;
+  height: 94vw;
 }
 
 @media screen and (min-width: 576px) {

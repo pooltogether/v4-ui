@@ -50,7 +50,6 @@ export const DrawCard = (props: DrawCardProps) => {
 
   return (
     <Card className='draw-card relative'>
-      {/* style={{ height: 436 }} */}
       <div className='flex flex-col'>
         <DrawDetails
           {...props}
@@ -125,7 +124,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         claimState={claimState}
       />
-      <div className='relative -t-8'>
+      <div className='absolute xs:relative mx-auto xs:mx-0 left-0 xs:left-auto right-0 xs:right-auto bottom-4 xs:bottom-auto xs:-top-6 text-center'>
         <DrawClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
@@ -188,7 +187,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         href={url}
         theme={SquareButtonTheme.teal}
         size={SquareButtonSize.sm}
-        className='text-center'
+        className='text-center mx-auto xs:mx-0'
       >
         <ThemedClipSpinner className='mr-2' size={12} />
         {t('claiming', 'Claiming')}
@@ -202,7 +201,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         href={url}
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.sm}
-        className='text-center'
+        className='text-center mx-auto xs:mx-0'
       >
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
@@ -214,6 +213,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         size={SquareButtonSize.sm}
         onClick={() => setClaimState(ClaimState.checking)}
         disabled={isChecking}
+        className='text-center mx-auto xs:mx-0'
       >
         {isChecking ? (
           <>
@@ -227,20 +227,24 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   } else if (claimState === ClaimState.unclaimed && !drawResults.totalValue.isZero()) {
     btnJsx = (
-      <SquareButton size={SquareButtonSize.sm} onClick={() => openModal()}>
+      <SquareButton
+        size={SquareButtonSize.sm}
+        onClick={() => openModal()}
+        className='text-center mx-auto xs:mx-0'
+      >
         {t('claimPrizes', 'Claim prizes')}
       </SquareButton>
     )
   } else {
     // TODO: Show 'Prizes claimed' or 'No prizes to claim'
     btnJsx = (
-      <SquareButton size={SquareButtonSize.sm} disabled>
+      <SquareButton size={SquareButtonSize.sm} disabled className='text-center mx-auto xs:mx-0'>
         {t('noPrizesToClaim', 'No prizes to claim')}
       </SquareButton>
     )
   }
 
-  return <div className='flex items-start mt-2 relative z-20'>{btnJsx}</div>
+  return <div className='flex items-start relative'>{btnJsx}</div>
 }
 
 const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />

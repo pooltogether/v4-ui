@@ -76,7 +76,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
     <div
       className={classnames(
         className,
-        'video-container rounded-xl absolute t-0 l-0 r-0 w-full overflow-hidden flex flex-col justify-end'
+        'video-container rounded-xl absolute t-0 l-0 r-0 b-0 w-full overflow-hidden'
       )}
     >
       {/* Rest */}
