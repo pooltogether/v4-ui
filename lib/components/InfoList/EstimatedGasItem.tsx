@@ -71,7 +71,7 @@ interface EstimatedPrizePoolGasItemWithAmountProps extends EstimatedPrizePoolGas
 }
 
 // hard-coded gas used while testing in Wei
-const DEPOSIT_GAS_AMOUNT = BigNumber.from('190128')
+const DEPOSIT_GAS_AMOUNT = BigNumber.from('243724')
 const WITHDRAW_GAS_AMOUNT = BigNumber.from('176702')
 const APPROVE_GAS_AMOUNT = BigNumber.from('11111')
 
