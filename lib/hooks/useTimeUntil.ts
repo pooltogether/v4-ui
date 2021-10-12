@@ -15,7 +15,6 @@ export const useTimeUntil = (_epochTimeSeconds: number = 0) => {
   }>(getTimeBreakdown(secondsLeft))
 
   useEffect(() => {
-    console.log('useTimeUntil useEffect new:', _epochTimeSeconds, 'old:', epochTimeSeconds)
     if (_epochTimeSeconds !== epochTimeSeconds) {
       setEpochTimeSeconds(_epochTimeSeconds)
       const secondsLeft = getInitialSecondsLeft(_epochTimeSeconds)

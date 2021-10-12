@@ -66,8 +66,15 @@ interface NavTabProps extends NavLink {
 const NavTab = (props: NavTabProps) => {
   const { isSelected, i18nKey, href } = props
   const { t } = useTranslation()
+  const router = useRouter()
+
   return (
-    <Link href={href}>
+    <Link
+      href={{
+        pathname: href,
+        query: router.query
+      }}
+    >
       <a
         className={classnames(
           'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-2 sm:py-0 px-3 flex flex-row',

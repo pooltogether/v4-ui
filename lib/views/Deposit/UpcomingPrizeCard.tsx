@@ -9,6 +9,8 @@ import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSele
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/LinkedPrizePool/useDrawBeaconPeriod'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
+import { CountdownString } from 'lib/components/CountdownString'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 const AWARD_DAY = 'Friday'
 
@@ -21,13 +23,16 @@ export const UpcomingPrizeCard = (props) => {
 
   const countdown = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
 
-  const prizeUnformatted = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize
-  const prizePretty = numberWithCommas(prizeUnformatted, {
-    decimals: prizePoolTokens?.token.decimals
-  })
+  const { amountPretty } = roundPrizeAmount(
+    TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize,
+    prizePoolTokens?.token.decimals
+  )
 
-  const amount = formatNumbers(prizePretty)
-  // const amount = prizePretty ? formatNumbers(prizePretty) : weeklyPrizeAmountV3()
+  const { weeks, days, hours, minutes } = countdown
+  const thereIsWeeks = weeks > 0
+  const thereIsDays = thereIsWeeks || days > 0
+  const thereIsHours = thereIsDays || hours > 0
+  const thereIsMinutes = thereIsHours || minutes > 0
 
   return (
     <>
@@ -40,32 +45,40 @@ export const UpcomingPrizeCard = (props) => {
         <div className='border-gradient mx-auto py-4 xs:py-8'>
           <div className='w-2/3 xs:w-1/2 mx-auto leading-none'>
             <h1 className='text-4xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
-              {isFetched ? amount : '--'}
+              {isFetched ? `$${amountPretty}` : '--'}
             </h1>
             <div className='uppercase font-semibold text-default-soft text-xxs xs:text-lg mt-2'>
-              {t?.('inWeeklyPrizes', 'In weekly prizes') || 'In weekly prizes'}
+              {t('inDailyPrizes', 'In daily prizes')}
             </div>
           </div>
-          <div className='uppercase font-semibold text-highlight-6 text-xxs xs:text-lg w-2/3 xs:w-1/2 mx-auto'>
-            {t?.('awardedEveryXDay', {
-              day: AWARD_DAY
-            }) || `Awarded every ${AWARD_DAY}!`}
-          </div>
+
+          {isDrawBeaconPeriodFetched && (
+            <>
+              <div className='uppercase font-semibold text-default-soft text-xxs xs:text-xs mx-auto'>
+                Draw #{drawBeaconPeriod.drawId}
+              </div>
+              <div className='uppercase font-semibold text-highlight-6 text-xxs xs:text-sm w-2/3 xs:w-1/2 mx-auto'>
+                {countdown.secondsLeft === 0 ? (
+                  'Closing soon'
+                ) : (
+                  <>
+                    Closing in
+                    <CountdownString
+                      className='ml-1'
+                      {...countdown}
+                      hideHours={thereIsWeeks}
+                      hideMinutes={thereIsDays}
+                      hideSeconds={thereIsMinutes}
+                    />
+                  </>
+                )}
+              </div>
+            </>
+          )}
+
           <ViewPrizeBreakdownTrigger />
         </div>
       </div>
-      {isDrawBeaconPeriodFetched && countdown.secondsLeft === 0 && (
-        <span>Eligibility for draw #{drawBeaconPeriod.drawId} is ending now</span>
-      )}
-      {isDrawBeaconPeriodFetched && countdown.secondsLeft > 0 && (
-        <div className='flex space-x-2'>
-          <span>Eligibility for draw #{drawBeaconPeriod.drawId} ends in </span>
-          {Boolean(countdown.days) && <span>{countdown.days} days</span>}
-          {Boolean(countdown.hours) && <span>{countdown.hours} hours</span>}
-          {Boolean(countdown.minutes) && <span>{countdown.minutes} minutes</span>}
-          {Boolean(countdown.seconds) && <span>{countdown.seconds} seconds</span>}
-        </div>
-      )}
     </>
   )
 }

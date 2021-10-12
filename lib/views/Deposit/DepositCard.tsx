@@ -162,7 +162,6 @@ export const DepositCard = () => {
     const clientMethod =
       ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    console.log(contractMethod, clientMethod)
     const txId = await sendTx({
       name,
       method: contractMethod,
@@ -325,6 +324,7 @@ interface CompletedDepositProps {
 const CompletedDeposit = (props: CompletedDepositProps) => {
   const { resetState, depositedAmount, tx, token, chainId } = props
   const { t } = useTranslation()
+  const router = useRouter()
 
   return (
     <div className='flex flex-col py-4'>
@@ -360,7 +360,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         {t('depositMore', 'Deposit more')}
       </SquareButton>
       <SquareLink
-        href='/account'
+        href={{ pathname: '/account', query: router.query }}
         Link={Link}
         size={SquareButtonSize.sm}
         theme={SquareButtonTheme.purpleOutline}

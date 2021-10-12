@@ -21,7 +21,6 @@ export const useDrawBeaconPeriod = () => {
   }) => {
     const { endsAtSeconds } = drawBeaconPeriod
     let refetchIntervalMs = sToMs(endsAtSeconds.toNumber()) - Date.now()
-    console.log('onSuccess', refetchIntervalMs, new Date().toLocaleString())
     // Refetch when the period is done
     if (refetchIntervalMs > 0) {
       setRefetchIntervalMs(refetchIntervalMs)
@@ -31,13 +30,7 @@ export const useDrawBeaconPeriod = () => {
     }
   }
 
-  const getDrawBeaconPeriod = async () => {
-    const a = await linkedPrizePool.getDrawBeaconPeriod()
-    console.log('getDrawBeaconPeriod', a, new Date().toLocaleString())
-    return a
-  }
-
-  return useQuery(['useDrawBeaconPeriod'], getDrawBeaconPeriod, {
+  return useQuery(['useDrawBeaconPeriod'], () => linkedPrizePool.getDrawBeaconPeriod(), {
     enabled,
     refetchInterval: refetchIntervalMs,
     onSuccess

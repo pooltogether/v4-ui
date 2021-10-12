@@ -12,6 +12,7 @@ import { numberWithCommas } from '@pooltogether/utilities'
 
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { formatUnits } from '@ethersproject/units'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution
@@ -106,8 +107,7 @@ const PrizeTableRow = (props: PrizeTableRowProps) => {
     return null
   }
 
-  const amount = Math.ceil(Number(formatUnits(prizeForDistributionUnformatted, token.decimals)))
-  const amountPretty = numberWithCommas(amount, { precision: 0 })
+  const { amountPretty } = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals)
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>

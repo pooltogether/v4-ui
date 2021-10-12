@@ -15,6 +15,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { Navigation } from 'lib/components/Navigation'
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
+import { useRouter } from 'next/router'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -22,13 +23,22 @@ export enum ContentPaneState {
   account = 'account'
 }
 
-export const PageHeader = (props) => (
-  <PageHeaderContainer Link={Link} as='/' href='/' className='z-20 sticky top-0 bg-page-header'>
-    <Navigation />
-    <UsersAccount />
-    <Settings />
-  </PageHeaderContainer>
-)
+export const PageHeader = (props) => {
+  const router = useRouter()
+
+  return (
+    <PageHeaderContainer
+      Link={Link}
+      as='/deposit'
+      href='/deposit'
+      className='z-20 sticky top-0 bg-page-header'
+    >
+      <Navigation />
+      <UsersAccount />
+      <Settings />
+    </PageHeaderContainer>
+  )
+}
 
 const Settings = () => {
   const { t } = useTranslation()

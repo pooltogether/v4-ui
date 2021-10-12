@@ -39,7 +39,6 @@ export const useDrawLocks = () => {
 }
 
 const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<DrawLocks> => {
-  console.log('getDrawLocks', new Date().toLocaleString())
   const lockedDraws = await Promise.all(
     prizeDistributors.map((prizeDistributor) => prizeDistributor.getTimelockDrawId())
   )
@@ -60,8 +59,6 @@ const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<Draw
       )
     }
   })
-
-  console.log('drawLocks', drawLocks, new Date().toLocaleString())
 
   return drawLocks
 }

@@ -57,7 +57,6 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
     drawLock?: DrawLock
   }[]
 > => {
-  console.log('getUnclaimedDrawsAndPrizeDistributions', new Date().toLocaleString())
   const drawIds = await prizeDistributor.getValidDrawIds()
   const [drawsAndPrizeDistributions, claimedAmounts, normalizedBalances] = await Promise.all([
     prizeDistributor.getDrawsAndPrizeDistributions(drawIds),

@@ -20,6 +20,8 @@ import { useSignerPrizeDistributor } from 'lib/hooks/Tsunami/PrizeDistributor/us
 import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
+import { formatUnits } from '@ethersproject/units'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
   isOpen: boolean
@@ -128,7 +130,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     )
   }
 
-  const { amountPretty } = getAmountFromBigNumber(drawResults.totalValue, ticket.decimals)
+  const { amountPretty } = roundPrizeAmount(drawResults.totalValue, ticket.decimals)
 
   if (modalState === ModalState.viewPrizes) {
     return (

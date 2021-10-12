@@ -27,6 +27,7 @@ import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
 import { DrawLock } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
+import { CountdownString } from 'lib/components/CountdownString'
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
@@ -186,6 +187,13 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   if (!usersAddress) {
     return null
   } else if (drawLock && countdown.secondsLeft) {
+    const { weeks, days, hours, minutes } = countdown
+
+    const thereIsWeeks = weeks > 0
+    const thereIsDays = thereIsWeeks || days > 0
+    const thereIsHours = thereIsDays || hours > 0
+    const thereIsMinutes = thereIsHours || minutes > 0
+
     btnJsx = (
       <div className='flex flex-col mx-auto xs:mx-0 text-center'>
         <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.sm}>
@@ -193,7 +201,13 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
           {t('checkForPrizes', 'Check for prizes')}
         </SquareButton>
         <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
-          Draw #{draw.drawId} unlocks in <CountdownString countdown={countdown} />
+          Draw #{draw.drawId} unlocks in{' '}
+          <CountdownString
+            {...countdown}
+            hideHours={thereIsWeeks}
+            hideMinutes={thereIsDays}
+            hideSeconds={thereIsMinutes}
+          />
         </div>
       </div>
     )
@@ -269,36 +283,3 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 const LoadingCard = () => (
   <div className='w-full rounded-xl animate-pulse bg-card mb-4 h-48 xs:h-112' />
 )
-
-const CountdownString = (props: {
-  countdown: {
-    secondsLeft: number
-    years: number
-    weeks: number
-    days: number
-    hours: number
-    minutes: number
-    seconds: number
-  }
-}) => {
-  const { countdown } = props
-  const { weeks, days, hours, minutes, seconds } = countdown
-  const { t } = useTranslation()
-  return (
-    <>
-      {Boolean(weeks) && `${weeks} ${t('lowercaseWeek', { count: weeks })} `}
-      {Boolean(days) && `${days} ${t('lowercaseDay', { count: days })} `}
-      {Boolean(hours) && !Boolean(weeks) && `${hours} ${t('lowercaseHour', { count: hours })} `}
-      {Boolean(minutes) &&
-        !Boolean(weeks) &&
-        !Boolean(days) &&
-        `${minutes} ${t('lowercaseMinute', { count: minutes })} `}
-      {Boolean(seconds) &&
-        !Boolean(weeks) &&
-        !Boolean(days) &&
-        !Boolean(hours) &&
-        !Boolean(minutes) &&
-        `${seconds} ${t('lowercaseSecond', { count: seconds })} `}
-    </>
-  )
-}

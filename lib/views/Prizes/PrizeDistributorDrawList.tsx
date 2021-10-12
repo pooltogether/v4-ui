@@ -9,6 +9,7 @@ import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
 import { SquareButtonSize, SquareLink } from '@pooltogether/react-components'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 interface PrizeDistributorDrawListProps {
   prizeDistributor: PrizeDistributor
@@ -29,6 +30,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
     isFetched: isUsersBalancesFetched
   } = useUsersPrizePoolBalances(prizePool)
   const [drawIdsToHideThisSession, setDrawIdsToHideThisSession] = useState([])
+  const router = useRouter()
 
   // Filter out manually hidden draw ids from this session
   const drawsAndPrizeDistributionsToRender = useMemo(
@@ -61,7 +63,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
             <SquareLink
               Link={Link}
               size={SquareButtonSize.sm}
-              href='/deposit'
+              href={{ pathname: '/deposit', query: router.query }}
               className='mb-8 items-center block xs:inline mx-auto w-32'
             >
               Deposit
