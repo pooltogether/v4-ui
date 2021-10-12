@@ -46,7 +46,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           Link={Link}
           href={blockExplorerUrl}
           className='w-full mt-6 text-center'
-          theme={SquareButtonTheme.purple}
+          theme={SquareButtonTheme.tealOutline}
           target='_blank'
         >
           {t('viewReceipt', 'View receipt')}
