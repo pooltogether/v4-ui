@@ -30,7 +30,9 @@ export const TxButtonNetworkGated = (props: TxButtonNetworkGatedProps) => {
         data-for={`${toolTipId}-tooltip`}
         disabled={!isWalletOnProperNetwork || disabled}
         children={
-          isWalletOnProperNetwork ? children : t('connectToNetwork', 'Connect to {{networkName}}')
+          isWalletOnProperNetwork
+            ? children
+            : t('connectToNetwork', 'Connect to {{networkName}}', { networkName })
         }
       />
       {!isWalletOnProperNetwork && (

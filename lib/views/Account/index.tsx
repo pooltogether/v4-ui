@@ -134,17 +134,16 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   return (
     <li className='w-full flex flex-col mb-4 last:mb-0'>
       <Card>
-        <div className='w-full flex flex-row justify-between'>
-          <div>
-            <div className='flex flex-row'>
-              <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
-              <span className='ml-2 xs:text-lg'>
-                {t('depositsOnNetwork', 'Deposits on {{ network }}', {
-                  network: getNetworkNiceNameByChainId(prizePool.chainId)
-                })}
-              </span>
-            </div>
+        <div className='w-full flex flex-col sm:flex-row justify-between mb-3'>
+          <div className='flex flex-row items-center justify-center sm:justify-start'>
+            <NetworkIcon className='my-auto' chainId={prizePool.chainId} />
+            <span className='ml-2 xs:text-sm'>
+              {t('depositsOnNetwork', 'Deposits on {{ network }}', {
+                network: getNetworkNiceNameByChainId(prizePool.chainId)
+              })}
+            </span>
           </div>
+
           <Balance
             prizePool={prizePool}
             isFetched={isFetched}
@@ -153,6 +152,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
             token={prizePoolTokens?.token}
           />
         </div>
+
         <ManageBalanceButtons player={player} prizePool={prizePool} />
         <DelegateTicketsSection
           prizePool={prizePool}
@@ -274,7 +274,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
         <SquareButton
           className='w-full mr-2'
           size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.purple}
+          theme={SquareButtonTheme.purpleOutline}
           onClick={handleWithdrawClick}
         >
           {withdrawTx ? t('withdrawAgain', 'Withdraw again') : t('withdraw')}
@@ -291,7 +291,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
           }}
           className='w-full text-center ml-2'
           size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.teal}
+          theme={SquareButtonTheme.tealOutline}
         >
           {t('deposit')}
         </SquareLink>
@@ -316,30 +316,35 @@ const Balance = (props: BalanceProps) => {
   if (!isFetched) {
     return (
       <BalanceContainer>
-        <ThemedClipSpinner className='ml-auto my-1' />
-        <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
+        <ThemedClipSpinner className='my-1' />
+        <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
       </BalanceContainer>
     )
   } else if (!isWalletConnected) {
     return (
       <BalanceContainer>
-        <span className='ml-auto sm:text-lg font-bold'>--</span>
-        <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
+        <span className='sm:text-lg font-bold'>--</span>
+        <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
       </BalanceContainer>
     )
   }
 
   return (
     <BalanceContainer>
-      <span className='ml-auto sm:text-lg font-bold'>
+      <span className='sm:text-lg font-bold'>
         {balance.amountPretty} {ticket.symbol}
       </span>
-      <BalanceUsdValue className='ml-auto text-accent-1 font-light text-xs' {...props} />
+      <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
     </BalanceContainer>
   )
 }
 
-const BalanceContainer = (props) => <div {...props} className='flex flex-col mb-4' />
+const BalanceContainer = (props) => (
+  <div
+    {...props}
+    className='flex mt-2 sm:mt-0 mb-4 sm:mb-0 items-center justify-center sm:justify-start'
+  />
+)
 
 const BalanceUsdValue = (props: BalanceProps) => {
   const { balance, token, prizePool } = props

@@ -39,24 +39,26 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
 
   return (
     <>
-      <div className={classNames('flex mx-auto', className)}>
-        <span className='text-2xl'>👋</span>
-        <span className='my-auto ml-4 font-bold'>
+      <div className={classNames('flex flex-col mx-auto mt-6 sm:mt-12 text-center', className)}>
+        <span className='text-2xl mx-auto'>👋</span>
+        <span className='my-auto font-bold'>
           {t(
             'toWinPrizesNeedToActivate',
-            'To win prizes with your deposit you first need to activate it:'
+            'To win prizes with your deposit you first need to activate it'
           )}
+          :
+        </span>
+
+        <ActivateTicketsButton
+          className='mt-4 w-1/2 mx-auto'
+          prizePool={prizePool}
+          refetchDelegate={refetchDelegate}
+        />
+
+        <span className='my-auto mt-1 opacity-70'>
+          ({t('thisIsOncePerNetwork', 'This is one-time per network')})
         </span>
       </div>
-      <ActivateTicketsButton
-        className='mt-4'
-        prizePool={prizePool}
-        refetchDelegate={refetchDelegate}
-      />
-
-      <span className='my-auto ml-4 font-bold'>
-        {t('thisIsOncePerNetwork', 'This is one-time per network.')}
-      </span>
     </>
   )
 }
@@ -105,7 +107,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
     <TxButtonNetworkGated
       chainId={prizePool.chainId}
       toolTipId={`activate-deposits-${prizePool?.id()}`}
-      className={classNames('w-full', className)}
+      className={classNames('', className)}
       size={SquareButtonSize.sm}
       onClick={sendDelegateTx}
     >
