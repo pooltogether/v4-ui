@@ -43,3 +43,6 @@ functions-out
 
 # Local Netlify folder
 .netlify
+
+# Sentry
+.sentryclirc

@@ -2,27 +2,22 @@
 # Note: this is passed directly to ethers.js so you'll want to make sure ethers understand the name.
 export NEXT_JS_ENV=
 
-export NEXT_JS_FORTMATIC_API_KEY=
-export NEXT_JS_FORTMATIC_PRODUCTION_API_KEY=
-
-export NEXT_JS_PORTIS_API_KEY=
-
 export NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME=
+
+export NEXT_JS_DOMAIN_NAME=
 
 export NEXT_JS_INFURA_ID=
 export NEXT_JS_THE_GRAPH_API_KEY=
 export NEXT_JS_QUICKNODE_ID=
 
-export NEXT_JS_DOMAIN_NAME=
-
 export NEXT_JS_ETHERSCAN_API_KEY=
-
-export MAGIC_SECRET_KEY=
-export NEXT_JS_MAGIC_PUB_KEY=
 
 export NEXT_JS_LOCIZE_DEV_API_KEY=
 export NEXT_JS_LOCIZE_PROJECT_ID=
 export NEXT_JS_LOCIZE_VERSION=
+
+export NEXT_JS_SENTRY_DSN=
+
 export NEXT_JS_FATHOM_SITE_ID=
 
 # CloudFlare KV - Used by lambda functions
