@@ -31,12 +31,6 @@
   border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
 }
 
-.video-container video {
-  /* object-fit: cover;
-  top: 0;
-  left: 0; */
-}
-
 .draw-card-container {
   @apply w-full;
 }

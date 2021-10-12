@@ -186,7 +186,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         target='_blank'
         href={url}
         theme={SquareButtonTheme.teal}
-        size={SquareButtonSize.sm}
+        size={SquareButtonSize.md}
         className='text-center mx-auto xs:mx-0'
       >
         <ThemedClipSpinner className='mr-2' size={12} />
@@ -200,7 +200,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         target='_blank'
         href={url}
         theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.sm}
+        size={SquareButtonSize.md}
         className='text-center mx-auto xs:mx-0'
       >
         {t('viewReceipt', 'View receipt')}
@@ -210,7 +210,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     const isChecking = claimState === ClaimState.checking
     btnJsx = (
       <SquareButton
-        size={SquareButtonSize.sm}
+        size={SquareButtonSize.md}
         onClick={() => setClaimState(ClaimState.checking)}
         disabled={isChecking}
         className='text-center mx-auto xs:mx-0'
@@ -229,7 +229,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     btnJsx = (
       <SquareButton
         theme={SquareButtonTheme.rainbow}
-        size={SquareButtonSize.sm}
+        size={SquareButtonSize.md}
         onClick={() => openModal()}
         className='text-center mx-auto xs:mx-0'
       >
@@ -239,7 +239,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   } else {
     // TODO: Show 'Prizes claimed' or 'No prizes to claim'
     btnJsx = (
-      <SquareButton size={SquareButtonSize.sm} disabled className='text-center mx-auto xs:mx-0'>
+      <SquareButton size={SquareButtonSize.md} disabled className='text-center mx-auto xs:mx-0'>
         {t('noPrizesToClaim', 'No prizes to claim')}
       </SquareButton>
     )
