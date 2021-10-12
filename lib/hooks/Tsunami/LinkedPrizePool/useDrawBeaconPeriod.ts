@@ -1,9 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { sToMs } from '@pooltogether/utilities'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
-import { useState } from 'react'
+import { atom, useAtom } from 'jotai'
 import { useQuery } from 'react-query'
 import { useLinkedPrizePool } from './useLinkedPrizePool'
+
+// Refetch every 5 minutes (the time for the defender)
+const refetchIntervalMsAtom = atom<number>(sToMs(60 * 5))
 
 /**
  * // TODO: Rather than polling could we just listen for an event then trigger a refetch?
@@ -11,10 +13,8 @@ import { useLinkedPrizePool } from './useLinkedPrizePool'
  */
 export const useDrawBeaconPeriod = () => {
   const { data: linkedPrizePool, isFetched } = useLinkedPrizePool()
-  const [refetchIntervalMs, setRefetchIntervalMs] = useState<number | false>(false)
+  const [refetchIntervalMs, setRefetchIntervalMs] = useAtom(refetchIntervalMsAtom)
   const enabled = isFetched
-
-  console.log(refetchIntervalMs)
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber
@@ -23,24 +23,23 @@ export const useDrawBeaconPeriod = () => {
   }) => {
     const { endsAtSeconds } = drawBeaconPeriod
     let refetchIntervalMs = sToMs(endsAtSeconds.toNumber()) - Date.now()
-    console.log('onSuccess', refetchIntervalMs)
+    console.log('onSuccess', refetchIntervalMs, new Date().toLocaleString())
     // Refetch when the period is done
     if (refetchIntervalMs > 0) {
       setRefetchIntervalMs(refetchIntervalMs)
     } else {
-      // Otherwise, refetch every 15 seconds
-      setRefetchIntervalMs(sToMs(15))
+      // Otherwise, refetch every 5 minutes (the time for the defender)
+      setRefetchIntervalMs(sToMs(60 * 5))
     }
   }
 
   const getDrawBeaconPeriod = async () => {
     const a = await linkedPrizePool.getDrawBeaconPeriod()
-    console.log('getDrawBeaconPeriod', a)
+    console.log('getDrawBeaconPeriod', a, new Date().toLocaleString())
     return a
   }
 
   return useQuery(['useDrawBeaconPeriod'], getDrawBeaconPeriod, {
-    ...NO_REFETCH,
     enabled,
     refetchInterval: refetchIntervalMs,
     onSuccess

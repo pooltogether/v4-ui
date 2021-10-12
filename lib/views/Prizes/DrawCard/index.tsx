@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
-import { Token, Transaction, useTimeCountdown, useTransaction } from '@pooltogether/hooks'
+import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   Card,
@@ -9,7 +9,8 @@ import {
   SquareButton,
   SquareButtonTheme,
   SquareButtonSize,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  Tooltip
 } from '@pooltogether/react-components'
 import { PrizeDistributor, Draw, PrizeDistribution, DrawResults } from '@pooltogether/v4-js-client'
 
@@ -26,6 +27,24 @@ import { StoredDrawStates } from 'lib/utils/drawResultsStorage'
 import { DrawDetails } from './DrawDetails'
 import { DrawLock } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
+import { getPrettyDate } from 'lib/utils/date'
+
+const useDataFetch = (prizeDistributor: PrizeDistributor) => {
+  useEffect(() => {
+    console.log('SET EVENT LISTENERS')
+    prizeDistributor.drawBufferContract.on('DrawSet', (...args) => {
+      console.log('EVENT', 'DrawSet', args)
+    })
+    prizeDistributor.prizeDistributionsBufferContract.on('PrizeDistributionSet', (...args) => {
+      console.log('EVENT', 'PrizeDistributionSet', args)
+    })
+
+    return () => {
+      prizeDistributor.drawBufferContract.removeAllListeners('DrawSet')
+      prizeDistributor.prizeDistributionsBufferContract.removeAllListeners('PrizeDistributionSet')
+    }
+  }, [prizeDistributor])
+}
 
 interface DrawCardProps {
   prizeDistribution: PrizeDistribution
@@ -42,10 +61,12 @@ export interface DrawPropsWithDetails extends DrawCardProps {
 }
 
 export const DrawCard = (props: DrawCardProps) => {
-  const { prizeDistribution } = props
+  const { prizeDistribution, prizeDistributor } = props
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
+
+  useDataFetch(prizeDistributor)
 
   if (!isPrizePoolTokensFetched) {
     return <LoadingCard />
@@ -169,13 +190,10 @@ interface DrawClaimButtonProps extends DrawPropsWithDetails {
 }
 
 const DrawClaimButton = (props: DrawClaimButtonProps) => {
-  const { claimState, setClaimState, openModal, drawResults, claimTx, drawLock } = props
+  const { claimState, setClaimState, openModal, drawResults, claimTx, drawLock, draw } = props
   const usersAddress = useUsersAddress()
 
   const countdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
-  if (drawLock) {
-    console.log(countdown)
-  }
 
   const { t } = useTranslation()
 
@@ -188,7 +206,17 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   if (!usersAddress) {
     return null
   } else if (drawLock && countdown.secondsLeft) {
-    btnJsx = <div>Not redy</div>
+    btnJsx = (
+      <div className='flex flex-col'>
+        <SquareButton disabled className='flex'>
+          <FeatherIcon icon='lock' className='w-5 h-5 my-auto mr-2' />
+          {t('checkForPrizes', 'Check for prizes')}
+        </SquareButton>
+        <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
+          Draw #{draw.drawId} unlocks in <CountdownString countdown={countdown} />
+        </div>
+      </div>
+    )
   } else if (claimTx?.inFlight) {
     btnJsx = (
       <SquareLink
@@ -258,6 +286,43 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   return <div className='flex items-start relative'>{btnJsx}</div>
 }
 
+<<<<<<< HEAD
 const LoadingCard = () => (
   <div className='w-full rounded-xl animate-pulse bg-card mb-4 h-48 xs:h-112' />
 )
+=======
+const LoadingCard = () => <div className='w-full rounded-xl animate-pulse bg-card h-112' />
+
+const CountdownString = (props: {
+  countdown: {
+    secondsLeft: number
+    years: number
+    weeks: number
+    days: number
+    hours: number
+    minutes: number
+    seconds: number
+  }
+}) => {
+  const { countdown } = props
+  const { weeks, days, hours, minutes, seconds } = countdown
+  const { t } = useTranslation()
+  return (
+    <>
+      {Boolean(weeks) && `${weeks} ${t('lowercaseWeek', { count: weeks })} `}
+      {Boolean(days) && `${days} ${t('lowercaseDay', { count: days })} `}
+      {Boolean(hours) && !Boolean(weeks) && `${hours} ${t('lowercaseHour', { count: hours })} `}
+      {Boolean(minutes) &&
+        !Boolean(weeks) &&
+        !Boolean(days) &&
+        `${minutes} ${t('lowercaseMinute', { count: minutes })} `}
+      {Boolean(seconds) &&
+        !Boolean(weeks) &&
+        !Boolean(days) &&
+        !Boolean(hours) &&
+        !Boolean(minutes) &&
+        `${seconds} ${t('lowercaseSecond', { count: seconds })} `}
+    </>
+  )
+}
+>>>>>>> a208051 (refetching draws)

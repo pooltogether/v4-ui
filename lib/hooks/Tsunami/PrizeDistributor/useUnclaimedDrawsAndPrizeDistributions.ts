@@ -21,6 +21,8 @@ import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
  * - stored draw results that have been claimed
  * - user had 0 average balance during the draw period
  * Appends draws with timelock data if available
+ * Refetches when the draw beacon period changes
+ * - A new draw is pushed onto the drawBuffer at this time
  * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
@@ -40,7 +42,6 @@ export const useUnclaimedDrawsAndPrizeDistributions = (prizeDistributor: PrizeDi
     ],
     async () => getUnclaimedDrawsAndPrizeDistributions(usersAddress, prizeDistributor, drawLocks),
     {
-      ...NO_REFETCH,
       enabled
     }
   )
@@ -58,6 +59,7 @@ const getUnclaimedDrawsAndPrizeDistributions = async (
     drawLock?: DrawLock
   }[]
 > => {
+  console.log('getUnclaimedDrawsAndPrizeDistributions', new Date().toLocaleString())
   const drawIds = await prizeDistributor.getValidDrawIds()
   const [
     drawsAndPrizeDistributions,

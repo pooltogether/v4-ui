@@ -22,7 +22,6 @@ export const UpcomingPrizeCard = (props) => {
   const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
 
   const countdown = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
-  console.log('UpcomingPrizeCard', drawBeaconPeriod, countdown)
 
   const prizeUnformatted = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize
   const prizePretty = numberWithCommas(prizeUnformatted, {
@@ -60,7 +59,7 @@ export const UpcomingPrizeCard = (props) => {
       {countdown.secondsLeft === 0 && 'Eligibility for tomorrows draw is ending now'}
       {countdown.secondsLeft > 0 && (
         <div className='flex space-x-2'>
-          <span>Eligibility for tomorrows draw ends in </span>
+          <span>Eligibility for the next draw ends in </span>
           {Boolean(countdown.days) && <span>{countdown.days} days</span>}
           {Boolean(countdown.hours) && <span>{countdown.hours} hours</span>}
           {Boolean(countdown.minutes) && <span>{countdown.minutes} minutes</span>}

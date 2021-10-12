@@ -2,6 +2,7 @@ import { PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery } from 'react-query'
+import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
 export interface DrawLock {
@@ -20,11 +21,16 @@ export interface DrawLocks {
  */
 export const useDrawLocks = () => {
   const { data: prizeDistributors, isFetched } = usePrizeDistributors()
-  const enabled = Boolean(prizeDistributors) && isFetched
-  return useQuery(['useDrawUnlockTime'], () => getDrawLocks(prizeDistributors), {
-    ...NO_REFETCH,
-    enabled
-  })
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const enabled = Boolean(prizeDistributors) && isFetched && isDrawBeaconFetched
+  return useQuery(
+    ['useDrawUnlockTime', drawBeaconPeriod?.startedAtSeconds.toString()],
+    () => getDrawLocks(prizeDistributors),
+    {
+      ...NO_REFETCH,
+      enabled
+    }
+  )
 }
 
 const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<DrawLocks> => {
