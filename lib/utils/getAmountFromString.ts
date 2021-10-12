@@ -8,6 +8,12 @@ const EMPTY_AMOUNT: Amount = {
   amountPretty: ''
 }
 
+/**
+ *
+ * @param amount formatted amount
+ * @param decimals
+ * @returns
+ */
 export const getAmountFromString = (amount: string, decimals: string): Amount => {
   try {
     if (!amount || amount === undefined) {

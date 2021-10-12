@@ -12,9 +12,10 @@ import {
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import { ModalWithStyles } from 'lib/components/Modal/ModalWithStyles'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 export interface DrawDetailsProps {
-  prizeDistribution: PrizeDistribution
+  prizeDistribution?: PrizeDistribution
   draw: Draw
   token: Token
 }
@@ -39,19 +40,28 @@ export const DrawDetails = (props: DrawDetailsProps) => {
 }
 
 export const PrizeDistributorTotal = (props: {
-  prizeDistribution: PrizeDistribution
   token: Token
+  prizeDistribution?: PrizeDistribution
   className?: string
   numberClassName?: string
+  pendingClassName?: string
   textClassName?: string
 }) => {
   const { t } = useTranslation()
+  const { prizeDistribution, token } = props
+
+  if (!prizeDistribution)
+    return (
+      <div className={props.className}>
+        <span className={props.pendingClassName}>Propagating</span>
+      </div>
+    )
+
+  const { amountPretty } = roundPrizeAmount(prizeDistribution.prize, token.decimals)
 
   return (
     <div className={props.className}>
-      <span className={props.numberClassName}>
-        ${numberWithCommas(props.prizeDistribution.prize, { decimals: props.token.decimals })}
-      </span>
+      <span className={props.numberClassName}>${amountPretty}</span>
       <span className={props.textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
   )
@@ -59,6 +69,7 @@ export const PrizeDistributorTotal = (props: {
 
 PrizeDistributorTotal.defaultProps = {
   numberClassName: 'font-bold text-xl text-white',
+  pendingClassName: 'font-bold text-white opacity-70',
   // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
   // numberClassName: 'font-bold text-xl text-flashy',
   textClassName: 'font-bold text-white text-xxs ml-2'
@@ -92,20 +103,28 @@ PrizeDistributorTotal.defaultProps = {
 // }
 
 export const ViewPrizeTiersTrigger = (props: {
-  prizeDistribution: PrizeDistribution
   token: Token
+  prizeDistribution?: PrizeDistribution
   className?: string
 }) => {
+  const { prizeDistribution } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
+
+  if (!prizeDistribution) return null
 
   return (
     <>
       <button className={props.className} onClick={() => setIsOpen(true)}>
         {t('viewPrizeTiers', 'View prize tiers')}
       </button>
-      <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
+      <PrizeBreakdownModal
+        {...props}
+        prizeDistribution={prizeDistribution}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+      />
     </>
   )
 }

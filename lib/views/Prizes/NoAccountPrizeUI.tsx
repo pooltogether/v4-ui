@@ -7,9 +7,8 @@ import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
-import { useClaimableDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useClaimableDrawsAndPrizeDistributions'
+import { useValidDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useValidDrawsAndPrizeDistributions'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useNextDrawDate } from 'lib/hooks/Tsunami/useNextDrawDate'
 import {
   DrawDate,
   DrawDetailsProps,
@@ -25,8 +24,6 @@ interface NoAccountPrizeUIProps {
 
 export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
   const { prizeDistributor, prizePool } = props
-
-  const nextDrawDate = useNextDrawDate()
 
   return (
     <PagePadding className='flex flex-col space-y-4'>
@@ -45,7 +42,7 @@ const PastPrizeList = (props: NoAccountPrizeUIProps) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useClaimableDrawsAndPrizeDistributions(prizeDistributor)
+    useValidDrawsAndPrizeDistributions(prizeDistributor)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
     return (
