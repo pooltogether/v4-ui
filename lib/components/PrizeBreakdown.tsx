@@ -36,8 +36,8 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
       <div className={'flex flex-col'}>
         <div className='flex justify-between space-x-2 sm:space-x-4'>
           <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
-          <PrizeTableHeader>{t('prizes', 'Prizes')}</PrizeTableHeader>
-          <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader>
+          <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
+          {/* <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader> */}
         </div>
         <div className='flex flex-col space-y-2'>
           {!isFetched ? (
@@ -111,7 +111,7 @@ const PrizeTableRow = (props: PrizeTableRowProps) => {
         ${numberWithCommas(prizeForDistributionUnformatted, { decimals: token.decimals })}
       </PrizeTableCell>
       <PrizeTableCell index={index}>{numberOfWinners}</PrizeTableCell>
-      <PrizeTableCell index={index}>--</PrizeTableCell>
+      {/* <PrizeTableCell index={index}>--</PrizeTableCell> */}
     </div>
   )
 }
