@@ -2356,10 +2356,10 @@
     "@pooltogether/draw-calculator-js" "^1.0.0-beta.27"
     "@pooltogether/etherplex" "^1.1.2"
 
-"@pooltogether/v4-pool-data@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-0.5.0.tgz#ec053c8413ffc50cf55ee9ce5733c8b7e373713e"
-  integrity sha512-wlZUY2Y9cnyEi/VP4HiC740KWUuh0dYW76Ett0r6S25O7nmg1guDb5zKJQbGIItNahbZ74i5WINhJo0lR10JnA==
+"@pooltogether/v4-pool-data@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-0.6.0.tgz#1c7ab1fb507dc1c2bf7d4209d2dbfed4705bcd9c"
+  integrity sha512-kEFOnQKCmz+fxE/3+VxUgpSv857SCDTNDJpWOHIVsMF5DYL03oPodAGq/kq/llXWfRt8F7sy1r2bZbbnHyDkWQ==
 
 "@pooltogether/yield-source-interface@^1.0.1":
   version "1.0.2"

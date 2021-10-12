@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions'
-import { testnets } from '@pooltogether/v4-pool-data'
+import { testnet } from '@pooltogether/v4-pool-data'
 import { ethers } from 'ethers'
 
 import { initializePrizeDistributors } from '@pooltogether/v4-js-client'
@@ -111,7 +111,7 @@ export const getProvider = (chainId) => {
 // Contract List
 
 const getContractList = (chainId) => {
-  return testnets
+  return testnet
 }
 
 // Cloudflare KV
