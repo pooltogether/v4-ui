@@ -6,7 +6,8 @@ export const InfoBoxContainer = (props) => (
     {...props}
     className={classnames(
       props.className,
-      'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'
+      props.bgClassName ? props.bgClassName : 'bg-light-purple-10',
+      'w-full px-4 py-2 rounded-lg text-accent-1 transition'
     )}
   />
 )

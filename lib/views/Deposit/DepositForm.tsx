@@ -248,7 +248,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     ))
 
     return (
-      <InfoBoxContainer className={className}>
+      <InfoBoxContainer bgClassName='bg-pt-purple-dark' className={className}>
         <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
       </InfoBoxContainer>
     )

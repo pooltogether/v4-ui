@@ -112,7 +112,7 @@ export const ViewPrizeTiersTrigger = (props: {
 
 ViewPrizeTiersTrigger.defaultProps = {
   className:
-    'uppercase font-bold text-white text-xxs transition hover:text-green leading-none tracking-wide'
+    'uppercase font-bold text-inverse text-xxs transition hover:text-green leading-none tracking-wide'
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (

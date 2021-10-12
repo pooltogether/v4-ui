@@ -1,9 +1,11 @@
+import classnames from 'classnames'
+import ordinal from 'ordinal'
+import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { PrizeAwardable } from '@pooltogether/v4-js-client'
-import classnames from 'classnames'
+
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { sortByBigNumber } from 'lib/utils/sortByBigNumber'
-import ordinal from 'ordinal'
 
 interface PrizeListProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
@@ -39,6 +41,8 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { prize, ticket, token } = props
   const { amount: amountUnformatted, distributionIndex } = prize
 
+  const { t } = useTranslation()
+
   const { amountPretty } = getAmountFromBigNumber(amountUnformatted, ticket.decimals)
 
   return (
@@ -57,13 +61,17 @@ const PrizeRow = (props: PrizeRowProps) => {
         )}
       >
         <span>{`${amountPretty} ${token.symbol}`}</span>
-        <span>{`${ordinal(distributionIndex + 1)} Prize${getEmoji(distributionIndex)}`}</span>
+        <span>{`${ordinal(distributionIndex + 1)} ${t('tier', 'Tier')}${getEmoji(
+          distributionIndex
+        )}`}</span>
       </div>
     </li>
   )
 }
 
 const getEmoji = (distributionIndex) => {
+  return ' 🏆'
+
   if (distributionIndex === 0) {
     return ' 🏆'
   } else if (distributionIndex === 1) {
