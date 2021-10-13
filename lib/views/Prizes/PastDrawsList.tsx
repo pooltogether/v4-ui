@@ -124,10 +124,6 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = storedDrawResult && !storedDrawResult.drawResults.totalValue.isZero()
 
-  if (draw.drawId === 51) {
-    console.log({ storedDrawResult, amountUnformatted, userHasClaimed, userHasAmountToClaim })
-  }
-
   if (drawLockCountdown?.secondsLeft) {
     const { weeks, days, hours, minutes } = drawLockCountdown
     const thereIsWeeks = weeks > 0
