@@ -39,6 +39,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
     drawResults,
     prizeDistributor,
+    prizeDistribution,
     token,
     ticket,
     isOpen,
@@ -141,7 +142,12 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
             <span className='text-xl ml-2'>{token.symbol}</span>
           </div>
 
-          <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
+          <PrizeList
+            prizes={drawResults.prizes}
+            ticket={ticket}
+            token={token}
+            prizeDistribution={prizeDistribution}
+          />
 
           <SquareButton
             className='mt-8 w-full'
