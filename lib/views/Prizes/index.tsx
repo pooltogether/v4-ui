@@ -7,7 +7,7 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { PrizeDistributorDrawList } from './PrizeDistributorDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
-import { HistoricPrizesList } from './HistoricPrizesList'
+import { PastDrawsList } from './PastDrawsList'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -45,7 +45,7 @@ export const PrizesUI = () => {
       <SelectedNetworkToggleWithPadding />
       <PrizeDistributorDrawList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       <PagePadding>
-        <HistoricPrizesList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
+        <PastDrawsList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       </PagePadding>
     </>
   )

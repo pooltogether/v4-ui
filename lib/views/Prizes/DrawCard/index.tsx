@@ -174,7 +174,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
   const { claimState, setClaimState, openModal, drawResults, claimTx, drawLock, draw } = props
   const usersAddress = useUsersAddress()
 
-  const countdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
+  const drawLockCountdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
   const { t } = useTranslation()
 
@@ -186,8 +186,8 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
   if (!usersAddress) {
     return null
-  } else if (drawLock && countdown.secondsLeft) {
-    const { weeks, days, hours, minutes } = countdown
+  } else if (drawLock && drawLockCountdown.secondsLeft) {
+    const { weeks, days, hours, minutes } = drawLockCountdown
 
     const thereIsWeeks = weeks > 0
     const thereIsDays = thereIsWeeks || days > 0
@@ -196,14 +196,14 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
     btnJsx = (
       <div className='flex flex-col mx-auto xs:mx-0 text-center'>
-        <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.sm}>
+        <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.md}>
           <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
           {t('checkForPrizes', 'Check for prizes')}
         </SquareButton>
         <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
           Draw #{draw.drawId} unlocks in{' '}
           <CountdownString
-            {...countdown}
+            {...drawLockCountdown}
             hideHours={thereIsWeeks}
             hideMinutes={thereIsDays}
             hideSeconds={thereIsMinutes}

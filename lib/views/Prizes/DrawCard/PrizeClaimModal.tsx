@@ -15,13 +15,11 @@ import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useSignerPrizeDistributor } from 'lib/hooks/Tsunami/PrizeDistributor/useSignerPrizeDistributor'
 import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
-import { formatUnits } from '@ethersproject/units'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
+import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
 
 interface PrizeClaimModalProps extends DrawPropsWithDetails {
   isOpen: boolean
@@ -58,7 +56,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const usersAddress = useUsersAddress()
   const [modalState, setModalState] = useState<ModalState>(ModalState.viewPrizes)
 
-  const { refetch: refetchClaimedAmounts } = usePastDrawsForUser(prizeDistributor, token)
+  const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(prizeDistributor, token)
 
   const onSuccessfulClaim = (tx: Transaction) => {
     updateStoredDrawResultState(
