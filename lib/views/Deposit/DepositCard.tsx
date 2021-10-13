@@ -12,7 +12,7 @@ import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
+import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
@@ -211,7 +211,7 @@ export const DepositCard = () => {
                   symbol={token.symbol}
                 />{' '}
                 {t('on', 'On')}
-                {/* <SelectedNetworkDropdown className='mx-2' /> */}
+                <SelectedNetworkDropdown className='mx-2' />
               </div>
               <DepositForm
                 form={form}
