@@ -199,6 +199,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         <SquareButton
           disabled
           className='w-max mx-auto xs:mx-0 text-center'
+          theme={SquareButtonTheme.tealOutline}
           size={SquareButtonSize.md}
           style={{ minWidth: 230 }}
         >

@@ -78,3 +78,13 @@
 .theme-light .bg-tsunami-card-bridge {
   background: white;
 }
+
+.selected-network-dropdown {
+  max-width: 144px;
+}
+
+@screen xs {
+  .selected-network-dropdown {
+    max-width: 152px;
+  }
+}

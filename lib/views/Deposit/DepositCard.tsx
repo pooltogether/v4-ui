@@ -205,7 +205,7 @@ export const DepositCard = () => {
             />
           ) : (
             <>
-              <div className='font-semibold font-inter flex items-center justify-center text-lg mb-6 sm:mb-8'>
+              <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-6 sm:mb-8'>
                 {t('deposit', 'Deposit')}
                 <TokenSymbolAndIcon
                   className='mr-1 ml-2'
@@ -215,7 +215,7 @@ export const DepositCard = () => {
                   symbol={token.symbol}
                 />{' '}
                 {t('on', 'On')}
-                <SelectedNetworkDropdown className='mx-2' />
+                <SelectedNetworkDropdown className='network-dropdown ml-1 xs:ml-2' />
               </div>
               <DepositForm
                 form={form}
