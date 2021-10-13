@@ -190,7 +190,11 @@ export const DepositCard = () => {
   return (
     <>
       <div>
-        <Card className='shadow-xs relative' roundedClassName='rounded-t-xl'>
+        <Card
+          paddingClassName='px-4 xs:px-8 sm:px-12 py-8 xs:py-6 sm:py-10'
+          className='shadow-xs relative'
+          roundedClassName='rounded-t-xl'
+        >
           {completedDepositTx ? (
             <CompletedDeposit
               chainId={prizePool.chainId}
@@ -201,7 +205,7 @@ export const DepositCard = () => {
             />
           ) : (
             <>
-              <div className='font-semibold font-inter flex items-center justify-center text-lg mb-4'>
+              <div className='font-semibold font-inter flex items-center justify-center text-lg mb-6 sm:mb-8'>
                 {t('deposit', 'Deposit')}
                 <TokenSymbolAndIcon
                   className='mr-1 ml-2'

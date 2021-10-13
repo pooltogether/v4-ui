@@ -1,7 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
 import { DropdownList, NetworkIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
+import { NETWORK, getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
@@ -12,19 +13,19 @@ interface SelectedNetworkDropdownProps {
 }
 
 const NETWORKS = {
-  '1': {
+  [NETWORK.mainnet]: {
     name: 'Mainnet',
     nativeName: 'Mainnet'
   },
-  '4': {
+  [NETWORK.rinkeby]: {
     name: 'Rinkeby',
     nativeName: 'Rinkeby'
   },
-  '137': {
+  [NETWORK.polygon]: {
     name: 'Polygon',
     nativeName: 'Polygon'
   },
-  '80001': {
+  [NETWORK.mumbai]: {
     name: 'Mumbai',
     nativeName: 'Mumbai'
   }
@@ -33,85 +34,45 @@ const NETWORKS = {
 export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => {
   const { className } = props
 
-  console.log({ DEFAULT_NETWORKS })
-  console.log({ SUPPORTED_NETWORKS })
+  const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
 
-  const supportedNetworks = useSupportedNetworks()
+  const supportedNetworks = SUPPORTED_NETWORKS[appEnv]
+  // const defaultNetwork = DEFAULT_NETWORKS[appEnv]
+
+  // const supportedNetworks = useSupportedNetworks()
   console.log({ supportedNetworks })
   const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
 
-  const formatValue = (key) => {
-    console.log({ key })
-    const network = NETWORKS[key.toString()]
-
-    return (
-      <>
-        {key.toString().toUpperCase()} -{' '}
-        <span className='capitalize'>{network.nativeName.split(',')[0]}</span> (
-        {network.name.split(';')[0]})
-      </>
-    )
+  const formatValue = (chainId) => {
+    return <span className='capitalize'>{getNetworkNiceNameByChainId(chainId)}</span>
   }
 
-  const changeNetwork = (a, b) => {
-    console.log('changeNetwork')
-    console.log(a, b)
+  const changeNetwork = (value) => {
+    setSelectedNetwork(value)
   }
+
+  // <NetworkIcon chainId={chainId} className='my-auto mr-1' sizeClassName='w-4 h-4' />
+  // <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
+  //   {getNetworkNiceNameByChainId(chainId)}
+  // </span>
 
   return (
     <DropdownList
       id='selected-network-dropdown'
-      className={classnames('text-xxs sm:text-sm', className)}
+      className={classnames(
+        className,
+        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
+        'text-xs hover:text-white active:bg-highlight-9'
+        // { 'bg-highlight-9 text-white': isSelected },
+        // { 'hover:bg-tertiary': !isSelected }
+      )}
       label={''}
       formatValue={formatValue}
       onValueSet={changeNetwork}
       current={selectedChainId}
-      values={NETWORKS}
+      values={supportedNetworks}
     />
   )
-
-  // return (
-  //   <div
-  //     className={classnames(
-  //       className,
-  //       'flex flex-row rounded-xl bg-pt-purple-bright p-1 max-w-max'
-  //     )}
-  //   >
-  //     {supportedNetworks.map((chainId) => (
-  //       <NetworkToggle
-  //         key={chainId}
-  //         chainId={chainId}
-  //         isSelected={chainId === selectedChainId}
-  //         setSelectedNetwork={setSelectedNetwork}
-  //       />
-  //     ))}
-  //   </div>
-  // )
 }
 
-interface NetworkToggleProps {
-  chainId: number
-  isSelected: boolean
-  setSelectedNetwork: (chainId: number) => void
-}
-
-const NetworkToggle = (props: NetworkToggleProps) => {
-  const { chainId, setSelectedNetwork, isSelected } = props
-
-  return (
-    <button
-      className={classnames(
-        'transition mx-1 first:ml-0 last:mr-0 rounded-lg px-3 flex flex-row',
-        'text-xs hover:text-white active:bg-highlight-9',
-        { 'bg-highlight-9 text-white': isSelected },
-        { 'hover:bg-tertiary': !isSelected }
-      )}
-      onClick={() => setSelectedNetwork(chainId)}
-    >
-      <NetworkIcon chainId={chainId} className='my-auto mr-1' sizeClassName='w-4 h-4' />
-      <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
-        {getNetworkNiceNameByChainId(chainId)}
-      </span>
-    </button>
-  )
-}
+// classnames('text-xxs sm:text-sm', className)
