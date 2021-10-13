@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-import { ReactQueryDevtools } from 'react-query-devtools'
+// import { ReactQueryDevtools } from 'react-query-devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
+import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
 import {
   useInitCookieOptions,
   useInitInfuraId,
@@ -139,7 +140,8 @@ const InitPoolTogetherHooks = ({ children }) => {
     infuraId: process.env.NEXT_JS_INFURA_ID,
     fortmaticKey: process.env.NEXT_JS_FORTMATIC_API_KEY,
     portisKey: process.env.NEXT_JS_PORTIS_API_KEY,
-    defaultNetworkName: process.env.NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME
+    defaultNetworkName: process.env.NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME,
+    customWalletsConfig: CUSTOM_WALLETS_CONFIG
   })
   return children
 }
