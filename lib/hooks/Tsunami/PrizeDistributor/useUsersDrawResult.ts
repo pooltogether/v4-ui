@@ -42,21 +42,21 @@ const getUsersDrawResult = async (
     return storedResult.drawResults
   }
 
-  console.log('TEST', 'base path', window.location.origin)
-  const url = new URL('/.netlify/functions/users-prizes', window.location.origin)
-  url.searchParams.set('usersAddress', usersAddress)
-  url.searchParams.set('chainId', String(prizeDistributor.chainId))
-  url.searchParams.set('prizeDistributorAddress', prizeDistributor.address)
-  url.searchParams.set('drawId', String(draw.drawId))
+  // console.log('TEST', 'base path', window.location.origin)
+  // const url = new URL('/.netlify/functions/users-prizes', window.location.origin)
+  // url.searchParams.set('usersAddress', usersAddress)
+  // url.searchParams.set('chainId', String(prizeDistributor.chainId))
+  // url.searchParams.set('prizeDistributorAddress', prizeDistributor.address)
+  // url.searchParams.set('drawId', String(draw.drawId))
 
-  console.log('TEST', 'Fetching', url)
-  const response = await fetch(url.toString())
-  console.log('TEST', 'Response', response)
-  let drawResults = await response.json()
-  drawResults = deserializeBigNumbers(drawResults)
-  console.log('TEST', 'Result', drawResults)
+  // console.log('TEST', 'Fetching', url)
+  // const response = await fetch(url.toString())
+  // console.log('TEST', 'Response', response)
+  // let drawResults = await response.json()
+  // drawResults = deserializeBigNumbers(drawResults)
+  // console.log('TEST', 'Result', drawResults)
 
-  // const result = await prizeDistributor.getUsersPrizes(usersAddress, draw)
+  const drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
   // NOTE: Assumes draw is unclaimed.
   setStoredDrawResult(
     usersAddress,
