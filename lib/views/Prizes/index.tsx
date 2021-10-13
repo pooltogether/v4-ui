@@ -32,12 +32,7 @@ export const PrizesUI = () => {
   }
 
   if (!usersAddress) {
-    return (
-      <>
-        <SelectedNetworkToggleWithPadding />
-        <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
-      </>
-    )
+    return <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
   }
 
   return (
