@@ -46,11 +46,19 @@
   height: 94vw;
 }
 
+/* prob don't want both the @media query and the @screen here. Figure this out later ... */
 @media screen and (min-width: 576px) {
   @screen xs {
     .draw-card {
       height: 436px;
     }
+  }
+}
+
+@media screen and (max-height: 600px) {
+  .main-nav {
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
   }
 }
 

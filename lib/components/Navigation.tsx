@@ -42,6 +42,7 @@ export const Navigation = (props) => {
       <nav
         className={classnames(
           className,
+          'main-nav',
           'mx-auto p-1 py-4 sm:py-1',
           'flex flex-row justify-center font-inter'
         )}

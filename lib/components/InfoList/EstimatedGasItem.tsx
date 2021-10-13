@@ -38,10 +38,16 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 
   if (isFetched && totalGasWei) {
     valueJsx = (
-      <>
-        <span className='opacity-60'> (${numberWithCommas(totalGasUsd)})</span>{' '}
-        {numberWithCommas(totalGasWei)} {nativeCurrency}
-      </>
+      <Tooltip
+        id={`tooltip-est-gas-costs-wei-${txName}`}
+        tip={
+          <>
+            {numberWithCommas(totalGasWei)} {nativeCurrency}
+          </>
+        }
+      >
+        <span className='text-white'>${numberWithCommas(totalGasUsd)}</span>
+      </Tooltip>
     )
   }
 
@@ -60,7 +66,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
     )
   }
 
-  return <InfoListItem dimValue label={label} value={valueJsx} />
+  return <InfoListItem label={label} value={valueJsx} />
 }
 
 interface EstimatedPrizePoolGasItemProps {
