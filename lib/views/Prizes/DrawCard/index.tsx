@@ -196,9 +196,16 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
 
     btnJsx = (
       <div className='flex flex-col mx-auto xs:mx-0 text-center'>
-        <SquareButton disabled className='flex w-max mx-auto xs:mx-0' size={SquareButtonSize.md}>
-          <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-          {t('checkForPrizes', 'Check for prizes')}
+        <SquareButton
+          disabled
+          className='w-max mx-auto xs:mx-0 text-center'
+          size={SquareButtonSize.md}
+          style={{ minWidth: 230 }}
+        >
+          <span className='flex items-center justify-center'>
+            <FeatherIcon icon='lock' className='w-4 h-4 mr-2' />
+            {t('checkForPrizes', 'Check for prizes')}
+          </span>
         </SquareButton>
         <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
           Draw #{draw.drawId} unlocks in{' '}
@@ -246,6 +253,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         onClick={() => setClaimState(ClaimState.checking)}
         disabled={isChecking}
         className='text-center mx-auto xs:mx-0'
+        style={{ minWidth: 230 }}
       >
         {isChecking ? (
           <>
@@ -264,6 +272,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
         size={SquareButtonSize.md}
         onClick={() => openModal()}
         className='text-center mx-auto xs:mx-0'
+        style={{ minWidth: 230 }}
       >
         {t('claimPrizes', 'Claim prizes')}
       </SquareButton>

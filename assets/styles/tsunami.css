@@ -70,3 +70,11 @@
   box-shadow: none;
   background: var(--color-bg-secondary);
 }
+
+.theme-dark .bg-tsunami-card-bridge {
+  background: rgba(76, 36, 159, 0.1);
+}
+
+.theme-light .bg-tsunami-card-bridge {
+  background: white;
+}

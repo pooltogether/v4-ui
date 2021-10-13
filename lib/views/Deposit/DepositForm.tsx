@@ -155,29 +155,29 @@ export const DepositForm = (props: DepositFormProps) => {
               />
             }
             label={
-              <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-                {t('depositTicker', { ticker: token.symbol })}
+              <div className='font-inter font-semibold uppercase text-accent-3 opacity-50'>
+                {t('amount', 'Amount')}
               </div>
             }
           />
         </div>
 
+        <DepositInfoBox
+          className='mt-3'
+          depositTx={depositTx}
+          prizePool={prizePool}
+          amountToDeposit={amountToDeposit}
+          errors={isDirty ? errors : null}
+        />
+
         <BottomButton
-          className='mt-2 w-full'
+          className='mt-4 w-full'
           disabled={(!isValid && isDirty) || depositTx?.inFlight}
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
           tokenBalance={tokenBalance}
           token={token}
           amountToDeposit={amountToDeposit}
-        />
-
-        <DepositInfoBox
-          className='mt-4'
-          depositTx={depositTx}
-          prizePool={prizePool}
-          amountToDeposit={amountToDeposit}
-          errors={isDirty ? errors : null}
         />
       </form>
     </>

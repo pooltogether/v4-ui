@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import Link from 'next/link'
+import FeatherIcon from 'feather-icons-react'
 import { Amount, Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
@@ -10,8 +11,10 @@ import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
+import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
+import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
@@ -182,46 +185,62 @@ export const DepositCard = () => {
     setDepositedAmount(undefined)
   }
 
+  const [chainId] = useSelectedNetwork()
+
   return (
     <>
-      <Card>
-        {completedDepositTx ? (
-          <CompletedDeposit
-            chainId={prizePool.chainId}
-            resetState={resetState}
-            tx={completedDepositTx}
-            depositedAmount={depositedAmount}
-            token={token}
-          />
-        ) : (
-          <>
-            <SelectedNetworkToggle className='mb-6 mx-auto' />
-            <DepositForm
-              form={form}
-              player={player}
-              isPlayerFetched={isPlayerFetched}
-              prizePool={prizePool}
-              isPrizePoolFetched={isPrizePoolFetched}
+      <div>
+        <Card className='shadow-xs relative' roundedClassName='rounded-t-xl'>
+          {completedDepositTx ? (
+            <CompletedDeposit
+              chainId={prizePool.chainId}
+              resetState={resetState}
+              tx={completedDepositTx}
+              depositedAmount={depositedAmount}
               token={token}
-              ticket={ticket}
-              isPrizePoolTokensFetched={isPrizePoolTokensFetched}
-              approveTx={approveTx}
-              depositTx={depositTx}
-              isUsersBalancesFetched={isUsersBalancesFetched}
-              tokenBalance={tokenBalance}
-              ticketBalance={ticketBalance}
-              isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
-              depositAllowance={depositAllowance}
-              setShowConfirmModal={setShowConfirmModal}
-              amountToDeposit={amountToDeposit}
             />
-            <div className='w-full flex justify-around mt-4'>
-              <BridgeTokensModalTrigger prizePool={prizePool} />
-              <GetTokensModalTrigger prizePool={prizePool} />
-            </div>
-          </>
-        )}
-      </Card>
+          ) : (
+            <>
+              <div className='font-semibold font-inter flex items-center justify-center text-lg mb-4'>
+                {t('deposit', 'Deposit')}
+                <TokenSymbolAndIcon
+                  className='mr-1 ml-2'
+                  sizeClassName='w-4 h-4'
+                  chainId={prizePool.chainId}
+                  address={token.address}
+                  symbol={token.symbol}
+                />{' '}
+                {t('on', 'On')}
+                {/* <SelectedNetworkDropdown className='mx-2' /> */}
+              </div>
+              <DepositForm
+                form={form}
+                player={player}
+                isPlayerFetched={isPlayerFetched}
+                prizePool={prizePool}
+                isPrizePoolFetched={isPrizePoolFetched}
+                token={token}
+                ticket={ticket}
+                isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+                approveTx={approveTx}
+                depositTx={depositTx}
+                isUsersBalancesFetched={isUsersBalancesFetched}
+                tokenBalance={tokenBalance}
+                ticketBalance={ticketBalance}
+                isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
+                depositAllowance={depositAllowance}
+                setShowConfirmModal={setShowConfirmModal}
+                amountToDeposit={amountToDeposit}
+              />
+            </>
+          )}
+        </Card>
+
+        <div className='w-full flex bg-tsunami-card-bridge justify-around py-4 rounded-b-xl'>
+          <BridgeTokensModalTrigger prizePool={prizePool} />
+          <GetTokensModalTrigger prizePool={prizePool} />
+        </div>
+      </div>
 
       <ConfirmationModal
         isOpen={showConfirmModal}
@@ -256,9 +275,14 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className=' text-white opacity-60 hover:opacity-100 transition-opacity'
+        className=' text-inverse opacity-70 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
+        <FeatherIcon
+          icon={'plus-circle'}
+          className='relative w-4 h-4 mr-1 inline-block'
+          style={{ left: -2, top: -2 }}
+        />{' '}
         {t('getTokens', 'Get tokens')}
       </button>
       <GetTokensModal
@@ -280,9 +304,20 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className=' text-white opacity-60 hover:opacity-100 transition-opacity'
+        className=' text-inverse opacity-70 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
       >
+        <FeatherIcon
+          icon={'arrow-left'}
+          className='relative w-3 h-3  inline-block'
+          style={{ top: -2 }}
+        />
+        <FeatherIcon
+          icon={'arrow-right'}
+          className='relative w-3 h-3 mr-1 inline-block'
+          style={{ top: -2, left: -5 }}
+        />
+
         {t('bridgeTokens', 'Bridge tokens')}
       </button>
       <BridgeTokensModal
