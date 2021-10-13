@@ -1,3 +1,4 @@
+import { deserializeBigNumbers } from '@pooltogether/utilities'
 import { PrizeDistributor, Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -41,14 +42,28 @@ const getUsersDrawResult = async (
     return storedResult.drawResults
   }
 
-  const result = await prizeDistributor.getUsersPrizes(usersAddress, draw)
+  // console.log('TEST', 'base path', window.location.origin)
+  // const url = new URL('/.netlify/functions/users-prizes', window.location.origin)
+  // url.searchParams.set('usersAddress', usersAddress)
+  // url.searchParams.set('chainId', String(prizeDistributor.chainId))
+  // url.searchParams.set('prizeDistributorAddress', prizeDistributor.address)
+  // url.searchParams.set('drawId', String(draw.drawId))
+
+  // console.log('TEST', 'Fetching', url)
+  // const response = await fetch(url.toString())
+  // console.log('TEST', 'Response', response)
+  // let drawResults = await response.json()
+  // drawResults = deserializeBigNumbers(drawResults)
+  // console.log('TEST', 'Result', drawResults)
+
+  const drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
   // NOTE: Assumes draw is unclaimed.
   setStoredDrawResult(
     usersAddress,
     prizeDistributor,
     draw.drawId,
-    result,
+    drawResults,
     StoredDrawStates.unclaimed
   )
-  return result
+  return drawResults
 }

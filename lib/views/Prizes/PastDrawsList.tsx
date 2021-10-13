@@ -1,8 +1,8 @@
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import { Amount } from '@pooltogether/hooks'
 import { Card } from '@pooltogether/react-components'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
-import { usePastDrawsForUser } from 'lib/hooks/Tsunami/PrizeDistributor/usePastDrawsForUser'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult } from 'lib/utils/drawResultsStorage'
@@ -17,8 +17,12 @@ import {
   ViewPrizeTiersTrigger
 } from './DrawCard/DrawDetails'
 import { useAllDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useAllDrawsAndPrizeDistributions'
+import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
+import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { useTimeUntil } from 'lib/hooks/useTimeUntil'
+import { CountdownString } from 'lib/components/CountdownString'
 
-export const HistoricPrizesList = (props: {
+export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
 }) => {
@@ -31,11 +35,13 @@ export const HistoricPrizesList = (props: {
 
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
     useAllDrawsAndPrizeDistributions(prizeDistributor)
+  const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor, prizePoolTokens?.token)
+  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched) {
+  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
       <>
-        <HistoricPrizesListHeader className='mb-1' />
+        <PastDrawsListHeader className='mb-1' />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
@@ -47,29 +53,35 @@ export const HistoricPrizesList = (props: {
 
   return (
     <>
-      <HistoricPrizesListHeader className='mb-1' />{' '}
+      <PastDrawsListHeader className='mb-1' />
       {drawsAndPrizeDistributions.length === 0 && (
         <div className='opacity-70 text-center w-full mt-12'>
           {t('noDrawsYet', 'No draws yet, check back soon')}
         </div>
       )}
       <ul className='space-y-4'>
-        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => (
-          <PastPrizeListItem
-            key={`past-prize-list-${drawAndPrizeDistribution.draw.drawId}-${prizeDistributor.id()}`}
-            {...drawAndPrizeDistribution}
-            prizeDistributor={prizeDistributor}
-            token={prizePoolTokens.token}
-          />
-        ))}
+        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
+          const drawId = drawAndPrizeDistribution.draw.drawId
+          return (
+            <PastPrizeListItem
+              key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
+              {...drawAndPrizeDistribution}
+              prizeDistributor={prizeDistributor}
+              token={prizePoolTokens.token}
+              claimedAmount={claimedAmounts?.[drawId]}
+              drawLock={drawLocks[drawId]}
+            />
+          )
+        })}
       </ul>
     </>
   )
 }
 
 interface PastPrizeListItemProps extends DrawDetailsProps {
-  // claimedAmount: Amount
   prizeDistributor: PrizeDistributor
+  claimedAmount?: Amount
+  drawLock?: DrawLock
 }
 
 const PastPrizeListItem = (props: PastPrizeListItemProps) => (
@@ -91,34 +103,53 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
       <div className='flex justify-between'>
         <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
       </div>
-      {/* TODO: Commenting out for a few minutes */}
-      {/* <ClaimedAmountSection {...props} className='mt-2' /> */}
+      <ExtraDetailsSection {...props} className='mt-2' />
     </Card>
   </li>
 )
 
-const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, prizeDistributor, draw, className, token } = props
-  const { amountUnformatted } = claimedAmount
+const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
+  const { claimedAmount, prizeDistributor, draw, className, token, drawLock } = props
 
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
 
-  const storedDrawResult = getStoredDrawResult(usersAddress, prizeDistributor, draw.drawId)
+  const drawLockCountdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
-  const userHasntClaimed = amountUnformatted.isZero()
-  const userHasAmountToClaim = !storedDrawResult?.drawResults.totalValue.isZero()
+  // TODO: Move stored draw results to a hook so this reacts when pushing new results
+  const storedDrawResult =
+    usersAddress && getStoredDrawResult(usersAddress, prizeDistributor, draw.drawId)
+  const amountUnformatted = claimedAmount?.amountUnformatted
+  const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
+  const userHasAmountToClaim = storedDrawResult && !storedDrawResult.drawResults.totalValue.isZero()
 
-  if (!Boolean(storedDrawResult)) {
-    return null
-  } else if (userHasntClaimed && !userHasAmountToClaim) {
+  if (drawLockCountdown?.secondsLeft) {
+    const { weeks, days, hours, minutes } = drawLockCountdown
+    const thereIsWeeks = weeks > 0
+    const thereIsDays = thereIsWeeks || days > 0
+    const thereIsHours = thereIsDays || hours > 0
+    const thereIsMinutes = thereIsHours || minutes > 0
+    return (
+      <div className={classNames('text-accent-1 flex', className)}>
+        <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
+        Draw #{draw.drawId} unlocks in
+        <CountdownString
+          className='ml-1'
+          {...drawLockCountdown}
+          hideHours={thereIsWeeks}
+          hideMinutes={thereIsDays}
+          hideSeconds={thereIsMinutes}
+        />
+      </div>
+    )
+  } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && storedDrawResult) {
     return (
       <span className={classNames('text-accent-1', className)}>
         {t('noPrizesWon', 'No prizes won')}
       </span>
     )
-  } else if (userHasntClaimed && userHasAmountToClaim) {
+  } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
     const { amountPretty } = getAmountFromBigNumber(
       storedDrawResult?.drawResults.totalValue,
       token.decimals
@@ -130,20 +161,21 @@ const ClaimedAmountSection = (props: { className?: string } & PastPrizeListItemP
         <span className='ml-2 font-bold'>{token.symbol}</span>
       </div>
     )
+  } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
+    const { amountPretty } = claimedAmount
+    return (
+      <div className={classNames(className)}>
+        <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
+        <span className='ml-2 font-bold'>{amountPretty}</span>
+        <span className='ml-2 font-bold'>{token.symbol}</span>
+      </div>
+    )
+  } else {
+    return null
   }
-
-  const { amountPretty } = claimedAmount
-
-  return (
-    <div className={classNames(className)}>
-      <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
-      <span className='ml-2 font-bold'>{amountPretty}</span>
-      <span className='ml-2 font-bold'>{token.symbol}</span>
-    </div>
-  )
 }
 
-const HistoricPrizesListHeader = (props: { className?: string }) => {
+const PastDrawsListHeader = (props: { className?: string }) => {
   const { t } = useTranslation()
   return (
     <div

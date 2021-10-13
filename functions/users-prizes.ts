@@ -1,10 +1,10 @@
 import { Handler } from '@netlify/functions'
 import { testnet } from '@pooltogether/v4-pool-data'
 import { ethers } from 'ethers'
-
+import fetch from 'cross-fetch'
+import { isValidAddress, NETWORK } from '@pooltogether/utilities'
 import { initializePrizeDistributors } from '@pooltogether/v4-js-client'
 
-import fetch from 'cross-fetch'
 global.fetch = fetch
 
 // Cloudflare KV
@@ -14,15 +14,21 @@ const CLOUDFLARE_BEARER_TOKEN = process.env.NEXT_JS_CLOUDFLARE_BEARER_TOKEN
 const AUTH_HEADERS = Object.freeze({ Authorization: `Bearer ${CLOUDFLARE_BEARER_TOKEN}` })
 // Infura
 const INFURA_ID = process.env.NEXT_JS_INFURA_ID
-// Other constants
-// const VALID_CHAIN_IDS = [NETWORK]
+// Validation
+const SUPPORTED_NETWORKS = Object.freeze({
+  mainnets: [NETWORK.mainnet, NETWORK.polygon],
+  testnets: [NETWORK.rinkeby, NETWORK.mumbai]
+})
+const VALID_NETWORKS = [...SUPPORTED_NETWORKS['mainnets'], ...SUPPORTED_NETWORKS['testnets']]
+// Response
+const RESPONSE_HEADERS = Object.freeze({ 'Content-Type': 'application/json' })
 
 /**
- * Path: /.netlify/functions/users-prizes-background
+ * Path: /.netlify/functions/users-prizes
  * Required query params:
  * - usersAddress
  * - chainId
- * - claimableDrawAddress
+ * - prizeDistributorAddress
  * - drawId
  *
  * @param event
@@ -34,41 +40,47 @@ const handler: Handler = async (event, context) => {
     const {
       usersAddress,
       chainId: _chainId,
-      claimableDrawAddress,
+      prizeDistributorAddress,
       drawId: _drawId
     } = event.queryStringParameters
     const chainId = Number(_chainId)
     const drawId = Number(_drawId)
-    // console.log('Params:', usersAddress, chainId, claimableDrawAddress, drawId)
 
-    // TODO: Validate params
+    console.log('====================================')
+    console.log('Params:', usersAddress, chainId, prizeDistributorAddress, drawId)
+    console.log('====================================')
 
-    // TODO: Check KV
-    const test = await getKVItem('test')
-    // console.log('TEST', test)
-    const d = await test.text()
-    // console.log('DATA', d)
+    await validateParameters(usersAddress, chainId, prizeDistributorAddress, drawId)
 
-    await setKVItem('iPhone', 'iPhone')
+    // Create PrizeDistributor
+    const contractList = getContractList(chainId)
+    const chainIds = Array.from(new Set(contractList.contracts.map((c) => c.chainId)))
+    console.log('chainIds', chainIds)
+    const readProviders = getProviders(chainIds)
+    const prizeDistributors = await initializePrizeDistributors(readProviders, contractList)
+    const prizeDistributor = prizeDistributors.find(
+      (cd) => cd.chainId === chainId && cd.address === prizeDistributorAddress
+    )
 
-    // TODO: Fetch new data
-    // const contractList = getContractList(chainId)
-    // const chainIds = Array.from(new Set(contractList.contracts.map((c) => c.chainId)))
-    // console.log('chainIds', chainIds)
-    // const readProviders = getProviders(chainIds)
-    // let r = await readProviders[4].getNetwork()
-    // const prizeDistributors = await initializePrizeDistributors(readProviders, contractList)
-    // const prizeDistributor = prizeDistributors.find(
-    //   (cd) => cd.chainId === chainId && cd.address === claimableDrawAddress
-    // )
+    if (!prizeDistributor) {
+      throw new Error(
+        `Invalid Prize Distributor identifiers. chainId: ${chainId}, prizeDistributorAddress: ${prizeDistributorAddress}`
+      )
+    }
 
-    // TODO: Store draw results in KV
-    // const drawResults = await prizeDistributor.getUsersPrizesByDrawId(usersAddress, drawId)
-    // console.log('drawResults', drawResults)
+    // Get DrawResults
+    const drawResults = await prizeDistributor.getUsersPrizesByDrawId(usersAddress, drawId)
+
+    console.log('====================================')
+    console.log('Draw Results:', JSON.stringify(drawResults))
+    console.log('====================================')
 
     return {
+      headers: {
+        ...RESPONSE_HEADERS
+      },
       statusCode: 200,
-      body: 'hi'
+      body: JSON.stringify(drawResults)
     }
   } catch (e) {
     console.log(e.message)
@@ -80,6 +92,25 @@ const handler: Handler = async (event, context) => {
 }
 
 export { handler }
+
+// Validation
+const validateParameters = async (
+  usersAddress: string,
+  chainId: number,
+  prizeDistributorAddress: string,
+  drawId: number
+) => {
+  // Check chain id
+  if (!VALID_NETWORKS.includes(chainId)) {
+    throw new Error(
+      `Invalid chain id ${chainId}. Supported chain ids: ${VALID_NETWORKS.join(', ')}`
+    )
+  } else if (!isValidAddress(usersAddress)) {
+    throw new Error(`Invalid users address ${usersAddress}.`)
+  } else if (!isValidAddress(prizeDistributorAddress)) {
+    throw new Error(`Invalid users address ${prizeDistributorAddress}.`)
+  }
+}
 
 // Ethers Providers
 
@@ -94,15 +125,18 @@ export const getProviders = (chainIds) => {
 }
 
 export const getProvider = (chainId) => {
-  if ([1, 4].includes(chainId)) {
+  if ([NETWORK.mainnet, NETWORK.rinkeby].includes(chainId)) {
     return new ethers.providers.InfuraProvider(chainId, INFURA_ID)
-  } else if (chainId === 137) {
+  } else if (chainId === NETWORK.polygon) {
     return new ethers.providers.JsonRpcProvider(
       `${POLYGON_INFURA_WEBSOCKETS_URL}/${INFURA_ID}`,
-      137
+      NETWORK.polygon
     )
-  } else if (chainId === 80001) {
-    return new ethers.providers.JsonRpcProvider('https://matic-mumbai.chainstacklabs.com', 80001)
+  } else if (chainId === NETWORK.mumbai) {
+    return new ethers.providers.JsonRpcProvider(
+      'https://matic-mumbai.chainstacklabs.com',
+      NETWORK.mumbai
+    )
   } else {
     throw new Error('Unsupported chain id')
   }
@@ -110,8 +144,17 @@ export const getProvider = (chainId) => {
 
 // Contract List
 
+/**
+ * TODO: ADD THE MAINNET CONTRACT LIST
+ * @param chainId
+ * @returns
+ */
 const getContractList = (chainId) => {
-  return testnet
+  if (SUPPORTED_NETWORKS['mainnets'].includes(chainId)) {
+    return testnet
+  } else {
+    return testnet
+  }
 }
 
 // Cloudflare KV

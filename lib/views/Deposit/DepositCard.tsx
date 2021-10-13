@@ -46,6 +46,7 @@ export const DepositCard = () => {
   const {
     data: ticketDelegate,
     isFetched: isTicketDelegateFetched,
+    isFetching: isTicketDelegateFetching,
     refetch: refetchTicketDelegate
   } = useUsersTicketDelegate(prizePool)
 
@@ -55,7 +56,8 @@ export const DepositCard = () => {
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
-    isTicketDelegateFetched
+    isTicketDelegateFetched &&
+    !isTicketDelegateFetching
 
   const form = useForm({
     mode: 'onChange',
@@ -116,18 +118,6 @@ export const DepositCard = () => {
     }
   }, [])
 
-  // Move to completed state after successful deposit
-  // useEffect(() => {
-  //   console.log('depositTx', depositTx)
-  //   if (depositTx && depositTx.completed && !depositTx.error && !depositTx.cancelled) {
-  //     setCompletedDepositTxId(depositTx.id)
-  //     setDepositedAmount(amountToDeposit)
-  //     setDepositTxId(0)
-  //     closeModal()
-  //     resetQueryParam()
-  //   }
-  // }, [depositTx?.completed])
-
   const closeModal = () => {
     const { query, pathname } = router
     delete query.showConfirmModal
@@ -154,6 +144,7 @@ export const DepositCard = () => {
     setDepositTxId(0, prizePool)
     closeModal()
     resetQueryParam()
+    refetchTicketDelegate()
   }
 
   const sendDepositTx = async () => {

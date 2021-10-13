@@ -1,4 +1,5 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
+import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useAllDraws } from './useAllDraws'
@@ -42,8 +43,12 @@ const getAllDrawsAndPrizeDistributions = async (
     drawsAndPrizeDistributions.push({ draw, prizeDistribution })
   })
 
-  // Push any beacon draw ids that are missing into the array
-  const missingDraws = draws.filter((draw) => !prizeDistributionBufferDrawIds.includes(draw.drawId))
+  // Push any beacon draw ids that are newer than the oldesr prize distribution that are missing into the array
+  const missingDraws = draws.filter(
+    (draw) =>
+      !prizeDistributionBufferDrawIds.includes(draw.drawId) &&
+      draw.drawId > prizeDistributionBufferDrawIds[0]
+  )
 
   missingDraws.forEach((draw) => {
     drawsAndPrizeDistributions.push({ draw })
@@ -54,10 +59,3 @@ const getAllDrawsAndPrizeDistributions = async (
 
 const sortByDrawId = (a: DrawAndPrizeDistribution, b: DrawAndPrizeDistribution) =>
   sortDrawsByDrawId(a.draw, b.draw)
-
-/**
- * Can I have a draw on mainnet but not on L2?
- * YES
- * If the defender hasn't run yet. This is when the draw beacon is in the "ending soon" state.
- * Need to fetch MAINNET draw ids. Then fetch
- */
