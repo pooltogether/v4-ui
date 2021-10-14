@@ -54,10 +54,8 @@ export const UpcomingPrizeCard = (props) => {
 
           {isDrawBeaconPeriodFetched && (
             <>
-              <div className='uppercase font-semibold text-default-soft text-xxs xs:text-xs mx-auto'>
-                Draw #{drawBeaconPeriod.drawId}
-              </div>
               <div className='uppercase font-semibold text-highlight-6 text-xxs xs:text-sm w-2/3 xs:w-1/2 mx-auto'>
+                {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
                 {countdown.secondsLeft === 0 ? (
                   'Closing soon'
                 ) : (
