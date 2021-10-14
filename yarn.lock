@@ -2257,10 +2257,10 @@
     chalk "^4.1.2"
     debug "^4.3.2"
 
-"@pooltogether/draw-calculator-js@^1.0.0-beta.28":
-  version "1.0.0-beta.28"
-  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.28.tgz#bca219f6c943141ba6f3772ff6ce66a50aa797ae"
-  integrity sha512-5q7F+pHrfTta9Denwq8pn4fopV1ehIzFwhbK7vpkcx1o9ksyczoGqZyNfq9KkTHTTE9+1V3L6MvBgF7YGeh2OA==
+"@pooltogether/draw-calculator-js@^1.0.0-beta.29":
+  version "1.0.0-beta.29"
+  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.29.tgz#abc4d941582e347cc6e632fe56a2871a83ed3a13"
+  integrity sha512-Z8BdH7lpSZAQuV24I25PD64Jvtr6UrKr5yMT/nEWP37SY53ZiGVheR9fRygNTTWfrcp02q8OTEECaEm/76D8lQ==
   dependencies:
     chalk "^4.1.2"
     debug "^4.3.2"
