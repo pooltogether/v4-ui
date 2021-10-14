@@ -1,15 +1,12 @@
 import { PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
 export interface DrawLock {
-  startTimeSeconds: BigNumber
   endTimeSeconds: BigNumber
-  durationSeconds: number
 }
 
 export interface DrawLocks {
@@ -48,27 +45,15 @@ const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<Draw
   lockedDraws.forEach((lockedDraw) => {
     const drawLockForDrawId = drawLocks[lockedDraw.drawId]
     if (!drawLockForDrawId) {
-      drawLocks[lockedDraw.drawId] = getFullDrawLock(
-        lockedDraw.lockStartTimeSeconds,
-        lockedDraw.timelockDurationSeconds
-      )
-    } else if (drawLockForDrawId.startTimeSeconds.lt(lockedDraw.lockStartTimeSeconds)) {
-      drawLocks[lockedDraw.drawId] = getFullDrawLock(
-        lockedDraw.lockStartTimeSeconds,
-        lockedDraw.timelockDurationSeconds
-      )
+      drawLocks[lockedDraw.drawId] = {
+        endTimeSeconds: lockedDraw.endTimeSeconds.add(1)
+      }
+    } else if (drawLockForDrawId.endTimeSeconds.lt(lockedDraw.endTimeSeconds)) {
+      drawLocks[lockedDraw.drawId] = {
+        endTimeSeconds: lockedDraw.endTimeSeconds.add(1)
+      }
     }
   })
 
   return drawLocks
-}
-
-const getFullDrawLock = (startTimeSeconds: BigNumber, durationSeconds: number): DrawLock => {
-  const endTimeSeconds = startTimeSeconds.add(durationSeconds).add(1)
-
-  return {
-    startTimeSeconds,
-    endTimeSeconds,
-    durationSeconds
-  }
 }
