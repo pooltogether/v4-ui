@@ -7,7 +7,7 @@ export const PRIZE_DISTRIBUTORS = Object.freeze({
     [NETWORK.polygon]: ''
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [NETWORK.rinkeby]: ['0xa9ea790946E5Cd4b3C596293113bD6c0fF61e4d6'],
-    [NETWORK.mumbai]: ['0x53511a74B66ecD1F3e487DfE69503169E0f5c70F']
+    [NETWORK.rinkeby]: ['0xF1B85984C641a21E2fa1159CD1FD0c1BC9843414'],
+    [NETWORK.mumbai]: ['0x4C2d729E7052e12e09d29C95fd1f02Bd7471759e']
   }
 })
