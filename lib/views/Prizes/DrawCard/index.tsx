@@ -54,7 +54,7 @@ export const DrawCard = (props: DrawCardProps) => {
   }
 
   return (
-    <Card className='draw-card relative'>
+    <Card className='draw-card relative' style={{ minHeight: 200 }}>
       <div className='flex flex-col'>
         <DrawDetails
           {...props}
@@ -129,7 +129,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         claimState={claimState}
       />
-      <div className='absolute xs:relative mx-auto xs:mx-0 left-0 xs:left-auto right-0 xs:right-auto bottom-4 xs:bottom-auto xs:-top-6 text-center z-20'>
+      <div className='absolute xs:relative mx-auto xs:ml-0 left-0 xs:left-auto right-0 xs:right-auto bottom-2 xs:bottom-auto xs:-top-4 text-center z-20'>
         <DrawClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
@@ -195,7 +195,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     const thereIsMinutes = thereIsHours || minutes > 0
 
     btnJsx = (
-      <div className='flex flex-col mx-auto xs:mx-0 text-center'>
+      <div className='flex flex-col text-center mx-auto xs:mx-0 mt-2'>
         <SquareButton
           disabled
           className='w-max mx-auto xs:mx-0 text-center'
@@ -208,7 +208,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
             {t('checkForPrizes', 'Check for prizes')}
           </span>
         </SquareButton>
-        <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
+        <div className='text-left uppercase font-semibold text-inverse xs:text-white opacity-90 text-xxs leading-none mt-2'>
           {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
           {t('unlocksIn', 'unlocks in')}{' '}
           <CountdownString
@@ -288,7 +288,7 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
     )
   }
 
-  return <div className='flex items-start relative'>{btnJsx}</div>
+  return <div className='flex items-center relative'>{btnJsx}</div>
 }
 
 const LoadingCard = () => (

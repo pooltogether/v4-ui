@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
-import { Modal, ModalProps } from '@pooltogether/react-components'
+import { Modal, ModalProps, ThemedClipSpinner } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import {
   calculatePrizeForDistributionIndex,
@@ -29,10 +29,10 @@ export const DrawDetails = (props: DrawDetailsProps) => {
           <DrawDate {...props} />
         </span>
         <span className='flex xs:flex-col flex-col-reverse pt-1 xs:pt-0 space-y-2 items-start xs:items-end '>
-          <span className='mt-1 xs:mt-0'>
-            <ViewPrizeTiersTrigger {...props} />
+          <span className='mt-2 xs:mt-0'>
+            <PrizeDistributorTotal {...props} />
           </span>
-          <PrizeDistributorTotal {...props} />
+          <ViewPrizeTiersTrigger {...props} />
         </span>
       </div>
     </div>
@@ -53,7 +53,9 @@ export const PrizeDistributorTotal = (props: {
   if (!prizeDistribution)
     return (
       <div className={props.className}>
-        <span className={props.pendingClassName}>Propagating</span>
+        <span className={props.pendingClassName}>
+          <ThemedClipSpinner size={10} className='mr-1' /> {t('propagating', 'Propagating ...')}
+        </span>
       </div>
     )
 
@@ -68,11 +70,11 @@ export const PrizeDistributorTotal = (props: {
 }
 
 PrizeDistributorTotal.defaultProps = {
-  numberClassName: 'font-bold text-xl text-white',
-  pendingClassName: 'font-bold text-white opacity-70',
   // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
   // numberClassName: 'font-bold text-xl text-flashy',
-  textClassName: 'font-bold text-white text-xxs ml-2'
+  numberClassName: 'font-bold text-white text-xs xs:text-sm',
+  pendingClassName: 'font-bold text-white opacity-70 uppercase',
+  textClassName: 'font-bold text-white text-xxs xs:text-xs ml-1 opacity-60'
 }
 
 // export const DrawGrandPrize = (props: {
@@ -99,7 +101,7 @@ PrizeDistributorTotal.defaultProps = {
 
 // DrawGrandPrize.defaultProps = {
 //   numberClassName: 'font-bold text-xl sm:text-2xl w-full',
-//   textClassName: 'font-bold text-accent-1 text-xxs ml-2'
+//   textClassName: 'font-bold text-accent-1 text-xs ml-2'
 // }
 
 export const ViewPrizeTiersTrigger = (props: {
@@ -131,7 +133,7 @@ export const ViewPrizeTiersTrigger = (props: {
 
 ViewPrizeTiersTrigger.defaultProps = {
   className:
-    'uppercase font-bold text-inverse text-xxs sm:text-sm transition hover:text-green leading-none tracking-wide'
+    'uppercase font-bold text-xs underline text-highlight-9 hover:text-white sm:text-sm transition leading-none tracking-wide'
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (
@@ -139,7 +141,7 @@ export const DrawDate = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawDate.defaultProps = {
-  className: 'uppercase font-bold text-white opacity-70 text-xxs leading-none'
+  className: 'uppercase font-bold text-white opacity-70 text-xs leading-none'
 }
 
 export const DrawId = (props: { draw: Draw; className?: string }) => (
@@ -147,7 +149,7 @@ export const DrawId = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawId.defaultProps = {
-  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xxs leading-none'
+  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xs leading-none'
 }
 
 const PrizeBreakdownModal = (

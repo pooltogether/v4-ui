@@ -49,7 +49,7 @@ export const DrawCarousel = (props: DrawCarouselProps) => {
 const ArrowNext = (clickHandler: () => void, hasNext: boolean, label: string) => {
   if (!hasNext) return null
   return (
-    <button onClick={clickHandler} className='absolute right-4 sm:right-0 inset-y-0 z-10'>
+    <button onClick={clickHandler} className='absolute right-4 sm:right-0 top-40 xs:inset-y-0 z-10'>
       <Arrow icon='chevron-right' />
     </button>
   )
@@ -58,7 +58,7 @@ const ArrowNext = (clickHandler: () => void, hasNext: boolean, label: string) =>
 const ArrowPrev = (clickHandler: () => void, hasNext: boolean, label: string) => {
   if (!hasNext) return null
   return (
-    <button onClick={clickHandler} className='absolute left-4 sm:left-0 inset-y-0 z-10'>
+    <button onClick={clickHandler} className='absolute left-4 sm:left-0 top-40 xs:inset-y-0 z-10'>
       <Arrow icon='chevron-left' />
     </button>
   )

@@ -86,24 +86,37 @@ interface PastPrizeListItemProps extends DrawDetailsProps {
 
 const PastPrizeListItem = (props: PastPrizeListItemProps) => (
   <li>
-    <Card>
-      <div className='flex flex-row justify-between leading-none'>
-        <span className='flex items-start'>
-          <DrawId
-            className='uppercase font-bold text-accent-2 opacity-50 text-xxs leading-none mr-2'
+    <Card style={{ minHeight: 100 }}>
+      <div className='flex flex-col xs:flex-row justify-between leading-none'>
+        <div className='flex flex-col'>
+          <span className='flex items-start'>
+            <DrawId
+              className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm leading-none mr-2'
+              {...props}
+            />
+            <DrawDate
+              className='uppercase font-bold text-accent-1 opacity-80 text-xs xs:text-sm leading-none'
+              {...props}
+            />
+          </span>
+          <ExtraDetailsSection {...props} className='mt-2' />
+        </div>
+
+        <span className='mt-6 xs:mt-0'>
+          <PrizeDistributorTotal
             {...props}
+            pendingClassName='font-bold text-inverse text-xs xs:text-sm opacity-90 uppercase'
+            numberClassName='font-bold text-inverse text-xs xs:text-sm'
+            textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
           />
-          <DrawDate
-            className='uppercase font-bold text-accent-1 opacity-80 text-xxs leading-none'
-            {...props}
-          />
+          <div className='mt-2'>
+            <ViewPrizeTiersTrigger
+              {...props}
+              className='uppercase font-bold text-xs underline text-highlight-9 hover:text-highlight-2 sm:text-sm transition leading-none tracking-wide'
+            />
+          </div>
         </span>
-        <ViewPrizeTiersTrigger {...props} />
       </div>
-      <div className='flex justify-between'>
-        <PrizeDistributorTotal {...props} numberClassName='font-bold text-xl' />
-      </div>
-      <ExtraDetailsSection {...props} className='mt-2' />
     </Card>
   </li>
 )
@@ -131,7 +144,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     const thereIsHours = thereIsDays || hours > 0
     const thereIsMinutes = thereIsHours || minutes > 0
     return (
-      <div className={classNames('text-accent-1 flex', className)}>
+      <div className={classNames('text-inverse flex', className)}>
         <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
         {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
         {t('unlocksIn', 'unlocks in')}
@@ -146,7 +159,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     )
   } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && storedDrawResult) {
     return (
-      <span className={classNames('text-accent-1', className)}>
+      <span className={classNames('text-inverse', className)}>
         {t('noPrizesWon', 'No prizes won')}
       </span>
     )
