@@ -59,8 +59,7 @@ export const DepositCard = () => {
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
-    isTicketDelegateFetched &&
-    !isTicketDelegateFetching
+    (isTicketDelegateFetched || !isTicketDelegateFetching)
 
   const form = useForm({
     mode: 'onChange',
@@ -124,7 +123,7 @@ export const DepositCard = () => {
   const closeModal = () => {
     const { query, pathname } = router
     delete query.showConfirmModal
-    router.replace({ pathname, query })
+    router.replace({ pathname, query }, null, { scroll: false })
     setShowConfirmModal(false)
   }
 
@@ -173,7 +172,7 @@ export const DepositCard = () => {
   const resetQueryParam = () => {
     const { query, pathname } = router
     delete query[DEPOSIT_QUANTITY_KEY]
-    router.replace({ pathname, query })
+    router.replace({ pathname, query }, null, { scroll: false })
   }
 
   const resetState = () => {

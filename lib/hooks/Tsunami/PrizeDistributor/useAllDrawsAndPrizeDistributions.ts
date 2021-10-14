@@ -47,7 +47,8 @@ const getAllDrawsAndPrizeDistributions = async (
   const missingDraws = draws.filter(
     (draw) =>
       !prizeDistributionBufferDrawIds.includes(draw.drawId) &&
-      draw.drawId > prizeDistributionBufferDrawIds[0]
+      (prizeDistributionBufferDrawIds.length === 0 ||
+        draw.drawId > prizeDistributionBufferDrawIds[0])
   )
 
   missingDraws.forEach((draw) => {

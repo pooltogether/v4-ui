@@ -11,7 +11,7 @@ import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
-export const UpcomingPrizeCard = (props) => {
+export const UpcomingPrizeCard = () => {
   const { t } = useTranslation()
 
   const { data: prizePool } = useSelectedNetworkPrizePool()
@@ -52,7 +52,7 @@ export const UpcomingPrizeCard = (props) => {
           {isDrawBeaconPeriodFetched && (
             <div className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto relative'>
               {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
-              {countdown.secondsLeft === 0 ? (
+              {countdown.secondsLeft <= 60 ? (
                 t('closesSoon', 'Closes soon')
               ) : (
                 <>
