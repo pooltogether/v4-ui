@@ -66,7 +66,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
               href={{ pathname: '/deposit', query: router.query }}
               className='mb-8 items-center block xs:inline mx-auto w-32'
             >
-              Deposit
+              {t('deposit')}
             </SquareLink>
           </>
         )}

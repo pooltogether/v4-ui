@@ -42,7 +42,6 @@ interface DepositFormProps {
   ticket: Token
   tokenBalance: TokenBalance
   ticketBalance: TokenBalance
-  depositAllowance: DepositAllowance
   amountToDeposit: Amount
   setShowConfirmModal: (show: boolean) => void
 }
@@ -85,7 +84,7 @@ export const DepositForm = (props: DepositFormProps) => {
     const { query, pathname } = router
     const quantity = values[DEPOSIT_QUANTITY_KEY]
     query[DEPOSIT_QUANTITY_KEY] = quantity
-    router.replace({ pathname, query })
+    router.replace({ pathname, query }, null, { scroll: false })
     setShowConfirmModal(true)
   }
 

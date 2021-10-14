@@ -70,7 +70,7 @@ export const useSelectedNetworkWatcher = () => {
     if (selectedNetwork !== queryParamNetwork) {
       const url = new URL(window.location.href)
       url.searchParams.set(URL_QUERY_KEY.network, String(selectedNetwork))
-      router.replace(url, url, { scroll: false })
+      router.replace(url, null, { scroll: false })
     }
   }, [selectedNetwork])
 }

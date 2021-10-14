@@ -32,11 +32,14 @@ export const ConnectWalletCard = (props: ConnectWalletCardProps) => {
         </span>
         <span>
           {t('forMoreInfoOnWalletSee:', 'For more info on wallets, see')}:<br />
-          <Link href='https://ethereum.org/en/wallets/'>
-            <a className='underline hover:opacity-70 transition-opacity'>
-              ethereum.org - {t('wallets', 'wallets')}
-            </a>
-          </Link>
+          <a
+            href='https://ethereum.org/en/wallets/'
+            target='_blank'
+            rel='noreferrer noopener'
+            className='underline hover:opacity-70 transition-opacity'
+          >
+            ethereum.org - {t('wallets', 'wallets')}
+          </a>
         </span>
       </div>
       <ConnectWalletButton />
