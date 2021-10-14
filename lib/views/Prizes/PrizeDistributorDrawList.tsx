@@ -49,14 +49,19 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
   if (isFetched && drawsAndPrizeDistributionsToRender.length === 0) {
     return (
       <div className='flex flex-col justify-center purple-radial-gradient text-center text-accent-1 mx-auto px-2 max-w-xl mb-4 h-48 xs:h-112'>
-        <span className='mt-10 text-xl text-inverse'>
-          {t('noDrawsToCheck', 'No draws to check!')}
-        </span>
         {usersBalances.ticket.hasBalance && (
-          <span className='mb-10'>{t('comeBackSoon', 'Come back soon')}</span>
+          <>
+            <span className='mt-10 text-xl text-inverse'>
+              {t('noDrawsToCheck', 'No draws to check!')}
+            </span>
+            <span className='mb-10'>{t('comeBackSoon', 'Come back soon')}</span>
+          </>
         )}
         {!usersBalances.ticket.hasBalance && (
           <>
+            <span className='mt-10 text-xl text-inverse'>
+              {t('noDrawsToCheckNoDeposits', 'No draws to check!')}
+            </span>
             <span className='mb-2'>
               {t('depositToBeEligible', 'Make a deposit for a chance to win')}
             </span>
