@@ -2257,6 +2257,14 @@
     chalk "^4.1.2"
     debug "^4.3.2"
 
+"@pooltogether/draw-calculator-js@^1.0.0-beta.28":
+  version "1.0.0-beta.28"
+  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.28.tgz#bca219f6c943141ba6f3772ff6ce66a50aa797ae"
+  integrity sha512-5q7F+pHrfTta9Denwq8pn4fopV1ehIzFwhbK7vpkcx1o9ksyczoGqZyNfq9KkTHTTE9+1V3L6MvBgF7YGeh2OA==
+  dependencies:
+    chalk "^4.1.2"
+    debug "^4.3.2"
+
 "@pooltogether/etherplex@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.1.tgz#330f326ce8fbfd4f4aae70d5fd02d5baa3e9195e"
@@ -2356,10 +2364,10 @@
     "@pooltogether/draw-calculator-js" "^1.0.0-beta.27"
     "@pooltogether/etherplex" "^1.1.2"
 
-"@pooltogether/v4-pool-data@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-0.10.0.tgz#a849f98062903476098ca256d732946747fa278e"
-  integrity sha512-RiM2NVMITRIM757wb/iL08ybYBjVnkG5AzC0t149J2PI4g+lBTqdPlw+dAzwdjvlokqmmMKfDR9zzf0YrHsNig==
+"@pooltogether/v4-pool-data@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-0.11.0.tgz#5a9a6e4cbf08413df1577419ee697e1b8cbe89bb"
+  integrity sha512-ERvhN1WI5PMxjj2QsLU5mIGeFiNRAhv2HGzO1m/GV6tc5TZYaX3AHkbUUM/zGP9nRY4ooMzzGW/d9fUjZ+F/Wg==
 
 "@pooltogether/yield-source-interface@^1.0.1":
   version "1.0.2"
