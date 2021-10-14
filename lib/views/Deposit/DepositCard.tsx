@@ -275,7 +275,7 @@ const HelpLink = () => {
     <a
       href='https://docs.pooltogether.com'
       target='_blank'
-      rel='noreferrer nofollow'
+      rel='noreferrer noopener'
       className='text-center text-xs text-inverse opacity-70 hover:opacity-100 transition-opacity xs:-ml-3'
       style={{ minWidth: BUTTON_MIN_WIDTH }}
     >
@@ -401,11 +401,20 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-1 my-4 text-xxs rounded-lg text-white'>
+      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-white'>
         {t(
           'disclaimerComeBackRegularlyToClaimWinnings',
-          'Come back regularly to claim your winnings!'
+          'You are eligible for all future prizes! Come back to check for winnings, if you don’t claim winnings in 60 days they will expire. <Link>Learn more</Link>'
         )}
+        <br />
+        <a
+          href='https://docs.pooltogether.com'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='underline text-xs'
+        >
+          {t('learnMore', 'Learn more')}
+        </a>
       </div>
       <SquareButton
         size={SquareButtonSize.md}
