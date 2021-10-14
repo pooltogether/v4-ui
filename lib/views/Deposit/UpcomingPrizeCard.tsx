@@ -1,7 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { numberWithCommas } from '@pooltogether/utilities'
 
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
 import { ViewPrizeTiersTrigger } from 'lib/views/Prizes/DrawCard/DrawDetails'
@@ -11,8 +10,6 @@ import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/LinkedPrizePool/useDrawBe
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
-
-const AWARD_DAY = 'Friday'
 
 export const UpcomingPrizeCard = (props) => {
   const { t } = useTranslation()
@@ -43,24 +40,24 @@ export const UpcomingPrizeCard = (props) => {
       >
         <div className='lightning-bolts' />
         <div className='border-gradient mx-auto py-4 xs:py-8'>
-          <div className='w-2/3 xs:w-1/2 mx-auto leading-none'>
-            <h1 className='text-4xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
+          <div className='mx-auto leading-none'>
+            <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
               {isFetched ? `$${amountPretty}` : '--'}
             </h1>
-            <div className='uppercase font-semibold text-default-soft text-xxs xs:text-lg mt-2'>
+            <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-4'>
               {t('inDailyPrizes', 'In daily prizes')}
             </div>
           </div>
 
           {isDrawBeaconPeriodFetched && (
             <>
-              <div className='uppercase font-semibold text-highlight-6 text-xxs xs:text-sm w-2/3 xs:w-1/2 mx-auto'>
+              <div className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto'>
                 {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
                 {countdown.secondsLeft === 0 ? (
-                  'Closing soon'
+                  t('closesSoon', 'Closes soon')
                 ) : (
                   <>
-                    Closing in
+                    {t('closingIn', 'Closing in')}
                     <CountdownString
                       className='ml-1'
                       {...countdown}
@@ -83,23 +80,13 @@ export const UpcomingPrizeCard = (props) => {
 
 const ViewPrizeBreakdownTrigger = (props) => {
   const { data: prizePool } = useSelectedNetworkPrizePool()
-  const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
+  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
   return (
     <ViewPrizeTiersTrigger
-      className='uppercase font-bold text-white text-xxs transition hover:text-highlight-9 leading-none tracking-wide'
+      className='uppercase underline font-bold text-green text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
       token={prizePoolTokens?.token}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
     />
   )
-}
-
-const formatNumbers = (num) => {
-  if (num > 1000000) {
-    return `$${numberWithCommas(num / 1000000, { precision: 2 })} ${'million'}`
-  } else if (num > 10000) {
-    return `$${numberWithCommas(num, { precision: 0 })}`
-  } else {
-    return `$${numberWithCommas(num, { precision: 0 })}`
-  }
 }

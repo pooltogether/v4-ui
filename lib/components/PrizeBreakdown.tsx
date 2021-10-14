@@ -1,22 +1,23 @@
+import React from 'react'
+import classnames from 'classnames'
 import { Token } from '@pooltogether/hooks'
+import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import {
   calculateNumberOfPrizesForIndex,
   calculatePrizeForDistributionIndex,
   PrizeDistribution
 } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
-import classnames from 'classnames'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { MouseEventHandler } from 'react-modal/node_modules/@types/react'
 
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
-import { formatUnits } from '@ethersproject/units'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution
   token: Token
+  closeModal: MouseEventHandler
   className?: string
   isFetched?: boolean
 }
@@ -60,6 +61,14 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
           )}
         </div>
       </div>
+      <SquareButton
+        theme={SquareButtonTheme.tealOutline}
+        size={SquareButtonSize.md}
+        className='text-center mx-auto w-3/4 mt-8'
+        onClick={props.closeModal}
+      >
+        {t('close', 'Close')}
+      </SquareButton>
     </div>
   )
 }

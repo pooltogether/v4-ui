@@ -131,7 +131,7 @@ export const ViewPrizeTiersTrigger = (props: {
 
 ViewPrizeTiersTrigger.defaultProps = {
   className:
-    'uppercase font-bold text-inverse text-xxs transition hover:text-green leading-none tracking-wide'
+    'uppercase font-bold text-inverse text-xxs sm:text-sm transition hover:text-green leading-none tracking-wide'
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (
@@ -162,6 +162,7 @@ const PrizeBreakdownModal = (
       className='mt-10 mx-auto'
       prizeDistribution={props.prizeDistribution}
       token={props.token}
+      closeModal={props.closeModal}
     />
   </ModalWithStyles>
 )

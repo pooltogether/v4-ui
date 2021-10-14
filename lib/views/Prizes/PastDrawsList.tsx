@@ -133,7 +133,8 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     return (
       <div className={classNames('text-accent-1 flex', className)}>
         <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-        Draw #{draw.drawId} unlocks in
+        {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
+        {t('unlocksIn', 'unlocks in')}
         <CountdownString
           className='ml-1'
           {...drawLockCountdown}

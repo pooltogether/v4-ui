@@ -209,7 +209,8 @@ const DrawClaimButton = (props: DrawClaimButtonProps) => {
           </span>
         </SquareButton>
         <div className='text-left uppercase font-semibold text-white opacity-90 text-xxs leading-none mt-2'>
-          Draw #{draw.drawId} unlocks in{' '}
+          {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
+          {t('unlocksIn', 'unlocks in')}{' '}
           <CountdownString
             {...drawLockCountdown}
             hideHours={thereIsWeeks}
