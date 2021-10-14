@@ -31,15 +31,17 @@ export const ConnectWalletCard = (props: ConnectWalletCardProps) => {
           )}
         </span>
         <span>
-          {t('forMoreInfoOnWalletSee:', 'For more info on wallets, see')}:<br />
+          {t('forMoreInfoOnWalletSee', 'Connect to your existing wallet or')}
+          <br />
           <a
-            href='https://ethereum.org/en/wallets/'
+            href='https://docs.pooltogether.com/'
             target='_blank'
             rel='noreferrer noopener'
             className='underline hover:opacity-70 transition-opacity'
           >
-            ethereum.org - {t('wallets', 'wallets')}
+            {t('learnMoreAboutProtocol')}
           </a>
+          .
         </span>
       </div>
       <ConnectWalletButton />
