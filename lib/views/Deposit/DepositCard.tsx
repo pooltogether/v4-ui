@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Card, SquareLink } from '@pooltogether/react-components'
 import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
+import { ethers } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
@@ -27,7 +28,8 @@ import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
-import { ethers } from 'ethers'
+
+const BUTTON_MIN_WIDTH = 100
 
 export const DepositCard = () => {
   const router = useRouter()
@@ -239,8 +241,9 @@ export const DepositCard = () => {
           )}
         </Card>
 
-        <div className='w-full flex bg-tsunami-card-bridge justify-around py-4 rounded-b-xl'>
+        <div className='w-full flex bg-tsunami-card-bridge justify-around px-2 py-4 rounded-b-xl'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
+          <HelpLink />
           <GetTokensModalTrigger prizePool={prizePool} />
         </div>
       </div>
@@ -265,6 +268,28 @@ export const DepositCard = () => {
   )
 }
 
+const HelpLink = () => {
+  const { t } = useTranslation()
+
+  return (
+    <a
+      href='https://docs.pooltogether.com'
+      target='_blank'
+      rel='noreferrer nofollow'
+      className='text-center text-xs text-inverse opacity-70 hover:opacity-100 transition-opacity xs:-ml-3'
+      style={{ minWidth: BUTTON_MIN_WIDTH }}
+    >
+      <FeatherIcon
+        icon={'help-circle'}
+        className='relative w-4 h-4 mr-2 inline-block'
+        style={{ top: -2 }}
+      />
+
+      {t('help', 'Help')}
+    </a>
+  )
+}
+
 interface ExternalLinkProps {
   prizePool: PrizePool
 }
@@ -278,8 +303,9 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className=' text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
+        style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
         <FeatherIcon
           icon={'plus-circle'}
@@ -307,8 +333,9 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className=' text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
+        style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
         <FeatherIcon
           icon={'arrow-left'}
