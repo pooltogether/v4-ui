@@ -82,7 +82,7 @@ const ViewPrizeBreakdownTrigger = (props) => {
 
   return (
     <ViewPrizeTiersTrigger
-      className='uppercase underline font-bold text-green text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
+      className='relative uppercase underline font-bold text-green text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
       token={prizePoolTokens?.token}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
     />
