@@ -38,9 +38,9 @@ export const UpcomingPrizeCard = (props) => {
           'relative overflow-visible flex flex-col justify-between text-center bg-prize-amount--small'
         )}
       >
-        <div className='lightning-bolts' />
-        <div className='border-gradient mx-auto py-4 xs:py-8'>
-          <div className='mx-auto leading-none'>
+        <div className='lightning-bolts z-10' />
+        <div className='upcoming-banner-animated mx-auto py-4 xs:py-8'>
+          <div className='mx-auto leading-none relative'>
             <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
               {isFetched ? `$${amountPretty}` : '--'}
             </h1>
@@ -50,25 +50,23 @@ export const UpcomingPrizeCard = (props) => {
           </div>
 
           {isDrawBeaconPeriodFetched && (
-            <>
-              <div className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto'>
-                {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
-                {countdown.secondsLeft === 0 ? (
-                  t('closesSoon', 'Closes soon')
-                ) : (
-                  <>
-                    {t('closingIn', 'Closing in')}
-                    <CountdownString
-                      className='ml-1'
-                      {...countdown}
-                      hideHours={thereIsWeeks}
-                      hideMinutes={thereIsDays}
-                      hideSeconds={thereIsMinutes}
-                    />
-                  </>
-                )}
-              </div>
-            </>
+            <div className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto relative'>
+              {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
+              {countdown.secondsLeft === 0 ? (
+                t('closesSoon', 'Closes soon')
+              ) : (
+                <>
+                  {t('closingIn', 'Closing in')}
+                  <CountdownString
+                    className='ml-1'
+                    {...countdown}
+                    hideHours={thereIsWeeks}
+                    hideMinutes={thereIsDays}
+                    hideSeconds={thereIsMinutes}
+                  />
+                </>
+              )}
+            </div>
           )}
 
           <ViewPrizeBreakdownTrigger />
