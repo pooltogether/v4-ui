@@ -1,5 +1,5 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
-import { PrizeDistributor, Draw } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, Draw, DrawResults } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/queryKeys'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import {
@@ -8,8 +8,6 @@ import {
   setStoredDrawResult
 } from 'lib/utils/drawResultsStorage'
 import { useQuery } from 'react-query'
-
-// TODO: Optimize this rather than calling for each draw on render
 
 /**
  *
@@ -42,21 +40,22 @@ const getUsersDrawResult = async (
     return storedResult.drawResults
   }
 
-  // console.log('TEST', 'base path', window.location.origin)
-  // const url = new URL('/.netlify/functions/users-prizes', window.location.origin)
-  // url.searchParams.set('usersAddress', usersAddress)
-  // url.searchParams.set('chainId', String(prizeDistributor.chainId))
-  // url.searchParams.set('prizeDistributorAddress', prizeDistributor.address)
-  // url.searchParams.set('drawId', String(draw.drawId))
+  let drawResults: DrawResults
+  try {
+    const url = getDrawCalcUrl(
+      prizeDistributor.chainId,
+      prizeDistributor.address,
+      usersAddress,
+      draw.drawId
+    )
+    const response = await fetch(url.toString())
+    const drawResultsJson = await response.json()
+    drawResults = deserializeBigNumbers(drawResultsJson)
+  } catch (e) {
+    console.log(e.message)
+    drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
+  }
 
-  // console.log('TEST', 'Fetching', url)
-  // const response = await fetch(url.toString())
-  // console.log('TEST', 'Response', response)
-  // let drawResults = await response.json()
-  // drawResults = deserializeBigNumbers(drawResults)
-  // console.log('TEST', 'Result', drawResults)
-
-  const drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
   // NOTE: Assumes draw is unclaimed.
   setStoredDrawResult(
     usersAddress,
@@ -67,3 +66,11 @@ const getUsersDrawResult = async (
   )
   return drawResults
 }
+
+const getDrawCalcUrl = (
+  chainId: number,
+  prizeDistributorAddress: string,
+  usersAddress: string,
+  drawId: number
+) =>
+  `https://tsunami-prizes-production.pooltogether-api.workers.dev/${chainId}/${prizeDistributorAddress}/prizes/${usersAddress}/${drawId}/`
