@@ -35,7 +35,7 @@ export const CUSTOM_WALLETS_CONFIG = [
   {
     walletName: 'trezor',
     preferred: true,
-    appUrl: 'https://app.pooltogether.com',
+    appUrl: 'https://v4.pooltogether.com',
     email: 'hello@pooltogether.com',
     rpcUrl: RPC_URL
   },

@@ -1,10 +1,10 @@
 import Head from 'next/head'
 
 export const Meta = ({ title }) => {
-  const defaultTitle = 'Tsunami (v4) - PoolTogether'
+  const defaultTitle = '"Tsunami", PoolTogether v4.'
   title = title ? `${title} - ${defaultTitle}` : defaultTitle
 
-  let url = `https://app.pooltogether.com`
+  let url = `https://v4.pooltogether.com`
   if (typeof window !== 'undefined') {
     url = window.location.href
   }
