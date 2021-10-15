@@ -18,6 +18,7 @@ export interface DrawDetailsProps {
   prizeDistribution?: PrizeDistribution
   draw: Draw
   token: Token
+  ticket: Token
 }
 
 export const DrawDetails = (props: DrawDetailsProps) => {

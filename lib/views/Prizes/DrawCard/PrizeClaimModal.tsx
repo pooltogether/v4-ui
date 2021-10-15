@@ -139,7 +139,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
         <div className='w-full mx-auto mt-4 flex flex-col'>
           <div className='mx-auto font-bold text-white mb-4'>
             <span className='text-3xl '>{amountPretty}</span>
-            <span className='text-xl ml-2'>{token.symbol}</span>
+            <span className='text-xl ml-2'>{ticket.symbol}</span>
           </div>
 
           <PrizeList
@@ -182,7 +182,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   //     <div className='w-full mx-auto mt-4 flex flex-col'>
   //       <div className='mx-auto font-bold text-flashy mb-4'>
   //         <span className='text-3xl '>{amountPretty}</span>
-  //         <span className='text-xl ml-2'>{token.symbol}</span>
+  //         <span className='text-xl ml-2'>{ticket.symbol}</span>
   //       </div>
 
   //       <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
@@ -205,14 +205,3 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   //   </ModalWithStyles>
   // )
 }
-
-// const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
-//   const { amount, ticket } = props
-//   const { t } = useTranslation()
-//   return (
-//     <InfoListItem
-//       label={t('tickerToReceive', { ticker: ticket.symbol })}
-//       value={amount.amountPretty}
-//     />
-//   )
-// }

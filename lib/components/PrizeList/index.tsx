@@ -72,7 +72,7 @@ const PrizeRow = (props: PrizeRowProps) => {
           }
         )}
       >
-        <span>{`${amountPretty} ${token.symbol}`}</span>
+        <span>{`${amountPretty} ${ticket.symbol}`}</span>
         <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')}${getEmoji(tierIndex)}`}</span>
       </div>
     </li>

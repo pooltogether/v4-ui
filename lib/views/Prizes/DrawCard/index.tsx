@@ -60,6 +60,7 @@ export const DrawCard = (props: DrawCardProps) => {
           {...props}
           prizeDistribution={prizeDistribution}
           token={prizePoolTokens.token}
+          ticket={prizePoolTokens.ticket}
         />
         <DrawClaimSection
           {...props}

@@ -69,6 +69,7 @@ export const PastDrawsList = (props: {
               {...drawAndPrizeDistribution}
               prizeDistributor={prizeDistributor}
               token={prizePoolTokens.token}
+              ticket={prizePoolTokens.ticket}
               claimedAmount={claimedAmounts?.[drawId]}
               drawLock={drawLocks[drawId]}
             />
@@ -123,7 +124,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
 )
 
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, prizeDistributor, draw, className, token, drawLock } = props
+  const { claimedAmount, prizeDistributor, draw, className, ticket, drawLock } = props
 
   const { t } = useTranslation()
 
@@ -167,13 +168,13 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
     const { amountPretty } = roundPrizeAmount(
       storedDrawResult?.drawResults.totalValue,
-      token.decimals
+      ticket.decimals
     )
     return (
       <div className={classNames(className, 'animate-pulse')}>
         <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
-        <span className='ml-2 font-bold'>{token.symbol}</span>
+        <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
@@ -182,7 +183,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       <div className={classNames(className)}>
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
-        <span className='ml-2 font-bold'>{token.symbol}</span>
+        <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
   } else {

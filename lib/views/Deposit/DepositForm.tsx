@@ -248,7 +248,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     errorMessages &&
     errorMessages.length > 0 &&
     errorMessages[0].message !== '' &&
-    !depositTx.inFlight
+    !depositTx?.inFlight
   ) {
     const messages = errorMessages.map((error) => (
       <span key={error.message} className='text-red font-semibold'>
