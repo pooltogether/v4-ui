@@ -408,7 +408,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         )}
         <br />
         <a
-          href='https://docs.pooltogether.com'
+          href='https://docs.pooltogether.com/faq/prizes-and-winning'
           target='_blank'
           rel='noopener noreferrer'
           className='underline text-xs'
