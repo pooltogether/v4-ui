@@ -39,7 +39,11 @@ export const CountdownString = (props: CountdownStringProps) => {
     <span className={classNames('space-x-1', className)}>
       {Boolean(weeks) && !hideWeeks && `${weeks} ${t('lowercaseWeek', { count: weeks })}`}
       {Boolean(days) && !hideDays && `${days} ${t('lowercaseDay', { count: days })}`}
-      {Boolean(hours) && !hideHours && `${hours} ${t('lowercaseHour', { count: hours })}`}
+      {Boolean(hours) && !hideHours && (
+        <span className='ml-1'>
+          {hours} {t('lowercaseHour', { count: hours })}
+        </span>
+      )}
       {Boolean(minutes) && !hideMinutes && `${minutes} ${t('lowercaseMinute', { count: minutes })}`}
       {Boolean(seconds) && !hideSeconds && `${seconds} ${t('lowercaseSecond', { count: seconds })}`}
     </span>

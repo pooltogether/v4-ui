@@ -7,7 +7,7 @@ import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersP
 import { getPrettyDate } from 'lib/utils/date'
 import { DrawCard } from './DrawCard'
 import { DrawCarousel } from './DrawCarousel'
-import { SquareButtonSize, SquareLink } from '@pooltogether/react-components'
+import { SquareButtonSize, SquareButtonTheme, SquareLink } from '@pooltogether/react-components'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -68,8 +68,9 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
             <SquareLink
               Link={Link}
               size={SquareButtonSize.sm}
+              theme={SquareButtonTheme.tealOutline}
               href={{ pathname: '/deposit', query: router.query }}
-              className='mb-8 items-center block xs:inline mx-auto w-32'
+              className='mt-4 mb-8 items-center block xs:inline mx-auto w-32'
             >
               {t('deposit')}
             </SquareLink>

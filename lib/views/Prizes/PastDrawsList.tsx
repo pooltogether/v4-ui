@@ -56,9 +56,11 @@ export const PastDrawsList = (props: {
     <>
       <PastDrawsListHeader className='mb-1' />
       {drawsAndPrizeDistributions.length === 0 && (
-        <div className='opacity-70 text-center w-full mt-12'>
-          {t('noDrawsYet', 'No draws yet, check back soon')}
-        </div>
+        <Card>
+          <div className='opacity-70 text-center w-full'>
+            {t('noDrawsYet', 'No draws yet, check back soon')}
+          </div>
+        </Card>
       )}
       <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
