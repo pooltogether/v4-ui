@@ -1,6 +1,12 @@
 import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
-import { Modal, ModalProps, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import {
+  Tooltip,
+  Modal,
+  ModalProps,
+  SquareButton,
+  SquareButtonTheme
+} from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
@@ -161,7 +167,9 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
         <TextInputGroup
           readOnly
           disabled
-          symbolAndIcon={ticket.symbol}
+          symbolAndIcon={
+            <TokenSymbolAndIcon chainId={chainId} address={ticket.address} symbol={ticket.symbol} />
+          }
           Input={RectangularInput}
           roundedClassName={'rounded-lg'}
           containerRoundedClassName={'rounded-lg'}
@@ -216,7 +224,20 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
   const { t } = useTranslation()
   return (
     <InfoListItem
-      label={t('tickerToReceive', { ticker: ticket.symbol })}
+      label={
+        <>
+          <Tooltip
+            id={`tooltip-ticket-representes-${ticket.address}`}
+            tip={t(
+              'ticketRepresentsChanceToWin',
+              'The {{ticket}} token represents your chance to win.',
+              { ticket: ticket.symbol }
+            )}
+          >
+            {t('tickerToReceive', { ticker: ticket.symbol })}
+          </Tooltip>
+        </>
+      }
       value={amount.amountPretty}
     />
   )

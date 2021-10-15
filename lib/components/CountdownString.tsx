@@ -44,7 +44,11 @@ export const CountdownString = (props: CountdownStringProps) => {
           {hours} {t('lowercaseHour', { count: hours })}
         </span>
       )}
-      {Boolean(minutes) && !hideMinutes && `${minutes} ${t('lowercaseMinute', { count: minutes })}`}
+      {Boolean(minutes) && !hideMinutes && (
+        <span className='ml-1'>
+          {minutes} {t('lowercaseMinute', { count: minutes })}
+        </span>
+      )}
       {Boolean(seconds) && !hideSeconds && `${seconds} ${t('lowercaseSecond', { count: seconds })}`}
     </span>
   )

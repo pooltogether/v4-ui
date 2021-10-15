@@ -9,9 +9,10 @@ export interface PrizePoolTokens {
 }
 
 export const usePrizePoolTokens = (prizePool: PrizePool) => {
-  const enabled = Boolean(prizePool)
+  const enabled = Boolean(prizePool) && Boolean(prizePool.chainId)
+
   return useQuery(
-    'prizePoolTokens',
+    ['prizePoolTokens', prizePool?.chainId, prizePool?.address],
     async () => {
       const ticketDataPromise = prizePool.getTicketData()
       const tokenDataPromise = prizePool.getTokenData()
