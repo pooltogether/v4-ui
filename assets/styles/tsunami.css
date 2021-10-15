@@ -123,6 +123,7 @@
   z-index: -1;
   animation: animatedgradient 8s ease alternate infinite;
   background-size: 300% 300%;
+  animation-timing-function: steps(50);
 }
 
 @keyframes animatedgradient {

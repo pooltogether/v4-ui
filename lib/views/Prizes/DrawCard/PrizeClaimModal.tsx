@@ -30,11 +30,6 @@ interface PrizeClaimModalProps extends DrawPropsWithDetails {
   setTxId: (txId: number) => void
 }
 
-enum ModalState {
-  viewPrizes,
-  reviewTransaction
-}
-
 export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
     drawResults,
@@ -55,7 +50,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
   const usersAddress = useUsersAddress()
-  const [modalState, setModalState] = useState<ModalState>(ModalState.viewPrizes)
 
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(prizeDistributor, token)
 
@@ -131,40 +125,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   const { amountPretty } = roundPrizeAmount(drawResults.totalValue, ticket.decimals)
 
-  if (modalState === ModalState.viewPrizes) {
-    return (
-      <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
-        <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
-
-        <div className='w-full mx-auto mt-4 flex flex-col'>
-          <div className='mx-auto font-bold text-white mb-4'>
-            <span className='text-3xl '>{amountPretty}</span>
-            <span className='text-xl ml-2'>{ticket.symbol}</span>
-          </div>
-
-          <PrizeList
-            prizes={drawResults.prizes}
-            ticket={ticket}
-            token={token}
-            prizeDistribution={prizeDistribution}
-          />
-
-          <SquareButton
-            className='mt-8 w-full'
-            onClick={() => {
-              // setModalState(ModalState.reviewTransaction)
-              sendClaimTx()
-            }}
-            theme={SquareButtonTheme.rainbow}
-            disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
-          >
-            {t('confirmClaim', 'Confirm claim')}
-          </SquareButton>
-        </div>
-      </ModalWithStyles>
-    )
-  }
-
   if (!isWalletOnProperNetwork) {
     return (
       <ModalWithStyles label='Wrong network modal' isOpen={isOpen} closeModal={closeModal}>
@@ -174,34 +134,34 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     )
   }
 
-  return null
-  // return (
-  //   <ModalWithStyles label='Network gated modal' isOpen={isOpen} closeModal={closeModal}>
-  //     <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
+  return (
+    <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+      <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
-  //     <div className='w-full mx-auto mt-4 flex flex-col'>
-  //       <div className='mx-auto font-bold text-flashy mb-4'>
-  //         <span className='text-3xl '>{amountPretty}</span>
-  //         <span className='text-xl ml-2'>{ticket.symbol}</span>
-  //       </div>
+      <div className='w-full mx-auto mt-4 flex flex-col'>
+        <div className='mx-auto font-bold text-white mb-4'>
+          <span className='text-3xl '>{amountPretty}</span>
+          <span className='text-xl ml-2'>{ticket.symbol}</span>
+        </div>
 
-  //       <PrizeList prizes={drawResults.prizes} ticket={ticket} token={token} />
+        <PrizeList
+          prizes={drawResults.prizes}
+          ticket={ticket}
+          token={token}
+          prizeDistribution={prizeDistribution}
+        />
 
-  //       <TxButtonNetworkGated
-  //         className='mt-8 w-full'
-  //         chainId={chainId}
-  //         toolTipId={`deposit-tx-${chainId}`}
-  //         onClick={() => {
-  //           console.log('wat 2')
-
-  //           // from what I can tell this state isn't necessary ...
-  //           sendClaimTx()
-  //         }}
-  //         disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
-  //       >
-  //         {t('confirmClaim', 'Confirm claim')}
-  //       </TxButtonNetworkGated>
-  //     </div>
-  //   </ModalWithStyles>
-  // )
+        <SquareButton
+          className='mt-8 w-full'
+          onClick={() => {
+            sendClaimTx()
+          }}
+          theme={SquareButtonTheme.rainbow}
+          disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
+        >
+          {t('confirmClaim', 'Confirm claim')}
+        </SquareButton>
+      </div>
+    </ModalWithStyles>
+  )
 }
