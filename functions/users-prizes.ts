@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions'
-import { testnet } from '@pooltogether/v4-pool-data'
+import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { ethers } from 'ethers'
 import fetch from 'cross-fetch'
 import { isValidAddress, NETWORK } from '@pooltogether/utilities'
@@ -145,16 +145,11 @@ export const getProvider = (chainId) => {
 // Contract List
 
 /**
- * TODO: ADD THE MAINNET CONTRACT LIST
  * @param chainId
  * @returns
  */
 const getContractList = (chainId) => {
-  if (SUPPORTED_NETWORKS['mainnets'].includes(chainId)) {
-    return testnet
-  } else {
-    return testnet
-  }
+  return SUPPORTED_NETWORKS['mainnets'].includes(chainId) ? mainnet : testnet
 }
 
 // Cloudflare KV
