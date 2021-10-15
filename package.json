@@ -58,7 +58,7 @@
     "@pooltogether/current-pool-data": "3.5.14",
     "@pooltogether/draw-calculator-js": "^1.0.0-beta.29",
     "@pooltogether/etherplex": "^1.1.1",
-    "@pooltogether/hooks": "^1.1.10",
+    "@pooltogether/hooks": "^1.1.11",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
     "@pooltogether/react-components": "^1.2.3",
     "@pooltogether/utilities": "^0.1.5",
