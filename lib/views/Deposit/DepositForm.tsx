@@ -244,7 +244,12 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
 
   const errorMessages = errors ? Object.values(errors) : null
-  if (errorMessages && errorMessages.length > 0 && errorMessages[0].message !== '') {
+  if (
+    errorMessages &&
+    errorMessages.length > 0 &&
+    errorMessages[0].message !== '' &&
+    !depositTx.inFlight
+  ) {
     const messages = errorMessages.map((error) => (
       <span key={error.message} className='text-red font-semibold'>
         {error.message}

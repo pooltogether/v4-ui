@@ -21,6 +21,7 @@ import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUs
 import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -164,7 +165,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       </span>
     )
   } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
-    const { amountPretty } = getAmountFromBigNumber(
+    const { amountPretty } = roundPrizeAmount(
       storedDrawResult?.drawResults.totalValue,
       token.decimals
     )

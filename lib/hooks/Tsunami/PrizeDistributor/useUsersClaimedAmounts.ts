@@ -2,6 +2,7 @@ import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
+import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useQuery } from 'react-query'
 
 /**
@@ -37,10 +38,7 @@ const getUsersClaimedAmounts = async (
   } = {}
 
   validDrawIds.map((drawId, index) => {
-    claimedAmountsKeyedByDrawId[drawId] = getAmountFromBigNumber(
-      claimedAmounts[index],
-      token.decimals
-    )
+    claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[index], token.decimals)
   })
 
   return claimedAmountsKeyedByDrawId

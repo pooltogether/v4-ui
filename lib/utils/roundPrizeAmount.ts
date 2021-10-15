@@ -5,6 +5,6 @@ import { getAmountFromString } from './getAmountFromString'
 // TODO: Round to 6 decimal places for ultimate accuracy
 export const roundPrizeAmount = (amountUnformatted: BigNumber, decimals: string) =>
   getAmountFromString(
-    Math.ceil(Number(formatUnits(amountUnformatted, decimals))).toString(),
+    Math.round(Number(formatUnits(amountUnformatted, decimals))).toString(),
     decimals
   )
