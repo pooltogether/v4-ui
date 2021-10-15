@@ -5,12 +5,12 @@ import { parseUnits } from '@ethersproject/units'
 export const DECIMALS_FOR_DISTRIBUTION_TIERS = '9'
 
 export const TSUNAMI_USDC_PRIZE_DISTRIBUTION: PrizeDistribution = Object.freeze({
-  matchCardinality: 10,
-  tiers: [183418928, 0, 0, 315480557, 0, 501100513, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   bitRangeSize: 2,
+  tiers: [166889185, 0, 0, 320427236, 0, 512683578, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   maxPicksPerUser: 2,
-  numberOfPicks: BigNumber.from(0x080000),
-  prize: BigNumber.from(0x032c694b80),
+  matchCardinality: 7,
+  numberOfPicks: BigNumber.from(0x1b3b),
+  prize: BigNumber.from(0x037ce0a900),
   drawStartTimestampOffset: 0,
   drawEndTimestampOffset: 0
 })
