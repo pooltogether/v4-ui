@@ -356,11 +356,14 @@ const BalanceUsdValue = (props: BalanceProps) => {
     return <span className={classNames(props.className)}>($--)</span>
   }
 
-  const usdValuePretty = numberWithCommas(balance.amountUnformatted.mul(tokenPrice.usd), {
-    decimals: token.decimals
-  })
+  return null
 
-  return <span className={classNames(props.className)}>(${usdValuePretty})</span>
+  // # TODO: why no usd price?
+  // const usdValuePretty = numberWithCommas(balance.amountUnformatted.mul(tokenPrice.usd), {
+  //   decimals: token.decimals
+  // })
+  //
+  // return <span className={classNames(props.className)}>(${usdValuePretty})</span>
 }
 
 const Piggy = (props) => (
