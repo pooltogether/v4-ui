@@ -1,6 +1,6 @@
-# PoolTogether Skeleton UI
+# PoolTogether V4 UI
 
-A simple React app to standardize core apps across the PoolTogether ecosystem.
+Interact with Tsunami. V4 of the PoolTogether prize-savings protocol.
 
 # Setup
 
@@ -27,12 +27,6 @@ To run the local server, run:
 ```
 $ yarn dev
 ```
-
-# Usage
-
-- Choose what layout you want (`DefaultLayout` or `SimpleLayout`)
-- Add supported networks to `useSupportedNetworks`
-- Remember to wrap your pages with `<Layout>`
 
 #### Developer Tools
 
