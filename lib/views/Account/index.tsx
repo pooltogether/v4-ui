@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import {
+  AddTokenToMetamaskButton,
   Card,
   LoadingDots,
   NetworkIcon,
@@ -13,9 +14,16 @@ import {
   SquareButtonSize,
   SquareButtonTheme,
   ThemedClipSpinner,
+  Tooltip,
   TokenIcon
 } from '@pooltogether/react-components'
-import { Amount, Token, TokenBalance, useTransaction } from '@pooltogether/hooks'
+import {
+  Amount,
+  Token,
+  TokenBalance,
+  useTransaction,
+  useIsWalletMetamask
+} from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
@@ -25,6 +33,7 @@ import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
@@ -315,7 +324,12 @@ interface BalanceProps {
 
 const Balance = (props: BalanceProps) => {
   const { prizePool, isFetched, balance, ticket } = props
-  const { isWalletConnected } = useOnboard()
+
+  const { t } = useTranslation()
+
+  const { wallet, isWalletConnected } = useOnboard()
+  const isMetaMask = useIsWalletMetamask(wallet)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
 
   if (!isFetched) {
     return (
@@ -333,16 +347,42 @@ const Balance = (props: BalanceProps) => {
     )
   }
 
+  const tokenNameAndIcon = (
+    <>
+      <TokenIcon
+        sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
+        className='mr-2'
+        chainId={prizePool.chainId}
+        address={ticket.address}
+      />{' '}
+      {balance.amountPretty} {ticket.symbol}
+    </>
+  )
+
   return (
     <BalanceContainer>
       <span className='flex items-center xs:text-lg font-bold'>
-        <TokenIcon
-          sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
-          className='mr-2'
-          chainId={prizePool.chainId}
-          address={ticket.address}
-        />{' '}
-        {balance.amountPretty} {ticket.symbol}
+        {isMetaMask ? (
+          <Tooltip
+            id={`tooltip-add-${ticket.address}-metamask`}
+            tip={t('addTicketTokenToMetamask', {
+              token: ticket.symbol
+            })}
+          >
+            <AddTokenToMetamaskButton
+              t={t}
+              isWalletOnProperNetwork={isWalletOnProperNetwork}
+              isMetaMask={isMetaMask}
+              token={ticket}
+              chainId={prizePool.chainId}
+              className='font-semibold'
+            >
+              {tokenNameAndIcon}
+            </AddTokenToMetamaskButton>
+          </Tooltip>
+        ) : (
+          tokenNameAndIcon
+        )}
       </span>
       <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
     </BalanceContainer>
