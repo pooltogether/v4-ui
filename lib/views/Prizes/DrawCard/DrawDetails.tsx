@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
-import { Tooltip } from '@pooltogether/react-components'
-import { Modal, ModalProps, ThemedClipSpinner } from '@pooltogether/react-components'
+import { Modal, ModalProps } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import {
   calculatePrizeForDistributionIndex,
@@ -52,24 +52,9 @@ export const PrizeDistributorTotal = (props: {
   const { t } = useTranslation()
   const { prizeDistribution, token } = props
 
-  if (!prizeDistribution)
-    return (
-      <div className={props.className}>
-        <span className={props.pendingClassName}>
-          <Tooltip
-            id={`tooltip-what-is-propagating`}
-            place='bottom'
-            tip={t(
-              'propagatingMeans',
-              'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
-            )}
-          >
-            <ThemedClipSpinner size={10} className='mr-1' />{' '}
-            <span className='uppercase'> {t('propagating', 'Propagating ...')}</span>
-          </Tooltip>
-        </span>
-      </div>
-    )
+  if (!prizeDistribution) {
+    return null
+  }
 
   const { amountPretty } = roundPrizeAmount(prizeDistribution.prize, token.decimals)
 

@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
 import { Amount } from '@pooltogether/hooks'
-import { Card } from '@pooltogether/react-components'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -62,7 +62,7 @@ export const PastDrawsList = (props: {
           </div>
         </Card>
       )}
-      <ul className='space-y-4'>
+      <ul className='space-y-4 z-30'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
           const drawId = drawAndPrizeDistribution.draw.drawId
           return (
@@ -88,42 +88,77 @@ interface PastPrizeListItemProps extends DrawDetailsProps {
   drawLock?: DrawLock
 }
 
-const PastPrizeListItem = (props: PastPrizeListItemProps) => (
-  <li>
-    <Card style={{ minHeight: 100 }}>
-      <div className='flex flex-col xs:flex-row justify-between leading-none'>
-        <div className='flex flex-col'>
-          <span className='flex items-start'>
-            <DrawId
-              className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm leading-none mr-2'
-              {...props}
-            />
-            <DrawDate
-              className='uppercase font-bold text-accent-1 opacity-80 text-xs xs:text-sm leading-none'
-              {...props}
-            />
-          </span>
-          <ExtraDetailsSection {...props} className='mt-2' />
-        </div>
+const PastPrizeListItem = (props: PastPrizeListItemProps) => {
+  const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
 
-        <span className='mt-6 xs:mt-0'>
-          <PrizeDistributorTotal
-            {...props}
-            pendingClassName='font-bold text-inverse text-xs xs:text-sm opacity-90'
-            numberClassName='font-bold text-inverse text-xs xs:text-sm'
-            textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
-          />
-          <div className='mt-2'>
-            <ViewPrizeTiersTrigger
-              {...props}
-              className='uppercase font-bold text-xs underline text-highlight-9 hover:text-highlight-2 sm:text-sm transition leading-none tracking-wide'
-            />
+  return (
+    <li>
+      <Card style={{ minHeight: 100 }}>
+        <div className='flex flex-col xs:flex-row justify-between leading-none'>
+          <div className='flex flex-col'>
+            <span className='flex items-start'>
+              <DrawId
+                className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm leading-none mr-2'
+                {...props}
+              />
+              <DrawDate
+                className='uppercase font-bold text-accent-1 opacity-80 text-xs xs:text-sm leading-none'
+                {...props}
+              />
+            </span>
+
+            <ExtraDetailsSection {...props} className='mt-2' />
+
+            <PropagatingMessage pendingClassName={pendingClassName} {...props} />
           </div>
+
+          <span className='mt-6 xs:mt-0'>
+            <PrizeDistributorTotal
+              {...props}
+              pendingClassName={pendingClassName}
+              numberClassName='font-bold text-inverse text-xs xs:text-sm'
+              textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
+            />
+            <div className='mt-2'>
+              <ViewPrizeTiersTrigger
+                {...props}
+                className='uppercase font-bold text-xs underline text-highlight-9 hover:text-highlight-2 sm:text-sm transition leading-none tracking-wide'
+              />
+            </div>
+          </span>
+        </div>
+      </Card>
+    </li>
+  )
+}
+
+const PropagatingMessage = (props) => {
+  const { t } = useTranslation()
+
+  if (props.prizeDistribution) {
+    return null
+  }
+
+  return (
+    <div className={props.pendingClassName}>
+      <Tooltip
+        id={`tooltip-what-is-propagating`}
+        tip={t(
+          'propagatingMeans',
+          'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
+        )}
+        className='flex items-center mt-4'
+      >
+        <ThemedClipSpinner size={10} className='mr-2' />{' '}
+        <span className='uppercase flex items-center'>
+          {' '}
+          {t('propagating', 'Propagating ...')}{' '}
+          <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
         </span>
-      </div>
-    </Card>
-  </li>
-)
+      </Tooltip>
+    </div>
+  )
+}
 
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
   const { claimedAmount, prizeDistributor, draw, className, ticket, drawLock } = props
@@ -196,12 +231,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
 const PastDrawsListHeader = (props: { className?: string }) => {
   const { t } = useTranslation()
   return (
-    <div
-      className={classNames(
-        props.className,
-        'flex justify-between sticky top-12 sm:top-20 bg-body pt-4 pb-2 z-10'
-      )}
-    >
+    <div className={classNames(props.className, 'pt-4 pb-2')}>
       <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>
     </div>
   )
