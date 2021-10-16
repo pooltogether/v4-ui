@@ -1,13 +1,25 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
-import { Amount, Token, Transaction, useTransaction } from '@pooltogether/hooks'
+import {
+  Amount,
+  Token,
+  Transaction,
+  useTransaction,
+  useIsWalletMetamask
+} from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Card, SquareLink } from '@pooltogether/react-components'
-import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { Card, SquareLink, TokenIcon } from '@pooltogether/react-components'
+import {
+  AddTokenToMetamaskButton,
+  SquareButton,
+  SquareButtonTheme,
+  SquareButtonSize
+} from '@pooltogether/react-components'
 import { ethers } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
@@ -15,6 +27,7 @@ import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
@@ -203,6 +216,7 @@ export const DepositCard = () => {
               tx={completedDepositTx}
               depositedAmount={depositedAmount}
               token={token}
+              ticket={ticket}
             />
           ) : (
             <>
@@ -375,6 +389,7 @@ interface CompletedDepositProps {
   depositedAmount: Amount
   tx: Transaction
   token: Token
+  ticket: Token
 }
 
 const CompletedDeposit = (props: CompletedDepositProps) => {
@@ -386,16 +401,18 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
     <div className='flex flex-col py-4'>
       <SuccessBalloons className='mx-auto mb-6' />
 
-      <div className='leading-tight mb-4'>
+      <div className='leading-tight mb-4 text-inverse'>
         <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl'>
           {t('successfullyDeposited', {
             amount: depositedAmount.amountPretty,
             ticker: token.symbol
           })}
         </p>
-        <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4 text-white'>
+        <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4'>
           {depositedAmount.amountPretty} {token.symbol}
         </p>
+
+        <DepositAddTokenButton {...props} />
       </div>
 
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
@@ -416,6 +433,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
           {t('learnMore', 'Learn more')}
         </a>
       </div>
+
       <SquareButton
         size={SquareButtonSize.md}
         theme={SquareButtonTheme.tealOutline}
@@ -434,5 +452,35 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         {t('viewAccount', 'View account')}
       </SquareLink>
     </div>
+  )
+}
+
+const DepositAddTokenButton = (props) => {
+  const { ticket, chainId } = props
+  const { t } = useTranslation()
+
+  const { wallet } = useOnboard()
+  const isMetaMask = useIsWalletMetamask(wallet)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+
+  return (
+    <AddTokenToMetamaskButton
+      t={t}
+      isWalletOnProperNetwork={isWalletOnProperNetwork}
+      isMetaMask={isMetaMask}
+      token={ticket}
+      chainId={chainId}
+      className='underline trans text-green hover:opacity-90 cursor-pointer flex items-center text-center font-semibold mx-auto'
+    >
+      <TokenIcon
+        sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
+        className='mr-2'
+        chainId={chainId}
+        address={ticket.address}
+      />{' '}
+      {t('addTicketTokenToMetamask', {
+        token: ticket.symbol
+      })}{' '}
+    </AddTokenToMetamaskButton>
   )
 }

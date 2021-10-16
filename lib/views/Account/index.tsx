@@ -375,7 +375,7 @@ const Balance = (props: BalanceProps) => {
               isMetaMask={isMetaMask}
               token={ticket}
               chainId={prizePool.chainId}
-              className='font-semibold'
+              className='trans hover:opacity-90 cursor-pointer inline-flex items-center font-semibold'
             >
               {tokenNameAndIcon}
             </AddTokenToMetamaskButton>
