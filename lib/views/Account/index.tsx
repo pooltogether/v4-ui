@@ -372,7 +372,6 @@ const Balance = (props: BalanceProps) => {
             <AddTokenToMetamaskButton
               t={t}
               isWalletOnProperNetwork={isWalletOnProperNetwork}
-              isMetaMask={isMetaMask}
               token={ticket}
               chainId={prizePool.chainId}
               className='trans hover:opacity-90 cursor-pointer inline-flex items-center font-semibold'

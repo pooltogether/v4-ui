@@ -46,7 +46,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
           </>
         }
       >
-        <span className='text-white'>${numberWithCommas(totalGasUsd, { precision: 2 })}</span>
+        <span className='text-inverse'>${numberWithCommas(totalGasUsd, { precision: 2 })}</span>
       </Tooltip>
     )
   }

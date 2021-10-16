@@ -463,11 +463,14 @@ const DepositAddTokenButton = (props) => {
   const isMetaMask = useIsWalletMetamask(wallet)
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
+  if (!isMetaMask) {
+    return null
+  }
+
   return (
     <AddTokenToMetamaskButton
       t={t}
       isWalletOnProperNetwork={isWalletOnProperNetwork}
-      isMetaMask={isMetaMask}
       token={ticket}
       chainId={chainId}
       className='underline trans text-green hover:opacity-90 cursor-pointer flex items-center text-center font-semibold mx-auto'

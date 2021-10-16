@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
+import { Tooltip } from '@pooltogether/react-components'
 import { Modal, ModalProps, ThemedClipSpinner } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import {
@@ -55,7 +56,17 @@ export const PrizeDistributorTotal = (props: {
     return (
       <div className={props.className}>
         <span className={props.pendingClassName}>
-          <ThemedClipSpinner size={10} className='mr-1' /> {t('propagating', 'Propagating ...')}
+          <Tooltip
+            id={`tooltip-what-is-propagating`}
+            place='bottom'
+            tip={t(
+              'propagatingMeans',
+              'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
+            )}
+          >
+            <ThemedClipSpinner size={10} className='mr-1' />{' '}
+            <span className='uppercase'> {t('propagating', 'Propagating ...')}</span>
+          </Tooltip>
         </span>
       </div>
     )
@@ -74,7 +85,7 @@ PrizeDistributorTotal.defaultProps = {
   // 'text-flashy' huge CPU/GPU perf hit because it's being rendered on all carousel slides at once
   // numberClassName: 'font-bold text-xl text-flashy',
   numberClassName: 'font-bold text-white text-xs xs:text-sm',
-  pendingClassName: 'font-bold text-white opacity-70 uppercase',
+  pendingClassName: 'font-bold text-white opacity-70',
   textClassName: 'font-bold text-white text-xxs xs:text-xs ml-1 opacity-60'
 }
 

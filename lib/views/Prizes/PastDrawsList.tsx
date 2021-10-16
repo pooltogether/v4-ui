@@ -109,7 +109,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => (
         <span className='mt-6 xs:mt-0'>
           <PrizeDistributorTotal
             {...props}
-            pendingClassName='font-bold text-inverse text-xs xs:text-sm opacity-90 uppercase'
+            pendingClassName='font-bold text-inverse text-xs xs:text-sm opacity-90'
             numberClassName='font-bold text-inverse text-xs xs:text-sm'
             textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
           />
