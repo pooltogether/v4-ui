@@ -531,22 +531,26 @@ const ManageDepositDropdown = (props) => {
                 onSelect={() => {
                   console.log('withdraw')
                 }}
+                className='flex items-center'
               >
-                {t('withdraw')}
+                <FeatherIcon icon='arrow-up' className='w-5 mr-1' /> {t('withdraw')}
               </MenuItem>
               <MenuItem
                 key={`manage-deposits-item-deposit`}
                 onSelect={() => {
                   console.log('deposit')
                 }}
+                className='flex items-center'
               >
-                {t('deposit')}
+                <FeatherIcon icon='arrow-down' className='w-5 mr-1' /> {t('deposit')}
               </MenuItem>
               {isMetaMask && (
                 <MenuItem
                   key={`manage-deposits-item-add-to-metamask`}
                   onSelect={handleAddTokenToMetaMask}
+                  className='flex items-center'
                 >
+                  <FeatherIcon icon='plus-circle' className='w-5 mr-1' />{' '}
                   {t('addTicketTokenToMetamask', {
                     token: ticket?.symbol
                   })}
@@ -557,7 +561,9 @@ const ManageDepositDropdown = (props) => {
                 onSelect={() => {
                   console.log('revoke')
                 }}
+                className='flex items-center'
               >
+                <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
                 {t('revokePoolAllowance', {
                   ticker: token?.symbol
                 })}
