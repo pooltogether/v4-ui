@@ -41,7 +41,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
       ) || [],
     [drawsAndPrizeDistributions, drawIdsToHideThisSession]
   )
-  drawsAndPrizeDistributionsToRender = drawsAndPrizeDistributionsToRender.slice(0, 10)
+  // drawsAndPrizeDistributionsToRender = drawsAndPrizeDistributionsToRender.slice(0, 10)
 
   if (!isFetched || !isUsersBalancesFetched) {
     return <LoadingCard />

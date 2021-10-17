@@ -38,7 +38,7 @@ export const PastDrawsList = (props: {
     useAllDrawsAndPrizeDistributions(prizeDistributor)
   const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor, prizePoolTokens?.token)
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
-  const drawsAndPrizeDistributionsSliced = drawsAndPrizeDistributions.slice(0, 10)
+  // const drawsAndPrizeDistributionsSliced = drawsAndPrizeDistributions.slice(0, 10)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
@@ -64,7 +64,7 @@ export const PastDrawsList = (props: {
         </Card>
       )}
       <ul className='space-y-4 z-30'>
-        {drawsAndPrizeDistributionsSliced.map((drawAndPrizeDistribution) => {
+        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
           const drawId = drawAndPrizeDistribution.draw.drawId
           return (
             <PastPrizeListItem
@@ -153,7 +153,10 @@ const PropagatingMessage = (props) => {
         <ThemedClipSpinner size={10} className='mr-2' />{' '}
         <span className='uppercase flex items-center'>
           {' '}
-          {t('propagating', 'Propagating ...')}{' '}
+          <span className='border-default border-dotted border-b-2'>
+            {' '}
+            {t('propagating', 'Propagating ...')}{' '}
+          </span>
           <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
         </span>
       </Tooltip>
