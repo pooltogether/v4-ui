@@ -48,7 +48,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
           ) : (
             <>
               {tiers.map((distribution, i) => (
-                <PrizeTableRow
+                <PrizeBreakdownTableRow
                   key={`distribution_row_${i}`}
                   index={i}
                   prizeDistribution={prizeDistribution}
@@ -91,7 +91,7 @@ const PrizeTableHeader = (
   />
 )
 
-interface PrizeTableRowProps {
+interface PrizeBreakdownTableRowProps {
   prizeDistribution: PrizeDistribution
   index: number
   totalPrize: BigNumber
@@ -102,7 +102,7 @@ interface PrizeTableRowProps {
 // TODO: Calculate number of winners w draw settings
 // Calculate prize w draw settings
 // Calculate odds
-const PrizeTableRow = (props: PrizeTableRowProps) => {
+const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
   const { index, prizeDistribution, totalPrize, token } = props
 
   const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(
@@ -116,7 +116,16 @@ const PrizeTableRow = (props: PrizeTableRowProps) => {
     return null
   }
 
-  const { amountPretty } = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals)
+  let amountPretty
+  if (index === 0) {
+    amountPretty = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals).amountPretty
+  } else if (index === 3) {
+    amountPretty = 100
+  } else {
+    amountPretty = 10
+  }
+
+  // const { amountPretty } = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals)
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>

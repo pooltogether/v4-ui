@@ -1,26 +1,26 @@
 import React from 'react'
-import { TokenIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
+import { Token } from '@pooltogether/hooks'
+import { TokenIcon } from '@pooltogether/react-components'
 
 interface TokenSymbolAndIconProps {
+  token: Token
+  chainId: number
   className?: string
   sizeClassName?: string
-  chainId: number
-  address: string
-  symbol: string
 }
 
 export const TokenSymbolAndIcon = (props: TokenSymbolAndIconProps) => {
-  const { className, chainId, address, symbol, sizeClassName } = props
+  const { className, chainId, sizeClassName, token } = props
   return (
-    <div className={classNames('flex', className)}>
+    <div className={classNames('flex items-center', className)}>
       <TokenIcon
         sizeClassName={sizeClassName}
-        className='mr-2 my-auto'
+        className='mr-2'
         chainId={chainId}
-        address={address}
+        address={token.address}
       />
-      <span className='my-auto'>{symbol}</span>
+      <span className=''>{token.symbol}</span>
     </div>
   )
 }

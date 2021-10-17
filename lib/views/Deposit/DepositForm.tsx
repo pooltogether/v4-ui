@@ -130,9 +130,7 @@ export const DepositForm = (props: DepositFormProps) => {
             unsignedNumber
             readOnly={depositTx?.inFlight}
             Input={RectangularInput}
-            symbolAndIcon={
-              <TokenSymbolAndIcon chainId={chainId} address={token.address} symbol={token.symbol} />
-            }
+            symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
             validate={depositValidationRules}
             containerBgClassName={'bg-transparent'}
             containerRoundedClassName={'rounded-lg'}

@@ -38,7 +38,13 @@ export const PastDrawsList = (props: {
     useAllDrawsAndPrizeDistributions(prizeDistributor)
   const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor, prizePoolTokens?.token)
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
-  // const drawsAndPrizeDistributionsSliced = drawsAndPrizeDistributions.slice(0, 10)
+
+  const drawsAndPrizeDistributionsLength = drawsAndPrizeDistributions?.length
+  const drawsAndPrizeDistributionsSliced =
+    drawsAndPrizeDistributions?.slice(
+      drawsAndPrizeDistributionsLength - 10,
+      drawsAndPrizeDistributionsLength
+    ) || []
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
@@ -64,7 +70,7 @@ export const PastDrawsList = (props: {
         </Card>
       )}
       <ul className='space-y-4 z-30'>
-        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
+        {drawsAndPrizeDistributionsSliced.map((drawAndPrizeDistribution) => {
           const drawId = drawAndPrizeDistribution.draw.drawId
           return (
             <PastPrizeListItem
@@ -96,7 +102,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
     <li>
       <Card style={{ minHeight: 100 }}>
         <div className='flex flex-col xs:flex-row justify-between leading-none'>
-          <div className='flex flex-col'>
+          <div className='flex flex-col sm:w-2/3'>
             <span className='flex items-start'>
               <DrawId
                 className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm leading-none mr-2'
@@ -113,7 +119,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
             <PropagatingMessage pendingClassName={pendingClassName} {...props} />
           </div>
 
-          <span className='mt-6 xs:mt-0'>
+          <div className='mt-6 xs:mt-0'>
             <PrizeDistributorTotal
               {...props}
               pendingClassName={pendingClassName}
@@ -126,7 +132,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
                 className='uppercase font-bold text-xs underline text-highlight-9 hover:text-highlight-2 sm:text-sm transition leading-none tracking-wide'
               />
             </div>
-          </span>
+          </div>
         </div>
       </Card>
     </li>
@@ -187,17 +193,19 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     const thereIsHours = thereIsDays || hours > 0
     const thereIsMinutes = thereIsHours || minutes > 0
     return (
-      <div className={classNames('text-inverse flex', className)}>
+      <div className={classNames('text-inverse flex leading-tight', className)}>
         <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-        {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
-        {t('unlocksIn', 'unlocks in')}
-        <CountdownString
-          className='ml-1'
-          {...drawLockCountdown}
-          hideHours={thereIsWeeks}
-          hideMinutes={thereIsDays}
-          hideSeconds={thereIsMinutes}
-        />
+        <span>
+          {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
+          {t('unlocksIn', 'unlocks in')}
+          <CountdownString
+            className='ml-1'
+            {...drawLockCountdown}
+            hideHours={thereIsWeeks}
+            hideMinutes={thereIsDays}
+            hideSeconds={thereIsMinutes}
+          />
+        </span>
       </div>
     )
   } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && storedDrawResult) {

@@ -226,8 +226,7 @@ export const DepositCard = () => {
                   className='mr-1 ml-2'
                   sizeClassName='w-4 h-4'
                   chainId={prizePool.chainId}
-                  address={token.address}
-                  symbol={token.symbol}
+                  token={token}
                 />{' '}
                 {t('on', 'On')}
                 <SelectedNetworkDropdown className='network-dropdown ml-1 xs:ml-2' />

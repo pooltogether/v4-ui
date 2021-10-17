@@ -10,6 +10,7 @@ import { ModalWithStyles } from 'lib/components/Modal/ModalWithStyles'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 // import { InfoListItem } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
@@ -139,12 +140,13 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
       <div className='w-full mx-auto mt-4 flex flex-col'>
-        <div className='mx-auto font-bold text-white mb-4'>
-          <span className='text-3xl '>{amountPretty}</span>
-          <span className='text-xl ml-2'>{ticket.symbol}</span>
+        <div className='flex items-center mx-auto font-bold text-white mb-4 text-3xl'>
+          <span className='mr-2'>{amountPretty}</span>
+          <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </div>
 
         <PrizeList
+          chainId={prizeDistributor.chainId}
           prizes={drawResults.prizes}
           ticket={ticket}
           token={token}

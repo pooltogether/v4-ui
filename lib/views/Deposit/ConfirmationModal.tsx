@@ -143,9 +143,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
         <TextInputGroup
           readOnly
           disabled
-          symbolAndIcon={
-            <TokenSymbolAndIcon chainId={chainId} address={token.address} symbol={token.symbol} />
-          }
+          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
           Input={RectangularInput}
           textClassName={'text-xl text-right'}
           className={'font-inter font-semibold opacity-100'}
@@ -167,9 +165,7 @@ export const ConfirmationModal = (props: ConfirmationModalProps) => {
         <TextInputGroup
           readOnly
           disabled
-          symbolAndIcon={
-            <TokenSymbolAndIcon chainId={chainId} address={ticket.address} symbol={ticket.symbol} />
-          }
+          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={ticket} />}
           Input={RectangularInput}
           roundedClassName={'rounded-lg'}
           containerRoundedClassName={'rounded-lg'}

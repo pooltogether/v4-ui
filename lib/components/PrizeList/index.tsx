@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { PrizeAwardable, PrizeDistribution } from '@pooltogether/v4-js-client'
 
+import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { sortByBigNumber } from 'lib/utils/sortByBigNumber'
 
 interface PrizeListProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
+  chainId: number
   prizeDistribution: PrizeDistribution
   prizes: PrizeAwardable[]
   ticket: Token
@@ -25,6 +27,7 @@ export const PrizeList = (props: PrizeListProps) => {
         Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
       {prizes?.sort(sortByPrizeAmount).map((prize) => (
         <PrizeRow
+          {...props}
           key={prize.pick.toString()}
           prize={prize}
           token={token}
@@ -40,6 +43,7 @@ const sortByPrizeAmount = (a: PrizeAwardable, b: PrizeAwardable) =>
   sortByBigNumber(a.amount, b.amount)
 
 interface PrizeRowProps {
+  chainId: number
   prize: PrizeAwardable
   ticket: Token
   token: Token
@@ -47,15 +51,16 @@ interface PrizeRowProps {
 }
 
 const PrizeRow = (props: PrizeRowProps) => {
-  const { prize, ticket, token, prizeDistribution } = props
+  const { chainId, prize, ticket, token, prizeDistribution } = props
   const { amount: amountUnformatted, distributionIndex } = prize
 
-  const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
   const { t } = useTranslation()
 
   const { tiers } = prizeDistribution
   const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
   const tierIndex = filteredTiers.indexOf(tiers[distributionIndex])
+
+  const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
 
   return (
     <li
@@ -72,7 +77,10 @@ const PrizeRow = (props: PrizeRowProps) => {
           }
         )}
       >
-        <span>{`${amountPretty} ${ticket.symbol}`}</span>
+        <span className='flex items-center '>
+          <span className='mr-2'>{amountPretty}</span>{' '}
+          <TokenSymbolAndIcon chainId={chainId} token={ticket} />
+        </span>
         <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')}${getEmoji(tierIndex)}`}</span>
       </div>
     </li>

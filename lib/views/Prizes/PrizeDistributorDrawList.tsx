@@ -41,7 +41,15 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
       ) || [],
     [drawsAndPrizeDistributions, drawIdsToHideThisSession]
   )
+
   // drawsAndPrizeDistributionsToRender = drawsAndPrizeDistributionsToRender.slice(0, 10)
+
+  const drawsAndPrizeDistributionsLength = drawsAndPrizeDistributionsToRender?.length
+  const drawsAndPrizeDistributionsToRenderSliced =
+    drawsAndPrizeDistributions?.slice(
+      drawsAndPrizeDistributionsLength - 10,
+      drawsAndPrizeDistributionsLength
+    ) || []
 
   if (!isFetched || !isUsersBalancesFetched) {
     return <LoadingCard />
@@ -84,7 +92,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
   return (
     <div className='max-w-5xl mx-auto'>
       <DrawCarousel>
-        {drawsAndPrizeDistributionsToRender.map((drawAndPrizeDistribution) => (
+        {drawsAndPrizeDistributionsToRenderSliced.map((drawAndPrizeDistribution) => (
           <div
             className='mx-auto pb-12 flex justify-center'
             key={`${prizeDistributor.id()}_${drawAndPrizeDistribution.draw.drawId}`}

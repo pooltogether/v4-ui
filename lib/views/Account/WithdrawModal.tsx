@@ -312,12 +312,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <DownArrow />
 
-      <SquaredTokenAmountContainer
-        chainId={chainId}
-        amount={amount}
-        symbol={token.symbol}
-        address={token.address}
-      />
+      <SquaredTokenAmountContainer chainId={chainId} amount={amount} token={token} />
 
       <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
 
@@ -367,8 +362,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
       <SquaredTokenAmountContainer
         chainId={chainId}
         amount={amountToWithdraw.amount}
-        symbol={ticket.symbol}
-        address={ticket.address}
+        token={ticket}
       />
 
       <DownArrow />
@@ -377,8 +371,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='mb-8'
         chainId={chainId}
         amount={amountToWithdraw.amount}
-        symbol={token.symbol}
-        address={token.address}
+        token={token}
       />
 
       <div className='my-8'>
@@ -454,9 +447,7 @@ const WithdrawForm = (props: WithdrawFormProps) => {
       unsignedNumber
       readOnly={disabled}
       Input={RectangularInput}
-      symbolAndIcon={
-        <TokenSymbolAndIcon chainId={chainId} address={ticketAddress} symbol={ticketSymbol} />
-      }
+      symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={ticket} />}
       validate={withdrawValidationRules}
       containerBgClassName={'bg-transparent'}
       containerRoundedClassName={'rounded-lg'}
@@ -486,13 +477,13 @@ WithdrawForm.defaultProps = {
 }
 
 const SquaredTokenAmountContainer = (props) => {
-  const { chainId, amount, symbol, address } = props
+  const { chainId, amount, token } = props
 
   return (
     <TextInputGroup
       readOnly
       disabled
-      symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} symbol={symbol} address={address} />}
+      symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
       Input={RectangularInput}
       roundedClassName={'rounded-lg'}
       containerRoundedClassName={'rounded-lg'}
