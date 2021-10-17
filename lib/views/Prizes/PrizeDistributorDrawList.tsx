@@ -33,7 +33,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
   const router = useRouter()
 
   // Filter out manually hidden draw ids from this session
-  const drawsAndPrizeDistributionsToRender = useMemo(
+  let drawsAndPrizeDistributionsToRender = useMemo(
     () =>
       drawsAndPrizeDistributions?.filter(
         (drawAndPrizeDistribution) =>
@@ -41,6 +41,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
       ) || [],
     [drawsAndPrizeDistributions, drawIdsToHideThisSession]
   )
+  drawsAndPrizeDistributionsToRender = drawsAndPrizeDistributionsToRender.slice(0, 10)
 
   if (!isFetched || !isUsersBalancesFetched) {
     return <LoadingCard />

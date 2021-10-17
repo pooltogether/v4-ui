@@ -38,6 +38,7 @@ export const PastDrawsList = (props: {
     useAllDrawsAndPrizeDistributions(prizeDistributor)
   const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor, prizePoolTokens?.token)
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
+  const drawsAndPrizeDistributionsSliced = drawsAndPrizeDistributions.slice(0, 10)
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
@@ -63,7 +64,7 @@ export const PastDrawsList = (props: {
         </Card>
       )}
       <ul className='space-y-4 z-30'>
-        {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
+        {drawsAndPrizeDistributionsSliced.map((drawAndPrizeDistribution) => {
           const drawId = drawAndPrizeDistribution.draw.drawId
           return (
             <PastPrizeListItem
