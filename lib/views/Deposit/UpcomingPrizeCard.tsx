@@ -20,10 +20,8 @@ export const UpcomingPrizeCard = () => {
 
   const countdown = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
 
-  const { amountPretty } = roundPrizeAmount(
-    TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize,
-    prizePoolTokens?.token.decimals
-  )
+  const prizeAmountWeekly = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize.mul(7)
+  const { amountPretty } = roundPrizeAmount(prizeAmountWeekly, prizePoolTokens?.token.decimals)
 
   const { weeks, days, hours, minutes } = countdown
   const thereIsWeeks = weeks > 0
@@ -44,8 +42,11 @@ export const UpcomingPrizeCard = () => {
             <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
               {isFetched ? `$${amountPretty}` : '--'}
             </h1>
-            <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-4'>
-              {t('inDailyPrizes', 'In daily prizes')}
+            <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-1'>
+              {t('inWeeklyPrizes', 'In weekly prizes')}
+            </div>
+            <div className='font-semibold text-default-soft text-xxs mb-4'>
+              {t('awardedDaily', '* awarded daily')}
             </div>
           </div>
 
