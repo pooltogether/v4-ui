@@ -2249,18 +2249,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.5.14.tgz#1bd7f61a85b9df25cd77a53fe0f120280235d5d2"
   integrity sha512-eIBvlh7I0UjGhnPwJvAHnIZMZ5P1OOjrgVi5vFfD/5p/FmLdiKkdsclJf1+jN/fNNRiLrEpuxn4xCYweUr5Z2A==
 
-"@pooltogether/draw-calculator-js@^1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.27.tgz#3814f0705a43915133a6bbade80358a1059dd643"
-  integrity sha512-LcJYN44UzCIXijlbXUT8OwGkSaw1PCECVbpZxFTtZcAtIEna+w3sfg4l0By0K0kzVj+sD+9u8o8HJnuM5PwMtw==
-  dependencies:
-    chalk "^4.1.2"
-    debug "^4.3.2"
-
-"@pooltogether/draw-calculator-js@^1.0.0-beta.29":
-  version "1.0.0-beta.29"
-  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.29.tgz#abc4d941582e347cc6e632fe56a2871a83ed3a13"
-  integrity sha512-Z8BdH7lpSZAQuV24I25PD64Jvtr6UrKr5yMT/nEWP37SY53ZiGVheR9fRygNTTWfrcp02q8OTEECaEm/76D8lQ==
+"@pooltogether/draw-calculator-js@^1.0.0-beta.30":
+  version "1.0.0-beta.30"
+  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.0-beta.30.tgz#358349717d35944948d1932d5c1c26cf594c3ed4"
+  integrity sha512-xHPNrvVnvvzQZzP1yeOo4vuelqsY8gOMPDKIHXvwBM6EcKNsyLxpZGssdXcPrwkHd9hewHdjo7bpOuK/KGm2cQ==
   dependencies:
     chalk "^4.1.2"
     debug "^4.3.2"
@@ -2354,14 +2346,14 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.1.5.tgz#762209e46fe718baaa7f047c2dcb26187d286532"
   integrity sha512-hxjvceBDYK0WwWYpVaRDFES17JdmgNRwZSmVEt7FFU0mI98mbxEImJk+ehRaIudm6DQfbGXWKz4RP0L8Fyf2jw==
 
-"@pooltogether/v4-js-client@^0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.4.5.tgz#bbed9330c9978f504ffb9398338131b06fb9e57a"
-  integrity sha512-/o9KJIGyWjjdife08Sc82V/x/oFmgSiHX/DYUIuLLNCgN1mK7vFLkal5usB0TEnZTxasLU7qIEr8RfZwccWGbQ==
+"@pooltogether/v4-js-client@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.4.6.tgz#8fa71429dee6a88fbd104b94361408caa85ec39c"
+  integrity sha512-UH3xhyP1/VqysJ4ytdpOSDQD/cYpSqzLpB3E3Pf0oPY8eLtNIUCa3QWjkuyOWe9tS6UNp0uEa9GkOyfRRmjxbg==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
-    "@pooltogether/draw-calculator-js" "^1.0.0-beta.27"
+    "@pooltogether/draw-calculator-js" "^1.0.0-beta.30"
     "@pooltogether/etherplex" "^1.1.2"
 
 "@pooltogether/v4-pool-data@^1.0.0":
