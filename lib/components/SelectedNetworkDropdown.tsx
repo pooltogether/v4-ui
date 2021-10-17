@@ -54,7 +54,7 @@ export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => 
 
   return (
     <DropdownList
-      id='selected-network-dropdown'
+      id='tsunami-dropdown'
       className={classnames(
         className,
         'font-inter transition border border-accent-4 hover:border-default rounded-lg',

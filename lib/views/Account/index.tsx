@@ -1,21 +1,20 @@
-import React from 'react'
-import classNames from 'classnames'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
+import classnames from 'classnames'
+import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import {
   AddTokenToMetamaskButton,
+  addTokenToMetaMask,
   Card,
   LoadingDots,
   NetworkIcon,
-  SquareLink,
-  SquareButton,
-  SquareButtonSize,
-  SquareButtonTheme,
   ThemedClipSpinner,
   Tooltip,
-  TokenIcon
+  TokenIcon,
+  poolToast
 } from '@pooltogether/react-components'
 import {
   Amount,
@@ -25,6 +24,7 @@ import {
   useIsWalletMetamask
 } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { useRouter } from 'next/router'
 
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
@@ -44,8 +44,9 @@ import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 
-import PiggyBank from 'assets/images/piggy-bank.svg'
-import { useRouter } from 'next/router'
+const TOKEN_IMG_URL = {
+  PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
+}
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -110,14 +111,14 @@ const PrizePoolList = (props: PrizePoolListProps) => {
 
   if (!isFetched) {
     return (
-      <div className={classNames(className, 'w-full flex h-60')}>
+      <div className={classnames(className, 'w-full flex h-60')}>
         <LoadingDots className='m-auto' />
       </div>
     )
   }
 
   return (
-    <ul className={classNames(className, 'w-full')}>
+    <ul className={classnames(className, 'w-full')}>
       {prizePools.map((prizePool) => (
         <PrizePoolRow key={prizePool.id()} player={player} prizePool={prizePool} />
       ))}
@@ -283,8 +284,10 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
         </InfoBoxContainer>
       )}
 
-      <div className='flex'>
-        <SquareButton
+      <div className='w-full flex flex-row justify-end'>
+        <ManageDepositDropdown {...props} />
+
+        {/* <SquareButton
           className='w-full mr-2'
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.purpleOutline}
@@ -307,7 +310,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
           theme={SquareButtonTheme.tealOutline}
         >
           {t('deposit')}
-        </SquareLink>
+        </SquareLink> */}
       </div>
     </>
   )
@@ -347,41 +350,16 @@ const Balance = (props: BalanceProps) => {
     )
   }
 
-  const tokenNameAndIcon = (
-    <>
-      <TokenIcon
-        sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
-        className='mr-2'
-        chainId={prizePool.chainId}
-        address={ticket.address}
-      />{' '}
-      {balance.amountPretty} {ticket.symbol}
-    </>
-  )
-
   return (
     <BalanceContainer>
       <span className='flex items-center xs:text-lg font-bold'>
-        {isMetaMask ? (
-          <Tooltip
-            id={`tooltip-add-${ticket.address}-metamask`}
-            tip={t('addTicketTokenToMetamask', {
-              token: ticket.symbol
-            })}
-          >
-            <AddTokenToMetamaskButton
-              t={t}
-              isWalletOnProperNetwork={isWalletOnProperNetwork}
-              token={ticket}
-              chainId={prizePool.chainId}
-              className='trans hover:opacity-90 cursor-pointer inline-flex items-center font-semibold'
-            >
-              {tokenNameAndIcon}
-            </AddTokenToMetamaskButton>
-          </Tooltip>
-        ) : (
-          tokenNameAndIcon
-        )}
+        <TokenIcon
+          sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
+          className='mr-2'
+          chainId={prizePool.chainId}
+          address={ticket.address}
+        />{' '}
+        {balance.amountPretty} {ticket.symbol}
       </span>
       <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
     </BalanceContainer>
@@ -400,9 +378,9 @@ const BalanceUsdValue = (props: BalanceProps) => {
   const { data: tokenPrice, isFetched: isTokenValueFetched } = usePrizePoolTokenValue(prizePool)
 
   if (!balance) {
-    return <span className={classNames(props.className)}>($--)</span>
+    return <span className={classnames(props.className)}>($--)</span>
   } else if (!isTokenValueFetched) {
-    return <span className={classNames(props.className)}>($--)</span>
+    return <span className={classnames(props.className)}>($--)</span>
   }
 
   return null
@@ -412,7 +390,7 @@ const BalanceUsdValue = (props: BalanceProps) => {
   //   decimals: token.decimals
   // })
   //
-  // return <span className={classNames(props.className)}>(${usdValuePretty})</span>
+  // return <span className={classnames(props.className)}>(${usdValuePretty})</span>
 }
 
 const Piggy = (props) => {
@@ -440,5 +418,154 @@ const Piggy = (props) => {
         fill='#EADC75'
       />
     </svg>
+  )
+}
+
+export const SettingsGearSvg = (props) => {
+  return (
+    <svg
+      {...props}
+      viewBox='0 0 16 15'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+      className={classnames(props.className, 'fill-current')}
+    >
+      <path
+        fillRule='evenodd'
+        clipRule='evenodd'
+        d='M13.23 8.235c.031-.24.054-.48.054-.735s-.023-.495-.054-.735l1.627-1.237a.371.371 0 00.093-.48l-1.542-2.595c-.093-.165-.3-.225-.47-.165l-1.92.75c-.401-.3-.833-.548-1.303-.735L9.422.315A.373.373 0 009.044 0H5.96a.373.373 0 00-.378.315l-.293 1.988c-.47.187-.902.442-1.303.735l-1.92-.75a.381.381 0 00-.47.165L.053 5.048a.363.363 0 00.093.48l1.627 1.237c-.031.24-.054.488-.054.735s.023.495.054.735L.146 9.473a.371.371 0 00-.093.48l1.543 2.595c.092.165.3.225.47.165l1.92-.75c.4.3.832.547 1.303.735l.293 1.987c.023.18.185.315.378.315h3.084a.373.373 0 00.378-.315l.293-1.988c.47-.187.902-.442 1.303-.734l1.92.75c.177.067.377 0 .47-.165l1.542-2.595a.371.371 0 00-.093-.48L13.23 8.235zM7.5 10a2.5 2.5 0 100-5 2.5 2.5 0 000 5z'
+      />
+    </svg>
+  )
+}
+
+const ManageDepositDropdown = (props) => {
+  const { prizePool, className } = props
+  console.log({ prizePool })
+
+  const { t } = useTranslation()
+
+  const { wallet, isWalletConnected } = useOnboard()
+  const isMetaMask = useIsWalletMetamask(wallet)
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool?.chainId)
+
+  const chainId = prizePool?.chainId
+  const currentNetworkName = getNetworkNiceNameByChainId(chainId)
+
+  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
+
+  const ticket = prizePoolTokens?.ticket
+  const token = prizePoolTokens?.token
+
+  const handleAddTokenToMetaMask = async () => {
+    if (!ticket) {
+      return
+    }
+
+    if (!isWalletOnProperNetwork) {
+      poolToast.warn(
+        t('switchToNetworkToAddToken', `Switch to {{networkName}} to add token '{{token}}'`, {
+          networkName: currentNetworkName,
+          token: token.symbol
+        })
+      )
+      return null
+    }
+
+    // {/* <AddTokenToMetamaskButton
+    //               t={t}
+    //               isWalletOnProperNetwork={isWalletOnProperNetwork}
+    //               token={ticket}
+    //               chainId={prizePool?.chainId}
+    //               className='trans hover:opacity-90 cursor-pointer inline-flex items-center font-semibold'
+    //             /> */}
+
+    addTokenToMetaMask(
+      t,
+      ticket.symbol,
+      ticket.address,
+      Number(ticket.decimals),
+      TOKEN_IMG_URL[ticket.symbol]
+    )
+  }
+
+  return (
+    <>
+      <Menu>
+        {({ isExpanded }) => (
+          <>
+            {/* <SquareButton
+          onClick={() => {}}
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.tealOutline}
+          className='flex items-center p-2'
+        >
+          <span className='mx-2'>{t('manageDeposit', 'Manage deposit')}</span>{' '}
+          
+        </SquareButton> */}
+
+            <MenuButton
+              className={classnames(
+                className,
+                'sm:text-sm transition hover:text-highlight-9 leading-none tracking-wide py-2 px-4',
+                'square-btn square-btn--teal-outline square-btn--sm relative text-xs',
+                'inline-flex items-center justify-center trans'
+                // {
+                //   [inactiveTextColorClasses]: !isExpanded,
+                //   [activeTextColorClasses]: isExpanded
+                // }
+              )}
+            >
+              <SettingsGearSvg className='w-4 mr-2' />
+              {t('manageDeposit', 'Manage deposit')}{' '}
+              <FeatherIcon
+                icon={isExpanded ? 'chevron-up' : 'chevron-down'}
+                className='relative w-4 h-4 inline-block ml-2'
+                strokeWidth='0.15rem'
+              />
+            </MenuButton>
+
+            <MenuList className={`tsunami-dropdown-md slide-down overflow-y-auto max-h-1/2`}>
+              <MenuItem
+                key={`manage-deposits-item-withdraw`}
+                onSelect={() => {
+                  console.log('withdraw')
+                }}
+              >
+                {t('withdraw')}
+              </MenuItem>
+              <MenuItem
+                key={`manage-deposits-item-deposit`}
+                onSelect={() => {
+                  console.log('deposit')
+                }}
+              >
+                {t('deposit')}
+              </MenuItem>
+              {isMetaMask && (
+                <MenuItem
+                  key={`manage-deposits-item-add-to-metamask`}
+                  onSelect={handleAddTokenToMetaMask}
+                >
+                  {t('addTicketTokenToMetamask', {
+                    token: ticket?.symbol
+                  })}
+                </MenuItem>
+              )}
+              <MenuItem
+                key={`manage-deposits-item-revoke`}
+                onSelect={() => {
+                  console.log('revoke')
+                }}
+              >
+                {t('revokePoolAllowance', {
+                  ticker: token?.symbol
+                })}
+              </MenuItem>
+            </MenuList>
+          </>
+        )}
+      </Menu>
+    </>
   )
 }

@@ -79,13 +79,23 @@
   background: white;
 }
 
-.selected-network-dropdown {
+.tsunami-dropdown {
   max-width: 144px;
 }
 
 @screen xs {
-  .selected-network-dropdown {
+  .tsunami-dropdown {
     max-width: 152px;
+  }
+}
+
+.tsunami-dropdown-md {
+  max-width: 204px;
+}
+
+@screen xs {
+  .tsunami-dropdown-md {
+    max-width: 222px;
   }
 }
 
