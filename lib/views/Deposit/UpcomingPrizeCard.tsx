@@ -45,9 +45,6 @@ export const UpcomingPrizeCard = () => {
             <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-1'>
               {t('inWeeklyPrizes', 'In weekly prizes')}
             </div>
-            <div className='font-semibold text-default-soft text-xxs mb-4'>
-              {t('awardedDaily', '* awarded daily')}
-            </div>
           </div>
 
           {isDrawBeaconPeriodFetched && (
@@ -86,7 +83,7 @@ const ViewPrizeBreakdownTrigger = (props) => {
   return (
     <ViewPrizeTiersTrigger
       label={t('viewDailyPrizes', 'View daily prizes')}
-      className='relative uppercase underline font-bold text-green text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
+      className='relative uppercase font-bold text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide mt-2'
       token={prizePoolTokens?.token}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
     />

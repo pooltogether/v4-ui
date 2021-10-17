@@ -130,7 +130,7 @@ const DrawClaimSection = (props: DrawPropsWithDetails) => {
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         claimState={claimState}
       />
-      <div className='absolute xs:relative mx-auto xs:ml-0 left-0 xs:left-auto right-0 xs:right-auto bottom-2 xs:bottom-auto xs:-top-4 text-center z-20'>
+      <div className='absolute xs:relative mx-auto xs:ml-0 left-0 xs:left-auto right-0 xs:right-auto bottom-2 xs:bottom-auto xs:-top-7 text-center z-20'>
         <DrawClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}

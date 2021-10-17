@@ -3,6 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { Modal, ModalProps } from '@pooltogether/react-components'
+import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import {
   calculatePrizeForDistributionIndex,
@@ -116,9 +117,15 @@ export const ViewPrizeTiersTrigger = (props: {
 
   return (
     <>
-      <button className={props.className} onClick={() => setIsOpen(true)}>
+      <SquareButton
+        theme={SquareButtonTheme.tealOutline}
+        size={SquareButtonSize.sm}
+        className={props.className}
+        onClick={() => setIsOpen(true)}
+      >
         {label || t('viewPrizeTiers', 'View prize tiers')}
-      </button>
+      </SquareButton>
+
       <PrizeBreakdownModal
         {...props}
         prizeDistribution={prizeDistribution}
@@ -131,7 +138,7 @@ export const ViewPrizeTiersTrigger = (props: {
 
 ViewPrizeTiersTrigger.defaultProps = {
   className:
-    'uppercase font-bold text-xs underline text-highlight-9 hover:text-white sm:text-sm transition leading-none tracking-wide'
+    'uppercase font-bold text-xxs sm:text-xs text-highlight-9 hover:text-white transition leading-none tracking-wide'
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (
