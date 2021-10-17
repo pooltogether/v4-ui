@@ -81,8 +81,11 @@ const ViewPrizeBreakdownTrigger = (props) => {
   const { data: prizePool } = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
+  const { t } = useTranslation()
+
   return (
     <ViewPrizeTiersTrigger
+      label={t('viewDailyPrizes', 'View daily prizes')}
       className='relative uppercase underline font-bold text-green text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
       token={prizePoolTokens?.token}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}

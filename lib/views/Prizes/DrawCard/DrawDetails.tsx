@@ -103,10 +103,11 @@ PrizeDistributorTotal.defaultProps = {
 
 export const ViewPrizeTiersTrigger = (props: {
   token: Token
+  label?: string
   prizeDistribution?: PrizeDistribution
   className?: string
 }) => {
-  const { prizeDistribution } = props
+  const { prizeDistribution, label } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
@@ -116,7 +117,7 @@ export const ViewPrizeTiersTrigger = (props: {
   return (
     <>
       <button className={props.className} onClick={() => setIsOpen(true)}>
-        {t('viewPrizeTiers', 'View prize tiers')}
+        {label || t('viewPrizeTiers', 'View prize tiers')}
       </button>
       <PrizeBreakdownModal
         {...props}
