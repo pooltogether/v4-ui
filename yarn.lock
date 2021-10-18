@@ -2341,10 +2341,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/uniform-random-number/-/uniform-random-number-1.0.0-beta.1.tgz#72257401fe8536e95f9f812f1d249262659084a7"
   integrity sha512-V4iqLOpNFNhnUqfKRlvqUeRwvKaODdz+qn4Qi65C3iMOnDb0J31tBvyhwKbhP4wauNuUN64WfepqkkxET9U7EQ==
 
-"@pooltogether/utilities@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.1.5.tgz#762209e46fe718baaa7f047c2dcb26187d286532"
-  integrity sha512-hxjvceBDYK0WwWYpVaRDFES17JdmgNRwZSmVEt7FFU0mI98mbxEImJk+ehRaIudm6DQfbGXWKz4RP0L8Fyf2jw==
+"@pooltogether/utilities@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.2.1.tgz#5bdf3c1bf5f7db9dbffbd30b444888607bb4042d"
+  integrity sha512-HG8EcbvT5ZXOCxDDdtbu0SiUmJ4GbD+RZjH5kO2lvnk+b7O1mX3kb5evAv8vi6crS603pV5Pu3ZNEEagignEwA==
 
 "@pooltogether/v4-js-client@^0.4.8":
   version "0.4.8"

@@ -24,6 +24,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { UsersOdds } from './UsersOdds'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TxHashRow } from 'lib/components/TxHashRow'
@@ -67,6 +68,7 @@ export const AccountUI = (props) => {
   return (
     <PagePadding>
       <AccountDeposits player={player} isPlayerFetched={isPlayerFetched} />
+      <UsersOdds />
       <div className='mt-4'>
         <BackToV3Banner />
       </div>
