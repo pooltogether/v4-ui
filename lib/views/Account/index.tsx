@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
-import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { Menu, MenuList, MenuButton, MenuItem } from '@reach/menu-button'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import {
-  AddTokenToMetamaskButton,
   addTokenToMetaMask,
   Card,
   LoadingDots,
   NetworkIcon,
   ThemedClipSpinner,
-  Tooltip,
   TokenIcon,
   poolToast
 } from '@pooltogether/react-components'
@@ -25,12 +22,14 @@ import {
 } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
+import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
@@ -247,13 +246,12 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
     setCurrentStep(WithdrawalSteps.input)
   }
 
-  const handleWithdrawClick = (e) => {
-    if (withdrawTx) {
+  const handleWithdrawClick = () => {
+    if (withdrawTx?.completed) {
       resetState()
-    } else {
-      setSelectedNetwork(prizePool.chainId)
-      setIsModalOpen(true)
     }
+    setSelectedNetwork(prizePool.chainId)
+    setIsModalOpen(true)
   }
 
   return (
@@ -284,8 +282,8 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
         </InfoBoxContainer>
       )}
 
-      <div className='w-full flex flex-row justify-end'>
-        <ManageDepositDropdown {...props} />
+      <div className='w-full flex flex-row justify-end py-1'>
+        <ManageDepositDropdown {...props} handleWithdrawClick={handleWithdrawClick} />
 
         {/* <SquareButton
           className='w-full mr-2'
@@ -440,12 +438,13 @@ export const SettingsGearSvg = (props) => {
 }
 
 const ManageDepositDropdown = (props) => {
-  const { prizePool, className } = props
-  console.log({ prizePool })
+  const { prizePool, handleWithdrawClick, className } = props
 
   const { t } = useTranslation()
 
-  const { wallet, isWalletConnected } = useOnboard()
+  const router = useRouter()
+
+  const { wallet } = useOnboard()
   const isMetaMask = useIsWalletMetamask(wallet)
   const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool?.chainId)
 
@@ -456,6 +455,45 @@ const ManageDepositDropdown = (props) => {
 
   const ticket = prizePoolTokens?.ticket
   const token = prizePoolTokens?.token
+
+  const { data: depositAllowance, refetch: refetchUsersDepositAllowance } =
+    useUsersDepositAllowance(prizePool)
+
+  const isApproved = depositAllowance?.isApproved
+
+  const sendTx = useSendTransaction()
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
+
+  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+
+  const handleRevokeAllowanceClick = async () => {
+    if (!isWalletOnProperNetwork) {
+      poolToast.warn(
+        t(
+          'switchToNetworkToRevokeToken',
+          `Switch to {{networkName}} to revoke '{{token}}' token allowance`,
+          {
+            networkName: currentNetworkName,
+            token: token.symbol
+          }
+        )
+      )
+      return null
+    }
+
+    const name = t(`revokePoolAllowance`, { ticker: token.symbol })
+    const txId = await sendTx({
+      name,
+      method: 'approve',
+      callTransaction: async () => player.approveDeposits(BigNumber.from(0)),
+      callbacks: {
+        refetch: () => refetchUsersDepositAllowance()
+      }
+    })
+
+    setTxId(txId)
+  }
 
   const handleAddTokenToMetaMask = async () => {
     if (!ticket) {
@@ -472,14 +510,6 @@ const ManageDepositDropdown = (props) => {
       return null
     }
 
-    // {/* <AddTokenToMetamaskButton
-    //               t={t}
-    //               isWalletOnProperNetwork={isWalletOnProperNetwork}
-    //               token={ticket}
-    //               chainId={prizePool?.chainId}
-    //               className='trans hover:opacity-90 cursor-pointer inline-flex items-center font-semibold'
-    //             /> */}
-
     addTokenToMetaMask(
       t,
       ticket.symbol,
@@ -494,26 +524,12 @@ const ManageDepositDropdown = (props) => {
       <Menu>
         {({ isExpanded }) => (
           <>
-            {/* <SquareButton
-          onClick={() => {}}
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.tealOutline}
-          className='flex items-center p-2'
-        >
-          <span className='mx-2'>{t('manageDeposit', 'Manage deposit')}</span>{' '}
-          
-        </SquareButton> */}
-
             <MenuButton
               className={classnames(
                 className,
                 'sm:text-sm transition hover:text-highlight-9 leading-none tracking-wide py-2 px-4',
                 'square-btn square-btn--teal-outline square-btn--sm relative text-xs',
                 'inline-flex items-center justify-center trans'
-                // {
-                //   [inactiveTextColorClasses]: !isExpanded,
-                //   [activeTextColorClasses]: isExpanded
-                // }
               )}
             >
               <SettingsGearSvg className='w-4 mr-2' />
@@ -529,20 +545,26 @@ const ManageDepositDropdown = (props) => {
               <MenuItem
                 key={`manage-deposits-item-withdraw`}
                 onSelect={() => {
-                  console.log('withdraw')
-                }}
-                className='flex items-center'
-              >
-                <FeatherIcon icon='arrow-up' className='w-5 mr-1' /> {t('withdraw')}
-              </MenuItem>
-              <MenuItem
-                key={`manage-deposits-item-deposit`}
-                onSelect={() => {
-                  console.log('deposit')
+                  router.push({
+                    pathname: '/deposit',
+                    query: {
+                      ...router.query,
+                      network: prizePool.chainId
+                    }
+                  })
                 }}
                 className='flex items-center'
               >
                 <FeatherIcon icon='arrow-down' className='w-5 mr-1' /> {t('deposit')}
+              </MenuItem>
+              <MenuItem
+                key={`manage-deposits-item-deposit`}
+                onSelect={() => {
+                  handleWithdrawClick()
+                }}
+                className='flex items-center'
+              >
+                <FeatherIcon icon='arrow-up' className='w-5 mr-1' /> {t('withdraw')}
               </MenuItem>
               {isMetaMask && (
                 <MenuItem
@@ -556,18 +578,18 @@ const ManageDepositDropdown = (props) => {
                   })}
                 </MenuItem>
               )}
-              <MenuItem
-                key={`manage-deposits-item-revoke`}
-                onSelect={() => {
-                  console.log('revoke')
-                }}
-                className='flex items-center'
-              >
-                <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
-                {t('revokePoolAllowance', {
-                  ticker: token?.symbol
-                })}
-              </MenuItem>
+              {isApproved && (
+                <MenuItem
+                  key={`manage-deposits-item-revoke`}
+                  onSelect={handleRevokeAllowanceClick}
+                  className='flex items-center'
+                >
+                  <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
+                  {t('revokePoolAllowance', {
+                    ticker: token?.symbol
+                  })}
+                </MenuItem>
+              )}
             </MenuList>
           </>
         )}
