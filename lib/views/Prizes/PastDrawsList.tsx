@@ -41,10 +41,12 @@ export const PastDrawsList = (props: {
 
   const drawsAndPrizeDistributionsLength = drawsAndPrizeDistributions?.length
   const drawsAndPrizeDistributionsSliced =
-    drawsAndPrizeDistributions?.slice(
-      drawsAndPrizeDistributionsLength - 10,
-      drawsAndPrizeDistributionsLength
-    ) || []
+    drawsAndPrizeDistributionsLength > 10
+      ? drawsAndPrizeDistributions?.slice(
+          drawsAndPrizeDistributionsLength - 10,
+          drawsAndPrizeDistributionsLength
+        )
+      : drawsAndPrizeDistributions
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
