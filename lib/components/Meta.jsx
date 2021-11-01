@@ -1,7 +1,7 @@
 import Head from 'next/head'
 
 export const Meta = ({ title }) => {
-  const defaultTitle = '"Tsunami", PoolTogether v4.'
+  const defaultTitle = 'PoolTogether - v4'
   title = title ? `${title} - ${defaultTitle}` : defaultTitle
 
   let url = `https://v4.pooltogether.com`
@@ -16,8 +16,6 @@ export const Meta = ({ title }) => {
     <>
       <Head>
         <>
-          <title>{title}</title>
-
           <meta name='description' content={description} />
           <meta name='keywords' content={keywords} />
 
