@@ -139,7 +139,7 @@ const WinningOdds = () => {
           <Trans
             i18nKey='xDollarsGetsYouOdds'
             values={{ dollars: 10, odds: oneOverOddsForTen.toFixed(2) }}
-            components={{ style1: <b className='text-flashy' />, style2: <b /> }}
+            components={{ style1: <b className='' />, style2: <b /> }}
           />
           <span className='opacity-40'>*</span>
         </span>
@@ -150,7 +150,7 @@ const WinningOdds = () => {
   return (
     <div className='ml-auto flex leading-none'>
       <span className='mr-1 mt-1'>{t('winningOdds')}</span>
-      <div className='font-bold text-flashy flex'>
+      <div className='font-bold flex'>
         <span className='text-5xl'>1</span>
         <span className='mx-1 my-auto'>in</span>
         <span className='text-5xl'>{oneOverOdds.toFixed(2)}</span>
