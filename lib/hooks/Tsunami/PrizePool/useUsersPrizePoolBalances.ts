@@ -5,6 +5,7 @@ import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenBalance
@@ -14,12 +15,13 @@ export interface UsersPrizePoolBalances {
 export const useUsersPrizePoolBalances = (prizePool: PrizePool) => {
   const usersAddress = useUsersAddress()
   const refetchInterval = useRefetchInterval(prizePool?.chainId)
+  const { data: tokens, isFetched } = usePrizePoolTokens(prizePool)
 
-  const enabled = Boolean(prizePool) && Boolean(usersAddress)
+  const enabled = Boolean(prizePool) && Boolean(usersAddress) && isFetched
 
   return useQuery(
     ['getUsersTokenBalances', prizePool?.id(), usersAddress],
-    async () => getUsersPrizePoolBalances(prizePool, usersAddress),
+    async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
     {
       refetchInterval,
       enabled
@@ -32,16 +34,12 @@ const prettyNumber = (amount: BigNumber, decimals: string): string =>
 
 const getUsersPrizePoolBalances = async (
   prizePool: PrizePool,
-  usersAddress: string
+  usersAddress: string,
+  tokens: PrizePoolTokens
 ): Promise<UsersPrizePoolBalances> => {
-  const balancesPromise = prizePool.getUsersPrizePoolBalances(usersAddress)
-  const ticketPromise = prizePool.getTicketData()
-  const tokenPromise = prizePool.getTokenData()
-  const [balances, ticket, token] = await Promise.all([
-    balancesPromise,
-    ticketPromise,
-    tokenPromise
-  ])
+  const balances = await prizePool.getUsersPrizePoolBalances(usersAddress)
+  const { ticket, token } = tokens
+
   return {
     ticket: {
       hasBalance: !balances.ticket.isZero(),

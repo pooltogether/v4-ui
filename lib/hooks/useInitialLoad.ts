@@ -9,8 +9,7 @@ import { useSelectedNetworkPrizePool } from './Tsunami/PrizePool/useSelectedNetw
  */
 export const useInitialLoad = () => {
   useSelectedNetworkPlayer()
-  const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
+  const prizePool = useSelectedNetworkPrizePool()
   const { isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
-
-  return isPrizePoolFetched && isPrizePoolTokensFetched
+  return isPrizePoolTokensFetched
 }

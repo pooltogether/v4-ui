@@ -1,4 +1,4 @@
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'

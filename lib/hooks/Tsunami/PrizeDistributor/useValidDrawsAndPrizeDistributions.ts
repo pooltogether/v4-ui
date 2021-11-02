@@ -1,5 +1,5 @@
 import { Draw, PrizeDistributor, PrizeDistribution } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'

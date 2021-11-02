@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from 'react-query'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 
 export const usePlayer = (prizePool: PrizePool) => {
   const { isWalletConnected, provider, address, network: walletChainId } = useOnboard()

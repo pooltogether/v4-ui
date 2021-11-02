@@ -2,32 +2,13 @@ import React from 'react'
 import classnames from 'classnames'
 import { DropdownList, NetworkIcon } from '@pooltogether/react-components'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
-import { NETWORK, getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 interface SelectedNetworkDropdownProps {
   className?: string
-}
-
-const NETWORKS = {
-  [NETWORK.mainnet]: {
-    name: 'Mainnet',
-    nativeName: 'Mainnet'
-  },
-  [NETWORK.rinkeby]: {
-    name: 'Rinkeby',
-    nativeName: 'Rinkeby'
-  },
-  [NETWORK.polygon]: {
-    name: 'Polygon',
-    nativeName: 'Polygon'
-  },
-  [NETWORK.mumbai]: {
-    name: 'Mumbai',
-    nativeName: 'Mumbai'
-  }
 }
 
 export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => {

@@ -1,7 +1,7 @@
 import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useQuery } from 'react-query'
 

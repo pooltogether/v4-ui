@@ -2,31 +2,32 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { Modal, ModalProps } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, NETWORK } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
+import { CHAIN_ID } from 'lib/constants/constants'
 
 interface BridgeTokensModalProps extends ModalProps {
   chainId: number
 }
 
 const BRIDGE_URLS = Object.freeze({
-  [NETWORK.mainnet]: [
+  [CHAIN_ID.mainnet]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
-  [NETWORK.rinkeby]: [
+  [CHAIN_ID.rinkeby]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
-  [NETWORK.mumbai]: [
+  [CHAIN_ID.mumbai]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
-  [NETWORK.polygon]: [
+  [CHAIN_ID.polygon]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
@@ -108,5 +109,5 @@ const BridgeLink = (props: { url: string; title: string }) => {
 }
 
 BridgeTokensModal.defaultProps = {
-  chainId: NETWORK.mainnet
+  chainId: CHAIN_ID.mainnet
 }

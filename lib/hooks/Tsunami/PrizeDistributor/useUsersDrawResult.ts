@@ -1,6 +1,6 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 import { PrizeDistributor, Draw, DrawResults } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import {
   StoredDrawStates,

@@ -1,12 +1,15 @@
+import { useMemo } from 'react'
 import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 
-// TODO: Migrade to useMemo like usePrizeDistributor
 export const usePrizePool = (address: string, chainId: number) => {
-  const { data: linkedPrizePool, ...useQueryResponse } = useLinkedPrizePool()
-  return {
-    ...useQueryResponse,
-    data: linkedPrizePool?.prizePools.find(
-      (prizePool) => prizePool.address === address && prizePool.chainId === chainId
+  const { data: linkedPrizePool } = useLinkedPrizePool()
+  return useMemo(() => {
+    if (!linkedPrizePool) return null
+    const prizePool = linkedPrizePool.prizePools.find(
+      (prizeDistributor) =>
+        prizeDistributor.chainId === chainId && prizeDistributor.address === address
     )
-  }
+    if (!prizePool) return null
+    return prizePool
+  }, [linkedPrizePool])
 }

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { NETWORK } from '@pooltogether/utilities'
 import { atom, useAtom } from 'jotai'
 
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
 import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
 
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
+import { CHAIN_ID } from 'lib/constants/constants'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
@@ -32,7 +32,7 @@ const parseUrlNetwork = (urlNetwork: string) => {
  * initial selected network
  */
 const getInitialSelectedNetwork = () => {
-  if (typeof window === 'undefined') return NETWORK.mainnet
+  if (typeof window === 'undefined') return CHAIN_ID.mainnet
 
   const url = new URL(window.location.href)
   const urlNetwork = url.searchParams.get(URL_QUERY_KEY.network)

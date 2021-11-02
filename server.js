@@ -28,13 +28,6 @@ Object.keys(ifaces).forEach(function (ifname) {
   })
 })
 
-const devProxy = {
-  '/.netlify': {
-    target: 'http://localhost:9000',
-    pathRewrite: { '^/.netlify/functions': '' }
-  }
-}
-
 const port = parseInt(process.env.PORT, 10) || 3000
 const env = process.env.NODE_ENV || 'development'
 const dev = env !== 'production'
@@ -50,14 +43,6 @@ app
   .prepare()
   .then(async () => {
     server = express()
-
-    // Set up the proxy for Netlify lambda functions
-    if (dev && devProxy) {
-      const { createProxyMiddleware } = require('http-proxy-middleware')
-      Object.keys(devProxy).forEach(function (context) {
-        server.use(createProxyMiddleware(context, devProxy[context]))
-      })
-    }
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res))

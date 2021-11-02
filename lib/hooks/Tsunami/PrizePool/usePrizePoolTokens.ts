@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export interface PrizePoolTokens {
@@ -13,31 +13,33 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
 
   return useQuery(
     ['prizePoolTokens', prizePool?.chainId, prizePool?.address],
-    async () => {
-      const ticketDataPromise = prizePool.getTicketData()
-      const tokenDataPromise = prizePool.getTokenData()
-
-      const [ticketData, tokenData] = await Promise.all([ticketDataPromise, tokenDataPromise])
-
-      const ticket: Token = {
-        address: prizePool.ticketMetadata.address,
-        symbol: ticketData.symbol,
-        name: ticketData.name,
-        decimals: ticketData.decimals
-      }
-
-      const token: Token = {
-        address: prizePool.tokenMetadata.address,
-        symbol: tokenData.symbol,
-        name: tokenData.name,
-        decimals: tokenData.decimals
-      }
-
-      return {
-        ticket,
-        token
-      } as PrizePoolTokens
-    },
+    async () => getPrizePoolTokens(prizePool),
     { ...NO_REFETCH, enabled } as UseQueryOptions<PrizePoolTokens>
   )
+}
+
+const getPrizePoolTokens = async (prizePool: PrizePool) => {
+  const ticketDataPromise = prizePool.getTicketData()
+  const tokenDataPromise = prizePool.getTokenData()
+
+  const [ticketData, tokenData] = await Promise.all([ticketDataPromise, tokenDataPromise])
+
+  const ticket: Token = {
+    address: prizePool.ticketMetadata.address,
+    symbol: ticketData.symbol,
+    name: ticketData.name,
+    decimals: ticketData.decimals
+  }
+
+  const token: Token = {
+    address: prizePool.tokenMetadata.address,
+    symbol: tokenData.symbol,
+    name: tokenData.name,
+    decimals: tokenData.decimals
+  }
+
+  return {
+    ticket,
+    token
+  } as PrizePoolTokens
 }

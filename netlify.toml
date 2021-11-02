@@ -8,8 +8,6 @@
   # been specified, include it in the publish directory path.
   publish = 'out'
 
-  functions = 'functions-out'
-
 [[headers]]
   for = "/*"
   [headers.values]

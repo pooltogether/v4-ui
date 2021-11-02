@@ -31,7 +31,6 @@ interface DepositFormProps {
   form: UseFormReturn<FieldValues, object>
   player: Player
   prizePool: PrizePool
-  isPrizePoolFetched: boolean
   isPrizePoolTokensFetched: boolean
   isPlayerFetched: boolean
   isUsersBalancesFetched: boolean

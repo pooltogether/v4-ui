@@ -42,6 +42,10 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
+import { usePrizePool } from 'lib/hooks/Tsunami/PrizePool/usePrizePool'
+import { useAppEnvString } from 'lib/hooks/useAppEnvString'
+import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwabs'
+import { AccountCard } from 'lib/views/Account/AccountCard'
 
 const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
@@ -66,7 +70,8 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding>
-      <AccountDeposits player={player} isPlayerFetched={isPlayerFetched} />
+      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+      {/* <AccountDeposits  /> */}
       <div className='mt-4'>
         <BackToV3Banner />
       </div>
@@ -82,13 +87,12 @@ interface AccountDepositsProps {
 const AccountDeposits = (props: AccountDepositsProps) => {
   const { player, isPlayerFetched } = props
 
-  const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
-
-  const isFetched = isPlayerFetched && isLinkedPrizePoolFetched
+  const { data: twabs, isFetched } = useUsersCurrentPrizePoolTwabs()
 
   return (
     <>
       <Piggy className='w-32 mb-8 mx-auto' />
+
       <PrizePoolList
         player={player}
         isFetched={isFetched}

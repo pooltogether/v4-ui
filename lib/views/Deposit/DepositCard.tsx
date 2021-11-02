@@ -47,7 +47,7 @@ const BUTTON_MIN_WIDTH = 100
 export const DepositCard = () => {
   const router = useRouter()
 
-  const { data: prizePool, isFetched: isPrizePoolFetched } = useSelectedNetworkPrizePool()
+  const prizePool = useSelectedNetworkPrizePool()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -69,7 +69,6 @@ export const DepositCard = () => {
   } = useUsersTicketDelegate(prizePool)
 
   const isDataFetched =
-    isPrizePoolFetched &&
     isPlayerFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
@@ -236,7 +235,6 @@ export const DepositCard = () => {
                 player={player}
                 isPlayerFetched={isPlayerFetched}
                 prizePool={prizePool}
-                isPrizePoolFetched={isPrizePoolFetched}
                 token={token}
                 ticket={ticket}
                 isPrizePoolTokensFetched={isPrizePoolTokensFetched}
@@ -246,7 +244,6 @@ export const DepositCard = () => {
                 tokenBalance={tokenBalance}
                 ticketBalance={ticketBalance}
                 isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
-                depositAllowance={depositAllowance}
                 setShowConfirmModal={setShowConfirmModal}
                 amountToDeposit={amountToDeposit}
               />

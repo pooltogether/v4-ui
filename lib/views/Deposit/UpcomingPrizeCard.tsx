@@ -14,7 +14,7 @@ import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 export const UpcomingPrizeCard = () => {
   const { t } = useTranslation()
 
-  const { data: prizePool } = useSelectedNetworkPrizePool()
+  const prizePool = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconPeriodFetched } = useDrawBeaconPeriod()
 
@@ -75,7 +75,7 @@ export const UpcomingPrizeCard = () => {
 }
 
 const ViewPrizeBreakdownTrigger = (props) => {
-  const { data: prizePool } = useSelectedNetworkPrizePool()
+  const prizePool = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
   const { t } = useTranslation()

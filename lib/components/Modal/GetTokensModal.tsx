@@ -2,7 +2,7 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import { NETWORK } from '@pooltogether/utilities'
+import { CHAIN_ID } from 'lib/constants/constants'
 
 interface GetTokensModalProps extends ModalProps {
   chainId: number
@@ -10,13 +10,13 @@ interface GetTokensModalProps extends ModalProps {
 }
 
 const EXCHANGE_URLS = Object.freeze({
-  [NETWORK.mainnet]: (tokenAddress: string) =>
+  [CHAIN_ID.mainnet]: (tokenAddress: string) =>
     `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [NETWORK.rinkeby]: (tokenAddress: string) =>
+  [CHAIN_ID.rinkeby]: (tokenAddress: string) =>
     `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [NETWORK.polygon]: (tokenAddress: string) =>
+  [CHAIN_ID.polygon]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [NETWORK.mumbai]: (tokenAddress: string) =>
+  [CHAIN_ID.mumbai]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
 })
 
@@ -59,5 +59,5 @@ export const GetTokensModal = (props: GetTokensModalProps) => {
 }
 
 GetTokensModal.defaultProps = {
-  chainId: NETWORK.mainnet
+  chainId: CHAIN_ID.mainnet
 }

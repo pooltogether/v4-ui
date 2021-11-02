@@ -4,6 +4,6 @@ import { usePlayer } from './usePlayer'
 
 export const useSelectedNetworkPlayer = () => {
   const [chainId] = useSelectedNetwork()
-  const { data: prizePool } = useNetworkPrizePool(chainId)
+  const prizePool = useNetworkPrizePool(chainId)
   return usePlayer(prizePool)
 }

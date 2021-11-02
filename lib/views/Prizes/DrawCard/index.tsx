@@ -45,7 +45,7 @@ export interface DrawPropsWithDetails extends DrawCardProps {
 
 export const DrawCard = (props: DrawCardProps) => {
   const { prizeDistribution, prizeDistributor } = props
-  const { data: prizePool } = useSelectedNetworkPrizePool()
+  const prizePool = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 

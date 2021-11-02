@@ -1,7 +1,3 @@
-export const QUERY_KEYS = {
-  coingeckoTokenInfoQuery: 'coingeckoTokenInfoQuery'
-}
-
 export const NO_REFETCH = Object.freeze({
   refetchInterval: false as false,
   refetchIntervalInBackground: false as false,

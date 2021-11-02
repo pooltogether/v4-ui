@@ -1,6 +1,6 @@
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery, UseQueryOptions } from 'react-query'
 

@@ -1,5 +1,5 @@
 import { initializeLinkedPrizePool, LinkedPrizePool } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/queryKeys'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useContractListChainIds } from 'lib/hooks/Tsunami/useContractListChainIds'
 import { useProvidersKeyedByNumbers } from 'lib/hooks/Tsunami/useProvidersKeyedbyNumbers'
 import { useQuery, UseQueryOptions } from 'react-query'

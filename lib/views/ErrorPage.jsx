@@ -2,9 +2,9 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 
-import { DISCORD_INVITE_URL } from '../constants'
+import { DISCORD_INVITE_URL } from '../constants/constants'
 
-export function ErrorPage () {
+export function ErrorPage() {
   const { t } = useTranslation()
 
   return (
