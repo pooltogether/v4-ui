@@ -5,25 +5,36 @@ import { useQuery } from 'react-query'
 import { useUsersAddress } from '../useUsersAddress'
 import { useLinkedPrizePool } from './LinkedPrizePool/useLinkedPrizePool'
 import { BigNumber, ethers } from 'ethers'
+import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwabs'
+import { Amount } from '@pooltogether/hooks'
+import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 
 export const useUsersUpcomingOddsOfWinningAPrize = () => {
   const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
+  const { data: twabs, isFetched: isTwabsFetched } = useUsersCurrentPrizePoolTwabs()
+  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
   const usersAddress = useUsersAddress()
-  const enabled = isLinkedPrizePoolFetched && Boolean(usersAddress)
+  const enabled =
+    isLinkedPrizePoolFetched && Boolean(usersAddress) && isTwabsFetched && isTicketDecimalsFetched
 
   return useQuery(
     ['useUsersOddsOfWinningAPrize', usersAddress],
-    () => getUsersOdds(linkedPrizePool, usersAddress),
+    () => getUsersOdds(linkedPrizePool, twabs, ticketDecimals),
     { enabled }
   )
 }
 
-const getUsersOdds = async (linkedPrizePool: LinkedPrizePool, usersAddress: string) => {
+const getUsersOdds = async (
+  linkedPrizePool: LinkedPrizePool,
+  twabs: {
+    total: Amount
+    ethereum: Amount
+    polygon: Amount
+  },
+  decimals: string
+) => {
   const totalSupplyResults = await Promise.all(
     linkedPrizePool.prizePools.map((prizePool) => prizePool.getTicketTotalSupply())
-  )
-  const balanceResults = await Promise.all(
-    linkedPrizePool.prizePools.map((prizePool) => prizePool.getUsersTicketBalance(usersAddress))
   )
   const prizeDistribution = TSUNAMI_USDC_PRIZE_DISTRIBUTION
 
@@ -42,9 +53,13 @@ const getUsersOdds = async (linkedPrizePool: LinkedPrizePool, usersAddress: stri
     },
     ethers.constants.Zero
   )
-  const totalBalance = balanceResults.reduce((totalBalance: BigNumber, balance: BigNumber) => {
-    return totalBalance.add(balance)
-  }, ethers.constants.Zero)
+  const totalBalance = twabs.total.amountUnformatted
 
-  return calculateOdds(totalBalance, totalTotalSupply, '6', numberOfPrizes)
+  const odds = calculateOdds(totalBalance, totalTotalSupply, decimals, numberOfPrizes)
+  const oneOverOdds = 1 / odds
+
+  return {
+    odds,
+    oneOverOdds
+  }
 }

@@ -30,8 +30,8 @@ import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { WithdrawalSteps } from 'lib/views/Account'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { WithdrawalSteps } from 'lib/views/Account/ManageBalancesList'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
