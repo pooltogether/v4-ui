@@ -10,6 +10,10 @@ import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/Tsunami/PrizePool/useUs
 import { Amount } from '@pooltogether/hooks'
 import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
 import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
+import { Trans, useTranslation } from 'react-i18next'
+import { ethers } from 'ethers'
+import { parseUnits } from '@ethersproject/units'
+import { calculateOdds } from '@pooltogether/utilities'
 
 interface AccountCardProps {
   className?: string
@@ -20,7 +24,7 @@ interface AccountCardProps {
 export const AccountCard = (props: AccountCardProps) => {
   const { className, player, isPlayerFetched } = props
   const { theme } = useTheme()
-  const { data: twabs, isFetched, isPartiallyFetched } = useUsersCurrentPrizePoolTwabs()
+  // const { data: twabs, isFetched, isPartiallyFetched } = useUsersCurrentPrizePoolTwabs()
   const backgroundImage = theme === ColorTheme.dark ? CardCornerLight : CardCornerLight
 
   return (
@@ -41,6 +45,7 @@ export const AccountCard = (props: AccountCardProps) => {
   )
 }
 
+// TODO: WIP
 const Twab = (props) => {
   const { twabs, isFetched, isPartiallyFetched } = props
   return (
@@ -97,20 +102,52 @@ const TwabAmount = (props: {
 
 const WinningOdds = () => {
   const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
+  const { t } = useTranslation()
 
   if (!isFetched) {
     return (
       <div className='ml-auto'>
-        <ThemedClipSpinner sizeClassName='w-4 h-4' />
+        <ThemedClipSpinner sizeClassName='w-6 h-6' className='mb-4' />
       </div>
     )
   }
 
-  const { oneOverOdds } = data
+  const {
+    odds,
+    oneOverOdds,
+    totalSupplyUnformatted,
+    decimals,
+    numberOfPrizes,
+    totalBalanceUnformatted
+  } = data
+
+  if (odds === 0) {
+    const oddsForTen = calculateOdds(
+      parseUnits('10', decimals),
+      totalSupplyUnformatted,
+      decimals,
+      numberOfPrizes
+    )
+    const oneOverOddsForTen = 1 / oddsForTen
+    return (
+      <div className='ml-auto flex flex-col leading-none space-y-1'>
+        <span className='ml-auto'>🌊🏆</span>
+        <span className='font-bold ml-auto'>Make a deposit for a chance to win!</span>
+        <span className='ml-auto'>
+          <Trans
+            i18nKey='xDollarsGetsYouOdds'
+            values={{ dollars: 10, odds: oneOverOddsForTen.toFixed(2) }}
+            components={{ style1: <b className='text-flashy' />, style2: <b /> }}
+          />
+          <span className='opacity-40'>*</span>
+        </span>
+      </div>
+    )
+  }
 
   return (
     <div className='ml-auto flex leading-none'>
-      <span className='mr-1 mt-1'>Winning odds</span>
+      <span className='mr-1 mt-1'>{t('winningOdds')}</span>
       <div className='font-bold text-flashy flex'>
         <span className='text-5xl'>1</span>
         <span className='mx-1 my-auto'>in</span>
@@ -122,10 +159,18 @@ const WinningOdds = () => {
 }
 
 const OddsDisclaimer = () => {
+  const { t } = useTranslation()
   return (
     <span className='opacity-40 text-xxs text-center mx-auto mt-4'>
-      *Estimated odds of winning a single prize is based on current data and is subject to change.
-      Read more.
+      *<span>{t('oddsDisclaimer')}</span>
+      <a
+        href='https://docs.pooltogether.com/faq/prizes-and-winning'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='underline ml-1'
+      >
+        {t('readMore')}.
+      </a>
     </span>
   )
 }

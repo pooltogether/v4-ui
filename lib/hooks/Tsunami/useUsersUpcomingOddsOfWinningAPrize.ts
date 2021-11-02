@@ -60,6 +60,10 @@ const getUsersOdds = async (
 
   return {
     odds,
-    oneOverOdds
+    oneOverOdds,
+    decimals,
+    totalBalanceUnformatted: totalBalance,
+    totalSupplyUnformatted: totalTotalSupply,
+    numberOfPrizes
   }
 }

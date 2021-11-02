@@ -7,14 +7,15 @@ import {
   SquareButton,
   SquareButtonTheme,
   Tooltip,
-  ErrorsBox
+  ErrorsBox,
+  ThemedClipSpinner
 } from '@pooltogether/react-components'
 import { Amount, Token, TokenBalance, Transaction } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { calculateOdds, getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
@@ -32,6 +33,7 @@ import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawalSteps } from 'lib/views/Account/ManageBalancesList'
+import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -519,11 +521,19 @@ const WithdrawWarning = (props) => {
   )
 }
 
-const UpdatedStats = (props) => {
+const UpdatedStats = (props: {
+  className?: string
+  prizePool: PrizePool
+  amountToWithdraw: Amount
+  token: Token
+  ticket: Token
+  ticketBalance: TokenBalance
+}) => {
   const { className, prizePool, amountToWithdraw, token, ticket, ticketBalance } = props
 
   return (
     <InfoList className={className}>
+      <UpdatedOdds amount={amountToWithdraw} />
       <FinalTicketBalanceStat
         amount={amountToWithdraw?.amount}
         ticket={ticket}
@@ -536,6 +546,62 @@ const UpdatedStats = (props) => {
       />
     </InfoList>
   )
+}
+
+const UpdatedOdds = (props: { amount: Amount }) => {
+  const { amount } = props
+  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
+  const { t } = useTranslation()
+
+  return (
+    <InfoListItem
+      label={
+        <>
+          <Tooltip
+            id={`tooltip-deposit-updated-odds`}
+            tip={t('oddsToWinOnePrize', 'Your estimated odds of winning at least one prize')}
+          >
+            {t('updatedWinningOdds', 'Updated winning odds')}
+          </Tooltip>
+        </>
+      }
+      value={<OddsValue isFetched={isFetched} data={data} amount={amount} />}
+    />
+  )
+}
+
+const OddsValue = (props: {
+  isFetched: boolean
+  amount: Amount
+  data: {
+    odds: number
+    oneOverOdds: number
+    decimals: string
+    totalBalanceUnformatted: BigNumber
+    totalSupplyUnformatted: BigNumber
+    numberOfPrizes: number
+  }
+}) => {
+  const { t } = useTranslation()
+  const { isFetched, amount, data } = props
+  if (!isFetched) {
+    return <ThemedClipSpinner sizeClassName='w-3 h-3' />
+  }
+  const { totalBalanceUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes } = data
+  const balanceWithWithdrawalUnformatted = totalBalanceUnformatted.sub(amount.amountUnformatted)
+
+  if (balanceWithWithdrawalUnformatted.isZero()) {
+    return <b className='text-orange'>{t('none')}</b>
+  }
+
+  const odds = calculateOdds(
+    balanceWithWithdrawalUnformatted,
+    totalSupplyUnformatted,
+    decimals,
+    numberOfPrizes
+  )
+  const oneOverOdds = 1 / odds
+  return <>{t('oneInOdds', { odds: oneOverOdds.toFixed(2) })}</>
 }
 
 const FinalTicketBalanceStat = (props) => {

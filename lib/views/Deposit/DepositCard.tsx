@@ -35,7 +35,7 @@ import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSele
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { ConfirmationModal } from 'lib/views/Deposit/ConfirmationModal'
+import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
@@ -258,7 +258,7 @@ export const DepositCard = () => {
         </div>
       </div>
 
-      <ConfirmationModal
+      <DepositConfirmationModal
         isOpen={showConfirmModal}
         closeModal={closeModal}
         label='deposit confirmation modal'
