@@ -24,6 +24,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { UsersOdds } from './UsersOdds'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TxHashRow } from 'lib/components/TxHashRow'
