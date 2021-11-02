@@ -88,11 +88,13 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
-    <li className='w-full flex flex-col mb-4 last:mb-0 rounded-xl bg-card px-4 py-2'>
-      <div className='w-full flex flex-row justify-between mb-3'>
+    <li className='w-full flex flex-col mb-4 last:mb-0 rounded-xl bg-card px-4 sm:px-6 py-4'>
+      <div className='w-full flex flex-row justify-between mb-4 mt-1'>
         <div className='flex flex-row items-center'>
           <NetworkIcon sizeClassName='w-5 xs:w-6 h-5 xs:h-6' chainId={prizePool.chainId} />
-          <span className='ml-2 xs:text-lg'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
+          <span className='ml-2 xs:text-lg text-accent-1'>
+            {getNetworkNiceNameByChainId(prizePool.chainId)}
+          </span>
         </div>
 
         <Balance

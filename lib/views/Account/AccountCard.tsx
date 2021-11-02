@@ -30,23 +30,30 @@ export const AccountCard = (props: AccountCardProps) => {
         theme={CardTheme.purple}
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className='ml-auto mb-6 flex flex-col sm:mt-0'>
-          <div className='flex'>
-            <div className='flex mr-2'>
-              <TwabToolTip />
-              <span className='opacity-80'>Total chance</span>
-            </div>
-            <TwabAmount
-              amount={twabs?.total}
-              isFetched={isFetched}
-              isPartiallyFetched={isPartiallyFetched}
-            />
-          </div>
-          <OddsOfWinningOnePrize />
+        <div className='ml-auto mb-12 flex flex-col mt-3 sm:mt-0'>
+          <WinningOdds />
+          {/* <Twab twabs={twabs} isFetched={isFetched} isPartiallyFetched={isPartiallyFetched} /> */}
         </div>
         <ManageBalancesList player={player} isFetched={isPlayerFetched} />
       </Card>
       <OddsDisclaimer />
+    </div>
+  )
+}
+
+const Twab = (props) => {
+  const { twabs, isFetched, isPartiallyFetched } = props
+  return (
+    <div className='flex'>
+      <div className='flex mr-2'>
+        <TwabToolTip />
+        <span className='opacity-80'>Total chance</span>
+      </div>
+      <TwabAmount
+        amount={twabs?.total}
+        isFetched={isFetched}
+        isPartiallyFetched={isPartiallyFetched}
+      />
     </div>
   )
 }
@@ -76,7 +83,7 @@ const TwabAmount = (props: {
 
   return (
     <span
-      className={classNames(className, 'text-5xl font-bold leading-none', {
+      className={classNames(className, 'font-bold leading-none', {
         'opacity-70': !isPartiallyFetched
       })}
     >
@@ -88,14 +95,27 @@ const TwabAmount = (props: {
   )
 }
 
-const OddsOfWinningOnePrize = () => {
-  const {
-    data: { oneOverOdds }
-  } = useUsersUpcomingOddsOfWinningAPrize()
+const WinningOdds = () => {
+  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
+
+  if (!isFetched) {
+    return (
+      <div className='ml-auto'>
+        <ThemedClipSpinner sizeClassName='w-4 h-4' />
+      </div>
+    )
+  }
+
+  const { oneOverOdds } = data
+
   return (
-    <div className='ml-auto'>
-      <span>Winning odds: </span>
-      <span className='font-bold'>1 in {oneOverOdds?.toFixed(2)}</span>
+    <div className='ml-auto flex leading-none'>
+      <span className='mr-1 mt-1'>Winning odds</span>
+      <div className='font-bold text-flashy flex'>
+        <span className='text-5xl'>1</span>
+        <span className='mx-1 my-auto'>in</span>
+        <span className='text-5xl'>{oneOverOdds.toFixed(2)}</span>
+      </div>
       <span className='opacity-40'>*</span>
     </div>
   )
@@ -104,7 +124,8 @@ const OddsOfWinningOnePrize = () => {
 const OddsDisclaimer = () => {
   return (
     <span className='opacity-40 text-xxs text-center mx-auto mt-4'>
-      * Odds calculation is an estimate based on current data and is subject to change.
+      *Estimated odds of winning a single prize is based on current data and is subject to change.
+      Read more.
     </span>
   )
 }
