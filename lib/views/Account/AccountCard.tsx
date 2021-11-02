@@ -132,7 +132,9 @@ const WinningOdds = () => {
     return (
       <div className='ml-auto flex flex-col leading-none space-y-1'>
         <span className='ml-auto'>🌊🏆</span>
-        <span className='font-bold ml-auto'>Make a deposit for a chance to win!</span>
+        <span className='font-bold ml-auto'>
+          {t('makeADepositForAChanceToWin', 'Make a deposit for a chance to win!')}
+        </span>
         <span className='ml-auto'>
           <Trans
             i18nKey='xDollarsGetsYouOdds'
