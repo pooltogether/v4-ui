@@ -11,5 +11,5 @@ export const usePrizePool = (address: string, chainId: number) => {
     )
     if (!prizePool) return null
     return prizePool
-  }, [linkedPrizePool])
+  }, [linkedPrizePool, chainId])
 }
