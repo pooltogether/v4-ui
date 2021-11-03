@@ -285,9 +285,10 @@ const OddsValue = (props: {
   }
   const { totalBalanceUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes } = data
   const balanceWithDepositUnformatted = totalBalanceUnformatted.add(amount.amountUnformatted)
+  const totalSupplyWithDepositUnformatted = totalSupplyUnformatted.add(amount.amountUnformatted)
   const odds = calculateOdds(
     balanceWithDepositUnformatted,
-    totalSupplyUnformatted,
+    totalSupplyWithDepositUnformatted,
     decimals,
     numberOfPrizes
   )

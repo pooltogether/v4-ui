@@ -589,6 +589,7 @@ const OddsValue = (props: {
   }
   const { totalBalanceUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes } = data
   const balanceWithWithdrawalUnformatted = totalBalanceUnformatted.sub(amount.amountUnformatted)
+  const totalSupplyWithWithdrawalUnformatted = totalSupplyUnformatted.sub(amount.amountUnformatted)
 
   if (balanceWithWithdrawalUnformatted.isZero()) {
     return <b className='text-orange'>{t('none')}</b>
@@ -596,7 +597,7 @@ const OddsValue = (props: {
 
   const odds = calculateOdds(
     balanceWithWithdrawalUnformatted,
-    totalSupplyUnformatted,
+    totalSupplyWithWithdrawalUnformatted,
     decimals,
     numberOfPrizes
   )
