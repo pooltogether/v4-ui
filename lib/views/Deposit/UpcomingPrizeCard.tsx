@@ -1,6 +1,7 @@
 import React from 'react'
-import classnames from 'classnames'
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { Time } from '@pooltogether/react-components'
 
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
 import { ViewPrizeTiersTrigger } from 'lib/views/Prizes/DrawCard/DrawDetails'
@@ -10,71 +11,77 @@ import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/LinkedPrizePool/useDrawBe
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
+import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
 
 export const UpcomingPrizeCard = () => {
   const { t } = useTranslation()
 
   const prizePool = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
-  const { data: drawBeaconPeriod, isFetched: isDrawBeaconPeriodFetched } = useDrawBeaconPeriod()
-
-  const countdown = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
 
   const prizeAmountWeekly = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize.mul(7)
   const { amountPretty } = roundPrizeAmount(prizeAmountWeekly, prizePoolTokens?.token.decimals)
 
-  const { weeks, days, hours, minutes } = countdown
-  const thereIsWeeks = weeks > 0
-  const thereIsDays = thereIsWeeks || days > 0
-  const thereIsHours = thereIsDays || hours > 0
-  const thereIsMinutes = thereIsHours || minutes > 0
+  return (
+    <AnimatedBorderCard innerClassName='flex flex-col text-center relative'>
+      <LightningLeft className='absolute top-4 xs:top-4 -left-2 xs:-left-4 sm:-left-8 w-24 h-24 xs:w-28 xs:h-28' />
+      <LightningRight className='absolute top-3 -right-2 xs:-right-4 sm:-right-8 w-24 h-24 xs:w-28 xs:h-28' />
+      <div className='mx-auto leading-none relative'>
+        <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-inverse'>
+          {isFetched ? `$${amountPretty}` : '--'}
+        </h1>
+
+        <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-1'>
+          {t('inWeeklyPrizes', 'In weekly prizes')}
+        </div>
+      </div>
+
+      <DrawCountdown />
+
+      <ViewPrizeBreakdownTrigger className='w-max mt-1 mx-auto' />
+    </AnimatedBorderCard>
+  )
+}
+
+const DrawCountdown = (props) => {
+  const { t } = useTranslation()
+  const { data: drawBeaconPeriod, isFetched: isDrawBeaconPeriodFetched } = useDrawBeaconPeriod()
+  const { secondsLeft } = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
+  const drawId = drawBeaconPeriod?.drawId
+
+  if (secondsLeft < 60) {
+    return (
+      <>
+        <DrawNumberString>
+          <span>{t('drawNumber', 'Draw #{{number}}', { number: drawId })}</span>
+        </DrawNumberString>
+        <span className='mt-1 h-14 uppercase font-semibold text-accent-1 text-2xl mx-auto'>
+          {t('closingSoon', 'Closing soon')}
+        </span>
+      </>
+    )
+  }
 
   return (
     <>
-      <div
-        className={classnames(
-          'relative overflow-visible flex flex-col justify-between text-center bg-prize-amount--small'
-        )}
-      >
-        <div className='lightning-bolts z-10' />
-        <div className='upcoming-banner-animated mx-auto py-4 xs:py-8'>
-          <div className='mx-auto leading-none relative'>
-            <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-white'>
-              {isFetched ? `$${amountPretty}` : '--'}
-            </h1>
-            <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-1'>
-              {t('inWeeklyPrizes', 'In weekly prizes')}
-            </div>
-          </div>
-
-          {isDrawBeaconPeriodFetched && (
-            <div className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto relative'>
-              {t('drawNumber', 'Draw #{{number}}', { number: drawBeaconPeriod.drawId })}{' '}
-              {countdown.secondsLeft <= 60 ? (
-                t('closesSoon', 'Closes soon')
-              ) : (
-                <>
-                  {t('closingIn', 'Closing in')}
-                  <CountdownString
-                    className='ml-1'
-                    {...countdown}
-                    hideHours={thereIsWeeks}
-                    hideMinutes={thereIsDays}
-                    hideSeconds={thereIsMinutes}
-                  />
-                </>
-              )}
-            </div>
-          )}
-
-          <ViewPrizeBreakdownTrigger />
-        </div>
-      </div>
+      <DrawNumberString drawId={drawId}>
+        <span>{t('drawNumber', 'Draw #{{number}}', { number: drawId })}</span>
+        <span className='ml-1'>{t('closingIn')}</span>
+      </DrawNumberString>
+      <Time seconds={secondsLeft} className='mt-1 mx-auto h-14' />
     </>
   )
 }
 
+const DrawNumberString = (props) => (
+  <span
+    {...props}
+    className='uppercase font-semibold text-highlight-6 text-xs xs:text-lg mx-auto'
+  />
+)
+
 const ViewPrizeBreakdownTrigger = (props) => {
+  const { className } = props
   const prizePool = useSelectedNetworkPrizePool()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
@@ -83,9 +90,26 @@ const ViewPrizeBreakdownTrigger = (props) => {
   return (
     <ViewPrizeTiersTrigger
       label={t('viewDailyPrizes', 'View daily prizes')}
-      className='relative uppercase font-bold text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide mt-2'
+      className={classNames(
+        className,
+        'relative uppercase font-bold text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
+      )}
       token={prizePoolTokens?.token}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
     />
   )
 }
+
+const LightningLeft = (props) => (
+  <div
+    className={classNames(props.className, 'bg-contain bg-no-repeat')}
+    style={{ backgroundImage: 'url(/lightning-left.png)' }}
+  />
+)
+
+const LightningRight = (props) => (
+  <div
+    className={classNames(props.className, 'w-6 h-6 bg-contain bg-no-repeat')}
+    style={{ backgroundImage: 'url(/lightning-right.png)' }}
+  />
+)
