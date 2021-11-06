@@ -1,13 +1,11 @@
 import React from 'react'
-
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
-import { Player } from '@pooltogether/v4-js-client'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
-import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwabs'
-import { AccountCard } from 'lib/views/Account/AccountCard'
+import { AccountCard, OddsDisclaimer } from 'lib/views/Account/AccountCard'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -17,8 +15,12 @@ export const AccountUI = (props) => {
   if (!isWalletConnected) {
     return (
       <PagePadding>
-        <Piggy className='w-32 mb-8 mx-auto' />
+        <Piggy className='w-20 sm:w-32 mb-2 sm:mb-4 mx-auto' />
+        <span className='mx-auto mb-6 text-xs sm:text-lg block text-center'>
+          <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
+        </span>
         <ConnectWalletCard />
+        <OddsDisclaimer className='block' />
         <div className='mt-4'>
           <BackToV3Banner />
         </div>
@@ -34,11 +36,6 @@ export const AccountUI = (props) => {
       </div>
     </PagePadding>
   )
-}
-
-interface AccountDepositsProps {
-  player: Player
-  isPlayerFetched: boolean
 }
 
 const Piggy = (props) => {

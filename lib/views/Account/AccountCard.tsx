@@ -2,18 +2,14 @@ import React from 'react'
 import { Card, CardTheme, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 
 import CardCornerLight from './card-corner-light.png'
-import CardCornerDark from './card-corner-dark.png'
 import { ColorTheme, useTheme } from 'lib/hooks/useTheme'
 import { Player } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
-import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwabs'
 import { Amount } from '@pooltogether/hooks'
 import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
 import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
-import { Trans, useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
-import { parseUnits } from '@ethersproject/units'
-import { calculateOdds } from '@pooltogether/utilities'
+import { useTranslation } from 'react-i18next'
+import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 
 interface AccountCardProps {
   className?: string
@@ -112,23 +108,9 @@ const WinningOdds = () => {
     )
   }
 
-  const {
-    odds,
-    oneOverOdds,
-    totalSupplyUnformatted,
-    decimals,
-    numberOfPrizes,
-    totalBalanceUnformatted
-  } = data
+  const { odds, oneOverOdds } = data
 
   if (odds === 0) {
-    const oddsForTen = calculateOdds(
-      parseUnits('10', decimals),
-      totalSupplyUnformatted,
-      decimals,
-      numberOfPrizes
-    )
-    const oneOverOddsForTen = 1 / oddsForTen
     return (
       <div className='ml-auto flex flex-col leading-none space-y-1'>
         <span className='ml-auto'>🌊🏆</span>
@@ -136,11 +118,7 @@ const WinningOdds = () => {
           {t('makeADepositForAChanceToWin', 'Make a deposit for a chance to win!')}
         </span>
         <span className='ml-auto'>
-          <Trans
-            i18nKey='xDollarsGetsYouOdds'
-            values={{ dollars: 10, odds: oneOverOddsForTen.toFixed(2) }}
-            components={{ style1: <b className='' />, style2: <b /> }}
-          />
+          <XDollarsGetsYou x='100' />
           <span className='opacity-40'>*</span>
         </span>
       </div>
@@ -160,10 +138,10 @@ const WinningOdds = () => {
   )
 }
 
-const OddsDisclaimer = () => {
+export const OddsDisclaimer = (props: { className?: string }) => {
   const { t } = useTranslation()
   return (
-    <span className='opacity-40 text-xxs text-center mx-auto mt-4'>
+    <span className={classNames('opacity-40 text-xxs text-center mx-auto mt-4', props.className)}>
       *<span>{t('oddsDisclaimer')}</span>
       <a
         href='https://docs.pooltogether.com/faq/prizes-and-winning'
