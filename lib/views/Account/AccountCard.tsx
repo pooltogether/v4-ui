@@ -147,7 +147,7 @@ export const OddsDisclaimer = (props: { className?: string }) => {
         href='https://docs.pooltogether.com/faq/prizes-and-winning'
         target='_blank'
         rel='noopener noreferrer'
-        className='underline ml-1'
+        className='underline ml-1 text-xxxs'
       >
         {t('readMore')}.
       </a>
