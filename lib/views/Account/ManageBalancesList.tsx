@@ -9,7 +9,6 @@ import {
 import FeatherIcon from 'feather-icons-react'
 import {
   addTokenToMetaMask,
-  Card,
   LoadingDots,
   NetworkIcon,
   poolToast,
@@ -39,6 +38,8 @@ import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DelegateTicketsSection } from 'lib/views/Account/DelegateTicketsSection'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
+import { UsersOddsValue } from 'lib/components/UpdatedOddsListItem'
+import classNames from 'classnames'
 
 const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
@@ -83,27 +84,28 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
-  const { t } = useTranslation()
-
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
     <li className='w-full flex flex-col mb-4 last:mb-0 rounded-xl bg-card px-4 sm:px-6 py-4'>
       <div className='w-full flex flex-row justify-between mb-4 mt-1'>
-        <div className='flex flex-row items-center'>
+        <div className='flex flex-row'>
           <NetworkIcon sizeClassName='w-5 xs:w-6 h-5 xs:h-6' chainId={prizePool.chainId} />
           <span className='ml-2 xs:text-lg text-accent-1'>
             {getNetworkNiceNameByChainId(prizePool.chainId)}
           </span>
         </div>
 
-        <Balance
-          prizePool={prizePool}
-          isFetched={isFetched}
-          balance={usersBalances?.ticket}
-          ticket={prizePoolTokens?.ticket}
-          token={prizePoolTokens?.token}
-        />
+        <div className='flex flex-col'>
+          <Balance
+            prizePool={prizePool}
+            isFetched={isFetched}
+            balance={usersBalances?.ticket}
+            ticket={prizePoolTokens?.ticket}
+            token={prizePoolTokens?.token}
+          />
+          <WinningOdds prizePool={prizePool} className='ml-auto' />
+        </div>
       </div>
 
       <ManageBalanceButtons player={player} prizePool={prizePool} />
@@ -113,6 +115,20 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
         balance={usersBalances?.ticket}
       />
     </li>
+  )
+}
+
+const WinningOdds = (props: { prizePool: PrizePool; className?: string }) => {
+  const { prizePool, className } = props
+  const { t } = useTranslation()
+  return (
+    <span className={classNames(className, 'text-xxs')}>
+      <span className='text-accent-1'>{t('winningOdds')}:</span>
+      <span className='ml-1 font-bold'>
+        <UsersOddsValue prizePool={prizePool} emptyString='--' />
+        <span className='opacity-30'>*</span>
+      </span>
+    </span>
   )
 }
 
@@ -139,8 +155,6 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
   const withdrawTx = useTransaction(withdrawTxId)
 
   const sendTx = useSendTransaction()
-
-  const router = useRouter()
 
   const form = useForm({
     mode: 'onChange',
@@ -226,31 +240,6 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
 
       <div className='w-full flex flex-row justify-end py-1'>
         <ManageDepositDropdown {...props} handleWithdrawClick={handleWithdrawClick} />
-
-        {/* <SquareButton
-          className='w-full mr-2'
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.purpleOutline}
-          onClick={handleWithdrawClick}
-        >
-          {withdrawTx ? t('withdrawAgain', 'Withdraw again') : t('withdraw')}
-        </SquareButton>
-
-        <SquareLink
-          Link={Link}
-          href={{
-            pathname: '/deposit',
-            query: {
-              ...router.query,
-              network: prizePool.chainId
-            }
-          }}
-          className='w-full text-center ml-2'
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.tealOutline}
-        >
-          {t('deposit')}
-        </SquareLink> */}
       </div>
     </>
   )
@@ -306,7 +295,7 @@ const Balance = (props: BalanceProps) => {
   )
 }
 
-const BalanceContainer = (props) => <div {...props} className='flex sm:mt-0 sm:mb-0 items-center' />
+const BalanceContainer = (props) => <div {...props} className='flex sm:mt-0 sm:mb-0' />
 
 const BalanceUsdValue = (props: BalanceProps) => {
   const { balance, token, prizePool } = props

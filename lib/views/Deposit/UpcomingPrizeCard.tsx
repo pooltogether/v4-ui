@@ -64,7 +64,7 @@ const DrawCountdown = (props) => {
 
   return (
     <>
-      <DrawNumberString drawId={drawId}>
+      <DrawNumberString>
         <span>{t('drawNumber', 'Draw #{{number}}', { number: drawId })}</span>
         <span className='ml-1'>{t('closingIn')}</span>
       </DrawNumberString>

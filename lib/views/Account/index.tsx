@@ -20,7 +20,7 @@ export const AccountUI = (props) => {
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
-        <OddsDisclaimer className='block' />
+        <OddsDisclaimer className='block mt-6' />
         <div className='mt-4'>
           <BackToV3Banner />
         </div>

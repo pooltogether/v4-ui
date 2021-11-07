@@ -6,7 +6,7 @@ import { ColorTheme, useTheme } from 'lib/hooks/useTheme'
 import { Player } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
-import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
 import { useTranslation } from 'react-i18next'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
@@ -36,7 +36,7 @@ export const AccountCard = (props: AccountCardProps) => {
         </div>
         <ManageBalancesList player={player} isFetched={isPlayerFetched} />
       </Card>
-      <OddsDisclaimer />
+      <OddsDisclaimer className='mt-6' />
     </div>
   )
 }
@@ -97,7 +97,7 @@ const TwabAmount = (props: {
 }
 
 const WinningOdds = () => {
-  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
+  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork()
   const { t } = useTranslation()
 
   if (!isFetched) {
@@ -141,13 +141,13 @@ const WinningOdds = () => {
 export const OddsDisclaimer = (props: { className?: string }) => {
   const { t } = useTranslation()
   return (
-    <span className={classNames('opacity-40 text-xxs text-center mx-auto mt-4', props.className)}>
-      *<span>{t('oddsDisclaimer')}</span>
+    <span className={classNames('opacity-40 text-xxxs text-center mx-auto', props.className)}>
+      * <span>{t('oddsDisclaimer')}</span>
       <a
         href='https://docs.pooltogether.com/faq/prizes-and-winning'
         target='_blank'
         rel='noopener noreferrer'
-        className='underline ml-1 text-xxs'
+        className='underline ml-1'
       >
         {t('readMore')}.
       </a>

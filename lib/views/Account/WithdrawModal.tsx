@@ -33,7 +33,12 @@ import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawalSteps } from 'lib/views/Account/ManageBalancesList'
-import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
+
+import { useOddsData } from 'lib/hooks/Tsunami/useOddsData'
+import { useUsersCurrentPrizePoolTwab } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwab'
+import { useNetworkTwab } from 'lib/hooks/Tsunami/PrizePool/useNetworkTwab'
+import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
+import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -533,7 +538,11 @@ const UpdatedStats = (props: {
 
   return (
     <InfoList className={className}>
-      <UpdatedOdds amount={amountToWithdraw} />
+      <UpdatedOdds
+        amount={amountToWithdraw}
+        prizePool={prizePool}
+        action={EstimateAction.withdraw}
+      />
       <FinalTicketBalanceStat
         amount={amountToWithdraw?.amount}
         ticket={ticket}
@@ -546,63 +555,6 @@ const UpdatedStats = (props: {
       />
     </InfoList>
   )
-}
-
-const UpdatedOdds = (props: { amount: Amount }) => {
-  const { amount } = props
-  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
-  const { t } = useTranslation()
-
-  return (
-    <InfoListItem
-      label={
-        <>
-          <Tooltip
-            id={`tooltip-deposit-updated-odds`}
-            tip={t('oddsToWinOnePrize', 'Your estimated odds of winning at least one prize')}
-          >
-            {t('updatedWinningOdds', 'Updated winning odds')}
-          </Tooltip>
-        </>
-      }
-      value={<OddsValue isFetched={isFetched} data={data} amount={amount} />}
-    />
-  )
-}
-
-const OddsValue = (props: {
-  isFetched: boolean
-  amount: Amount
-  data: {
-    odds: number
-    oneOverOdds: number
-    decimals: string
-    totalBalanceUnformatted: BigNumber
-    totalSupplyUnformatted: BigNumber
-    numberOfPrizes: number
-  }
-}) => {
-  const { t } = useTranslation()
-  const { isFetched, amount, data } = props
-  if (!isFetched) {
-    return <ThemedClipSpinner sizeClassName='w-3 h-3' />
-  }
-  const { totalBalanceUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes } = data
-  const balanceWithWithdrawalUnformatted = totalBalanceUnformatted.sub(amount.amountUnformatted)
-  const totalSupplyWithWithdrawalUnformatted = totalSupplyUnformatted.sub(amount.amountUnformatted)
-
-  if (balanceWithWithdrawalUnformatted.isZero()) {
-    return <b className='text-orange'>{t('none')}</b>
-  }
-
-  const odds = calculateOdds(
-    balanceWithWithdrawalUnformatted,
-    totalSupplyWithWithdrawalUnformatted,
-    decimals,
-    numberOfPrizes
-  )
-  const oneOverOdds = 1 / odds
-  return <>{t('oneInOdds', { odds: oneOverOdds.toFixed(2) })}</>
 }
 
 const FinalTicketBalanceStat = (props) => {

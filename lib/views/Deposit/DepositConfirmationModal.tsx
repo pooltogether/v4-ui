@@ -26,9 +26,8 @@ import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoList, InfoListItem } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useUsersUpcomingOddsOfWinningAPrize } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrize'
-import { BigNumber } from 'ethers'
-import { calculateOdds } from '@pooltogether/utilities'
+import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 
 interface DepositConfirmationModalProps extends ModalProps {
   prizePool: PrizePool
@@ -181,7 +180,11 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         />
 
         <InfoList className='mt-8'>
-          <UpdatedOdds amount={amountToDeposit} />
+          <UpdatedOdds
+            amount={amountToDeposit}
+            prizePool={prizePool}
+            action={EstimateAction.deposit}
+          />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
           <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
         </InfoList>
@@ -242,56 +245,4 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
       value={amount.amountPretty}
     />
   )
-}
-
-const UpdatedOdds = (props: { amount: Amount }) => {
-  const { amount } = props
-  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrize()
-  const { t } = useTranslation()
-
-  return (
-    <InfoListItem
-      label={
-        <>
-          <Tooltip
-            id={`tooltip-deposit-updated-odds`}
-            tip={t('oddsToWinOnePrize', 'Your estimated odds of winning at least one prize')}
-          >
-            {t('updatedWinningOdds', 'Updated winning odds')}
-          </Tooltip>
-        </>
-      }
-      value={<OddsValue isFetched={isFetched} data={data} amount={amount} />}
-    />
-  )
-}
-
-const OddsValue = (props: {
-  isFetched: boolean
-  amount: Amount
-  data: {
-    odds: number
-    oneOverOdds: number
-    decimals: string
-    totalBalanceUnformatted: BigNumber
-    totalSupplyUnformatted: BigNumber
-    numberOfPrizes: number
-  }
-}) => {
-  const { t } = useTranslation()
-  const { isFetched, amount, data } = props
-  if (!isFetched) {
-    return <ThemedClipSpinner sizeClassName='w-3 h-3' />
-  }
-  const { totalBalanceUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes } = data
-  const balanceWithDepositUnformatted = totalBalanceUnformatted.add(amount.amountUnformatted)
-  const totalSupplyWithDepositUnformatted = totalSupplyUnformatted.add(amount.amountUnformatted)
-  const odds = calculateOdds(
-    balanceWithDepositUnformatted,
-    totalSupplyWithDepositUnformatted,
-    decimals,
-    numberOfPrizes
-  )
-  const oneOverOdds = 1 / odds
-  return <>{t('oneInOdds', { odds: oneOverOdds.toFixed(2) })}</>
 }
