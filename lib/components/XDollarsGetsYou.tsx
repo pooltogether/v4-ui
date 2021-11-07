@@ -16,8 +16,6 @@ export const XDollarsGetsYou = (props: XDollarsGetsYouProps) => {
     isFetched ? getAmountFromString(x, decimals) : undefined
   )
 
-  console.log(odds)
-
   return (
     <span {...spanProps}>
       <Trans

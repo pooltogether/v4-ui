@@ -24,8 +24,8 @@ export const UpcomingPrizeCard = () => {
 
   return (
     <AnimatedBorderCard innerClassName='flex flex-col text-center relative'>
-      <LightningLeft className='absolute top-4 xs:top-4 -left-2 xs:-left-4 sm:-left-8 w-24 h-24 xs:w-28 xs:h-28' />
-      <LightningRight className='absolute top-3 -right-2 xs:-right-4 sm:-right-8 w-24 h-24 xs:w-28 xs:h-28' />
+      <LightningLeft className='absolute top-4 xs:top-4 -left-2 xs:-left-4 sm:-left-8 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28' />
+      <LightningRight className='absolute top-3 -right-2 xs:-right-4 sm:-right-8 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28' />
       <div className='mx-auto leading-none relative'>
         <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-inverse'>
           {isFetched ? `$${amountPretty}` : '--'}

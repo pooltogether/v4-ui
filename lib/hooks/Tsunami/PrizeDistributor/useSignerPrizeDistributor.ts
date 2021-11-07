@@ -8,6 +8,10 @@ export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributor) =>
     const enabled = isWalletConnected && Boolean(address) && Boolean(prizeDistributor)
     if (!enabled) return null
     const signer = provider.getSigner()
-    return new PrizeDistributor(signer, prizeDistributor.contractMetadataList)
+    return new PrizeDistributor(
+      prizeDistributor.prizeDistributorMetadata,
+      signer,
+      prizeDistributor.contractMetadataList
+    )
   }, [isWalletConnected, address, prizeDistributor, walletChainId])
 }

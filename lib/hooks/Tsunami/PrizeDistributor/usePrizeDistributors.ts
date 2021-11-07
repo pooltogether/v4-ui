@@ -12,7 +12,7 @@ export const usePrizeDistributors = () => {
   const enabled = Boolean(readProviders)
   return useQuery(
     ['usePrizeDistributors', chainIds],
-    async () => initializePrizeDistributors(readProviders, linkedPrizePoolContractList),
+    async () => initializePrizeDistributors(linkedPrizePoolContractList, readProviders),
     { ...NO_REFETCH, enabled } as UseQueryOptions<PrizeDistributor[]>
   )
 }

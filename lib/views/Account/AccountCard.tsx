@@ -117,7 +117,7 @@ const WinningOdds = () => {
         <span className='font-bold ml-auto'>
           {t('makeADepositForAChanceToWin', 'Make a deposit for a chance to win!')}
         </span>
-        <span className='ml-auto'>
+        <span className='ml-auto text-right'>
           <XDollarsGetsYou x='100' />
           <span className='opacity-40'>*</span>
         </span>

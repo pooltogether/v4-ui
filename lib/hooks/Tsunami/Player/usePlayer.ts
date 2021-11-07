@@ -11,7 +11,7 @@ export const usePlayer = (prizePool: PrizePool) => {
     ['usePlayer', prizePool?.id(), address, walletChainId],
     async () => {
       const signer = provider.getSigner()
-      return new Player(signer, prizePool)
+      return new Player(prizePool.prizePoolMetadata, signer, prizePool)
     },
     { ...NO_REFETCH, enabled } as UseQueryOptions<Player>
   )
