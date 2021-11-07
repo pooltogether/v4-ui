@@ -5,8 +5,7 @@ import {
   Modal,
   ModalProps,
   SquareButton,
-  SquareButtonTheme,
-  ThemedClipSpinner
+  SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
@@ -59,7 +58,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isOpen,
     closeModal
   } = props
-  const { amount, amountPretty, amountUnformatted } = amountToDeposit
+  const { amount, amountUnformatted } = amountToDeposit
 
   const [chainId] = useSelectedNetwork()
   const { t } = useTranslation()

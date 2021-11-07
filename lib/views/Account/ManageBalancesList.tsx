@@ -89,7 +89,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
   return (
     <li className='w-full flex flex-col mb-4 last:mb-0 rounded-xl bg-card px-4 sm:px-6 py-4'>
       <div className='w-full flex flex-row justify-between mb-4 mt-1'>
-        <div className='flex flex-row'>
+        <div className='flex flex-row items-center mb-auto'>
           <NetworkIcon sizeClassName='w-5 xs:w-6 h-5 xs:h-6' chainId={prizePool.chainId} />
           <span className='ml-2 xs:text-lg text-accent-1'>
             {getNetworkNiceNameByChainId(prizePool.chainId)}
@@ -104,7 +104,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
             ticket={prizePoolTokens?.ticket}
             token={prizePoolTokens?.token}
           />
-          <WinningOdds prizePool={prizePool} className='ml-auto' />
+          {/* <WinningOdds prizePool={prizePool} className='ml-auto' /> */}
         </div>
       </div>
 
@@ -281,16 +281,17 @@ const Balance = (props: BalanceProps) => {
 
   return (
     <BalanceContainer>
-      <span className='flex items-center xs:text-lg font-bold'>
+      <div className='flex flex-row items-center mb-auto xs:text-lg font-bold'>
         <TokenIcon
           sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
           className='mr-2'
           chainId={prizePool.chainId}
           address={ticket.address}
-        />{' '}
-        {balance.amountPretty} {ticket.symbol}
-      </span>
-      <BalanceUsdValue className='text-accent-1 font-light text-xs ml-2' {...props} />
+        />
+        <span>
+          {balance.amountPretty} {ticket.symbol}
+        </span>
+      </div>
     </BalanceContainer>
   )
 }

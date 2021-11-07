@@ -16,11 +16,10 @@ interface AccountCardProps {
   player: Player
   isPlayerFetched: boolean
 }
-
+// TODO: ODDS on the account card shouldn't include ethereum if the user isn't deposited into ethereum
 export const AccountCard = (props: AccountCardProps) => {
   const { className, player, isPlayerFetched } = props
   const { theme } = useTheme()
-  // const { data: twabs, isFetched, isPartiallyFetched } = useUsersCurrentPrizePoolTwabs()
   const backgroundImage = theme === ColorTheme.dark ? CardCornerLight : CardCornerLight
 
   return (
@@ -97,10 +96,10 @@ const TwabAmount = (props: {
 }
 
 const WinningOdds = () => {
-  const { data, isFetched } = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork()
+  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork()
   const { t } = useTranslation()
 
-  if (!isFetched) {
+  if (!Boolean(data)) {
     return (
       <div className='ml-auto'>
         <ThemedClipSpinner sizeClassName='w-6 h-6' className='mb-4' />

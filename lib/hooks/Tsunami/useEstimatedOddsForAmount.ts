@@ -17,9 +17,10 @@ export const useEstimatedOddsForAmount = (
   action: EstimateAction = EstimateAction.none,
   changeAmountUnformatted: BigNumber = ethers.constants.Zero
 ) => {
-  const { data, isFetched } = useOddsData(prizePool)
+  const data = useOddsData(prizePool)
+
   return useMemo(() => {
-    if (!isFetched || amount === undefined) {
+    if (!Boolean(data) || amount === undefined) {
       return {
         isFetched: false,
         data: undefined
@@ -37,7 +38,7 @@ export const useEstimatedOddsForAmount = (
         changeAmountUnformatted
       )
     }
-  }, [isFetched, amount])
+  }, [data, amount])
 }
 
 export const estimateOddsForAmount = (
