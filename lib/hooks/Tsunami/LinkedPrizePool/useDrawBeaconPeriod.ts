@@ -9,9 +9,9 @@ import { useLinkedPrizePool } from './useLinkedPrizePool'
  * @returns
  */
 export const useDrawBeaconPeriod = () => {
-  const { data: linkedPrizePool, isFetched } = useLinkedPrizePool()
+  const linkedPrizePool = useLinkedPrizePool()
   const [refetchIntervalMs, setRefetchIntervalMs] = useState(sToMs(60 * 2.5))
-  const enabled = isFetched
+  const enabled = Boolean(linkedPrizePool)
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber
@@ -31,8 +31,8 @@ export const useDrawBeaconPeriod = () => {
   }
 
   return useQuery(['useDrawBeaconPeriod'], () => linkedPrizePool.getDrawBeaconPeriod(), {
-    enabled,
     refetchInterval: refetchIntervalMs,
+    enabled,
     onSuccess
   })
 }

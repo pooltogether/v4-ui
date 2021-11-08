@@ -1,7 +1,6 @@
 import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 import { useEstimatedOddsForAmount } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import React from 'react'
 import { Trans } from 'react-i18next'

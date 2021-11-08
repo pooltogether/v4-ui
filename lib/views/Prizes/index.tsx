@@ -18,11 +18,11 @@ export const PRIZE_UI_STATES = {
 
 // NOTE:, this is where we are selecting a single PrizeDistributor from the list
 export const PrizesUI = () => {
-  const { data: prizeDistributors, isFetched } = useSelectedNetworkPrizeDistributors()
+  const prizeDistributors = useSelectedNetworkPrizeDistributors()
   const prizePool = useSelectedNetworkPrizePool()
   const usersAddress = useUsersAddress()
 
-  if (!isFetched || !prizePool) {
+  if (!Boolean(prizeDistributors) || !prizePool) {
     return (
       <PagePadding>
         <SelectedNetworkToggleWithPadding />

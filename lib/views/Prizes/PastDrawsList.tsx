@@ -62,7 +62,7 @@ export const PastDrawsList = (props: {
           </div>
         </Card>
       )}
-      <ul className='space-y-4 z-30'>
+      <ul className='space-y-4'>
         {drawsAndPrizeDistributions.map((drawAndPrizeDistribution) => {
           const drawId = drawAndPrizeDistribution.draw.drawId
           return (

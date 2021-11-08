@@ -36,7 +36,7 @@ export const Navigation = (props) => {
         className,
         'bg-pt-purple-bright shadow-lg w-fill sm:w-max sm:rounded-xl',
         'sm:absolute sm:bottom-auto mx-auto',
-        'fixed bottom-0 pb-0 inset-x-0 z-20'
+        'fixed bottom-0 pb-0 inset-x-0 z-30'
       )}
     >
       <nav

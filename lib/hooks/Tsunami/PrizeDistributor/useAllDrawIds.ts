@@ -8,9 +8,9 @@ import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
  * @returns the draw ids in the DrawBuffer for the beacon pool on L1
  */
 export const useAllDrawIds = () => {
-  const { data: linkedPrizePool, isFetched: isLinkedPrizePoolFetched } = useLinkedPrizePool()
+  const linkedPrizePool = useLinkedPrizePool()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const enabled = isLinkedPrizePoolFetched && isDrawBeaconFetched
+  const enabled = isDrawBeaconFetched && Boolean(linkedPrizePool)
   return useQuery(
     ['useAllDrawIds', linkedPrizePool?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
     () => linkedPrizePool.getAllDrawIds(),

@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
@@ -18,9 +18,9 @@ export interface DrawLocks {
  * @returns
  */
 export const useDrawLocks = () => {
-  const { data: prizeDistributors, isFetched } = usePrizeDistributors()
+  const prizeDistributors = usePrizeDistributors()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const enabled = Boolean(prizeDistributors) && isFetched && isDrawBeaconFetched
+  const enabled = Boolean(prizeDistributors) && isDrawBeaconFetched
   return useQuery(
     [
       'useDrawUnlockTime',

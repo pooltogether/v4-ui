@@ -307,6 +307,7 @@ interface ExternalLinkProps {
 const GetTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
+  const { data: tokens } = usePrizePoolTokens(prizePool)
 
   const { t } = useTranslation()
 
@@ -327,7 +328,7 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
       <GetTokensModal
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
-        tokenAddress={prizePool.tokenMetadata.address}
+        tokenAddress={tokens?.token.address}
         isOpen={showModal}
         closeModal={() => setShowModal(false)}
       />

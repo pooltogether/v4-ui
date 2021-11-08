@@ -24,15 +24,18 @@ const getPrizePoolTokens = async (prizePool: PrizePool) => {
 
   const [ticketData, tokenData] = await Promise.all([ticketDataPromise, tokenDataPromise])
 
+  const ticketContract = await prizePool.getTicketContract()
+  const tokenContract = await prizePool.getTokenContract()
+
   const ticket: Token = {
-    address: prizePool.ticketMetadata.address,
+    address: ticketContract.address,
     symbol: ticketData.symbol,
     name: ticketData.name,
     decimals: ticketData.decimals
   }
 
   const token: Token = {
-    address: prizePool.tokenMetadata.address,
+    address: tokenContract.address,
     symbol: tokenData.symbol,
     name: tokenData.name,
     decimals: tokenData.decimals
