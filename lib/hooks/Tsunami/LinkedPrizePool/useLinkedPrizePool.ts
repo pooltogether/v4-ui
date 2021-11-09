@@ -8,9 +8,14 @@ export const useLinkedPrizePool = (): LinkedPrizePool => {
   const linkedPrizePoolContractList = useContractList()
   const chainIds = useContractListChainIds(linkedPrizePoolContractList.contracts)
   const readProviders = useProvidersKeyedByNumbers(chainIds)
-
   return useMemo(() => {
     if (!readProviders || !linkedPrizePoolContractList) return undefined
-    return new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
-  }, [readProviders ? Object.keys(readProviders) : '', chainIds, linkedPrizePoolContractList.name])
+    const linkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
+    console.log({ linkedPrizePool })
+    return linkedPrizePool
+  }, [
+    readProviders ? Object.keys(readProviders).join('') : '',
+    chainIds?.join(''),
+    linkedPrizePoolContractList.name
+  ])
 }
