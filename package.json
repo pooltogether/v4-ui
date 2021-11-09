@@ -60,7 +60,7 @@
     "@pooltogether/react-components": "^1.2.12",
     "@pooltogether/utilities": "^0.2.1",
     "@pooltogether/v4-js-client": "^0.7.1",
-    "@pooltogether/v4-pool-data": "^1.0.0",
+    "@pooltogether/v4-pool-data": "^1.1.0",
     "@reach/dialog": "^0.15.3",
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",

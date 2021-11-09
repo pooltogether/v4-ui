@@ -5,8 +5,9 @@ import { atom, useAtom } from 'jotai'
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
 import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
 
-import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
+import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
+import { useAppEnvString } from './useAppEnvString'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
@@ -52,6 +53,7 @@ export const selectedNetworkAtom = atom<number>(getInitialSelectedNetwork())
 export const useSelectedNetwork = () => useAtom(selectedNetworkAtom)
 
 export const useSelectedNetworkWatcher = () => {
+  const { isTestnets } = useIsTestnets()
   const [selectedNetwork, setSelectedNetwork] = useAtom(selectedNetworkAtom)
   const router = useRouter()
   const networkQueryParam = router.query[URL_QUERY_KEY.network] as string
@@ -73,4 +75,15 @@ export const useSelectedNetworkWatcher = () => {
       router.replace(url, null, { scroll: false })
     }
   }, [selectedNetwork])
+
+  // Watch for testnet changes
+  useEffect(() => {
+    const testnetDefault = DEFAULT_NETWORKS[APP_ENVIRONMENTS.testnets]
+    const mainnetDefault = DEFAULT_NETWORKS[APP_ENVIRONMENTS.mainnets]
+    if (isTestnets && selectedNetwork !== testnetDefault) {
+      setSelectedNetwork(testnetDefault)
+    } else if (!isTestnets && selectedNetwork !== mainnetDefault) {
+      setSelectedNetwork(mainnetDefault)
+    }
+  }, [isTestnets])
 }
