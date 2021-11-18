@@ -13,6 +13,12 @@ export const MultipleDrawsDate = (props: {
   const firstDraw = drawList[0]
   const lastDraw = drawList[drawList.length - 1]
 
+  if (drawList.length === 1) {
+    return (
+      <span className={props.className}>{getTimestampStringWithTime(firstDraw.timestamp)}</span>
+    )
+  }
+
   return (
     <span className={props.className}>
       {getTimestampStringWithTime(firstDraw.timestamp, {

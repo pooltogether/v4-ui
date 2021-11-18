@@ -1,5 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
+import classNames from 'classnames'
 import { DrawData } from 'lib/types/v4'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +25,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
       <SquareButton
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.sm}
-        className={props.className}
+        className={classNames(props.className)}
         onClick={() => setIsOpen(true)}
       >
         {label || t('viewPrizeTiers', 'View prize tiers')}

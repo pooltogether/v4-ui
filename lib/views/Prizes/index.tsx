@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { useSelectedNetworkPrizeDistributors } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedNetwork'
 import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
@@ -39,7 +38,6 @@ export const PrizesUI = () => {
   return (
     <>
       <PagePadding>
-        {/* <PrizeDistributorDrawList prizeDistributor={prizeDistributor} prizePool={prizePool} /> */}
         <PrizeChecker prizeDistributor={prizeDistributor} prizePool={prizePool} />
         {/* <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} /> */}
       </PagePadding>

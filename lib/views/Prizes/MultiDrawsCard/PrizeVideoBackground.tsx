@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import classnames from 'classnames'
 
-import { CheckedState } from '..'
+import { CheckedState } from '.'
 
 interface PrizeVideoBackgroundProps {
   className?: string

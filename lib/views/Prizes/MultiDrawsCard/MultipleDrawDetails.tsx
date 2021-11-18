@@ -26,10 +26,8 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
           <MultipleDrawsDate {...remainingProps} />
         </span>
         <span className='flex xs:flex-col flex-col-reverse pt-1 xs:pt-0 space-y-2 items-start xs:items-end '>
-          <span className='mt-2 xs:mt-0'>
-            <TotalPrizes {...remainingProps} />
-          </span>
           <MultiDrawsPrizeTiersTrigger {...remainingProps} />
+          <TotalPrizes className='mt-2 xs:mt-0' {...remainingProps} />
         </span>
       </div>
     </div>

@@ -18,7 +18,7 @@ import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolToke
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimModal } from '../PrizeClaimModal'
 import { DrawData } from 'lib/types/v4'
-import { PrizeVideoBackground } from './PrizeVideo/PrizeVideoBackground'
+import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
 import { useUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawDatas'
@@ -50,7 +50,13 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
 
   // TODO: If there are no draws, attempt to show locked draws
   if (Boolean(drawDatas) && !Object.keys(drawDatas).length) {
-    return <LockedDrawsCard prizeDistributor={prizeDistributor} />
+    return (
+      <LockedDrawsCard
+        prizeDistributor={prizeDistributor}
+        token={prizePoolTokens.token}
+        ticket={prizePoolTokens.ticket}
+      />
+    )
   }
 
   return (
@@ -102,7 +108,6 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         ticket={ticket}
         className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
       />
-      {/* <div className='absolute xs:relative mx-auto xs:ml-0 left-0 xs:left-auto right-0 xs:right-auto bottom-2 xs:bottom-auto xs:top-4 text-center'> */}
       <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
         <MultiDrawsClaimButton
           {...props}

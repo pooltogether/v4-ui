@@ -145,7 +145,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           {winningDrawResultsList.map((drawResults) => {
             const drawData = drawDatas[drawResults.drawId]
             return (
-              <li>
+              <li key={`prize_list_draw_id_${drawResults.drawId}`}>
                 <PrizeList
                   chainId={prizeDistributor.chainId}
                   drawResults={drawResults}
