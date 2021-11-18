@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { useUnclaimedDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawsAndPrizeDistributions'
+import { useUnclaimedDrawDataList } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawDatas'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { getPrettyDate } from 'lib/utils/date'
 import { DrawCard } from './DrawCard'
@@ -23,7 +23,7 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
     error,
     data: drawsAndPrizeDistributions,
     isFetched
-  } = useUnclaimedDrawsAndPrizeDistributions(prizeDistributor)
+  } = useUnclaimedDrawDataList(prizeDistributor)
   const {
     data: usersBalances,
     refetch: refetchUsersBalances,
@@ -73,15 +73,15 @@ export const PrizeDistributorDrawList = (props: PrizeDistributorDrawListProps) =
             <span className='mb-2'>
               {t('depositToBeEligible', 'Make a deposit for a chance to win')}
             </span>
-            <SquareLink
-              Link={Link}
-              size={SquareButtonSize.sm}
-              theme={SquareButtonTheme.tealOutline}
-              href={{ pathname: '/deposit', query: router.query }}
-              className='mt-4 mb-8 items-center block xs:inline mx-auto w-32'
-            >
-              {t('deposit')}
-            </SquareLink>
+            <Link href={{ pathname: '/deposit', query: router.query }}>
+              <SquareLink
+                size={SquareButtonSize.sm}
+                theme={SquareButtonTheme.tealOutline}
+                className='mt-4 mb-8 items-center block xs:inline mx-auto w-32'
+              >
+                {t('deposit')}
+              </SquareLink>
+            </Link>
           </>
         )}
       </div>

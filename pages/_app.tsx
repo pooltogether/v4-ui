@@ -30,7 +30,7 @@ import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
-import '@pooltogether/react-components/dist/index.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 // Carousel for Prizes
 import 'react-responsive-carousel/lib/styles/carousel.min.css'

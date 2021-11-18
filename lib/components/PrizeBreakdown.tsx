@@ -9,15 +9,12 @@ import {
 } from '@pooltogether/v4-js-client'
 import { BigNumber } from '@ethersproject/bignumber'
 import { useTranslation } from 'react-i18next'
-import { MouseEventHandler } from 'react-modal/node_modules/@types/react'
 
-import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution
   token: Token
-  closeModal: MouseEventHandler
   className?: string
   isFetched?: boolean
 }
@@ -30,45 +27,29 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
 
   return (
     <div className={classnames('flex flex-col max-w-md text-center', className)}>
-      <PrizeWLaurels className='mx-auto' />
-      <div className='font-inter font-semibold text-sm capitalize text-white my-3 text-center'>
-        {t('prizeBreakdown', 'Prize breakdown')}
+      <div className='flex justify-between space-x-2 sm:space-x-4'>
+        <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
+        <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
+        {/* <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader> */}
       </div>
-
-      <hr className='opacity-10 border-white w-full' />
-      <div className={'flex flex-col'}>
-        <div className='flex justify-between space-x-2 sm:space-x-4'>
-          <PrizeTableHeader>{t('amount')}</PrizeTableHeader>
-          <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
-          {/* <PrizeTableHeader>{t('oddsPerPick', 'Odds per pick')}</PrizeTableHeader> */}
-        </div>
-        <div className='flex flex-col space-y-2'>
-          {!isFetched ? (
-            Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
-          ) : (
-            <>
-              {tiers.map((distribution, i) => (
-                <PrizeBreakdownTableRow
-                  key={`distribution_row_${i}`}
-                  index={i}
-                  prizeDistribution={prizeDistribution}
-                  numberOfPicks={numberOfPicks}
-                  totalPrize={prize}
-                  token={token}
-                />
-              ))}
-            </>
-          )}
-        </div>
+      <div className='flex flex-col space-y-2'>
+        {!isFetched ? (
+          Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
+        ) : (
+          <>
+            {tiers.map((distribution, i) => (
+              <PrizeBreakdownTableRow
+                key={`distribution_row_${i}`}
+                index={i}
+                prizeDistribution={prizeDistribution}
+                numberOfPicks={numberOfPicks}
+                totalPrize={prize}
+                token={token}
+              />
+            ))}
+          </>
+        )}
       </div>
-      <SquareButton
-        theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.md}
-        className='text-center mx-auto w-3/4 mt-8'
-        onClick={props.closeModal}
-      >
-        {t('close', 'Close')}
-      </SquareButton>
     </div>
   )
 }

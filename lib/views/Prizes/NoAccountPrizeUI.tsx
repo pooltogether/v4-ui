@@ -13,14 +13,12 @@ interface NoAccountPrizeUIProps {
 }
 
 export const NoAccountPrizeUI = (props: NoAccountPrizeUIProps) => {
-  const { prizeDistributor, prizePool } = props
-
   return (
     <PagePadding className='flex flex-col space-y-4'>
       <SelectedNetworkToggle className='mx-auto mb-4' />
       <PrizeWLaurels className='mx-auto mb-4' />
       <ConnectWalletCard />
-      <PastDrawsList {...props} />
+      {/* <PastDrawsList {...props} /> */}
     </PagePadding>
   )
 }

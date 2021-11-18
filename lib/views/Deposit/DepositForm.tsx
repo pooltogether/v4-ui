@@ -61,7 +61,7 @@ export const DepositForm = (props: DepositFormProps) => {
   const { data: minimumDepositAmount, isFetched: isMinimumDepositFetched } =
     useMinimumDepositAmount(prizePool, token)
 
-  const [chainId] = useSelectedNetwork()
+  const { chainId } = useSelectedNetwork()
 
   const decimals = token.decimals
 

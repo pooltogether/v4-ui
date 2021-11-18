@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import classnames from 'classnames'
-import { BigNumber } from '@ethersproject/bignumber'
-import { DrawResults } from '@pooltogether/v4-js-client'
 
-import { ClaimState } from 'lib/views/Prizes/DrawCard'
+import { CheckedState } from '..'
 
 interface PrizeVideoBackgroundProps {
   className?: string
-  claimState: ClaimState
-  drawResults: DrawResults
+  didUserWinAPrize: boolean
+  checkedState: CheckedState
   setCheckedAnimationFinished: () => void
 }
 
@@ -30,7 +28,7 @@ const getVideoSource = (videoClip: VideoClip, videoState: VideoState, extension:
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}`
 
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
-  const { claimState, drawResults, className, setCheckedAnimationFinished } = props
+  const { checkedState, didUserWinAPrize, className, setCheckedAnimationFinished } = props
 
   // const a1 = useRef<HTMLVideoElement>(null)
   const a2 = useRef<HTMLVideoElement>(null)
@@ -54,7 +52,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const showPrizeOrNoPrize = () => {
     setCurrentVideoState(VideoState.transition)
 
-    if (drawResults?.totalValue?.isZero()) {
+    if (!didUserWinAPrize) {
       setCurrentVideoClip(VideoClip.noPrize)
       c1.current.play()
       c2.current.load()
@@ -65,20 +63,8 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
     }
   }
 
-  // If draw results are stored but they still haven't claimed
-  useEffect(() => {
-    if (drawResults) {
-      showPrizeOrNoPrize()
-    }
-  }, [])
-
   return (
-    <div
-      className={classnames(
-        className,
-        'video-container rounded-xl absolute t-0 l-0 r-0 b-0 w-full overflow-hidden'
-      )}
-    >
+    <div className={classnames(className, 'h-full w-full')}>
       {/* Rest */}
       {/* Rest Transition */}
       {/* <video
@@ -112,7 +98,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b1.current.load()
         }}
         onEnded={() => {
-          if (claimState === ClaimState.checking) {
+          if (checkedState === CheckedState.checking) {
             b1.current.play()
             b2.current.load()
             setCurrentVideoClip(VideoClip.reveal)
@@ -161,7 +147,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         playsInline
         muted
         onEnded={() => {
-          if (claimState === ClaimState.checking && !drawResults) {
+          if (checkedState === CheckedState.checking && didUserWinAPrize === undefined) {
             b2.current.play()
           } else {
             showPrizeOrNoPrize()

@@ -7,21 +7,21 @@ import {
   SquareButton,
   SquareButtonTheme,
   Tooltip,
-  ErrorsBox,
-  ThemedClipSpinner
+  ErrorsBox
 } from '@pooltogether/react-components'
 import { Amount, Token, TokenBalance, Transaction } from '@pooltogether/hooks'
-import { calculateOdds, getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
-import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
+import { Player, PrizePool } from '@pooltogether/v4-js-client'
+
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { PrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
@@ -33,10 +33,6 @@ import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawalSteps } from 'lib/views/Account/ManageBalancesList'
-
-import { useOddsData } from 'lib/hooks/Tsunami/useOddsData'
-import { useUsersCurrentPrizePoolTwab } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwab'
-import { useNetworkTwab } from 'lib/hooks/Tsunami/PrizePool/useNetworkTwab'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 
@@ -99,16 +95,16 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
 
   if (!isWalletOnProperNetwork) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
+      <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
         <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   if (currentStep === WithdrawalSteps.viewTxReceipt) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
+      <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
         <ModalTitle
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
@@ -119,12 +115,12 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
           tx={withdrawTx}
           closeModal={closeModal}
         />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   return (
-    <ModalWithStyles isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
+    <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
       <BackButton resetForm={reset} currentStep={currentStep} setCurrentStep={setCurrentStep} />
       <ModalTitle chainId={prizePool.chainId} title={t('withdrawTokens', 'Withdraw tokens')} />
       <div className='w-full mx-auto mt-8'>
@@ -146,7 +142,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
           sendWithdrawTx={sendWithdrawTx}
         />
       </div>
-    </ModalWithStyles>
+    </Modal>
   )
 }
 
@@ -611,20 +607,3 @@ const UnderlyingReceivedStat = (props) => {
 }
 
 const DownArrow = () => <DefaultDownArrow className='my-2 text-inverse' />
-
-interface ModalWithStylesProps {
-  isOpen: boolean
-  closeModal: () => void
-  children: React.ReactNode
-}
-
-const ModalWithStyles = (props: ModalWithStylesProps) => (
-  <Modal
-    noSize
-    noBgColor
-    noPad
-    className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-    label='Withdrawal Modal'
-    {...props}
-  />
-)

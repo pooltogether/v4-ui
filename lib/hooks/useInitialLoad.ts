@@ -1,6 +1,6 @@
 import { useSelectedNetworkPlayer } from './Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from './Tsunami/PrizePool/usePrizePoolTokens'
-import { useSelectedNetworkPrizePool } from './Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { usePrizePoolBySelectedNetwork } from './Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 
 /**
  * Initial fetches required, regardless of the page loaded.
@@ -9,7 +9,7 @@ import { useSelectedNetworkPrizePool } from './Tsunami/PrizePool/useSelectedNetw
  */
 export const useInitialLoad = () => {
   useSelectedNetworkPlayer()
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizePool = usePrizePoolBySelectedNetwork()
   const { isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
   return isPrizePoolTokensFetched
 }

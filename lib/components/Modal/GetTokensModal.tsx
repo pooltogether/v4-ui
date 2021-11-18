@@ -29,11 +29,9 @@ export const GetTokensModal = (props: GetTokensModalProps) => {
 
   return (
     <Modal
-      noSize
-      noBgColor
-      noPad
       isOpen={Boolean(props.isOpen)}
-      className='shadow-3xl pt-20 bg-new-modal h-full sm:h-auto sm:max-w-xl'
+      paddingClassName='pt-20'
+      maxWidthClassName='sm:max-w-xl'
       label={t('getTokensModal', 'Get Tokens - modal')}
       closeModal={props.closeModal}
       style={{ paddingTop: 70 }}

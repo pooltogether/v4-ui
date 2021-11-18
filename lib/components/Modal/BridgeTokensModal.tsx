@@ -43,23 +43,11 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
 
   const networkName = getNetworkNiceNameByChainId(chainId)
 
-  // const ModalWithStyles = (props: ModalWithStylesProps) => (
-  //   <Modal
-  //     noSize
-  //     noBgColor
-  //     noPad
-  //     className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-  //     label='Withdrawal Modal'
-  //     {...props}
-  //   />
-  // )
-
   return (
     <Modal
-      noSize
-      noBgColor
       isOpen={Boolean(props.isOpen)}
-      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
+      paddingClassName='px-2 xs:px-8 py-10'
+      maxWidthClassName='sm:max-w-md'
       label={t('getTokensModal', 'Get tokens - modal window')}
       closeModal={props.closeModal}
     >

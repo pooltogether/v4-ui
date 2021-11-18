@@ -1,27 +1,24 @@
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
-import { Amount } from '@pooltogether/hooks'
-import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
+import { Amount, Token } from '@pooltogether/hooks'
+import { Draw, PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getStoredDrawResult } from 'lib/utils/drawResultsStorage'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import {
-  DrawDate,
-  DrawDetailsProps,
-  DrawId,
-  PrizeDistributorTotal,
-  ViewPrizeTiersTrigger
-} from './DrawCard/DrawDetails'
 import { useAllDrawsAndPrizeDistributions } from 'lib/hooks/Tsunami/PrizeDistributor/useAllDrawsAndPrizeDistributions'
 import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
 import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
+import { DrawData } from 'lib/types/v4'
+import { AmountInPrizes } from 'lib/components/AmountInPrizes'
+import { ViewPrizeTiersTrigger } from 'lib/components/ViewPrizesTrigger'
+import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -36,7 +33,7 @@ export const PastDrawsList = (props: {
 
   const { data: drawsAndPrizeDistributions, isFetched: isDrawsAndPrizeDistributionsFetched } =
     useAllDrawsAndPrizeDistributions(prizeDistributor)
-  const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor, prizePoolTokens?.token)
+  const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor)
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
@@ -82,14 +79,20 @@ export const PastDrawsList = (props: {
   )
 }
 
-interface PastPrizeListItemProps extends DrawDetailsProps {
+interface PastPrizeListItemProps {
+  token: Token
+  ticket: Token
+  drawData: DrawData
   prizeDistributor: PrizeDistributor
-  claimedAmount?: Amount
+  claimedAmount: Amount
   drawLock?: DrawLock
 }
 
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
+  const { token, ticket, drawData, prizeDistributor, claimedAmount, drawLock } = props
   const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
+  const { prizeDistribution } = drawData
+  const amount = roundPrizeAmount(prizeDistribution.prize, ticket.decimals)
 
   return (
     <li>
@@ -113,9 +116,8 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
           </div>
 
           <div className='mt-6 xs:mt-0'>
-            <PrizeDistributorTotal
-              {...props}
-              pendingClassName={pendingClassName}
+            <AmountInPrizes
+              amount={amount}
               numberClassName='font-bold text-inverse text-xs xs:text-sm'
               textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
             />
@@ -130,6 +132,22 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
       </Card>
     </li>
   )
+}
+
+export const DrawDate = (props: { draw: Draw; className?: string }) => (
+  <span className={props.className}>{getTimestampStringWithTime(props.draw.timestamp)}</span>
+)
+
+DrawDate.defaultProps = {
+  className: 'uppercase font-bold text-white opacity-70 text-xs leading-none'
+}
+
+const DrawId = (props: { draw: Draw; className?: string }) => (
+  <span className={props.className}>#{props.draw.drawId}</span>
+)
+
+DrawId.defaultProps = {
+  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xs leading-none'
 }
 
 const PropagatingMessage = (props) => {

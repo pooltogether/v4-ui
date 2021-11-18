@@ -31,7 +31,7 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -47,7 +47,7 @@ const BUTTON_MIN_WIDTH = 100
 export const DepositCard = () => {
   const router = useRouter()
 
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizePool = usePrizePoolBySelectedNetwork()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -198,7 +198,7 @@ export const DepositCard = () => {
     setDepositedAmount(undefined)
   }
 
-  const [chainId] = useSelectedNetwork()
+  const { chainId } = useSelectedNetwork()
 
   return (
     <>
@@ -439,15 +439,15 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       >
         {t('depositMore', 'Deposit more')}
       </SquareButton>
-      <SquareLink
-        href={{ pathname: '/account', query: router.query }}
-        Link={Link}
-        size={SquareButtonSize.sm}
-        theme={SquareButtonTheme.purpleOutline}
-        className='text-xs hover:text-white transition-colors text-center'
-      >
-        {t('viewAccount', 'View account')}
-      </SquareLink>
+      <Link href={{ pathname: '/account', query: router.query }}>
+        <SquareLink
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.purpleOutline}
+          className='text-xs hover:text-white transition-colors text-center'
+        >
+          {t('viewAccount', 'View account')}
+        </SquareLink>
+      </Link>
     </div>
   )
 }

@@ -1,13 +1,15 @@
 import React from 'react'
 
-import { useSelectedNetworkPrizeDistributors } from 'lib/hooks/Tsunami/PrizeDistributor/useSelectedNetworkPrizeDistributors'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { useSelectedNetworkPrizeDistributors } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedNetwork'
+import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { SelectedNetworkToggle } from 'lib/components/SelectedNetworkToggle'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { PrizeDistributorDrawList } from './PrizeDistributorDrawList'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { NoAccountPrizeUI } from './NoAccountPrizeUI'
 import { PastDrawsList } from './PastDrawsList'
+import { usePrizeDistributorBySelectedNetwork } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedNetwork'
+import { PrizeChecker } from './PrizeChecker.tsx'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -16,13 +18,12 @@ export const PRIZE_UI_STATES = {
   didNotWin: 'didNotWin'
 }
 
-// NOTE:, this is where we are selecting a single PrizeDistributor from the list
 export const PrizesUI = () => {
-  const prizeDistributors = useSelectedNetworkPrizeDistributors()
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizeDistributor = usePrizeDistributorBySelectedNetwork()
+  const prizePool = usePrizePoolBySelectedNetwork()
   const usersAddress = useUsersAddress()
 
-  if (!Boolean(prizeDistributors) || !prizePool) {
+  if (!Boolean(prizeDistributor) || !prizePool) {
     return (
       <PagePadding>
         <SelectedNetworkToggleWithPadding />
@@ -32,15 +33,15 @@ export const PrizesUI = () => {
   }
 
   if (!usersAddress) {
-    return <NoAccountPrizeUI prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
+    return <NoAccountPrizeUI prizeDistributor={prizeDistributor} prizePool={prizePool} />
   }
 
   return (
     <>
-      <SelectedNetworkToggleWithPadding />
-      <PrizeDistributorDrawList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
       <PagePadding>
-        <PastDrawsList prizeDistributor={prizeDistributors[0]} prizePool={prizePool} />
+        {/* <PrizeDistributorDrawList prizeDistributor={prizeDistributor} prizePool={prizePool} /> */}
+        <PrizeChecker prizeDistributor={prizeDistributor} prizePool={prizePool} />
+        {/* <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} /> */}
       </PagePadding>
     </>
   )

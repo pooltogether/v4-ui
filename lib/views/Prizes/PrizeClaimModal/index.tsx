@@ -1,67 +1,58 @@
-import React, { useCallback, useState } from 'react'
-import { PreTransactionDetails, Transaction } from '@pooltogether/hooks'
-// import { Amount, PreTransactionDetails, Token, Transaction } from '@pooltogether/hooks'
+import React, { useCallback } from 'react'
+import { Token, Transaction } from '@pooltogether/hooks'
 import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
-import { DrawResults } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
+import { ethers } from 'ethers'
 
-// import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
-import { ModalWithStyles } from 'lib/components/Modal/ModalWithStyles'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-// import { InfoListItem } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { DrawPropsWithDetails } from '.'
 import { PrizeList } from 'lib/components/PrizeList'
 import { useSignerPrizeDistributor } from 'lib/hooks/Tsunami/PrizeDistributor/useSignerPrizeDistributor'
-import { StoredDrawStates, updateStoredDrawResultState } from 'lib/utils/drawResultsStorage'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { DrawData } from 'lib/types/v4'
 
-interface PrizeClaimModalProps extends DrawPropsWithDetails {
+interface PrizeClaimModalProps {
+  prizeDistributor: PrizeDistributor
+  prizePool: PrizePool
+  token: Token
+  ticket: Token
   isOpen: boolean
-  closeModal: () => void
-  drawResults: DrawResults
+  didUserWinAPrize: boolean
+  drawDatas: { [drawId: number]: DrawData }
+  winningDrawResultsList: DrawResults[]
   claimTx: Transaction
-  sendTx: (txDetails: PreTransactionDetails) => Promise<number>
+  closeModal: () => void
   setTxId: (txId: number) => void
 }
 
 export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
-    drawResults,
+    winningDrawResultsList,
+    drawDatas,
     prizeDistributor,
-    prizeDistribution,
     token,
     ticket,
     isOpen,
     closeModal,
     claimTx,
-    sendTx,
-    setTxId,
-    refetchUsersBalances
+    setTxId
   } = props
 
-  const [chainId] = useSelectedNetwork()
+  const sendTx = useSendTransaction()
+
+  const { chainId } = useSelectedNetwork()
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-  const usersAddress = useUsersAddress()
 
-  const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(prizeDistributor, token)
-
-  const onSuccessfulClaim = (tx: Transaction) => {
-    updateStoredDrawResultState(
-      usersAddress,
-      prizeDistributor,
-      drawResults.drawId,
-      StoredDrawStates.claimed
-    )
-  }
+  const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(prizeDistributor)
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
@@ -69,24 +60,24 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     const txId = await sendTx({
       name,
       method: 'claim',
-      callTransaction: async () => signerPrizeDistributor.claimPrizesByDrawResults(drawResults),
+      callTransaction: async () =>
+        signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(winningDrawResultsList),
       callbacks: {
-        onSuccess: onSuccessfulClaim,
+        // onSuccess: onSuccessfulClaim,
         refetch: () => {
-          refetchUsersBalances()
           refetchClaimedAmounts()
         }
       }
     })
     setTxId(txId)
-  }, [signerPrizeDistributor, drawResults])
+  }, [signerPrizeDistributor, winningDrawResultsList])
 
-  if (!drawResults) return null
+  if (!winningDrawResultsList) return null
 
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
       return (
-        <ModalWithStyles label='Error depositing modal' isOpen={isOpen} closeModal={closeModal}>
+        <Modal label='Error depositing modal' isOpen={isOpen} closeModal={closeModal}>
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <div className='text-white opacity-60'>
             <p className='my-2 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -107,12 +98,12 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           >
             {t('tryAgain', 'Try again')}
           </SquareButton>
-        </ModalWithStyles>
+        </Modal>
       )
     }
 
     return (
-      <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+      <Modal label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
@@ -120,38 +111,52 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           tx={claimTx}
           closeModal={closeModal}
         />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
-  const { amountPretty } = roundPrizeAmount(drawResults.totalValue, ticket.decimals)
+  const totalPrizesWonUnformatted = winningDrawResultsList.reduce(
+    (total, drawResult) => total.add(drawResult.totalValue),
+    ethers.BigNumber.from(0)
+  )
+
+  const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
 
   if (!isWalletOnProperNetwork) {
     return (
-      <ModalWithStyles label='Wrong network modal' isOpen={isOpen} closeModal={closeModal}>
+      <Modal label='Wrong network modal' isOpen={isOpen} closeModal={closeModal}>
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   return (
-    <ModalWithStyles label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
-      <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
+    <Modal label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+      <div className='w-full mx-auto flex flex-col max-h-full'>
+        <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
-      <div className='w-full mx-auto mt-4 flex flex-col'>
         <div className='flex items-center mx-auto font-bold text-white mb-4 text-3xl'>
           <span className='mr-2'>{amountPretty}</span>
           <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </div>
 
-        <PrizeList
-          chainId={prizeDistributor.chainId}
-          prizes={drawResults.prizes}
-          ticket={ticket}
-          token={token}
-          prizeDistribution={prizeDistribution}
-        />
+        <ul className='space-y-4 overflow-y-auto' style={{ maxHeight: '100%' }}>
+          {winningDrawResultsList.map((drawResults) => {
+            const drawData = drawDatas[drawResults.drawId]
+            return (
+              <li>
+                <PrizeList
+                  chainId={prizeDistributor.chainId}
+                  drawResults={drawResults}
+                  ticket={ticket}
+                  token={token}
+                  drawData={drawData}
+                />
+              </li>
+            )
+          })}
+        </ul>
 
         <SquareButton
           className='mt-8 w-full'
@@ -164,6 +169,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           {t('confirmClaim', 'Confirm claim')}
         </SquareButton>
       </div>
-    </ModalWithStyles>
+    </Modal>
   )
 }

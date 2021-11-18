@@ -1,20 +1,14 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { sortDrawsByDrawId } from 'lib/utils/sortByDrawId'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
-import { useAllDraws } from './useAllDraws'
-
-interface DrawAndPrizeDistribution {
-  draw: Draw
-  prizeDistribution?: PrizeDistribution
-}
+import { useAllBeaconChainDraws } from './useAllBeaconChainDraws'
+import { DrawData } from 'lib/types/v4'
 
 /**
  * TODO: Add locks
  * @returns all draws and prize distributions if available
  */
 export const useAllDrawsAndPrizeDistributions = (prizeDistributor: PrizeDistributor) => {
-  const { data: draws, isFetched: isDrawsFetched } = useAllDraws()
+  const { data: draws, isFetched: isDrawsFetched } = useAllBeaconChainDraws()
   const enabled = isDrawsFetched && Boolean(prizeDistributor)
   return useQuery(
     ['useAllDrawsAndPrizeDistributions', prizeDistributor?.id(), draws?.map((d) => d.drawId)],
@@ -34,13 +28,13 @@ const getAllDrawsAndPrizeDistributions = async (
   )
 
   // NOTE: PrizeDistributionBuffer draw ids can never be greater than DrawBuffer
-  const drawsAndPrizeDistributions: DrawAndPrizeDistribution[] = []
+  const drawsAndPrizeDistributions: { [drawId: number]: Partial<DrawData> } = {}
 
   // Pair up all of the draws and prize distributions
   prizeDistributionBufferDrawIds.forEach((drawId, index) => {
     const prizeDistribution = prizeDistributions[index]
     const draw = draws.find((draw) => drawId === draw.drawId)
-    drawsAndPrizeDistributions.push({ draw, prizeDistribution })
+    drawsAndPrizeDistributions[draw.drawId] = { draw, prizeDistribution }
   })
 
   // Push any beacon draw ids that are newer than the oldesr prize distribution that are missing into the array
@@ -52,11 +46,8 @@ const getAllDrawsAndPrizeDistributions = async (
   )
 
   missingDraws.forEach((draw) => {
-    drawsAndPrizeDistributions.push({ draw })
+    drawsAndPrizeDistributions[draw.drawId] = { draw }
   })
 
-  return drawsAndPrizeDistributions.sort(sortByDrawId)
+  return drawsAndPrizeDistributions
 }
-
-const sortByDrawId = (a: DrawAndPrizeDistribution, b: DrawAndPrizeDistribution) =>
-  sortDrawsByDrawId(a.draw, b.draw)

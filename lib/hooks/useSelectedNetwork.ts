@@ -8,6 +8,8 @@ import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/supportedNet
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
 import { useAppEnvString } from './useAppEnvString'
+import { useEnvironmentNetworks } from './Tsunami/useEnvironmentNetwork'
+import { Network } from 'lib/constants/network'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
@@ -50,7 +52,14 @@ const getInitialSelectedNetwork = () => {
 
 export const selectedNetworkAtom = atom<number>(getInitialSelectedNetwork())
 
-export const useSelectedNetwork = () => useAtom(selectedNetworkAtom)
+export const useSelectedNetwork = () => {
+  const [chainId, setSelectedChainId] = useAtom(selectedNetworkAtom)
+  const envNetworks = useEnvironmentNetworks()
+  const networks = Object.keys(envNetworks) as Network[]
+  const chainIds = Object.values(envNetworks)
+  const network = networks[chainIds.indexOf(chainId)]
+  return { chainId, setSelectedChainId, network }
+}
 
 export const useSelectedNetworkWatcher = () => {
   const { isTestnets } = useIsTestnets()

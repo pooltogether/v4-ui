@@ -18,7 +18,7 @@ export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => 
 
   const supportedNetworks = SUPPORTED_NETWORKS[appEnv]
 
-  const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
+  const { chainId, setSelectedChainId } = useSelectedNetwork()
 
   const formatValue = (chainId) => {
     return (
@@ -30,7 +30,7 @@ export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => 
   }
 
   const changeNetwork = (value) => {
-    setSelectedNetwork(value)
+    setSelectedChainId(value)
   }
 
   return (
@@ -44,7 +44,7 @@ export const SelectedNetworkDropdown = (props: SelectedNetworkDropdownProps) => 
       label={''}
       formatValue={formatValue}
       onValueSet={changeNetwork}
-      current={selectedChainId}
+      current={chainId}
       values={supportedNetworks}
     />
   )

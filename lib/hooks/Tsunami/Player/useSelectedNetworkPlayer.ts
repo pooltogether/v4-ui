@@ -1,9 +1,9 @@
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { useNetworkPrizePool } from '../PrizePool/useNetworkPrizePool'
+import { usePrizePoolByChainId } from '../PrizePool/usePrizePoolByChainId'
 import { usePlayer } from './usePlayer'
 
 export const useSelectedNetworkPlayer = () => {
-  const [chainId] = useSelectedNetwork()
-  const prizePool = useNetworkPrizePool(chainId)
+  const { chainId } = useSelectedNetwork()
+  const prizePool = usePrizePoolByChainId(chainId)
   return usePlayer(prizePool)
 }

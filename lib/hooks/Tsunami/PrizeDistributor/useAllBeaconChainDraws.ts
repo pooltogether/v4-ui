@@ -5,15 +5,22 @@ import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 
 /**
  * Refetches when the draw beacon has updated
- * @returns the draw ids in the DrawBuffer for the beacon pool on L1
+ * @returns the draw in the DrawBuffer for the Prize Pool on the Beacon Chain
  */
-export const useAllDrawIds = () => {
+export const useAllBeaconChainDraws = () => {
   const linkedPrizePool = useLinkedPrizePool()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const enabled = isDrawBeaconFetched && Boolean(linkedPrizePool)
+  const enabled = Boolean(linkedPrizePool) && isDrawBeaconFetched
   return useQuery(
-    ['useAllDrawIds', linkedPrizePool?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
-    () => linkedPrizePool.getAllDrawIds(),
+    [
+      'useAllBeaconChainDraws',
+      linkedPrizePool?.id(),
+      drawBeaconPeriod?.startedAtSeconds.toString()
+    ],
+    async () => {
+      console.log({ linkedPrizePool })
+      return linkedPrizePool.getBeaconChainDraws()
+    },
     { ...NO_REFETCH, enabled }
   )
 }

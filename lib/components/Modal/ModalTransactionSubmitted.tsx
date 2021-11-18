@@ -35,7 +35,6 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
       </span>
 
       <SquareLink
-        Link={Link}
         target='_blank'
         href={url}
         theme={SquareButtonTheme.tealOutline}

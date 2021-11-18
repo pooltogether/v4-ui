@@ -125,7 +125,7 @@ const WinningOdds = (props: { prizePool: PrizePool; className?: string }) => {
     <span className={classNames(className, 'text-xxs')}>
       <span className='text-accent-1'>{t('winningOdds')}:</span>
       <span className='ml-1 font-bold'>
-        <UsersOddsValue prizePool={prizePool} emptyString='--' />
+        <UsersOddsValue emptyString='--' />
         <span className='opacity-30'>*</span>
       </span>
     </span>
@@ -149,7 +149,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation()
-  const [, setSelectedNetwork] = useSelectedNetwork()
+  const { setSelectedChainId } = useSelectedNetwork()
 
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
@@ -206,7 +206,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
     if (withdrawTx?.completed) {
       resetState()
     }
-    setSelectedNetwork(prizePool.chainId)
+    setSelectedChainId(prizePool.chainId)
     setIsModalOpen(true)
   }
 

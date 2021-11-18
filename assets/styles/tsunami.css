@@ -43,17 +43,25 @@
 
 /* scale the height by the view width, maintains aspect ratio */
 .draw-card {
-  height: 94vw;
+  padding-top: calc(77.77% + 5rem);
+  position: relative;
+  overflow: hidden;
+}
+
+@screen xs {
+  .draw-card {
+    padding-top: 77.77%;
+  }
 }
 
 /* prob don't want both the @media query and the @screen here. Figure this out later ... */
-@media screen and (min-width: 576px) {
+/* @media screen and (min-width: 576px) {
   @screen xs {
     .draw-card {
       height: 436px;
     }
   }
-}
+} */
 
 @media screen and (max-height: 600px) {
   .main-nav {
@@ -79,7 +87,7 @@
   background: white;
 }
 
-.tsunami-dropdown {
+/* .tsunami-dropdown {
   max-width: 144px;
 }
 
@@ -97,7 +105,7 @@
   .tsunami-dropdown-md {
     max-width: 263px;
   }
-}
+} */
 
 .bg-animated-gradient-1 {
   background: linear-gradient(85deg, #f37055 -30%, #0dacf5, #f947d2, #11d1fc, #dd6ffe, #fedc6f 95%);
