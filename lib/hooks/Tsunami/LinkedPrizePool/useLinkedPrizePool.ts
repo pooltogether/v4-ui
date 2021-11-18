@@ -11,7 +11,6 @@ export const useLinkedPrizePool = (): LinkedPrizePool => {
   return useMemo(() => {
     if (!readProviders || !linkedPrizePoolContractList) return undefined
     const linkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
-    console.log({ linkedPrizePool })
     return linkedPrizePool
   }, [
     readProviders ? Object.keys(readProviders).join('') : '',
