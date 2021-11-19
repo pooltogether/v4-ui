@@ -34,7 +34,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     return (
       <div className={classNames(className, 'flex flex-col')}>
         <ThemedClipSpinner className='mx-auto mb-8' sizeClassName='w-10 h-10' />
-        <div className='text-white opacity-60'>
+        <div className='text-inverse opacity-60'>
           <p className='mb-4 text-center mx-8'>
             {t(
               'onceYourApprovalTxHasFinished',
@@ -43,7 +43,6 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           </p>
         </div>
         <SquareLink
-          Link={Link}
           href={blockExplorerUrl}
           className='w-full mt-6 text-center'
           theme={SquareButtonTheme.tealOutline}
@@ -57,7 +56,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
 
   return (
     <div className={classNames(className, 'flex flex-col')}>
-      <div className='mx-4 text-white opacity-60'>
+      <div className='mx-4 text-inverse opacity-60'>
         <p className='mb-4'>
           {t(
             'prizePoolContractsRequireApprovals',

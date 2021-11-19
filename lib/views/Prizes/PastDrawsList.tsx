@@ -139,7 +139,7 @@ export const DrawDate = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawDate.defaultProps = {
-  className: 'uppercase font-bold text-white opacity-70 text-xs leading-none'
+  className: 'uppercase font-bold text-inverse opacity-70 text-xs leading-none'
 }
 
 const DrawId = (props: { draw: Draw; className?: string }) => (
@@ -147,7 +147,7 @@ const DrawId = (props: { draw: Draw; className?: string }) => (
 )
 
 DrawId.defaultProps = {
-  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xs leading-none'
+  className: 'uppercase font-bold text-inverse mr-2 opacity-50 text-xs leading-none'
 }
 
 const PropagatingMessage = (props) => {

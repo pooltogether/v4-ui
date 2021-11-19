@@ -59,16 +59,21 @@ const LockedDrawDetails = (props: {
 }) => {
   const { className, drawDatas, token, ticket } = props
   return (
-    <div className={classNames(className, 'flex flex-row justify-between w-full')}>
-      <div className='space-y-1'>
-        <div>
-          <MultipleDrawIds drawDatas={drawDatas} />
-          <MultipleDrawsDate drawDatas={drawDatas} />
-        </div>
-        <MultiDrawsPrizeTiersTrigger token={token} drawDatas={drawDatas} />
-        <TotalPrizes token={token} drawDatas={drawDatas} />
+    <div
+      className={classNames(
+        className,
+        'flex flex-col xs:flex-row justify-between leading-none xs:w-full'
+      )}
+    >
+      <div>
+        <MultipleDrawIds drawDatas={drawDatas} />
+        <MultipleDrawsDate drawDatas={drawDatas} />
       </div>
-      <FeatherIcon name='lock' className='text-white w-10 h-10 stroke-current' />
+      <div className='flex flex-col space-y-1'>
+        <TotalPrizes token={token} drawDatas={drawDatas} />
+        <MultiDrawsPrizeTiersTrigger token={token} drawDatas={drawDatas} />
+      </div>
+      {/* <FeatherIcon name='lock' className='text-white w-10 h-10 stroke-current' /> */}
     </div>
   )
 }

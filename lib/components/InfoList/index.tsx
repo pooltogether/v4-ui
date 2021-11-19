@@ -4,7 +4,7 @@ export const InfoList = (
   props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement>
 ) => (
   <ul
-    className={classnames('text-white rounded-lg py-4 px-4 bg-pt-purple-bright', props.className)}
+    className={classnames('text-inverse rounded-lg py-4 px-4 bg-pt-purple-bright', props.className)}
   >
     {props.children}
   </ul>

@@ -59,7 +59,7 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
           })}
         />
 
-        <p className='text-white opacity-60 mt-4 mb-6'>
+        <p className='text-inverse opacity-60 mt-4 mb-6'>
           {t(
             'checkOutThese',
             'Make use of one of these services to move your tokens to {{networkName}}',
@@ -84,7 +84,7 @@ const BridgeLink = (props: { url: string; title: string }) => {
   return (
     <li>
       <a
-        className='flex text-sm text-accent-1 transition-colors hover:text-white'
+        className='flex text-sm text-accent-1 transition-colors hover:text-inverse'
         href={url}
         target='_blank'
         rel='noopener noreferrer'

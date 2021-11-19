@@ -2,6 +2,7 @@ import classnames from 'classnames'
 import ordinal from 'ordinal'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
+import { Switch } from '@pooltogether/react-components'
 import { Draw, DrawResults, PrizeAwardable, PrizeDistribution } from '@pooltogether/v4-js-client'
 
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
@@ -19,18 +20,39 @@ interface PrizeListProps
   drawResults: DrawResults
   ticket: Token
   token: Token
+  drawIdsToNotClaim: Set<number>
+  addDrawIdToClaim: (drawId: number) => void
+  removeDrawIdToClaim: (drawId: number) => void
 }
 
 export const PrizeList = (props: PrizeListProps) => {
-  const { drawResults, ticket, token, className, drawData, ...ulProps } = props
+  const {
+    drawResults,
+    ticket,
+    token,
+    className,
+    drawData,
+    drawIdsToNotClaim,
+    addDrawIdToClaim,
+    removeDrawIdToClaim,
+    ...ulProps
+  } = props
   const { prizes, drawId } = drawResults
+  const isNotClaiming = drawIdsToNotClaim.has(drawId)
 
   return (
-    <>
-      <PrizeListHeader drawResults={drawResults} drawData={drawData} className='mb-2' />
+    <div className={classNames({ 'opacity-50': isNotClaiming })}>
+      <PrizeListHeader
+        drawResults={drawResults}
+        drawData={drawData}
+        className='mb-2'
+        drawIdsToNotClaim={drawIdsToNotClaim}
+        addDrawIdToClaim={addDrawIdToClaim}
+        removeDrawIdToClaim={removeDrawIdToClaim}
+      />
       <ul
         {...ulProps}
-        className={classnames(className, 'text-white max-h-80 overflow-y-auto space-y-2 pr-2')}
+        className={classnames(className, 'text-inverse max-h-80 overflow-y-auto space-y-2 pr-2')}
       >
         {!prizes &&
           Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
@@ -45,7 +67,7 @@ export const PrizeList = (props: PrizeListProps) => {
           />
         ))}
       </ul>
-    </>
+    </div>
   )
 }
 
@@ -116,16 +138,41 @@ const LoadingPrizeRow = () => <li className='w-full h-6 animate-pulse bg-darkene
 const PrizeListHeader = (props: {
   drawData: DrawData
   drawResults: DrawResults
+  drawIdsToNotClaim: Set<number>
+  addDrawIdToClaim: (drawId: number) => void
+  removeDrawIdToClaim: (drawId: number) => void
   className?: string
 }) => {
-  const { drawResults, className, drawData } = props
+  const {
+    drawResults,
+    className,
+    drawData,
+    drawIdsToNotClaim,
+    addDrawIdToClaim,
+    removeDrawIdToClaim
+  } = props
   const { drawId } = drawResults
   const { draw } = drawData
+
+  const enabled = !drawIdsToNotClaim.has(drawId)
+  const setEnabled = (enabled: boolean) => {
+    if (enabled) {
+      removeDrawIdToClaim(drawId)
+    } else {
+      addDrawIdToClaim(drawId)
+    }
+  }
+
   const { t } = useTranslation()
   return (
-    <div className={classNames(className, 'flex flex-col justify-between text-xs font-bold')}>
-      <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
-      <span className='text-white'>{getTimestampStringWithTime(draw.timestamp)}</span>
+    <div className='flex w-full justify-between'>
+      <div className={classNames(className, 'flex flex-col space-y-1 text-xs font-bold')}>
+        <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
+        <span className='text-inverse'>{getTimestampStringWithTime(draw.timestamp)}</span>
+      </div>
+      <div>
+        <Switch enabled={enabled} setEnabled={setEnabled} />
+      </div>
     </div>
   )
 }

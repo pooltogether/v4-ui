@@ -16,7 +16,7 @@ export const ModalLoadingGate = (props: ModalLoadingGateProps) => {
     <div className={classNames(className, 'flex flex-col text-accent-1')}>
       <ThemedClipSpinner className='mx-auto mb-8' sizeClassName='w-10 h-10' />
 
-      <div className='text-white opacity-60'>
+      <div className='text-inverse opacity-60'>
         <p className='mb-4 text-center mx-8'>
           {t('wereGettingMoreData', `We're getting some more data to make sure you can deposit.`)}
         </p>

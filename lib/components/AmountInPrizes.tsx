@@ -25,6 +25,6 @@ export const AmountInPrizes = (props: {
 }
 
 AmountInPrizes.defaultProps = {
-  numberClassName: 'font-bold text-white text-xs xs:text-sm',
-  textClassName: 'font-bold text-white text-xxs xs:text-xs ml-1 opacity-60'
+  numberClassName: 'font-bold text-inverse text-xs xs:text-sm',
+  textClassName: 'font-bold text-inverse text-xxs xs:text-xs ml-1 opacity-60'
 }

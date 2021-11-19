@@ -15,7 +15,9 @@ const walletConnectOptions = {
   rpc: {
     42220: 'https://forno.celo.org',
     44787: 'https://alfajores-forno.celo-testnet.org',
-    62320: 'https://baklava-forno.celo-testnet.org'
+    62320: 'https://baklava-forno.celo-testnet.org',
+    1: RPC_URL,
+    137: 'https://polygon-rpc.com'
   },
   bridge: 'https://pooltogether.bridge.walletconnect.org/'
 }

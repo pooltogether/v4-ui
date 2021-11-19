@@ -2197,10 +2197,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.17.tgz#25fdbdfd282c2f86ddf3fcefbd98be99cd2627e2"
   integrity sha512-0p1rCgM3LLbAdwBnc7gqgnvjHg9KpbhcSphergHShlkWz8EdPawoMJ3/VbezI0mGC5eKCDzMaPgF9Yca6cKvrg==
 
-"@pooltogether/bnc-onboard-hooks@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/bnc-onboard-hooks/-/bnc-onboard-hooks-1.0.3.tgz#c794823a5306deda7c05426c27afa80f5d2cf7b2"
-  integrity sha512-y/YlQGouhWQurvv/tbBjE9xaJ5aIiT/eKt6CwQTlEyw6OBidH38ZGKcuzKPmEz+uCQf61z4aDtgAHBZnPjjAkw==
+"@pooltogether/bnc-onboard-hooks@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/bnc-onboard-hooks/-/bnc-onboard-hooks-1.0.4.tgz#7d493c77e466f0020c5f7b0f3b01731d0be04c88"
+  integrity sha512-qo8xo8EQrWbY9OL991/JmVCt9yh7/M6GBZ1Qcva6Aop6muoi8nM2JKi89Fe2iNb2zGy2XwqaoXtOZw+ZJUOgVg==
 
 "@pooltogether/bnc-onboard@1.34.1-i":
   version "1.34.1-i"

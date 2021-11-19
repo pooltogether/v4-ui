@@ -20,7 +20,7 @@ export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
   const networkName = getNetworkNiceNameByChainId(chainId)
 
   return (
-    <div className={classNames(className, 'flex flex-col text-white')}>
+    <div className={classNames(className, 'flex flex-col text-inverse')}>
       <div className='mx-4 opacity-70'>
         <p className='mb-4'>
           {t(

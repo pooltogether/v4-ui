@@ -66,7 +66,7 @@ const PrizeTableHeader = (
   <div
     {...props}
     className={classnames(
-      'font-inter text-xxs uppercase font-semibold text-white mt-8 mb-2 opacity-60 w-full',
+      'font-inter text-xxs uppercase font-semibold text-inverse mt-8 mb-2 opacity-60 w-full',
       props.className
     )}
   />
@@ -127,7 +127,7 @@ const PrizeTableCell = (props: PrizeTableCellProps) => (
     {...props}
     className={classnames(props.className, 'font-inter text-sm xs:text-lg capitalize my-1 w-full', {
       'text-flashy font-bold': props.index === 0,
-      'opacity-70 text-white font-semibold': props.index !== 0
+      'opacity-70 text-inverse font-semibold': props.index !== 0
     })}
   />
 )

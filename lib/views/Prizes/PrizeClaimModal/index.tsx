@@ -26,7 +26,10 @@ interface PrizeClaimModalProps {
   isOpen: boolean
   didUserWinAPrize: boolean
   drawDatas: { [drawId: number]: DrawData }
-  winningDrawResultsList: DrawResults[]
+  winningDrawResults: { [drawId: number]: DrawResults }
+  drawIdsToNotClaim: Set<number>
+  addDrawIdToClaim: (drawId: number) => void
+  removeDrawIdToClaim: (drawId: number) => void
   claimTx: Transaction
   closeModal: () => void
   setTxId: (txId: number) => void
@@ -34,12 +37,15 @@ interface PrizeClaimModalProps {
 
 export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   const {
-    winningDrawResultsList,
+    winningDrawResults,
     drawDatas,
     prizeDistributor,
     token,
     ticket,
     isOpen,
+    drawIdsToNotClaim,
+    addDrawIdToClaim,
+    removeDrawIdToClaim,
     closeModal,
     claimTx,
     setTxId
@@ -60,8 +66,15 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     const txId = await sendTx({
       name,
       method: 'claim',
-      callTransaction: async () =>
-        signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(winningDrawResultsList),
+      callTransaction: async () => {
+        const winningDrawResultsList = Object.values(winningDrawResults).filter((drawResults) => {
+          return !drawIdsToNotClaim.has(drawResults.drawId)
+        })
+        console.log({ winningDrawResultsList })
+        return signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(
+          winningDrawResultsList
+        )
+      },
       callbacks: {
         // onSuccess: onSuccessfulClaim,
         refetch: () => {
@@ -70,16 +83,16 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       }
     })
     setTxId(txId)
-  }, [signerPrizeDistributor, winningDrawResultsList])
+  }, [signerPrizeDistributor, winningDrawResults, drawIdsToNotClaim])
 
-  if (!winningDrawResultsList) return null
+  if (!winningDrawResults) return null
 
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
       return (
         <Modal label='Error depositing modal' isOpen={isOpen} closeModal={closeModal}>
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
-          <div className='text-white opacity-60'>
+          <div className='text-inverse opacity-60'>
             <p className='my-2 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
             <p className='mb-8 text-center mx-8'>
               {t(
@@ -115,10 +128,13 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     )
   }
 
-  const totalPrizesWonUnformatted = winningDrawResultsList.reduce(
-    (total, drawResult) => total.add(drawResult.totalValue),
-    ethers.BigNumber.from(0)
-  )
+  const winningDrawResultsList = Object.values(winningDrawResults)
+  const totalPrizesWonUnformatted = winningDrawResultsList.reduce((total, drawResult) => {
+    if (!drawIdsToNotClaim.has(drawResult.drawId)) {
+      return total.add(drawResult.totalValue)
+    }
+    return total
+  }, ethers.BigNumber.from(0))
 
   const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
 
@@ -136,7 +152,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
       <div className='w-full mx-auto flex flex-col max-h-full'>
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
-        <div className='flex items-center mx-auto font-bold text-white mb-4 text-3xl'>
+        <div className='flex items-center mx-auto font-bold text-inverse mb-4 text-3xl'>
           <span className='mr-2'>{amountPretty}</span>
           <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </div>
@@ -147,6 +163,9 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
             return (
               <li key={`prize_list_draw_id_${drawResults.drawId}`}>
                 <PrizeList
+                  drawIdsToNotClaim={drawIdsToNotClaim}
+                  addDrawIdToClaim={addDrawIdToClaim}
+                  removeDrawIdToClaim={removeDrawIdToClaim}
                   chainId={prizeDistributor.chainId}
                   drawResults={drawResults}
                   ticket={ticket}

@@ -98,7 +98,7 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b1.current.load()
         }}
         onEnded={() => {
-          if (checkedState === CheckedState.checking) {
+          if (checkedState !== CheckedState.unchecked) {
             b1.current.play()
             b2.current.load()
             setCurrentVideoClip(VideoClip.reveal)

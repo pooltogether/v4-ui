@@ -37,7 +37,7 @@ export const GetTokensModal = (props: GetTokensModalProps) => {
       style={{ paddingTop: 70 }}
     >
       <a
-        className='absolute top-6 left-6 flex text-sm text-accent-1 transition-colors hover:text-white'
+        className='absolute top-6 left-6 flex text-sm text-accent-1 transition-colors hover:text-inverse'
         href={url}
         target='_blank'
         rel='noopener noreferrer'

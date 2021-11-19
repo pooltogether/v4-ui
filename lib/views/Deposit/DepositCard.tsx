@@ -415,7 +415,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-white'>
+      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-inverse'>
         {t(
           'disclaimerComeBackRegularlyToClaimWinnings',
           'You are eligible for all future prizes! Come back to check for winnings, if you don’t claim winnings in 60 days they will expire. <Link>Learn more</Link>'
@@ -434,7 +434,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <SquareButton
         size={SquareButtonSize.md}
         theme={SquareButtonTheme.tealOutline}
-        className='text-xl hover:text-white transition-colors mb-2'
+        className='text-xl hover:text-inverse transition-colors mb-2'
         onClick={resetState}
       >
         {t('depositMore', 'Deposit more')}
@@ -443,7 +443,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
         <SquareLink
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.purpleOutline}
-          className='text-xs hover:text-white transition-colors text-center'
+          className='text-xs hover:text-inverse transition-colors text-center'
         >
           {t('viewAccount', 'View account')}
         </SquareLink>

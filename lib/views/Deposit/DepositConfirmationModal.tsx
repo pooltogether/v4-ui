@@ -186,7 +186,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           }
         />
 
-        <DownArrow className='text-white' />
+        <DownArrow className='text-inverse' />
 
         <TextInputGroup
           readOnly

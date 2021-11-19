@@ -48,7 +48,6 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
     return <LoadingCard />
   }
 
-  // TODO: If there are no draws, attempt to show locked draws
   if (Boolean(drawDatas) && !Object.keys(drawDatas).length) {
     return (
       <LockedDrawsCard
@@ -83,9 +82,11 @@ export enum CheckedState {
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const { drawDatas, ticket, token } = props
   const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
-  const [winningDrawResultsList, setWinningDrawResultsList] = useState<DrawResults[]>(null)
-  const didUserWinAPrize = Boolean(winningDrawResultsList)
-    ? winningDrawResultsList.length > 0
+  const [winningDrawResults, setWinningDrawResults] =
+    useState<{ [drawId: number]: DrawResults }>(null)
+  const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useState<Set<number>>(new Set())
+  const didUserWinAPrize = Boolean(winningDrawResults)
+    ? Object.keys(winningDrawResults).length > 0
     : undefined
   const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
@@ -93,6 +94,22 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
 
   const [txId, setTxId] = useState(0)
   const claimTx = useTransaction(txId)
+
+  const addDrawIdToClaim = (drawId: number) => {
+    setDrawIdsToNotClaim((drawIdsToNotClaim) => {
+      const newDrawIdsToClaim = new Set(drawIdsToNotClaim)
+      newDrawIdsToClaim.add(drawId)
+      return newDrawIdsToClaim
+    })
+  }
+
+  const removeDrawIdToClaim = (drawId: number) => {
+    setDrawIdsToNotClaim((drawIdsToNotClaim) => {
+      const newDrawIdsToClaim = new Set(drawIdsToNotClaim)
+      newDrawIdsToClaim.delete(drawId)
+      return newDrawIdsToClaim
+    })
+  }
 
   return (
     <>
@@ -113,7 +130,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
           didUserWinAPrize={didUserWinAPrize}
-          setWinningDrawResultsList={setWinningDrawResultsList}
+          setWinningDrawResults={setWinningDrawResults}
           checkedState={checkedState}
           setCheckedState={setCheckedState}
           openModal={() => setIsModalOpen(true)}
@@ -125,8 +142,11 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         {...props}
         setTxId={setTxId}
         claimTx={claimTx}
+        drawIdsToNotClaim={drawIdsToNotClaim}
+        addDrawIdToClaim={addDrawIdToClaim}
+        removeDrawIdToClaim={removeDrawIdToClaim}
         didUserWinAPrize={didUserWinAPrize}
-        winningDrawResultsList={winningDrawResultsList}
+        winningDrawResults={winningDrawResults}
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
@@ -141,7 +161,7 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
   claimTx: Transaction
   className?: string
   size?: SquareButtonSize
-  setWinningDrawResultsList: (drawResultsList: DrawResults[]) => void
+  setWinningDrawResults: (drawResultsList: { [drawId: number]: DrawResults }) => void
   setCheckedState: (state: CheckedState) => void
   openModal: () => void
 }
@@ -155,7 +175,8 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     drawDatas,
     className,
     size,
-    setWinningDrawResultsList,
+    hasCheckedAnimationFinished,
+    setWinningDrawResults,
     setCheckedState,
     openModal
   } = props
@@ -195,8 +216,34 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
     )
-  } else if ([CheckedState.unchecked, CheckedState.checking].includes(checkedState)) {
-    const isChecking = checkedState === CheckedState.checking
+  } else if (
+    checkedState === CheckedState.checked &&
+    didUserWinAPrize &&
+    hasCheckedAnimationFinished
+  ) {
+    btnJsx = (
+      <SquareButton
+        theme={SquareButtonTheme.rainbow}
+        size={size}
+        onClick={() => openModal()}
+        className={className}
+        style={{ minWidth: 230 }}
+      >
+        {t('viewPrizes', 'View prizes')}
+      </SquareButton>
+    )
+  } else if (
+    checkedState === CheckedState.checked &&
+    !didUserWinAPrize &&
+    hasCheckedAnimationFinished
+  ) {
+    btnJsx = (
+      <SquareButton size={size} disabled className={className}>
+        {t('noPrizesToClaim', 'No prizes to claim')}
+      </SquareButton>
+    )
+  } else {
+    const isChecking = checkedState !== CheckedState.unchecked
     btnJsx = (
       <SquareButton
         size={size}
@@ -205,7 +252,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
             prizeDistributor,
             draws,
             usersAddress,
-            setWinningDrawResultsList,
+            setWinningDrawResults,
             setCheckedState
           )
         }
@@ -223,24 +270,6 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         )}
       </SquareButton>
     )
-  } else if (checkedState === CheckedState.checked && didUserWinAPrize) {
-    btnJsx = (
-      <SquareButton
-        theme={SquareButtonTheme.rainbow}
-        size={size}
-        onClick={() => openModal()}
-        className={className}
-        style={{ minWidth: 230 }}
-      >
-        {t('viewPrizes', 'View prizes')}
-      </SquareButton>
-    )
-  } else {
-    btnJsx = (
-      <SquareButton size={size} disabled className={className}>
-        {t('noPrizesToClaim', 'No prizes to claim')}
-      </SquareButton>
-    )
   }
 
   return <div className='flex items-center relative'>{btnJsx}</div>
@@ -254,7 +283,7 @@ const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
   draws: Draw[],
   usersAddress: string,
-  setWinningDrawResultsList: (drawResultsList: DrawResults[]) => void,
+  setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
   setCheckedState: (state: CheckedState) => void
 ) => {
   setCheckedState(CheckedState.checking)
@@ -262,7 +291,9 @@ const getUsersDrawResults = async (
   // Read stored draw results
   const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor, drawIds)
 
-  const winningDrawResultsList: DrawResults[] = []
+  console.log({ draws, storedDrawResults })
+
+  const winningDrawResults: { [drawId: string]: DrawResults } = {}
   const drawResultsPromises = draws.map(async (draw) => {
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
@@ -287,13 +318,15 @@ const getUsersDrawResults = async (
       }
     }
     if (!drawResults.totalValue.isZero()) {
-      winningDrawResultsList.push(drawResults)
+      winningDrawResults[draw.drawId] = drawResults
     }
   })
 
   await Promise.all(drawResultsPromises)
 
-  setWinningDrawResultsList(winningDrawResultsList)
+  console.log({ winningDrawResults })
+
+  setWinningDrawResults(winningDrawResults)
   setCheckedState(CheckedState.checked)
 }
 

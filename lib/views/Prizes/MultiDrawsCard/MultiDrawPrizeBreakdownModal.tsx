@@ -52,7 +52,11 @@ export const MultiDrawPrizeBreakdownModal = (
         </select>
       </div>
       <PrizeWLaurels className='mx-auto' />
-      <PrizeBreakdown className='`mx-auto' prizeDistribution={prizeDistribution} token={token} />
+      <PrizeBreakdown
+        className='w-full mx-auto'
+        prizeDistribution={prizeDistribution}
+        token={token}
+      />
       <SquareButton
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.md}

@@ -155,7 +155,7 @@ const BackButton = (props) => {
 
   return (
     <button
-      className='text-white hover:text-white absolute top-7 left-8 text-xs border-b opacity-30 hover:opacity-100 trans leading-tight'
+      className='text-inverse hover:text-inverse absolute top-7 left-8 text-xs border-b opacity-30 hover:opacity-100 trans leading-tight'
       onClick={() => {
         const newStep = currentStep - 1
         if (newStep === WithdrawalSteps.input) {
