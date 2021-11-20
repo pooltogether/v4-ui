@@ -1,6 +1,6 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { DrawData } from 'lib/types/v4'
-import { DrawLock, useDrawLocks } from './useDrawLocks'
+import { useDrawLocks } from './useDrawLocks'
 import { useValidDrawDatas } from './useValidDrawDatas'
 
 export const useLockedDrawDatas = (prizeDistributor: PrizeDistributor) => {

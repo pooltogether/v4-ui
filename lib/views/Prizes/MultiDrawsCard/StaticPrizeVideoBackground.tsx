@@ -14,7 +14,7 @@ enum VideoState {
   transition = 'IN'
 }
 
-enum VideoClip {
+export enum VideoClip {
   noPrize = 'NOPRIZE',
   prize = 'PRIZE',
   rest = 'REST',
@@ -29,8 +29,9 @@ export const StaticPrizeVideoBackground = (props: StaticPrizeVideoBackgroundProp
 
   return (
     <div className={classnames(className, 'h-full w-full')}>
-      <video playsInline autoPlay muted loop preload='auto'>
+      <video playsInline autoPlay muted loop preload='auto' className='xs:rounded-xl rounded-t-xl'>
         <source src={getVideoSource(videoClip, videoState, 'webm')} type='video/webm' />
+        <source src={getVideoSource(videoClip, videoState, 'original.mp4')} type='video/mp4' />
       </video>
     </div>
   )

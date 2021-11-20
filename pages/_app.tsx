@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
-// import { ReactQueryDevtools } from 'react-query-devtools'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
 import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
@@ -10,8 +9,7 @@ import {
   useInitCookieOptions,
   useInitInfuraId,
   useInitQuickNodeId,
-  useInitReducedMotion,
-  useInitTheGraphApiKey
+  useInitReducedMotion
 } from '@pooltogether/hooks'
 import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
@@ -133,7 +131,6 @@ const InitPoolTogetherHooks = ({ children }) => {
   useSelectedNetworkWatcher()
   useInitInfuraId(process.env.NEXT_JS_INFURA_ID)
   useInitQuickNodeId(process.env.NEXT_JS_QUICKNODE_ID)
-  useInitTheGraphApiKey(process.env.NEXT_JS_THE_GRAPH_API_KEY)
   useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
   useInitializeOnboard({

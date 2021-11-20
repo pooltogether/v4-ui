@@ -17,6 +17,8 @@ import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import classNames from 'classnames'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
+import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
+import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -29,8 +31,10 @@ export const PrizesUI = () => {
   const prizeDistributor = usePrizeDistributorBySelectedNetwork()
   const prizePool = usePrizePoolBySelectedNetwork()
   const usersAddress = useUsersAddress()
+  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
+    usePrizePoolTokens(prizePool)
 
-  if (!Boolean(prizeDistributor) || !prizePool) {
+  if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (
       <PagePadding className='flex flex-col space-y-6'>
         <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
@@ -42,10 +46,15 @@ export const PrizesUI = () => {
   if (!usersAddress) {
     return (
       <PagePadding className='flex flex-col space-y-6'>
-        <PrizeWLaurels className='mx-auto' />
-        <ConnectWalletCard />
+        {/* <PrizeWLaurels className='mx-auto' /> */}
+        {/* <ConnectWalletCard /> */}
         <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        {/* <PastDrawsList {...props} /> */}
+        <LockedDrawsCard
+          prizeDistributor={prizeDistributor}
+          token={prizePoolTokens?.token}
+          ticket={prizePoolTokens?.ticket}
+        />
+        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
       </PagePadding>
     )
   }
@@ -55,7 +64,7 @@ export const PrizesUI = () => {
       <PagePadding className='flex flex-col space-y-6'>
         <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
         <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        {/* <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} /> */}
+        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
       </PagePadding>
     </>
   )

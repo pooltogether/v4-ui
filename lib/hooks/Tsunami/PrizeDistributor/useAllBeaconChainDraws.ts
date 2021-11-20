@@ -1,3 +1,4 @@
+import { Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
@@ -18,8 +19,10 @@ export const useAllBeaconChainDraws = () => {
       drawBeaconPeriod?.startedAtSeconds.toString()
     ],
     async () => {
-      console.log({ linkedPrizePool })
-      return linkedPrizePool.getBeaconChainDraws()
+      const drawsList = await linkedPrizePool.getBeaconChainDraws()
+      const draws: { [drawId: number]: Draw } = {}
+      drawsList.forEach((draw) => (draws[draw.drawId] = draw))
+      return draws
     },
     { ...NO_REFETCH, enabled }
   )

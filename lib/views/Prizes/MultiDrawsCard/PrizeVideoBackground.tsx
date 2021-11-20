@@ -5,6 +5,7 @@ import { CheckedState } from '.'
 
 interface PrizeVideoBackgroundProps {
   className?: string
+  borderRadiusClassName?: string
   didUserWinAPrize: boolean
   checkedState: CheckedState
   setCheckedAnimationFinished: () => void
@@ -28,7 +29,13 @@ const getVideoSource = (videoClip: VideoClip, videoState: VideoState, extension:
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}`
 
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
-  const { checkedState, didUserWinAPrize, className, setCheckedAnimationFinished } = props
+  const {
+    checkedState,
+    didUserWinAPrize,
+    className,
+    setCheckedAnimationFinished,
+    borderRadiusClassName
+  } = props
 
   // const a1 = useRef<HTMLVideoElement>(null)
   const a2 = useRef<HTMLVideoElement>(null)
@@ -84,11 +91,13 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         }}
       >
       <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'webm')} type='video/webm' />
-      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'mp4')} type='video/mp4' />
+      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'original.mp4')} type='video/mp4' />
       </video> */}
       {/* Rest Loop */}
       <video
-        className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.loop) })}
+        className={classnames(borderRadiusClassName, {
+          'h-0': isHidden(VideoClip.rest, VideoState.loop)
+        })}
         ref={a2}
         playsInline
         autoPlay
@@ -109,13 +118,16 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         }}
       >
         <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
-        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'mp4')} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
+          type='video/mp4'
+        />
       </video>
 
       {/* Reveal */}
       {/* Reveal Transition */}
       <video
-        className={classnames({
+        className={classnames(borderRadiusClassName, {
           'h-0': isHidden(VideoClip.reveal, VideoState.transition)
         })}
         ref={b1}
@@ -136,13 +148,15 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           type='video/webm'
         />
         <source
-          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'mp4')}
+          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'original.mp4')}
           type='video/mp4'
         />
       </video>
       {/* Reveal Loop */}
       <video
-        className={classnames({ 'h-0': isHidden(VideoClip.reveal, VideoState.loop) })}
+        className={classnames(borderRadiusClassName, {
+          'h-0': isHidden(VideoClip.reveal, VideoState.loop)
+        })}
         ref={b2}
         playsInline
         muted
@@ -155,13 +169,16 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         }}
       >
         <source src={getVideoSource(VideoClip.reveal, VideoState.loop, 'webm')} type='video/webm' />
-        <source src={getVideoSource(VideoClip.reveal, VideoState.loop, 'mp4')} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.reveal, VideoState.loop, 'original.mp4')}
+          type='video/mp4'
+        />
       </video>
 
       {/* No Prize */}
       {/* No Prize Transition */}
       <video
-        className={classnames({
+        className={classnames(borderRadiusClassName, {
           'h-0': isHidden(VideoClip.noPrize, VideoState.transition)
         })}
         ref={c1}
@@ -178,13 +195,15 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           type='video/webm'
         />
         <source
-          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'mp4')}
+          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'original.mp4')}
           type='video/mp4'
         />
       </video>
       {/* No Prize Loop */}
       <video
-        className={classnames({ 'h-0': isHidden(VideoClip.noPrize, VideoState.loop) })}
+        className={classnames(borderRadiusClassName, {
+          'h-0': isHidden(VideoClip.noPrize, VideoState.loop)
+        })}
         ref={c2}
         playsInline
         muted
@@ -196,13 +215,16 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'webm')}
           type='video/webm'
         />
-        <source src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'mp4')} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'original.mp4')}
+          type='video/mp4'
+        />
       </video>
 
       {/* Prize */}
       {/* Prize Transition */}
       <video
-        className={classnames({
+        className={classnames(borderRadiusClassName, {
           'h-0': isHidden(VideoClip.prize, VideoState.transition)
         })}
         ref={d1}
@@ -219,13 +241,15 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           type='video/webm'
         />
         <source
-          src={getVideoSource(VideoClip.prize, VideoState.transition, 'mp4')}
+          src={getVideoSource(VideoClip.prize, VideoState.transition, 'original.mp4')}
           type='video/mp4'
         />
       </video>
       {/* Prize Loop */}
       <video
-        className={classnames({ 'h-0': isHidden(VideoClip.prize, VideoState.loop) })}
+        className={classnames(borderRadiusClassName, {
+          'h-0': isHidden(VideoClip.prize, VideoState.loop)
+        })}
         ref={d2}
         playsInline
         muted
@@ -234,8 +258,15 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         }}
       >
         <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')} type='video/webm' />
-        <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'mp4')} type='video/mp4' />
+        <source
+          src={getVideoSource(VideoClip.prize, VideoState.loop, 'original.mp4')}
+          type='video/mp4'
+        />
       </video>
     </div>
   )
+}
+
+PrizeVideoBackground.defaultProps = {
+  borderRadiusClassName: 'rounded-lg'
 }

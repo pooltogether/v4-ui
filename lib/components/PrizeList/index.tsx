@@ -33,6 +33,7 @@ export const PrizeList = (props: PrizeListProps) => {
     className,
     drawData,
     drawIdsToNotClaim,
+    chainId,
     addDrawIdToClaim,
     removeDrawIdToClaim,
     ...ulProps

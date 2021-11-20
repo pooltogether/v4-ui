@@ -1,21 +1,15 @@
 import { Amount } from '@pooltogether/hooks'
-import { PrizeDistributor, Draw, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
+import { useQuery } from 'react-query'
+
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { DrawData } from 'lib/types/v4'
-import { getStoredDrawResult, StoredDrawStates } from 'lib/utils/drawResultsStorage'
-import { sortDrawsByDrawIdDesc } from 'lib/utils/sortByDrawId'
-import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
-import { DrawLock, DrawLocks, useDrawLocks } from './useDrawLocks'
+import { DrawLocks, useDrawLocks } from './useDrawLocks'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useValidDrawDatas } from './useValidDrawDatas'
-import { useValidDrawIds } from './useValidDrawIds'
-import { useValidDraws } from './useValidDraws'
-import { useValidPrizeDistributions } from './useValidPrizeDistributions'
-
-// TODO: Check that next draw date to refetch works
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.

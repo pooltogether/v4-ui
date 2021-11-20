@@ -8,7 +8,7 @@ import {
 } from '@pooltogether/hooks'
 import FeatherIcon from 'feather-icons-react'
 import {
-  addTokenToMetaMask,
+  addTokenToMetamask,
   LoadingDots,
   NetworkIcon,
   poolToast,
@@ -19,7 +19,7 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { Player, PrizePool } from '@pooltogether/v4-js-client'
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import classnames from 'classnames'
-import { BigNumber } from 'ethers'
+import { BigNumber, Overrides } from 'ethers'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -180,11 +180,12 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
     e.preventDefault()
 
     const tokenSymbol = token.symbol
+    const overrides: Overrides = { gasLimit: 750000 }
 
     const txId = await sendTx({
       name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,
       method: 'withdrawInstantlyFrom',
-      callTransaction: () => player.withdraw(amountToWithdraw?.amountUnformatted),
+      callTransaction: () => player.withdraw(amountToWithdraw?.amountUnformatted, overrides),
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
@@ -409,8 +410,7 @@ const ManageDepositDropdown = (props) => {
       return null
     }
 
-    addTokenToMetaMask(
-      t,
+    addTokenToMetamask(
       ticket.symbol,
       ticket.address,
       Number(ticket.decimals),

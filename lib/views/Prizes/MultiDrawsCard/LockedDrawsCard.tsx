@@ -69,10 +69,10 @@ const LockedDrawDetails = (props: {
         <MultipleDrawIds drawDatas={drawDatas} />
         <MultipleDrawsDate drawDatas={drawDatas} />
       </div>
-      <div className='flex flex-col space-y-1'>
-        <TotalPrizes token={token} drawDatas={drawDatas} />
-        <MultiDrawsPrizeTiersTrigger token={token} drawDatas={drawDatas} />
-      </div>
+      <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
+        <MultiDrawsPrizeTiersTrigger className='mt-2 xs:mt-0' token={token} drawDatas={drawDatas} />
+        <TotalPrizes className='mt-2' token={token} drawDatas={drawDatas} />
+      </span>
       {/* <FeatherIcon name='lock' className='text-white w-10 h-10 stroke-current' /> */}
     </div>
   )
@@ -105,7 +105,7 @@ const NoDrawsCard = (props: { className?: string }) => {
   return (
     <div className={classNames(className, 'draw-card purple-radial-gradient')}>
       <div className='absolute inset-0 flex flex-col justify-center text-center px-8'>
-        <span className='text-lg text-inverse'>{t('noDrawsToCheck')}</span>
+        <span className='text-lg text-inverse'>{t('noDrawsToCheckNoDeposits')}</span>
         <span className=''>{t('comeBackSoon')}</span>
       </div>
     </div>

@@ -1,7 +1,6 @@
-import { Amount, Token } from '@pooltogether/hooks'
+import { Amount } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useQuery } from 'react-query'
 import { useTicketDecimals } from '../PrizePool/useTicketDecimals'

@@ -12,8 +12,9 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
   drawDatas: { [drawId: number]: DrawData }
   label?: string
   className?: string
+  textClassName?: string
 }) => {
-  const { drawDatas, label, token } = props
+  const { drawDatas, label, token, textClassName, className } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
@@ -25,7 +26,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
       <SquareButton
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.sm}
-        className={classNames(props.className)}
+        className={classNames(className, textClassName)}
         onClick={() => setIsOpen(true)}
       >
         {label || t('viewPrizeTiers', 'View prize tiers')}
@@ -42,6 +43,6 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 }
 
 MultiDrawsPrizeTiersTrigger.defaultProps = {
-  className:
+  textClassName:
     'uppercase font-bold text-xxs sm:text-xs text-highlight-9 hover:text-inverse transition leading-none tracking-wide'
 }

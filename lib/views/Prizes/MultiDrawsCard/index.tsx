@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
@@ -23,7 +23,17 @@ import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
 import { useUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
-import { getStoredDrawResults, setStoredDrawResult } from 'lib/utils/drawResultsStorage'
+import {
+  drawIdsToNotClaimAtom,
+  drawResultsAtom,
+  getStoredDrawResults,
+  StoredDrawResults,
+  updateDrawResults
+} from 'lib/utils/drawResultsStorage'
+import { useAtom } from 'jotai'
+import { useHasUserCheckedAllDraws } from 'lib/hooks/Tsunami/PrizeDistributor/useHasUserCheckedAllDraws'
+import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
+import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedWInningDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -40,11 +50,16 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   const { prizePool, prizeDistributor } = props
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-
   const { data: drawDatas, isFetched: isUnclaimedDrawDataFetched } =
     useUnclaimedDrawDatas(prizeDistributor)
+  const { data: hasUserCheckedAllDraws, isFetched: isHasUserCheckedAllDrawsFetched } =
+    useHasUserCheckedAllDraws(prizeDistributor)
 
-  if (!isPrizePoolTokensFetched || !isUnclaimedDrawDataFetched) {
+  if (
+    !isPrizePoolTokensFetched ||
+    !isUnclaimedDrawDataFetched ||
+    !isHasUserCheckedAllDrawsFetched
+  ) {
     return <LoadingCard />
   }
 
@@ -55,6 +70,19 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
         token={prizePoolTokens.token}
         ticket={prizePoolTokens.ticket}
       />
+    )
+  }
+
+  if (hasUserCheckedAllDraws) {
+    return (
+      <Card className='draw-card' paddingClassName=''>
+        <CheckedDrawsClaimSection
+          {...props}
+          drawDatas={drawDatas}
+          token={prizePoolTokens.token}
+          ticket={prizePoolTokens.ticket}
+        />
+      </Card>
     )
   }
 
@@ -84,7 +112,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
   const [winningDrawResults, setWinningDrawResults] =
     useState<{ [drawId: number]: DrawResults }>(null)
-  const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useState<Set<number>>(new Set())
+  const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useAtom(drawIdsToNotClaimAtom)
   const didUserWinAPrize = Boolean(winningDrawResults)
     ? Object.keys(winningDrawResults).length > 0
     : undefined
@@ -145,7 +173,6 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         drawIdsToNotClaim={drawIdsToNotClaim}
         addDrawIdToClaim={addDrawIdToClaim}
         removeDrawIdToClaim={removeDrawIdToClaim}
-        didUserWinAPrize={didUserWinAPrize}
         winningDrawResults={winningDrawResults}
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
@@ -166,6 +193,77 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
   openModal: () => void
 }
 
+// NOTE: Shortcut. Just copy pasta for now.
+const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
+  const { drawDatas, ticket, token, prizeDistributor } = props
+  const { t } = useTranslation()
+
+  const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useAtom(drawIdsToNotClaimAtom)
+  const winningDrawResults = useUsersUnclaimedWinningDrawResults(prizeDistributor)
+  const winningDrawData = useMemo(() => {
+    const drawIds = Object.keys(winningDrawResults).map(Number)
+    const winningDrawData: { [drawId: number]: DrawData } = {}
+    drawIds.forEach((drawId) => {
+      winningDrawData[drawId] = drawDatas[drawId]
+    })
+    return winningDrawData
+  }, [winningDrawResults, drawDatas])
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [txId, setTxId] = useState(0)
+  const claimTx = useTransaction(txId)
+
+  const addDrawIdToClaim = (drawId: number) => {
+    setDrawIdsToNotClaim((drawIdsToNotClaim) => {
+      const newDrawIdsToClaim = new Set(drawIdsToNotClaim)
+      newDrawIdsToClaim.add(drawId)
+      return newDrawIdsToClaim
+    })
+  }
+
+  const removeDrawIdToClaim = (drawId: number) => {
+    setDrawIdsToNotClaim((drawIdsToNotClaim) => {
+      const newDrawIdsToClaim = new Set(drawIdsToNotClaim)
+      newDrawIdsToClaim.delete(drawId)
+      return newDrawIdsToClaim
+    })
+  }
+
+  return (
+    <>
+      <StaticPrizeVideoBackground videoClip={VideoClip.prize} className='absolute inset-0' />
+      <MultipleDrawDetails
+        drawDatas={winningDrawData}
+        token={token}
+        ticket={ticket}
+        className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
+      />
+      <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
+        <SquareButton
+          theme={SquareButtonTheme.rainbow}
+          size={SquareButtonSize.md}
+          onClick={() => setIsModalOpen(true)}
+          className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
+          style={{ minWidth: 230 }}
+        >
+          {t('viewPrizes', 'View prizes')}
+        </SquareButton>
+      </div>
+      <PrizeClaimModal
+        {...props}
+        setTxId={setTxId}
+        claimTx={claimTx}
+        drawIdsToNotClaim={drawIdsToNotClaim}
+        addDrawIdToClaim={addDrawIdToClaim}
+        removeDrawIdToClaim={removeDrawIdToClaim}
+        winningDrawResults={winningDrawResults}
+        isOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+      />
+    </>
+  )
+}
+
 const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   const {
     checkedState,
@@ -182,6 +280,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   } = props
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
+  const [storedDrawResults, setStoredDrawResults] = useAtom(drawResultsAtom)
 
   let btnJsx, url
   const drawDataList = drawDatas ? Object.values(drawDatas) : []
@@ -253,7 +352,8 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
             draws,
             usersAddress,
             setWinningDrawResults,
-            setCheckedState
+            setCheckedState,
+            setStoredDrawResults
           )
         }
         disabled={isChecking}
@@ -284,21 +384,21 @@ const getUsersDrawResults = async (
   draws: Draw[],
   usersAddress: string,
   setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
-  setCheckedState: (state: CheckedState) => void
+  setCheckedState: (state: CheckedState) => void,
+  setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
 ) => {
   setCheckedState(CheckedState.checking)
-  const drawIds = draws.map((draw) => draw.drawId)
   // Read stored draw results
-  const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor, drawIds)
-
-  console.log({ draws, storedDrawResults })
+  const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor)
 
   const winningDrawResults: { [drawId: string]: DrawResults } = {}
+  const newDrawResults: { [drawId: string]: DrawResults } = {}
+
   const drawResultsPromises = draws.map(async (draw) => {
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
-      drawResults = storedDrawResult.drawResults
+      drawResults = storedDrawResult
     } else {
       try {
         const url = getDrawCalcUrl(
@@ -311,11 +411,11 @@ const getUsersDrawResults = async (
         const drawResultsJson = await response.json()
         drawResults = deserializeBigNumbers(drawResultsJson)
         // Store draw result
-        setStoredDrawResult(usersAddress, prizeDistributor, draw.drawId, drawResults)
       } catch (e) {
         console.log(e.message)
         drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
       }
+      newDrawResults[draw.drawId] = drawResults
     }
     if (!drawResults.totalValue.isZero()) {
       winningDrawResults[draw.drawId] = drawResults
@@ -324,8 +424,7 @@ const getUsersDrawResults = async (
 
   await Promise.all(drawResultsPromises)
 
-  console.log({ winningDrawResults })
-
+  updateDrawResults(usersAddress, prizeDistributor, newDrawResults, setStoredDrawResults)
   setWinningDrawResults(winningDrawResults)
   setCheckedState(CheckedState.checked)
 }

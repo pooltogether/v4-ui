@@ -19,15 +19,15 @@ interface MultipleDrawDetailsProps {
 export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
   const { className, ...remainingProps } = props
   return (
-    <div className={classNames('w-full flex flex-col space-y-1', className)}>
+    <div className={classNames('w-full flex flex-col', className)}>
       <div className='flex flex-col xs:flex-row justify-between leading-none'>
         <span className='flex items-start'>
           <MultipleDrawIds {...remainingProps} />
           <MultipleDrawsDate {...remainingProps} />
         </span>
-        <span className='flex xs:flex-col flex-col-reverse pt-1 xs:pt-0 space-y-2 items-start xs:items-end '>
-          <MultiDrawsPrizeTiersTrigger {...remainingProps} />
-          <TotalPrizes className='mt-2 xs:mt-0' {...remainingProps} />
+        <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
+          <MultiDrawsPrizeTiersTrigger className='mt-2 xs:mt-0' {...remainingProps} />
+          <TotalPrizes className='mt-2' {...remainingProps} />
         </span>
       </div>
     </div>

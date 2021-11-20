@@ -20,7 +20,7 @@ import {
   SquareButtonTheme,
   SquareButtonSize
 } from '@pooltogether/react-components'
-import { ethers } from 'ethers'
+import { ethers, Overrides } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
@@ -41,6 +41,7 @@ import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const BUTTON_MIN_WIDTH = 100
 
@@ -48,6 +49,7 @@ export const DepositCard = () => {
   const router = useRouter()
 
   const prizePool = usePrizePoolBySelectedNetwork()
+  const usersAddress = useUsersAddress()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -164,15 +166,26 @@ export const DepositCard = () => {
   }
 
   const sendDepositTx = async () => {
-    const contractMethod =
-      ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'
-    const clientMethod =
-      ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const overrides: Overrides = { gasLimit: 750000 }
+    let contractMethod
+    let callTransaction
+    if (ticketDelegate === ethers.constants.AddressZero) {
+      contractMethod = 'depositToAndDelegate'
+      callTransaction = player.depositAndDelegate(
+        amountToDeposit.amountUnformatted,
+        usersAddress,
+        overrides
+      )
+    } else {
+      contractMethod = 'depositTo'
+      callTransaction = player.deposit(amountToDeposit.amountUnformatted, overrides)
+    }
+
     const txId = await sendTx({
       name,
       method: contractMethod,
-      callTransaction: async () => player[clientMethod](amountToDeposit.amountUnformatted),
+      callTransaction: async () => callTransaction(),
       callbacks: {
         onSuccess,
         refetch: () => {

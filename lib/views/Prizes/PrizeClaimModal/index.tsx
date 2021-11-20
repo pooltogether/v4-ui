@@ -18,13 +18,14 @@ import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUs
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawData } from 'lib/types/v4'
 
+const CLAIMING_GAS_LIMIT = 500000
+
 interface PrizeClaimModalProps {
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
   token: Token
   ticket: Token
   isOpen: boolean
-  didUserWinAPrize: boolean
   drawDatas: { [drawId: number]: DrawData }
   winningDrawResults: { [drawId: number]: DrawResults }
   drawIdsToNotClaim: Set<number>
@@ -70,9 +71,10 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
         const winningDrawResultsList = Object.values(winningDrawResults).filter((drawResults) => {
           return !drawIdsToNotClaim.has(drawResults.drawId)
         })
-        console.log({ winningDrawResultsList })
+        const overrides = { gasLimit: CLAIMING_GAS_LIMIT * winningDrawResultsList.length }
         return signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(
-          winningDrawResultsList
+          winningDrawResultsList,
+          overrides
         )
       },
       callbacks: {
@@ -90,7 +92,14 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
       return (
-        <Modal label='Error depositing modal' isOpen={isOpen} closeModal={closeModal}>
+        <Modal
+          label='Error depositing modal'
+          isOpen={isOpen}
+          closeModal={() => {
+            setTxId(0)
+            closeModal()
+          }}
+        >
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <div className='text-inverse opacity-60'>
             <p className='my-2 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -116,13 +125,23 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
     }
 
     return (
-      <Modal label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label='Claim prizes modal'
+        isOpen={isOpen}
+        closeModal={() => {
+          setTxId(0)
+          closeModal()
+        }}
+      >
         <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={chainId}
           tx={claimTx}
-          closeModal={closeModal}
+          closeModal={() => {
+            setTxId(0)
+            closeModal()
+          }}
         />
       </Modal>
     )
@@ -140,15 +159,33 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   if (!isWalletOnProperNetwork) {
     return (
-      <Modal label='Wrong network modal' isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label='Wrong network modal'
+        isOpen={isOpen}
+        closeModal={() => {
+          setTxId(0)
+          closeModal()
+        }}
+      >
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
       </Modal>
     )
   }
 
+  const drawIdsToClaim = winningDrawResultsList.filter(
+    (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
+  )
+
   return (
-    <Modal label='Claim prizes modal' isOpen={isOpen} closeModal={closeModal}>
+    <Modal
+      label='Claim prizes modal'
+      isOpen={isOpen}
+      closeModal={() => {
+        setTxId(0)
+        closeModal()
+      }}
+    >
       <div className='w-full mx-auto flex flex-col max-h-full'>
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
@@ -158,7 +195,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
         </div>
 
         <ul className='space-y-4 overflow-y-auto' style={{ maxHeight: '100%' }}>
-          {winningDrawResultsList.map((drawResults) => {
+          {winningDrawResultsList.reverse().map((drawResults) => {
             const drawData = drawDatas[drawResults.drawId]
             return (
               <li key={`prize_list_draw_id_${drawResults.drawId}`}>
@@ -183,7 +220,10 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
             sendClaimTx()
           }}
           theme={SquareButtonTheme.rainbow}
-          disabled={claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed}
+          disabled={
+            (claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed) ||
+            drawIdsToClaim.length === 0
+          }
         >
           {t('confirmClaim', 'Confirm claim')}
         </SquareButton>

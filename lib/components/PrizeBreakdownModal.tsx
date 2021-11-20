@@ -20,15 +20,20 @@ export const PrizeBreakdownModal = (
 ) => {
   const { t } = useTranslation()
   return (
-    <Modal isOpen={props.isOpen} closeModal={props.closeModal} label='Prize breakdown modal'>
+    <Modal
+      className='flex flex-col'
+      isOpen={props.isOpen}
+      closeModal={props.closeModal}
+      label='Prize breakdown modal'
+    >
       <PrizeWLaurels className='mx-auto' />
       <div className='font-inter font-semibold text-sm capitalize text-white my-3 text-center'>
         {t('prizeBreakdown', 'Prize breakdown')}
       </div>
 
-      <hr className='opacity-10 border-white w-full' />
+      <hr className='opacity-10 border-white w-80' />
       <PrizeBreakdown
-        className='mx-auto'
+        className='mx-auto w-full'
         prizeDistribution={props.prizeDistribution}
         token={props.token}
       />
