@@ -3,7 +3,7 @@ import { useUsersCurrentPrizePoolTwab } from 'lib/hooks/Tsunami/PrizePool/useUse
 
 import { usePrizePoolByNetwork } from './usePrizePoolByNetwork'
 
-export const useNetworkTwab = (network: Network) => {
+export const useTwabByNetwork = (network: Network) => {
   const prizePool = usePrizePoolByNetwork(network)
   return useUsersCurrentPrizePoolTwab(prizePool)
 }

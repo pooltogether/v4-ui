@@ -12,10 +12,10 @@ import {
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { useRouter } from 'next/router'
 
 import { Navigation } from 'lib/components/Navigation'
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
-import { useRouter } from 'next/router'
 
 export enum ContentPaneState {
   deposit = 'deposit',

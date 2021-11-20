@@ -43,23 +43,11 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
 
   const networkName = getNetworkNiceNameByChainId(chainId)
 
-  // const ModalWithStyles = (props: ModalWithStylesProps) => (
-  //   <Modal
-  //     noSize
-  //     noBgColor
-  //     noPad
-  //     className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-  //     label='Withdrawal Modal'
-  //     {...props}
-  //   />
-  // )
-
   return (
     <Modal
-      noSize
-      noBgColor
       isOpen={Boolean(props.isOpen)}
-      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
+      paddingClassName='px-2 xs:px-8 py-10'
+      maxWidthClassName='sm:max-w-md'
       label={t('getTokensModal', 'Get tokens - modal window')}
       closeModal={props.closeModal}
     >
@@ -71,7 +59,7 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
           })}
         />
 
-        <p className='text-white opacity-60 mt-4 mb-6'>
+        <p className='text-inverse opacity-60 mt-4 mb-6'>
           {t(
             'checkOutThese',
             'Make use of one of these services to move your tokens to {{networkName}}',
@@ -96,7 +84,7 @@ const BridgeLink = (props: { url: string; title: string }) => {
   return (
     <li>
       <a
-        className='flex text-sm text-accent-1 transition-colors hover:text-white'
+        className='flex text-sm text-accent-1 transition-colors hover:text-inverse'
         href={url}
         target='_blank'
         rel='noopener noreferrer'

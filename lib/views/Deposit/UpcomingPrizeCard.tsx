@@ -4,18 +4,18 @@ import { useTranslation } from 'react-i18next'
 import { Time } from '@pooltogether/react-components'
 
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
-import { ViewPrizeTiersTrigger } from 'lib/views/Prizes/DrawCard/DrawDetails'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/LinkedPrizePool/useDrawBeaconPeriod'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
+import { ViewPrizeTiersTrigger } from 'lib/components/ViewPrizesTrigger'
 
 export const UpcomingPrizeCard = () => {
   const { t } = useTranslation()
 
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizePool = usePrizePoolBySelectedNetwork()
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
 
   const prizeAmountWeekly = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize.mul(7)
@@ -81,7 +81,7 @@ const DrawNumberString = (props) => (
 
 const ViewPrizeBreakdownTrigger = (props) => {
   const { className } = props
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizePool = usePrizePoolBySelectedNetwork()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
   const { t } = useTranslation()

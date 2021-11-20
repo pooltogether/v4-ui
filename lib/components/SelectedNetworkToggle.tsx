@@ -12,7 +12,7 @@ interface SelectedNetworkToggleProps {
 export const SelectedNetworkToggle = (props: SelectedNetworkToggleProps) => {
   const { className } = props
   const supportedNetworks = useSupportedNetworks()
-  const [selectedChainId, setSelectedNetwork] = useSelectedNetwork()
+  const { chainId: selectedChainId, setSelectedChainId } = useSelectedNetwork()
 
   return (
     <div
@@ -26,7 +26,7 @@ export const SelectedNetworkToggle = (props: SelectedNetworkToggleProps) => {
           key={chainId}
           chainId={chainId}
           isSelected={chainId === selectedChainId}
-          setSelectedNetwork={setSelectedNetwork}
+          setSelectedNetwork={setSelectedChainId}
         />
       ))}
     </div>

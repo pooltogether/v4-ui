@@ -17,7 +17,7 @@ export const ConnectWalletCard = (props: ConnectWalletCardProps) => {
 
   return (
     <Card className={classNames('flex flex-col mx-auto', className)}>
-      <div className='text-sm text-accent-1 font-inter mx-auto mt-2 mb-8 flex flex-col space-y-4'>
+      <div className='text-xs text-accent-1 font-inter mx-auto mt-2 mb-8 flex flex-col space-y-4'>
         <span className='text-lg text-inverse font-semibold'>
           {t(
             'poolTogetherIsACrossChainProtocol',
@@ -32,12 +32,11 @@ export const ConnectWalletCard = (props: ConnectWalletCardProps) => {
         </span>
         <span>
           {t('forMoreInfoOnWalletSee', 'Connect to your existing wallet or')}
-          <br />
           <a
             href='https://docs.pooltogether.com/'
             target='_blank'
             rel='noreferrer noopener'
-            className='underline hover:opacity-70 transition-opacity'
+            className='underline hover:opacity-70 transition-opacity ml-1'
           >
             {t('learnMoreAboutProtocol')}
           </a>

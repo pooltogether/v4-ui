@@ -2,40 +2,73 @@ import classnames from 'classnames'
 import ordinal from 'ordinal'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
-import { PrizeAwardable, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { Switch } from '@pooltogether/react-components'
+import { Draw, DrawResults, PrizeAwardable, PrizeDistribution } from '@pooltogether/v4-js-client'
 
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { sortByBigNumber } from 'lib/utils/sortByBigNumber'
+import classNames from 'classnames'
+import { DrawData } from 'lib/types/v4'
+import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
+import React from 'react'
 
 interface PrizeListProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
   chainId: number
-  prizeDistribution: PrizeDistribution
-  prizes: PrizeAwardable[]
+  drawData: DrawData
+  drawResults: DrawResults
   ticket: Token
   token: Token
+  drawIdsToNotClaim: Set<number>
+  addDrawIdToClaim: (drawId: number) => void
+  removeDrawIdToClaim: (drawId: number) => void
 }
 
 export const PrizeList = (props: PrizeListProps) => {
-  const { prizes, ticket, token, className, prizeDistribution, ...ulProps } = props
+  const {
+    drawResults,
+    ticket,
+    token,
+    className,
+    drawData,
+    drawIdsToNotClaim,
+    chainId,
+    addDrawIdToClaim,
+    removeDrawIdToClaim,
+    ...ulProps
+  } = props
+  const { prizes, drawId } = drawResults
+  const isNotClaiming = drawIdsToNotClaim.has(drawId)
 
   return (
-    <ul {...ulProps} className={classnames(className, 'text-white max-h-80 overflow-y-auto pr-2')}>
-      {!prizes &&
-        Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
-      {prizes?.sort(sortByPrizeAmount).map((prize) => (
-        <PrizeRow
-          {...props}
-          key={prize.pick.toString()}
-          prize={prize}
-          token={token}
-          ticket={ticket}
-          prizeDistribution={prizeDistribution}
-        />
-      ))}
-    </ul>
+    <div className={classNames({ 'opacity-50': isNotClaiming })}>
+      <PrizeListHeader
+        drawResults={drawResults}
+        drawData={drawData}
+        className='mb-2'
+        drawIdsToNotClaim={drawIdsToNotClaim}
+        addDrawIdToClaim={addDrawIdToClaim}
+        removeDrawIdToClaim={removeDrawIdToClaim}
+      />
+      <ul
+        {...ulProps}
+        className={classnames(className, 'text-inverse max-h-80 overflow-y-auto space-y-2 pr-2')}
+      >
+        {!prizes &&
+          Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
+        {prizes?.sort(sortByPrizeAmount).map((prize) => (
+          <PrizeRow
+            {...props}
+            key={prize.pick.toString()}
+            prize={prize}
+            token={token}
+            ticket={ticket}
+            drawData={drawData}
+          />
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -47,16 +80,17 @@ interface PrizeRowProps {
   prize: PrizeAwardable
   ticket: Token
   token: Token
-  prizeDistribution: PrizeDistribution
+  drawData: DrawData
 }
 
 const PrizeRow = (props: PrizeRowProps) => {
-  const { chainId, prize, ticket, token, prizeDistribution } = props
+  const { chainId, prize, ticket, drawData } = props
+  const { prizeDistribution } = drawData
+  const { tiers } = prizeDistribution
   const { amount: amountUnformatted, distributionIndex } = prize
 
   const { t } = useTranslation()
 
-  const { tiers } = prizeDistribution
   const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
   const tierIndex = filteredTiers.indexOf(tiers[distributionIndex])
 
@@ -64,7 +98,7 @@ const PrizeRow = (props: PrizeRowProps) => {
 
   return (
     <li
-      className={classnames('flex mb-2 flex-row text-center rounded-lg last:mb-0 text-xxs', {
+      className={classnames('flex flex-row text-center rounded-lg text-xxs', {
         'bg-light-purple-10': tierIndex !== 0,
         'pool-gradient-3 ': tierIndex === 0
       })}
@@ -101,3 +135,45 @@ const getEmoji = (distributionIndex) => {
 }
 
 const LoadingPrizeRow = () => <li className='w-full h-6 animate-pulse bg-darkened rounded-xl' />
+
+const PrizeListHeader = (props: {
+  drawData: DrawData
+  drawResults: DrawResults
+  drawIdsToNotClaim: Set<number>
+  addDrawIdToClaim: (drawId: number) => void
+  removeDrawIdToClaim: (drawId: number) => void
+  className?: string
+}) => {
+  const {
+    drawResults,
+    className,
+    drawData,
+    drawIdsToNotClaim,
+    addDrawIdToClaim,
+    removeDrawIdToClaim
+  } = props
+  const { drawId } = drawResults
+  const { draw } = drawData
+
+  const enabled = !drawIdsToNotClaim.has(drawId)
+  const setEnabled = (enabled: boolean) => {
+    if (enabled) {
+      removeDrawIdToClaim(drawId)
+    } else {
+      addDrawIdToClaim(drawId)
+    }
+  }
+
+  const { t } = useTranslation()
+  return (
+    <div className='flex w-full justify-between'>
+      <div className={classNames(className, 'flex flex-col space-y-1 text-xs font-bold')}>
+        <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
+        <span className='text-inverse'>{getTimestampStringWithTime(draw.timestamp)}</span>
+      </div>
+      <div>
+        <Switch enabled={enabled} setEnabled={setEnabled} />
+      </div>
+    </div>
+  )
+}

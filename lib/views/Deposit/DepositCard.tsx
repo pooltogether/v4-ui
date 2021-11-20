@@ -20,7 +20,7 @@ import {
   SquareButtonTheme,
   SquareButtonSize
 } from '@pooltogether/react-components'
-import { ethers } from 'ethers'
+import { ethers, Overrides } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
@@ -31,7 +31,7 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useSelectedNetworkPrizePool } from 'lib/hooks/Tsunami/PrizePool/useSelectedNetworkPrizePool'
+import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -41,13 +41,15 @@ import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 
 import SuccessBalloonsSvg from 'assets/images/success.svg'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const BUTTON_MIN_WIDTH = 100
 
 export const DepositCard = () => {
   const router = useRouter()
 
-  const prizePool = useSelectedNetworkPrizePool()
+  const prizePool = usePrizePoolBySelectedNetwork()
+  const usersAddress = useUsersAddress()
   const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -164,15 +166,26 @@ export const DepositCard = () => {
   }
 
   const sendDepositTx = async () => {
-    const contractMethod =
-      ticketDelegate === ethers.constants.AddressZero ? 'depositToAndDelegate' : 'depositTo'
-    const clientMethod =
-      ticketDelegate === ethers.constants.AddressZero ? 'depositAndDelegate' : 'deposit'
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const overrides: Overrides = { gasLimit: 750000 }
+    let contractMethod
+    let callTransaction
+    if (ticketDelegate === ethers.constants.AddressZero) {
+      contractMethod = 'depositToAndDelegate'
+      callTransaction = player.depositAndDelegate(
+        amountToDeposit.amountUnformatted,
+        usersAddress,
+        overrides
+      )
+    } else {
+      contractMethod = 'depositTo'
+      callTransaction = player.deposit(amountToDeposit.amountUnformatted, overrides)
+    }
+
     const txId = await sendTx({
       name,
       method: contractMethod,
-      callTransaction: async () => player[clientMethod](amountToDeposit.amountUnformatted),
+      callTransaction: async () => callTransaction(),
       callbacks: {
         onSuccess,
         refetch: () => {
@@ -198,7 +211,7 @@ export const DepositCard = () => {
     setDepositedAmount(undefined)
   }
 
-  const [chainId] = useSelectedNetwork()
+  const { chainId } = useSelectedNetwork()
 
   return (
     <>
@@ -415,7 +428,7 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
         <TxHashRow depositTx={tx} chainId={chainId} />
       </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-white'>
+      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-inverse'>
         {t(
           'disclaimerComeBackRegularlyToClaimWinnings',
           'You are eligible for all future prizes! Come back to check for winnings, if you don’t claim winnings in 60 days they will expire. <Link>Learn more</Link>'
@@ -434,20 +447,20 @@ const CompletedDeposit = (props: CompletedDepositProps) => {
       <SquareButton
         size={SquareButtonSize.md}
         theme={SquareButtonTheme.tealOutline}
-        className='text-xl hover:text-white transition-colors mb-2'
+        className='text-xl hover:text-inverse transition-colors mb-2'
         onClick={resetState}
       >
         {t('depositMore', 'Deposit more')}
       </SquareButton>
-      <SquareLink
-        href={{ pathname: '/account', query: router.query }}
-        Link={Link}
-        size={SquareButtonSize.sm}
-        theme={SquareButtonTheme.purpleOutline}
-        className='text-xs hover:text-white transition-colors text-center'
-      >
-        {t('viewAccount', 'View account')}
-      </SquareLink>
+      <Link href={{ pathname: '/account', query: router.query }}>
+        <SquareLink
+          size={SquareButtonSize.sm}
+          theme={SquareButtonTheme.purpleOutline}
+          className='text-xs hover:text-inverse transition-colors text-center'
+        >
+          {t('viewAccount', 'View account')}
+        </SquareLink>
+      </Link>
     </div>
   )
 }

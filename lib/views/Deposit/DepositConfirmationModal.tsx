@@ -60,32 +60,44 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
   } = props
   const { amount, amountUnformatted } = amountToDeposit
 
-  const [chainId] = useSelectedNetwork()
+  const { chainId } = useSelectedNetwork()
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   if (!isWalletOnProperNetwork) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label={t('confirmDepositModal', 'Confirm deposit - modal')}
+        isOpen={isOpen}
+        closeModal={closeModal}
+      >
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   if (!isDataFetched) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label={t('confirmDepositModal', 'Confirm deposit - modal')}
+        isOpen={isOpen}
+        closeModal={closeModal}
+      >
         <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
         <ModalLoadingGate className='mt-8' />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   if (!depositAllowance?.isApproved) {
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label={t('confirmDepositModal', 'Confirm deposit - modal')}
+        isOpen={isOpen}
+        closeModal={closeModal}
+      >
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
           chainId={chainId}
@@ -94,14 +106,18 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           sendApproveTx={sendApproveTx}
           className='mt-8'
         />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   if (depositTx && depositTx.sent) {
     if (depositTx.error) {
       return (
-        <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+        <Modal
+          label={t('confirmDepositModal', 'Confirm deposit - modal')}
+          isOpen={isOpen}
+          closeModal={closeModal}
+        >
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
           <p className='mb-8 text-accent-1 text-center mx-8'>
@@ -120,12 +136,16 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           >
             {t('tryAgain', 'Try again')}
           </SquareButton>
-        </ModalWithStyles>
+        </Modal>
       )
     }
 
     return (
-      <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+      <Modal
+        label={t('confirmDepositModal', 'Confirm deposit - modal')}
+        isOpen={isOpen}
+        closeModal={closeModal}
+      >
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         <ModalTransactionSubmitted
           className='mt-8'
@@ -133,12 +153,16 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           tx={depositTx}
           closeModal={closeModal}
         />
-      </ModalWithStyles>
+      </Modal>
     )
   }
 
   return (
-    <ModalWithStyles isOpen={isOpen} closeModal={closeModal}>
+    <Modal
+      label={t('confirmDepositModal', 'Confirm deposit - modal')}
+      isOpen={isOpen}
+      closeModal={closeModal}
+    >
       <ModalTitle chainId={prizePool.chainId} title={t('depositConfirmation')} />
 
       <div className='w-full mx-auto mt-8'>
@@ -162,7 +186,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           }
         />
 
-        <DownArrow className='text-white' />
+        <DownArrow className='text-inverse' />
 
         <TextInputGroup
           readOnly
@@ -198,27 +222,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           {t('confirmDeposit', 'Confirm deposit')}
         </TxButtonNetworkGated>
       </div>
-    </ModalWithStyles>
-  )
-}
-
-interface ModalWithStylesProps {
-  isOpen: boolean
-  closeModal: () => void
-  children: React.ReactNode
-}
-
-const ModalWithStyles = (props: ModalWithStylesProps) => {
-  const { t } = useTranslation()
-  return (
-    <Modal
-      noSize
-      noBgColor
-      noPad
-      className='h-full sm:h-auto sm:max-w-md shadow-3xl bg-new-modal px-2 xs:px-8 py-10'
-      label={t('confirmDepositModal', 'Confirm deposit - modal')}
-      {...props}
-    />
+    </Modal>
   )
 }
 

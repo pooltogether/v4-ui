@@ -1,7 +1,7 @@
 import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 import { Network } from 'lib/constants/network'
-import { useNetworkTwab } from 'lib/hooks/Tsunami/PrizePool/useNetworkTwab'
+import { useTwabByNetwork } from 'lib/hooks/Tsunami/PrizePool/useTwabByNetwork'
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
@@ -13,12 +13,12 @@ export const useUsersCurrentPrizePoolTwabs = () => {
     data: ethereumTwab,
     isFetched: isEthereumTwabFetched,
     refetch: refetchEthereumTwab
-  } = useNetworkTwab(Network.ethereum)
+  } = useTwabByNetwork(Network.ethereum)
   const {
     data: polygonTwab,
     isFetched: isPolygonTwabFetched,
     refetch: refetchPolygonTwab
-  } = useNetworkTwab(Network.polygon)
+  } = useTwabByNetwork(Network.polygon)
 
   const total = isTicketDecimalsFetched
     ? getTotalTwab([ethereumTwab, polygonTwab], ticketDecimals)

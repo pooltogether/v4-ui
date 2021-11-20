@@ -16,7 +16,6 @@ export const BackToV3Banner = (props) => {
 
       <div className='opacity-70 hover:opacity-100 transition inline-block mx-auto mt-2'>
         <SquareLink
-          Link={Link}
           size={SquareButtonSize.sm}
           theme={SquareButtonTheme.purpleOutline}
           href='https://app.pooltogether.com'

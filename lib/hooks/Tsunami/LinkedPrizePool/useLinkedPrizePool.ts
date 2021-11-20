@@ -1,20 +1,31 @@
 import { LinkedPrizePool } from '@pooltogether/v4-js-client'
+import { atom, useAtom } from 'jotai'
 import { useContractListChainIds } from 'lib/hooks/Tsunami/useContractListChainIds'
 import { useProvidersKeyedByNumbers } from 'lib/hooks/Tsunami/useProvidersKeyedbyNumbers'
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { useContractList } from '../useContractList'
 
+const linkedPrizePoolAtom = atom(undefined as LinkedPrizePool)
+
 export const useLinkedPrizePool = (): LinkedPrizePool => {
+  const [linkedPrizePool, setLinkedPrizePool] = useAtom(linkedPrizePoolAtom)
   const linkedPrizePoolContractList = useContractList()
   const chainIds = useContractListChainIds(linkedPrizePoolContractList.contracts)
   const readProviders = useProvidersKeyedByNumbers(chainIds)
-  return useMemo(() => {
-    if (!readProviders || !linkedPrizePoolContractList) return undefined
-    const linkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
-    return linkedPrizePool
-  }, [
-    readProviders ? Object.keys(readProviders).join('') : '',
-    chainIds?.join(''),
-    linkedPrizePoolContractList.name
-  ])
+
+  useEffect(() => {
+    if (!readProviders || !linkedPrizePoolContractList) return
+    const providerChainIds = Object.keys(readProviders)
+    if (Boolean(linkedPrizePool)) {
+      const prizePoolChainIds = linkedPrizePool.prizePools.map((p) => p.chainId)
+      if (prizePoolChainIds.every((chainId) => providerChainIds.includes(String(chainId)))) return
+      const newLinkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
+      setLinkedPrizePool(newLinkedPrizePool)
+    } else {
+      const newLinkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
+      setLinkedPrizePool(newLinkedPrizePool)
+    }
+  }, [readProviders])
+
+  return linkedPrizePool
 }

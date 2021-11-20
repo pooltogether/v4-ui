@@ -1,8 +1,14 @@
 import React from 'react'
-import { Card, CardTheme, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
+import {
+  Card,
+  CardTheme,
+  ColorTheme,
+  ThemedClipSpinner,
+  Tooltip
+} from '@pooltogether/react-components'
 
 import CardCornerLight from './card-corner-light.png'
-import { ColorTheme, useTheme } from 'lib/hooks/useTheme'
+import { useTheme } from 'lib/hooks/useTheme'
 import { Player } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
