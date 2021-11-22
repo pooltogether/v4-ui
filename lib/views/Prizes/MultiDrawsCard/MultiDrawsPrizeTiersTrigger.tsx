@@ -19,7 +19,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 
   const { t } = useTranslation()
 
-  if (!drawDatas) return null
+  if (!drawDatas || Object.keys(drawDatas).length === 0) return null
 
   return (
     <>

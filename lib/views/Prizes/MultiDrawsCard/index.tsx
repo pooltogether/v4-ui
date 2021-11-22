@@ -63,7 +63,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
     return <LoadingCard />
   }
 
-  if (Boolean(drawDatas) && !Object.keys(drawDatas).length) {
+  if (Boolean(drawDatas) && Object.keys(drawDatas).length === 0) {
     return (
       <LockedDrawsCard
         prizeDistributor={prizeDistributor}
@@ -139,6 +139,8 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     })
   }
 
+  console.log('MultiDrawsClaimSection', { drawDatas })
+
   return (
     <>
       <PrizeVideoBackground
@@ -199,8 +201,12 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const { t } = useTranslation()
 
   const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useAtom(drawIdsToNotClaimAtom)
-  const winningDrawResults = useUsersUnclaimedWinningDrawResults(prizeDistributor)
+  const { data: winningDrawResults, isFetched: isUsersUnclaimedWinningDrawResultsFetched } =
+    useUsersUnclaimedWinningDrawResults(prizeDistributor)
   const winningDrawData = useMemo(() => {
+    if (!winningDrawResults) {
+      return null
+    }
     const drawIds = Object.keys(winningDrawResults).map(Number)
     const winningDrawData: { [drawId: number]: DrawData } = {}
     drawIds.forEach((drawId) => {
@@ -228,6 +234,12 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
       return newDrawIdsToClaim
     })
   }
+
+  if (!isUsersUnclaimedWinningDrawResultsFetched) {
+    return null
+  }
+
+  console.log('CheckedDrawsClaimSection', { winningDrawData, drawDatas, winningDrawResults })
 
   return (
     <>

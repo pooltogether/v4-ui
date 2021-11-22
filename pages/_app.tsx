@@ -5,12 +5,7 @@ import { Integrations } from '@sentry/tracing'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
 import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
-import {
-  useInitCookieOptions,
-  useInitInfuraId,
-  useInitQuickNodeId,
-  useInitReducedMotion
-} from '@pooltogether/hooks'
+import { useInitCookieOptions, useInitRpcApiKeys, useInitReducedMotion } from '@pooltogether/hooks'
 import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   ToastContainer,
@@ -129,15 +124,22 @@ function MyApp({ Component, pageProps, router }) {
 
 const InitPoolTogetherHooks = ({ children }) => {
   useSelectedNetworkWatcher()
-  useInitInfuraId(process.env.NEXT_JS_INFURA_ID)
-  useInitQuickNodeId(process.env.NEXT_JS_QUICKNODE_ID)
+  useInitRpcApiKeys({
+    infura: {
+      mainnet: process.env.NEXT_JS_INFURA_ID_MAINNET || process.env.NEXT_JS_INFURA_ID,
+      polygon: process.env.NEXT_JS_INFURA_ID_POLYGON || process.env.NEXT_JS_INFURA_ID
+    },
+    quicknode: {
+      bsc: process.env.NEXT_JS_QUICKNODE_ID
+    }
+  })
   useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
   useInitializeOnboard({
     infuraId: process.env.NEXT_JS_INFURA_ID,
     fortmaticKey: process.env.NEXT_JS_FORTMATIC_API_KEY,
     portisKey: process.env.NEXT_JS_PORTIS_API_KEY,
-    defaultNetworkName: process.env.NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME,
+    defaultNetworkName: 'homestead',
     customWalletsConfig: CUSTOM_WALLETS_CONFIG
   })
   return children

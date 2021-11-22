@@ -73,7 +73,11 @@ export const MultipleDrawIds = (props: {
   const { t } = useTranslation()
   const { drawDatas, className } = props
   const drawIds = Object.keys(drawDatas)
-  if (drawIds.length === 1) return <span className={className}>#{drawIds[0]}</span>
+  if (drawIds.length === 0) {
+    return null
+  } else if (drawIds.length === 1) {
+    return <span className={className}>#{drawIds[0]}</span>
+  }
   return <span className={className}>{t('multipleDraws', 'Multiple draws')}</span>
 }
 

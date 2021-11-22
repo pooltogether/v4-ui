@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -10,6 +10,7 @@ import { DrawLocks, useDrawLocks } from './useDrawLocks'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useValidDrawDatas } from './useValidDrawDatas'
+import { useUsersStoredDrawResults } from '../useUsersStoredDrawResults'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
@@ -29,6 +30,7 @@ import { useValidDrawDatas } from './useValidDrawDatas'
  */
 export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
   const usersAddress = useUsersAddress()
+  const storedDrawResults = useUsersStoredDrawResults(prizeDistributor)
   const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
@@ -51,9 +53,19 @@ export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
       prizeDistributor?.id(),
       drawBeaconPeriod?.startedAtSeconds.toString(),
       usersAddress,
-      drawLocks
+      drawLocks,
+      claimedAmounts ? 'claimedAmounts-' + Object.keys(claimedAmounts).join(',') : '',
+      normalizedBalances ? 'normalizedBalances-' + Object.keys(normalizedBalances).join(',') : '',
+      drawDatas ? 'drawDatas-' + Object.keys(drawDatas).join(',') : ''
     ],
-    async () => getUnclaimedDrawDatas(drawLocks, drawDatas, normalizedBalances, claimedAmounts),
+    async () =>
+      getUnclaimedDrawDatas(
+        drawLocks,
+        drawDatas,
+        normalizedBalances,
+        claimedAmounts,
+        storedDrawResults
+      ),
     {
       enabled
     }
@@ -64,7 +76,10 @@ const getUnclaimedDrawDatas = async (
   drawLocks: DrawLocks,
   drawDatas: { [drawId: number]: DrawData },
   normalizedBalances: { [drawId: number]: BigNumber },
-  claimedAmounts: { [drawId: number]: Amount }
+  claimedAmounts: { [drawId: number]: Amount },
+  storedDrawResults: {
+    [drawId: number]: DrawResults
+  }
 ): Promise<{ [drawId: number]: DrawData }> => {
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
@@ -74,11 +89,17 @@ const getUnclaimedDrawDatas = async (
     const claimedAmount = claimedAmounts[drawId]
     const normalizedBalance = normalizedBalances[drawId]
     const drawLock = drawLocks[drawId]
+    const storedDrawResult = storedDrawResults?.[drawId]
 
     // Filter draws with claimed amounts
     // Filter draws with no normalized balance during that period
     // Filter draws that are locked
-    if (!claimedAmount.amountUnformatted.isZero() || normalizedBalance.isZero() || drawLock) {
+    if (
+      !claimedAmount.amountUnformatted.isZero() ||
+      normalizedBalance.isZero() ||
+      drawLock ||
+      (Boolean(storedDrawResult) && storedDrawResult.totalValue.isZero())
+    ) {
       return
     }
     unclaimedDrawDatas[drawId] = drawData

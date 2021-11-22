@@ -23,6 +23,9 @@ export const useUsersUnclaimedWinningDrawResults = (prizeDistributor: PrizeDistr
           unclaimedWinningDrawResults[drawId] = drawResult
         }
       })
-    return unclaimedWinningDrawResults
+    return {
+      data: unclaimedWinningDrawResults,
+      isFetched: true
+    }
   }, [prizeDistributor?.id(), usersAddress, claimedAmounts, drawResults])
 }

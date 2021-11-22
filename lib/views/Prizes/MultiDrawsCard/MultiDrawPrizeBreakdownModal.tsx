@@ -6,7 +6,7 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { DrawData } from 'lib/types/v4'
 import classNames from 'classnames'
@@ -24,7 +24,22 @@ export const MultiDrawPrizeBreakdownModal = (
   const { t } = useTranslation()
   const drawIds = Object.keys(drawDatas).map(Number)
   const [selectedDrawId, setSelectedDrawId] = useState(drawIds[0])
-  const prizeDistribution = drawDatas[selectedDrawId].prizeDistribution
+  const prizeDistribution = useMemo(() => {
+    if (Object.keys(drawDatas).length === 0) {
+      return null
+    }
+    const drawData = drawDatas[selectedDrawId]
+    if (!drawData) {
+      setSelectedDrawId(drawIds[0])
+      return drawDatas[drawIds[0]].prizeDistribution
+    } else {
+      return drawData.prizeDistribution
+    }
+  }, [selectedDrawId, drawDatas])
+
+  if (Object.keys(drawDatas).length === 0) {
+    return null
+  }
 
   return (
     <Modal

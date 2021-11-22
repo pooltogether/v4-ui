@@ -1,24 +1,24 @@
-# When the application is loaded on a non-web3 browser this is the network that the browser will use.
-# Note: this is passed directly to ethers.js so you'll want to make sure ethers understand the name.
-export NEXT_JS_ENV=
-
-export NEXT_JS_DEFAULT_ETHEREUM_NETWORK_NAME=
-
+# Blank if development. Domain if production.
 export NEXT_JS_DOMAIN_NAME=
 
-export NEXT_JS_INFURA_ID=
-export NEXT_JS_THE_GRAPH_API_KEY=
-export NEXT_JS_QUICKNODE_ID=
+# Optional
+# API keys for extra wallet support.
+export NEXT_JS_FORTMATIC_API_KEY=
+export NEXT_JS_FORTMATIC_PRODUCTION_API_KEY=
+export NEXT_JS_PORTIS_API_KEY=
 
+# Locize API keys for localization.
+export NEXT_JS_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
+export NEXT_JS_LOCIZE_VERSION=latest
+
+# Optional
+# Locize Dev API key for writing values.
 export NEXT_JS_LOCIZE_DEV_API_KEY=
-export NEXT_JS_LOCIZE_PROJECT_ID=
-export NEXT_JS_LOCIZE_VERSION=
 
-export NEXT_JS_SENTRY_DSN=
-
+# Fathom API keys for analytics tracking.
 export NEXT_JS_FATHOM_SITE_ID=
 
-# CloudFlare KV - Used by lambda functions
-export NEXT_JS_CLOUDFLARE_ACCOUNT_IDENTIFIER=
-export NEXT_JS_CLOUDFLARE_NAMESPACE_IDENTIFIER=
-export NEXT_JS_CLOUDFLARE_BEARER_TOKEN=
+# Optional 
+# API keys for read only RPC calls.
+export NEXT_JS_INFURA_ID_POLYGON=
+export NEXT_JS_INFURA_ID_MAINNET=

@@ -2289,10 +2289,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.2.0.tgz#43c35ec48aeb13203a33509032d04ccab7b7eba0"
-  integrity sha512-ei8W9INLu63LcQa+Bwite8K3a5pQgfpjBq3MFobbfF6rF3v+zweo4pyG5dLqWG5OLwf7WQjbNggzuIrL0+uS3g==
+"@pooltogether/hooks@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.3.2.tgz#4b2424fca99cdd7d547e8d13bb778a619a42ffe4"
+  integrity sha512-22+AIRhUTc7Ukq7eAXfGRI6iWRuGD3EWNYv0sx7lP2jRa9WNP5RUfPYEpr1Bh9+ErrAvzXXysI0v3BIUgC/dlQ==
 
 "@pooltogether/pooltogether-contracts@^3.4.4":
   version "3.4.4"

@@ -172,20 +172,17 @@ export const DepositCard = () => {
     let callTransaction
     if (ticketDelegate === ethers.constants.AddressZero) {
       contractMethod = 'depositToAndDelegate'
-      callTransaction = player.depositAndDelegate(
-        amountToDeposit.amountUnformatted,
-        usersAddress,
-        overrides
-      )
+      callTransaction = async () =>
+        player.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
     } else {
       contractMethod = 'depositTo'
-      callTransaction = player.deposit(amountToDeposit.amountUnformatted, overrides)
+      callTransaction = async () => player.deposit(amountToDeposit.amountUnformatted, overrides)
     }
 
     const txId = await sendTx({
       name,
       method: contractMethod,
-      callTransaction: async () => callTransaction(),
+      callTransaction,
       callbacks: {
         onSuccess,
         refetch: () => {
@@ -296,7 +293,7 @@ const HelpLink = () => {
 
   return (
     <a
-      href='https://docs.pooltogether.com'
+      href='https://docs.pooltogether.com/how-to/how-to-deposit'
       target='_blank'
       rel='noreferrer noopener'
       className='text-center text-xs text-inverse opacity-70 hover:opacity-100 transition-opacity xs:-ml-3'
