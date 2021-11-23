@@ -64,11 +64,11 @@ export const DepositCard = () => {
     isFetched: isUsersDepositAllowanceFetched
   } = useUsersDepositAllowance(prizePool)
   const {
-    data: ticketDelegate,
+    data: delegateData,
     isFetched: isTicketDelegateFetched,
     isFetching: isTicketDelegateFetching,
     refetch: refetchTicketDelegate
-  } = useUsersTicketDelegate(prizePool)
+  } = useUsersTicketDelegate(usersAddress, prizePool)
 
   const isDataFetched =
     isPlayerFetched &&
@@ -76,6 +76,8 @@ export const DepositCard = () => {
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
+
+  const ticketDelegate = delegateData[usersAddress]
 
   const form = useForm({
     mode: 'onChange',

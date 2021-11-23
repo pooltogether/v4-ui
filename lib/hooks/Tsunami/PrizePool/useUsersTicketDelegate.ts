@@ -1,13 +1,16 @@
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery } from 'react-query'
 
-export const useUsersTicketDelegate = (prizePool: PrizePool) => {
-  const usersAddress = useUsersAddress()
+export const useUsersTicketDelegate = (usersAddress: string, prizePool: PrizePool) => {
   const enabled = Boolean(prizePool) && Boolean(usersAddress)
-  return useQuery(
+  return useQuery<{ [usersAddress: string]: string }>(
     ['useUsersTicketDelegate', prizePool?.id(), usersAddress],
-    async () => await prizePool.getUsersTicketDelegate(usersAddress),
+    async () => {
+      const ticketDelegate = await prizePool.getUsersTicketDelegate(usersAddress)
+      return {
+        [usersAddress]: ticketDelegate
+      }
+    },
     {
       enabled
     }

@@ -17,7 +17,9 @@ import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { AmountInPrizes } from 'lib/components/AmountInPrizes'
 import { ViewPrizeTiersTrigger } from 'lib/components/ViewPrizesTrigger'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
-import { useUsersStoredDrawResults } from 'lib/hooks/Tsunami/useUsersStoredDrawResults'
+import { useUsersNormalizedBalances } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersNormalizedBalances'
+import { BigNumber } from 'ethers'
+import { useUsersStoredDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersStoredDrawResults'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -33,6 +35,7 @@ export const PastDrawsList = (props: {
   const { data: drawDatas, isFetched: isDrawsAndPrizeDistributionsFetched } =
     useAllDrawDatas(prizeDistributor)
   const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor)
+  const { data: normalizedBalances } = useUsersNormalizedBalances(prizeDistributor)
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
@@ -71,6 +74,7 @@ export const PastDrawsList = (props: {
               token={prizePoolTokens.token}
               ticket={prizePoolTokens.ticket}
               claimedAmount={claimedAmounts?.[drawId]}
+              normalizedBalance={normalizedBalances?.[drawId]}
               drawLock={drawLocks[drawId]}
             />
           )
@@ -86,14 +90,18 @@ interface PastPrizeListItemProps {
   drawData: { draw: Draw; prizeDistribution?: PrizeDistribution }
   prizeDistributor: PrizeDistributor
   claimedAmount: Amount
+  normalizedBalance: BigNumber
   drawLock?: DrawLock
 }
 
+// Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
-  const { token, ticket, drawData, prizeDistributor, claimedAmount, drawLock } = props
+  const { token, ticket, drawData } = props
   const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
   const { draw, prizeDistribution } = drawData
-  const amount = roundPrizeAmount(prizeDistribution.prize, ticket.decimals)
+  const amount = prizeDistribution
+    ? roundPrizeAmount(prizeDistribution.prize, ticket.decimals)
+    : null
 
   return (
     <li>
@@ -190,7 +198,15 @@ const PropagatingMessage = (props: {
 }
 
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, prizeDistributor, className, ticket, drawLock, drawData } = props
+  const {
+    claimedAmount,
+    prizeDistributor,
+    className,
+    ticket,
+    drawLock,
+    drawData,
+    normalizedBalance
+  } = props
   const { draw } = drawData
   const storedDrawResults = useUsersStoredDrawResults(prizeDistributor)
   const { t } = useTranslation()
@@ -204,6 +220,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = storedDrawResult && !storedDrawResult.totalValue.isZero()
+  const useWasNotEligible = normalizedBalance && normalizedBalance.isZero()
 
   if (drawLockCountdown?.secondsLeft) {
     const { weeks, days, hours, minutes } = drawLockCountdown
@@ -249,6 +266,12 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
         <span className='ml-2 font-bold'>{ticket.symbol}</span>
+      </div>
+    )
+  } else if (usersAddress && normalizedBalance && useWasNotEligible) {
+    return (
+      <div className={classNames(className)}>
+        <span className='text-accent-1 opacity-50'>Not eligible</span>
       </div>
     )
   } else {

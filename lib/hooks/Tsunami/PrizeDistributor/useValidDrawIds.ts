@@ -1,8 +1,8 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
+
+import { NO_REFETCH } from 'lib/constants/query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
-import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 
 /**
  * Refetches when the draw beacon has updated
@@ -13,7 +13,11 @@ export const useValidDrawIds = (prizeDistributor: PrizeDistributor) => {
   const enabled = isDrawBeaconFetched && Boolean(prizeDistributor)
   return useQuery(
     ['useValidDrawIds', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
-    () => prizeDistributor.getValidDrawIds(),
+    async () => {
+      const validDrawIds = await prizeDistributor.getValidDrawIds()
+      console.log('useValidDrawIds', validDrawIds)
+      return validDrawIds
+    },
     { ...NO_REFETCH, enabled }
   )
 }

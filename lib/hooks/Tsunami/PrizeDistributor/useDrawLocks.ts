@@ -2,8 +2,10 @@ import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
+
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
+import { NO_REFETCH } from 'lib/constants/query'
 
 export interface DrawLock {
   endTimeSeconds: BigNumber
@@ -29,8 +31,9 @@ export const useDrawLocks = () => {
     ],
     () => getDrawLocks(prizeDistributors),
     {
-      enabled,
-      refetchInterval: sToMs(60 * 5)
+      ...NO_REFETCH,
+      refetchInterval: sToMs(60 * 5),
+      enabled
     }
   )
 }
@@ -54,6 +57,8 @@ const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<Draw
       }
     }
   })
+
+  console.log('useDrawLocks', drawLocks)
 
   return drawLocks
 }

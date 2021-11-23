@@ -1,7 +1,9 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery } from 'react-query'
+
+import { NO_REFETCH } from 'lib/constants/query'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**
@@ -19,6 +21,7 @@ export const useUsersNormalizedBalances = (prizeDistributor: PrizeDistributor) =
     ['useUsersNormalizedBalances', prizeDistributor?.id(), usersAddress],
     () => getUsersNormalizedBalances(usersAddress, prizeDistributor, drawIds),
     {
+      ...NO_REFETCH,
       enabled
     }
   )
@@ -42,5 +45,14 @@ const getUsersNormalizedBalances = async (
     normalizedBalancesKeyedByDrawId[drawId] = normalizedBalances[index]
   })
 
+  console.log(
+    'useUsersNormalizedBalances',
+    {
+      usersAddress,
+      drawIds,
+      normalizedBalancesKeyedByDrawId
+    },
+    Date.now()
+  )
   return normalizedBalancesKeyedByDrawId
 }

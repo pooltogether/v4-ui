@@ -1,20 +1,19 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { Card, Time } from '@pooltogether/react-components'
 import React from 'react'
-import FeatherIcon from 'feather-icons-react'
+import classNames from 'classnames'
+import { Token } from '@pooltogether/hooks'
+import { useTranslation } from 'react-i18next'
 
 import { LoadingCard } from './LoadingCard'
 import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
-import classNames from 'classnames'
 import { useLockedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useLockedDrawDatas'
-import { Token } from '@pooltogether/hooks'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { DrawData } from 'lib/types/v4'
-import { useTranslation } from 'react-i18next'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
-import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 
 export const LockedDrawsCard = (props: {
   prizeDistributor: PrizeDistributor

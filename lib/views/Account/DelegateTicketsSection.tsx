@@ -12,6 +12,7 @@ import { TxHashRow } from 'lib/components/TxHashRow'
 import { usePlayer } from 'lib/hooks/Tsunami/Player/usePlayer'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool
@@ -22,18 +23,18 @@ interface DelegateTicketsSectionProps {
 export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
   const { className, balance, prizePool } = props
   const { t } = useTranslation()
-
+  const usersAddress = useUsersAddress()
   const {
-    data: usersDelegate,
+    data: delegateData,
     isFetched,
     refetch: refetchDelegate
-  } = useUsersTicketDelegate(prizePool)
+  } = useUsersTicketDelegate(usersAddress, prizePool)
 
   if (
     !balance ||
     balance.amountUnformatted.isZero() ||
     !isFetched ||
-    usersDelegate !== ethers.constants.AddressZero
+    delegateData?.[usersAddress] !== ethers.constants.AddressZero
   )
     return null
 

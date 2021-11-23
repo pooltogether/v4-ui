@@ -31,16 +31,6 @@
   border-color: rgba(255, 255, 255, 0.3) transparent rgba(255, 255, 255, 0.3) transparent;
 }
 
-.draw-card-container {
-  @apply w-full;
-}
-
-@screen sm {
-  .draw-card-container {
-    width: 100%;
-  }
-}
-
 /* scale the height by the view width, maintains aspect ratio */
 .draw-card {
   padding-top: calc(77.77% + 5rem);

@@ -1,8 +1,10 @@
 import { Amount } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { useQuery } from 'react-query'
+
+import { NO_REFETCH } from 'lib/constants/query'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
-import { useQuery } from 'react-query'
 import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
 import { useValidDrawIds } from './useValidDrawIds'
 
@@ -23,6 +25,7 @@ export const useUsersClaimedAmounts = (prizeDistributor: PrizeDistributor) => {
     ['useUsersClaimedAmounts', prizeDistributor?.id(), usersAddress],
     () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, decimals),
     {
+      ...NO_REFETCH,
       enabled
     }
   )
@@ -44,5 +47,10 @@ const getUsersClaimedAmounts = async (
     claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], decimals)
   })
 
+  console.log(
+    'useUsersClaimedAmounts',
+    { claimedAmountsKeyedByDrawId, usersAddress, drawIds },
+    Date.now()
+  )
   return claimedAmountsKeyedByDrawId
 }

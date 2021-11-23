@@ -2,13 +2,14 @@ import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useMemo } from 'react'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
-import { useUsersDrawResults } from './useUsersStoredDrawResults'
+import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 
 export const useUsersUnclaimedWinningDrawResults = (prizeDistributor: PrizeDistributor) => {
   const usersAddress = useUsersAddress()
   const { data: claimedAmounts, isFetched: isClaimedAmountsFetched } =
     useUsersClaimedAmounts(prizeDistributor)
-  const drawResults = useUsersDrawResults(prizeDistributor)
+  const drawResults = useUsersStoredDrawResults(prizeDistributor)
+
   return useMemo(() => {
     if (!isClaimedAmountsFetched || !usersAddress || !prizeDistributor) {
       return { data: null, isFetched: false }

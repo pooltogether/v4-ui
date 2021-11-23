@@ -5,7 +5,6 @@ import { useMemo } from 'react'
 import { useUnlockedDrawIds } from './useUnlockedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
-import { useValidDrawIds } from './useValidDrawIds'
 
 /**
  *

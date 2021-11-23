@@ -80,9 +80,7 @@ interface PrizeBreakdownTableRowProps {
   token: Token
 }
 
-// TODO: Calculate number of winners w draw settings
 // Calculate prize w draw settings
-// Calculate odds
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
   const { index, prizeDistribution, totalPrize, token } = props
 

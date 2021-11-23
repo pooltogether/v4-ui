@@ -139,7 +139,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     })
   }
 
-  console.log('MultiDrawsClaimSection', { drawDatas })
+  // console.log('MultiDrawsClaimSection', { drawDatas })
 
   return (
     <>
@@ -239,7 +239,7 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     return null
   }
 
-  console.log('CheckedDrawsClaimSection', { winningDrawData, drawDatas, winningDrawResults })
+  // console.log('CheckedDrawsClaimSection', { winningDrawData, drawDatas, winningDrawResults })
 
   return (
     <>

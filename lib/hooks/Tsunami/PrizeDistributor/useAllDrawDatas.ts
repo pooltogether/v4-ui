@@ -1,7 +1,6 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
 import { useAllBeaconChainDraws } from './useAllBeaconChainDraws'
-import { DrawData } from 'lib/types/v4'
 
 /**
  * @returns all draws and prize distributions if available

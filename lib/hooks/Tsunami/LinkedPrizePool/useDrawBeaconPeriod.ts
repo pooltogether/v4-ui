@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { sToMs } from '@pooltogether/utilities'
+import { NO_REFETCH } from 'lib/constants/query'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { useLinkedPrizePool } from './useLinkedPrizePool'
@@ -30,9 +31,18 @@ export const useDrawBeaconPeriod = () => {
     }
   }
 
-  return useQuery(['useDrawBeaconPeriod'], () => linkedPrizePool.getDrawBeaconPeriod(), {
-    refetchInterval: refetchIntervalMs,
-    enabled,
-    onSuccess
-  })
+  return useQuery(
+    ['useDrawBeaconPeriod'],
+    async () => {
+      const drawBeaconPeriod = await linkedPrizePool.getDrawBeaconPeriod()
+      console.log('useDrawBeaconPeriod', drawBeaconPeriod)
+      return drawBeaconPeriod
+    },
+    {
+      ...NO_REFETCH,
+      refetchInterval: refetchIntervalMs,
+      enabled,
+      onSuccess
+    }
+  )
 }

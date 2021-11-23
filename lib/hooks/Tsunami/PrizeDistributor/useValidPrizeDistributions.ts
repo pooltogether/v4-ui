@@ -1,8 +1,8 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
+
+import { NO_REFETCH } from 'lib/constants/query'
 import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
-import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**
@@ -19,7 +19,11 @@ export const useValidPrizeDistributions = (prizeDistributor: PrizeDistributor) =
       prizeDistributor?.id(),
       drawBeaconPeriod?.startedAtSeconds.toString()
     ],
-    async () => prizeDistributor.getPrizeDistributions(drawIds),
+    async () => {
+      const validPrizeDistributions = await prizeDistributor.getPrizeDistributions(drawIds)
+      console.log('useValidPrizeDistributions', validPrizeDistributions)
+      return validPrizeDistributions
+    },
     { ...NO_REFETCH, enabled }
   )
 }

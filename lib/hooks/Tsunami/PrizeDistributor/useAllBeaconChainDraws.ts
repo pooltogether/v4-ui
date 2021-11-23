@@ -18,12 +18,7 @@ export const useAllBeaconChainDraws = () => {
       linkedPrizePool?.id(),
       drawBeaconPeriod?.startedAtSeconds.toString()
     ],
-    async () => {
-      const drawsList = await linkedPrizePool.getBeaconChainDraws()
-      const draws: { [drawId: number]: Draw } = {}
-      drawsList.forEach((draw) => (draws[draw.drawId] = draw))
-      return draws
-    },
+    async () => linkedPrizePool.getBeaconChainDraws(),
     { ...NO_REFETCH, enabled }
   )
 }

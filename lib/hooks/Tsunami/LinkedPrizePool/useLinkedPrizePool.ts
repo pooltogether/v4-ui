@@ -21,11 +21,9 @@ export const useLinkedPrizePool = (): LinkedPrizePool => {
       const prizePoolChainIds = linkedPrizePool.prizePools.map((p) => p.chainId)
       if (prizePoolChainIds.every((chainId) => providerChainIds.includes(String(chainId)))) return
       const newLinkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
-      console.log({ newLinkedPrizePool, readProviders })
       setLinkedPrizePool(newLinkedPrizePool)
     } else {
       const newLinkedPrizePool = new LinkedPrizePool(readProviders, linkedPrizePoolContractList)
-      console.log({ newLinkedPrizePool, readProviders })
       setLinkedPrizePool(newLinkedPrizePool)
     }
   }, [readProviders])
