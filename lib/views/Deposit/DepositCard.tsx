@@ -78,7 +78,7 @@ export const DepositCard = () => {
     isUsersDepositAllowanceFetched &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
-  const ticketDelegate = delegateData[usersAddress]
+  const ticketDelegate = delegateData?.[usersAddress]
 
   const form = useForm({
     mode: 'onChange',
