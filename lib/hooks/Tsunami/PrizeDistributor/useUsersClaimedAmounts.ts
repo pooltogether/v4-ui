@@ -14,8 +14,10 @@ import { useValidDrawIds } from './useValidDrawIds'
  * @param token
  * @returns
  */
-export const useUsersClaimedAmounts = (prizeDistributor: PrizeDistributor) => {
-  const usersAddress = useUsersAddress()
+export const useUsersClaimedAmounts = (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor
+) => {
   const { data: drawIds, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const { data: decimals, isFetched: isDecimalsFetched } = useTicketDecimals()
   const enabled =
@@ -36,7 +38,11 @@ const getUsersClaimedAmounts = async (
   prizeDistributor: PrizeDistributor,
   drawIds: number[],
   decimals: string
-) => {
+): Promise<{
+  [usersAddress: string]: {
+    [drawId: number]: Amount
+  }
+}> => {
   const claimedAmounts = await prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
 
   const claimedAmountsKeyedByDrawId: {
@@ -46,11 +52,7 @@ const getUsersClaimedAmounts = async (
   drawIds.map((drawId) => {
     claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], decimals)
   })
-
-  console.log(
-    'useUsersClaimedAmounts',
-    { claimedAmountsKeyedByDrawId, usersAddress, drawIds },
-    Date.now()
-  )
-  return claimedAmountsKeyedByDrawId
+  return {
+    [usersAddress]: claimedAmountsKeyedByDrawId
+  }
 }

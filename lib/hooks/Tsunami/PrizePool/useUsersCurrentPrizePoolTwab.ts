@@ -1,14 +1,13 @@
-import { Amount, TokenBalance, useRefetchInterval } from '@pooltogether/hooks'
+import { Amount, useRefetchInterval } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { formatUnits } from '@ethersproject/units'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 
-export const useUsersCurrentPrizePoolTwab = (prizePool: PrizePool) => {
-  const usersAddress = useUsersAddress()
+export const useUsersCurrentPrizePoolTwab = (usersAddress: string, prizePool: PrizePool) => {
   const refetchInterval = useRefetchInterval(prizePool?.chainId)
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
 
@@ -31,7 +30,7 @@ const getUsersPrizePoolTwab = async (
   prizePool: PrizePool,
   usersAddress: string,
   decimals: string
-): Promise<Amount> => {
+): Promise<{ [usersAddress: string]: Amount }> => {
   const timestamp = Math.round(msToS(Date.now()))
   const twab = await prizePool.getUsersTicketTwabAt(usersAddress, timestamp)
 
@@ -40,8 +39,10 @@ const getUsersPrizePoolTwab = async (
   const amountPretty = prettyNumber(amountUnformatted, decimals)
 
   return {
-    amount,
-    amountUnformatted,
-    amountPretty
+    [usersAddress]: {
+      amount,
+      amountUnformatted,
+      amountPretty
+    }
   }
 }

@@ -32,7 +32,6 @@ export const useValidDrawDatas = (prizeDistributor: PrizeDistributor) => {
           prizeDistribution: przeDistributions[drawId]
         }
       })
-      console.log('useValidDrawDatas', drawDatas)
       return drawDatas
     },
     {

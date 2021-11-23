@@ -1,9 +1,8 @@
 import { Amount } from '@pooltogether/hooks'
 import { calculateOdds } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-js-client'
 import { BigNumber, ethers } from 'ethers'
 import { useMemo } from 'react'
-import { useOddsData } from './useOddsData'
+
 import { useOverallOddsData } from './useOverallOddsData'
 
 export enum EstimateAction {
@@ -13,7 +12,6 @@ export enum EstimateAction {
 }
 
 export const useEstimatedOddsForAmount = (
-  prizePool: PrizePool,
   amount: Amount,
   action: EstimateAction = EstimateAction.none,
   changeAmountUnformatted: BigNumber = ethers.constants.Zero
@@ -23,7 +21,7 @@ export const useEstimatedOddsForAmount = (
   const data = useOverallOddsData()
 
   return useMemo(() => {
-    if (!Boolean(data) || amount === undefined) {
+    if (!Boolean(data) || amount === undefined || amount === null) {
       return {
         isFetched: false,
         data: undefined

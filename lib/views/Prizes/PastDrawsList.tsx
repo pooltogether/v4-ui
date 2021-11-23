@@ -29,13 +29,16 @@ export const PastDrawsList = (props: {
 
   const { t } = useTranslation()
 
+  const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-
   const { data: drawDatas, isFetched: isDrawsAndPrizeDistributionsFetched } =
     useAllDrawDatas(prizeDistributor)
-  const { data: claimedAmounts } = useUsersClaimedAmounts(prizeDistributor)
-  const { data: normalizedBalances } = useUsersNormalizedBalances(prizeDistributor)
+  const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
+  const { data: normalizedBalancesData } = useUsersNormalizedBalances(
+    usersAddress,
+    prizeDistributor
+  )
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
@@ -73,8 +76,8 @@ export const PastDrawsList = (props: {
               prizeDistributor={prizeDistributor}
               token={prizePoolTokens.token}
               ticket={prizePoolTokens.ticket}
-              claimedAmount={claimedAmounts?.[drawId]}
-              normalizedBalance={normalizedBalances?.[drawId]}
+              claimedAmount={claimedAmountsData?.[usersAddress]?.[drawId]}
+              normalizedBalance={normalizedBalancesData?.[usersAddress]?.[drawId]}
               drawLock={drawLocks[drawId]}
             />
           )
@@ -208,18 +211,18 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     normalizedBalance
   } = props
   const { draw } = drawData
-  const storedDrawResults = useUsersStoredDrawResults(prizeDistributor)
-  const { t } = useTranslation()
-
   const usersAddress = useUsersAddress()
-
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const { t } = useTranslation()
   const drawLockCountdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
+  const drawResults = storedDrawResults?.[usersAddress]
+
   // TODO: Move stored draw results to a hook so this reacts when pushing new results
-  const storedDrawResult = storedDrawResults?.[draw.drawId]
+  const drawResult = drawResults?.[draw.drawId]
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
-  const userHasAmountToClaim = storedDrawResult && !storedDrawResult.totalValue.isZero()
+  const userHasAmountToClaim = drawResult && !drawResult.totalValue.isZero()
   const useWasNotEligible = normalizedBalance && normalizedBalance.isZero()
 
   if (drawLockCountdown?.secondsLeft) {
@@ -244,14 +247,14 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
         </span>
       </div>
     )
-  } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && storedDrawResult) {
+  } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult) {
     return (
       <span className={classNames('text-inverse', className)}>
         {t('noPrizesWon', 'No prizes won')}
       </span>
     )
   } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
-    const { amountPretty } = roundPrizeAmount(storedDrawResult?.totalValue, ticket.decimals)
+    const { amountPretty } = roundPrizeAmount(drawResult?.totalValue, ticket.decimals)
     return (
       <div className={classNames(className, 'animate-pulse')}>
         <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>

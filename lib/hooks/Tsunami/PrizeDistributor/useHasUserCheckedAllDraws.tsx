@@ -11,18 +11,27 @@ import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
  * @param prizeDistributor
  * @returns
  */
-export const useHasUserCheckedAllDraws = (prizeDistributor: PrizeDistributor) => {
+export const useHasUserCheckedAllDraws = (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor
+) => {
   const { data: drawIds, isFetched: isDrawIdsFetched } = useUnlockedDrawIds(prizeDistributor)
-  const { data: claimedAmounts, isFetched: isClaimedAmountsFetched } =
-    useUsersClaimedAmounts(prizeDistributor)
-  const { data: normalizedBalances, isFetched: isNormalizedBalancesFetched } =
-    useUsersNormalizedBalances(prizeDistributor)
-  const usersAddress = useUsersAddress()
+  const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
+    usersAddress,
+    prizeDistributor
+  )
+  const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
+    useUsersNormalizedBalances(usersAddress, prizeDistributor)
 
   /**
    * This is kind of cheeky. We're reading straight from local storage to get the "checked" draw results (Draw results for draws that the user has clicked "Check for prizes" on). If the user hasn't checked the draw before we fetch them when the user clicks "Check for prizes" and then store them in the local storage. This update to local storage WILL NOT trigger this useMemo to rerun. We want that. Otherwise there ma be some other state jumps where the UI expects thte user to not have checked all before, but becaues it was immediately saved, they technically have.
    */
-  return useMemo(() => {
+  return useMemo((): {
+    data: {
+      [usersAddress: string]: boolean
+    }
+    isFetched: boolean
+  } => {
     if (
       !isDrawIdsFetched ||
       !usersAddress ||
@@ -32,6 +41,14 @@ export const useHasUserCheckedAllDraws = (prizeDistributor: PrizeDistributor) =>
     ) {
       return { data: null, isFetched: false }
     }
+
+    const claimedAmounts = claimedAmountsData[usersAddress]
+    const normalizedBalances = normalizedBalancesData[usersAddress]
+
+    if (!claimedAmounts || !normalizedBalances) {
+      return { data: null, isFetched: false }
+    }
+
     const drawResults = getStoredDrawResults(usersAddress, prizeDistributor)
     const claimedDrawIds = []
 
@@ -56,15 +73,20 @@ export const useHasUserCheckedAllDraws = (prizeDistributor: PrizeDistributor) =>
         claimedDrawIds.includes(drawId) ||
         drawIdsWithoutANormalizedBalance.includes(drawId)
     )
-    return { data: hasUserCheckedAllDraws, isFetched: true }
+    return {
+      data: {
+        [usersAddress]: hasUserCheckedAllDraws
+      },
+      isFetched: true
+    }
   }, [
     usersAddress,
     isClaimedAmountsFetched,
     isDrawIdsFetched,
     isNormalizedBalancesFetched,
-    claimedAmounts,
+    claimedAmountsData,
     drawIds,
-    normalizedBalances,
+    normalizedBalancesData,
     prizeDistributor?.id()
   ])
 }

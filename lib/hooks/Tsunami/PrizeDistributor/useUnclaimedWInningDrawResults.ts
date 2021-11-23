@@ -1,16 +1,29 @@
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useMemo } from 'react'
+
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 
-export const useUsersUnclaimedWinningDrawResults = (prizeDistributor: PrizeDistributor) => {
-  const usersAddress = useUsersAddress()
-  const { data: claimedAmounts, isFetched: isClaimedAmountsFetched } =
-    useUsersClaimedAmounts(prizeDistributor)
-  const drawResults = useUsersStoredDrawResults(prizeDistributor)
+export const useUsersUnclaimedWinningDrawResults = (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor
+): {
+  data: {
+    [usersAddress: string]: {
+      [drawId: number]: DrawResults
+    }
+  }
+  isFetched: boolean
+} => {
+  const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
+    usersAddress,
+    prizeDistributor
+  )
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const drawResults = storedDrawResults?.[usersAddress]
 
   return useMemo(() => {
+    const claimedAmounts = claimedAmountsData?.[usersAddress]
     if (!isClaimedAmountsFetched || !usersAddress || !prizeDistributor) {
       return { data: null, isFetched: false }
     }
@@ -25,8 +38,8 @@ export const useUsersUnclaimedWinningDrawResults = (prizeDistributor: PrizeDistr
         }
       })
     return {
-      data: unclaimedWinningDrawResults,
+      data: { [usersAddress]: unclaimedWinningDrawResults },
       isFetched: true
     }
-  }, [prizeDistributor?.id(), usersAddress, claimedAmounts, drawResults])
+  }, [prizeDistributor?.id(), usersAddress, claimedAmountsData, drawResults])
 }

@@ -24,6 +24,7 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import classNames from 'classnames'
 
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TxHashRow } from 'lib/components/TxHashRow'
@@ -39,7 +40,7 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DelegateTicketsSection } from 'lib/views/Account/DelegateTicketsSection'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
 import { UsersOddsValue } from 'lib/components/UpdatedOddsListItem'
-import classNames from 'classnames'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
@@ -79,11 +80,15 @@ interface PrizePoolRowProps {
 
 const PrizePoolRow = (props: PrizePoolRowProps) => {
   const { prizePool, player } = props
-  const { data: usersBalances, isFetched: isUsersBalancesFetched } =
-    useUsersPrizePoolBalances(prizePool)
+  const usersAddress = useUsersAddress()
+  const { data: usersBalancesData, isFetched: isUsersBalancesFetched } = useUsersPrizePoolBalances(
+    usersAddress,
+    prizePool
+  )
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
+  const usersBalances = usersBalancesData?.[usersAddress]
   const isFetched = isUsersBalancesFetched && isPrizePoolTokensFetched
 
   return (
@@ -143,10 +148,9 @@ export enum WithdrawalSteps {
 const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
   const { player, prizePool } = props
 
+  const usersAddress = useUsersAddress()
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
-
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation()
   const { setSelectedChainId } = useSelectedNetwork()
@@ -171,10 +175,11 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
   }
 
   const {
-    data: usersBalances,
+    data: usersBalancesData,
     isFetched: isUsersBalancesFetched,
     refetch: refetchUsersBalances
-  } = useUsersPrizePoolBalances(prizePool)
+  } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const usersBalances = usersBalancesData?.[usersAddress]
 
   const sendWithdrawTx = async (e) => {
     e.preventDefault()

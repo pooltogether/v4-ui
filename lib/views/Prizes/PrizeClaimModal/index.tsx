@@ -17,6 +17,7 @@ import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawData } from 'lib/types/v4'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const CLAIMING_GAS_LIMIT = 500000
 
@@ -59,7 +60,8 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
-  const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(prizeDistributor)
+  const usersAddress = useUsersAddress()
+  const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {

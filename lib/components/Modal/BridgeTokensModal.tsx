@@ -7,7 +7,7 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { CHAIN_ID } from 'lib/constants/constants'
 
-interface BridgeTokensModalProps extends ModalProps {
+interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
 }
 

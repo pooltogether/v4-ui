@@ -58,7 +58,5 @@ const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<Draw
     }
   })
 
-  console.log('useDrawLocks', drawLocks)
-
   return drawLocks
 }

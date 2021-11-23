@@ -16,13 +16,13 @@ import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsuna
 import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
 import { useTranslation } from 'react-i18next'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface AccountCardProps {
   className?: string
   player: Player
   isPlayerFetched: boolean
 }
-// TODO: ODDS on the account card shouldn't include ethereum if the user isn't deposited into ethereum
 export const AccountCard = (props: AccountCardProps) => {
   const { className, player, isPlayerFetched } = props
   const { theme } = useTheme()
@@ -102,7 +102,8 @@ const TwabAmount = (props: {
 }
 
 const WinningOdds = () => {
-  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork()
+  const usersAddress = useUsersAddress()
+  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(usersAddress)
   const { t } = useTranslation()
 
   if (!Boolean(data)) {
@@ -113,7 +114,7 @@ const WinningOdds = () => {
     )
   }
 
-  const { odds, oneOverOdds } = data
+  const { odds, oneOverOdds } = data[usersAddress]
 
   if (odds === 0) {
     return (

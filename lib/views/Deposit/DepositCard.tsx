@@ -54,10 +54,11 @@ export const DepositCard = () => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
-    data: usersBalances,
+    data: usersBalancesData,
     refetch: refetchUsersBalances,
     isFetched: isUsersBalancesFetched
-  } = useUsersPrizePoolBalances(prizePool)
+  } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const usersBalances = usersBalancesData?.[usersAddress]
   const {
     data: depositAllowance,
     refetch: refetchUsersDepositAllowance,

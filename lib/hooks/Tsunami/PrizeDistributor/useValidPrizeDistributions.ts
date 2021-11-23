@@ -21,7 +21,6 @@ export const useValidPrizeDistributions = (prizeDistributor: PrizeDistributor) =
     ],
     async () => {
       const validPrizeDistributions = await prizeDistributor.getPrizeDistributions(drawIds)
-      console.log('useValidPrizeDistributions', validPrizeDistributions)
       return validPrizeDistributions
     },
     { ...NO_REFETCH, enabled }

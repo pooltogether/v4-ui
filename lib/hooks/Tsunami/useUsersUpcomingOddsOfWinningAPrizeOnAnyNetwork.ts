@@ -10,21 +10,30 @@ import { useOverallOddsData } from './useOverallOddsData'
  * @returns
  */
 export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
+  usersAddress: string,
   action: EstimateAction = EstimateAction.none,
   amountUnformatted: BigNumber = ethers.constants.Zero
-) => {
-  const { data: twabs, isFetched: isTwabsFetched } = useUsersCurrentPrizePoolTwabs()
+): {
+  [usersAddress: string]: {
+    odds: number
+    oneOverOdds: number
+  }
+} => {
+  const { data: twabsData, isFetched: isTwabsFetched } = useUsersCurrentPrizePoolTwabs(usersAddress)
   const data = useOverallOddsData()
-  if (!isTwabsFetched || !data) {
+  const twabs = twabsData?.[usersAddress]
+  if (!isTwabsFetched || !data || !twabs) {
     return undefined
   }
   const { totalSupply, numberOfPrizes, decimals } = data
-  return estimateOddsForAmount(
-    twabs.total,
-    totalSupply,
-    numberOfPrizes,
-    decimals,
-    action,
-    amountUnformatted
-  )
+  return {
+    [usersAddress]: estimateOddsForAmount(
+      twabs.total,
+      totalSupply,
+      numberOfPrizes,
+      decimals,
+      action,
+      amountUnformatted
+    )
+  }
 }

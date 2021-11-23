@@ -21,7 +21,7 @@ import { DrawData } from 'lib/types/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
-import { useUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedDrawDatas'
+import { useUsersUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import {
   drawIdsToNotClaimAtom,
@@ -50,10 +50,11 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   const { prizePool, prizeDistributor } = props
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-  const { data: drawDatas, isFetched: isUnclaimedDrawDataFetched } =
-    useUnclaimedDrawDatas(prizeDistributor)
-  const { data: hasUserCheckedAllDraws, isFetched: isHasUserCheckedAllDrawsFetched } =
-    useHasUserCheckedAllDraws(prizeDistributor)
+  const usersAddress = useUsersAddress()
+  const { data: unclaimedDrawDatasData, isFetched: isUnclaimedDrawDataFetched } =
+    useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
+  const { data: hasUserCheckedAllDrawsData, isFetched: isHasUserCheckedAllDrawsFetched } =
+    useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
 
   if (
     !isPrizePoolTokensFetched ||
@@ -62,6 +63,9 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   ) {
     return <LoadingCard />
   }
+
+  const drawDatas = unclaimedDrawDatasData[usersAddress]
+  const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData[usersAddress]
 
   if (Boolean(drawDatas) && Object.keys(drawDatas).length === 0) {
     return (
@@ -139,8 +143,6 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     })
   }
 
-  // console.log('MultiDrawsClaimSection', { drawDatas })
-
   return (
     <>
       <PrizeVideoBackground
@@ -200,9 +202,13 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const { drawDatas, ticket, token, prizeDistributor } = props
   const { t } = useTranslation()
 
+  const usersAddress = useUsersAddress()
   const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useAtom(drawIdsToNotClaimAtom)
-  const { data: winningDrawResults, isFetched: isUsersUnclaimedWinningDrawResultsFetched } =
-    useUsersUnclaimedWinningDrawResults(prizeDistributor)
+  const { data: winningDrawResultsData, isFetched: isUsersUnclaimedWinningDrawResultsFetched } =
+    useUsersUnclaimedWinningDrawResults(usersAddress, prizeDistributor)
+
+  const winningDrawResults = winningDrawResultsData?.[usersAddress]
+
   const winningDrawData = useMemo(() => {
     if (!winningDrawResults) {
       return null
@@ -238,8 +244,6 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   if (!isUsersUnclaimedWinningDrawResultsFetched) {
     return null
   }
-
-  // console.log('CheckedDrawsClaimSection', { winningDrawData, drawDatas, winningDrawResults })
 
   return (
     <>

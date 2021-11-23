@@ -1,24 +1,40 @@
 import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 import { Network } from 'lib/constants/network'
-import { useTwabByNetwork } from 'lib/hooks/Tsunami/PrizePool/useTwabByNetwork'
+import { useUsersTwabByNetwork } from 'lib/hooks/Tsunami/PrizePool/useUsersTwabByNetwork'
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
-export const useUsersCurrentPrizePoolTwabs = () => {
+export const useUsersCurrentPrizePoolTwabs = (
+  usersAddress: string
+): {
+  data: {
+    [usersAddress: string]: {
+      total: Amount
+      ethereum: Amount
+      polygon: Amount
+    }
+  }
+  isPartiallyFetched: boolean
+  isFetched: boolean
+  refetch: () => void
+} => {
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
 
   // Fetch data for each network
   const {
-    data: ethereumTwab,
+    data: ethereumTwabData,
     isFetched: isEthereumTwabFetched,
     refetch: refetchEthereumTwab
-  } = useTwabByNetwork(Network.ethereum)
+  } = useUsersTwabByNetwork(usersAddress, Network.ethereum)
   const {
-    data: polygonTwab,
+    data: polygonTwabData,
     isFetched: isPolygonTwabFetched,
     refetch: refetchPolygonTwab
-  } = useTwabByNetwork(Network.polygon)
+  } = useUsersTwabByNetwork(usersAddress, Network.polygon)
+
+  const ethereumTwab = isEthereumTwabFetched ? ethereumTwabData[usersAddress] : undefined
+  const polygonTwab = isPolygonTwabFetched ? polygonTwabData[usersAddress] : undefined
 
   const total = isTicketDecimalsFetched
     ? getTotalTwab([ethereumTwab, polygonTwab], ticketDecimals)
@@ -33,9 +49,11 @@ export const useUsersCurrentPrizePoolTwabs = () => {
 
   return {
     data: {
-      total,
-      [Network.ethereum]: ethereumTwab,
-      [Network.polygon]: polygonTwab
+      [usersAddress]: {
+        total,
+        [Network.ethereum]: ethereumTwab,
+        [Network.polygon]: polygonTwab
+      }
     },
     isPartiallyFetched,
     isFetched,

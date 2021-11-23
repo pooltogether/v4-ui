@@ -17,7 +17,6 @@ export const useValidDraws = (prizeDistributor: PrizeDistributor) => {
     ['useValidDraws', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
     async () => {
       const validDraws = await prizeDistributor.getDraws(drawIds)
-      console.log('useValidDraws', validDraws)
       return validDraws
     },
     { ...NO_REFETCH, enabled }

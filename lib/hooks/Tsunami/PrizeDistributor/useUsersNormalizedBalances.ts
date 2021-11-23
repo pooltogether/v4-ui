@@ -3,7 +3,6 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from 'lib/constants/query'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**
@@ -12,8 +11,10 @@ import { useValidDrawIds } from './useValidDrawIds'
  * @param token
  * @returns
  */
-export const useUsersNormalizedBalances = (prizeDistributor: PrizeDistributor) => {
-  const usersAddress = useUsersAddress()
+export const useUsersNormalizedBalances = (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor
+) => {
   const { data: drawIds, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && isDrawIdsFetched
 
@@ -31,7 +32,11 @@ const getUsersNormalizedBalances = async (
   usersAddress: string,
   prizeDistributor: PrizeDistributor,
   drawIds: number[]
-) => {
+): Promise<{
+  [usersAddress: string]: {
+    [drawId: number]: BigNumber
+  }
+}> => {
   const normalizedBalances = await prizeDistributor.getUsersNormalizedBalancesForDrawIds(
     usersAddress,
     drawIds
@@ -44,15 +49,7 @@ const getUsersNormalizedBalances = async (
   drawIds.map((drawId, index) => {
     normalizedBalancesKeyedByDrawId[drawId] = normalizedBalances[index]
   })
-
-  console.log(
-    'useUsersNormalizedBalances',
-    {
-      usersAddress,
-      drawIds,
-      normalizedBalancesKeyedByDrawId
-    },
-    Date.now()
-  )
-  return normalizedBalancesKeyedByDrawId
+  return {
+    [usersAddress]: normalizedBalancesKeyedByDrawId
+  }
 }

@@ -4,7 +4,7 @@ import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { CHAIN_ID } from 'lib/constants/constants'
 
-interface GetTokensModalProps extends ModalProps {
+interface GetTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
   tokenAddress: string
 }

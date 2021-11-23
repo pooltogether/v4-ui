@@ -35,7 +35,6 @@ export const useDrawBeaconPeriod = () => {
     ['useDrawBeaconPeriod'],
     async () => {
       const drawBeaconPeriod = await linkedPrizePool.getDrawBeaconPeriod()
-      console.log('useDrawBeaconPeriod', drawBeaconPeriod)
       return drawBeaconPeriod
     },
     {

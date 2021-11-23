@@ -32,21 +32,37 @@ import { NO_REFETCH } from 'lib/constants/query'
  * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
-export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
-  const storedDrawResults = useUsersStoredDrawResults(prizeDistributor)
+export const useUsersUnclaimedDrawDatas = (
+  usersAddress: string,
+  prizeDistributor: PrizeDistributor
+) => {
+  // Generic data
   const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
-  const { data: normalizedBalances, isFetched: isNormalizedBalancesFetched } =
-    useUsersNormalizedBalances(prizeDistributor)
-  const { data: claimedAmounts, isFetched: isClaimedAmountsFetched } =
-    useUsersClaimedAmounts(prizeDistributor)
+  // User specific data
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
+    useUsersNormalizedBalances(usersAddress, prizeDistributor)
+  const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
+    usersAddress,
+    prizeDistributor
+  )
+
+  const drawResults = storedDrawResults?.[usersAddress]
+  const normalizedBalances = normalizedBalancesData?.[usersAddress]
+  const claimedAmounts = claimedAmountsData?.[usersAddress]
+
+  // Check if there is data keyed by the same users address so we aren't mixing data
+  const userAddressesMatch =
+    Boolean(drawResults) && Boolean(normalizedBalances) && Boolean(claimedAmounts)
 
   const enabled =
     Boolean(prizeDistributor) &&
     isDrawUnlockTimesFetched &&
     isDrawDatasFetched &&
     isNormalizedBalancesFetched &&
-    isClaimedAmountsFetched
+    isClaimedAmountsFetched &&
+    userAddressesMatch
 
   const drawLocksKey = drawLocks ? 'drawLocks-' + Object.keys(drawLocks).join(',') : ''
   const claimedAmountsKey = claimedAmounts
@@ -65,8 +81,9 @@ export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
 
   return useQuery(
     [
-      'useUnclaimedDrawDatas',
+      'useUsersUnclaimedDrawDatas',
       prizeDistributor?.id(),
+      usersAddress,
       drawLocksKey,
       claimedAmountsKey,
       normalizedBalancesKey,
@@ -74,11 +91,12 @@ export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
     ],
     async () =>
       getUnclaimedDrawDatas(
+        usersAddress,
         drawLocks,
         drawDatas,
         normalizedBalances,
         claimedAmounts,
-        storedDrawResults
+        drawResults
       ),
     {
       ...NO_REFETCH,
@@ -88,14 +106,15 @@ export const useUnclaimedDrawDatas = (prizeDistributor: PrizeDistributor) => {
 }
 
 const getUnclaimedDrawDatas = async (
+  usersAddress: string,
   drawLocks: DrawLocks,
   drawDatas: { [drawId: number]: DrawData },
   normalizedBalances: { [drawId: number]: BigNumber },
   claimedAmounts: { [drawId: number]: Amount },
-  storedDrawResults: {
+  drawResults: {
     [drawId: number]: DrawResults
   }
-): Promise<{ [drawId: number]: DrawData }> => {
+): Promise<{ [usersAddress: string]: { [drawId: number]: DrawData } }> => {
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
 
@@ -104,7 +123,7 @@ const getUnclaimedDrawDatas = async (
     const claimedAmount = claimedAmounts[drawId]
     const normalizedBalance = normalizedBalances[drawId]
     const drawLock = drawLocks[drawId]
-    const storedDrawResult = storedDrawResults?.[drawId]
+    const drawResult = drawResults?.[drawId]
 
     // Filter draws with claimed amounts
     // Filter draws with no normalized balance during that period
@@ -114,24 +133,13 @@ const getUnclaimedDrawDatas = async (
       normalizedBalance.isZero() ||
       (Boolean(drawLock) &&
         drawLock.endTimeSeconds.gte(BigNumber.from(Math.floor(msToS(Date.now()))))) ||
-      (Boolean(storedDrawResult) && storedDrawResult.totalValue.isZero())
+      (Boolean(drawResult) && drawResult.totalValue.isZero())
     ) {
       return
     }
     unclaimedDrawDatas[drawId] = drawData
   })
-
-  console.log(
-    'useUnclaimedDrawDatas',
-    {
-      unclaimedDrawDatas,
-      drawLocks,
-      drawDatas,
-      normalizedBalances,
-      claimedAmounts,
-      storedDrawResults
-    },
-    Date.now()
-  )
-  return unclaimedDrawDatas
+  return {
+    [usersAddress]: unclaimedDrawDatas
+  }
 }
