@@ -140,15 +140,6 @@ const getUnclaimedDrawDatas = async (
     }
     unclaimedDrawDatas[drawId] = drawData
   })
-  console.log({
-    usersAddress,
-    unclaimedDrawDatas,
-    drawDatas,
-    lockedDrawIds,
-    drawResults,
-    claimedAmounts,
-    normalizedBalances
-  })
   return {
     [usersAddress]: unclaimedDrawDatas
   }
