@@ -1,9 +1,10 @@
-import { DrawData } from 'lib/types/v4'
+import { Draw } from '@pooltogether/v4-js-client'
+
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import { sortDrawsByDrawIdAsc } from 'lib/utils/sortByDrawId'
 
 export const MultipleDrawsDate = (props: {
-  drawDatas: { [drawId: number]: DrawData }
+  drawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
 }) => {
   const { drawDatas } = props

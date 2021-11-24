@@ -1,7 +1,7 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { getStoredDrawResults } from 'lib/utils/drawResultsStorage'
 import { useMemo } from 'react'
+
+import { getStoredDrawResults } from 'lib/utils/drawResultsStorage'
 import { useUnlockedDrawIds } from './useUnlockedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
@@ -73,6 +73,15 @@ export const useHasUserCheckedAllDraws = (
         claimedDrawIds.includes(drawId) ||
         drawIdsWithoutANormalizedBalance.includes(drawId)
     )
+    console.log({
+      hasUserCheckedAllDraws,
+      usersAddress,
+      drawIds,
+      checkedDrawIds,
+      claimedDrawIds,
+      drawIdsWithoutANormalizedBalance,
+      normalizedBalances
+    })
     return {
       data: {
         [usersAddress]: hasUserCheckedAllDraws

@@ -2,15 +2,15 @@ import { Amount } from '@pooltogether/hooks'
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { msToS } from '@pooltogether/utilities'
 
 import { DrawData } from 'lib/types/v4'
-import { DrawLocks, useDrawLocks } from './useDrawLocks'
+import { useDrawLocks } from './useDrawLocks'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useValidDrawDatas } from './useValidDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { NO_REFETCH } from 'lib/constants/query'
+import { useLockedDrawIds } from './useLockedDrawIds'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
@@ -23,9 +23,10 @@ import { NO_REFETCH } from 'lib/constants/query'
  * - with stored draw results that have been claimed
  * - where user had 0 average balance during the draw period
  * - that are locked
- * Refetches
+ * Reruns
  * - When the draw beacon period is updated
  * - When draw locks are updated
+ * - When draw locks finish
  * - When claimed amounts are updated
  * - When user normalized balances are updated
  * - When valid draw datas are updated
@@ -37,7 +38,8 @@ export const useUsersUnclaimedDrawDatas = (
   prizeDistributor: PrizeDistributor
 ) => {
   // Generic data
-  const { data: drawLocks, isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
+  const lockedDrawIds = useLockedDrawIds()
+  const { isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
   // User specific data
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
@@ -64,7 +66,7 @@ export const useUsersUnclaimedDrawDatas = (
     isClaimedAmountsFetched &&
     userAddressesMatch
 
-  const drawLocksKey = drawLocks ? 'drawLocks-' + Object.keys(drawLocks).join(',') : ''
+  const lockeDrawsKey = lockedDrawIds ? 'lockedDraws-' + lockedDrawIds.join(',') : ''
   const claimedAmountsKey = claimedAmounts
     ? 'claimedAmounts-' +
       Object.values(claimedAmounts)
@@ -84,7 +86,7 @@ export const useUsersUnclaimedDrawDatas = (
       'useUsersUnclaimedDrawDatas',
       prizeDistributor?.id(),
       usersAddress,
-      drawLocksKey,
+      lockeDrawsKey,
       claimedAmountsKey,
       normalizedBalancesKey,
       drawDatasKey
@@ -92,7 +94,7 @@ export const useUsersUnclaimedDrawDatas = (
     async () =>
       getUnclaimedDrawDatas(
         usersAddress,
-        drawLocks,
+        lockedDrawIds,
         drawDatas,
         normalizedBalances,
         claimedAmounts,
@@ -107,7 +109,7 @@ export const useUsersUnclaimedDrawDatas = (
 
 const getUnclaimedDrawDatas = async (
   usersAddress: string,
-  drawLocks: DrawLocks,
+  lockedDrawIds: number[],
   drawDatas: { [drawId: number]: DrawData },
   normalizedBalances: { [drawId: number]: BigNumber },
   claimedAmounts: { [drawId: number]: Amount },
@@ -122,7 +124,7 @@ const getUnclaimedDrawDatas = async (
     const drawData = drawDatas[drawId]
     const claimedAmount = claimedAmounts[drawId]
     const normalizedBalance = normalizedBalances[drawId]
-    const drawLock = drawLocks[drawId]
+    const isLocked = lockedDrawIds.includes(drawId)
     const drawResult = drawResults?.[drawId]
 
     // Filter draws with claimed amounts
@@ -131,13 +133,21 @@ const getUnclaimedDrawDatas = async (
     if (
       !claimedAmount.amountUnformatted.isZero() ||
       normalizedBalance.isZero() ||
-      (Boolean(drawLock) &&
-        drawLock.endTimeSeconds.gte(BigNumber.from(Math.floor(msToS(Date.now()))))) ||
+      isLocked ||
       (Boolean(drawResult) && drawResult.totalValue.isZero())
     ) {
       return
     }
     unclaimedDrawDatas[drawId] = drawData
+  })
+  console.log({
+    usersAddress,
+    unclaimedDrawDatas,
+    drawDatas,
+    lockedDrawIds,
+    drawResults,
+    claimedAmounts,
+    normalizedBalances
   })
   return {
     [usersAddress]: unclaimedDrawDatas

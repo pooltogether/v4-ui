@@ -8,6 +8,7 @@ import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { ethers } from 'ethers'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import classNames from 'classnames'
+import { Draw } from '@pooltogether/v4-js-client'
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }
@@ -67,7 +68,7 @@ TotalPrizes.defaultProps = {
 }
 
 export const MultipleDrawIds = (props: {
-  drawDatas: { [drawId: number]: DrawData }
+  drawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
 }) => {
   const { t } = useTranslation()

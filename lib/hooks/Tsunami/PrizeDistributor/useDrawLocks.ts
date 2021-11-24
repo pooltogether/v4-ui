@@ -11,10 +11,6 @@ export interface DrawLock {
   endTimeSeconds: BigNumber
 }
 
-export interface DrawLocks {
-  [drawId: number]: DrawLock
-}
-
 /**
  * Fetches all of the locked draws, returns the latest ending time for each draw id and an amount of time until the next time we need to refetch
  * @returns
@@ -38,12 +34,18 @@ export const useDrawLocks = () => {
   )
 }
 
-const getDrawLocks = async (prizeDistributors: PrizeDistributor[]): Promise<DrawLocks> => {
+const getDrawLocks = async (
+  prizeDistributors: PrizeDistributor[]
+): Promise<{
+  [drawId: number]: DrawLock
+}> => {
   const lockedDraws = await Promise.all(
     prizeDistributors.map((prizeDistributor) => prizeDistributor.getTimelockDrawId())
   )
 
-  const drawLocks: DrawLocks = {}
+  const drawLocks: {
+    [drawId: number]: DrawLock
+  } = {}
 
   lockedDraws.forEach((lockedDraw) => {
     const drawLockForDrawId = drawLocks[lockedDraw.drawId]

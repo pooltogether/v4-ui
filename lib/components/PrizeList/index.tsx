@@ -57,7 +57,7 @@ export const PrizeList = (props: PrizeListProps) => {
       >
         {!prizes &&
           Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`prize-loading-row-${i}`} />)}
-        {prizes?.sort(sortByPrizeAmount).map((prize) => (
+        {prizes?.sort(sortByPrizeAmountDesc).map((prize) => (
           <PrizeRow
             {...props}
             key={prize.pick.toString()}
@@ -72,8 +72,8 @@ export const PrizeList = (props: PrizeListProps) => {
   )
 }
 
-const sortByPrizeAmount = (a: PrizeAwardable, b: PrizeAwardable) =>
-  sortByBigNumber(a.amount, b.amount)
+const sortByPrizeAmountDesc = (a: PrizeAwardable, b: PrizeAwardable) =>
+  sortByBigNumber(b.amount, a.amount)
 
 interface PrizeRowProps {
   chainId: number

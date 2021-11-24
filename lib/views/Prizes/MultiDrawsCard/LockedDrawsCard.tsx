@@ -1,5 +1,6 @@
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { Card, Time } from '@pooltogether/react-components'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { Card, ThemedClipSpinner, Time, Tooltip } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
 import React from 'react'
 import classNames from 'classnames'
 import { Token } from '@pooltogether/hooks'
@@ -14,6 +15,7 @@ import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { usePropagatingDraws } from 'lib/hooks/Tsunami/PrizeDistributor/usePropagatingDraws'
 
 export const LockedDrawsCard = (props: {
   prizeDistributor: PrizeDistributor
@@ -22,9 +24,15 @@ export const LockedDrawsCard = (props: {
 }) => {
   const { prizeDistributor, ticket, token } = props
   const lockedDrawDatas = useLockedDrawDatas(prizeDistributor)
+  const { data: propagatingDraws, isFetched: isPropagatingDrawsFetched } =
+    usePropagatingDraws(prizeDistributor)
 
-  if (!lockedDrawDatas) {
+  if (!lockedDrawDatas || !isPropagatingDrawsFetched) {
     return <LoadingCard />
+  }
+
+  if (Object.keys(propagatingDraws).length > 0) {
+    return <PropagatingDrawsCard draws={propagatingDraws} />
   }
 
   if (Object.keys(lockedDrawDatas).length === 0) {
@@ -99,14 +107,59 @@ const LockedDrawsCountdown = (props: {
 }
 
 const NoDrawsCard = (props: { className?: string }) => {
-  const { className } = props
   const { t } = useTranslation()
   return (
-    <div className={classNames(className, 'draw-card purple-radial-gradient')}>
-      <div className='absolute inset-0 flex flex-col justify-center text-center px-8'>
+    <Card className='draw-card' paddingClassName=''>
+      <StaticPrizeVideoBackground className='absolute inset-0' />
+      <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
         <span className='text-lg text-inverse'>{t('noDrawsToCheckNoDeposits')}</span>
         <span className=''>{t('comeBackSoon')}</span>
       </div>
-    </div>
+    </Card>
+  )
+}
+
+const PropagatingDrawsCard = (props: {
+  draws: { [chainId: number]: { draw: Draw } }
+  className?: string
+}) => {
+  const { draws } = props
+  const { t } = useTranslation()
+  return (
+    <Card className='draw-card' paddingClassName=''>
+      <StaticPrizeVideoBackground className='absolute inset-0' />
+      <div
+        className={classNames(
+          'flex flex-col xs:flex-row justify-between leading-none xs:w-full absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
+        )}
+      >
+        <div>
+          <MultipleDrawIds drawDatas={draws} />
+          <MultipleDrawsDate drawDatas={draws} />
+        </div>
+      </div>
+      <div className='absolute bottom-6 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
+        <div className='font-bold text-inverse text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
+          <Tooltip
+            id={`tooltip-what-is-propagating`}
+            tip={t(
+              'propagatingMeans',
+              'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
+            )}
+            className='flex items-center'
+          >
+            <ThemedClipSpinner size={10} className='mr-2' />{' '}
+            <span className='uppercase flex items-center'>
+              {' '}
+              <span className='border-default border-dotted border-b-2'>
+                {' '}
+                {t('propagating', 'Propagating ...')}{' '}
+              </span>
+              <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
+            </span>
+          </Tooltip>
+        </div>
+      </div>
+    </Card>
   )
 }
