@@ -79,14 +79,12 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
 
   if (hasUserCheckedAllDraws) {
     return (
-      <Card className='draw-card' paddingClassName=''>
-        <CheckedDrawsClaimSection
-          {...props}
-          drawDatas={drawDatas}
-          token={prizePoolTokens.token}
-          ticket={prizePoolTokens.ticket}
-        />
-      </Card>
+      <CheckedDrawsClaimCard
+        {...props}
+        drawDatas={drawDatas}
+        token={prizePoolTokens.token}
+        ticket={prizePoolTokens.ticket}
+      />
     )
   }
 
@@ -198,8 +196,8 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
 }
 
 // NOTE: Shortcut. Just copy pasta for now.
-const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
-  const { drawDatas, ticket, token, prizeDistributor } = props
+const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
+  const { drawDatas, prizeDistributor, ticket, token } = props
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
@@ -245,8 +243,12 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     return null
   }
 
+  if (!winningDrawResults || Object.keys(winningDrawResults).length === 0) {
+    return <LockedDrawsCard prizeDistributor={prizeDistributor} token={token} ticket={ticket} />
+  }
+
   return (
-    <>
+    <Card className='draw-card' paddingClassName=''>
       <StaticPrizeVideoBackground videoClip={VideoClip.prize} className='absolute inset-0' />
       <MultipleDrawDetails
         drawDatas={winningDrawData}
@@ -276,7 +278,7 @@ const CheckedDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
-    </>
+    </Card>
   )
 }
 
