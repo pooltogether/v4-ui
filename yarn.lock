@@ -2249,10 +2249,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.5.14.tgz#1bd7f61a85b9df25cd77a53fe0f120280235d5d2"
   integrity sha512-eIBvlh7I0UjGhnPwJvAHnIZMZ5P1OOjrgVi5vFfD/5p/FmLdiKkdsclJf1+jN/fNNRiLrEpuxn4xCYweUr5Z2A==
 
-"@pooltogether/draw-calculator-js@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.2.tgz#9cb16681d03c2eaf2c9935d4b5e333bfc8364b55"
-  integrity sha512-4hRjPPLzRuKQ220VH1gBKSKoij3vze/tPdgrXrha2ZUUPduA5NUVKehTDxIxSgdeXmlDU55yMcKqMaGMpDVxCw==
+"@pooltogether/draw-calculator-js@^1.0.3-beta.1":
+  version "1.0.3-beta.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.3-beta.1.tgz#91a703a89e185312805217703fbe537410718d7b"
+  integrity sha512-OEvMdgs+aZgPaqcdwI+y+L5GSRl8UBYDUChWEMZRSgeSgUOujnyP/H6LlXSF34ndm+YTCy/HKNc8zXx8anrwoQ==
   dependencies:
     chalk "^4.1.2"
     debug "^4.3.2"
@@ -2344,14 +2344,14 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.2.1.tgz#5bdf3c1bf5f7db9dbffbd30b444888607bb4042d"
   integrity sha512-HG8EcbvT5ZXOCxDDdtbu0SiUmJ4GbD+RZjH5kO2lvnk+b7O1mX3kb5evAv8vi6crS603pV5Pu3ZNEEagignEwA==
 
-"@pooltogether/v4-js-client@^0.8.1":
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.8.1.tgz#b1e3ebbb7c12399daa564d13911612560cb63b05"
-  integrity sha512-aLIUQXd+pAy43gLI5oiaicQs48VkSMmE6BW2YIAKrtgLpRdx50AQ5wToQcFaHV3rD5SToU7OzHDCV7A6asOJFw==
+"@pooltogether/v4-js-client@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.8.2.tgz#7ebda42452c6524aec8d5d01fcb0971f15692604"
+  integrity sha512-X/W2iagHVUBJamix4ayL2scsCrfQHorSb3Uy+r88PbOTDmF1BCs2SeiG96lmEhqpEoT77hYLeSr5m00q0aeeBw==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
-    "@pooltogether/draw-calculator-js" "^1.0.2"
+    "@pooltogether/draw-calculator-js" "^1.0.3-beta.1"
     "@pooltogether/etherplex" "^1.1.2"
 
 "@pooltogether/v4-pool-data@^1.1.0":
