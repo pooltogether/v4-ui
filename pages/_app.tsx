@@ -29,8 +29,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
 // Custom css
-import '../lib/styles/pageHeader.css'
-
+import 'assets/styles/pageHeader.css'
 import 'assets/styles/index.css'
 import 'assets/styles/tsunami.css'
 

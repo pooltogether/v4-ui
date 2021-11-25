@@ -19,7 +19,8 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawData } from 'lib/types/v4'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
-const CLAIMING_GAS_LIMIT = 500000
+const CLAIMING_BASE_GAS_LIMIT = 200000
+const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
 
 interface PrizeClaimModalProps {
   prizeDistributor: PrizeDistributor
@@ -73,7 +74,10 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
         const winningDrawResultsList = Object.values(winningDrawResults).filter((drawResults) => {
           return !drawIdsToNotClaim.has(drawResults.drawId)
         })
-        const overrides = { gasLimit: CLAIMING_GAS_LIMIT * winningDrawResultsList.length }
+        const overrides = {
+          gasLimit:
+            CLAIMING_BASE_GAS_LIMIT + CLAIMING_PER_DRAW_GAS_LIMIT * winningDrawResultsList.length
+        }
         return signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(
           winningDrawResultsList,
           overrides

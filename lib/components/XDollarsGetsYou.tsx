@@ -1,4 +1,3 @@
-import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 import { useEstimatedOddsForAmount } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
@@ -13,9 +12,7 @@ interface XDollarsGetsYouProps
 export const XDollarsGetsYou = (props: XDollarsGetsYouProps) => {
   const { x, ...spanProps } = props
   const { data: decimals, isFetched } = useTicketDecimals()
-  const prizePool = usePrizePoolBySelectedNetwork()
   const { data: odds } = useEstimatedOddsForAmount(
-    prizePool,
     isFetched ? getAmountFromString(x, decimals) : undefined
   )
 
