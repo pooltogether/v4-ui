@@ -5,11 +5,11 @@ import { useAllBeaconChainDraws } from './useAllBeaconChainDraws'
 /**
  * @returns all draws and prize distributions if available
  */
-export const useAllDrawDatas = (prizeDistributor: PrizeDistributor) => {
+export const useAllPartialDrawDatas = (prizeDistributor: PrizeDistributor) => {
   const { data: draws, isFetched: isDrawsFetched } = useAllBeaconChainDraws()
   const enabled = isDrawsFetched && Boolean(prizeDistributor)
   return useQuery(
-    ['useAllDrawDatas', prizeDistributor?.id(), draws ? Object.keys(draws) : []],
+    ['useAllPartialDrawDatas', prizeDistributor?.id(), draws ? Object.keys(draws) : []],
     () => getAllDrawDatas(prizeDistributor, draws),
     { enabled }
   )

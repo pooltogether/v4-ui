@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useAllDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useAllDrawDatas'
+import { useAllPartialDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useAllPartialDrawDatas'
 import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
 import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
@@ -33,7 +33,7 @@ export const PastDrawsList = (props: {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: drawDatas, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useAllDrawDatas(prizeDistributor)
+    useAllPartialDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { data: normalizedBalancesData } = useUsersNormalizedBalances(
     usersAddress,

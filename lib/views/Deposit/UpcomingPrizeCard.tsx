@@ -44,7 +44,7 @@ export const UpcomingPrizeCard = () => {
 
 const DrawCountdown = (props) => {
   const { t } = useTranslation()
-  const { data: drawBeaconPeriod, isFetched: isDrawBeaconPeriodFetched } = useDrawBeaconPeriod()
+  const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
   const { secondsLeft } = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
   const drawId = drawBeaconPeriod?.drawId
 

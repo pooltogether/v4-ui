@@ -4,11 +4,11 @@ import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import { sortDrawsByDrawIdAsc } from 'lib/utils/sortByDrawId'
 
 export const MultipleDrawsDate = (props: {
-  drawDatas: { [drawId: number]: { draw: Draw } }
+  partialDrawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
 }) => {
-  const { drawDatas } = props
-  const drawList = Object.values(drawDatas)
+  const { partialDrawDatas } = props
+  const drawList = Object.values(partialDrawDatas)
     .map((drawData) => drawData.draw)
     .sort(sortDrawsByDrawIdAsc)
   const firstDraw = drawList[0]

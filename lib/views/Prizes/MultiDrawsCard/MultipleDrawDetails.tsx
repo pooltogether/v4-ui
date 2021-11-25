@@ -18,17 +18,21 @@ interface MultipleDrawDetailsProps {
 }
 
 export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
-  const { className, ...remainingProps } = props
+  const { className, drawDatas, ...remainingProps } = props
   return (
     <div className={classNames('w-full flex flex-col', className)}>
       <div className='flex flex-col xs:flex-row justify-between leading-none'>
         <span className='flex items-start'>
-          <MultipleDrawIds {...remainingProps} />
-          <MultipleDrawsDate {...remainingProps} />
+          <MultipleDrawIds {...remainingProps} partialDrawDatas={drawDatas} />
+          <MultipleDrawsDate {...remainingProps} partialDrawDatas={drawDatas} />
         </span>
         <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
-          <MultiDrawsPrizeTiersTrigger className='mt-2 xs:mt-0' {...remainingProps} />
-          <TotalPrizes className='mt-2' {...remainingProps} />
+          <MultiDrawsPrizeTiersTrigger
+            className='mt-2 xs:mt-0'
+            {...remainingProps}
+            drawDatas={drawDatas}
+          />
+          <TotalPrizes className='mt-2' {...remainingProps} drawDatas={drawDatas} />
         </span>
       </div>
     </div>
@@ -68,12 +72,12 @@ TotalPrizes.defaultProps = {
 }
 
 export const MultipleDrawIds = (props: {
-  drawDatas: { [drawId: number]: { draw: Draw } }
+  partialDrawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
 }) => {
   const { t } = useTranslation()
-  const { drawDatas, className } = props
-  const drawIds = Object.keys(drawDatas)
+  const { partialDrawDatas, className } = props
+  const drawIds = Object.keys(partialDrawDatas)
   if (drawIds.length === 0) {
     return null
   } else if (drawIds.length === 1) {

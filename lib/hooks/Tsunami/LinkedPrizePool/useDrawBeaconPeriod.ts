@@ -32,7 +32,7 @@ export const useDrawBeaconPeriod = () => {
   }
 
   return useQuery(
-    ['useDrawBeaconPeriod'],
+    ['useDrawBeaconPeriod', linkedPrizePool?.id()],
     async () => {
       const drawBeaconPeriod = await linkedPrizePool.getDrawBeaconPeriod()
       return drawBeaconPeriod

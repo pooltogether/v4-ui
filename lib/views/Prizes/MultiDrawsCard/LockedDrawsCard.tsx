@@ -1,4 +1,4 @@
-import { Draw, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { Card, ThemedClipSpinner, Time, Tooltip } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'
@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { LoadingCard } from './LoadingCard'
 import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
-import { useLockedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useLockedDrawDatas'
+import { useLockedPartialDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useLockedPartialDrawDatas'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { DrawData } from 'lib/types/v4'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
@@ -23,11 +23,11 @@ export const LockedDrawsCard = (props: {
   ticket: Token
 }) => {
   const { prizeDistributor, ticket, token } = props
-  const lockedDrawDatas = useLockedDrawDatas(prizeDistributor)
+  const lockedPartialDrawDatas = useLockedPartialDrawDatas(prizeDistributor)
   const { data: propagatingDraws, isFetched: isPropagatingDrawsFetched } =
     usePropagatingDraws(prizeDistributor)
 
-  if (!lockedDrawDatas || !isPropagatingDrawsFetched) {
+  if (!lockedPartialDrawDatas || !isPropagatingDrawsFetched) {
     return <LoadingCard />
   }
 
@@ -35,7 +35,8 @@ export const LockedDrawsCard = (props: {
     return <PropagatingDrawsCard draws={propagatingDraws} />
   }
 
-  if (Object.keys(lockedDrawDatas).length === 0) {
+  const lockedPartialDrawDatasList = Object.values(lockedPartialDrawDatas)
+  if (lockedPartialDrawDatasList.length === 0) {
     return <NoDrawsCard />
   }
 
@@ -43,13 +44,13 @@ export const LockedDrawsCard = (props: {
     <Card className='draw-card' paddingClassName=''>
       <StaticPrizeVideoBackground className='absolute inset-0' />
       <LockedDrawDetails
-        drawDatas={lockedDrawDatas}
+        partialDrawDatas={lockedPartialDrawDatas}
         token={token}
         ticket={ticket}
         className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
       />
       <LockedDrawsCountdown
-        drawDatas={lockedDrawDatas}
+        firstLockDrawId={lockedPartialDrawDatasList[0].draw.drawId}
         className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex justify-center'
       />
     </Card>
@@ -60,11 +61,27 @@ const LockedDrawDetails = (props: {
   className?: string
   token: Token
   ticket: Token
-  drawDatas: {
-    [drawId: number]: DrawData
+  partialDrawDatas: {
+    [drawId: number]: {
+      draw: Draw
+      prizeDistribution?: PrizeDistribution
+    }
   }
 }) => {
-  const { className, drawDatas, token, ticket } = props
+  const { className, partialDrawDatas, token, ticket } = props
+
+  const fullDrawDraws: { [drawId: number]: DrawData } = {}
+  Object.keys(partialDrawDatas).forEach((_drawId) => {
+    const drawId = Number(_drawId)
+    const partialDrawData = partialDrawDatas[drawId]
+    if (partialDrawData.prizeDistribution) {
+      fullDrawDraws[drawId] = {
+        draw: partialDrawData.draw,
+        prizeDistribution: partialDrawData.prizeDistribution
+      }
+    }
+  })
+
   return (
     <div
       className={classNames(
@@ -73,26 +90,26 @@ const LockedDrawDetails = (props: {
       )}
     >
       <div>
-        <MultipleDrawIds drawDatas={drawDatas} />
-        <MultipleDrawsDate drawDatas={drawDatas} />
+        <MultipleDrawIds partialDrawDatas={partialDrawDatas} />
+        <MultipleDrawsDate partialDrawDatas={partialDrawDatas} />
       </div>
       <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
-        <MultiDrawsPrizeTiersTrigger className='mt-2 xs:mt-0' token={token} drawDatas={drawDatas} />
-        <TotalPrizes className='mt-2' token={token} drawDatas={drawDatas} />
+        <MultiDrawsPrizeTiersTrigger
+          className='mt-2 xs:mt-0'
+          token={token}
+          drawDatas={fullDrawDraws}
+        />
+        <TotalPrizes className='mt-2' token={token} drawDatas={fullDrawDraws} />
       </span>
-      {/* <FeatherIcon name='lock' className='text-white w-10 h-10 stroke-current' /> */}
     </div>
   )
 }
 
-const LockedDrawsCountdown = (props: {
-  drawDatas: { [drawId: number]: DrawData }
-  className?: string
-}) => {
-  const { className, drawDatas } = props
+const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: string }) => {
+  const { className, firstLockDrawId } = props
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  const drawLock = drawLocks?.[Object.keys(drawDatas)[0]]
+  const drawLock = drawLocks?.[firstLockDrawId]
   const { secondsLeft } = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
   if (!isDrawLocksFetched) {
@@ -111,7 +128,7 @@ const NoDrawsCard = (props: { className?: string }) => {
   return (
     <Card className='draw-card' paddingClassName=''>
       <StaticPrizeVideoBackground className='absolute inset-0' />
-      <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
+      <div className='absolute bottom-4 left-0 right-0 xs:top-8 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center xs:text-left'>
         <span className='text-lg text-inverse'>{t('noDrawsToCheckNoDeposits')}</span>
         <span className=''>{t('comeBackSoon')}</span>
       </div>
@@ -134,8 +151,8 @@ const PropagatingDrawsCard = (props: {
         )}
       >
         <div>
-          <MultipleDrawIds drawDatas={draws} />
-          <MultipleDrawsDate drawDatas={draws} />
+          <MultipleDrawIds partialDrawDatas={draws} />
+          <MultipleDrawsDate partialDrawDatas={draws} />
         </div>
       </div>
       <div className='absolute bottom-6 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
