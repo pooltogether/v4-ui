@@ -1,9 +1,9 @@
 name: Release
-on:
-  schedule:
-    - cron:  '0 12 * * 1-4' # every day 12:00 UTC Monday-Thursday
-
-  # manual trigger
+on: 
+  # Triggers the workflow on push but only for the main branch
+  push:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -19,11 +19,18 @@ jobs:
 
       - name: Bump version and push tag
         id: github_tag_action
-        uses: mathieudutour/github-tag-action@331898d5052eedac9b15fec867b5ba66ebf9b692
+        uses: mathieudutour/github-tag-action@v6.0
+        # uses: mathieudutour/github-tag-action@331898d5052eedac9b15fec867b5ba66ebf9b692
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          release_branches: .*
           default_bump: false
+
+  echomsg:
+    name: Echo msg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a one-line script
+        run: echo Hello, world!
 
   create_release:
     name: Create Release
@@ -50,18 +57,18 @@ jobs:
         id: upload
         uses: anantaramdas/ipfs-pinata-deploy-action@39bbda1ce1fe24c69c6f57861b8038278d53688d
         with:
-          pin-name: Uniswap ${{ needs.bump_version.outputs.new_tag }}
-          path: './build'
+          pin-name: PoolTogether ${{ needs.bump_version.outputs.new_tag }}
+          path: './out'
           pinata-api-key: ${{ secrets.PINATA_API_KEY }}
           pinata-secret-api-key: ${{ secrets.PINATA_API_SECRET_KEY }}
 
-      - name: Pin to Crust
-        uses: crustio/ipfs-crust-action@v2.0.3
-        continue-on-error: true
-        timeout-minutes: 2
-        with:
-          cid: ${{ steps.upload.outputs.hash }}
-          seeds: ${{ secrets.CRUST_SEEDS }}
+  #     - name: Pin to Crust
+  #       uses: crustio/ipfs-crust-action@v2.0.3
+  #       continue-on-error: true
+  #       timeout-minutes: 2
+  #       with:
+  #         cid: ${{ steps.upload.outputs.hash }}
+  #         seeds: ${{ secrets.CRUST_SEEDS }}
 
       - name: Convert CIDv0 to CIDv1
         id: convert_cidv0
@@ -69,39 +76,39 @@ jobs:
         with:
           cidv0: ${{ steps.upload.outputs.hash }}
 
-      - name: Update DNS with new IPFS hash
-        env:
-          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-          RECORD_DOMAIN: 'uniswap.org'
-          RECORD_NAME: '_dnslink.app'
-          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-        uses: textileio/cloudflare-update-dnslink@0fe7b7a1ffc865db3a4da9773f0f987447ad5848
-        with:
-          cid: ${{ steps.upload.outputs.hash }}
+  #     - name: Update DNS with new IPFS hash
+  #       env:
+  #         CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+  #         RECORD_DOMAIN: 'uniswap.org'
+  #         RECORD_NAME: '_dnslink.app'
+  #         CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+  #       uses: textileio/cloudflare-update-dnslink@0fe7b7a1ffc865db3a4da9773f0f987447ad5848
+  #       with:
+  #         cid: ${{ steps.upload.outputs.hash }}
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1.1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ needs.bump_version.outputs.new_tag }}
-          release_name: Release ${{ needs.bump_version.outputs.new_tag }}
-          body: |
-            IPFS hash of the deployment:
-            - CIDv0: `${{ steps.upload.outputs.hash }}`
-            - CIDv1: `${{ steps.convert_cidv0.outputs.cidv1 }}`
+  #     - name: Create GitHub Release
+  #       id: create_release
+  #       uses: actions/create-release@v1.1.0
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         tag_name: ${{ needs.bump_version.outputs.new_tag }}
+  #         release_name: Release ${{ needs.bump_version.outputs.new_tag }}
+  #         body: |
+  #           IPFS hash of the deployment:
+  #           - CIDv0: `${{ steps.upload.outputs.hash }}`
+  #           - CIDv1: `${{ steps.convert_cidv0.outputs.cidv1 }}`
 
-            The latest release is always accessible via our alias to the Cloudflare IPFS gateway at [app.uniswap.org](https://app.uniswap.org).
+  #           The latest release is always accessible via our alias to the Cloudflare IPFS gateway at [app.uniswap.org](https://app.uniswap.org).
 
-            You can also access the Uniswap Interface directly from an IPFS gateway.
-            **BEWARE**: The Uniswap interface uses [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to remember your settings, such as which tokens you have imported.
-            **You should always use an IPFS gateway that enforces origin separation**, or our alias to the latest release at [app.uniswap.org](https://app.uniswap.org).
-            Your Uniswap settings are never remembered across different URLs.
+  #           You can also access the Uniswap Interface directly from an IPFS gateway.
+  #           **BEWARE**: The Uniswap interface uses [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) to remember your settings, such as which tokens you have imported.
+  #           **You should always use an IPFS gateway that enforces origin separation**, or our alias to the latest release at [app.uniswap.org](https://app.uniswap.org).
+  #           Your Uniswap settings are never remembered across different URLs.
 
-            IPFS gateways:
-            - https://${{ steps.convert_cidv0.outputs.cidv1 }}.ipfs.dweb.link/
-            - https://${{ steps.convert_cidv0.outputs.cidv1 }}.ipfs.cf-ipfs.com/
-            - [ipfs://${{ steps.upload.outputs.hash }}/](ipfs://${{ steps.upload.outputs.hash }}/)
+  #           IPFS gateways:
+  #           - https://${{ steps.convert_cidv0.outputs.cidv1 }}.ipfs.dweb.link/
+  #           - https://${{ steps.convert_cidv0.outputs.cidv1 }}.ipfs.cf-ipfs.com/
+  #           - [ipfs://${{ steps.upload.outputs.hash }}/](ipfs://${{ steps.upload.outputs.hash }}/)
 
-            ${{ needs.bump_version.outputs.changelog }}
+  #           ${{ needs.bump_version.outputs.changelog }}
