@@ -1,4 +1,4 @@
-import { Network } from 'lib/constants/network'
+import { Network } from 'lib/constants/config'
 import { useEnvironmentNetworks } from '../useEnvironmentNetwork'
 import { useEnvPrizePoolAddresses } from './useEnvPrizePoolAddresses'
 import { usePrizePools } from './usePrizePools'

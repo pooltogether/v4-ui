@@ -96,7 +96,7 @@ const LockedDrawDetails = (props: {
       <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
         <MultiDrawsPrizeTiersTrigger
           className='mt-2 xs:mt-0'
-          token={token}
+          ticket={ticket}
           drawDatas={fullDrawDraws}
         />
         <TotalPrizes className='mt-2' token={token} drawDatas={fullDrawDraws} />

@@ -13,7 +13,7 @@ import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'
 
 export const PrizeBreakdownModal = (
-  props: { prizeDistribution: PrizeDistribution; token: Token } & Omit<
+  props: { prizeDistribution: PrizeDistribution; ticket: Token } & Omit<
     ModalProps,
     'label' | 'children'
   >
@@ -35,7 +35,7 @@ export const PrizeBreakdownModal = (
       <PrizeBreakdown
         className='mx-auto w-full'
         prizeDistribution={props.prizeDistribution}
-        token={props.token}
+        ticket={props.ticket}
       />
       <SquareButton
         theme={SquareButtonTheme.tealOutline}

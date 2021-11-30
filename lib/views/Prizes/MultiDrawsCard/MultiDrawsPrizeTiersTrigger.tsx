@@ -8,13 +8,13 @@ import { useTranslation } from 'react-i18next'
 import { MultiDrawPrizeBreakdownModal } from './MultiDrawPrizeBreakdownModal'
 
 export const MultiDrawsPrizeTiersTrigger = (props: {
-  token: Token
+  ticket: Token
   drawDatas: { [drawId: number]: DrawData }
   label?: string
   className?: string
   textClassName?: string
 }) => {
-  const { drawDatas, label, token, textClassName, className } = props
+  const { drawDatas, label, ticket, textClassName, className } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
@@ -34,7 +34,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 
       <MultiDrawPrizeBreakdownModal
         drawDatas={drawDatas}
-        token={token}
+        ticket={ticket}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
       />

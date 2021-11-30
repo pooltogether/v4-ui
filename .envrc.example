@@ -20,5 +20,6 @@ export NEXT_JS_FATHOM_SITE_ID=
 
 # Optional 
 # API keys for read only RPC calls.
-export NEXT_JS_INFURA_ID_POLYGON=
-export NEXT_JS_INFURA_ID_MAINNET=
+export NEXT_JS_ALCHEMY_API_KEY=
+export NEXT_JS_ETHERSCAN_API_KEY=
+export NEXT_JS_INFURA_ID=

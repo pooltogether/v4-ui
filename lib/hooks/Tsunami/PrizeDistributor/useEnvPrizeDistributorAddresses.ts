@@ -1,4 +1,4 @@
-import { PRIZE_DISTRIBUTORS } from '../../../constants/prizeDistributors'
+import { PRIZE_DISTRIBUTORS } from 'lib/constants/config'
 import { useAppEnvString } from 'lib/hooks/useAppEnvString'
 
 export const useEnvPrizeDistributorAddresses = () => {

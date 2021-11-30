@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { PrizeBreakdownModal } from './PrizeBreakdownModal'
 
 export const ViewPrizeTiersTrigger = (props: {
-  token: Token
+  ticket: Token
   label?: string
   prizeDistribution?: PrizeDistribution
   className?: string

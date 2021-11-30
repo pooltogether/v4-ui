@@ -1,4 +1,4 @@
-import { Network } from 'lib/constants/network'
+import { Network } from 'lib/constants/config'
 import { useUsersCurrentPrizePoolTwab } from 'lib/hooks/Tsunami/PrizePool/useUsersCurrentPrizePoolTwab'
 
 import { usePrizePoolByNetwork } from './usePrizePoolByNetwork'

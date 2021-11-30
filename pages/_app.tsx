@@ -5,7 +5,11 @@ import { Integrations } from '@sentry/tracing'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { Provider } from 'jotai'
 import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
-import { useInitCookieOptions, useInitRpcApiKeys, useInitReducedMotion } from '@pooltogether/hooks'
+import {
+  useInitCookieOptions,
+  useInitReducedMotion,
+  initProviderApiKeys
+} from '@pooltogether/hooks'
 import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   ToastContainer,
@@ -35,10 +39,12 @@ import 'assets/styles/tsunami.css'
 
 const queryClient = new QueryClient()
 
-// TODO: Is this necessary? What is this for?
-// if (typeof window !== 'undefined') {
-//   window.ethers = ethers
-// }
+// Initialize read provider API keys
+initProviderApiKeys({
+  alchemy: process.env.NEXT_JS_ALCHEMY_API_KEY,
+  etherscan: process.env.NEXT_JS_ETHERSCAN_API_KEY,
+  infura: process.env.NEXT_JS_INFURA_ID
+})
 
 if (process.env.NEXT_JS_SENTRY_DSN) {
   Sentry.init({
@@ -123,15 +129,6 @@ function MyApp({ Component, pageProps, router }) {
 
 const InitPoolTogetherHooks = ({ children }) => {
   useSelectedNetworkWatcher()
-  useInitRpcApiKeys({
-    infura: {
-      mainnet: process.env.NEXT_JS_INFURA_ID_MAINNET || process.env.NEXT_JS_INFURA_ID,
-      polygon: process.env.NEXT_JS_INFURA_ID_POLYGON || process.env.NEXT_JS_INFURA_ID
-    },
-    quicknode: {
-      bsc: process.env.NEXT_JS_QUICKNODE_ID
-    }
-  })
   useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
   useInitializeOnboard({

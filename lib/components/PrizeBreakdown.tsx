@@ -14,14 +14,14 @@ import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeDistribution: PrizeDistribution
-  token: Token
+  ticket: Token
   className?: string
   isFetched?: boolean
 }
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { prizeDistribution, className, token, isFetched } = props
+  const { prizeDistribution, className, ticket, isFetched } = props
   const { tiers, prize, numberOfPicks } = prizeDistribution
   const { t } = useTranslation()
 
@@ -44,7 +44,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
                 prizeDistribution={prizeDistribution}
                 numberOfPicks={numberOfPicks}
                 totalPrize={prize}
-                token={token}
+                ticket={ticket}
               />
             ))}
           </>
@@ -77,12 +77,12 @@ interface PrizeBreakdownTableRowProps {
   index: number
   totalPrize: BigNumber
   numberOfPicks: BigNumber
-  token: Token
+  ticket: Token
 }
 
 // Calculate prize w draw settings
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
-  const { index, prizeDistribution, totalPrize, token } = props
+  const { index, prizeDistribution, totalPrize, ticket } = props
 
   const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(
     index,
@@ -97,14 +97,12 @@ const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
 
   let amountPretty
   if (index === 0) {
-    amountPretty = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals).amountPretty
+    amountPretty = roundPrizeAmount(prizeForDistributionUnformatted, ticket.decimals).amountPretty
   } else if (index === 3) {
     amountPretty = 100
   } else {
     amountPretty = 10
   }
-
-  // const { amountPretty } = roundPrizeAmount(prizeForDistributionUnformatted, token.decimals)
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>

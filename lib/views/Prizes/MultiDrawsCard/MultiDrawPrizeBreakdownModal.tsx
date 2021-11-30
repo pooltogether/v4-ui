@@ -15,12 +15,12 @@ import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 
 export const MultiDrawPrizeBreakdownModal = (
-  props: { drawDatas: { [drawId: number]: DrawData }; token: Token } & Omit<
+  props: { drawDatas: { [drawId: number]: DrawData }; ticket: Token } & Omit<
     ModalProps,
     'label' | 'children'
   >
 ) => {
-  const { drawDatas, token, closeModal } = props
+  const { drawDatas, ticket, closeModal } = props
   const { t } = useTranslation()
   const drawIds = Object.keys(drawDatas).map(Number)
   const [selectedDrawId, setSelectedDrawId] = useState(drawIds[0])
@@ -70,7 +70,7 @@ export const MultiDrawPrizeBreakdownModal = (
       <PrizeBreakdown
         className='w-full mx-auto'
         prizeDistribution={prizeDistribution}
-        token={token}
+        ticket={ticket}
       />
       <SquareButton
         theme={SquareButtonTheme.tealOutline}

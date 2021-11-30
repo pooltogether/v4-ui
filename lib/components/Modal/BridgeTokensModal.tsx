@@ -6,40 +6,18 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { CHAIN_ID } from 'lib/constants/constants'
+import { getBridgeUrls } from 'lib/constants/config'
 
 interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
 }
-
-const BRIDGE_URLS = Object.freeze({
-  [CHAIN_ID.mainnet]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.rinkeby]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.mumbai]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.polygon]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ]
-})
 
 export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
   const { chainId } = props
 
   const { t } = useTranslation()
 
-  const links = BRIDGE_URLS[chainId]
+  const links = getBridgeUrls(chainId)
 
   const networkName = getNetworkNiceNameByChainId(chainId)
 

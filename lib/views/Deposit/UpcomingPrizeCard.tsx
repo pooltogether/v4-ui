@@ -19,7 +19,7 @@ export const UpcomingPrizeCard = () => {
   const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
 
   const prizeAmountWeekly = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize.mul(7)
-  const { amountPretty } = roundPrizeAmount(prizeAmountWeekly, prizePoolTokens?.token.decimals)
+  const { amountPretty } = roundPrizeAmount(prizeAmountWeekly, prizePoolTokens?.ticket.decimals)
 
   return (
     <AnimatedBorderCard innerClassName='flex flex-col text-center relative'>
@@ -93,7 +93,7 @@ const ViewPrizeBreakdownTrigger = (props) => {
         className,
         'relative uppercase font-bold text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
       )}
-      token={prizePoolTokens?.token}
+      ticket={prizePoolTokens?.ticket}
       prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
     />
   )

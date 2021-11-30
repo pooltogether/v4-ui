@@ -3,13 +3,13 @@ import { useEffect } from 'react'
 import { atom, useAtom } from 'jotai'
 
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
-import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
+import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/config'
 
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
 import { useAppEnvString } from './useAppEnvString'
 import { useEnvironmentNetworks } from './Tsunami/useEnvironmentNetwork'
-import { Network } from 'lib/constants/network'
+import { Network } from 'lib/constants/config'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets

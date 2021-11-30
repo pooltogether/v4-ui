@@ -4,7 +4,7 @@ import { DropdownList, NetworkIcon } from '@pooltogether/react-components'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-import { SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
+import { SUPPORTED_NETWORKS } from 'lib/constants/config'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 
 interface SelectedNetworkDropdownProps {

@@ -2,30 +2,21 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
+
 import { CHAIN_ID } from 'lib/constants/constants'
+import { getExchangeUrl } from 'lib/constants/config'
 
 interface GetTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
   tokenAddress: string
 }
 
-const EXCHANGE_URLS = Object.freeze({
-  [CHAIN_ID.mainnet]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.rinkeby]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.polygon]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
-})
-
 export const GetTokensModal = (props: GetTokensModalProps) => {
-  const { chainId } = props
+  const { chainId, tokenAddress } = props
 
   const { t } = useTranslation()
 
-  const url = EXCHANGE_URLS[chainId](props.tokenAddress)
+  const url = getExchangeUrl(chainId, tokenAddress)
 
   return (
     <Modal

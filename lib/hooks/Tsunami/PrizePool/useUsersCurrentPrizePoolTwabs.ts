@@ -1,6 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
-import { Network } from 'lib/constants/network'
+import { Network } from 'lib/constants/config'
 import { useUsersTwabByNetwork } from 'lib/hooks/Tsunami/PrizePool/useUsersTwabByNetwork'
 import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'

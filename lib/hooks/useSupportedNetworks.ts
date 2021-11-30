@@ -1,4 +1,4 @@
-import { SUPPORTED_NETWORKS } from 'lib/constants/supportedNetworks'
+import { SUPPORTED_NETWORKS } from 'lib/constants/config'
 import { useAppEnvString } from 'lib/hooks/useAppEnvString'
 
 export const useSupportedNetworks = () => {

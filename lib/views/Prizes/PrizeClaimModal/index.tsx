@@ -78,6 +78,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           gasLimit:
             CLAIMING_BASE_GAS_LIMIT + CLAIMING_PER_DRAW_GAS_LIMIT * winningDrawResultsList.length
         }
+        console.log({ winningDrawResultsList })
         return signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(
           winningDrawResultsList,
           overrides

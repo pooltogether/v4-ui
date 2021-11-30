@@ -138,7 +138,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
             />
             <div className='mt-2'>
               <ViewPrizeTiersTrigger
-                token={token}
+                ticket={ticket}
                 prizeDistribution={prizeDistribution}
                 className='uppercase font-bold text-xs text-highlight-9 hover:text-highlight-2 transition tracking-wide leading-none'
               />

@@ -1,5 +1,5 @@
 import { calculateNumberOfPrizesForIndex } from '@pooltogether/v4-js-client'
-import { Network } from 'lib/constants/network'
+import { Network } from 'lib/constants/config'
 import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { usePrizePoolByNetwork } from './PrizePool/usePrizePoolByNetwork'
