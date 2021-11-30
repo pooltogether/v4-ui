@@ -1,6 +1,6 @@
 # PoolTogether V4 UI
 
-Interact with Tsunami. V4 of the PoolTogether prize-savings protocol.
+Interact with V4 of the PoolTogether prize-savings protocol.
 
 # Setup
 
