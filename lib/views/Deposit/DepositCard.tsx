@@ -29,7 +29,7 @@ import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
@@ -50,7 +50,7 @@ export const DepositCard = () => {
 
   const prizePool = usePrizePoolBySelectedNetwork()
   const usersAddress = useUsersAddress()
-  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
@@ -72,7 +72,7 @@ export const DepositCard = () => {
   } = useUsersTicketDelegate(usersAddress, prizePool)
 
   const isDataFetched =
-    isPlayerFetched &&
+    isUserFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
@@ -151,7 +151,7 @@ export const DepositCard = () => {
     const txId = await sendTx({
       name,
       method: 'approve',
-      callTransaction: async () => player.approveDeposits(),
+      callTransaction: async () => user.approveDeposits(),
       callbacks: {
         refetch: () => refetchUsersDepositAllowance()
       }
@@ -176,10 +176,10 @@ export const DepositCard = () => {
     if (ticketDelegate === ethers.constants.AddressZero) {
       contractMethod = 'depositToAndDelegate'
       callTransaction = async () =>
-        player.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
+        user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
     } else {
       contractMethod = 'depositTo'
-      callTransaction = async () => player.deposit(amountToDeposit.amountUnformatted, overrides)
+      callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
     }
 
     const txId = await sendTx({
@@ -245,8 +245,8 @@ export const DepositCard = () => {
               </div>
               <DepositForm
                 form={form}
-                player={player}
-                isPlayerFetched={isPlayerFetched}
+                user={user}
+                isUserFetched={isUserFetched}
                 prizePool={prizePool}
                 token={token}
                 ticket={ticket}

@@ -2,7 +2,7 @@ import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from 'lib/constants/query'
-import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
+import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**

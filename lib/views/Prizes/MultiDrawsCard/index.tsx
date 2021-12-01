@@ -431,7 +431,7 @@ const getUsersDrawResults = async (
         // Store draw result
       } catch (e) {
         console.log(e.message)
-        drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
+        drawResults = await prizeDistributor.calculateUsersPrizes(usersAddress, draw)
       }
       newDrawResults[draw.drawId] = drawResults
     }

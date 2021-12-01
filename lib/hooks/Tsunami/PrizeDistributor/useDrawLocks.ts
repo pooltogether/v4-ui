@@ -3,7 +3,7 @@ import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
-import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
+import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 import { NO_REFETCH } from 'lib/constants/query'
 

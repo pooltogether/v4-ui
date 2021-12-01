@@ -1,6 +1,6 @@
-import { useLinkedPrizePool } from 'lib/hooks/Tsunami/LinkedPrizePool/useLinkedPrizePool'
+import { usePrizePoolNetwork } from 'lib/hooks/Tsunami/PrizePoolNetwork/usePrizePoolNetwork'
 
 export const usePrizePools = () => {
-  const linkedPrizePool = useLinkedPrizePool()
-  return linkedPrizePool?.prizePools
+  const prizePoolNetwork = usePrizePoolNetwork()
+  return prizePoolNetwork?.prizePools
 }

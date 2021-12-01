@@ -9,7 +9,7 @@ import {
 
 import CardCornerLight from './card-corner-light.png'
 import { useTheme } from 'lib/hooks/useTheme'
-import { Player } from '@pooltogether/v4-js-client'
+import { User } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
@@ -20,11 +20,11 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface AccountCardProps {
   className?: string
-  player: Player
-  isPlayerFetched: boolean
+  user: User
+  isUserFetched: boolean
 }
 export const AccountCard = (props: AccountCardProps) => {
-  const { className, player, isPlayerFetched } = props
+  const { className, user, isUserFetched } = props
   const { theme } = useTheme()
   const backgroundImage = theme === ColorTheme.dark ? CardCornerLight : CardCornerLight
 
@@ -39,7 +39,7 @@ export const AccountCard = (props: AccountCardProps) => {
           <WinningOdds />
           {/* <Twab twabs={twabs} isFetched={isFetched} isPartiallyFetched={isPartiallyFetched} /> */}
         </div>
-        <ManageBalancesList player={player} isFetched={isPlayerFetched} />
+        <ManageBalancesList user={user} isFetched={isUserFetched} />
       </Card>
       <OddsDisclaimer className='mt-6' />
     </div>

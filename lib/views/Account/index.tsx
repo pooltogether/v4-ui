@@ -1,6 +1,6 @@
 import React from 'react'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { AccountCard, OddsDisclaimer } from 'lib/views/Account/AccountCard'
@@ -10,7 +10,7 @@ import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
-  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
 
   if (!isWalletConnected) {
     return (
@@ -30,7 +30,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding>
-      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
+      <AccountCard user={user} isUserFetched={isUserFetched} />
       <div className='mt-4'>
         <BackToV3Banner />
       </div>

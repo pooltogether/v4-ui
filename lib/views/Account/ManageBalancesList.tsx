@@ -16,7 +16,7 @@ import {
   TokenIcon
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-js-client'
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import classnames from 'classnames'
 import { BigNumber, Overrides } from 'ethers'
@@ -28,7 +28,7 @@ import classNames from 'classnames'
 
 import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
 import { usePrizePools } from 'lib/hooks/Tsunami/PrizePool/usePrizePools'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
@@ -48,12 +48,12 @@ const TOKEN_IMG_URL = {
 
 interface PrizePoolListProps {
   className?: string
-  player: Player
+  user: User
   isFetched: boolean
 }
 
 export const ManageBalancesList = (props: PrizePoolListProps) => {
-  const { player, isFetched, className } = props
+  const { user, isFetched, className } = props
   const prizePools = usePrizePools()
 
   if (!isFetched) {
@@ -67,7 +67,7 @@ export const ManageBalancesList = (props: PrizePoolListProps) => {
   return (
     <ul className={classnames(className, 'w-full')}>
       {prizePools.map((prizePool) => (
-        <PrizePoolRow key={prizePool.id()} player={player} prizePool={prizePool} />
+        <PrizePoolRow key={prizePool.id()} user={user} prizePool={prizePool} />
       ))}
     </ul>
   )
@@ -75,11 +75,11 @@ export const ManageBalancesList = (props: PrizePoolListProps) => {
 
 interface PrizePoolRowProps {
   prizePool: PrizePool
-  player: Player
+  user: User
 }
 
 const PrizePoolRow = (props: PrizePoolRowProps) => {
-  const { prizePool, player } = props
+  const { prizePool, user } = props
   const usersAddress = useUsersAddress()
   const { data: usersBalancesData, isFetched: isUsersBalancesFetched } = useUsersPrizePoolBalances(
     usersAddress,
@@ -113,7 +113,7 @@ const PrizePoolRow = (props: PrizePoolRowProps) => {
         </div>
       </div>
 
-      <ManageBalanceButtons player={player} prizePool={prizePool} />
+      <ManageBalanceButtons user={user} prizePool={prizePool} />
       <DelegateTicketsSection
         prizePool={prizePool}
         className='mt-4'
@@ -146,7 +146,7 @@ export enum WithdrawalSteps {
 }
 
 const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
-  const { player, prizePool } = props
+  const { user, prizePool } = props
 
   const usersAddress = useUsersAddress()
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
@@ -190,7 +190,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
     const txId = await sendTx({
       name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,
       method: 'withdrawInstantlyFrom',
-      callTransaction: () => player.withdraw(amountToWithdraw?.amountUnformatted, overrides),
+      callTransaction: () => user.withdraw(amountToWithdraw?.amountUnformatted, overrides),
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
@@ -220,7 +220,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
     <>
       <WithdrawModal
         isOpen={isModalOpen}
-        player={player}
+        user={user}
         prizePool={prizePool}
         withdrawTx={withdrawTx}
         currentStep={currentStep}
@@ -370,7 +370,7 @@ const ManageDepositDropdown = (props) => {
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
 
-  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
 
   const handleRevokeAllowanceClick = async () => {
     if (!isWalletOnProperNetwork) {
@@ -391,7 +391,7 @@ const ManageDepositDropdown = (props) => {
     const txId = await sendTx({
       name,
       method: 'approve',
-      callTransaction: async () => player.approveDeposits(BigNumber.from(0)),
+      callTransaction: async () => user.approveDeposits(BigNumber.from(0)),
       callbacks: {
         refetch: () => refetchUsersDepositAllowance()
       }

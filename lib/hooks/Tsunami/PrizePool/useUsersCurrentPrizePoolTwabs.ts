@@ -30,7 +30,8 @@ export const useUsersCurrentPrizePoolTwabs = (
   const {
     data: polygonTwabData,
     isFetched: isPolygonTwabFetched,
-    refetch: refetchPolygonTwab
+    refetch: refetchPolygonTwab,
+    error
   } = useUsersTwabByNetwork(usersAddress, Network.polygon)
 
   const ethereumTwab = isEthereumTwabFetched ? ethereumTwabData[usersAddress] : undefined

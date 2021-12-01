@@ -1,6 +1,6 @@
-import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
+import { usePrizePoolNetwork } from '../PrizePoolNetwork/usePrizePoolNetwork'
 
 export const usePrizePool = (chainId: number, address: string) => {
-  const linkedPrizePool = useLinkedPrizePool()
-  return linkedPrizePool?.getPrizePool(chainId, address)
+  const prizePoolNetwork = usePrizePoolNetwork()
+  return prizePoolNetwork?.getPrizePool(chainId, address)
 }

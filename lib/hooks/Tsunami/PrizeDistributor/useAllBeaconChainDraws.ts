@@ -1,24 +1,24 @@
 import { Draw } from '@pooltogether/v4-js-client'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
-import { useDrawBeaconPeriod } from '../LinkedPrizePool/useDrawBeaconPeriod'
-import { useLinkedPrizePool } from '../LinkedPrizePool/useLinkedPrizePool'
+import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
+import { usePrizePoolNetwork } from '../PrizePoolNetwork/usePrizePoolNetwork'
 
 /**
  * Refetches when the draw beacon has updated
  * @returns the draw in the DrawBuffer for the Prize Pool on the Beacon Chain
  */
 export const useAllBeaconChainDraws = () => {
-  const linkedPrizePool = useLinkedPrizePool()
+  const prizePoolNetwork = usePrizePoolNetwork()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const enabled = Boolean(linkedPrizePool) && isDrawBeaconFetched
+  const enabled = Boolean(prizePoolNetwork) && isDrawBeaconFetched
   return useQuery(
     [
       'useAllBeaconChainDraws',
-      linkedPrizePool?.id(),
+      prizePoolNetwork?.id(),
       drawBeaconPeriod?.startedAtSeconds.toString()
     ],
-    async () => linkedPrizePool.getBeaconChainDraws(),
+    async () => prizePoolNetwork.getBeaconChainDraws(),
     { ...NO_REFETCH, enabled }
   )
 }

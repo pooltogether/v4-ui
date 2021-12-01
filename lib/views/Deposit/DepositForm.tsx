@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-js-client'
 
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
@@ -29,10 +29,10 @@ export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 interface DepositFormProps {
   form: UseFormReturn<FieldValues, object>
-  player: Player
+  user: User
   prizePool: PrizePool
   isPrizePoolTokensFetched: boolean
-  isPlayerFetched: boolean
+  isUserFetched: boolean
   isUsersBalancesFetched: boolean
   isUsersDepositAllowanceFetched: boolean
   approveTx: Transaction

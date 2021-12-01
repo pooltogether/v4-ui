@@ -59,6 +59,14 @@ export const AVALANCHE_NETWORK = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
 })
 
+export const getEnvironmentNetworks = (appEnv: string) => {
+  return {
+    [Network.ethereum]: ETHEREUM_NETWORK[appEnv],
+    [Network.polygon]: POLYGON_NETWORK[appEnv]
+    // [Network.avalanche]: AVALANCHE_NETWORK[appEnv]
+  }
+}
+
 // Native currency symbols in app
 export const CHAIN_NATIVE_CURRENCY = Object.freeze({
   [CHAIN_ID.mainnet]: 'Ξ',

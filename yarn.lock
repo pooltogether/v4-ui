@@ -2343,15 +2343,16 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.4.tgz#a878b2b18fd37eb486fb6e1f7a8054920ee6ac6b"
   integrity sha512-1A5Ac+vrhMK0CASDD1XmT/M6NVs4eWO+u3+FpzhGADqIBkKMxbVYfifKauyb+ncpaZk5xfpxPwfLVK+O/uHPCA==
 
-"@pooltogether/v4-js-client@^0.8.3":
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.8.3.tgz#eb3eabff28fc458d031b1dc93574745063600a1d"
-  integrity sha512-yjOzA/gRuSwtuBO33uURslfkgMsTmujx855idcmuDwZuJ9ke9A5e7KPDiVc4YP5tsZAMVUQBcP08GV7NTAIvuA==
+"@pooltogether/v4-js-client@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.9.1.tgz#fe9b55f9d849d6867de5c860153ae7f4e4b3a61b"
+  integrity sha512-uO11Oih30H1u1si5qWHbQ0aayCHIO6NtpOPkChRy3t6way3TtGsI09FkO0+rrsWUQTWfyefu2b2gCMui2alx1A==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/draw-calculator-js" "^1.0.3-beta.2"
     "@pooltogether/etherplex" "^1.1.2"
+    debug "^4.3.3"
 
 "@pooltogether/v4-pool-data@^1.1.0":
   version "1.1.0"
@@ -6351,7 +6352,7 @@ debug@^3.1.0:
   dependencies:
     ms "^2.1.1"
 
-debug@^4.3.2:
+debug@^4.3.2, debug@^4.3.3:
   version "4.3.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.3.tgz#04266e0b70a98d4462e6e288e38259213332b664"
   integrity sha512-/zxw5+vh1Tfv+4Qn7a5nsbcJKPaSvCDhojn6FEl9vupwK2VCSDtEiEtqr8DFtzYFOdz63LBkxec7DYuc2jon6Q==

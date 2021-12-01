@@ -9,7 +9,7 @@ import { TokenBalance, useTransaction } from '@pooltogether/hooks'
 import { InfoList } from 'lib/components/InfoList'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { usePlayer } from 'lib/hooks/Tsunami/Player/usePlayer'
+import { useUser } from 'lib/hooks/Tsunami/User/useUser'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -78,7 +78,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
 
   const { t } = useTranslation()
 
-  const { data: player } = usePlayer(prizePool)
+  const { data: user } = useUser(prizePool)
 
   const sendDelegateTx = async (e) => {
     e.preventDefault()
@@ -86,7 +86,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
     const txId = await sendTx({
       name: `Activate deposits`,
       method: 'withdrawInstantlyFrom',
-      callTransaction: () => player.selfDelegateTickets(),
+      callTransaction: () => user.selfDelegateTickets(),
       callbacks: {
         refetch: () => {
           refetchDelegate()

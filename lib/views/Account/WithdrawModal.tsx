@@ -15,7 +15,7 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
-import { Player, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-js-client'
 
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
@@ -40,7 +40,7 @@ const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
 interface WithdrawModalProps {
   isOpen: boolean
-  player: Player
+  user: User
   prizePool: PrizePool
   withdrawTx: Transaction
   currentStep: WithdrawalSteps
@@ -61,7 +61,7 @@ interface WithdrawModalProps {
 export const WithdrawModal = (props: WithdrawModalProps) => {
   const {
     isOpen,
-    player,
+    user,
     prizePool,
     withdrawTx,
     currentStep,
@@ -128,7 +128,7 @@ export const WithdrawModal = (props: WithdrawModalProps) => {
           form={form}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          player={player}
+          user={user}
           prizePool={prizePool}
           usersBalances={usersBalances}
           prizePoolTokens={prizePoolTokens}
@@ -177,7 +177,7 @@ const BackButton = (props) => {
 interface WithdrawStepContentProps {
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
-  player: Player
+  user: User
   prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
   prizePoolTokens: PrizePoolTokens
@@ -195,7 +195,7 @@ interface WithdrawStepContentProps {
 const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
-    player,
+    user,
     prizePool,
     usersBalances,
     prizePoolTokens,
@@ -210,7 +210,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     refetchUsersBalances
   } = props
 
-  const chainId = player.chainId
+  const chainId = user.chainId
 
   if (!isUsersBalancesFetched) {
     return (
@@ -226,7 +226,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   if (currentStep === WithdrawalSteps.review) {
     return (
       <WithdrawReviewStep
-        player={player}
+        user={user}
         prizePool={prizePool}
         chainId={chainId}
         amountToWithdraw={amountToWithdraw}
@@ -329,7 +329,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 }
 
 interface WithdrawReviewStepProps {
-  player: Player
+  user: User
   prizePool: PrizePool
   chainId: number
   amountToWithdraw: Amount

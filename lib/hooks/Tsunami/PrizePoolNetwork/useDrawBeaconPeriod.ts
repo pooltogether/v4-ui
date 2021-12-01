@@ -3,16 +3,16 @@ import { sToMs } from '@pooltogether/utilities'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
-import { useLinkedPrizePool } from './useLinkedPrizePool'
+import { usePrizePoolNetwork } from './usePrizePoolNetwork'
 
 /**
  * // TODO: Rather than polling could we just listen for an event then trigger a refetch?
  * @returns
  */
 export const useDrawBeaconPeriod = () => {
-  const linkedPrizePool = useLinkedPrizePool()
+  const prizePoolNetwork = usePrizePoolNetwork()
   const [refetchIntervalMs, setRefetchIntervalMs] = useState(sToMs(60 * 2.5))
-  const enabled = Boolean(linkedPrizePool)
+  const enabled = Boolean(prizePoolNetwork)
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber
@@ -32,9 +32,9 @@ export const useDrawBeaconPeriod = () => {
   }
 
   return useQuery(
-    ['useDrawBeaconPeriod', linkedPrizePool?.id()],
+    ['useDrawBeaconPeriod', prizePoolNetwork?.id()],
     async () => {
-      const drawBeaconPeriod = await linkedPrizePool.getDrawBeaconPeriod()
+      const drawBeaconPeriod = await prizePoolNetwork.getDrawBeaconPeriod()
       return drawBeaconPeriod
     },
     {
