@@ -21,6 +21,7 @@ import {
   SquareButtonSize
 } from '@pooltogether/react-components'
 import { ethers, Overrides } from 'ethers'
+import transakSDK from '@transak/transak-sdk'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
@@ -263,7 +264,7 @@ export const DepositCard = () => {
 
         <div className='w-full flex bg-tsunami-card-bridge justify-around px-2 py-4 rounded-b-xl'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
-          <HelpLink />
+          <CryptoOnrampModalTrigger />
           <GetTokensModalTrigger prizePool={prizePool} />
         </div>
       </div>
@@ -310,6 +311,68 @@ const HelpLink = () => {
   )
 }
 
+const purple_default = '4c249f'
+const settings = {
+  apiKey: 'cf5868eb-a8bb-45c8-a2db-4309e5f8b412', // Sample Staging API key
+  environment: 'STAGING', // STAGING/PRODUCTION
+  hostURL: '', // window.location.origin set on init
+  redirectURL: '', // also set on init
+  
+  walletAddress: '', 
+  defaultCryptoCurrency: 'USDC',
+  defaultNetwork: 'polygon',
+  networks: 'polygon,ethereum,mainnet',
+  cryptoCurrencyList: 'USDC,USDT,DAI,ETH',
+  exchangeScreenTitle: 'Buy tokens to your wallet',
+  
+  themeColor: purple_default, // App theme color
+  widgetHeight: "75vh", // 75vh or 700px
+  widgetWidth: "500px", // 500px is good, otherwise via classname maxWidthClassName='sm:max-w-xl'
+}
+
+function openTransak(transakSettings) {
+  const transak = new transakSDK(transakSettings);
+  console.log('transakSettings in openTransak', transakSettings)
+  // Set events listeners
+  // TRANSAK_WIDGET_CLOSE / TRANSAK_WIDGET_CLOSE_REQUEST / TRANSAK_WIDGET_INITIALISED / TRANSAK_WIDGET_OPEN
+  transak.on(transak.ALL_EVENTS, (data) => {
+    console.log('transak.ALL_EVENTS', data)
+  });  
+  transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, (data) => {
+    transak.close();
+  });
+  transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (orderData) => {
+    transak.close();
+  });
+  // Init transak iframe
+  transak.init();
+}
+
+const CryptoOnrampModalTrigger = () => {
+  const { t } = useTranslation()
+
+  const { network: chainId, address: usersAddress } = useOnboard()
+  settings.walletAddress = usersAddress
+  settings.hostURL = window.location.origin
+
+  return (
+    <>
+      <button
+        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        onClick={() => openTransak(settings)} 
+        style={{ minWidth: BUTTON_MIN_WIDTH }}
+      >
+        <FeatherIcon
+          icon={'plus-circle'}
+          className='relative w-4 h-4 mr-1 inline-block'
+          style={{ left: -2, top: -2 }}
+        />{' '}
+        {t('getTokens', 'Get tokens')}
+      </button>
+    </>
+  )
+}
+
 interface ExternalLinkProps {
   prizePool: PrizePool
 }
@@ -333,7 +396,7 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
           className='relative w-4 h-4 mr-1 inline-block'
           style={{ left: -2, top: -2 }}
         />{' '}
-        {t('getTokens', 'Get tokens')}
+        {t('swapTokens', 'Swap tokens')}
       </button>
       <GetTokensModal
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
