@@ -68,6 +68,7 @@
     "@sentry/cli": "^1.69.1",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
+    "@transak/transak-sdk": "^1.0.31",
     "add": "^2.0.6",
     "autoprefixer": "^10.3.1",
     "beautiful-react-hooks": "^0.35.0",
