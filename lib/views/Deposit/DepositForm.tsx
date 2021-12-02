@@ -58,8 +58,7 @@ export const DepositForm = (props: DepositFormProps) => {
     setShowConfirmModal
   } = props
 
-  const { data: minimumDepositAmount, isFetched: isMinimumDepositFetched } =
-    useMinimumDepositAmount(prizePool, token)
+  const minimumDepositAmount = useMinimumDepositAmount(token)
 
   const { chainId } = useSelectedNetwork()
 
@@ -93,7 +92,7 @@ export const DepositForm = (props: DepositFormProps) => {
     isValid: (v) => {
       const isNotANumber = isNaN(v)
       if (isNotANumber) return false
-      if (!isMinimumDepositFetched) return false
+      if (!minimumDepositAmount) return false
 
       const quantityUnformatted = safeParseUnits(v, decimals)
 

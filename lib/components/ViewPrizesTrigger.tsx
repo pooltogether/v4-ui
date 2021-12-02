@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
-import { PrizeDistribution } from '@pooltogether/v4-js-client'
+import { PrizeTier } from '@pooltogether/v4-js-client'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -9,15 +9,13 @@ import { PrizeBreakdownModal } from './PrizeBreakdownModal'
 export const ViewPrizeTiersTrigger = (props: {
   ticket: Token
   label?: string
-  prizeDistribution?: PrizeDistribution
+  prizeTier?: PrizeTier
   className?: string
 }) => {
-  const { prizeDistribution, label } = props
+  const { prizeTier, label } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
-
-  if (!prizeDistribution) return null
 
   return (
     <>
@@ -26,13 +24,14 @@ export const ViewPrizeTiersTrigger = (props: {
         size={SquareButtonSize.sm}
         className={props.className}
         onClick={() => setIsOpen(true)}
+        disabled={!prizeTier}
       >
         {label || t('viewPrizeTiers', 'View prize tiers')}
       </SquareButton>
 
       <PrizeBreakdownModal
         {...props}
-        prizeDistribution={prizeDistribution}
+        prizeTier={prizeTier}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
       />

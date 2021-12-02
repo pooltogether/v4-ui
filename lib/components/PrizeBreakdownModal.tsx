@@ -6,17 +6,14 @@ import {
   SquareButtonSize,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import { PrizeDistribution } from '@pooltogether/v4-js-client'
+import { PrizeTier } from '@pooltogether/v4-js-client'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'
 
 export const PrizeBreakdownModal = (
-  props: { prizeDistribution: PrizeDistribution; ticket: Token } & Omit<
-    ModalProps,
-    'label' | 'children'
-  >
+  props: { prizeTier: PrizeTier; ticket: Token } & Omit<ModalProps, 'label' | 'children'>
 ) => {
   const { t } = useTranslation()
   return (
@@ -34,7 +31,7 @@ export const PrizeBreakdownModal = (
       <hr className='opacity-10 border-white w-80' />
       <PrizeBreakdown
         className='mx-auto w-full'
-        prizeDistribution={props.prizeDistribution}
+        prizeTier={props.prizeTier}
         ticket={props.ticket}
       />
       <SquareButton

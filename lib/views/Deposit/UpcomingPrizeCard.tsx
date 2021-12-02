@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Time } from '@pooltogether/react-components'
 
-import { TSUNAMI_USDC_PRIZE_DISTRIBUTION } from 'lib/constants/prizeDistribution'
 import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from 'lib/hooks/Tsunami/PrizePoolNetwork/useDrawBeaconPeriod'
@@ -11,15 +10,24 @@ import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
 import { ViewPrizeTiersTrigger } from 'lib/components/ViewPrizesTrigger'
+import { useUpcomingPrizeTier } from 'lib/hooks/useUpcomingPrizeTier'
 
 export const UpcomingPrizeCard = () => {
   const { t } = useTranslation()
 
   const prizePool = usePrizePoolBySelectedNetwork()
-  const { data: prizePoolTokens, isFetched } = usePrizePoolTokens(prizePool)
+  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
+    usePrizePoolTokens(prizePool)
+  const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
 
-  const prizeAmountWeekly = TSUNAMI_USDC_PRIZE_DISTRIBUTION.prize.mul(7)
-  const { amountPretty } = roundPrizeAmount(prizeAmountWeekly, prizePoolTokens?.ticket.decimals)
+  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
+  let amountPretty = '--'
+  if (isFetched) {
+    amountPretty = roundPrizeAmount(
+      prizeTier.prize.mul(7),
+      prizePoolTokens.ticket.decimals
+    ).amountPretty
+  }
 
   return (
     <AnimatedBorderCard innerClassName='flex flex-col text-center relative'>
@@ -27,7 +35,7 @@ export const UpcomingPrizeCard = () => {
       <LightningRight className='absolute top-3 -right-2 xs:-right-4 sm:-right-8 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28' />
       <div className='mx-auto leading-none relative'>
         <h1 className='text-7xl xs:text-10xl xs:-mt-0 font-semibold text-inverse'>
-          {isFetched ? `$${amountPretty}` : '--'}
+          {`$${amountPretty}`}
         </h1>
 
         <div className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mt-2 mb-1'>
@@ -37,7 +45,11 @@ export const UpcomingPrizeCard = () => {
 
       <DrawCountdown />
 
-      <ViewPrizeBreakdownTrigger className='w-max mt-1 mx-auto' />
+      <ViewPrizeBreakdownTrigger
+        className='w-max mt-1 mx-auto'
+        isFetched={isPrizeTierFetched}
+        prizeTier={prizeTier}
+      />
     </AnimatedBorderCard>
   )
 }
@@ -80,11 +92,12 @@ const DrawNumberString = (props) => (
 )
 
 const ViewPrizeBreakdownTrigger = (props) => {
-  const { className } = props
+  const { t } = useTranslation()
+  const { className, isFetched, prizeTier } = props
   const prizePool = usePrizePoolBySelectedNetwork()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
-  const { t } = useTranslation()
+  if (!isFetched) return null
 
   return (
     <ViewPrizeTiersTrigger
@@ -94,7 +107,7 @@ const ViewPrizeBreakdownTrigger = (props) => {
         'relative uppercase font-bold text-xs sm:text-sm transition opacity-80 hover:opacity-100 hover:text-highlight-9 leading-none tracking-wide'
       )}
       ticket={prizePoolTokens?.ticket}
-      prizeDistribution={TSUNAMI_USDC_PRIZE_DISTRIBUTION}
+      prizeTier={prizeTier}
     />
   )
 }
@@ -112,3 +125,6 @@ const LightningRight = (props) => (
     style={{ backgroundImage: 'url(/lightning-right.png)' }}
   />
 )
+function useUpcomingPrize(): {} {
+  throw new Error('Function not implemented.')
+}
