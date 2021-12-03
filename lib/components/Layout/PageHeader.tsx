@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
 
-import { Navigation } from 'lib/components/Navigation'
+import { TopNavigation } from 'lib/components/Layout/Navigation'
 import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
 
 export enum ContentPaneState {
@@ -24,18 +24,19 @@ export enum ContentPaneState {
 }
 
 export const PageHeader = (props) => {
-  const router = useRouter()
-
   return (
     <PageHeaderContainer
       Link={Link}
       as='/deposit'
       href='/deposit'
-      className='z-20 sticky top-0 bg-page-header'
+      className='sticky top-0 bg-page-header'
+      style={{ zIndex: 3 }}
     >
-      <Navigation />
-      <UsersAccount />
-      <Settings />
+      <TopNavigation className='absolute mx-auto inset-x-0' />
+      <div className='flex flex-row justify-end items-center'>
+        <UsersAccount />
+        <Settings />
+      </div>
     </PageHeaderContainer>
   )
 }

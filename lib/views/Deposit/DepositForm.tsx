@@ -32,7 +32,6 @@ interface DepositFormProps {
   user: User
   prizePool: PrizePool
   isPrizePoolTokensFetched: boolean
-  isUserFetched: boolean
   isUsersBalancesFetched: boolean
   isUsersDepositAllowanceFetched: boolean
   approveTx: Transaction

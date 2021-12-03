@@ -50,7 +50,7 @@ export const DepositCard = () => {
 
   const prizePool = usePrizePoolBySelectedNetwork()
   const usersAddress = useUsersAddress()
-  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
+  const user = useSelectedNetworkUser()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
@@ -72,7 +72,6 @@ export const DepositCard = () => {
   } = useUsersTicketDelegate(usersAddress, prizePool)
 
   const isDataFetched =
-    isUserFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
@@ -211,8 +210,6 @@ export const DepositCard = () => {
     setDepositedAmount(undefined)
   }
 
-  const { chainId } = useSelectedNetwork()
-
   return (
     <>
       <div>
@@ -246,7 +243,6 @@ export const DepositCard = () => {
               <DepositForm
                 form={form}
                 user={user}
-                isUserFetched={isUserFetched}
                 prizePool={prizePool}
                 token={token}
                 ticket={ticket}

@@ -6,25 +6,25 @@ import {
   ThemedClipSpinner,
   Tooltip
 } from '@pooltogether/react-components'
+import { useTranslation } from 'react-i18next'
 
-import CardCornerLight from './card-corner-light.png'
+import CardCornerLight from '../card-corner-light.png'
 import { useTheme } from 'lib/hooks/useTheme'
 import { User } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
-import { useTranslation } from 'react-i18next'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { TotalPrizeClaimed } from './TotalPrizesClaimed'
 
 interface AccountCardProps {
   className?: string
   user: User
-  isUserFetched: boolean
 }
 export const AccountCard = (props: AccountCardProps) => {
-  const { className, user, isUserFetched } = props
+  const { className, user } = props
   const { theme } = useTheme()
   const backgroundImage = theme === ColorTheme.dark ? CardCornerLight : CardCornerLight
 
@@ -39,7 +39,8 @@ export const AccountCard = (props: AccountCardProps) => {
           <WinningOdds />
           {/* <Twab twabs={twabs} isFetched={isFetched} isPartiallyFetched={isPartiallyFetched} /> */}
         </div>
-        <ManageBalancesList user={user} isFetched={isUserFetched} />
+        <TotalPrizeClaimed />
+        <ManageBalancesList user={user} />
       </Card>
       <OddsDisclaimer className='mt-6' />
     </div>

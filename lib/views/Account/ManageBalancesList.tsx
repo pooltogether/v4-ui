@@ -49,20 +49,11 @@ const TOKEN_IMG_URL = {
 interface PrizePoolListProps {
   className?: string
   user: User
-  isFetched: boolean
 }
 
 export const ManageBalancesList = (props: PrizePoolListProps) => {
   const { user, isFetched, className } = props
   const prizePools = usePrizePools()
-
-  if (!isFetched) {
-    return (
-      <div className={classnames(className, 'w-full flex h-60')}>
-        <LoadingDots className='m-auto' />
-      </div>
-    )
-  }
 
   return (
     <ul className={classnames(className, 'w-full')}>
@@ -370,7 +361,7 @@ const ManageDepositDropdown = (props) => {
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
 
-  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
+  const user = useSelectedNetworkUser()
 
   const handleRevokeAllowanceClick = async () => {
     if (!isWalletOnProperNetwork) {

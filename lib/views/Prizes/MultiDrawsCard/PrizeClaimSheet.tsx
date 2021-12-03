@@ -18,11 +18,12 @@ import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUs
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawData } from 'lib/types/v4'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
 
-interface PrizeClaimModalProps {
+interface PrizeClaimSheetProps {
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
   token: Token
@@ -38,7 +39,7 @@ interface PrizeClaimModalProps {
   setTxId: (txId: number) => void
 }
 
-export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
+export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   const {
     winningDrawResults,
     drawDatas,
@@ -99,10 +100,10 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   if (claimTx && claimTx.sent) {
     if (claimTx.error) {
       return (
-        <Modal
+        <BottomSheet
           label='Error depositing modal'
-          isOpen={isOpen}
-          closeModal={() => {
+          open={isOpen}
+          onDismiss={() => {
             setTxId(0)
             closeModal()
           }}
@@ -127,15 +128,15 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           >
             {t('tryAgain', 'Try again')}
           </SquareButton>
-        </Modal>
+        </BottomSheet>
       )
     }
 
     return (
-      <Modal
+      <BottomSheet
         label='Claim prizes modal'
-        isOpen={isOpen}
-        closeModal={() => {
+        open={isOpen}
+        onDismiss={() => {
           setTxId(0)
           closeModal()
         }}
@@ -150,7 +151,7 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
             closeModal()
           }}
         />
-      </Modal>
+      </BottomSheet>
     )
   }
 
@@ -166,17 +167,17 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
 
   if (!isWalletOnProperNetwork) {
     return (
-      <Modal
+      <BottomSheet
         label='Wrong network modal'
-        isOpen={isOpen}
-        closeModal={() => {
+        open={isOpen}
+        onDismiss={() => {
           setTxId(0)
           closeModal()
         }}
       >
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </Modal>
+      </BottomSheet>
     )
   }
 
@@ -185,10 +186,11 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
   )
 
   return (
-    <Modal
+    <BottomSheet
       label='Claim prizes modal'
-      isOpen={isOpen}
-      closeModal={() => {
+      open={isOpen}
+      snapPoints={snapTo90}
+      onDismiss={() => {
         setTxId(0)
         closeModal()
       }}
@@ -235,6 +237,6 @@ export const PrizeClaimModal = (props: PrizeClaimModalProps) => {
           {t('confirmClaim', 'Confirm claim')}
         </SquareButton>
       </div>
-    </Modal>
+    </BottomSheet>
   )
 }

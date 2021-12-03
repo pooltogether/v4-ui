@@ -28,7 +28,7 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 
-interface DepositConfirmationModalProps extends ModalProps {
+interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   prizePool: PrizePool
   token: Token
   ticket: Token

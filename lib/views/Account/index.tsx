@@ -6,15 +6,17 @@ import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { AccountCard, OddsDisclaimer } from 'lib/views/Account/AccountCard'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
+import { TotalPrizeClaimed } from './AccountCard/TotalPrizesClaimed'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
-  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
+  const user = useSelectedNetworkUser()
 
   if (!isWalletConnected) {
     return (
       <PagePadding>
+        <TotalPrizeClaimed />
         <Piggy className='w-20 sm:w-32 mb-2 sm:mb-4 mx-auto' />
         <span className='mx-auto mb-6 text-xs sm:text-lg block text-center'>
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
@@ -30,7 +32,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding>
-      <AccountCard user={user} isUserFetched={isUserFetched} />
+      <AccountCard user={user} />
       <div className='mt-4'>
         <BackToV3Banner />
       </div>

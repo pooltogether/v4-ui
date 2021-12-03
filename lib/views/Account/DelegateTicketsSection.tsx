@@ -78,7 +78,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
 
   const { t } = useTranslation()
 
-  const { data: user } = useUser(prizePool)
+  const user = useUser(prizePool)
 
   const sendDelegateTx = async (e) => {
     e.preventDefault()

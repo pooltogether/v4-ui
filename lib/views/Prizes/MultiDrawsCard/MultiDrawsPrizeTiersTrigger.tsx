@@ -5,7 +5,7 @@ import { DrawData } from 'lib/types/v4'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { MultiDrawPrizeBreakdownModal } from './MultiDrawPrizeBreakdownModal'
+import { MultiDrawPrizeBreakdownSheet } from './MultiDrawPrizeBreakdownSheet'
 
 export const MultiDrawsPrizeTiersTrigger = (props: {
   ticket: Token
@@ -32,7 +32,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
         {label || t('viewPrizeTiers', 'View prize tiers')}
       </SquareButton>
 
-      <MultiDrawPrizeBreakdownModal
+      <MultiDrawPrizeBreakdownSheet
         drawDatas={drawDatas}
         ticket={ticket}
         isOpen={isOpen}

@@ -32,6 +32,10 @@ import 'react-toastify/dist/ReactToastify.css'
 // Carousel for Prizes
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
+// Bottom sheet
+import 'react-spring-bottom-sheet/dist/style.css'
+import 'assets/styles/bottomSheet.css'
+
 // Custom css
 import 'assets/styles/pageHeader.css'
 import 'assets/styles/index.css'

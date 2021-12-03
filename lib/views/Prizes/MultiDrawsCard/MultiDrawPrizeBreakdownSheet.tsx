@@ -13,8 +13,9 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
+import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
 
-export const MultiDrawPrizeBreakdownModal = (
+export const MultiDrawPrizeBreakdownSheet = (
   props: { drawDatas: { [drawId: number]: DrawData }; ticket: Token } & Omit<
     ModalProps,
     'label' | 'children'
@@ -42,9 +43,9 @@ export const MultiDrawPrizeBreakdownModal = (
   }
 
   return (
-    <Modal
-      isOpen={props.isOpen}
-      closeModal={props.closeModal}
+    <BottomSheet
+      open={props.isOpen}
+      onDismiss={props.closeModal}
       label='Prize breakdown modal'
       className='flex flex-col'
     >
@@ -76,6 +77,6 @@ export const MultiDrawPrizeBreakdownModal = (
       >
         {t('close', 'Close')}
       </SquareButton>
-    </Modal>
+    </BottomSheet>
   )
 }

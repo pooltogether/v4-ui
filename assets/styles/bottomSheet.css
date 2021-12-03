@@ -1,0 +1,21 @@
+:root {
+  --rsbs-max-w: 576px;
+  --rsbs-ml: auto;
+  --rsbs-mr: auto;
+}
+
+.theme-dark {
+  --rsbs-bg: #5227a7;
+}
+
+.theme-light {
+  --rsbs-bg: #f7f7f7;
+}
+
+[data-rsbs-backdrop] {
+  backdrop-filter: blur(2px);
+}
+
+[data-rsbs-overlay] {
+  max-height: 97vh;
+}
