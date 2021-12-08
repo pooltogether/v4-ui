@@ -98,7 +98,7 @@ const TopNavTab = (props: NavTabProps) => {
           'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-0 px-3 flex flex-row',
           'text-xs hover:text-white active:bg-highlight-9',
           { 'bg-highlight-9 text-white': isSelected },
-          { 'hover:bg-tertiary': !isSelected }
+          { 'hover:bg-card-purple': !isSelected }
         )}
       >
         <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
