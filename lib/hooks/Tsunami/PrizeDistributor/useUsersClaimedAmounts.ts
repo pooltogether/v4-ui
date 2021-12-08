@@ -1,4 +1,4 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
 
@@ -6,6 +6,7 @@ import { NO_REFETCH } from 'lib/constants/query'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
 import { useValidDrawIds } from './useValidDrawIds'
+import { usePrizeDistributorToken } from './usePrizeDistributorToken'
 
 export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
 
@@ -20,15 +21,20 @@ export const useUsersClaimedAmounts = (
   prizeDistributor: PrizeDistributor
 ) => {
   const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
-  const { data: decimals, isFetched: isDecimalsFetched } = useTicketDecimals()
+  const { data: prizeDistributorTokenData, isFetched: isPrizeDistributorTokenFetched } =
+    usePrizeDistributorToken(prizeDistributor)
   const enabled =
-    Boolean(prizeDistributor) && Boolean(usersAddress) && isDrawIdsFetched && isDecimalsFetched
+    Boolean(prizeDistributor) &&
+    Boolean(usersAddress) &&
+    isDrawIdsFetched &&
+    isPrizeDistributorTokenFetched
 
   const drawIds = data?.drawIds
+  const token = prizeDistributorTokenData?.token
 
   return useQuery(
     [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
-    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, decimals),
+    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
     {
       ...NO_REFETCH,
       enabled
@@ -40,8 +46,9 @@ export const getUsersClaimedAmounts = async (
   usersAddress: string,
   prizeDistributor: PrizeDistributor,
   drawIds: number[],
-  decimals: string
+  token: Token
 ): Promise<{
+  token: Token
   usersAddress: string
   prizeDistributorId: string
   claimedAmounts: { [drawId: number]: Amount }
@@ -52,10 +59,11 @@ export const getUsersClaimedAmounts = async (
     [drawId: number]: Amount
   } = {}
   drawIds.map((drawId) => {
-    claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], decimals)
+    claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], token.decimals)
   })
 
   return {
+    token,
     prizeDistributorId: prizeDistributor.id(),
     usersAddress,
     claimedAmounts: claimedAmountsKeyedByDrawId

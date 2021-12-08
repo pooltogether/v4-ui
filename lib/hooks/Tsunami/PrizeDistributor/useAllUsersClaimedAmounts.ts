@@ -1,19 +1,24 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
-import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
+import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './useAllValidDrawIds'
 import { usePrizeDistributors } from './usePrizeDistributors'
 import { getUsersClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
 
 export const useAllUsersClaimedAmounts = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
+  const prizeDistributorTokensQueryResults = useAllPrizeDistributorTokens()
   const drawIdQueryResults = useAllValidDrawIds()
-  const { data: decimals, isFetched: isDecimalsFetched } = useTicketDecimals()
+
+  const isAllTokensFetched = prizeDistributorTokensQueryResults.every(
+    (queryResult) => queryResult.isFetched
+  )
   const isAllValidDrawIdsFetched = drawIdQueryResults.every((queryResult) => queryResult.isFetched)
 
   return useQueries<
     UseQueryOptions<{
+      token: Token
       usersAddress: string
       prizeDistributorId: string
       claimedAmounts: { [drawId: number]: Amount }
@@ -26,10 +31,19 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
         const drawIdQueryResult = drawIdQueryResults.find(
           (queryResult) => queryResult.data.prizeDistributorId === prizeDistributor.id()
         )
+        const prizeDistributorTokensQueryResult = prizeDistributorTokensQueryResults.find(
+          (queryResult) => queryResult.data.prizeDistributorId === prizeDistributor.id()
+        )
         const drawIds = drawIdQueryResult.data.drawIds
-        return getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, decimals)
+        const prizeDistributorToken = prizeDistributorTokensQueryResult.data.token
+        return getUsersClaimedAmounts(
+          usersAddress,
+          prizeDistributor,
+          drawIds,
+          prizeDistributorToken
+        )
       },
-      enabled: isDecimalsFetched && Boolean(usersAddress) && isAllValidDrawIdsFetched
+      enabled: isAllTokensFetched && Boolean(usersAddress) && isAllValidDrawIdsFetched
     }))
   )
 }

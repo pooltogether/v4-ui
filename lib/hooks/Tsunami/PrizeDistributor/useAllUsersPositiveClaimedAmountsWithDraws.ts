@@ -1,4 +1,4 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-js-client'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 import { useAllValidDraws } from './useAllValidDraws'
@@ -22,6 +22,7 @@ export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string)
   }
 
   const claimedAmountsAndDraws: {
+    token: Token
     prizeDistributorId
     chainId: number
     drawId: number
@@ -42,6 +43,7 @@ export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string)
 
     const draws = drawQueryResult.data.draws
     const claimedAmounts = claimedAmountsQueryResult.data.claimedAmounts
+    const token = claimedAmountsQueryResult.data.token
 
     Object.keys(claimedAmounts).forEach((_drawId) => {
       const drawId = Number(_drawId)
@@ -49,6 +51,7 @@ export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string)
       if (!claimedAmount.amountUnformatted.isZero()) {
         const draw = draws[drawId]
         claimedAmountsAndDraws.push({
+          token,
           prizeDistributorId,
           chainId,
           drawId,
@@ -60,7 +63,7 @@ export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string)
   })
 
   return {
-    data: claimedAmountsAndDraws,
+    data: claimedAmountsAndDraws.reverse(),
     isFetched: true
   }
 }

@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { useUsersTotalClaimedAmount } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { CountUp } from 'lib/components/CountUp'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
+import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import TrophyIcon from 'assets/images/pooltogether-trophy--detailed.svg'
-import { Amount } from '@pooltogether/hooks'
-import { useAllUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useAllUsersClaimedAmounts'
+import { Amount, Token } from '@pooltogether/hooks'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from 'lib/hooks/Tsunami/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { Draw } from '@pooltogether/v4-js-client'
+import { getTimestampString } from 'lib/utils/getTimestampString'
 
 export const TotalWinnings = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -78,9 +78,15 @@ interface PrizesClaimedListProps {}
 const PrizesClaimedList = (props: PrizesClaimedListProps) => {
   const usersAddress = useUsersAddress()
   const { data, isFetched } = useAllUsersPositiveClaimedAmountsWithDraws(usersAddress)
+  const { t } = useTranslation()
 
   return (
     <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
+      <div className='grid grid-cols-3 opacity-50 font-bold'>
+        <div>{t('prizeAmountString', 'Prize amount')}</div>
+        <div className='text-right'>{t('draw')}</div>
+        <div className='text-right'>{t('date', 'Date')}</div>
+      </div>
       {!isFetched ? (
         <>
           <LoadingRow />
@@ -88,20 +94,37 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
           <LoadingRow />
         </>
       ) : (
-        data.map((data) => <ClaimedPrizeItem {...data} />)
+        data.map((data) => (
+          <ClaimedPrizeItem key={`${data.prizeDistributorId}-${data.drawId}`} {...data} />
+        ))
       )}
     </ul>
   )
 }
 
 const ClaimedPrizeItem = (props: {
+  token: Token
   prizeDistributorId: string
   chainId: number
   drawId: number
   claimedAmount: Amount
   draw: Draw
 }) => {
-  return <li></li>
+  const { token, prizeDistributorId, chainId, drawId, claimedAmount, draw } = props
+
+  return (
+    <li className='grid grid-cols-3'>
+      <div className=''>
+        <TokenIcon className='mr-2' chainId={chainId} address={token.address} />
+        <span className='font-bold mr-1'>{claimedAmount.amountPretty}</span>
+        <span className='opacity-50'>{token.symbol}</span>
+      </div>
+      <div className='text-right'>#{drawId}</div>
+      <div className='text-right'>
+        {getTimestampString(draw.timestamp, { month: 'short', day: 'numeric', year: 'numeric' })}
+      </div>
+    </li>
+  )
 }
 
 const LoadingRow = () => (
