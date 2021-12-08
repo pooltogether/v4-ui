@@ -52,11 +52,14 @@ export const useUsersUnclaimedDrawDatas = (
 
   const drawResults = storedDrawResults?.[usersAddress]
   const normalizedBalances = normalizedBalancesData?.[usersAddress]
-  const claimedAmounts = claimedAmountsData?.[usersAddress]
+  const claimedAmounts = claimedAmountsData?.claimedAmounts
+  const claimedAmountsUsersAddress = claimedAmountsData?.usersAddress
 
   // Check if there is data keyed by the same users address so we aren't mixing data
   const userAddressesMatch =
-    Boolean(drawResults) && Boolean(normalizedBalances) && Boolean(claimedAmounts)
+    Boolean(drawResults) &&
+    Boolean(normalizedBalances) &&
+    claimedAmountsUsersAddress === usersAddress
 
   const enabled =
     Boolean(prizeDistributor) &&

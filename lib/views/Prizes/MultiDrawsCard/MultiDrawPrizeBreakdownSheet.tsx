@@ -69,14 +69,6 @@ export const MultiDrawPrizeBreakdownSheet = (
       </div>
       <PrizeWLaurels className='mx-auto' />
       <PrizeBreakdown className='w-full mx-auto' prizeTier={prizeDistribution} ticket={ticket} />
-      <SquareButton
-        theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.md}
-        className='text-center mx-auto w-3/4 mt-8'
-        onClick={props.closeModal}
-      >
-        {t('close', 'Close')}
-      </SquareButton>
     </BottomSheet>
   )
 }

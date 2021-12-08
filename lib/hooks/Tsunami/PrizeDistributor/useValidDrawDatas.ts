@@ -13,9 +13,10 @@ import { useValidPrizeDistributions } from './useValidPrizeDistributions'
  */
 export const useValidDrawDatas = (prizeDistributor: PrizeDistributor) => {
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const { data: draws, isFetched: isDrawsFetched } = useValidDraws(prizeDistributor)
+  const { data, isFetched: isDrawsFetched } = useValidDraws(prizeDistributor)
   const { data: przeDistributions, isFetched: isPrizeDistributionsFetched } =
     useValidPrizeDistributions(prizeDistributor)
+  const draws = data?.draws
   const enabled =
     Boolean(prizeDistributor) &&
     isDrawBeaconFetched &&

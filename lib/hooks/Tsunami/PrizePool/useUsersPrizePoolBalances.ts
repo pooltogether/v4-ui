@@ -11,6 +11,8 @@ export interface UsersPrizePoolBalances {
   token: TokenBalance
 }
 
+export const USERS_PRIZE_POOL_BALANCES_QUERY_KEY = 'useUsersPrizePoolBalances'
+
 export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: PrizePool) => {
   const refetchInterval = useRefetchInterval(prizePool?.chainId)
   const { data: tokens, isFetched } = usePrizePoolTokens(prizePool)
@@ -18,7 +20,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
   const enabled = Boolean(prizePool) && Boolean(usersAddress) && isFetched
 
   return useQuery(
-    ['useUsersPrizePoolBalances', prizePool?.id(), usersAddress],
+    [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool?.id(), usersAddress],
     async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
     {
       refetchInterval,
@@ -30,7 +32,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
 const prettyNumber = (amount: BigNumber, decimals: string): string =>
   numberWithCommas(amount, { decimals }) as string
 
-const getUsersPrizePoolBalances = async (
+export const getUsersPrizePoolBalances = async (
   prizePool: PrizePool,
   usersAddress: string,
   tokens: PrizePoolTokens
@@ -44,13 +46,15 @@ const getUsersPrizePoolBalances = async (
         hasBalance: !balances.ticket.isZero(),
         amountUnformatted: balances.ticket,
         amount: formatUnits(balances.ticket, ticket.decimals),
-        amountPretty: prettyNumber(balances.ticket, ticket.decimals)
+        amountPretty: prettyNumber(balances.ticket, ticket.decimals),
+        decimals: ticket.decimals
       },
       token: {
         hasBalance: !balances.token.isZero(),
         amountUnformatted: balances.token,
         amount: formatUnits(balances.token, token.decimals),
-        amountPretty: prettyNumber(balances.token, token.decimals)
+        amountPretty: prettyNumber(balances.token, token.decimals),
+        decimals: token.decimals
       }
     }
   }

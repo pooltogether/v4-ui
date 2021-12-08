@@ -1,12 +1,8 @@
 import React from 'react'
-import {
-  Card,
-  CardTheme,
-  ColorTheme,
-  ThemedClipSpinner,
-  Tooltip
-} from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
+import { ColorTheme, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
+import Image from 'next/image'
 
 import CardCornerLight from '../card-corner-light.png'
 import { useTheme } from 'lib/hooks/useTheme'
@@ -14,54 +10,47 @@ import { User } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { Amount } from '@pooltogether/hooks'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { ManageBalancesList } from 'lib/views/Account/ManageBalancesList'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { TotalPrizeClaimed } from './TotalPrizesClaimed'
+import { TotalWinnings } from './TotalWinnings'
+
+import walletIllustration from 'public/wallet-illustration.png'
+import { useUsersTotalPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersTotalPrizePoolBalances'
+import { CountUp } from 'lib/components/CountUp'
 
 interface AccountCardProps {
   className?: string
   user: User
 }
 export const AccountCard = (props: AccountCardProps) => {
-  const { className, user } = props
-  const { theme } = useTheme()
-  const backgroundImage = theme === ColorTheme.dark ? CardCornerLight : CardCornerLight
+  const { user } = props
 
   return (
-    <div className='flex flex-col'>
-      <Card
-        className={classNames(className, 'w-full bg-contain bg-no-repeat flex flex-col')}
-        theme={CardTheme.purple}
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
-        <div className='ml-auto mb-12 flex flex-col mt-3 sm:mt-0'>
-          <WinningOdds />
-          {/* <Twab twabs={twabs} isFetched={isFetched} isPartiallyFetched={isPartiallyFetched} /> */}
-        </div>
-        <TotalPrizeClaimed />
-        <ManageBalancesList user={user} />
-      </Card>
-      <OddsDisclaimer className='mt-6' />
+    <div className='flex flex-col p-4 pink-purple-gradient rounded-2xl'>
+      <div className='flex justify-between p-4'>
+        <TotalBalance user={user} />
+        <Image src={walletIllustration} width='55px' height='60px' />
+      </div>
+      <TotalWinnings />
     </div>
   )
 }
 
-// TODO: WIP
-const Twab = (props) => {
-  const { twabs, isFetched, isPartiallyFetched } = props
+const TotalBalance = (props: { className?: string; user: User }) => {
+  const { className, user } = props
+  const { t } = useTranslation()
+  const { data: totalBalances, isFetched } = useUsersTotalPrizePoolBalances()
   return (
-    <div className='flex'>
-      <div className='flex mr-2'>
-        <TwabToolTip />
-        <span className='opacity-80'>Total chance</span>
-      </div>
-      <TwabAmount
-        amount={twabs?.total}
-        isFetched={isFetched}
-        isPartiallyFetched={isPartiallyFetched}
-      />
-    </div>
+    <a href='#balance' className={className}>
+      <span className='uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <h2 className='leading-none flex'>
+        $<CountUp countTo={isFetched ? Number(totalBalances.totalBalance.amount) : 0} />
+        {!isFetched && (
+          <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
+        )}
+        <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
+      </h2>
+    </a>
   )
 }
 
@@ -142,22 +131,5 @@ const WinningOdds = () => {
       </div>
       <span className='opacity-40'>*</span>
     </div>
-  )
-}
-
-export const OddsDisclaimer = (props: { className?: string }) => {
-  const { t } = useTranslation()
-  return (
-    <span className={classNames('opacity-40 text-xxxs text-center mx-auto', props.className)}>
-      * <span>{t('oddsDisclaimer')}</span>
-      <a
-        href='https://docs.pooltogether.com/faq/prizes-and-winning'
-        target='_blank'
-        rel='noopener noreferrer'
-        className='underline ml-1 text-xxxs'
-      >
-        {t('readMore')}.
-      </a>
-    </span>
   )
 }

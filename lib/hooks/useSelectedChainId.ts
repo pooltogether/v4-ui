@@ -1,31 +1,29 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { atom, useAtom } from 'jotai'
+import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
 
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
-import { DEFAULT_NETWORKS, SUPPORTED_NETWORKS } from 'lib/constants/config'
-
-import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
+import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS } from 'lib/constants/config'
 import { CHAIN_ID } from 'lib/constants/constants'
-import { useAppEnvString } from './useAppEnvString'
-import { useEnvironmentNetworks } from './Tsunami/useEnvironmentNetwork'
+import { useEnvironmentChainIds } from './Tsunami/useEnvironmentChainIds'
 import { Network } from 'lib/constants/config'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
 
-  const supportedNetworks = SUPPORTED_NETWORKS[appEnv]
-  const defaultNetwork = DEFAULT_NETWORKS[appEnv]
+  const supportedChainIds = SUPPORTED_CHAIN_IDS[appEnv]
+  const defaultChainId = DEFAULT_CHAIN_IDS[appEnv]
 
   try {
     const urlChainId = Number(urlNetwork)
-    if (supportedNetworks.includes(urlChainId)) {
+    if (supportedChainIds.includes(urlChainId)) {
       return urlChainId
     }
-    return defaultNetwork
+    return defaultChainId
   } catch (e) {
     console.warn(`Invalid network id ${urlNetwork}`)
-    return defaultNetwork
+    return defaultChainId
   }
 }
 
@@ -34,34 +32,34 @@ const parseUrlNetwork = (urlNetwork: string) => {
  * Reads from the app environment & the URL to set the proper
  * initial selected network
  */
-const getInitialSelectedNetwork = () => {
+const getInitialSelectedChainId = () => {
   if (typeof window === 'undefined') return CHAIN_ID.mainnet
 
   const url = new URL(window.location.href)
   const urlNetwork = url.searchParams.get(URL_QUERY_KEY.network)
 
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
-  const defaultNetwork = DEFAULT_NETWORKS[appEnv]
+  const defaultChainId = DEFAULT_CHAIN_IDS[appEnv]
 
   if (urlNetwork) {
     const chainId = parseUrlNetwork(urlNetwork)
     return chainId
   }
-  return defaultNetwork
+  return defaultChainId
 }
 
-export const selectedNetworkAtom = atom<number>(getInitialSelectedNetwork())
+export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
 
-export const useSelectedNetwork = () => {
+export const useSelectedChainId = () => {
   const [chainId, setSelectedChainId] = useAtom(selectedNetworkAtom)
-  const envNetworks = useEnvironmentNetworks()
+  const envNetworks = useEnvironmentChainIds()
   const networks = Object.keys(envNetworks) as Network[]
   const chainIds = Object.values(envNetworks)
   const network = networks[chainIds.indexOf(chainId)]
   return { chainId, setSelectedChainId, network }
 }
 
-export const useSelectedNetworkWatcher = () => {
+export const useSelectedChainIdWatcher = () => {
   const { isTestnets } = useIsTestnets()
   const [selectedNetwork, setSelectedNetwork] = useAtom(selectedNetworkAtom)
   const router = useRouter()
@@ -87,8 +85,8 @@ export const useSelectedNetworkWatcher = () => {
 
   // Watch for testnet changes
   useEffect(() => {
-    const testnetDefault = DEFAULT_NETWORKS[APP_ENVIRONMENTS.testnets]
-    const mainnetDefault = DEFAULT_NETWORKS[APP_ENVIRONMENTS.mainnets]
+    const testnetDefault = DEFAULT_CHAIN_IDS[APP_ENVIRONMENTS.testnets]
+    const mainnetDefault = DEFAULT_CHAIN_IDS[APP_ENVIRONMENTS.mainnets]
     if (isTestnets && selectedNetwork !== testnetDefault) {
       setSelectedNetwork(testnetDefault)
     } else if (!isTestnets && selectedNetwork !== mainnetDefault) {

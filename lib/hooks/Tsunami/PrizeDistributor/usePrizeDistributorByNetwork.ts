@@ -1,10 +1,10 @@
 import { Network } from 'lib/constants/config'
-import { useEnvironmentNetworks } from '../useEnvironmentNetwork'
+import { useEnvironmentChainIds } from '../useEnvironmentChainIds'
 import { useEnvPrizeDistributorAddresses } from './useEnvPrizeDistributorAddresses'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
 export const usePrizeDistributorByNetwork = (network: Network) => {
-  const chainIdsByNetwork = useEnvironmentNetworks()
+  const chainIdsByNetwork = useEnvironmentChainIds()
   const prizeDistributorAddresses = useEnvPrizeDistributorAddresses()
   const prizeDistributors = usePrizeDistributors()
   return prizeDistributors?.find(

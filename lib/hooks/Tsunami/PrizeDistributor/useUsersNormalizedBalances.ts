@@ -15,8 +15,9 @@ export const useUsersNormalizedBalances = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
 ) => {
-  const { data: drawIds, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
+  const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && isDrawIdsFetched
+  const drawIds = data?.drawIds
 
   return useQuery(
     ['useUsersNormalizedBalances', prizeDistributor?.id(), usersAddress],

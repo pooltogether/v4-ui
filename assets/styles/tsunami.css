@@ -7,7 +7,7 @@
   background: transparent;
 }
 
-.theme-dark .gradient-new {
+.dark .gradient-new {
   background-image: linear-gradient(
     130deg,
     rgba(76, 36, 159, 0.7) -10%,
@@ -17,7 +17,7 @@
   );
 }
 
-.theme-light .gradient-new {
+.light .gradient-new {
   background-image: linear-gradient(
     130deg,
     rgba(76, 36, 159, 1) -10%,
@@ -44,11 +44,11 @@
   }
 }
 
-.theme-dark .bg-tsunami-card-bridge {
+.dark .bg-tsunami-card-bridge {
   background: rgba(76, 36, 159, 0.1);
 }
 
-.theme-light .bg-tsunami-card-bridge {
+.light .bg-tsunami-card-bridge {
   background: white;
 }
 

@@ -26,16 +26,16 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 
-import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
+import { InfoList } from 'lib/components/InfoList'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
+import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { usePrizePools } from 'lib/hooks/Tsunami/PrizePool/usePrizePools'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTokenValue } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokenValue'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DelegateTicketsSection } from 'lib/views/Account/DelegateTicketsSection'
 import { WithdrawModal } from 'lib/views/Account/WithdrawModal'
@@ -144,7 +144,7 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation()
-  const { setSelectedChainId } = useSelectedNetwork()
+  const { setSelectedChainId } = useSelectedChainId()
 
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
@@ -230,9 +230,9 @@ const ManageBalanceButtons = (props: ManageBalanceButtonsProps) => {
       />
 
       {withdrawTx && (
-        <InfoBoxContainer className='mb-2'>
+        <InfoList className='mb-2'>
           <TxHashRow depositTx={withdrawTx} chainId={prizePool.chainId} />
-        </InfoBoxContainer>
+        </InfoList>
       )}
 
       <div className='w-full flex flex-row justify-end py-1'>
@@ -361,7 +361,7 @@ const ManageDepositDropdown = (props) => {
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
 
-  const user = useSelectedNetworkUser()
+  const user = useSelectedChainIdUser()
 
   const handleRevokeAllowanceClick = async () => {
     if (!isWalletOnProperNetwork) {

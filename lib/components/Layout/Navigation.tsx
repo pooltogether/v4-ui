@@ -64,6 +64,7 @@ export const BottomNavigation = (props: { className?: string }) => {
         'bg-pt-purple-bright shadow-lg',
         'fixed bottom-0 inset-x-0'
       )}
+      style={{ zIndex: 2 }}
     >
       {NavLinks.map((navLink) => (
         <BottomNavTab
@@ -125,7 +126,7 @@ const BottomNavTab = (props: NavTabProps) => {
           'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-2 px-3 flex flex-row',
           'text-xs hover:text-white active:bg-highlight-9',
           { 'bg-highlight-9 text-white': isSelected },
-          { 'hover:bg-tertiary': !isSelected }
+          { 'hover:opacity-60': !isSelected }
         )}
       >
         <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>

@@ -2317,10 +2317,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
   integrity sha512-jQub/+qPLQwTFtbBCvvyIEqxJDEBEV/hgLKnuocBg2/GySWtHLz67WCy17bNn1hZw8nWIt8Ih8h+7iT2UJhtmQ==
 
-"@pooltogether/react-components@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.5.0.tgz#505f172ebf9593ff99933a98efc5fa8ee995c63e"
-  integrity sha512-oKMKpI+JRhj8kmSLVvqhawNPybZd/GUGPnDZsA4l4Z/ii7h6sSpXbY+4t2jHBdNFJ0GbREFxaMEkyf84jxqOJQ==
+"@pooltogether/react-components@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.0.tgz#6cfcc7cb40a1f4284022984500230d34d267872a"
+  integrity sha512-lPUet9DRlVxxd3mE1JPQmAXPq6cOTpeTe/5uPLZQf5QZODLGjAxt8D0dcOueTUCV7VnbeTiABYgfnWO5Y5L1eQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -8325,10 +8325,10 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
-feather-icons-react@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/feather-icons-react/-/feather-icons-react-0.4.3.tgz#50b5ee96a26773926636fa41ae3d60f2a8fee4db"
-  integrity sha512-tROWNpZD0HYOovJlaUoHwDN71S2HRoWMxtb3iKlJGObRGbSUzYdmPVcEO4Ksja8ADVbASDXOiD+KlkzDkPP7cA==
+feather-icons-react@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/feather-icons-react/-/feather-icons-react-0.5.0.tgz#74f8b398f4031491901aa47ff470899e408df159"
+  integrity sha512-k7y6JnghcwLi3uo5SaSnnngfHOE+IPpAFzlsmNhlXwbP8jev2rOYbEq1g5lhMglbV934KhcaSbo3DYV32I3/Ug==
 
 fetch-blob@^3.1.2:
   version "3.1.2"
@@ -13786,10 +13786,10 @@ react-copy-to-clipboard@^5.0.3:
     copy-to-clipboard "^3"
     prop-types "^15.5.8"
 
-react-countup@^5.1.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/react-countup/-/react-countup-5.2.0.tgz#58be5d97acebf767d5c61df5c3a3417b95c45a16"
-  integrity sha512-R6+FIrW8ypwoAe0Q0CZ16OhrgAntnnnch7HrnRAy9miXFKk8jQzVADjNtGSoNUuJeq/ZFiiXCGJCJIAmRJ5fLg==
+react-countup@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/react-countup/-/react-countup-6.1.0.tgz#ac9b923ecf1351a0c3281209ba55952345814cd8"
+  integrity sha512-0tN65l4ksaNa4rm8ZKshpGxbIHQ4RAh8TGaKYp06EZ7nZw+haXpW3dQTVDhTey9+10jDkJgdzyXKDmC96c1M8g==
   dependencies:
     countup.js "^2.0.8"
 
@@ -13845,10 +13845,10 @@ react-focus-lock@^2.5.1:
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
 
-react-hook-form@^7.15.2:
-  version "7.15.2"
-  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.15.2.tgz#c4d4fa44a5df755648ab19034062ae37087536b0"
-  integrity sha512-tPcLlsTXaOtZkyc1IGGaJfQ6amo2sJiM6DDufE7WG+S4N8s5Wr60HGtnKS7gPnnZL93pFPQYrSj7WDB5An2VVw==
+react-hook-form@^7.20.5:
+  version "7.20.5"
+  resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.20.5.tgz#69d563c9cceafb2d4449bd3c28d17342b57b5830"
+  integrity sha512-xYeBmQW6oqxDYAYVWIoZYC7tRD6lJBJt9b8Rr1Mv/VhZ+ZUCy2IuXlm2YA9i0/zl0TKKxqBWQOxGEb3qyVIhMg==
 
 react-hotkeys@^2.0.0:
   version "2.0.0"
@@ -13941,10 +13941,10 @@ react-query-devtools@^2.6.3:
   dependencies:
     match-sorter "^4.1.0"
 
-react-query@^3.19.1:
-  version "3.19.6"
-  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.19.6.tgz#02bda891a3f0a0534934d9024350d655b268e82c"
-  integrity sha512-21WfvDgBXvPzJtG4gAxi0h6ipOUNPKZGR3vZJ17m/kHGbj9g6rPblc0lG4sY5oVLpM05LP+BdDt/IYfy0IIKmg==
+react-query@^3.34.0:
+  version "3.34.0"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.34.0.tgz#43477ac6d117d850354e6db80dcca6d5c1b36728"
+  integrity sha512-g6L90FeCLzz6+53CbVKYJALBiZR5icOYPjqGGiNgHNeufcnddLZaQGE9wheclk10k6g+o+Dd4/jAtswhjVblXw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"

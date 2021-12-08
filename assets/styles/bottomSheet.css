@@ -4,11 +4,11 @@
   --rsbs-mr: auto;
 }
 
-.theme-dark {
+.dark {
   --rsbs-bg: #5227a7;
 }
 
-.theme-light {
+.light {
   --rsbs-bg: #f7f7f7;
 }
 
@@ -18,4 +18,11 @@
 
 [data-rsbs-overlay] {
   max-height: 97vh;
+}
+
+[data-rsbs-content] {
+  min-height: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }

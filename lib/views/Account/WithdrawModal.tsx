@@ -25,7 +25,7 @@ import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { PrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
-import { InfoList, InfoListItem } from 'lib/components/InfoList'
+import { InfoList, InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { EstimatedWithdrawalGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
@@ -533,7 +533,7 @@ const UpdatedStats = (props: {
   const { className, prizePool, amountToWithdraw, token, ticket, ticketBalance } = props
 
   return (
-    <InfoList className={className}>
+    <ModalInfoList className={className}>
       <UpdatedOdds
         amount={amountToWithdraw}
         prizePool={prizePool}
@@ -549,7 +549,7 @@ const UpdatedStats = (props: {
         prizePool={prizePool}
         amountUnformatted={amountToWithdraw?.amountUnformatted}
       />
-    </InfoList>
+    </ModalInfoList>
   )
 }
 

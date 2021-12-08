@@ -9,6 +9,7 @@ import {
 import { PrizeTier } from '@pooltogether/v4-js-client'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { BottomSheet } from './BottomSheet'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'
 
@@ -17,10 +18,10 @@ export const PrizeBreakdownModal = (
 ) => {
   const { t } = useTranslation()
   return (
-    <Modal
+    <BottomSheet
       className='flex flex-col'
-      isOpen={props.isOpen}
-      closeModal={props.closeModal}
+      open={props.isOpen}
+      onDismiss={props.closeModal}
       label='Prize breakdown modal'
     >
       <PrizeWLaurels className='mx-auto' />
@@ -34,14 +35,6 @@ export const PrizeBreakdownModal = (
         prizeTier={props.prizeTier}
         ticket={props.ticket}
       />
-      <SquareButton
-        theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.md}
-        className='text-center mx-auto w-3/4 mt-8'
-        onClick={props.closeModal}
-      >
-        {t('close', 'Close')}
-      </SquareButton>
-    </Modal>
+    </BottomSheet>
   )
 }

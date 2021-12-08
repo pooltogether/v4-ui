@@ -1,29 +1,22 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { TokenBalance, Transaction, Token, Amount } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
-import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
-import { InfoBoxContainer } from 'lib/components/InfoBoxContainer'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
+import { InfoList } from 'lib/components/InfoList'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,
   EstimatedDepositGasItem
 } from 'lib/components/InfoList/EstimatedGasItem'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { InfoListItem } from 'lib/components/InfoList'
-import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
+import { DepositAmountInput } from 'lib/components/Input/DepositAmountInput'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -45,34 +38,14 @@ interface DepositFormProps {
 }
 
 export const DepositForm = (props: DepositFormProps) => {
-  const {
-    form,
-    prizePool,
-    depositTx,
-    amountToDeposit,
-    token,
-    ticket,
-    tokenBalance,
-    ticketBalance,
-    setShowConfirmModal
-  } = props
-
-  const minimumDepositAmount = useMinimumDepositAmount(token)
-
-  const { chainId } = useSelectedNetwork()
-
-  const decimals = token.decimals
-
-  const { t } = useTranslation()
+  const { form, prizePool, depositTx, amountToDeposit, token, tokenBalance, setShowConfirmModal } =
+    props
 
   const { isWalletConnected } = useOnboard()
 
   const {
     handleSubmit,
-    register,
-    formState: { errors, isValid, isDirty },
-    setValue,
-    trigger
+    formState: { errors, isValid, isDirty }
   } = form
 
   const router = useRouter()
@@ -85,74 +58,15 @@ export const DepositForm = (props: DepositFormProps) => {
     setShowConfirmModal(true)
   }
 
-  const usersAddress = useUsersAddress()
-
-  const depositValidationRules = {
-    isValid: (v) => {
-      const isNotANumber = isNaN(v)
-      if (isNotANumber) return false
-      if (!minimumDepositAmount) return false
-
-      const quantityUnformatted = safeParseUnits(v, decimals)
-
-      if (isWalletConnected) {
-        if (!tokenBalance) return false
-        if (!ticketBalance) return false
-        if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
-          return t('insufficientFunds')
-        if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
-          return t(
-            'minimumDepositOfAmountRequired',
-            `Minimum deposit of {{amount}} {{token}} required`,
-            { amount: minimumDepositAmount.amountPretty, token: token.symbol }
-          )
-      }
-
-      if (getMaxPrecision(v) > Number(decimals)) return false
-      if (quantityUnformatted && quantityUnformatted.isZero()) return false
-      return true
-    }
-  }
-
-  // If the user input a larger amount than their wallet balance before connecting a wallet
-  useEffect(() => {
-    trigger(DEPOSIT_QUANTITY_KEY)
-  }, [usersAddress, ticketBalance, tokenBalance])
-
   return (
     <>
       <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>
         <div className='w-full mx-auto'>
-          <TextInputGroup
-            unsignedNumber
-            readOnly={depositTx?.inFlight}
-            Input={RectangularInput}
-            symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
-            validate={depositValidationRules}
-            containerBgClassName={'bg-transparent'}
-            containerRoundedClassName={'rounded-lg'}
-            bgClassName={'bg-primary'}
-            placeholder='0.0'
-            id={DEPOSIT_QUANTITY_KEY}
-            name={DEPOSIT_QUANTITY_KEY}
-            autoComplete='off'
-            register={register}
-            required={t('ticketQuantityRequired')}
-            rightLabel={
-              <MaxAmountTextInputRightLabel
-                valueKey={DEPOSIT_QUANTITY_KEY}
-                disabled={false}
-                setValue={setValue}
-                amount={tokenBalance?.amount}
-                tokenSymbol={token.symbol}
-                isAmountZero={!tokenBalance?.hasBalance}
-              />
-            }
-            label={
-              <div className='font-inter font-semibold uppercase text-accent-3 opacity-50'>
-                {t('amount', 'Amount')}
-              </div>
-            }
+          <DepositAmountInput
+            prizePool={prizePool}
+            className=''
+            form={form}
+            inputKey={DEPOSIT_QUANTITY_KEY}
           />
         </div>
 
@@ -252,22 +166,22 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     ))
 
     return (
-      <InfoBoxContainer bgClassName='bg-pt-purple-dark' className={className}>
+      <InfoList bgClassName='bg-pt-purple-dark' className={className}>
         <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
-      </InfoBoxContainer>
+      </InfoList>
     )
   }
 
   if (depositTx?.inFlight) {
     return (
-      <InfoBoxContainer className={className}>
+      <InfoList className={className}>
         <TxHashRow depositTx={depositTx} chainId={prizePool.chainId} />
-      </InfoBoxContainer>
+      </InfoList>
     )
   }
 
   return (
-    <InfoBoxContainer className={className}>
+    <InfoList className={className}>
       {depositAllowance?.isApproved ? (
         <EstimatedDepositGasItem
           prizePool={prizePool}
@@ -279,6 +193,6 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
           amountUnformatted={amountToDeposit.amountUnformatted}
         />
       )}
-    </InfoBoxContainer>
+    </InfoList>
   )
 }

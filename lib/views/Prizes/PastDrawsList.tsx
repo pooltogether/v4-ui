@@ -15,7 +15,7 @@ import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { AmountInPrizes } from 'lib/components/AmountInPrizes'
-import { ViewPrizeTiersTrigger } from 'lib/components/ViewPrizesTrigger'
+import { ViewPrizesSheetCustomTrigger } from 'lib/components/ViewPrizesSheetButton'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
 import { useUsersNormalizedBalances } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersNormalizedBalances'
 import { BigNumber } from 'ethers'
@@ -24,8 +24,9 @@ import { useUsersStoredDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/us
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
+  className?: string
 }) => {
-  const { prizePool, prizeDistributor } = props
+  const { prizePool, prizeDistributor, className } = props
 
   const { t } = useTranslation()
 
@@ -41,10 +42,15 @@ export const PastDrawsList = (props: {
   )
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
+  if (
+    !isPrizePoolTokensFetched ||
+    !isDrawsAndPrizeDistributionsFetched ||
+    !isDrawLocksFetched ||
+    claimedAmountsData.usersAddress !== usersAddress
+  ) {
     return (
       <>
-        <PastDrawsListHeader className='mb-1' />
+        <PastDrawsListHeader className={classNames(className, 'mb-1')} />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
@@ -58,7 +64,7 @@ export const PastDrawsList = (props: {
 
   return (
     <>
-      <PastDrawsListHeader className='mb-1' />
+      <PastDrawsListHeader className={classNames(className, 'mb-1')} />
       {drawDatasList.length === 0 && (
         <Card>
           <div className='opacity-70 text-center w-full'>
@@ -66,23 +72,29 @@ export const PastDrawsList = (props: {
           </div>
         </Card>
       )}
-      <ul className='space-y-4'>
-        {drawDatasList.map((drawData) => {
-          const drawId = drawData.draw.drawId
-          return (
-            <PastPrizeListItem
-              key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
-              drawData={drawData}
-              prizeDistributor={prizeDistributor}
-              token={prizePoolTokens.token}
-              ticket={prizePoolTokens.ticket}
-              claimedAmount={claimedAmountsData?.[usersAddress]?.[drawId]}
-              normalizedBalance={normalizedBalancesData?.[usersAddress]?.[drawId]}
-              drawLock={drawLocks[drawId]}
-            />
-          )
-        })}
-      </ul>
+      <div className='relative'>
+        <div
+          className='absolute inset-0 pointer-events-none bg-body-list-fade'
+          style={{ zIndex: 1 }}
+        />
+        <ul className='space-y-4 max-h-96 overflow-y-auto pb-10'>
+          {drawDatasList.map((drawData) => {
+            const drawId = drawData.draw.drawId
+            return (
+              <PastPrizeListItem
+                key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
+                drawData={drawData}
+                prizeDistributor={prizeDistributor}
+                token={prizePoolTokens.token}
+                ticket={prizePoolTokens.ticket}
+                claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
+                normalizedBalance={normalizedBalancesData?.[usersAddress][drawId]}
+                drawLock={drawLocks[drawId]}
+              />
+            )
+          })}
+        </ul>
+      </div>
     </>
   )
 }
@@ -108,44 +120,55 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
 
   return (
     <li>
-      <Card style={{ minHeight: 100 }}>
-        <div className='flex flex-col xs:flex-row justify-between leading-none'>
-          <div className='flex flex-col sm:w-2/3'>
-            <span className='flex items-start'>
-              <DrawId
-                className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm leading-none mr-2'
-                draw={draw}
-              />
-              <DrawDate
-                className='uppercase font-bold text-accent-1 opacity-80 text-xs xs:text-sm leading-none'
-                draw={draw}
-              />
-            </span>
+      <ViewPrizesSheetCustomTrigger
+        ticket={ticket}
+        prizeTier={prizeDistribution}
+        Button={({ onClick }) => {
+          return (
+            <button
+              onClick={onClick}
+              className={classNames(
+                'flex flex-row justify-between w-full bg-pt-purple-dark bg-opacity-50 rounded-lg p-4',
+                'hover:shadow-lg hover:bg-opacity-100'
+              )}
+            >
+              <div className='flex flex-col xs:flex-row justify-between w-full'>
+                <div className='flex flex-col sm:w-2/3'>
+                  <span className='flex items-start'>
+                    <DrawId
+                      className='uppercase font-bold text-accent-2 opacity-50 text-xs xs:text-sm mr-2'
+                      draw={draw}
+                    />
+                    <DrawDate
+                      className='uppercase font-bold text-accent-1 opacity-80 text-xs xs:text-sm'
+                      draw={draw}
+                    />
+                  </span>
 
-            <ExtraDetailsSection {...props} className='mt-2' />
+                  <ExtraDetailsSection {...props} className='mt-2 text-left' />
 
-            <PropagatingMessage
-              pendingClassName={pendingClassName}
-              prizeDistribution={prizeDistribution}
-            />
-          </div>
+                  <PropagatingMessage
+                    pendingClassName={pendingClassName}
+                    prizeDistribution={prizeDistribution}
+                  />
+                </div>
 
-          <div className='mt-6 xs:mt-0'>
-            <AmountInPrizes
-              amount={amount}
-              numberClassName='font-bold text-inverse text-xs xs:text-sm'
-              textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
-            />
-            <div className='mt-2'>
-              <ViewPrizeTiersTrigger
-                ticket={ticket}
-                prizeTier={prizeDistribution}
-                className='uppercase font-bold text-xs text-highlight-9 hover:text-highlight-2 transition tracking-wide leading-none'
+                <AmountInPrizes
+                  amount={amount}
+                  className='hidden xs:flex'
+                  numberClassName='font-bold text-inverse text-xs xs:text-sm'
+                  textClassName='font-bold text-inverse text-xs xs:text-sm ml-1 opacity-60'
+                />
+              </div>
+
+              <FeatherIcon
+                icon='chevron-right'
+                className='text-pt-purple-lighter w-6 h-6 ml-2 mb-auto'
               />
-            </div>
-          </div>
-        </div>
-      </Card>
+            </button>
+          )
+        }}
+      />
     </li>
   )
 }

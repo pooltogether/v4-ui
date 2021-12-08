@@ -15,7 +15,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
 
 import { TopNavigation } from 'lib/components/Layout/Navigation'
-import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
+import { useSupportedChainIds } from 'lib/hooks/useSupportedChainIds'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -84,7 +84,7 @@ const UsersAccount = () => {
     network
   } = useOnboard()
 
-  const supportedNetworks = useSupportedNetworks()
+  const supportedNetworks = useSupportedChainIds()
   const { t } = useTranslation()
 
   if (!isOnboardReady) return null

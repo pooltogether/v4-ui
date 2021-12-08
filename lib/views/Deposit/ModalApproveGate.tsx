@@ -12,7 +12,7 @@ import {
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 
-import { InfoList } from 'lib/components/InfoList'
+import { InfoList, ModalInfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 
 interface ModalApproveGateProps {
@@ -76,9 +76,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           .
         </p>
       </div>
-      <InfoList className='mb-6'>
+      <ModalInfoList className='mb-6'>
         <EstimatedApproveDepositsGasItem prizePool={prizePool} />
-      </InfoList>
+      </ModalInfoList>
       <SquareButton className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}
       </SquareButton>

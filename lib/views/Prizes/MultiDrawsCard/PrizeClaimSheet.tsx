@@ -9,7 +9,7 @@ import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
+import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { PrizeList } from 'lib/components/PrizeList'
 import { useSignerPrizeDistributor } from 'lib/hooks/Tsunami/PrizeDistributor/useSignerPrizeDistributor'
@@ -57,7 +57,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   const sendTx = useSendTransaction()
 
-  const { chainId } = useSelectedNetwork()
+  const { chainId } = useSelectedChainId()
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
@@ -101,6 +101,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     if (claimTx.error) {
       return (
         <BottomSheet
+          snapPoints={snapTo90}
           label='Error depositing modal'
           open={isOpen}
           onDismiss={() => {
@@ -134,6 +135,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
     return (
       <BottomSheet
+        snapPoints={snapTo90}
         label='Claim prizes modal'
         open={isOpen}
         onDismiss={() => {
@@ -168,6 +170,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   if (!isWalletOnProperNetwork) {
     return (
       <BottomSheet
+        snapPoints={snapTo90}
         label='Wrong network modal'
         open={isOpen}
         onDismiss={() => {
@@ -187,6 +190,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   return (
     <BottomSheet
+      snapPoints={snapTo90}
       label='Claim prizes modal'
       open={isOpen}
       snapPoints={snapTo90}

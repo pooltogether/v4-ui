@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next'
 import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
+import { useSelectedChainIdWatcher } from 'lib/hooks/useSelectedChainId'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -37,7 +37,7 @@ import 'react-spring-bottom-sheet/dist/style.css'
 import 'assets/styles/bottomSheet.css'
 
 // Custom css
-import 'assets/styles/pageHeader.css'
+import 'assets/styles/gradients.css'
 import 'assets/styles/index.css'
 import 'assets/styles/tsunami.css'
 
@@ -132,7 +132,7 @@ function MyApp({ Component, pageProps, router }) {
 }
 
 const InitPoolTogetherHooks = ({ children }) => {
-  useSelectedNetworkWatcher()
+  useSelectedChainIdWatcher()
   useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
   useInitializeOnboard({

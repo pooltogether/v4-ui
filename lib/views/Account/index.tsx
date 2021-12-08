@@ -1,28 +1,26 @@
 import React from 'react'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
-import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
+import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
-import { AccountCard, OddsDisclaimer } from 'lib/views/Account/AccountCard'
+import { AccountCard } from 'lib/views/Account/AccountCard'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
-import { TotalPrizeClaimed } from './AccountCard/TotalPrizesClaimed'
+import { OddsDisclaimer } from './OddsDisclaimer'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
-  const user = useSelectedNetworkUser()
+  const user = useSelectedChainIdUser()
 
   if (!isWalletConnected) {
     return (
       <PagePadding>
-        <TotalPrizeClaimed />
         <Piggy className='w-20 sm:w-32 mb-2 sm:mb-4 mx-auto' />
         <span className='mx-auto mb-6 text-xs sm:text-lg block text-center'>
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
-        <OddsDisclaimer className='block mt-6' />
         <div className='mt-4'>
           <BackToV3Banner />
         </div>
@@ -36,6 +34,7 @@ export const AccountUI = (props) => {
       <div className='mt-4'>
         <BackToV3Banner />
       </div>
+      <OddsDisclaimer className='block mt-6' />
     </PagePadding>
   )
 }

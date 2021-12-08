@@ -1,5 +1,5 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
-import { Card, ThemedClipSpinner, Time, Tooltip } from '@pooltogether/react-components'
+import { Card, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'
 import classNames from 'classnames'
@@ -16,6 +16,7 @@ import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { usePropagatingDraws } from 'lib/hooks/Tsunami/PrizeDistributor/usePropagatingDraws'
+import { Time } from 'lib/components/Time'
 
 export const LockedDrawsCard = (props: {
   prizeDistributor: PrizeDistributor
@@ -118,7 +119,11 @@ const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: stri
 
   return (
     <div className={classNames(className)}>
-      <Time seconds={secondsLeft} className='' />
+      <Time
+        seconds={secondsLeft}
+        backgroundColorClassName={'bg-pt-purple-lighter bg-opacity-20'}
+        unitsColorClassName={'text-pt-purple-lighter text-opacity-40'}
+      />
     </div>
   )
 }

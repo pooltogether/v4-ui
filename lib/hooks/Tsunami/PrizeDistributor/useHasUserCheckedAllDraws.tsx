@@ -37,12 +37,13 @@ export const useHasUserCheckedAllDraws = (
       !usersAddress ||
       !isClaimedAmountsFetched ||
       !prizeDistributor ||
-      !isNormalizedBalancesFetched
+      !isNormalizedBalancesFetched ||
+      usersAddress !== claimedAmountsData.usersAddress
     ) {
       return { data: null, isFetched: false }
     }
 
-    const claimedAmounts = claimedAmountsData[usersAddress]
+    const { claimedAmounts } = claimedAmountsData
     const normalizedBalances = normalizedBalancesData[usersAddress]
 
     if (!claimedAmounts || !normalizedBalances) {
