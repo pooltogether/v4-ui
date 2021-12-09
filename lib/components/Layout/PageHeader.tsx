@@ -45,7 +45,7 @@ const Settings = () => {
   const { t } = useTranslation()
 
   return (
-    <SettingsContainer t={t} className='ml-1 my-auto' title='Settings' sizeClassName='w-6 h-6'>
+    <SettingsContainer t={t} className='ml-2 my-auto'>
       <LanguagePicker />
       <ThemeSettingsItem t={t} />
       <TestnetSettingsItem t={t} />
