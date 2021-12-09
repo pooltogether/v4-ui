@@ -13,6 +13,7 @@ import { useUser } from 'lib/hooks/Tsunami/User/useUser'
 import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool
@@ -35,30 +36,20 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
     balance.amountUnformatted.isZero() ||
     !isFetched ||
     delegateData?.[usersAddress] !== ethers.constants.AddressZero
-  )
+  ) {
     return null
+  }
 
   return (
     <>
-      <div className={classNames('flex flex-col mx-auto mt-6 sm:mt-12 text-center', className)}>
-        <span className='text-2xl mx-auto'>👋</span>
-        <span className='my-auto font-bold'>
-          {t(
-            'toWinPrizesNeedToActivate',
-            'To win prizes with your deposit you first need to activate it'
-          )}
-          :
-        </span>
+      <div className={classNames('flex flex-col mx-auto text-center px-4 pb-4', className)}>
+        <span className='my-auto opacity-50 px-2'>{t('toWinPrizesNeedToActivate')}</span>
 
         <ActivateTicketsButton
-          className='mt-4 w-1/2 mx-auto'
+          className='mt-4 w-full mx-auto'
           prizePool={prizePool}
           refetchDelegate={refetchDelegate}
         />
-
-        <span className='my-auto mt-1 opacity-70'>
-          ({t('thisIsOncePerNetwork', 'This is one-time per network')})
-        </span>
       </div>
     </>
   )
@@ -112,7 +103,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
       size={SquareButtonSize.sm}
       onClick={sendDelegateTx}
     >
-      {t('activateTickets', 'Activate tickets')}
+      {t('activateNetworkDeposit', { network: getNetworkNiceNameByChainId(prizePool.chainId) })}
     </TxButtonNetworkGated>
   )
 }

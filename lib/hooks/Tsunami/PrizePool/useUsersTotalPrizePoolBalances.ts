@@ -17,9 +17,9 @@ export const useUsersTotalPrizePoolBalances = () => {
   let decimals: string
   const v4TotalBalanceAmountUnformatted = v4Balances.reduce((acc, curr) => {
     if (!decimals) {
-      decimals = curr[usersAddress].ticket.decimals
+      decimals = curr.balances.ticket.decimals
     }
-    return acc.add(curr[usersAddress].ticket.amountUnformatted)
+    return acc.add(curr.balances.ticket.amountUnformatted)
   }, BigNumber.from(0))
 
   const v4TotalBalance = getAmountFromBigNumber(v4TotalBalanceAmountUnformatted, decimals)

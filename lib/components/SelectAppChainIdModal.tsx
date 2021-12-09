@@ -7,6 +7,7 @@ import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { BottomSheet } from './BottomSheet'
 import { useSupportedChainIds } from 'lib/hooks/useSupportedChainIds'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -15,6 +16,7 @@ interface SelectAppChainIdModalProps {
 export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
   const { className } = props
 
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   const supportedChainIds = useSupportedChainIds()
@@ -37,12 +39,8 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
         <FeatherIcon icon='chevron-down' className='ml-2' />
       </button>
       <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
-        <h6 className='text-center uppercase text-sm mb-3'>Choose a network</h6>
-        <p className='max-w-xs mx-auto text-xs mb-12 text-center'>
-          All networks deposit to the same prize. Watch out for{' '}
-          <b className='text-highlight-1'>Pool Parties</b> where you can earn{' '}
-          <b className='text-pt-gradient'>REWARDS</b> just by using that network!
-        </p>
+        <h6 className='text-center uppercase text-sm mb-3'>{t('chooseANetwork')}</h6>
+        <p className='max-w-xs mx-auto text-xs mb-12 text-center'>{t('v4NetworkSelectPrompt')}</p>
 
         <ul className='space-y-2 mx-auto max-w-sm'>
           {supportedChainIds.map((chainId) => (

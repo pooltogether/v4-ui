@@ -8,7 +8,11 @@ interface InfoListProps
 }
 
 export const ModalInfoList = (props: Omit<InfoListProps, 'bgClassName' & 'textClassName'>) => (
-  <InfoList {...props} bgClassName='bg-pt-purple-lighter dark:bg-pt-purple' textClassName='' />
+  <InfoList
+    {...props}
+    bgClassName='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10'
+    textClassName=''
+  />
 )
 
 export const InfoList = (props: InfoListProps) => {

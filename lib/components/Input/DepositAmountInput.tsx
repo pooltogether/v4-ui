@@ -74,7 +74,7 @@ const DepositInputHeader = (props: DepositInputHeaderProps) => {
 
   const { trigger, setValue } = form
   const token = prizePoolTokens?.token
-  const usersBalances = usersBalancesData?.[usersAddress]
+  const usersBalances = usersBalancesData?.balances
   const tokenBalance = usersBalances?.token
 
   // If the user input a larger amount than their wallet balance before connecting a wallet
@@ -90,6 +90,7 @@ const DepositInputHeader = (props: DepositInputHeaderProps) => {
           id='_setMaxDepositAmount'
           type='button'
           className='font-bold inline-flex items-center '
+          disabled={!tokenBalance}
           onClick={(e) => {
             e.preventDefault()
             setValue(inputKey, tokenBalance.amount, { shouldValidate: true })
@@ -183,13 +184,12 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
   const token = prizePoolTokens?.token
   const decimals = token?.decimals
   const minimumDepositAmount = useMinimumDepositAmount(token)
-  const usersBalances = usersBalancesData?.[usersAddress]
+  const usersBalances = usersBalancesData?.balances
   const tokenBalance = usersBalances?.token
   const ticketBalance = usersBalances?.ticket
 
   return {
     isValid: (v: string) => {
-      console.log('Validate', v)
       const isNotANumber = isNaN(Number(v))
       if (isNotANumber) return false
       if (!minimumDepositAmount) return false

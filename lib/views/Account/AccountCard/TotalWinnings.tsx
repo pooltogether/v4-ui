@@ -80,24 +80,25 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
   const { data, isFetched } = useAllUsersPositiveClaimedAmountsWithDraws(usersAddress)
   const { t } = useTranslation()
 
+  let listItems: React.ReactNode = [<LoadingRow />, <LoadingRow />, <LoadingRow />]
+  if (isFetched) {
+    if (data.length === 0) {
+      return <EmptyState />
+    } else {
+      listItems = data.map((data) => (
+        <ClaimedPrizeItem key={`${data.prizeDistributorId}-${data.drawId}`} {...data} />
+      ))
+    }
+  }
+
   return (
     <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
-      <div className='grid grid-cols-3 opacity-50 font-bold'>
-        <div>{t('prizeAmountString', 'Prize amount')}</div>
+      <div className='grid grid-cols-4 opacity-50 font-bold'>
+        <div className='col-span-2'>{t('prizeAmountString', 'Prize amount')}</div>
         <div className='text-right'>{t('draw')}</div>
         <div className='text-right'>{t('date', 'Date')}</div>
       </div>
-      {!isFetched ? (
-        <>
-          <LoadingRow />
-          <LoadingRow />
-          <LoadingRow />
-        </>
-      ) : (
-        data.map((data) => (
-          <ClaimedPrizeItem key={`${data.prizeDistributorId}-${data.drawId}`} {...data} />
-        ))
-      )}
+      {listItems}
     </ul>
   )
 }
@@ -113,8 +114,8 @@ const ClaimedPrizeItem = (props: {
   const { token, prizeDistributorId, chainId, drawId, claimedAmount, draw } = props
 
   return (
-    <li className='grid grid-cols-3'>
-      <div className=''>
+    <li className='grid grid-cols-4'>
+      <div className='col-span-2'>
         <TokenIcon className='mr-2' chainId={chainId} address={token.address} />
         <span className='font-bold mr-1'>{claimedAmount.amountPretty}</span>
         <span className='opacity-50'>{token.symbol}</span>
@@ -130,3 +131,13 @@ const ClaimedPrizeItem = (props: {
 const LoadingRow = () => (
   <div className='rounded-lg bg-actually-black bg-opacity-20 dark:bg-white dark:bg-opacity-10 animate-pulse w-full h-10' />
 )
+
+const EmptyState = () => {
+  const { t } = useTranslation()
+  return (
+    <div className='rounded-lg bg-actually-black bg-opacity-5 dark:bg-white dark:bg-opacity-5 p-4 flex flex-col text-center'>
+      <span className='font-bold opacity-70'>{t('noPrizesYet', 'No prizes... Yet.')}</span>
+      <span className='text-9xl'>🤞</span>
+    </div>
+  )
+}

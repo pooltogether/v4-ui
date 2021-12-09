@@ -1,15 +1,13 @@
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 import classnames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import {
-  Modal,
   LoadingDots,
   SquareButton,
   SquareButtonTheme,
   Tooltip,
   ErrorsBox
 } from '@pooltogether/react-components'
-import { Amount, Token, TokenBalance, Transaction } from '@pooltogether/hooks'
+import { Amount, TokenWithBalance, Transaction } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from 'ethers/lib/utils'
@@ -23,156 +21,16 @@ import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { PrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
-import { InfoList, InfoListItem, ModalInfoList } from 'lib/components/InfoList'
+import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { EstimatedWithdrawalGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
-import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { WithdrawalSteps } from 'lib/views/Account/ManageBalancesList'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import { WithdrawalSteps } from './WithdrawView'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
-
-interface WithdrawModalProps {
-  isOpen: boolean
-  user: User
-  prizePool: PrizePool
-  withdrawTx: Transaction
-  currentStep: WithdrawalSteps
-  prizePoolTokens: PrizePoolTokens
-  isPrizePoolTokensFetched: boolean
-  usersBalances: UsersPrizePoolBalances
-  isUsersBalancesFetched: boolean
-  amountToWithdraw: Amount
-  form: UseFormReturn<FieldValues, object>
-  sendWithdrawTx: (e: any) => Promise<void>
-  closeModal: () => void
-  setWithdrawTxId: (txId: number) => void
-  setCurrentStep: (step: WithdrawalSteps) => void
-  refetchUsersBalances: () => void
-  setAmountToWithdraw: (amount: Amount) => void
-}
-
-export const WithdrawModal = (props: WithdrawModalProps) => {
-  const {
-    isOpen,
-    user,
-    prizePool,
-    withdrawTx,
-    currentStep,
-    prizePoolTokens,
-    isPrizePoolTokensFetched,
-    amountToWithdraw,
-    usersBalances,
-    isUsersBalancesFetched,
-    form,
-    closeModal,
-    refetchUsersBalances,
-    sendWithdrawTx,
-    setWithdrawTxId,
-    setCurrentStep,
-    setAmountToWithdraw
-  } = props
-
-  const { t } = useTranslation()
-
-  const { reset } = form
-
-  const closeModalAndMaybeReset = useCallback(() => {
-    closeModal()
-  }, [currentStep])
-
-  useEffect(() => {
-    reset()
-  }, [isOpen])
-
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
-
-  if (!isWalletOnProperNetwork) {
-    return (
-      <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
-        <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
-        <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
-      </Modal>
-    )
-  }
-
-  if (currentStep === WithdrawalSteps.viewTxReceipt) {
-    return (
-      <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
-        <ModalTitle
-          chainId={prizePool.chainId}
-          title={t('withdrawalSubmitted', 'Withdrawal submitted')}
-        />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={prizePool.chainId}
-          tx={withdrawTx}
-          closeModal={closeModal}
-        />
-      </Modal>
-    )
-  }
-
-  return (
-    <Modal label='Withdrawal Modal' isOpen={isOpen} closeModal={closeModalAndMaybeReset}>
-      <BackButton resetForm={reset} currentStep={currentStep} setCurrentStep={setCurrentStep} />
-      <ModalTitle chainId={prizePool.chainId} title={t('withdrawTokens', 'Withdraw tokens')} />
-      <div className='w-full mx-auto mt-8'>
-        <WithdrawStepContent
-          form={form}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          user={user}
-          prizePool={prizePool}
-          usersBalances={usersBalances}
-          prizePoolTokens={prizePoolTokens}
-          isUsersBalancesFetched={isUsersBalancesFetched}
-          isPrizePoolTokensFetched={isPrizePoolTokensFetched}
-          refetchUsersBalances={refetchUsersBalances}
-          amountToWithdraw={amountToWithdraw}
-          setAmountToWithdraw={setAmountToWithdraw}
-          withdrawTx={withdrawTx}
-          setWithdrawTxId={setWithdrawTxId}
-          sendWithdrawTx={sendWithdrawTx}
-        />
-      </div>
-    </Modal>
-  )
-}
-
-const BackButton = (props) => {
-  const { currentStep, setCurrentStep, resetForm } = props
-  const { t } = useTranslation()
-
-  if (currentStep === WithdrawalSteps.input || currentStep === WithdrawalSteps.viewTxReceipt)
-    return null
-
-  return (
-    <button
-      className='text-inverse hover:text-inverse absolute top-7 left-8 text-xs border-b opacity-30 hover:opacity-100 trans leading-tight'
-      onClick={() => {
-        const newStep = currentStep - 1
-        if (newStep === WithdrawalSteps.input) {
-          resetForm()
-        }
-        setCurrentStep(newStep)
-      }}
-    >
-      <FeatherIcon
-        icon={'arrow-left'}
-        className='relative w-4 h-4 inline-block'
-        style={{ top: -1 }}
-      />{' '}
-      {t('back')}
-    </button>
-  )
-}
 
 interface WithdrawStepContentProps {
   form: UseFormReturn<FieldValues, object>
@@ -180,9 +38,7 @@ interface WithdrawStepContentProps {
   user: User
   prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
-  prizePoolTokens: PrizePoolTokens
   isUsersBalancesFetched: boolean
-  isPrizePoolTokensFetched: boolean
   withdrawTx: Transaction
   amountToWithdraw: Amount
   sendWithdrawTx: (e: any) => Promise<void>
@@ -192,13 +48,12 @@ interface WithdrawStepContentProps {
   refetchUsersBalances: () => void
 }
 
-const WithdrawStepContent = (props: WithdrawStepContentProps) => {
+export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
     user,
     prizePool,
     usersBalances,
-    prizePoolTokens,
     isUsersBalancesFetched,
     currentStep,
     amountToWithdraw,
@@ -220,8 +75,7 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     )
   }
 
-  const { ticket: ticketBalance, token: tokenBalance } = usersBalances
-  const { ticket, token } = prizePoolTokens
+  const { ticket, token } = usersBalances
 
   if (currentStep === WithdrawalSteps.review) {
     return (
@@ -232,8 +86,6 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
         amountToWithdraw={amountToWithdraw}
         token={token}
         ticket={ticket}
-        tokenBalance={tokenBalance}
-        ticketBalance={ticketBalance}
         tx={withdrawTx}
         sendWithdrawTx={sendWithdrawTx}
         setCurrentStep={setCurrentStep}
@@ -249,8 +101,6 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
       form={form}
       token={token}
       ticket={ticket}
-      tokenBalance={tokenBalance}
-      ticketBalance={ticketBalance}
       setCurrentStep={setCurrentStep}
       setAmountToWithdraw={setAmountToWithdraw}
     />
@@ -260,10 +110,8 @@ const WithdrawStepContent = (props: WithdrawStepContentProps) => {
 interface WithdrawInputStepProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  tokenBalance: TokenBalance
-  ticketBalance: TokenBalance
-  token: Token
-  ticket: Token
+  token: TokenWithBalance
+  ticket: TokenWithBalance
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
 }
@@ -275,16 +123,7 @@ interface WithdrawInputStepProps {
  * @returns
  */
 const WithdrawInputStep = (props: WithdrawInputStepProps) => {
-  const {
-    chainId,
-    form,
-    token,
-    ticket,
-    tokenBalance,
-    ticketBalance,
-    setCurrentStep,
-    setAmountToWithdraw
-  } = props
+  const { chainId, form, token, ticket, setCurrentStep, setAmountToWithdraw } = props
 
   const { t } = useTranslation()
 
@@ -304,14 +143,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <WithdrawForm
-        chainId={chainId}
-        form={form}
-        token={token}
-        ticket={ticket}
-        tokenBalance={tokenBalance}
-        ticketBalance={ticketBalance}
-      />
+      <WithdrawForm chainId={chainId} form={form} token={token} ticket={ticket} />
 
       <DownArrow />
 
@@ -333,10 +165,8 @@ interface WithdrawReviewStepProps {
   prizePool: PrizePool
   chainId: number
   amountToWithdraw: Amount
-  tokenBalance: TokenBalance
-  ticketBalance: TokenBalance
-  token: Token
-  ticket: Token
+  token: TokenWithBalance
+  ticket: TokenWithBalance
   tx: Transaction
   sendWithdrawTx: (e: any) => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
@@ -351,8 +181,7 @@ interface WithdrawReviewStepProps {
  * @returns
  */
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
-  const { prizePool, chainId, amountToWithdraw, token, ticket, ticketBalance, tx, sendWithdrawTx } =
-    props
+  const { prizePool, chainId, amountToWithdraw, token, ticket, tx, sendWithdrawTx } = props
 
   const { t } = useTranslation()
 
@@ -360,21 +189,12 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
 
   return (
     <>
-      <WithdrawLabel symbol={ticket.symbol} />
-
-      <SquaredTokenAmountContainer
-        chainId={chainId}
-        amount={amountToWithdraw.amount}
-        token={ticket}
-      />
-
-      <DownArrow />
-
-      <SquaredTokenAmountContainer
-        className='mb-8'
-        chainId={chainId}
-        amount={amountToWithdraw.amount}
-        token={token}
+      <AmountBeingSwapped
+        title={t('withdrawTicker', { ticker: ticket.symbol })}
+        chainId={prizePool.chainId}
+        from={ticket}
+        to={token}
+        amount={amountToWithdraw}
       />
 
       <div className='my-8'>
@@ -383,7 +203,6 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
           amountToWithdraw={amountToWithdraw}
           token={token}
           ticket={ticket}
-          ticketBalance={ticketBalance}
         />
       </div>
 
@@ -414,19 +233,22 @@ const WithdrawLabel = (props) => {
 interface WithdrawFormProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  tokenBalance: TokenBalance
-  ticketBalance: TokenBalance
-  token: Token
-  ticket: Token
+  token: TokenWithBalance
+  ticket: TokenWithBalance
   disabled?: boolean
 }
 
 const WithdrawForm = (props: WithdrawFormProps) => {
-  const { disabled, chainId, form, token, ticket, ticketBalance } = props
+  const { disabled, chainId, form, token, ticket } = props
   const { register, setValue } = form
 
-  const { address: ticketAddress, symbol: ticketSymbol } = ticket
-  const { amount, amountUnformatted, hasBalance } = ticketBalance
+  const {
+    address: ticketAddress,
+    symbol: ticketSymbol,
+    amount,
+    amountUnformatted,
+    hasBalance
+  } = ticket
 
   const withdrawValidationRules = {
     isValid: (v) => {
@@ -526,11 +348,10 @@ const UpdatedStats = (props: {
   className?: string
   prizePool: PrizePool
   amountToWithdraw: Amount
-  token: Token
-  ticket: Token
-  ticketBalance: TokenBalance
+  token: TokenWithBalance
+  ticket: TokenWithBalance
 }) => {
-  const { className, prizePool, amountToWithdraw, token, ticket, ticketBalance } = props
+  const { className, prizePool, amountToWithdraw, token, ticket } = props
 
   return (
     <ModalInfoList className={className}>
@@ -539,11 +360,7 @@ const UpdatedStats = (props: {
         prizePool={prizePool}
         action={EstimateAction.withdraw}
       />
-      <FinalTicketBalanceStat
-        amount={amountToWithdraw?.amount}
-        ticket={ticket}
-        ticketBalance={ticketBalance}
-      />
+      <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
       <EstimatedWithdrawalGasItem
         prizePool={prizePool}
@@ -553,11 +370,11 @@ const UpdatedStats = (props: {
   )
 }
 
-const FinalTicketBalanceStat = (props) => {
-  const { amount, ticket, ticketBalance } = props
+const FinalTicketBalanceStat = (props: { amount: string; ticket: TokenWithBalance }) => {
+  const { amount, ticket } = props
   const { t } = useTranslation()
   const amountUnformatted = ethers.utils.parseUnits(amount, ticket.decimals)
-  const finalBalanceUnformatted = ticketBalance.amountUnformatted.sub(amountUnformatted)
+  const finalBalanceUnformatted = ticket.amountUnformatted.sub(amountUnformatted)
   const finalBalance = ethers.utils.formatUnits(finalBalanceUnformatted, ticket.decimals)
   const finalBalancePretty = numberWithCommas(finalBalance)
   const fullFinalBalancePretty = numberWithCommas(finalBalance, {

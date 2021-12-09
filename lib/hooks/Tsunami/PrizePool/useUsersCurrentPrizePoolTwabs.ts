@@ -22,6 +22,7 @@ export const useUsersCurrentPrizePoolTwabs = (
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
 
   // Fetch data for each network
+  // TODO: Replace this with `useQueries`, then we can remove all hardcoded references and make the entire app depend on the contract list!!
   const {
     data: ethereumTwabData,
     isFetched: isEthereumTwabFetched,

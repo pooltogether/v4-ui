@@ -12,7 +12,8 @@ import { useOverallOddsData } from './useOverallOddsData'
 export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
   usersAddress: string,
   action: EstimateAction = EstimateAction.none,
-  amountUnformatted: BigNumber = ethers.constants.Zero
+  amountUnformatted: BigNumber = ethers.constants.Zero,
+  daysOfPrizes: number = 1
 ): {
   [usersAddress: string]: {
     odds: number
@@ -30,7 +31,7 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
     [usersAddress]: estimateOddsForAmount(
       twabs.total,
       totalSupply,
-      numberOfPrizes,
+      numberOfPrizes * daysOfPrizes,
       decimals,
       action,
       amountUnformatted

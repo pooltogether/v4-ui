@@ -42,12 +42,7 @@ export const PastDrawsList = (props: {
   )
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  if (
-    !isPrizePoolTokensFetched ||
-    !isDrawsAndPrizeDistributionsFetched ||
-    !isDrawLocksFetched ||
-    claimedAmountsData.usersAddress !== usersAddress
-  ) {
+  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
     return (
       <>
         <PastDrawsListHeader className={classNames(className, 'mb-1')} />
@@ -281,8 +276,6 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     return (
       <div className={classNames(className, 'animate-pulse')}>
         <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
-        <span className='ml-2 font-bold'>{amountPretty}</span>
-        <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {

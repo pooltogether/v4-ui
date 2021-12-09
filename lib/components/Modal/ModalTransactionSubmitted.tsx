@@ -17,11 +17,12 @@ interface ModalTransactionSubmittedProps {
   className?: string
   chainId: number
   tx: Transaction
-  closeModal: any
+  closeModal: () => void
+  hideCloseButton?: boolean
 }
 
 export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps) => {
-  const { chainId, tx, className, closeModal } = props
+  const { chainId, tx, className, closeModal, hideCloseButton } = props
   const { t } = useTranslation()
 
   const url = formatBlockExplorerTxUrl(tx?.hash, chainId)
@@ -43,14 +44,20 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
       >
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
-      <SquareButton
-        onClick={() => closeModal()}
-        theme={SquareButtonTheme.purpleOutline}
-        size={SquareButtonSize.sm}
-        className='w-full text-center mt-4'
-      >
-        {t('close', 'Close')}
-      </SquareButton>
+      {!hideCloseButton && (
+        <SquareButton
+          onClick={() => closeModal()}
+          theme={SquareButtonTheme.purpleOutline}
+          size={SquareButtonSize.sm}
+          className='w-full text-center mt-4'
+        >
+          {t('close', 'Close')}
+        </SquareButton>
+      )}
     </div>
   )
+}
+
+ModalTransactionSubmitted.defaultProps = {
+  hideCloseButton: false
 }

@@ -58,7 +58,7 @@ export const DepositCard = (props: { className?: string }) => {
     refetch: refetchUsersBalances,
     isFetched: isUsersBalancesFetched
   } = useUsersPrizePoolBalances(usersAddress, prizePool)
-  const usersBalances = usersBalancesData?.[usersAddress]
+  const usersBalances = usersBalancesData?.balances
   const {
     data: depositAllowance,
     refetch: refetchUsersDepositAllowance,
@@ -75,6 +75,7 @@ export const DepositCard = (props: { className?: string }) => {
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
+    usersBalancesData.usersAddress === usersAddress &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
   const ticketDelegate = delegateData?.[usersAddress]

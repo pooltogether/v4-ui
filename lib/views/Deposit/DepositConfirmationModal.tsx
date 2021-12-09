@@ -30,6 +30,7 @@ import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { BottomSheet } from 'lib/components/BottomSheet'
 import classNames from 'classnames'
+import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   prizePool: PrizePool
@@ -170,46 +171,12 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
 
       <div className='w-full mx-auto mt-8'>
         <AmountBeingSwapped
+          title={t('depositTicker', { ticker: token.symbol })}
           chainId={prizePool.chainId}
-          token={token}
-          ticket={ticket}
-          amountToDeposit={amountToDeposit}
+          from={token}
+          to={ticket}
+          amount={amountToDeposit}
         />
-        {/* <TextInputGroup
-          readOnly
-          disabled
-          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
-          Input={RectangularInput}
-          textClassName={'text-xl text-right'}
-          className={'font-inter font-semibold opacity-100'}
-          containerBgClassName={'bg-transparent'}
-          containerRoundedClassName={'rounded-lg'}
-          id='quantity-confirm-modal'
-          name='quantity-confirm-modal'
-          register={() => {}}
-          value={amount}
-          label={
-            <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-              {t('depositTicker', { ticker: token.symbol })}
-            </div>
-          }
-        />
-
-        <DownArrow className='text-inverse' />
-
-        <TextInputGroup
-          readOnly
-          disabled
-          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={ticket} />}
-          Input={RectangularInput}
-          roundedClassName={'rounded-lg'}
-          containerRoundedClassName={'rounded-lg'}
-          bgVarName='var(--color-bg-readonly-tsunami)'
-          id='result-confirm-modal'
-          name='result-confirm-modal'
-          register={() => {}}
-          value={amount}
-        /> */}
 
         <ModalInfoList className='mt-8'>
           <UpdatedOdds
@@ -232,50 +199,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         </TxButtonNetworkGated>
       </div>
     </BottomSheet>
-  )
-}
-
-interface AmountBeingSwappedProps {
-  chainId: number
-  token: Token
-  ticket: Token
-  amountToDeposit: Amount
-  borderColorClassName: string
-}
-
-const AmountBeingSwapped = (props: AmountBeingSwappedProps) => {
-  const { chainId, token, ticket, amountToDeposit } = props
-  return (
-    <div className='bg-pt-purple-lighter dark:bg-pt-purple-dark border-2  border-pt-purple-light dark:border-pt-purple-darkest rounded-lg relative'>
-      <div className='absolute inset-0 flex justify-center'>
-        <div className='bg-pt-purple-light dark:bg-pt-purple-darkest rounded-full p-2 h-fit-content my-auto'>
-          <DownArrow className='text-inverse' />
-        </div>
-      </div>
-      <div className='flex justify-between items-center border-b border-pt-purple-light dark:border-pt-purple-darkest p-4'>
-        <TokenAndSymbol chainId={chainId} token={token} />
-        <span>{amountToDeposit.amountPretty}</span>
-      </div>
-      <div className='flex justify-between items-center border-t border-pt-purple-light dark:border-pt-purple-darkest p-4'>
-        <TokenAndSymbol chainId={chainId} token={ticket} />
-        <span>{amountToDeposit.amountPretty}</span>
-      </div>
-    </div>
-  )
-}
-
-const TokenAndSymbol = (props: { chainId: number; token: Token }) => {
-  const { chainId, token } = props
-  return (
-    <div className={classNames('flex items-center', 'placeholder-white placeholder-opacity-50')}>
-      <TokenIcon
-        sizeClassName='w-6 h-6'
-        className='mr-2'
-        chainId={chainId}
-        address={token.address}
-      />
-      <span className='font-bold'>{token.symbol}</span>
-    </div>
   )
 }
 
