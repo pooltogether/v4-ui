@@ -22,7 +22,7 @@ export const TotalWinnings = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'
+        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'
       >
         <span>
           {'🎉 '}
@@ -97,8 +97,8 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
 
   return (
     <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
-      <div className='grid grid-cols-4 opacity-50 font-bold'>
-        <div className='col-span-2'>{t('prizeAmountString', 'Prize amount')}</div>
+      <div className='grid grid-cols-3 xs:grid-cols-4 opacity-50 font-bold'>
+        <div className='xs:col-span-2'>{t('prizeAmountString', 'Prize amount')}</div>
         <div className='text-right'>{t('draw')}</div>
         <div className='text-right'>{t('date', 'Date')}</div>
       </div>
@@ -118,11 +118,11 @@ const ClaimedPrizeItem = (props: {
   const { token, prizeDistributorId, chainId, drawId, claimedAmount, draw } = props
 
   return (
-    <li className='grid grid-cols-4'>
-      <div className='col-span-2'>
-        <TokenIcon className='mr-2' chainId={chainId} address={token.address} />
+    <li className='grid grid-cols-3 xs:grid-cols-4'>
+      <div className='flex items-center xs:col-span-2'>
+        <TokenIcon className=' mr-2' chainId={chainId} address={token.address} />
         <span className='font-bold mr-1'>{claimedAmount.amountPretty}</span>
-        <span className='opacity-50'>{token.symbol}</span>
+        <span className='text-xxxxs opacity-50'>{token.symbol}</span>
       </div>
       <div className='text-right'>#{drawId}</div>
       <div className='text-right'>

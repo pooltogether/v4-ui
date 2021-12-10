@@ -1,5 +1,6 @@
 import { Token, Amount } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { DownArrow } from './DownArrow'
 
@@ -24,11 +25,15 @@ export const AmountBeingSwapped = (props: AmountBeingSwappedProps) => {
         </div>
         <div className='flex justify-between items-center border-b border-pt-purple-light dark:border-pt-purple-darkest p-4'>
           <TokenAndSymbol chainId={chainId} token={from} />
-          <span>{amount.amountPretty}</span>
+          <span>
+            {numberWithCommas(amount.amount, { precision: getMaxPrecision(amount.amount) })}
+          </span>
         </div>
         <div className='flex justify-between items-center border-t border-pt-purple-light dark:border-pt-purple-darkest p-4'>
           <TokenAndSymbol chainId={chainId} token={to} />
-          <span>{amount.amountPretty}</span>
+          <span>
+            {numberWithCommas(amount.amount, { precision: getMaxPrecision(amount.amount) })}
+          </span>
         </div>
       </div>
     </div>

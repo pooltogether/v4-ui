@@ -400,7 +400,7 @@ const UnderlyingReceivedStat = (props) => {
   const { token, amount } = props
   const { t } = useTranslation()
 
-  const amountPretty = numberWithCommas(amount)
+  const amountPretty = numberWithCommas(amount, { precision: getMaxPrecision(amount) })
   const fullFinalBalancePretty = numberWithCommas(amount, {
     precision: getMaxPrecision(amount)
   })

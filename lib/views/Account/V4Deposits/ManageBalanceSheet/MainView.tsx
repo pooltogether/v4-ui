@@ -5,7 +5,11 @@ import {
   SquareButtonTheme,
   TokenIcon
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  getMaxPrecision,
+  getNetworkNiceNameByChainId,
+  numberWithCommas
+} from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { CountUp } from 'lib/components/CountUp'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
@@ -45,7 +49,9 @@ export const MainView = (props: MainViewProps) => {
             address={ticket.address}
             sizeClassName='w-4 h-4 my-auto'
           />
-          <span className='font-bold opacity-50 mx-1'>{ticket.amount}</span>
+          <span className='font-bold opacity-50 mx-1'>
+            {numberWithCommas(ticket.amount, { precision: getMaxPrecision(ticket.amount) })}
+          </span>
           <span className='opacity-50'>{ticket.symbol}</span>
         </span>
       </div>

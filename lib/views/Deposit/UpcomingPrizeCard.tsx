@@ -152,11 +152,11 @@ const LightningBolts = () => (
     {/* Left */}
     <LightningBolt
       color='yellow'
-      className='top-4 xs:top-4 left-2 xs:left-4 sm:left-2 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
+      className='top-4 xs:top-4 left-2 xs:left-4 sm:left-2 w-12 h-12 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
     />
     <LightningBolt
       color='blue'
-      className='top-16 xs:top-20 -left-2 xs:left-4 sm:left-2 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
+      className='top-16 xs:top-20 -left-2 xs:left-4 sm:left-2 w-12 h-12 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
       scale={0.8}
     />
     {/* Right */}
@@ -164,12 +164,12 @@ const LightningBolts = () => (
       flip
       color='yellow'
       scale={0.6}
-      className='top-1 right-4 xs:right-4 sm:right-2 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
+      className='top-1 right-4 xs:right-4 sm:right-2 w-12 h-12 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
     />
     <LightningBolt
       flip
       color='blue'
-      className='top-14 right-2 xs:top-16 xs:right-4 sm:right-2 w-16 h-16 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
+      className='top-14 -right-1 xs:top-16 xs:right-4 sm:right-2 w-12 h-12 xs:w-24 xs:h-24 sm:w-28 sm:h-28'
     />
   </>
 )
