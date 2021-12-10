@@ -29,12 +29,6 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
 
   return (
     <div className={classNames('flex flex-col', className)}>
-      <ClipBoardWithCheckMark className='mx-auto mb-4 w-10' />
-
-      <span className='text-sm text-inverse mb-8 mx-auto opacity-50'>
-        {t('transactionSent', 'Transaction sent')}
-      </span>
-
       <SquareLink
         target='_blank'
         href={url}

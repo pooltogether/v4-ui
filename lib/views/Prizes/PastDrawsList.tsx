@@ -106,7 +106,7 @@ interface PastPrizeListItemProps {
 
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
-  const { token, ticket, drawData } = props
+  const { ticket, drawData } = props
   const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
   const { draw, prizeDistribution } = drawData
   const amount = prizeDistribution
@@ -123,7 +123,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
             <button
               onClick={onClick}
               className={classNames(
-                'flex flex-row justify-between w-full bg-pt-purple-dark bg-opacity-50 rounded-lg p-4',
+                'flex flex-row justify-between w-full bg-white dark:bg-pt-purple-dark dark:bg-opacity-50 rounded-lg p-4',
                 'hover:shadow-lg hover:bg-opacity-100'
               )}
             >
@@ -204,7 +204,7 @@ const PropagatingMessage = (props: {
           'propagatingMeans',
           'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
         )}
-        className='flex items-center mt-4'
+        className='flex items-center'
       >
         <ThemedClipSpinner size={10} className='mr-2' />{' '}
         <span className='uppercase flex items-center'>
@@ -274,7 +274,6 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       </span>
     )
   } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
-    const { amountPretty } = roundPrizeAmount(drawResult?.totalValue, ticket.decimals)
     return (
       <div className={classNames(className, 'animate-pulse')}>
         <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
@@ -292,7 +291,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   } else if (usersAddress && normalizedBalance && useWasNotEligible) {
     return (
       <div className={classNames(className)}>
-        <span className='text-accent-1 opacity-50'>Not eligible</span>
+        <span className='text-accent-1 opacity-50'>{t('notEligible', 'Not eligible')}</span>
       </div>
     )
   } else {

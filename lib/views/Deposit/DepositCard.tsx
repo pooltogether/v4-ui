@@ -94,7 +94,7 @@ export const DepositCard = (props: { className?: string }) => {
   const [depositedAmount, setDepositedAmount] = useState<Amount>()
 
   const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
-  const getKey = (prizePool: PrizePool, action: string) => `${prizePool.id()}-${action}`
+  const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
   const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
   const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
@@ -214,7 +214,7 @@ export const DepositCard = (props: { className?: string }) => {
   return (
     <>
       <div className={className}>
-        <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-6 sm:mb-8'>
+        <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-2 mt-4'>
           {t('depositOn', 'Deposit on')}
           <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
         </div>

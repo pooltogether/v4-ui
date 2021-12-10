@@ -10,13 +10,14 @@ import { useState } from 'react'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
+import classNames from 'classnames'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
   return (
     <div id='deposits'>
       <h3>{t('deposits')}</h3>
-      <div className='bg-pt-purple-lighter dark:bg-pt-purple rounded-lg p-4'>
+      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>
     </div>
@@ -83,7 +84,9 @@ const DepositBalance = (props: DepositItemsProps) => {
   return (
     <div className='flex'>
       <TokenIcon chainId={prizePool.chainId} address={ticket.address} className='mr-2 my-auto' />
-      <span className='font-bold text-lg mr-3'>{ticket.amountPretty}</span>
+      <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
+        ${ticket.amountPretty}
+      </span>
       <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
     </div>
   )

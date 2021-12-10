@@ -44,5 +44,5 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 
 MultiDrawsPrizeTiersTrigger.defaultProps = {
   textClassName:
-    'uppercase font-bold text-xxs sm:text-xs text-inverse opacity-70 hover:opacity-100 transition leading-none tracking-wide'
+    'uppercase font-bold text-xxs sm:text-xs opacity-70 hover:opacity-100 transition leading-none tracking-wide'
 }

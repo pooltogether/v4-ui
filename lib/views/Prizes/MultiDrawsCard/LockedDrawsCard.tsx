@@ -161,7 +161,7 @@ const PropagatingDrawsCard = (props: {
         </div>
       </div>
       <div className='absolute bottom-6 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
-        <div className='font-bold text-inverse text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
+        <div className='font-bold text-white text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
           <Tooltip
             id={`tooltip-what-is-propagating`}
             tip={t(
@@ -177,7 +177,7 @@ const PropagatingDrawsCard = (props: {
                 {' '}
                 {t('propagating', 'Propagating ...')}{' '}
               </span>
-              <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
+              <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-white ml-2' />
             </span>
           </Tooltip>
         </div>

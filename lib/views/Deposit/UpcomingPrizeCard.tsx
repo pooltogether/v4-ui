@@ -81,7 +81,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   return (
     <h1
       className={classNames(
-        'text-7xl xs:text-10xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
+        'text-10xl xs:text-13xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
         { 'opacity-50': !amount }
       )}
     >
@@ -115,7 +115,11 @@ const DrawCountdown = (props) => {
       <DrawNumberString>
         <span>{t('joinDrawNumber', 'Join draw #{{number}}', { number: drawId })}</span>
       </DrawNumberString>
-      <Time seconds={secondsLeft} className='mt-1 mx-auto h-14' />
+      <Time
+        seconds={secondsLeft}
+        className='mt-1 mx-auto h-14'
+        timeClassName='text-sm xs:text-lg'
+      />
     </div>
   )
 }

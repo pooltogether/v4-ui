@@ -237,7 +237,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
               zIndex: 4,
               colors: ['#17e1fd', '#4c249f', '#ff77e1', '#fff177']
             }}
-          />
+          >
+            <div />
+          </Reward>
         </div>
 
         <SquareButton

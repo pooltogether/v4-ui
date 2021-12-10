@@ -26,7 +26,7 @@ export const TotalWinnings = () => {
       >
         <span>
           {'🎉 '}
-          {t('totalWinningsExclamation')}
+          {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
         </span>
         <div className='flex'>
           <span className='rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
@@ -80,7 +80,11 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
   const { data, isFetched } = useAllUsersPositiveClaimedAmountsWithDraws(usersAddress)
   const { t } = useTranslation()
 
-  let listItems: React.ReactNode = [<LoadingRow />, <LoadingRow />, <LoadingRow />]
+  let listItems: React.ReactNode = [
+    <LoadingRow key={'loadingrow1'} />,
+    <LoadingRow key={'loadingrow2'} />,
+    <LoadingRow key={'loadingrow3'} />
+  ]
   if (isFetched) {
     if (data.length === 0) {
       return <EmptyState />

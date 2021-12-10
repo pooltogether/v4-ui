@@ -1,4 +1,4 @@
-import { Transaction, useTransaction } from '@pooltogether/hooks'
+import { Transaction } from '@pooltogether/hooks'
 import {
   BlockExplorerLink,
   SquareButton,
@@ -6,6 +6,7 @@ import {
   TokenIcon
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
 import { CountUp } from 'lib/components/CountUp'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { useRouter } from 'next/router'
@@ -24,8 +25,6 @@ export const MainView = (props: MainViewProps) => {
 
   const { ticket } = balances
 
-  console.log({ ticket })
-
   return (
     <>
       <ModalTitle
@@ -33,7 +32,11 @@ export const MainView = (props: MainViewProps) => {
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(prizePool.chainId) })}
       />
       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col'>
-        <span className='text-3xl mx-auto font-bold leading-none'>
+        <span
+          className={classNames('text-3xl mx-auto font-bold leading-none', {
+            'opacity-50': !ticket.hasBalance
+          })}
+        >
           $<CountUp countTo={Number(ticket.amount)} />
         </span>
         <span className='mx-auto flex'>
@@ -42,9 +45,7 @@ export const MainView = (props: MainViewProps) => {
             address={ticket.address}
             sizeClassName='w-4 h-4 my-auto'
           />
-          <span className='font-bold opacity-50 mx-1'>
-            $<CountUp countTo={Number(ticket.amount)} />
-          </span>
+          <span className='font-bold opacity-50 mx-1'>{ticket.amount}</span>
           <span className='opacity-50'>{ticket.symbol}</span>
         </span>
       </div>

@@ -28,7 +28,7 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
         </span>
         <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
           <MultiDrawsPrizeTiersTrigger
-            className='mt-2 xs:mt-0'
+            className='mt-2 xs:mt-0 text-white'
             {...remainingProps}
             drawDatas={drawDatas}
           />
