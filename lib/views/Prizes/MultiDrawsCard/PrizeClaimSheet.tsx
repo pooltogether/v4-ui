@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Token, Transaction } from '@pooltogether/hooks'
 import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
@@ -19,6 +19,7 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DrawData } from 'lib/types/v4'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
+import Reward, { RewardElement } from 'react-rewards'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -56,6 +57,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   } = props
 
   const sendTx = useSendTransaction()
+  const rewardRef = useRef<RewardElement>(null)
 
   const { chainId } = useSelectedChainId()
   const { t } = useTranslation()
@@ -192,7 +194,6 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       snapPoints={snapTo90}
       label='Claim prizes modal'
       open={isOpen}
-      snapPoints={snapTo90}
       onDismiss={() => {
         setTxId(0)
         closeModal()
@@ -226,9 +227,23 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           })}
         </ul>
 
+        {/* Centered container for the confetti to come from */}
+        <div className='mx-auto w-0.5'>
+          <Reward
+            ref={(ref) => (rewardRef.current = ref)}
+            type='confetti'
+            config={{
+              springAnimation: false,
+              zIndex: 4,
+              colors: ['#17e1fd', '#4c249f', '#ff77e1', '#fff177']
+            }}
+          />
+        </div>
+
         <SquareButton
           className='mt-8 w-full'
           onClick={() => {
+            rewardRef.current.rewardMe()
             sendClaimTx()
           }}
           theme={SquareButtonTheme.rainbow}

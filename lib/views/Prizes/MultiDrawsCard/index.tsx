@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
