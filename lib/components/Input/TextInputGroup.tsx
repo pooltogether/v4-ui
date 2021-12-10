@@ -4,7 +4,6 @@ import FeatherIcon from 'feather-icons-react'
 
 import { RoundInput } from './TextInputs'
 import { useTranslation } from 'react-i18next'
-// import { DEFAULT_INPUT_GROUP_CLASS_NAME, DEFAULT_INPUT_LABEL_CLASS_NAME } from '../../constants'
 const DEFAULT_INPUT_LABEL_CLASS_NAME = 'text-xs'
 const DEFAULT_INPUT_GROUP_CLASS_NAME = 'trans'
 

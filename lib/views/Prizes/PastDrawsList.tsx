@@ -169,7 +169,9 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
 }
 
 export const DrawDate = (props: { draw: Draw; className?: string }) => (
-  <span className={props.className}>{getTimestampStringWithTime(props.draw.timestamp)}</span>
+  <span className={props.className}>
+    {getTimestampStringWithTime(props.draw.beaconPeriodStartedAt)}
+  </span>
 )
 
 DrawDate.defaultProps = {

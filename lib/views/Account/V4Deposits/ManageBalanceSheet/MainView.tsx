@@ -1,4 +1,4 @@
-import { Transaction, useTransaction } from '.yalc/@pooltogether/hooks/dist'
+import { Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   BlockExplorerLink,
   SquareButton,

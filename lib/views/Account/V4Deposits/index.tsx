@@ -7,7 +7,7 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useTranslation } from 'react-i18next'
 import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useState } from 'react'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 

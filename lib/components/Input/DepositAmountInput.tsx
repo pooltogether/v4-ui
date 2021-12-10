@@ -1,11 +1,9 @@
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
-import { Token } from '@pooltogether/hooks'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import classNames from 'classnames'
 import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useEffect } from 'react'
@@ -176,10 +174,8 @@ const Input = (props: InputProps) => {
 const useDepositValidationRules = (prizePool: PrizePool) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
+  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
   const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
-  const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
 
   const token = prizePoolTokens?.token
   const decimals = token?.decimals
@@ -199,12 +195,6 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
       if (!!usersAddress) {
         if (!tokenBalance) return false
         if (!ticketBalance) return false
-        // if (!depositAllowance) return false
-
-        // if (depositAllowance.allowanceUnformatted.lt(quantityUnformatted)) {
-        //   console.log('Deposit allowance')
-        //   return t('insufficientDepositAllowance', 'Insufficient deposit allowance')
-        // }
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t('insufficientFunds')
         if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))

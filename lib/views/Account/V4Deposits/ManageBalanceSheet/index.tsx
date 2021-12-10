@@ -1,6 +1,6 @@
 import FeatherIcon from 'feather-icons-react'
 import { SquareButton, SquareButtonTheme, TokenIcon } from '@pooltogether/react-components'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizePool } from '@pooltogether/v4-js-client'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { BottomSheet } from 'lib/components/BottomSheet'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { MainView } from './MainView'
 import { MoreView } from './MoreView'
 import { WithdrawView } from './WithdrawView'
-import { useTransaction } from '.yalc/@pooltogether/hooks/dist'
+import { useTransaction } from '@pooltogether/hooks'
 
 interface ManageBalanceSheetProps {
   open: boolean

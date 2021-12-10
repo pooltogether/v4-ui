@@ -17,7 +17,7 @@ import { BigNumber } from 'ethers'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useState } from 'react'
 import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
-import { PrizePool } from '.yalc/@pooltogether/v4-js-client/dist'
+import { PrizePool } from '@pooltogether/v4-js-client'
 
 const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
