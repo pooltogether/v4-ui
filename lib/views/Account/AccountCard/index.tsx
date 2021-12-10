@@ -27,7 +27,7 @@ export const AccountCard = (props: AccountCardProps) => {
     <div className='flex flex-col p-4 pink-purple-gradient rounded-2xl space-y-2'>
       <div className='flex justify-between p-4'>
         <TotalBalance user={user} />
-        <Image src={walletIllustration} width='55px' height='60px' />
+        <img src={walletIllustration} style={{ width: '55px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
         <DailyOdds />
