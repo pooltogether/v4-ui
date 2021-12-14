@@ -7,7 +7,8 @@ import {
   SettingsContainer,
   SettingsItem,
   TestnetSettingsItem,
-  ThemeSettingsItem
+  ThemeSettingsItem,
+  SocialLinks
 } from '@pooltogether/react-components'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
@@ -45,10 +46,17 @@ const Settings = () => {
   const { t } = useTranslation()
 
   return (
-    <SettingsContainer t={t} className='ml-2 my-auto'>
-      <LanguagePicker />
-      <ThemeSettingsItem t={t} />
-      <TestnetSettingsItem t={t} />
+    <SettingsContainer t={t} className='ml-1 my-auto' sizeClassName='w-6 h-6 overflow-hidden'>
+      <div className='flex flex-col justify-between h-full sm:h-auto'>
+        <div>
+          <LanguagePicker />
+          <ThemeSettingsItem t={t} />
+          <TestnetSettingsItem t={t} />
+        </div>
+        <div className='sm:pt-24 pb-4 sm:pb-0'>
+          <SocialLinks t={t} />
+        </div>
+      </div>
     </SettingsContainer>
   )
 }
