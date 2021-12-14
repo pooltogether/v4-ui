@@ -9,7 +9,7 @@ export const BackToV3Banner = (props) => {
   const { t } = useTranslation()
 
   return (
-    <div className='flex flex-col justify-center w-full rounded-xl px-4 py-6 xs:py-8 text-accent-1'>
+    <div className='flex flex-col justify-center w-full rounded-xl px-4 text-accent-1'>
       <h6 className='text-center mb-2 mx-auto opacity-70'>
         {t('thisIsV4', 'This is V4. Previous pools are on V3.')}
       </h6>

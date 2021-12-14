@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
@@ -16,7 +15,7 @@ import { deserializeBigNumbers } from '@pooltogether/utilities'
 
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { PrizeClaimModal } from '../PrizeClaimModal'
+import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from 'lib/types/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
@@ -89,14 +88,16 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   }
 
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <MultiDrawsClaimSection
-        {...props}
-        drawDatas={drawDatas}
-        token={prizePoolTokens.token}
-        ticket={prizePoolTokens.ticket}
-      />
-    </Card>
+    <div>
+      <Card className='draw-card' paddingClassName=''>
+        <MultiDrawsClaimSection
+          {...props}
+          drawDatas={drawDatas}
+          token={prizePoolTokens.token}
+          ticket={prizePoolTokens.ticket}
+        />
+      </Card>
+    </div>
   )
 }
 
@@ -168,7 +169,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
           className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
         />
       </div>
-      <PrizeClaimModal
+      <PrizeClaimSheet
         {...props}
         setTxId={setTxId}
         claimTx={claimTx}
@@ -267,7 +268,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
           {t('viewPrizes', 'View prizes')}
         </SquareButton>
       </div>
-      <PrizeClaimModal
+      <PrizeClaimSheet
         {...props}
         setTxId={setTxId}
         claimTx={claimTx}

@@ -12,6 +12,9 @@ interface TokenSymbolAndIconProps {
 
 export const TokenSymbolAndIcon = (props: TokenSymbolAndIconProps) => {
   const { className, chainId, sizeClassName, token } = props
+
+  if (!token) return null
+
   return (
     <div className={classNames('flex items-center', className)}>
       <TokenIcon

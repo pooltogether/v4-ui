@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { useAllBeaconChainDraws } from './useAllBeaconChainDraws'
 
 /**
- * @returns all draws and prize distributions if available
+ * @returns all draws and prize distributions if available in the buffers
  */
 export const useAllPartialDrawDatas = (prizeDistributor: PrizeDistributor) => {
   const { data: draws, isFetched: isDrawsFetched } = useAllBeaconChainDraws()

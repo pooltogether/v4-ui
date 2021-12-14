@@ -4,21 +4,22 @@ import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export interface PrizePoolTokens {
+  prizePoolId: string
   token: Token
   ticket: Token
 }
 
-export const usePrizePoolTokens = (prizePool: PrizePool) => {
-  const enabled = Boolean(prizePool) && Boolean(prizePool.chainId)
+export const PRIZE_POOL_TOKENS_QUERY_KEY = 'prizePoolTokens'
 
+export const usePrizePoolTokens = (prizePool: PrizePool) => {
   return useQuery(
-    ['prizePoolTokens', prizePool?.chainId, prizePool?.address],
+    [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool?.id()],
     async () => getPrizePoolTokens(prizePool),
-    { ...NO_REFETCH, enabled } as UseQueryOptions<PrizePoolTokens>
+    { ...NO_REFETCH } as UseQueryOptions<PrizePoolTokens>
   )
 }
 
-const getPrizePoolTokens = async (prizePool: PrizePool) => {
+export const getPrizePoolTokens = async (prizePool: PrizePool) => {
   const ticketDataPromise = prizePool.getTicketData()
   const tokenDataPromise = prizePool.getTokenData()
 
@@ -42,6 +43,7 @@ const getPrizePoolTokens = async (prizePool: PrizePool) => {
   }
 
   return {
+    prizePoolId: prizePool.id(),
     ticket,
     token
   } as PrizePoolTokens

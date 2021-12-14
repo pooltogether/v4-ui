@@ -18,13 +18,13 @@ export enum Network {
   avalanche = 'avalanche'
 }
 
-export const SUPPORTED_NETWORKS = Object.freeze({
+export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
   // [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
   [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby]
 })
 
-export const DEFAULT_NETWORKS = Object.freeze({
+export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
@@ -34,7 +34,7 @@ export const DEFAULT_NETWORKS = Object.freeze({
  * Mainnet - mainnet
  * Testnet - rinkeby
  */
-export const ETHEREUM_NETWORK = Object.freeze({
+export const ETHEREUM_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
@@ -44,7 +44,7 @@ export const ETHEREUM_NETWORK = Object.freeze({
  * Mainnet - polygon
  * Testnet - mumbai
  */
-export const POLYGON_NETWORK = Object.freeze({
+export const POLYGON_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
@@ -54,16 +54,16 @@ export const POLYGON_NETWORK = Object.freeze({
  * Mainnet - avalanche
  * Testnet - fuji
  */
-export const AVALANCHE_NETWORK = Object.freeze({
+export const AVALANCHE_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.avalanche,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
 })
 
-export const getEnvironmentNetworks = (appEnv: string) => {
+export const getEnvironmentChainIds = (appEnv: string) => {
   return {
-    [Network.ethereum]: ETHEREUM_NETWORK[appEnv],
-    [Network.polygon]: POLYGON_NETWORK[appEnv]
-    // [Network.avalanche]: AVALANCHE_NETWORK[appEnv]
+    [Network.ethereum]: ETHEREUM_CHAIN_IDS[appEnv],
+    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv]
+    // [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
   }
 }
 

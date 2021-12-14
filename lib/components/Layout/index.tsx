@@ -4,6 +4,7 @@ import classNames from 'classnames'
 
 import { PageHeader } from 'lib/components/Layout/PageHeader'
 import { useInitialLoad } from 'lib/hooks/useInitialLoad'
+import { BottomNavigation } from './Navigation'
 
 interface LayoutProps {
   className?: string
@@ -11,11 +12,9 @@ interface LayoutProps {
 }
 
 const Layout = (props: LayoutProps) => {
-  const { children, className, ...containerProps } = props
+  const { children, className } = props
   const isInitialized = useInitialLoad()
 
-  // TODO: Temporary since we don't have any production pools
-  // People can't see the settings to turn on testnet mode.
   if (!isInitialized) {
     return (
       <div className={classNames(className, 'min-h-screen')}>
@@ -23,6 +22,7 @@ const Layout = (props: LayoutProps) => {
         <div className='flex flex-col h-screen absolute top-0 w-screen'>
           <LoadingLogo className='m-auto' />
         </div>
+        <BottomNavigation />
       </div>
     )
   }
@@ -31,6 +31,7 @@ const Layout = (props: LayoutProps) => {
     <div className={classNames(className, 'min-h-screen')}>
       <PageHeader />
       {children}
+      <BottomNavigation />
     </div>
   )
 }

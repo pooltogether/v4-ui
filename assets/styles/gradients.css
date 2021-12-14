@@ -1,0 +1,15 @@
+.dark .bg-page-header {
+  background: linear-gradient(#2d0b5a 90%, rgba(45, 11, 90, 0));
+}
+
+.light .bg-page-header {
+  background: linear-gradient(#f7f7f7 90%, #f7f7f740 95%, #f7f7f700 98%, #f7f7f700 100%);
+}
+
+.dark .bg-body-list-fade {
+  background: linear-gradient(to top, #2d0b5a, 10%, rgba(45, 11, 90, 0));
+}
+
+.light .bg-body-list-fade {
+  background: linear-gradient(to top, #f7f7f7, 10%, rgba(247, 247, 247, 0));
+}

@@ -4,6 +4,8 @@ import { useQuery } from 'react-query'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 
+export const VALID_DRAW_IDS_QUERY_KEY = 'useValidDrawIds'
+
 /**
  * Refetches when the draw beacon has updated
  * @returns the draw ids in the DrawBuffer for the provided PrizeDistributor
@@ -12,11 +14,16 @@ export const useValidDrawIds = (prizeDistributor: PrizeDistributor) => {
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const enabled = isDrawBeaconFetched && Boolean(prizeDistributor)
   return useQuery(
-    ['useValidDrawIds', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
-    async () => {
-      const validDrawIds = await prizeDistributor.getValidDrawIds()
-      return validDrawIds
-    },
+    [VALID_DRAW_IDS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.drawId],
+    async () => getValidDrawIds(prizeDistributor),
     { ...NO_REFETCH, enabled }
   )
+}
+
+export const getValidDrawIds = async (prizeDistributor: PrizeDistributor) => {
+  const drawIds = await prizeDistributor.getValidDrawIds()
+  return {
+    prizeDistributorId: prizeDistributor.id(),
+    drawIds
+  }
 }
