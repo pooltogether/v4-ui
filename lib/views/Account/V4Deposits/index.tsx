@@ -16,7 +16,7 @@ export const V4Deposits = () => {
   const { t } = useTranslation()
   return (
     <div id='deposits'>
-      <h3>{t('deposits')}</h3>
+      <h4 className='mb-2'>{t('deposits')}</h4>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>
