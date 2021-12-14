@@ -20,6 +20,12 @@ export const useValidDrawIds = (prizeDistributor: PrizeDistributor) => {
   )
 }
 
+/**
+ * Fetches valid draw ids for the provided prize dsitributor.
+ * "Valid draw ids" have both a draw and a prize distribution available in the buffers.
+ * @param prizeDistributor
+ * @returns
+ */
 export const getValidDrawIds = async (prizeDistributor: PrizeDistributor) => {
   const drawIds = await prizeDistributor.getValidDrawIds()
   return {

@@ -1,7 +1,7 @@
 import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useUsersTotalClaimedAmount } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { CountUp } from 'lib/components/CountUp'
@@ -69,6 +69,7 @@ const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
         </div>
       </div>
       <PrizesClaimedList />
+      <NumberOfPrizesDisclaimer />
     </BottomSheet>
   )
 }
@@ -147,5 +148,23 @@ const EmptyState = () => {
       <span className='font-bold opacity-70'>{t('noPrizesYet', 'No prizes... Yet.')}</span>
       <span className='text-9xl'>🤞</span>
     </div>
+  )
+}
+
+const NumberOfPrizesDisclaimer = () => {
+  return (
+    <span className='text-xxs text-center opacity-50 px-6'>
+      <Trans
+        i18nKey='claimedPrizesDisclaimer'
+        components={{
+          a: (
+            <a
+              className='underline text-xxs hover:opacity-100'
+              href='https://v4.docs.pooltogether.com/protocol/reference/smart-contracts#draw-beacon--draw-buffer'
+            ></a>
+          )
+        }}
+      />
+    </span>
   )
 }
