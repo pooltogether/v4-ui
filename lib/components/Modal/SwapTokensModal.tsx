@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next'
 import { CHAIN_ID } from 'lib/constants/constants'
 import { getExchangeUrl } from 'lib/constants/config'
 
-interface GetTokensModalProps extends Omit<ModalProps, 'children'> {
+interface SwapTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
   tokenAddress: string
 }
 
-export const GetTokensModal = (props: GetTokensModalProps) => {
+export const SwapTokensModal = (props: SwapTokensModalProps) => {
   const { chainId, tokenAddress } = props
 
   const { t } = useTranslation()
@@ -47,6 +47,6 @@ export const GetTokensModal = (props: GetTokensModalProps) => {
   )
 }
 
-GetTokensModal.defaultProps = {
+SwapTokensModal.defaultProps = {
   chainId: CHAIN_ID.mainnet
 }

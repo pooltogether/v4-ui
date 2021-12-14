@@ -1,6 +1,6 @@
-import { Draw } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from 'lib/constants/query'
 import { useQuery } from 'react-query'
+
+import { NO_REFETCH } from 'lib/constants/query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizePoolNetwork } from '../PrizePoolNetwork/usePrizePoolNetwork'
 
@@ -18,7 +18,10 @@ export const useAllBeaconChainDraws = () => {
       prizePoolNetwork?.id(),
       drawBeaconPeriod?.startedAtSeconds.toString()
     ],
-    async () => prizePoolNetwork.getBeaconChainDraws(),
+    async () => {
+      const draws = await prizePoolNetwork.getBeaconChainDraws()
+      return draws
+    },
     { ...NO_REFETCH, enabled }
   )
 }

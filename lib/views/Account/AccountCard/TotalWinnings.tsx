@@ -126,7 +126,7 @@ const ClaimedPrizeItem = (props: {
       </div>
       <div className='text-right'>#{drawId}</div>
       <div className='text-right'>
-        {getTimestampString(draw.beaconPeriodStartedAt, {
+        {getTimestampString(draw.beaconPeriodStartedAt.toNumber() + draw.beaconPeriodSeconds, {
           month: 'short',
           day: 'numeric',
           year: 'numeric'

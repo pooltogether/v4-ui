@@ -23,7 +23,7 @@ import {
 import { ethers, Overrides } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
-import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
+import { SwapTokensModal } from 'lib/components/Modal/SwapTokensModal'
 import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
@@ -238,7 +238,7 @@ export const DepositCard = (props: { className?: string }) => {
         <div className='w-full flex justify-around px-2 py-4'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
           <HelpLink />
-          <GetTokensModalTrigger prizePool={prizePool} />
+          <SwapTokensModalTrigger prizePool={prizePool} />
         </div>
       </div>
 
@@ -288,7 +288,7 @@ interface ExternalLinkProps {
   prizePool: PrizePool
 }
 
-const GetTokensModalTrigger = (props: ExternalLinkProps) => {
+const SwapTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
   const { data: tokens } = usePrizePoolTokens(prizePool)
@@ -303,13 +303,13 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
         <FeatherIcon
-          icon={'plus-circle'}
+          icon={'refresh-cw'}
           className='relative w-4 h-4 mr-1 inline-block'
           style={{ left: -2, top: -2 }}
         />{' '}
-        {t('getTokens', 'Get tokens')}
+        {t('swapTokens', 'Swap tokens')}
       </button>
-      <GetTokensModal
+      <SwapTokensModal
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
         tokenAddress={tokens?.token.address}

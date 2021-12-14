@@ -170,7 +170,9 @@ const PrizeListHeader = (props: {
       <div className={classNames(className, 'flex flex-col space-y-1 text-xs font-bold')}>
         <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
         <span className='text-inverse'>
-          {getTimestampStringWithTime(draw.beaconPeriodStartedAt)}
+          {getTimestampStringWithTime(
+            draw.beaconPeriodStartedAt.toNumber() + draw.beaconPeriodSeconds
+          )}
         </span>
       </div>
       <div>

@@ -75,7 +75,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
 
   let amount = 0
   if (isFetched) {
-    amount = Number(roundPrizeAmount(prizeTier.prize.mul(7), ticket.decimals).amount)
+    amount = Number(roundPrizeAmount(prizeTier.prize, ticket.decimals).amount)
   }
 
   return (

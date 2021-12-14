@@ -19,22 +19,30 @@ export const MultipleDrawsDate = (props: {
   } else if (drawList.length === 1) {
     return (
       <span className={props.className}>
-        {getTimestampStringWithTime(firstDraw.beaconPeriodStartedAt)}
+        {getTimestampStringWithTime(
+          firstDraw.beaconPeriodStartedAt.toNumber() + firstDraw.beaconPeriodSeconds
+        )}
       </span>
     )
   }
 
   return (
     <span className={props.className}>
-      {getTimestampStringWithTime(firstDraw.beaconPeriodStartedAt, {
-        month: 'short',
-        day: 'numeric'
-      })}
+      {getTimestampStringWithTime(
+        firstDraw.beaconPeriodStartedAt.toNumber() + firstDraw.beaconPeriodSeconds,
+        {
+          month: 'short',
+          day: 'numeric'
+        }
+      )}
       <span className='mx-1'>-</span>
-      {getTimestampStringWithTime(lastDraw.beaconPeriodStartedAt, {
-        month: 'short',
-        day: 'numeric'
-      })}
+      {getTimestampStringWithTime(
+        lastDraw.beaconPeriodStartedAt.toNumber() + lastDraw.beaconPeriodSeconds,
+        {
+          month: 'short',
+          day: 'numeric'
+        }
+      )}
     </span>
   )
 }
