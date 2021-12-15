@@ -148,7 +148,7 @@ const LightningBolt = (props: {
         }, ${props.scale})`
       }}
     >
-      <svg {...props} viewBox='0 0 202 151' fill='none' xmlns='http://www.w3.org/2000/svg'>
+      <svg viewBox='0 0 121 101' fill='none' xmlns='http://www.w3.org/2000/svg'>
         <path
           d='m78.667 12.83 43.728 10.131L133.441 50 83.64 60.695l10.217 8.885 4.695 24.71L7.9 98.809l-6.567-6.804 49.738-26.993-16.138-14.023 43.734-38.157Z'
           fill={fillBackgroundColor}
@@ -179,24 +179,24 @@ const LightningBolts = () => (
     {/* Left */}
     <LightningBolt
       color='yellow'
-      className='top-4 xs:top-4 left-2 xs:left-4 sm:left-2 w-16 h-16 xs:w-24 xs:h-24'
+      className='top-4 xs:top-4 left-1 xs:left-4 sm:left-8 w-8 h-8 xs:w-12 xs:h-12'
     />
     <LightningBolt
       color='teal'
-      className='top-16 xs:pt-2 -left-2 xs:left-4 sm:left-2 w-16 h-16 xs:w-24 xs:h-24'
+      className='top-14 xs:pt-2 left-3 xs:left-4 sm:left-10 w-8 h-8 xs:w-12 xs:h-12'
       scale={0.8}
     />
     {/* Right */}
     <LightningBolt
       flip
       color='yellow'
-      scale={0.6}
-      className='xs:top-1 right-1 xs:right-4 sm:right-2 w-20 h-20 xs:w-24 xs:h-24'
+      scale={0.7}
+      className='xs:top-1 right-0 xs:right-4 sm:right-10 w-10 h-10 xs:w-12 xs:h-12'
     />
     <LightningBolt
       flip
       color='teal'
-      className='top-14 -right-1 xs:top-16 xs:right-4 sm:right-2 w-16 h-16 xs:w-24 xs:h-24'
+      className='top-14 right-3 xs:top-16 xs:right-4 sm:right-14 w-8 h-8 xs:w-12 xs:h-12'
     />
   </>
 )
