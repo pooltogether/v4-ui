@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 
 import { RoundInput } from './TextInputs'
-// import { DEFAULT_INPUT_GROUP_CLASS_NAME, DEFAULT_INPUT_LABEL_CLASS_NAME } from '../../constants'
+import { useTranslation } from 'react-i18next'
 const DEFAULT_INPUT_LABEL_CLASS_NAME = 'text-xs'
 const DEFAULT_INPUT_GROUP_CLASS_NAME = 'trans'
 
@@ -32,6 +32,8 @@ export const TextInputGroup = (props) => {
     ...classAndInputProps
   } = props
 
+  const { t } = useTranslation()
+
   let inputMode = 'text'
   let pattern = ''
   let patternForHookForm = {}
@@ -40,7 +42,7 @@ export const TextInputGroup = (props) => {
     pattern = '^[0-9]*[.,]?[0-9]*$'
     patternForHookForm = {
       value: /^\d*\.?\d*$/,
-      message: 'please enter a positive number'
+      message: t('pleaseEnterAPositiveNumber')
     }
   }
 

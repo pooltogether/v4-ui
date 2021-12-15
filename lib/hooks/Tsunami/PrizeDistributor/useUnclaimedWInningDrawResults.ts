@@ -23,10 +23,15 @@ export const useUsersUnclaimedWinningDrawResults = (
   const drawResults = storedDrawResults?.[usersAddress]
 
   return useMemo(() => {
-    const claimedAmounts = claimedAmountsData?.[usersAddress]
-    if (!isClaimedAmountsFetched || !usersAddress || !prizeDistributor) {
+    if (
+      !isClaimedAmountsFetched ||
+      !usersAddress ||
+      !prizeDistributor ||
+      usersAddress !== claimedAmountsData.usersAddress
+    ) {
       return { data: null, isFetched: false }
     }
+    const claimedAmounts = claimedAmountsData.claimedAmounts
     const unclaimedWinningDrawResults: { [drawId: number]: DrawResults } = {}
     Object.keys(drawResults)
       .map(Number)

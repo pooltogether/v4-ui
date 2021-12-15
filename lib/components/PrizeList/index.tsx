@@ -169,7 +169,11 @@ const PrizeListHeader = (props: {
     <div className='flex w-full justify-between'>
       <div className={classNames(className, 'flex flex-col space-y-1 text-xs font-bold')}>
         <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
-        <span className='text-inverse'>{getTimestampStringWithTime(draw.timestamp)}</span>
+        <span className='text-inverse'>
+          {getTimestampStringWithTime(
+            draw.beaconPeriodStartedAt.toNumber() + draw.beaconPeriodSeconds
+          )}
+        </span>
       </div>
       <div>
         <Switch enabled={enabled} setEnabled={setEnabled} />

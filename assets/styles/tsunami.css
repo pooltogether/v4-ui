@@ -7,7 +7,7 @@
   background: transparent;
 }
 
-.theme-dark .gradient-new {
+.dark .gradient-new {
   background-image: linear-gradient(
     130deg,
     rgba(76, 36, 159, 0.7) -10%,
@@ -17,7 +17,7 @@
   );
 }
 
-.theme-light .gradient-new {
+.light .gradient-new {
   background-image: linear-gradient(
     130deg,
     rgba(76, 36, 159, 1) -10%,
@@ -44,58 +44,13 @@
   }
 }
 
-/* prob don't want both the @media query and the @screen here. Figure this out later ... */
-/* @media screen and (min-width: 576px) {
-  @screen xs {
-    .draw-card {
-      height: 436px;
-    }
-  }
-} */
-
-@media screen and (max-height: 600px) {
-  .main-nav {
-    padding-bottom: 0.5rem;
-    padding-top: 0.5rem;
-  }
-}
-
-.theme-dark .carousel .control-dots .dot {
-  border: 5px solid var(--color-bg-highlight-1);
-}
-
-.theme-light .carousel .control-dots .dot {
-  box-shadow: none;
-  background: var(--color-bg-secondary);
-}
-
-.theme-dark .bg-tsunami-card-bridge {
+.dark .bg-tsunami-card-bridge {
   background: rgba(76, 36, 159, 0.1);
 }
 
-.theme-light .bg-tsunami-card-bridge {
+.light .bg-tsunami-card-bridge {
   background: white;
 }
-
-/* .tsunami-dropdown {
-  max-width: 144px;
-}
-
-@screen xs {
-  .tsunami-dropdown {
-    max-width: 152px;
-  }
-}
-
-.tsunami-dropdown-md {
-  max-width: 204px;
-}
-
-@screen xs {
-  .tsunami-dropdown-md {
-    max-width: 263px;
-  }
-} */
 
 .bg-animated-gradient-1 {
   background: linear-gradient(85deg, #f37055 -30%, #0dacf5, #f947d2, #11d1fc, #dd6ffe, #fedc6f 95%);

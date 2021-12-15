@@ -7,15 +7,16 @@ import {
   SettingsContainer,
   SettingsItem,
   TestnetSettingsItem,
-  ThemeSettingsItem
+  ThemeSettingsItem,
+  SocialLinks
 } from '@pooltogether/react-components'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useRouter } from 'next/router'
 
-import { Navigation } from 'lib/components/Navigation'
-import { useSupportedNetworks } from 'lib/hooks/useSupportedNetworks'
+import { TopNavigation } from 'lib/components/Layout/Navigation'
+import { useSupportedChainIds } from 'lib/hooks/useSupportedChainIds'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -24,18 +25,19 @@ export enum ContentPaneState {
 }
 
 export const PageHeader = (props) => {
-  const router = useRouter()
-
   return (
     <PageHeaderContainer
       Link={Link}
       as='/deposit'
       href='/deposit'
-      className='z-20 sticky top-0 bg-page-header'
+      className='sticky top-0 bg-page-header'
+      style={{ zIndex: 3 }}
     >
-      <Navigation />
-      <UsersAccount />
-      <Settings />
+      <TopNavigation className='absolute mx-auto inset-x-0' />
+      <div className='flex flex-row justify-end items-center'>
+        <UsersAccount />
+        <Settings />
+      </div>
     </PageHeaderContainer>
   )
 }
@@ -44,10 +46,17 @@ const Settings = () => {
   const { t } = useTranslation()
 
   return (
-    <SettingsContainer t={t} className='ml-1 my-auto' title='Settings' sizeClassName='w-6 h-6'>
-      <LanguagePicker />
-      <ThemeSettingsItem t={t} />
-      <TestnetSettingsItem t={t} />
+    <SettingsContainer t={t} className='ml-1 my-auto' sizeClassName='w-6 h-6 overflow-hidden'>
+      <div className='flex flex-col justify-between h-full sm:h-auto'>
+        <div>
+          <LanguagePicker />
+          <ThemeSettingsItem t={t} />
+          <TestnetSettingsItem t={t} />
+        </div>
+        <div className='sm:pt-24 pb-4 sm:pb-0'>
+          <SocialLinks t={t} />
+        </div>
+      </div>
     </SettingsContainer>
   )
 }
@@ -83,7 +92,7 @@ const UsersAccount = () => {
     network
   } = useOnboard()
 
-  const supportedNetworks = useSupportedNetworks()
+  const supportedNetworks = useSupportedChainIds()
   const { t } = useTranslation()
 
   if (!isOnboardReady) return null

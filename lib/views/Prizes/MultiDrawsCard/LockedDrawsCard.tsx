@@ -1,5 +1,5 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
-import { Card, ThemedClipSpinner, Time, Tooltip } from '@pooltogether/react-components'
+import { Card, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'
 import classNames from 'classnames'
@@ -16,6 +16,7 @@ import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
 import { usePropagatingDraws } from 'lib/hooks/Tsunami/PrizeDistributor/usePropagatingDraws'
+import { Time } from 'lib/components/Time'
 
 export const LockedDrawsCard = (props: {
   prizeDistributor: PrizeDistributor
@@ -118,7 +119,11 @@ const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: stri
 
   return (
     <div className={classNames(className)}>
-      <Time seconds={secondsLeft} className='' />
+      <Time
+        seconds={secondsLeft}
+        backgroundColorClassName={'bg-pt-purple-lighter bg-opacity-20'}
+        unitsColorClassName={'text-pt-purple-lighter text-opacity-40'}
+      />
     </div>
   )
 }
@@ -156,7 +161,7 @@ const PropagatingDrawsCard = (props: {
         </div>
       </div>
       <div className='absolute bottom-6 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
-        <div className='font-bold text-inverse text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
+        <div className='font-bold text-white text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
           <Tooltip
             id={`tooltip-what-is-propagating`}
             tip={t(
@@ -172,7 +177,7 @@ const PropagatingDrawsCard = (props: {
                 {' '}
                 {t('propagating', 'Propagating ...')}{' '}
               </span>
-              <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
+              <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-white ml-2' />
             </span>
           </Tooltip>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import {
@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { Card, SquareLink, TokenIcon } from '@pooltogether/react-components'
+import { SquareLink, TokenIcon } from '@pooltogether/react-components'
 import {
   AddTokenToMetamaskButton,
   SquareButton,
@@ -23,15 +23,13 @@ import {
 import { ethers, Overrides } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
-import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
+import { SwapTokensModal } from 'lib/components/Modal/SwapTokensModal'
+import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { useSelectedNetworkUser } from 'lib/hooks/Tsunami/User/useSelectedNetworkUser'
+import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
+import { usePrizePoolBySelectedChainId } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedChainId'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -45,12 +43,14 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const BUTTON_MIN_WIDTH = 100
 
-export const DepositCard = () => {
+export const DepositCard = (props: { className?: string }) => {
+  const { className } = props
+
   const router = useRouter()
 
-  const prizePool = usePrizePoolBySelectedNetwork()
+  const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
-  const { data: user, isFetched: isUserFetched } = useSelectedNetworkUser()
+  const user = useSelectedChainIdUser()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
@@ -58,7 +58,7 @@ export const DepositCard = () => {
     refetch: refetchUsersBalances,
     isFetched: isUsersBalancesFetched
   } = useUsersPrizePoolBalances(usersAddress, prizePool)
-  const usersBalances = usersBalancesData?.[usersAddress]
+  const usersBalances = usersBalancesData?.balances
   const {
     data: depositAllowance,
     refetch: refetchUsersDepositAllowance,
@@ -72,10 +72,10 @@ export const DepositCard = () => {
   } = useUsersTicketDelegate(usersAddress, prizePool)
 
   const isDataFetched =
-    isUserFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
+    usersBalancesData.usersAddress === usersAddress &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
   const ticketDelegate = delegateData?.[usersAddress]
@@ -94,7 +94,7 @@ export const DepositCard = () => {
   const [depositedAmount, setDepositedAmount] = useState<Amount>()
 
   const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
-  const getKey = (prizePool: PrizePool, action: string) => `${prizePool.id()}-${action}`
+  const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
   const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
   const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
@@ -211,63 +211,34 @@ export const DepositCard = () => {
     setDepositedAmount(undefined)
   }
 
-  const { chainId } = useSelectedNetwork()
-
   return (
     <>
-      <div>
-        <Card
-          paddingClassName='px-4 xs:px-8 sm:px-12 py-8 xs:py-6 sm:py-10'
-          className='shadow-xs relative'
-          roundedClassName='rounded-t-xl'
-        >
-          {completedDepositTx ? (
-            <CompletedDeposit
-              chainId={prizePool.chainId}
-              resetState={resetState}
-              tx={completedDepositTx}
-              depositedAmount={depositedAmount}
-              token={token}
-              ticket={ticket}
-            />
-          ) : (
-            <>
-              <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-6 sm:mb-8'>
-                {t('deposit', 'Deposit')}
-                <TokenSymbolAndIcon
-                  className='mr-1 ml-2'
-                  sizeClassName='w-4 h-4'
-                  chainId={prizePool.chainId}
-                  token={token}
-                />{' '}
-                {t('on', 'On')}
-                <SelectedNetworkDropdown className='network-dropdown ml-1 xs:ml-2' />
-              </div>
-              <DepositForm
-                form={form}
-                user={user}
-                isUserFetched={isUserFetched}
-                prizePool={prizePool}
-                token={token}
-                ticket={ticket}
-                isPrizePoolTokensFetched={isPrizePoolTokensFetched}
-                approveTx={approveTx}
-                depositTx={depositTx}
-                isUsersBalancesFetched={isUsersBalancesFetched}
-                tokenBalance={tokenBalance}
-                ticketBalance={ticketBalance}
-                isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
-                setShowConfirmModal={setShowConfirmModal}
-                amountToDeposit={amountToDeposit}
-              />
-            </>
-          )}
-        </Card>
+      <div className={className}>
+        <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-2 mt-4'>
+          {t('depositOn', 'Deposit on')}
+          <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
+        </div>
+        <DepositForm
+          form={form}
+          user={user}
+          prizePool={prizePool}
+          token={token}
+          ticket={ticket}
+          isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+          approveTx={approveTx}
+          depositTx={depositTx}
+          isUsersBalancesFetched={isUsersBalancesFetched}
+          tokenBalance={tokenBalance}
+          ticketBalance={ticketBalance}
+          isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
+          setShowConfirmModal={setShowConfirmModal}
+          amountToDeposit={amountToDeposit}
+        />
 
-        <div className='w-full flex bg-tsunami-card-bridge justify-around px-2 py-4 rounded-b-xl'>
+        <div className='w-full flex justify-around px-2 py-4'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
           <HelpLink />
-          <GetTokensModalTrigger prizePool={prizePool} />
+          <SwapTokensModalTrigger prizePool={prizePool} />
         </div>
       </div>
 
@@ -317,7 +288,7 @@ interface ExternalLinkProps {
   prizePool: PrizePool
 }
 
-const GetTokensModalTrigger = (props: ExternalLinkProps) => {
+const SwapTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
   const { data: tokens } = usePrizePoolTokens(prizePool)
@@ -332,13 +303,13 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
         <FeatherIcon
-          icon={'plus-circle'}
+          icon={'refresh-cw'}
           className='relative w-4 h-4 mr-1 inline-block'
           style={{ left: -2, top: -2 }}
         />{' '}
-        {t('getTokens', 'Get tokens')}
+        {t('swapTokens', 'Swap tokens')}
       </button>
-      <GetTokensModal
+      <SwapTokensModal
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
         tokenAddress={tokens?.token.address}

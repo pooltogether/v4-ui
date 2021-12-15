@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
+import { usePrizePoolBySelectedChainId } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedChainId'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PastDrawsList } from './PastDrawsList'
-import { usePrizeDistributorBySelectedNetwork } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedNetwork'
+import { usePrizeDistributorBySelectedChainId } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
-import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
+import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import classNames from 'classnames'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
@@ -24,16 +24,20 @@ export const PRIZE_UI_STATES = {
 
 export const PrizesUI = () => {
   useLockedDrawIdsWatcher()
-  const prizeDistributor = usePrizeDistributorBySelectedNetwork()
-  const prizePool = usePrizePoolBySelectedNetwork()
+  const prizeDistributor = usePrizeDistributorBySelectedChainId()
+  const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
 
   if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (
-      <PagePadding className='flex flex-col space-y-6'>
-        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+      <PagePadding className='flex flex-col'>
+        <CheckForPrizesOnNetwork
+          prizePool={prizePool}
+          prizeDistributor={prizeDistributor}
+          className='mb-6'
+        />
         <LoadingCard />
       </PagePadding>
     )
@@ -41,24 +45,32 @@ export const PrizesUI = () => {
 
   if (!usersAddress) {
     return (
-      <PagePadding className='flex flex-col space-y-6'>
-        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+      <PagePadding className='flex flex-col'>
+        <CheckForPrizesOnNetwork
+          prizePool={prizePool}
+          prizeDistributor={prizeDistributor}
+          className='mb-6'
+        />
         <LockedDrawsCard
           prizeDistributor={prizeDistributor}
           token={prizePoolTokens?.token}
           ticket={prizePoolTokens?.ticket}
         />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
+        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
     )
   }
 
   return (
     <>
-      <PagePadding className='flex flex-col space-y-6'>
-        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+      <PagePadding className='flex flex-col'>
+        <CheckForPrizesOnNetwork
+          prizePool={prizePool}
+          prizeDistributor={prizeDistributor}
+          className='mb-6'
+        />
         <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
+        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
     </>
   )
@@ -78,7 +90,7 @@ const CheckForPrizesOnNetwork = (props: {
       )}
     >
       <span>{t('prizesOn', 'Prizes on')}</span>
-      <SelectedNetworkDropdown className='network-dropdown ml-1 xs:ml-2' />
+      <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
     </div>
   )
 }

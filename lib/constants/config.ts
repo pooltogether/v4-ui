@@ -18,13 +18,12 @@ export enum Network {
   avalanche = 'avalanche'
 }
 
-export const SUPPORTED_NETWORKS = Object.freeze({
+export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
-  // [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby]
+  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
 })
 
-export const DEFAULT_NETWORKS = Object.freeze({
+export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
@@ -34,7 +33,7 @@ export const DEFAULT_NETWORKS = Object.freeze({
  * Mainnet - mainnet
  * Testnet - rinkeby
  */
-export const ETHEREUM_NETWORK = Object.freeze({
+export const ETHEREUM_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
@@ -44,7 +43,7 @@ export const ETHEREUM_NETWORK = Object.freeze({
  * Mainnet - polygon
  * Testnet - mumbai
  */
-export const POLYGON_NETWORK = Object.freeze({
+export const POLYGON_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
@@ -54,16 +53,16 @@ export const POLYGON_NETWORK = Object.freeze({
  * Mainnet - avalanche
  * Testnet - fuji
  */
-export const AVALANCHE_NETWORK = Object.freeze({
+export const AVALANCHE_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.avalanche,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
 })
 
-export const getEnvironmentNetworks = (appEnv: string) => {
+export const getEnvironmentChainIds = (appEnv: string) => {
   return {
-    [Network.ethereum]: ETHEREUM_NETWORK[appEnv],
-    [Network.polygon]: POLYGON_NETWORK[appEnv]
-    // [Network.avalanche]: AVALANCHE_NETWORK[appEnv]
+    [Network.ethereum]: ETHEREUM_CHAIN_IDS[appEnv],
+    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv],
+    [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
   }
 }
 
@@ -133,9 +132,9 @@ export const PRIZE_DISTRIBUTORS = Object.freeze({
     [CHAIN_ID.polygon]: '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0xf49df4D05d9C99160777b79AdE9aA9222b202eAA',
-    [CHAIN_ID.mumbai]: '0x8F3D72C660cE938FA2A5138a5EDb6496C81fADcC'
-    // [CHAIN_ID.fuji]: '0xb29f3A6FD902A2b8971897e92D64C12105492E5E'
+    [CHAIN_ID.rinkeby]: '0x7188e2dd80B6eC7e01449b691fF9D86Ec7353ffF',
+    [CHAIN_ID.mumbai]: '0x3Dc242154a73b422a5e976ec3568CD1753Ca45BE',
+    [CHAIN_ID.fuji]: '0x0864B73B0619a3295694d0E8D4B490a7e6b808D8'
   }
 })
 
@@ -148,8 +147,8 @@ export const PRIZE_POOLS = Object.freeze({
     [CHAIN_ID.polygon]: '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0x996b69422d473a9B48e4A6C980328365B45847Ca',
-    [CHAIN_ID.mumbai]: '0xF5165834Fc6ecbBFe6c4317673D6eF2C2d905BcB'
-    // [CHAIN_ID.fuji]: '0x21CCBF996eD8f9306064bdc3Da553751e27650c0'
+    [CHAIN_ID.rinkeby]: '0xfbd13cB1ab2feCc763510cC24bB0CE90e85eFAf6',
+    [CHAIN_ID.mumbai]: '0x6ed4Edb336053C80bBFF9F17A68d8081587A37a0',
+    [CHAIN_ID.fuji]: '0xF2c2d31C95cAcdc9D69B344C29d8E6cdF14153C3'
   }
 })

@@ -1,12 +1,14 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from 'lib/constants/query'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
 import { useValidDrawIds } from './useValidDrawIds'
+import { usePrizeDistributorToken } from './usePrizeDistributorToken'
+
+export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
 
 /**
  * Returns the amounts a user has claimed for all valid draw ids.
@@ -18,14 +20,21 @@ export const useUsersClaimedAmounts = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
 ) => {
-  const { data: drawIds, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
-  const { data: decimals, isFetched: isDecimalsFetched } = useTicketDecimals()
+  const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
+  const { data: prizeDistributorTokenData, isFetched: isPrizeDistributorTokenFetched } =
+    usePrizeDistributorToken(prizeDistributor)
   const enabled =
-    Boolean(prizeDistributor) && Boolean(usersAddress) && isDrawIdsFetched && isDecimalsFetched
+    Boolean(prizeDistributor) &&
+    Boolean(usersAddress) &&
+    isDrawIdsFetched &&
+    isPrizeDistributorTokenFetched
+
+  const drawIds = data?.drawIds
+  const token = prizeDistributorTokenData?.token
 
   return useQuery(
-    ['useUsersClaimedAmounts', prizeDistributor?.id(), usersAddress],
-    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, decimals),
+    [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
+    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
     {
       ...NO_REFETCH,
       enabled
@@ -33,26 +42,30 @@ export const useUsersClaimedAmounts = (
   )
 }
 
-const getUsersClaimedAmounts = async (
+export const getUsersClaimedAmounts = async (
   usersAddress: string,
   prizeDistributor: PrizeDistributor,
   drawIds: number[],
-  decimals: string
+  token: Token
 ): Promise<{
-  [usersAddress: string]: {
-    [drawId: number]: Amount
-  }
+  token: Token
+  usersAddress: string
+  prizeDistributorId: string
+  claimedAmounts: { [drawId: number]: Amount }
 }> => {
   const claimedAmounts = await prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
 
   const claimedAmountsKeyedByDrawId: {
     [drawId: number]: Amount
   } = {}
-
   drawIds.map((drawId) => {
-    claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], decimals)
+    claimedAmountsKeyedByDrawId[drawId] = roundPrizeAmount(claimedAmounts[drawId], token.decimals)
   })
+
   return {
-    [usersAddress]: claimedAmountsKeyedByDrawId
+    token,
+    prizeDistributorId: prizeDistributor.id(),
+    usersAddress,
+    claimedAmounts: claimedAmountsKeyedByDrawId
   }
 }
