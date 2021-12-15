@@ -50,6 +50,8 @@ interface DepositItemsProps {
 
 const DepositItem = (props: DepositItemsProps) => {
   const { prizePool, balances } = props
+  console.log({ prizePool })
+  console.log({ balances })
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedChainId } = useSelectedChainId()
 
