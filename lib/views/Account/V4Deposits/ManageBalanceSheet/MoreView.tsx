@@ -76,7 +76,7 @@ export const MoreView = (props: ViewProps) => {
           address={ticket.address}
         />
         <LinkToContractItem
-          i18nKey='underlyingToken'
+          i18nKey='depositToken'
           chainId={prizePool.chainId}
           address={token.address}
         />

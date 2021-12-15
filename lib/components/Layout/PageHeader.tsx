@@ -13,7 +13,6 @@ import {
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { useRouter } from 'next/router'
 
 import { TopNavigation } from 'lib/components/Layout/Navigation'
 import { useSupportedChainIds } from 'lib/hooks/useSupportedChainIds'
