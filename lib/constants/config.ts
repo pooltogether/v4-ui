@@ -101,7 +101,9 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ]
+  ],
+  [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
+  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }]
 })
 
 /**
@@ -120,7 +122,9 @@ const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.polygon]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
+    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.avalanche]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
+  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })
 
 /**
