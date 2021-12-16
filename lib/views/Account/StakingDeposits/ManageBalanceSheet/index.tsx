@@ -1,6 +1,6 @@
 import FeatherIcon from 'feather-icons-react'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { BottomSheet } from 'lib/components/BottomSheet'
+import { BottomSheet } from '@pooltogether/react-components'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'

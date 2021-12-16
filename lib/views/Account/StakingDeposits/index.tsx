@@ -1,11 +1,19 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { BigNumber } from 'ethers'
+import { formatUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { useStakingPools, useIsTestnets } from '@pooltogether/hooks'
+import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
+import {
+  DEXES,
+  useStakingPoolChainData,
+  useUserLPChainData,
+  useStakingPools,
+  useIsTestnets
+} from '@pooltogether/hooks'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
@@ -36,6 +44,7 @@ const StakingDepositsList = () => {
   const stakingPools = useStakingPools()
 
   const user = useSelectedChainIdUser()
+  console.log({ user })
 
   // const { isTestnets } = useIsTestnets()
   // const chainId = isTestnets ? NETWORK.rinkeby : NETWORK.mainnet
@@ -72,21 +81,35 @@ const StakingDepositItem = (props) => {
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedChainId } = useSelectedChainId()
 
+  const usersAddress = useUsersAddress()
+  // const queryResults = useUsersStakingBalances(usersAddress)
+
+  const {
+    data: stakingPoolChainData,
+    // isFetched: stakingPoolChainDataIsFetched,
+    refetch: stakingPoolChainDataRefetch
+    // error: stakingPoolChainDataError
+  } = useStakingPoolChainData(stakingPool)
+  const {
+    data: userLPChainData,
+    // isFetched: userLPChainDataIsFetched,
+    refetch: userLPChainDataRefetch
+    // error: userLPChainDataError
+  } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
+
+  console.log({ stakingPoolChainData })
+  console.log({ userLPChainData })
+
+  const refetch = () => {
+    stakingPoolChainDataRefetch()
+    userLPChainDataRefetch()
+  }
+
   console.log({ stakingPool })
   console.log({ prizePool })
 
-  const balances = {
-    ticket: {
-      address: '0x6a304dFdb9f808741244b6bfEe65ca7B3b3A6076',
-      amount: '4.038629',
-      amountPretty: '4.03',
-      amountUnformatted: { _hex: '0x3d9fe5', _isBigNumber: true },
-      decimals: 6,
-      hasBalance: true,
-      name: 'PoolTogether aUSDC Ticket',
-      symbol: 'PTaUSDC'
-    }
-  }
+  let balances
+  if (userLPChainData) balances = userLPChainData.balances
 
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
