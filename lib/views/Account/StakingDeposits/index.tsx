@@ -1,30 +1,33 @@
 import React, { useState } from 'react'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { BigNumber } from 'ethers'
-import { formatUnits } from '@ethersproject/units'
+import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import {
-  DEXES,
+  DefaultBalanceSheetViews,
+  BalanceBottomSheet,
+  NetworkIcon,
+  TokenIcon
+} from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  useTransaction,
   useStakingPoolChainData,
   useUserLPChainData,
-  useStakingPools,
-  useIsTestnets
+  useStakingPools
 } from '@pooltogether/hooks'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { ManageBalanceSheet } from './ManageBalanceSheet'
+// import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 // import { DelegateTicketsSection } from './DelegateTicketsSection'
 
-// export interface StakingPool {
-//   ticket: TokenWithBalance
-// }
+export interface StakingPool {
+  prizePool: { chainId: number }
+}
 
 export const StakingDeposits = () => {
   const { t } = useTranslation()
@@ -43,6 +46,8 @@ const StakingDepositsList = () => {
   // const queryResults = useUsersStakingBalances(usersAddress)
   const stakingPools = useStakingPools()
 
+  const { wallet, network } = useOnboard()
+
   const user = useSelectedChainIdUser()
   console.log({ user })
 
@@ -51,9 +56,7 @@ const StakingDepositsList = () => {
 
   // const queryResults = useUsersV4Balances(usersAddress)
   // const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  // if (!isFetched) {
-  //   return <LoadingList />
-  // }
+
   // if (!isFetched) {
   //   return <LoadingList />
   // }
@@ -62,6 +65,8 @@ const StakingDepositsList = () => {
     <ul className='space-y-4'>
       {stakingPools.map((stakingPool) => (
         <StakingDepositItem
+          wallet={wallet}
+          network={network}
           key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
           stakingPool={stakingPool}
         />
@@ -70,46 +75,55 @@ const StakingDepositsList = () => {
   )
 }
 
-// interface StakingDepositItemsProps {
-//   stakingPool: StakingPool
-//   prizePool: PrizePool
-// }
+interface StakingDepositItemsProps {
+  wallet: object
+  network: object
+  stakingPool: StakingPool
+  prizePool: PrizePool
+}
 
 const StakingDepositItem = (props) => {
-  const { stakingPool } = props
+  const { stakingPool, wallet, network } = props
   const { prizePool } = stakingPool
+
   const [isOpen, setIsOpen] = useState(false)
+  const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
+
   const { setSelectedChainId } = useSelectedChainId()
 
   const usersAddress = useUsersAddress()
-  // const queryResults = useUsersStakingBalances(usersAddress)
 
   const {
     data: stakingPoolChainData,
-    // isFetched: stakingPoolChainDataIsFetched,
-    refetch: stakingPoolChainDataRefetch
-    // error: stakingPoolChainDataError
+    refetch: stakingPoolChainDataRefetch,
+    isFetched: stakingPoolChainDataIsFetched
   } = useStakingPoolChainData(stakingPool)
   const {
     data: userLPChainData,
-    // isFetched: userLPChainDataIsFetched,
-    refetch: userLPChainDataRefetch
-    // error: userLPChainDataError
+    refetch: userLPChainDataRefetch,
+    isFetched: userLPChainDataIsFetched
   } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
 
-  console.log({ stakingPoolChainData })
-  console.log({ userLPChainData })
+  const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
+
+  const [withdrawTxId, setWithdrawTxId] = useState(0)
+  const withdrawTx = useTransaction(withdrawTxId)
+
+  if (!isFetched) {
+    return <LoadingList />
+  }
 
   const refetch = () => {
     stakingPoolChainDataRefetch()
     userLPChainDataRefetch()
   }
 
-  console.log({ stakingPool })
-  console.log({ prizePool })
-
   let balances
-  if (userLPChainData) balances = userLPChainData.balances
+  if (userLPChainData) {
+    balances = userLPChainData.balances
+  }
+
+  const withdrawView = <div>hi</div>
 
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
@@ -121,14 +135,23 @@ const StakingDepositItem = (props) => {
         }}
       >
         <NetworkLabel chainId={prizePool.chainId} />
-        {/* <StakingDepositBalance {...props} /> */}
+        <StakingDepositBalance {...props} balances={balances} />
       </button>
-      <ManageBalanceSheet
+
+      <BalanceBottomSheet
         {...props}
         balances={balances}
         prizePool={prizePool}
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
+        setView={setView}
+        selectedView={selectedView}
+        withdrawView={withdrawView}
+        withdrawTx={withdrawTx}
+        network={network}
+        wallet={wallet}
+        label={`Staking Balance sheet`}
+        className='space-y-4'
       />
     </li>
   )
@@ -141,19 +164,33 @@ const NetworkLabel = (props: { chainId: number }) => (
   </div>
 )
 
-// const StakingDepositBalance = (props: StakingDepositItemsProps) => {
-//   const { balances, prizePool } = props
-//   const { ticket } = balances
-//   return (
-//     <div className='flex'>
-//       <TokenIcon chainId={prizePool.chainId} address={ticket.address} className='mr-2 my-auto' />
-//       <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
-//         ${ticket.amountPretty}
-//       </span>
-//       <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
-//     </div>
-//   )
-// }
+interface StakingDepositItemsProps {
+  stakingPool: StakingPool
+  balances: UsersPrizePoolBalances
+}
+
+const StakingDepositBalance = (props: StakingDepositItemsProps) => {
+  const { balances, stakingPool } = props
+
+  if (!balances) {
+    return null
+  }
+
+  const { ticket } = balances
+  return (
+    <div className='flex'>
+      <TokenIcon
+        chainId={stakingPool.prizePool.chainId}
+        address={ticket.address}
+        className='mr-2 my-auto'
+      />
+      <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
+        ${ticket.amountPretty}
+      </span>
+      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
+    </div>
+  )
+}
 
 const LoadingList = () => (
   <ul className='space-y-4'>
