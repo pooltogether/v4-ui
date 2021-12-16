@@ -101,7 +101,9 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ]
+  ],
+  [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
+  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }]
 })
 
 /**
@@ -120,7 +122,9 @@ const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.polygon]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
+    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.avalanche]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
+  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })
 
 /**
@@ -132,9 +136,9 @@ export const PRIZE_DISTRIBUTORS = Object.freeze({
     [CHAIN_ID.polygon]: '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0x7188e2dd80B6eC7e01449b691fF9D86Ec7353ffF',
-    [CHAIN_ID.mumbai]: '0x3Dc242154a73b422a5e976ec3568CD1753Ca45BE',
-    [CHAIN_ID.fuji]: '0x0864B73B0619a3295694d0E8D4B490a7e6b808D8'
+    [CHAIN_ID.rinkeby]: '0xeB58099f058CBb55463447740777384811c14e25',
+    [CHAIN_ID.mumbai]: '0x3a5E08dD7f4A03C35974dE1cD62d7b1b37cF5806',
+    [CHAIN_ID.fuji]: '0x28b949aF1513F9F1E94257c4eDC0eE50996054BE'
   }
 })
 
@@ -147,8 +151,8 @@ export const PRIZE_POOLS = Object.freeze({
     [CHAIN_ID.polygon]: '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0xfbd13cB1ab2feCc763510cC24bB0CE90e85eFAf6',
-    [CHAIN_ID.mumbai]: '0x6ed4Edb336053C80bBFF9F17A68d8081587A37a0',
-    [CHAIN_ID.fuji]: '0xF2c2d31C95cAcdc9D69B344C29d8E6cdF14153C3'
+    [CHAIN_ID.rinkeby]: '0x691710F4fF1E02428240258bF651C7bE023B08dB',
+    [CHAIN_ID.mumbai]: '0x43f6fD467F14470345927b60679d98765757A6C7',
+    [CHAIN_ID.fuji]: '0x5999699A56e5dF9F860535749f6a0F254ab29f31'
   }
 })
