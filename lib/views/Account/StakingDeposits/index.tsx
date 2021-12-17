@@ -26,8 +26,18 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 // import { DelegateTicketsSection } from './DelegateTicketsSection'
 
+export interface TokenFaucetDripToken {
+  address: string
+  symbol: string
+}
+
+export interface StakingPoolTokens {
+  tokenFaucetDripToken: TokenFaucetDripToken
+}
+
 export interface StakingPool {
   prizePool: { chainId: number }
+  tokens: StakingPoolTokens
 }
 
 export const StakingDeposits = () => {
@@ -164,21 +174,20 @@ const StakingDepositItem = (props) => {
         💎
       </div>
       {/* <NetworkLabel chainId={prizePool.chainId} /> */}
-      <div className='font-semibold text-lg mb-4'>
+      <div className='font-semibold text-xl mb-4'>
         {pair} {symbol}
-        {/* {dex} */}
       </div>
 
-      <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 p-4'>
+      <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-6'>
         <ul className='space-y-4'>
           <li className='flex items-center justify-between font-semibold text-lg'>
             Deposit <StakingDepositBalance {...props} balances={balances} />
           </li>
           <li className='flex items-center justify-between font-semibold text-lg'>
-            Rewards <StakingDepositBalance {...props} balances={balances} />
+            Rewards <StakingRewardsBalance {...props} balances={balances} />
           </li>
           <li className='flex items-center justify-between font-semibold text-lg'>
-            Earning <StakingDepositBalance {...props} balances={balances} />
+            Earning <StakingEarningBalance {...props} balances={balances} />
           </li>
         </ul>
       </div>
@@ -246,9 +255,58 @@ const StakingDepositBalance = (props: StakingDepositItemsProps) => {
         address={ticket.address}
         className='mr-2 my-auto'
       />
-      <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
-        ${ticket.amountPretty}
+      <span className={classNames('font-bold text-lg mr-3')}>
+        ${ticket.amountPretty} {ticket.symbol}
       </span>
+    </div>
+  )
+}
+
+const StakingRewardsBalance = (props: StakingDepositItemsProps) => {
+  const { balances, stakingPool } = props
+
+  if (!balances) {
+    return null
+  }
+
+  const { tokenFaucetDripToken } = stakingPool.tokens
+
+  return (
+    <div className='flex'>
+      <TokenIcon
+        chainId={stakingPool.prizePool.chainId}
+        address={tokenFaucetDripToken.address}
+        className='mr-2 my-auto'
+      />
+      <span className={classNames('font-bold text-lg mr-3')}>
+        {' '}
+        num {tokenFaucetDripToken.symbol}
+      </span>
+    </div>
+  )
+}
+
+const StakingEarningBalance = (props: StakingDepositItemsProps) => {
+  const { balances, stakingPool } = props
+
+  const { t } = useTranslation()
+
+  if (!balances) {
+    return null
+  }
+
+  const { tokenFaucetDripToken } = stakingPool.tokens
+  console.log(stakingPool.prizePool.chainId)
+  console.log(tokenFaucetDripToken.address)
+
+  return (
+    <div className='flex'>
+      <TokenIcon
+        chainId={stakingPool.prizePool.chainId}
+        address={tokenFaucetDripToken.address}
+        className='mr-2 my-auto'
+      />
+      <span className={classNames('font-bold text-lg mr-3')}>{t('vAPR', 'vAPR')}</span>
     </div>
   )
 }
