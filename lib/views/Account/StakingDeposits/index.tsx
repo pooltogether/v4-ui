@@ -5,6 +5,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import {
+  BalanceBottomSheetButtonTheme,
   DefaultBalanceSheetViews,
   BalanceBottomSheet,
   NetworkIcon,
@@ -48,8 +49,8 @@ const StakingDepositsList = () => {
 
   const { wallet, network } = useOnboard()
 
-  const user = useSelectedChainIdUser()
-  console.log({ user })
+  // const user = useSelectedChainIdUser()
+  // console.log({ user })
 
   // const { isTestnets } = useIsTestnets()
   // const chainId = isTestnets ? NETWORK.rinkeby : NETWORK.mainnet
@@ -86,8 +87,13 @@ const StakingDepositItem = (props) => {
   const { stakingPool, wallet, network } = props
   const { prizePool } = stakingPool
 
+  const { t } = useTranslation()
+
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
+
+  console.log({ stakingPool })
+  console.log({ prizePool })
 
   const { setSelectedChainId } = useSelectedChainId()
 
@@ -105,6 +111,9 @@ const StakingDepositItem = (props) => {
   } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
 
   const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
+
+  const [depositTxId, setDepositTxId] = useState(0)
+  const depositTx = useTransaction(depositTxId)
 
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
@@ -124,6 +133,25 @@ const StakingDepositItem = (props) => {
   }
 
   const withdrawView = <div>hi</div>
+
+  const buttons = [
+    {
+      theme: BalanceBottomSheetButtonTheme.primary,
+      label: t('deposit'),
+      onClick: () => setView(DefaultBalanceSheetViews.deposit)
+    },
+    {
+      theme: BalanceBottomSheetButtonTheme.secondary,
+      label: t('withdraw'),
+      disabled: !balances.ticket.hasBalance,
+      onClick: () => setView(DefaultBalanceSheetViews.withdraw)
+    },
+    {
+      theme: BalanceBottomSheetButtonTheme.tertiary,
+      label: t('moreInfo'),
+      onClick: () => setView(DefaultBalanceSheetViews.more)
+    }
+  ]
 
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
@@ -152,6 +180,7 @@ const StakingDepositItem = (props) => {
         wallet={wallet}
         label={`Staking Balance sheet`}
         className='space-y-4'
+        buttons={buttons}
       />
     </li>
   )

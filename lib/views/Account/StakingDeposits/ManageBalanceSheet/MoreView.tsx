@@ -93,11 +93,11 @@ export const MoreView = (props: ViewProps) => {
           })}
         </SquareButton>
       )}
-      <RevokeAllowanceButton
+      {/* <V3RevokeAllowanceButton
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         prizePool={prizePool}
         token={token}
-      />
+      /> */}
       <BackButton onClick={() => setView(ManageSheetViews.main)} />
     </>
   )
@@ -114,83 +114,101 @@ const LinkToContractItem = (props: { chainId: number; i18nKey: string; address: 
   )
 }
 
-interface RevokeAllowanceButtonProps {
+interface V3RevokeAllowanceButtonProps {
   isWalletOnProperNetwork: boolean
   prizePool: PrizePool
   token: Token
 }
 
-const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
-  const { isWalletOnProperNetwork, prizePool, token } = props
-  const { t } = useTranslation()
-  const user = useSelectedChainIdUser()
-  const sendTx = useSendTransaction()
-  const [approveTxId, setApproveTxId] = useState(0)
-  const approveTx = useTransaction(approveTxId)
+// const V3RevokeAllowanceButton = (props: V3RevokeAllowanceButtonProps) => {
+//   const { isWalletOnProperNetwork, prizePool, token } = props
+//   const { t } = useTranslation()
+//   const sendTx = useSendTransaction()
+//   const [approveTxId, setApproveTxId] = useState(0)
+//   const approveTx = useTransaction(approveTxId)
 
-  const {
-    data: depositAllowance,
-    refetch: refetchUsersDepositAllowance,
-    isFetched
-  } = useUsersDepositAllowance(prizePool)
+//   const {
+//     data: depositAllowance,
+//     refetch: refetchUsersDepositAllowance,
+//     isFetched
+//   } = useUsersDepositAllowance(prizePool)
 
-  const handleRevokeAllowanceClick = async () => {
-    if (!isWalletOnProperNetwork) {
-      poolToast.warn(
-        t(
-          'switchToNetworkToRevokeToken',
-          `Switch to {{networkName}} to revoke '{{token}}' token allowance`,
-          {
-            networkName: getNetworkNiceNameByChainId(prizePool.chainId),
-            token: token.symbol
-          }
-        )
-      )
-      return null
-    }
+//   const handleRevokeAllowanceClick = async () => {
+//     if (!isWalletOnProperNetwork) {
+//       poolToast.warn(
+//         t(
+//           'switchToNetworkToRevokeToken',
+//           `Switch to {{networkName}} to revoke '{{token}}' token allowance`,
+//           {
+//             networkName: getNetworkNiceNameByChainId(prizePool.chainId),
+//             token: token.symbol
+//           }
+//         )
+//       )
+//       return null
+//     }
 
-    const name = t(`revokePoolAllowance`, { ticker: token.symbol })
-    const txId = await sendTx({
-      name,
-      method: 'approve',
-      callTransaction: async () => user.approveDeposits(BigNumber.from(0)),
-      callbacks: {
-        refetch: () => refetchUsersDepositAllowance()
-      }
-    })
+//     // const id = await sendTx({
+//     //   name: txName,
+//     //   contractAbi: ControlledTokenAbi,
+//     //   contractAddress: tokenAddress,
+//     //   method,
+//     //   params,
+//     //   callbacks: { refetch }
+//     // })
+//     const contract = new ethers.Contract(address, Erc20Abi, signer)
+//     const params = [poolAddress, ethers.utils.parseEther('0')]
+//     const method = 'approve'
+//     const callTransaction = callTransaction(
+//       provider as JsonRpcProvider,
+//       contractAddress,
+//       contractAbi,
+//       method,
+//       params
+//     )
 
-    setApproveTxId(txId)
-  }
+//     const name = t(`revokePoolAllowance`, { ticker: token.symbol })
+//     const txId = await sendTx({
+//       name,
+//       method: 'approve',
+//       callTransaction: async () => approve(BigNumber.from(0)),
+//       callbacks: {
+//         refetch: () => refetchUsersDepositAllowance()
+//       }
+//     })
 
-  if (!isFetched || depositAllowance.allowanceUnformatted.isZero()) {
-    return null
-  }
+//     setApproveTxId(txId)
+//   }
 
-  if (approveTx?.sent && !approveTx?.cancelled) {
-    return (
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex'>
-        <span>
-          {' '}
-          {t('revokePoolAllowance', {
-            ticker: token?.symbol
-          })}
-        </span>
-        <span>
-          <BlockExplorerLink shorten chainId={prizePool.chainId} txHash={approveTx.hash} />
-        </span>
-      </div>
-    )
-  }
+//   if (!isFetched || depositAllowance.allowanceUnformatted.isZero()) {
+//     return null
+//   }
 
-  return (
-    <SquareButton
-      onClick={handleRevokeAllowanceClick}
-      className='flex w-full items-center justify-center'
-    >
-      <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
-      {t('revokePoolAllowance', {
-        ticker: token?.symbol
-      })}
-    </SquareButton>
-  )
-}
+//   if (approveTx?.sent && !approveTx?.cancelled) {
+//     return (
+//       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex'>
+//         <span>
+//           {' '}
+//           {t('revokePoolAllowance', {
+//             ticker: token?.symbol
+//           })}
+//         </span>
+//         <span>
+//           <BlockExplorerLink shorten chainId={prizePool.chainId} txHash={approveTx.hash} />
+//         </span>
+//       </div>
+//     )
+//   }
+
+//   return (
+//     <SquareButton
+//       onClick={handleRevokeAllowanceClick}
+//       className='flex w-full items-center justify-center'
+//     >
+//       <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
+//       {t('revokePoolAllowance', {
+//         ticker: token?.symbol
+//       })}
+//     </SquareButton>
+//   )
+// }
