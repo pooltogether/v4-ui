@@ -35,9 +35,8 @@ export const StakingDeposits = () => {
   return (
     <div id='staking'>
       <h4 className='mb-2'>{t('staking')}</h4>
-      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
-        <StakingDepositsList />
-      </div>
+
+      <StakingDepositsList />
     </div>
   )
 }
@@ -62,18 +61,14 @@ const StakingDepositsList = () => {
   //   return <LoadingList />
   // }
 
-  return (
-    <ul className='space-y-4'>
-      {stakingPools.map((stakingPool) => (
-        <StakingDepositItem
-          wallet={wallet}
-          network={network}
-          key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
-          stakingPool={stakingPool}
-        />
-      ))}
-    </ul>
-  )
+  return stakingPools.map((stakingPool) => (
+    <StakingDepositItem
+      wallet={wallet}
+      network={network}
+      key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
+      stakingPool={stakingPool}
+    />
+  ))
 }
 
 interface StakingDepositItemsProps {
@@ -92,8 +87,8 @@ const StakingDepositItem = (props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
 
-  console.log({ stakingPool })
-  console.log({ prizePool })
+  // console.log({ stakingPool })
+  // console.log({ prizePool })
 
   const { setSelectedChainId } = useSelectedChainId()
 
@@ -154,7 +149,13 @@ const StakingDepositItem = (props) => {
   ]
 
   return (
-    <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
+    <div
+      className='relative rounded-lg p-2'
+      style={{
+        backgroundImage: 'linear-gradient(200deg, #CF4CBB 0%, #EA69D6 100%)'
+      }}
+    >
+      <div className='absolute r-4 t-4 w-8 h-8 text-xl'>💎</div>
       <button
         className='hover:bg-white hover:bg-opacity-10 rounded-lg transition p-4 w-full flex justify-between items-center'
         onClick={() => {
@@ -165,9 +166,20 @@ const StakingDepositItem = (props) => {
         <NetworkLabel chainId={prizePool.chainId} />
         <StakingDepositBalance {...props} balances={balances} />
       </button>
-
+      <div className='flex items-end justify-end w-full pb-4 pr-4'>
+        <button
+          className='transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+          onClick={() => {
+            setSelectedChainId(prizePool.chainId)
+            setIsOpen(true)
+          }}
+        >
+          {t('manage')}
+        </button>
+      </div>
       <BalanceBottomSheet
         {...props}
+        t={t}
         balances={balances}
         prizePool={prizePool}
         open={isOpen}
@@ -182,7 +194,7 @@ const StakingDepositItem = (props) => {
         className='space-y-4'
         buttons={buttons}
       />
-    </li>
+    </div>
   )
 }
 
@@ -216,7 +228,6 @@ const StakingDepositBalance = (props: StakingDepositItemsProps) => {
       <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
         ${ticket.amountPretty}
       </span>
-      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
     </div>
   )
 }
