@@ -87,7 +87,7 @@ const StakingDepositItem = (props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
 
-  // console.log({ stakingPool })
+  console.log({ stakingPool })
   // console.log({ prizePool })
 
   const { setSelectedChainId } = useSelectedChainId()
@@ -148,33 +148,54 @@ const StakingDepositItem = (props) => {
     }
   ]
 
+  const { pair, symbol, dex } = stakingPool.tokens.underlyingToken
+
   return (
     <div
-      className='relative rounded-lg p-2'
+      className='relative rounded-lg p-4'
       style={{
-        backgroundImage: 'linear-gradient(200deg, #CF4CBB 0%, #EA69D6 100%)'
+        backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
       }}
     >
-      <div className='absolute r-4 t-4 w-8 h-8 text-xl'>💎</div>
-      <button
-        className='hover:bg-white hover:bg-opacity-10 rounded-lg transition p-4 w-full flex justify-between items-center'
-        onClick={() => {
-          setSelectedChainId(prizePool.chainId)
-          setIsOpen(true)
-        }}
+      <div
+        className='absolute r-4 t-3 w-6 h-6 text-xl'
+        style={{ textShadow: '2px 2px 0px rgba(50, 10, 100, 0.3)' }}
       >
-        <NetworkLabel chainId={prizePool.chainId} />
-        <StakingDepositBalance {...props} balances={balances} />
-      </button>
-      <div className='flex items-end justify-end w-full pb-4 pr-4'>
+        💎
+      </div>
+      {/* <NetworkLabel chainId={prizePool.chainId} /> */}
+      <div className='font-semibold text-lg mb-4'>
+        {pair} {symbol}
+        {/* {dex} */}
+      </div>
+
+      <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 p-4'>
+        <ul className='space-y-4'>
+          <li className='flex items-center justify-between font-semibold text-lg'>
+            Deposit <StakingDepositBalance {...props} balances={balances} />
+          </li>
+          <li className='flex items-center justify-between font-semibold text-lg'>
+            Rewards <StakingDepositBalance {...props} balances={balances} />
+          </li>
+          <li className='flex items-center justify-between font-semibold text-lg'>
+            Earning <StakingDepositBalance {...props} balances={balances} />
+          </li>
+        </ul>
+      </div>
+
+      <div className='flex items-end justify-end w-full mt-4'>
         <button
-          className='transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+          className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
           onClick={() => {
             setSelectedChainId(prizePool.chainId)
             setIsOpen(true)
           }}
         >
-          {t('manage')}
+          {t('manage')}{' '}
+          <FeatherIcon
+            icon='chevron-right'
+            className='transition w-6 h-6 opacity-50 hover:opacity-100 my-auto ml-1'
+          />
         </button>
       </div>
       <BalanceBottomSheet
