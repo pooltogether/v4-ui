@@ -5,6 +5,9 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import {
+  DepositAmountInput,
+  BalanceBottomSheetBackButton,
+  BalanceBottomSheetTitle,
   BalanceBottomSheetButtonTheme,
   DefaultBalanceSheetViews,
   BalanceBottomSheet,
@@ -26,6 +29,8 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 // import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 // import { DelegateTicketsSection } from './DelegateTicketsSection'
+
+export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 export interface TokenFaucetDripToken {
   address: string
@@ -72,58 +77,32 @@ const StakingDepositsList = () => {
   //   return <LoadingList />
   // }
 
-  return stakingPools.map((stakingPool) => (
-    <StakingDepositItem
-      wallet={wallet}
-      network={network}
-      key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
-      stakingPool={stakingPool}
-    />
-  ))
+  return stakingPools.map((stakingPool) => {
+    const { prizePool } = stakingPool
+
+    return (
+      <StakingDepositItem
+        key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
+        usersAddress={usersAddress}
+        wallet={wallet}
+        network={network}
+        stakingPool={stakingPool}
+        prizePool={prizePool}
+      />
+    )
+  })
 }
 
 interface StakingDepositItemsProps {
+  usersAddress: string
   wallet: object
   network: object
   stakingPool: StakingPool
   prizePool: PrizePool
 }
 
-function StakingBlockTitle(props) {
-  const { t, stakingPool } = props
-
-  const { prizePool } = stakingPool
-  const { pair, symbol } = stakingPool.tokens.underlyingToken
-  const { chainId } = prizePool
-  const { tokenFaucetDripToken } = stakingPool.tokens
-  const { address } = tokenFaucetDripToken
-
-  return (
-    <div className='font-semibold text-xl mb-4'>
-      <span
-        className='relative -mt-2 inline-block'
-        style={{
-          top: -2
-        }}
-      >
-        <NetworkIcon sizeClassName='w-6 h-6' chainId={chainId} />
-      </span>
-      <span
-        className='relative -ml-2 -mt-1 inline-block'
-        style={{
-          top: -2
-        }}
-      >
-        <TokenIcon chainId={chainId} address={address} className='mr-1' sizeClassName='w-6 h-6' />
-      </span>
-      {t('stake')} {pair} {symbol}
-    </div>
-  )
-}
-
 const StakingDepositItem = (props) => {
-  const { stakingPool, wallet, network } = props
-  const { prizePool } = stakingPool
+  const { prizePool, stakingPool, wallet, network, usersAddress } = props
 
   const { t } = useTranslation()
 
@@ -134,8 +113,6 @@ const StakingDepositItem = (props) => {
   // console.log({ prizePool })
 
   const { setSelectedChainId } = useSelectedChainId()
-
-  const usersAddress = useUsersAddress()
 
   const {
     data: stakingPoolChainData,
@@ -170,7 +147,7 @@ const StakingDepositItem = (props) => {
     balances = userLPChainData.balances
   }
 
-  const depositView = <div>dep hi</div>
+  const depositView = <DepositView {...props} depositTx={depositTx} />
   const withdrawView = <div>hi</div>
 
   const buttons = [
@@ -358,6 +335,84 @@ const StakingEarningBalance = (props: StakingDepositItemsProps) => {
         <VAPRTooltip t={t} />
       </span>
     </div>
+  )
+}
+
+const StakingBlockTitle = (props) => {
+  const { t, stakingPool, prizePool } = props
+
+  const { pair, symbol } = stakingPool.tokens.underlyingToken
+  const { chainId } = prizePool
+  const { tokenFaucetDripToken } = stakingPool.tokens
+  const { address } = tokenFaucetDripToken
+
+  return (
+    <div className='font-semibold text-xl mb-4'>
+      <span
+        className='relative -mt-2 inline-block'
+        style={{
+          top: -2
+        }}
+      >
+        <NetworkIcon sizeClassName='w-6 h-6' chainId={chainId} />
+      </span>
+      <span
+        className='relative -ml-2 -mt-1 inline-block'
+        style={{
+          top: -2
+        }}
+      >
+        <TokenIcon chainId={chainId} address={address} className='mr-1' sizeClassName='w-6 h-6' />
+      </span>
+      {t('stake')} {pair} {symbol}
+    </div>
+  )
+}
+
+const DepositView = (props) => {
+  const { prizePool, setView, stakingPool, depositTx } = props
+  const { t } = useTranslation()
+
+  const setReviewDeposit = () => {
+    setView(DefaultBalanceSheetViews.depositReview)
+  }
+
+  return (
+    <>
+      <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
+
+      <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>
+        <div className='w-full mx-auto'>
+          <DepositAmountInput
+            {...props}
+            prizePool={prizePool}
+            className=''
+            form={form}
+            inputKey={DEPOSIT_QUANTITY_KEY}
+          />
+        </div>
+
+        <DepositInfoBox
+          className='mt-3'
+          depositTx={depositTx}
+          prizePool={prizePool}
+          amountToDeposit={amountToDeposit}
+          errors={isDirty ? errors : null}
+        />
+
+        <BottomButton
+          className='mt-4 w-full'
+          disabled={(!isValid && isDirty) || depositTx?.inFlight}
+          depositTx={depositTx}
+          isWalletConnected={isWalletConnected}
+          tokenBalance={tokenBalance}
+          token={token}
+          amountToDeposit={amountToDeposit}
+        />
+      </form>
+
+      <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />
+    </>
   )
 }
 

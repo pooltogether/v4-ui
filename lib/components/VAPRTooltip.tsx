@@ -3,7 +3,7 @@ import { Tooltip } from '@pooltogether/react-components'
 
 export const VAPRTooltip = ({ t }) => {
   return (
-    <span className='border-b border-dashed border-pt-purple'>
+    <span className='border-b border-dotted border-white'>
       <Tooltip
         id={`tooltip-vapr`}
         tip={t(
