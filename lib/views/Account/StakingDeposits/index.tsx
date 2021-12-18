@@ -4,6 +4,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import { Trans } from 'react-i18next'
 import {
   DepositAmountInput,
   BalanceBottomSheetBackButton,
@@ -82,7 +83,7 @@ const StakingDepositsList = () => {
 
     return (
       <StakingDepositItem
-        key={`staking-pool-${stakingPool.prizePool.chainId}-${stakingPool.prizePool.address}`}
+        key={`staking-pool-${prizePool.chainId}-${prizePool.address}`}
         usersAddress={usersAddress}
         wallet={wallet}
         network={network}
@@ -108,9 +109,6 @@ const StakingDepositItem = (props) => {
 
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
-
-  console.log({ stakingPool })
-  // console.log({ prizePool })
 
   const { setSelectedChainId } = useSelectedChainId()
 
@@ -169,6 +167,20 @@ const StakingDepositItem = (props) => {
     }
   ]
 
+  const view = balances.ticket.hasBalance ? (
+    <>
+      <StakingBalanceStats {...props} t={t} balances={balances} />
+
+      <ManageDepositButton
+        {...props}
+        setIsOpen={setIsOpen}
+        setSelectedChainId={setSelectedChainId}
+      />
+    </>
+  ) : (
+    <BlankStateView {...props} setIsOpen={setIsOpen} setSelectedChainId={setSelectedChainId} />
+  )
+
   return (
     <div
       className='relative rounded-lg p-4 text-white'
@@ -185,14 +197,7 @@ const StakingDepositItem = (props) => {
 
       <StakingBlockTitle {...props} t={t} />
 
-      <StakingBalanceStats {...props} balances={balances} />
-
-      <ManageDepositButton
-        {...props}
-        t={t}
-        setIsOpen={setIsOpen}
-        setSelectedChainId={setSelectedChainId}
-      />
+      {view}
 
       <BalanceBottomSheet
         {...props}
@@ -217,18 +222,75 @@ const StakingDepositItem = (props) => {
   )
 }
 
+const BlankStateView = (props) => {
+  const { t } = useTranslation()
+  const { setSelectedChainId, setIsOpen, prizePool, stakingPool } = props
+
+  const { tokenFaucetDripToken } = stakingPool.tokens
+
+  return (
+    <>
+      <p className='text-sm'>
+        {t(
+          'lpStakingRewardsDescription',
+          'Add liquidity to the POOL/ETH pair on Uniswap and deposit LP tokens to earn extra POOL!'
+        )}
+      </p>
+      <h5 className='mt-3'>
+        <span
+          className='relative -mt-2 inline-block mr-1'
+          style={{
+            top: -2
+          }}
+        >
+          <TokenIcon
+            chainId={prizePool.chainId}
+            address={tokenFaucetDripToken.address}
+            sizeClassName='w-6 h-6'
+          />
+        </span>{' '}
+        <Trans
+          i18nKey='earnPercentageVAPR'
+          defaults='Earn {{percentage}}% <tooltip>vAPR</tooltip>'
+          values={{ percentage: '1111.11' }}
+          components={{
+            tooltip: <VAPRTooltip t={t} />
+          }}
+        />
+      </h5>
+      <div className='flex items-end justify-end w-full mt-4'>
+        <button
+          className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+          onClick={() => {
+            setSelectedChainId(prizePool.chainId)
+            setIsOpen(true)
+          }}
+        >
+          {t('deposit')}{' '}
+          <FeatherIcon
+            icon='chevron-right'
+            className='transition w-6 h-6 opacity-50 hover:opacity-100 my-auto ml-1'
+          />
+        </button>
+      </div>
+    </>
+  )
+}
+
 const StakingBalanceStats = (props) => {
+  const { t } = props
+
   return (
     <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-6'>
       <ul className='space-y-4'>
         <li className='flex items-center justify-between font-semibold text-lg'>
-          Deposit <StakingDepositBalance {...props} balances={props.balances} />
+          {t('deposit', 'Deposit')} <StakingDepositBalance {...props} balances={props.balances} />
         </li>
         <li className='flex items-center justify-between font-semibold text-lg'>
-          Rewards <StakingRewardsBalance {...props} balances={props.balances} />
+          {t('rewards', 'Rewards')} <StakingRewardsBalance {...props} balances={props.balances} />
         </li>
         <li className='flex items-center justify-between font-semibold text-lg'>
-          Earning <StakingEarningBalance {...props} balances={props.balances} />
+          {t('earning', 'Earning')} <StakingEarningBalance {...props} balances={props.balances} />
         </li>
       </ul>
     </div>
@@ -236,8 +298,10 @@ const StakingBalanceStats = (props) => {
 }
 
 const ManageDepositButton = (props) => {
-  const { t, stakingPool, setIsOpen, setSelectedChainId } = props
+  const { stakingPool, setIsOpen, setSelectedChainId } = props
   const { prizePool } = stakingPool
+
+  const { t } = useTranslation()
 
   return (
     <div className='flex items-end justify-end w-full mt-4'>
