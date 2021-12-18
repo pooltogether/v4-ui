@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import classNames from 'classnames'
+import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
@@ -20,6 +20,7 @@ import {
 } from '@pooltogether/hooks'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 // import { ManageBalanceSheet } from './ManageBalanceSheet'
@@ -193,7 +194,7 @@ const StakingDepositItem = (props) => {
 
   return (
     <div
-      className='relative rounded-lg p-4'
+      className='relative rounded-lg p-4 text-white'
       style={{
         backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
       }}
@@ -307,7 +308,7 @@ const StakingDepositBalance = (props: StakingDepositItemsProps) => {
         address={ticket.address}
         className='mr-2 my-auto'
       />
-      <span className={classNames('font-bold text-lg mr-3')}>
+      <span className={classnames('font-bold text-lg mr-3')}>
         ${ticket.amountPretty} {ticket.symbol}
       </span>
     </div>
@@ -330,10 +331,7 @@ const StakingRewardsBalance = (props: StakingDepositItemsProps) => {
         address={tokenFaucetDripToken.address}
         className='mr-2 my-auto'
       />
-      <span className={classNames('font-bold text-lg mr-3')}>
-        {' '}
-        num {tokenFaucetDripToken.symbol}
-      </span>
+      <span className='font-bold text-lg mr-3'> num {tokenFaucetDripToken.symbol}</span>
     </div>
   )
 }
@@ -356,7 +354,9 @@ const StakingEarningBalance = (props: StakingDepositItemsProps) => {
         address={tokenFaucetDripToken.address}
         className='mr-2 my-auto'
       />
-      <span className={classNames('font-bold text-lg mr-3')}>{t('vAPR', 'vAPR')}</span>
+      <span className='font-bold text-lg mr-3'>
+        <VAPRTooltip t={t} />
+      </span>
     </div>
   )
 }
