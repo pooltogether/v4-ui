@@ -88,6 +88,38 @@ interface StakingDepositItemsProps {
   prizePool: PrizePool
 }
 
+function StakingBlockTitle(props) {
+  const { t, stakingPool } = props
+
+  const { prizePool } = stakingPool
+  const { pair, symbol } = stakingPool.tokens.underlyingToken
+  const { chainId } = prizePool
+  const { tokenFaucetDripToken } = stakingPool.tokens
+  const { address } = tokenFaucetDripToken
+
+  return (
+    <div className='font-semibold text-xl mb-4'>
+      <span
+        className='relative -mt-2 inline-block'
+        style={{
+          top: -2
+        }}
+      >
+        <NetworkIcon sizeClassName='w-6 h-6' chainId={chainId} />
+      </span>
+      <span
+        className='relative -ml-2 -mt-1 inline-block'
+        style={{
+          top: -2
+        }}
+      >
+        <TokenIcon chainId={chainId} address={address} className='mr-1' sizeClassName='w-6 h-6' />
+      </span>
+      {t('stake')} {pair} {symbol}
+    </div>
+  )
+}
+
 const StakingDepositItem = (props) => {
   const { stakingPool, wallet, network } = props
   const { prizePool } = stakingPool
@@ -137,6 +169,7 @@ const StakingDepositItem = (props) => {
     balances = userLPChainData.balances
   }
 
+  const depositView = <div>dep hi</div>
   const withdrawView = <div>hi</div>
 
   const buttons = [
@@ -158,8 +191,6 @@ const StakingDepositItem = (props) => {
     }
   ]
 
-  const { pair, symbol, dex } = stakingPool.tokens.underlyingToken
-
   return (
     <div
       className='relative rounded-lg p-4'
@@ -173,40 +204,18 @@ const StakingDepositItem = (props) => {
       >
         💎
       </div>
-      {/* <NetworkLabel chainId={prizePool.chainId} /> */}
-      <div className='font-semibold text-xl mb-4'>
-        {pair} {symbol}
-      </div>
 
-      <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-6'>
-        <ul className='space-y-4'>
-          <li className='flex items-center justify-between font-semibold text-lg'>
-            Deposit <StakingDepositBalance {...props} balances={balances} />
-          </li>
-          <li className='flex items-center justify-between font-semibold text-lg'>
-            Rewards <StakingRewardsBalance {...props} balances={balances} />
-          </li>
-          <li className='flex items-center justify-between font-semibold text-lg'>
-            Earning <StakingEarningBalance {...props} balances={balances} />
-          </li>
-        </ul>
-      </div>
+      <StakingBlockTitle {...props} t={t} />
 
-      <div className='flex items-end justify-end w-full mt-4'>
-        <button
-          className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
-          onClick={() => {
-            setSelectedChainId(prizePool.chainId)
-            setIsOpen(true)
-          }}
-        >
-          {t('manage')}{' '}
-          <FeatherIcon
-            icon='chevron-right'
-            className='transition w-6 h-6 opacity-50 hover:opacity-100 my-auto ml-1'
-          />
-        </button>
-      </div>
+      <StakingBalanceStats {...props} balances={balances} />
+
+      <ManageDepositButton
+        {...props}
+        t={t}
+        setIsOpen={setIsOpen}
+        setSelectedChainId={setSelectedChainId}
+      />
+
       <BalanceBottomSheet
         {...props}
         t={t}
@@ -216,6 +225,8 @@ const StakingDepositItem = (props) => {
         onDismiss={() => setIsOpen(false)}
         setView={setView}
         selectedView={selectedView}
+        depositView={depositView}
+        depositTx={depositTx}
         withdrawView={withdrawView}
         withdrawTx={withdrawTx}
         network={network}
@@ -224,6 +235,47 @@ const StakingDepositItem = (props) => {
         className='space-y-4'
         buttons={buttons}
       />
+    </div>
+  )
+}
+
+const StakingBalanceStats = (props) => {
+  return (
+    <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-6'>
+      <ul className='space-y-4'>
+        <li className='flex items-center justify-between font-semibold text-lg'>
+          Deposit <StakingDepositBalance {...props} balances={props.balances} />
+        </li>
+        <li className='flex items-center justify-between font-semibold text-lg'>
+          Rewards <StakingRewardsBalance {...props} balances={props.balances} />
+        </li>
+        <li className='flex items-center justify-between font-semibold text-lg'>
+          Earning <StakingEarningBalance {...props} balances={props.balances} />
+        </li>
+      </ul>
+    </div>
+  )
+}
+
+const ManageDepositButton = (props) => {
+  const { t, stakingPool, setIsOpen, setSelectedChainId } = props
+  const { prizePool } = stakingPool
+
+  return (
+    <div className='flex items-end justify-end w-full mt-4'>
+      <button
+        className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+        onClick={() => {
+          setSelectedChainId(prizePool.chainId)
+          setIsOpen(true)
+        }}
+      >
+        {t('manage')}{' '}
+        <FeatherIcon
+          icon='chevron-right'
+          className='transition w-6 h-6 opacity-50 hover:opacity-100 my-auto ml-1'
+        />
+      </button>
     </div>
   )
 }
@@ -296,8 +348,6 @@ const StakingEarningBalance = (props: StakingDepositItemsProps) => {
   }
 
   const { tokenFaucetDripToken } = stakingPool.tokens
-  console.log(stakingPool.prizePool.chainId)
-  console.log(tokenFaucetDripToken.address)
 
   return (
     <div className='flex'>

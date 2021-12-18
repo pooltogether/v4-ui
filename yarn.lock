@@ -2712,10 +2712,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.0.0.tgz#191d155dc960559cce06b7ec3b0f9ed2caed0f46"
   integrity sha512-jQub/+qPLQwTFtbBCvvyIEqxJDEBEV/hgLKnuocBg2/GySWtHLz67WCy17bNn1hZw8nWIt8Ih8h+7iT2UJhtmQ==
 
-"@pooltogether/react-components@^1.6.10":
-  version "1.6.10"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.10.tgz#f840ab1583ff8c60aa2b0bbef100defdd394a95b"
-  integrity sha512-j/lf3eAPYPug+qeMe88lJF6T75je4kJStymcdKGHCTqlW2X8IwUcWvSY+u/mdZHBj/MHGgS30+6yWMNhCm6c0A==
+"@pooltogether/react-components@^1.6.11":
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.11.tgz#56483c36b2ed64bb93bb5544d72c759fc253af29"
+  integrity sha512-ZQB8z/Yh1acvSopZXgDep+EhF76rn50O6u7wO//UjhBRjFTDUwSRUhefym6LeJSxuQStUlsclBl5hpQ1Yb83zw==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
