@@ -4,9 +4,9 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 import { InfoListItem } from './InfoList'
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 export const UpdatedOdds = (props: {

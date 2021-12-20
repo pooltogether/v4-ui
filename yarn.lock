@@ -2688,10 +2688,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/contract-list-schema/-/contract-list-schema-0.1.4.tgz#52a4b35e1ef1b263c643e517ca1908180cf1cb6e"
   integrity sha512-oLAu9TGfU9xf1QFJJZQxUj0hsfcRao/DMCZ1hVvDkmwOnX1PUkuhuvZfvgwLFd4hJ4m2kjdCyTJ+VJ5qvgjyww==
 
-"@pooltogether/current-pool-data@3.5.14":
-  version "3.5.14"
-  resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.5.14.tgz#1bd7f61a85b9df25cd77a53fe0f120280235d5d2"
-  integrity sha512-eIBvlh7I0UjGhnPwJvAHnIZMZ5P1OOjrgVi5vFfD/5p/FmLdiKkdsclJf1+jN/fNNRiLrEpuxn4xCYweUr5Z2A==
+"@pooltogether/current-pool-data@^3.7.2":
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/current-pool-data/-/current-pool-data-3.7.2.tgz#c3050a746c299836e8835eab0ac718c0ecc89b08"
+  integrity sha512-UB9DRhck7t47Xz3vUCy39E5EB+dm6PeOXf9UEi/aru2hfFk0RVbSOcsCaB0bJ3lM1yK4DYW2hEGFImxrjgGVIQ==
 
 "@pooltogether/draw-calculator-js@^1.0.0-beta.25":
   version "1.0.3"

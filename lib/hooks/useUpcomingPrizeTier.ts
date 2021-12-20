@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from 'lib/constants/query'
-import { useDrawBeaconPeriod } from './Tsunami/PrizePoolNetwork/useDrawBeaconPeriod'
-import { usePrizePoolNetwork } from './Tsunami/PrizePoolNetwork/usePrizePoolNetwork'
+import { useDrawBeaconPeriod } from './v4/PrizePoolNetwork/useDrawBeaconPeriod'
+import { usePrizePoolNetwork } from './v4/PrizePoolNetwork/usePrizePoolNetwork'
 
 export const useUpcomingPrizeTier = () => {
   const { data: drawBeaconPeriod, isFetched } = useDrawBeaconPeriod()

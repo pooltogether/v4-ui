@@ -1,22 +1,28 @@
+import { useState } from 'react'
 import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { useUsersV4Balances } from 'lib/hooks/Tsunami/PrizePool/useUsersV4Balances'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useTranslation } from 'react-i18next'
-import { ManageBalanceSheet } from './ManageBalanceSheet'
-import { useState } from 'react'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import classNames from 'classnames'
+
+import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersV4Balances } from 'lib/hooks/v4/PrizePool/useUsersV4Balances'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
-import classNames from 'classnames'
+import { CardTitle } from 'lib/components/Text/CardTitle'
+import { CardSecondary } from 'lib/components/Text/CardSecondary'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
   return (
     <div id='deposits'>
-      <h3>{t('deposits')}</h3>
+      <div className='flex space-x-2 items-center'>
+        <CardTitle>{t('deposits')}</CardTitle>
+        <V4DepositAmount />
+      </div>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>
@@ -24,20 +30,23 @@ export const V4Deposits = () => {
   )
 }
 
+const V4DepositAmount = () => {
+  const usersAddress = useUsersAddress()
+  const { data, isFetched } = useUsersV4Balances(usersAddress)
+  if (!isFetched) return null
+  return <CardSecondary>${data.totalValueUsd.amountPretty}</CardSecondary>
+}
+
 const DepositsList = () => {
   const usersAddress = useUsersAddress()
-  const queryResults = useUsersV4Balances(usersAddress)
-  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+  const { data, isFetched } = useUsersV4Balances(usersAddress)
   if (!isFetched) {
     return <LoadingList />
   }
   return (
     <ul className='space-y-4'>
-      {queryResults.map((queryResult) => (
-        <DepositItem
-          key={'deposit-balance-' + queryResult.data.prizePool.id()}
-          {...queryResult.data}
-        />
+      {data.balances.map((balance) => (
+        <DepositItem key={'deposit-balance-' + balance.prizePool.id()} {...balance} />
       ))}
     </ul>
   )

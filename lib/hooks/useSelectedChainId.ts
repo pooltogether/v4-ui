@@ -6,7 +6,7 @@ import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@poo
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
 import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS } from 'lib/constants/config'
 import { CHAIN_ID } from 'lib/constants/constants'
-import { useEnvironmentChainIds } from './Tsunami/useEnvironmentChainIds'
+import { useEnvironmentChainIds } from './v4/useEnvironmentChainIds'
 import { Network } from 'lib/constants/config'
 
 const parseUrlNetwork = (urlNetwork: string) => {

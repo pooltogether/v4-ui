@@ -14,9 +14,9 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { BigNumber } from 'ethers'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import { useUsersDepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { useState } from 'react'
-import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { PrizePool } from '@pooltogether/v4-js-client'
 
 const TOKEN_IMG_URL = {

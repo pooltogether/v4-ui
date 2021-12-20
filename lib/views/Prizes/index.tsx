@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { usePrizePoolBySelectedChainId } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedChainId'
+import { usePrizePoolBySelectedChainId } from 'lib/hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PastDrawsList } from './PastDrawsList'
-import { usePrizeDistributorBySelectedChainId } from 'lib/hooks/Tsunami/PrizeDistributor/usePrizeDistributorBySelectedChainId'
+import { usePrizeDistributorBySelectedChainId } from 'lib/hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
@@ -12,8 +12,8 @@ import { MultiDrawsCard } from './MultiDrawsCard'
 import classNames from 'classnames'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useLockedDrawIdsWatcher } from 'lib/hooks/Tsunami/PrizeDistributor/useLockedDrawIdsWatcher'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
+import { useLockedDrawIdsWatcher } from 'lib/hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',

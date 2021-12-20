@@ -1,6 +1,6 @@
 import React from 'react'
 import { BackToV3Banner } from 'lib/components/BackToV3Banner'
-import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
 import { AccountCard } from 'lib/views/Account/AccountCard'
@@ -8,6 +8,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
+import { V3Deposits } from './V3Deposits'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -33,6 +34,7 @@ export const AccountUI = (props) => {
     <PagePadding className='space-y-8'>
       <AccountCard user={user} />
       <V4Deposits />
+      <V3Deposits />
       <div className='mt-4'>
         <BackToV3Banner />
       </div>

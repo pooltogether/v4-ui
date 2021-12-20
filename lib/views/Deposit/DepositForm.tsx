@@ -8,7 +8,7 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { InfoList } from 'lib/components/InfoList'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import { useUsersDepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,

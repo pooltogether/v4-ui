@@ -13,14 +13,14 @@ import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4
 import { useTranslation } from 'react-i18next'
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from 'lib/types/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
-import { useUsersUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersUnclaimedDrawDatas'
+import { useUsersUnclaimedDrawDatas } from 'lib/hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import {
   drawIdsToNotClaimAtom,
@@ -30,9 +30,9 @@ import {
   updateDrawResults
 } from 'lib/utils/drawResultsStorage'
 import { useAtom } from 'jotai'
-import { useHasUserCheckedAllDraws } from 'lib/hooks/Tsunami/PrizeDistributor/useHasUserCheckedAllDraws'
+import { useHasUserCheckedAllDraws } from 'lib/hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
-import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
