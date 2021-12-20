@@ -20,8 +20,7 @@ export enum Network {
 
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
-  // [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby]
+  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
 })
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({
@@ -62,8 +61,8 @@ export const AVALANCHE_CHAIN_IDS = Object.freeze({
 export const getEnvironmentChainIds = (appEnv: string) => {
   return {
     [Network.ethereum]: ETHEREUM_CHAIN_IDS[appEnv],
-    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv]
-    // [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
+    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv],
+    [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
   }
 }
 
@@ -102,7 +101,9 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ]
+  ],
+  [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
+  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }]
 })
 
 /**
@@ -121,7 +122,9 @@ const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.polygon]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
+    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.avalanche]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
+  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })
 
 /**
@@ -133,9 +136,9 @@ export const PRIZE_DISTRIBUTORS = Object.freeze({
     [CHAIN_ID.polygon]: '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0xf49df4D05d9C99160777b79AdE9aA9222b202eAA',
-    [CHAIN_ID.mumbai]: '0x8F3D72C660cE938FA2A5138a5EDb6496C81fADcC'
-    // [CHAIN_ID.fuji]: '0xb29f3A6FD902A2b8971897e92D64C12105492E5E'
+    [CHAIN_ID.rinkeby]: '0x8F96FeEF333a29664AB5812190294618F555FD3c',
+    [CHAIN_ID.mumbai]: '0x334becc39a6f5c79F78566134828974f015B7177',
+    [CHAIN_ID.fuji]: '0x9a7D5c4c631B42ea2A5a4a8efce5961f9EB7c277'
   }
 })
 
@@ -148,8 +151,8 @@ export const PRIZE_POOLS = Object.freeze({
     [CHAIN_ID.polygon]: '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60'
   },
   [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0x996b69422d473a9B48e4A6C980328365B45847Ca',
-    [CHAIN_ID.mumbai]: '0xF5165834Fc6ecbBFe6c4317673D6eF2C2d905BcB'
-    // [CHAIN_ID.fuji]: '0x21CCBF996eD8f9306064bdc3Da553751e27650c0'
+    [CHAIN_ID.rinkeby]: '0xB452d71016Ed5f4FE98707b33C005fE9E17Fba19',
+    [CHAIN_ID.mumbai]: '0xff349E7c5d8815cf058252393D104117e1BADBC1',
+    [CHAIN_ID.fuji]: '0xB7d1A750B2A662a0b331775B4EC21EaB0BdB84B7'
   }
 })
