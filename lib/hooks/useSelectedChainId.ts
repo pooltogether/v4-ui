@@ -6,8 +6,6 @@ import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@poo
 import { URL_QUERY_KEY } from 'lib/constants/urlQueryKeys'
 import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS } from 'lib/constants/config'
 import { CHAIN_ID } from 'lib/constants/constants'
-import { useEnvironmentChainIds } from './Tsunami/useEnvironmentChainIds'
-import { Network } from 'lib/constants/config'
 
 const parseUrlNetwork = (urlNetwork: string) => {
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets
@@ -52,11 +50,7 @@ export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
 
 export const useSelectedChainId = () => {
   const [chainId, setSelectedChainId] = useAtom(selectedNetworkAtom)
-  const envNetworks = useEnvironmentChainIds()
-  const networks = Object.keys(envNetworks) as Network[]
-  const chainIds = Object.values(envNetworks)
-  const network = networks[chainIds.indexOf(chainId)]
-  return { chainId, setSelectedChainId, network }
+  return { chainId, setSelectedChainId }
 }
 
 export const useSelectedChainIdWatcher = () => {

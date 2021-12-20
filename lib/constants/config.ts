@@ -6,18 +6,6 @@ import { CHAIN_ID } from 'lib/constants/constants'
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
-/**
- * "Network" meaning:
- *    Ethereum - mainnet, rinkeby, goerli, etc
- *    Polygon - matic, mumbai
- *    etc.
- */
-export enum Network {
-  ethereum = 'ethereum',
-  polygon = 'polygon',
-  avalanche = 'avalanche'
-}
-
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
   [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
@@ -57,14 +45,6 @@ export const AVALANCHE_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.avalanche,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
 })
-
-export const getEnvironmentChainIds = (appEnv: string) => {
-  return {
-    [Network.ethereum]: ETHEREUM_CHAIN_IDS[appEnv],
-    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv],
-    [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
-  }
-}
 
 // Native currency symbols in app
 export const CHAIN_NATIVE_CURRENCY = Object.freeze({
