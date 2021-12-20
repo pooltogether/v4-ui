@@ -15,13 +15,22 @@ import {
   NetworkIcon,
   TokenIcon
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  getNetworkNiceNameByChainId,
+  calculateAPR,
+  calculateLPTokenPrice,
+  amountMultByUsd,
+  toScaledUsdBigNumber
+} from '@pooltogether/utilities'
 import {
   useTransaction,
   useStakingPoolChainData,
   useUserLPChainData,
-  useStakingPools
+  useStakingPools,
+  useTokenBalances,
+  useCoingeckoTokenPrices
 } from '@pooltogether/hooks'
+import { formatUnits } from 'ethers/lib/utils'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
@@ -131,6 +140,20 @@ const StakingDepositItem = (props) => {
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
 
+  const { tokenFaucetData, underlyingTokenData, ticketsData } = stakingPoolChainData || {}
+  const { dripRatePerDayUnformatted } = tokenFaucetData || {}
+  const { tokens } = stakingPool || {}
+  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
+
+  const apr = useStakingAPR(
+    prizePool.chainId,
+    underlyingToken,
+    underlyingTokenData,
+    tokenFaucetDripToken,
+    dripRatePerDayUnformatted,
+    ticketsData
+  )
+
   if (!isFetched) {
     return <LoadingList />
   }
@@ -178,7 +201,12 @@ const StakingDepositItem = (props) => {
       />
     </>
   ) : (
-    <BlankStateView {...props} setIsOpen={setIsOpen} setSelectedChainId={setSelectedChainId} />
+    <BlankStateView
+      {...props}
+      setIsOpen={setIsOpen}
+      setSelectedChainId={setSelectedChainId}
+      apr={apr}
+    />
   )
 
   return (
@@ -222,11 +250,75 @@ const StakingDepositItem = (props) => {
   )
 }
 
-const BlankStateView = (props) => {
-  const { t } = useTranslation()
-  const { setSelectedChainId, setIsOpen, prizePool, stakingPool } = props
+const useStakingAPR = (
+  chainId,
+  underlyingToken,
+  underlyingTokenData,
+  tokenFaucetDripToken,
+  dripRatePerDayUnformatted,
+  ticketsData
+) => {
+  const { token1, token2 } = underlyingToken
 
+  const { data: lPTokenBalances, isFetched: tokenBalancesIsFetched } = useTokenBalances(
+    chainId,
+    underlyingToken.address,
+    [token1.address, token2.address]
+  )
+
+  const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(chainId, [
+    token1.address,
+    token2.address,
+    tokenFaucetDripToken.address
+  ])
+
+  if (
+    !tokenPricesIsFetched ||
+    !tokenBalancesIsFetched ||
+    !underlyingTokenData ||
+    !underlyingTokenData.totalSupply
+  ) {
+    return null
+  }
+
+  const lpTokenPrice = calculateLPTokenPrice(
+    formatUnits(
+      lPTokenBalances[token1.address].amountUnformatted,
+      lPTokenBalances[token1.address].decimals
+    ),
+    formatUnits(
+      lPTokenBalances[token2.address].amountUnformatted,
+      lPTokenBalances[token2.address].decimals
+    ),
+    tokenPrices[token1.address.toLowerCase()]?.usd || 0,
+    tokenPrices[token2.address.toLowerCase()]?.usd || 0,
+    underlyingTokenData.totalSupply
+  )
+
+  const totalDailyValueUnformatted = amountMultByUsd(
+    dripRatePerDayUnformatted,
+    tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
+  )
+
+  const totalDailyValue = formatUnits(totalDailyValueUnformatted, underlyingTokenData.decimals)
+  const totalDailyValueScaled = toScaledUsdBigNumber(totalDailyValue)
+
+  const totalValueUnformatted = amountMultByUsd(
+    ticketsData.totalSupplyUnformatted,
+    lpTokenPrice.toNumber()
+  )
+
+  const totalValue = formatUnits(totalValueUnformatted, underlyingTokenData.decimals)
+  const totalValueScaled = toScaledUsdBigNumber(totalValue)
+
+  return calculateAPR(totalDailyValueScaled, totalValueScaled)
+}
+
+const BlankStateView = (props) => {
+  const { setSelectedChainId, setIsOpen, prizePool, stakingPool, apr } = props
   const { tokenFaucetDripToken } = stakingPool.tokens
+
+  const { t } = useTranslation()
 
   return (
     <>
@@ -252,7 +344,7 @@ const BlankStateView = (props) => {
         <Trans
           i18nKey='earnPercentageVAPR'
           defaults='Earn {{percentage}}% <tooltip>vAPR</tooltip>'
-          values={{ percentage: '1111.11' }}
+          values={{ percentage: apr }}
           components={{
             tooltip: <VAPRTooltip t={t} />
           }}
