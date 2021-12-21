@@ -1,6 +1,7 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -10,6 +11,15 @@ import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))),
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
+})
+
+export const SUPPORTED_CHAIN_NAMES = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(
+    getNetworkNameAliasByChainId
+  ),
+  [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(
+    getNetworkNameAliasByChainId
+  )
 })
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({

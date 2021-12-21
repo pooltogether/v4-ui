@@ -2,35 +2,33 @@ import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
   Tooltip,
-  Modal,
   ModalProps,
   SquareButton,
   SquareButtonTheme,
-  TokenIcon
+  SquareLink,
+  ButtonLink,
+  SquareButtonSize
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 
-import { DownArrow } from 'lib/components/DownArrow'
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import { InfoList, InfoListItem, ModalInfoList } from 'lib/components/InfoList'
+import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { BottomSheet } from 'lib/components/BottomSheet'
-import classNames from 'classnames'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   prizePool: PrizePool
@@ -157,6 +155,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           tx={depositTx}
           closeModal={closeModal}
         />
+        <CheckBackForPrizesBox />
+        <AccountPageButton />
       </BottomSheet>
     )
   }
@@ -223,5 +223,36 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
       }
       value={amount.amountPretty}
     />
+  )
+}
+const CheckBackForPrizesBox = () => {
+  const { t } = useTranslation()
+  return (
+    <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-inverse'>
+      {t('disclaimerComeBackRegularlyToClaimWinnings')}
+      <br />
+      <a
+        href='https://docs.pooltogether.com/faq/prizes-and-winning'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='underline text-xs'
+      >
+        {t('learnMore', 'Learn more')}
+      </a>
+    </div>
+  )
+}
+const AccountPageButton = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+  return (
+    <Link href={{ pathname: '/account', query: router.query }}>
+      <SquareLink
+        size={SquareButtonSize.sm}
+        className='text-xs hover:text-inverse transition-colors text-center'
+      >
+        {t('viewAccount', 'View account')}
+      </SquareLink>
+    </Link>
   )
 }
