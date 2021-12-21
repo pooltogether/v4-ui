@@ -2,35 +2,38 @@ import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
   Tooltip,
-  Modal,
   ModalProps,
   SquareButton,
   SquareButtonTheme,
-  TokenIcon
+  SquareLink,
+  ButtonLink,
+  SquareButtonSize
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import { DownArrow } from 'lib/components/DownArrow'
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import { InfoList, InfoListItem, ModalInfoList } from 'lib/components/InfoList'
+import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { BottomSheet } from 'lib/components/BottomSheet'
-import classNames from 'classnames'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButton'
+import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
+import { addDays } from 'lib/utils/date'
+import { getTimestampString } from 'lib/utils/getTimestampString'
+import { msToS } from '@pooltogether/utilities'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   prizePool: PrizePool
@@ -62,7 +65,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isOpen,
     closeModal
   } = props
-  const { amount, amountUnformatted } = amountToDeposit
+  const { amountUnformatted } = amountToDeposit
 
   const { chainId } = useSelectedChainId()
   const { t } = useTranslation()
@@ -75,6 +78,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
@@ -88,6 +92,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
         <ModalLoadingGate className='mt-8' />
@@ -101,6 +106,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
@@ -121,6 +127,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           label={t('confirmDepositModal', 'Confirm deposit - modal')}
           open={isOpen}
           onDismiss={closeModal}
+          className='flex flex-col space-y-4'
         >
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -149,14 +156,12 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={chainId}
-          tx={depositTx}
-          closeModal={closeModal}
-        />
+        <CheckBackForPrizesBox />
+        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <AccountPageButton />
       </BottomSheet>
     )
   }
@@ -166,6 +171,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       label={t('confirmDepositModal', 'Confirm deposit - modal')}
       open={isOpen}
       onDismiss={closeModal}
+      className='flex flex-col space-y-4'
     >
       <ModalTitle chainId={prizePool.chainId} title={t('depositConfirmation')} />
 
@@ -223,5 +229,41 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
       }
       value={amount.amountPretty}
     />
+  )
+}
+const CheckBackForPrizesBox = () => {
+  const { t } = useTranslation()
+  const eligibleDate = getTimestampString(msToS(addDays(new Date(), 2).getTime()))
+
+  return (
+    <AnimatedBorderCard className='flex flex-col'>
+      <div className='mb-2'>
+        {t('disclaimerComeBackRegularlyToClaimWinnings', { date: eligibleDate })}
+      </div>
+
+      <a
+        href='https://docs.pooltogether.com/faq/prizes-and-winning'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='underline text-xs'
+      >
+        {t('learnMore', 'Learn more')}
+      </a>
+    </AnimatedBorderCard>
+  )
+}
+const AccountPageButton = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+  return (
+    <Link href={{ pathname: '/account', query: router.query }}>
+      <SquareLink
+        size={SquareButtonSize.md}
+        theme={SquareButtonTheme.tealOutline}
+        className='w-full text-center'
+      >
+        {t('viewAccount', 'View account')}
+      </SquareLink>
+    </Link>
   )
 }
