@@ -34,12 +34,11 @@ interface DepositFormProps {
   tokenBalance: TokenBalance
   ticketBalance: TokenBalance
   amountToDeposit: Amount
-  setShowConfirmModal: (show: boolean) => void
+  openModal: () => void
 }
 
 export const DepositForm = (props: DepositFormProps) => {
-  const { form, prizePool, depositTx, amountToDeposit, token, tokenBalance, setShowConfirmModal } =
-    props
+  const { form, prizePool, depositTx, amountToDeposit, token, tokenBalance, openModal } = props
 
   const { isWalletConnected } = useOnboard()
 
@@ -55,7 +54,7 @@ export const DepositForm = (props: DepositFormProps) => {
     const quantity = values[DEPOSIT_QUANTITY_KEY]
     query[DEPOSIT_QUANTITY_KEY] = quantity
     router.replace({ pathname, query }, null, { scroll: false })
-    setShowConfirmModal(true)
+    openModal()
   }
 
   return (

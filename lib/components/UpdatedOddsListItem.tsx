@@ -41,14 +41,13 @@ export const UsersOddsValue = (props: {
   const { amount, action, emptyString } = props
   const usersAddress = useUsersAddress()
 
-  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
+  const oddsData = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
     usersAddress,
     action,
     amount?.amountUnformatted
   )
-  const oddsData = data?.[usersAddress]
 
-  if (!Boolean(data)) {
+  if (!Boolean(oddsData)) {
     return <ThemedClipSpinner sizeClassName='w-3 h-3' />
   } else if (oddsData.odds === 0) {
     return <span className='opacity-80'>{emptyString || t('none')}</span>

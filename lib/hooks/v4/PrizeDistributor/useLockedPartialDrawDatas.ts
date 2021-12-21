@@ -22,9 +22,12 @@ export const useLockedPartialDrawDatas = (prizeDistributor: PrizeDistributor) =>
   if (drawIds.length === 0) return lockedDrawDatas
 
   drawIds.forEach((drawId) => {
-    lockedDrawDatas[drawId] = {
-      draw: drawDatas[drawId].draw,
-      prizeDistribution: drawDatas[drawId]?.prizeDistribution
+    const drawData = drawDatas[drawId]
+    if (drawData) {
+      lockedDrawDatas[drawId] = {
+        draw: drawData.draw,
+        prizeDistribution: drawData.prizeDistribution
+      }
     }
   })
   return lockedDrawDatas

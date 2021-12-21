@@ -79,7 +79,7 @@ const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
     )
   }
 
-  const { odds, oneOverOdds } = data[usersAddress]
+  const { odds, oneOverOdds } = data
 
   if (odds === 0) {
     return (

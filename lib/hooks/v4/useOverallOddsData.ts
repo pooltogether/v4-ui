@@ -1,39 +1,25 @@
 import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-js-client'
 
-import { Network } from 'lib/constants/config'
-import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useUpcomingPrizeTier } from '../useUpcomingPrizeTier'
-import { usePrizePoolByNetwork } from './PrizePool/usePrizePoolByNetwork'
-import { usePrizePoolTicketTotalSupply } from './PrizePool/usePrizePoolTicketTotalSupply'
+import { usePrizePoolNetworkTicketTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTotalSupply'
 import { useTicketDecimals } from './PrizePool/useTicketDecimals'
 
 export const useOverallOddsData = () => {
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
 
-  const ethereumPrizePool = usePrizePoolByNetwork(Network.ethereum)
-  const polygonPrizePool = usePrizePoolByNetwork(Network.polygon)
+  const { data: totalSupply, isFetched: isTotalSupplyFetched } =
+    usePrizePoolNetworkTicketTotalSupply()
 
-  const { data: ethereumTotalSupplyUnformatted, isFetched: isEthereumTicketTotalSupplyFetched } =
-    usePrizePoolTicketTotalSupply(ethereumPrizePool)
-  const { data: polygonTotalSupplyUnformatted, isFetched: isPolygonTicketTotalSupplyFetched } =
-    usePrizePoolTicketTotalSupply(polygonPrizePool)
-
-  const isFetched =
-    isEthereumTicketTotalSupplyFetched &&
-    isPolygonTicketTotalSupplyFetched &&
-    isTicketDecimalsFetched &&
-    isPrizeTierFetched
+  const isFetched = isTotalSupplyFetched && isTicketDecimalsFetched && isPrizeTierFetched
 
   if (!isFetched) {
     return null
   }
 
-  const totalSupplyUnformatted = ethereumTotalSupplyUnformatted.add(polygonTotalSupplyUnformatted)
-
   return {
     decimals: ticketDecimals,
-    totalSupply: getAmountFromBigNumber(totalSupplyUnformatted, ticketDecimals),
+    totalSupply,
     numberOfPrizes: getNumberOfPrizes(prizeTier)
   }
 }

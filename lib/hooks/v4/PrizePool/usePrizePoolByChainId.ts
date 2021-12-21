@@ -1,7 +1,7 @@
-import { useEnvPrizePoolAddresses } from 'lib/hooks/v4/PrizePool/useEnvPrizePoolAddresses'
-import { usePrizePool } from './usePrizePool'
+import { usePrizePools } from './usePrizePools'
 
+// NOTE: Assumes there is only one Prize Pool per network. This will need to be reworked eventually.
 export const usePrizePoolByChainId = (chainId: number) => {
-  const prizePoolAddresses = useEnvPrizePoolAddresses()
-  return usePrizePool(chainId, prizePoolAddresses[chainId])
+  const prizePools = usePrizePools()
+  return prizePools.find((prizePool) => prizePool.chainId === chainId)
 }

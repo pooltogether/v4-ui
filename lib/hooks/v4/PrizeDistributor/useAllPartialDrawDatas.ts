@@ -1,16 +1,18 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
-import { useAllBeaconChainDraws } from './useAllBeaconChainDraws'
+
+import { useValidDraws } from './useValidDraws'
 
 /**
+ *
  * @returns all draws and prize distributions if available in the buffers
  */
 export const useAllPartialDrawDatas = (prizeDistributor: PrizeDistributor) => {
-  const { data: draws, isFetched: isDrawsFetched } = useAllBeaconChainDraws()
+  const { data, isFetched: isDrawsFetched } = useValidDraws(prizeDistributor)
   const enabled = isDrawsFetched && Boolean(prizeDistributor)
   return useQuery(
-    ['useAllPartialDrawDatas', prizeDistributor?.id(), draws ? Object.keys(draws) : []],
-    () => getAllDrawDatas(prizeDistributor, draws),
+    ['useAllPartialDrawDatas', prizeDistributor?.id(), data?.draws ? Object.keys(data.draws) : []],
+    () => getAllDrawDatas(prizeDistributor, data.draws),
     { enabled }
   )
 }

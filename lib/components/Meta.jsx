@@ -8,8 +8,8 @@ export const Meta = ({ title }) => {
   if (typeof window !== 'undefined') {
     url = window.location.href
   }
-  const description = `PoolTogether is a crypto-powered savings protocol based on Premium Bonds. Save money and have a chance to win every week.  .`
-  const keywords = 'ethereum polygon celo bsc binance'
+  const description = `PoolTogether is a crypto-powered savings protocol based on Premium Bonds. Save money and have a chance to win every day.`
+  const keywords = 'ethereum polygon celo bsc binance avalanche dapp'
   const twitterHandle = '@PoolTogether_'
 
   return (

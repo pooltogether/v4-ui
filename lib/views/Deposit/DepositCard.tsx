@@ -37,8 +37,6 @@ import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationM
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
 import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
-
-import SuccessBalloonsSvg from 'assets/images/success.svg'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 const BUTTON_MIN_WIDTH = 100
@@ -91,18 +89,14 @@ export const DepositCard = (props: { className?: string }) => {
 
   const sendTx = useSendTransaction()
 
-  const [depositedAmount, setDepositedAmount] = useState<Amount>()
-
   const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
   const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
   const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
   const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
-  const completedDepositTxId = transactionIds?.[getKey(prizePool, 'completed-deposit')] || 0
 
   const approveTx = useTransaction(approveTxId)
   const depositTx = useTransaction(depositTxId)
-  const completedDepositTx = useTransaction(completedDepositTxId)
 
   const setSpecificTxId = (txId: number, prizePool: PrizePool, action: string) =>
     setTransactionIds((prevState) => ({ ...prevState, [getKey(prizePool, action)]: txId }))
@@ -110,8 +104,6 @@ export const DepositCard = (props: { className?: string }) => {
     setSpecificTxId(txId, prizePool, 'approve')
   const setDepositTxId = (txId: number, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'deposit')
-  const setCompletedDepositTxId = (txId: number, prizePool: PrizePool) =>
-    setSpecificTxId(txId, prizePool, 'completed-deposit')
 
   const token = prizePoolTokens?.token
   const ticket = prizePoolTokens?.ticket
@@ -139,11 +131,17 @@ export const DepositCard = (props: { className?: string }) => {
     }
   }, [])
 
+  /**
+   * Close modal and clear tx if it has completed
+   */
   const closeModal = () => {
     const { query, pathname } = router
     delete query.showConfirmModal
     router.replace({ pathname, query }, null, { scroll: false })
     setShowConfirmModal(false)
+    if (depositTx?.completed) {
+      setDepositTxId(0, prizePool)
+    }
   }
 
   const sendApproveTx = async () => {
@@ -160,10 +158,6 @@ export const DepositCard = (props: { className?: string }) => {
   }
 
   const onSuccess = (tx: Transaction) => {
-    setDepositedAmount(amountToDeposit)
-    setCompletedDepositTxId(tx.id, prizePool)
-    setDepositTxId(0, prizePool)
-    closeModal()
     resetQueryParam()
     refetchTicketDelegate()
   }
@@ -207,8 +201,16 @@ export const DepositCard = (props: { className?: string }) => {
     reset()
     setApproveTxId(0, prizePool)
     setDepositTxId(0, prizePool)
-    setCompletedDepositTxId(0, prizePool)
-    setDepositedAmount(undefined)
+  }
+
+  /**
+   * Open modal and clear tx if it has completed
+   */
+  const openModal = () => {
+    if (depositTx?.completed) {
+      setDepositTxId(0, prizePool)
+    }
+    setShowConfirmModal(true)
   }
 
   return (
@@ -231,7 +233,7 @@ export const DepositCard = (props: { className?: string }) => {
           tokenBalance={tokenBalance}
           ticketBalance={ticketBalance}
           isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
-          setShowConfirmModal={setShowConfirmModal}
+          openModal={openModal}
           amountToDeposit={amountToDeposit}
         />
 
@@ -352,87 +354,6 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
         closeModal={() => setShowModal(false)}
       />
     </>
-  )
-}
-
-const SuccessBalloons = (props) => (
-  <img
-    src={SuccessBalloonsSvg}
-    alt='success balloons graphic'
-    width={64}
-    className={props.className}
-  />
-)
-
-interface CompletedDepositProps {
-  chainId: number
-  resetState: () => void
-  depositedAmount: Amount
-  tx: Transaction
-  token: Token
-  ticket: Token
-}
-
-const CompletedDeposit = (props: CompletedDepositProps) => {
-  const { resetState, depositedAmount, tx, token, chainId } = props
-  const { t } = useTranslation()
-  const router = useRouter()
-
-  return (
-    <div className='flex flex-col py-4'>
-      <SuccessBalloons className='mx-auto mb-6' />
-
-      <div className='leading-tight mb-4 text-inverse'>
-        <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl'>
-          {t('successfullyDeposited', {
-            amount: depositedAmount.amountPretty,
-            ticker: token.symbol
-          })}
-        </p>
-        <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4'>
-          {depositedAmount.amountPretty} {token.symbol}
-        </p>
-
-        <DepositAddTokenButton {...props} />
-      </div>
-
-      <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
-        <TxHashRow depositTx={tx} chainId={chainId} />
-      </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-inverse'>
-        {t(
-          'disclaimerComeBackRegularlyToClaimWinnings',
-          'You are eligible for all future prizes! Come back to check for winnings, if you don’t claim winnings in 60 days they will expire. <Link>Learn more</Link>'
-        )}
-        <br />
-        <a
-          href='https://docs.pooltogether.com/faq/prizes-and-winning'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='underline text-xs'
-        >
-          {t('learnMore', 'Learn more')}
-        </a>
-      </div>
-
-      <SquareButton
-        size={SquareButtonSize.md}
-        theme={SquareButtonTheme.tealOutline}
-        className='text-xl hover:text-inverse transition-colors mb-2'
-        onClick={resetState}
-      >
-        {t('depositMore', 'Deposit more')}
-      </SquareButton>
-      <Link href={{ pathname: '/account', query: router.query }}>
-        <SquareLink
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.purpleOutline}
-          className='text-xs hover:text-inverse transition-colors text-center'
-        >
-          {t('viewAccount', 'View account')}
-        </SquareLink>
-      </Link>
-    </div>
   )
 }
 

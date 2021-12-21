@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers'
-import { useUsersCurrentPrizePoolTwabs } from 'lib/hooks/v4/PrizePool/useUsersCurrentPrizePoolTwabs'
+import { useUsersTotalTwab } from 'lib/hooks/v4/PrizePool/useUsersTotalTwab'
 import { EstimateAction, estimateOddsForAmount } from './useEstimatedOddsForAmount'
 import { useOverallOddsData } from './useOverallOddsData'
 
@@ -15,26 +15,27 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
   amountUnformatted: BigNumber = ethers.constants.Zero,
   daysOfPrizes: number = 1
 ): {
-  [usersAddress: string]: {
-    odds: number
-    oneOverOdds: number
-  }
+  usersAddress: string
+  odds: number
+  oneOverOdds: number
 } => {
-  const { data: twabsData, isFetched: isTwabsFetched } = useUsersCurrentPrizePoolTwabs(usersAddress)
+  const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
   const data = useOverallOddsData()
-  const twabs = twabsData?.[usersAddress]
   if (!isTwabsFetched || !data || !twabs) {
     return undefined
   }
   const { totalSupply, numberOfPrizes, decimals } = data
+  const { odds, oneOverOdds } = estimateOddsForAmount(
+    twabs.twab,
+    totalSupply,
+    numberOfPrizes * daysOfPrizes,
+    decimals,
+    action,
+    amountUnformatted
+  )
   return {
-    [usersAddress]: estimateOddsForAmount(
-      twabs.total,
-      totalSupply,
-      numberOfPrizes * daysOfPrizes,
-      decimals,
-      action,
-      amountUnformatted
-    )
+    usersAddress,
+    odds,
+    oneOverOdds
   }
 }
