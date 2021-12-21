@@ -4,9 +4,9 @@ import FeatherIcon from 'feather-icons-react'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import { useForm } from 'react-hook-form'
 import { Trans } from 'react-i18next'
 import {
-  DepositAmountInput,
   BalanceBottomSheetBackButton,
   BalanceBottomSheetTitle,
   BalanceBottomSheetButtonTheme,
@@ -34,7 +34,8 @@ import { formatUnits } from 'ethers/lib/utils'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
-import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+// import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 // import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
@@ -529,6 +530,16 @@ const DepositView = (props) => {
   const { prizePool, setView, stakingPool, depositTx } = props
   const { t } = useTranslation()
 
+  const form = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+  const {
+    handleSubmit,
+    formState: { isValid, isDirty, errors },
+    watch
+  } = form
+
   const setReviewDeposit = () => {
     setView(DefaultBalanceSheetViews.depositReview)
   }
@@ -539,7 +550,7 @@ const DepositView = (props) => {
 
       <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>
         <div className='w-full mx-auto'>
-          <DepositAmountInput
+          <GenericDepositAmountInput
             {...props}
             prizePool={prizePool}
             className=''
@@ -548,7 +559,7 @@ const DepositView = (props) => {
           />
         </div>
 
-        <DepositInfoBox
+        {/* <DepositInfoBox
           className='mt-3'
           depositTx={depositTx}
           prizePool={prizePool}
@@ -564,7 +575,7 @@ const DepositView = (props) => {
           tokenBalance={tokenBalance}
           token={token}
           amountToDeposit={amountToDeposit}
-        />
+        /> */}
       </form>
 
       <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />

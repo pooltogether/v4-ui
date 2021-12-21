@@ -1,19 +1,20 @@
+import React, { useEffect } from 'react'
+import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-js-client'
-import classNames from 'classnames'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+
 import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
 import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useEffect } from 'react'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+
 import WalletIcon from 'assets/images/icon-wallet.svg'
 
-interface DepositAmountInputProps {
+interface GenericDepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>
-  prizePool: PrizePool
+  prizePool: object
   inputKey: string
   className?: string
   widthClassName?: string
@@ -24,14 +25,14 @@ interface DepositAmountInputProps {
  * @param props
  * @returns
  */
-export const DepositAmountInput = (props: DepositAmountInputProps) => {
+export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps) => {
   const { prizePool, className, widthClassName, form, inputKey } = props
 
   return (
     <div
       className={classNames(className, widthClassName, 'flex flex-col', 'font-inter', 'text-xl')}
     >
-      <DepositInputHeader prizePool={prizePool} form={form} inputKey={inputKey} />
+      <GenericDepositInputHeader prizePool={prizePool} form={form} inputKey={inputKey} />
 
       <div
         className={classNames(
@@ -49,29 +50,26 @@ export const DepositAmountInput = (props: DepositAmountInputProps) => {
   )
 }
 
-DepositAmountInput.defaultProps = {
+GenericDepositAmountInput.defaultProps = {
   widthClassName: 'w-full'
 }
 
-interface DepositInputHeaderProps {
+interface GenericDepositInputHeaderProps {
   form: UseFormReturn<FieldValues, object>
-  prizePool: PrizePool
+  prizePool: object
   inputKey: string
 }
 
-const DepositInputHeader = (props: DepositInputHeaderProps) => {
+const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
   const { form, prizePool, inputKey } = props
 
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: usersBalancesData, isFetched: isUsersBalancesFetched } = useUsersPrizePoolBalances(
-    usersAddress,
-    prizePool
-  )
-
-  console.log({ prizePoolTokens })
-  console.log({ usersBalancesData })
+  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
+  // const { data: usersBalancesData, isFetched: isUsersBalancesFetched } = useUsersPrizePoolBalances(
+  //   usersAddress,
+  //   prizePool
+  // )
 
   const { trigger, setValue } = form
   const token = prizePoolTokens?.token
@@ -110,7 +108,7 @@ const DepositInputHeader = (props: DepositInputHeaderProps) => {
   )
 }
 
-const DepositToken = (props: { prizePool: PrizePool }) => {
+const DepositToken = (props: { prizePool: object }) => {
   const { prizePool } = props
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
   const token = prizePoolTokens?.token
@@ -139,7 +137,7 @@ const DepositToken = (props: { prizePool: PrizePool }) => {
 }
 
 interface InputProps {
-  prizePool: PrizePool
+  prizePool: object
   form: UseFormReturn<FieldValues, object>
   inputKey: string
 }
@@ -174,7 +172,7 @@ const Input = (props: InputProps) => {
  * @param prizePool
  * @returns
  */
-const useDepositValidationRules = (prizePool: PrizePool) => {
+const useDepositValidationRules = (prizePool: object) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
@@ -202,12 +200,6 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
           return t(
             'insufficientFundsGetTokensBelow',
             'Insufficient funds. Get or swap tokens below.'
-          )
-        if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
-          return t(
-            'minimumDepositOfAmountRequired',
-            `Minimum deposit of {{amount}} {{token}} required`,
-            { amount: minimumDepositAmount.amountPretty, token: token.symbol }
           )
       }
 
