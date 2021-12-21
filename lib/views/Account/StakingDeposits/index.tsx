@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { composeInitialProps, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useForm } from 'react-hook-form'
 import { Trans } from 'react-i18next'
@@ -30,7 +31,8 @@ import {
   useStakingPools,
   useTokenBalances,
   useCoingeckoTokenPrices,
-  TokenWithBalance
+  TokenWithBalance,
+  Amount
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
 
@@ -43,6 +45,7 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 // import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 // import { DelegateTicketsSection } from './DelegateTicketsSection'
+import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -555,9 +558,7 @@ export enum DepositViews {
 }
 
 const DepositView = (props: DepositViewProps) => {
-  const { tokenBalanceIsFetched, prizePool, setView, tokenBalance, stakingPool, depositTx } = props
-
-  const { t } = useTranslation()
+  const { depositTx } = props
 
   const [depositView, setDepositView] = useState(DepositViews.deposit)
 
@@ -565,15 +566,50 @@ const DepositView = (props: DepositViewProps) => {
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
+
+  const setReviewDeposit = () => {
+    setDepositView(DepositViews.review)
+  }
+
+  switch (depositView) {
+    case DepositViews.deposit:
+      return (
+        <DepositFormView
+          {...props}
+          form={form}
+          depositTx={depositTx}
+          setDepositView={setDepositView}
+          setReviewDeposit={setReviewDeposit}
+        />
+      )
+    case DepositViews.review:
+      return <DepositReviewView {...props} setDepositView={setDepositView} />
+  }
+}
+
+export interface DepositFormViewProps extends DepositViewProps {
+  form: UseFormReturn<FieldValues, object>
+  // amountToDeposit: Amount
+  setDepositView: (view: DepositViews) => void
+  setReviewDeposit: () => void
+}
+
+const DepositFormView = (props: DepositFormViewProps) => {
+  const { setReviewDeposit, prizePool, setView, form, depositTx, tokenBalance } = props
+
+  const { t } = useTranslation()
+
   const {
     handleSubmit,
     formState: { isValid, isDirty, errors },
     watch
   } = form
 
-  const setReviewDeposit = () => {
-    setDepositView(DepositViews.review)
-  }
+  const quantity = watch(DEPOSIT_QUANTITY_KEY)
+  const amountToDeposit = useMemo(
+    () => getAmountFromString(quantity, tokenBalance?.decimals),
+    [quantity, tokenBalance?.decimals]
+  )
 
   return (
     <>
@@ -593,13 +629,13 @@ const DepositView = (props: DepositViewProps) => {
           />
         </div>
 
-        <DepositInfoBox
+        {/* <DepositInfoBox
           className='mt-3'
           depositTx={depositTx}
           prizePool={prizePool}
           amountToDeposit={amountToDeposit}
           errors={isDirty ? errors : null}
-        />
+        /> */}
 
         {/* <BottomButton
           className='mt-4 w-full'
@@ -615,6 +651,14 @@ const DepositView = (props: DepositViewProps) => {
       <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />
     </>
   )
+}
+
+export interface DepositReviewViewProps extends DepositViewProps {
+  setDepositView: (view: DepositViews) => void
+}
+
+const DepositReviewView = (props: DepositReviewViewProps) => {
+  return null
 }
 
 const LoadingList = () => (
