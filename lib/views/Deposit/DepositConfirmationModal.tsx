@@ -185,7 +185,10 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             action={EstimateAction.deposit}
           />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
+          <EstimatedDepositGasItem
+            chainId={prizePool.chainId}
+            amountUnformatted={amountUnformatted}
+          />
         </ModalInfoList>
 
         <TxButtonNetworkGated

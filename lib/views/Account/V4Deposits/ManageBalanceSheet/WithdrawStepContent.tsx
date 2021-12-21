@@ -363,7 +363,7 @@ const UpdatedStats = (props: {
       <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
       <EstimatedWithdrawalGasItem
-        prizePool={prizePool}
+        chainId={prizePool.chainId}
         amountUnformatted={amountToWithdraw?.amountUnformatted}
       />
     </ModalInfoList>

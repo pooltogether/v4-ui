@@ -77,7 +77,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </p>
       </div>
       <ModalInfoList className='mb-6'>
-        <EstimatedApproveDepositsGasItem prizePool={prizePool} />
+        <EstimatedApproveDepositsGasItem chainId={prizePool.chainId} />
       </ModalInfoList>
       <SquareButton className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}

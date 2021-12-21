@@ -70,7 +70,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 }
 
 interface EstimatedPrizePoolGasItemProps {
-  prizePool: PrizePool
+  chainId: number
 }
 
 interface EstimatedPrizePoolGasItemWithAmountProps extends EstimatedPrizePoolGasItemProps {
@@ -147,12 +147,12 @@ export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmou
 }
 
 export const EstimatedWithdrawalGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
-  const { prizePool, amountUnformatted } = props
+  const { chainId, amountUnformatted } = props
   // const { data: gasEstimate, isFetched } = useWithdrawGasEstimate(prizePool, amountUnformatted)
 
   const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(
     WITHDRAW_GAS_AMOUNT,
-    prizePool.chainId
+    chainId
   )
 
   return (
@@ -160,7 +160,7 @@ export const EstimatedWithdrawalGasItem = (props: EstimatedPrizePoolGasItemWithA
       txName='withdraw'
       totalGasWei={totalGasWei}
       totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
+      chainId={chainId}
       isFetched={isFetched}
       error={error}
     />
@@ -168,12 +168,12 @@ export const EstimatedWithdrawalGasItem = (props: EstimatedPrizePoolGasItemWithA
 }
 
 export const EstimatedApproveDepositsGasItem = (props: EstimatedPrizePoolGasItemProps) => {
-  const { prizePool } = props
+  const { chainId } = props
   // const { data: gasEstimate, isFetched } = useApproveDepositsGasEstimate(prizePool)
 
   const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(
     APPROVE_GAS_AMOUNT,
-    prizePool.chainId
+    chainId
   )
 
   return (
@@ -181,7 +181,7 @@ export const EstimatedApproveDepositsGasItem = (props: EstimatedPrizePoolGasItem
       txName='approve'
       totalGasWei={totalGasWei}
       totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
+      chainId={chainId}
       isFetched={isFetched}
       error={error}
     />

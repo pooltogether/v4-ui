@@ -22,6 +22,7 @@ interface GenericDepositAmountInputProps {
   inputKey: string
   className?: string
   widthClassName?: string
+  depositTokenClassName?: string
 }
 
 /**
@@ -55,7 +56,8 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 }
 
 GenericDepositAmountInput.defaultProps = {
-  widthClassName: 'w-full'
+  widthClassName: 'w-full',
+  depositTokenClassName: 'text-xl'
 }
 
 interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
@@ -105,9 +107,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
 interface DepositTokenProps extends GenericDepositAmountInputProps {}
 
 const DepositToken = (props: DepositTokenProps) => {
-  const { prizePool, tokenBalance } = props
-  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  // const token = prizePoolTokens?.token
+  const { prizePool, tokenBalance, depositTokenClassName } = props
 
   if (!tokenBalance) {
     return null
@@ -118,7 +118,8 @@ const DepositToken = (props: DepositTokenProps) => {
       className={classNames(
         'flex items-center',
         'py-4 pl-8 pr-4',
-        'placeholder-white placeholder-opacity-50'
+        'placeholder-white placeholder-opacity-50',
+        depositTokenClassName
       )}
     >
       <TokenIcon
