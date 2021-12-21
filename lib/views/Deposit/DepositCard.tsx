@@ -63,10 +63,7 @@ export const DepositCard = (props: { className?: string }) => {
     data: depositAllowance,
     refetch: refetchUsersDepositAllowance,
     isFetched: isUsersDepositAllowanceFetched
-  } = useUsersDepositAllowance({
-    prizePoolAddress: prizePool?.id(),
-    getUsersDepositAllowanceFxn: prizePool.getUsersDepositAllowance(usersAddress)
-  })
+  } = useUsersDepositAllowance(prizePool)
   const {
     data: delegateData,
     isFetched: isTicketDelegateFetched,

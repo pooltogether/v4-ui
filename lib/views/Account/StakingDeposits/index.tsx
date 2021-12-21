@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { BigNumber } from 'ethers'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
@@ -214,7 +215,7 @@ const StakingDepositItem = (props) => {
     }
   ]
 
-  const view = balances.ticket.hasBalance ? (
+  const view = (
     <>
       <StakingBalanceStats {...props} t={t} balances={balances} />
 
@@ -224,14 +225,26 @@ const StakingDepositItem = (props) => {
         setSelectedChainId={setSelectedChainId}
       />
     </>
-  ) : (
-    <BlankStateView
-      {...props}
-      setIsOpen={setIsOpen}
-      setSelectedChainId={setSelectedChainId}
-      apr={apr}
-    />
   )
+
+  // const view = balances.ticket.hasBalance ? (
+  //   <>
+  //     <StakingBalanceStats {...props} t={t} balances={balances} />
+
+  //     <ManageDepositButton
+  //       {...props}
+  //       setIsOpen={setIsOpen}
+  //       setSelectedChainId={setSelectedChainId}
+  //     />
+  //   </>
+  // ) : (
+  //   <BlankStateView
+  //     {...props}
+  //     setIsOpen={setIsOpen}
+  //     setSelectedChainId={setSelectedChainId}
+  //     apr={apr}
+  //   />
+  // )
 
   return (
     <div
@@ -550,13 +563,18 @@ const StakingBlockTitle = (props) => {
   )
 }
 
+export interface UserLPChainData {
+  userData: { underlyingToken: { allowance: BigNumber } }
+  balances: object
+}
+
 export interface DepositViewProps {
   prizePool: { chainId: number }
   tokenBalanceIsFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
   stakingPool: object
-  userLPChainData: object
+  userLPChainData: UserLPChainData
   setView: (view: DefaultBalanceSheetViews) => void
   depositTx: Transaction
 }
@@ -632,12 +650,14 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
   const { userData } = userLPChainData
   const { underlyingToken } = userData
-  console.log(underlyingToken.allowance)
-  console.log(amountToDeposit)
+  const isApproved = amountToDeposit.amountUnformatted
+    ? underlyingToken.allowance.gt(amountToDeposit.amountUnformatted)
+    : false
   const depositAllowance: DepositAllowance = {
-    isApproved: underlyingToken.allowance.gt(amountToDeposit.amountUnformatted || 0),
+    isApproved,
     allowanceUnformatted: underlyingToken.allowance
   }
+  console.log({ depositAllowance })
 
   return (
     <>
