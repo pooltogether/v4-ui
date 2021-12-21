@@ -657,6 +657,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
         <DepositInfoBox
           className='mt-3'
+          chainId={prizePool.chainId}
           depositTx={depositTx}
           depositAllowance={depositAllowance}
           amountToDeposit={amountToDeposit}

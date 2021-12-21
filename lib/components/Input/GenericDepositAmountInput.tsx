@@ -7,8 +7,6 @@ import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 import WalletIcon from 'assets/images/icon-wallet.svg'
@@ -63,14 +61,12 @@ GenericDepositAmountInput.defaultProps = {
 interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
 
 const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
-  const { form, prizePool, tokenBalance, inputKey, tokenBalanceIsFetched } = props
+  const { form, tokenBalance, inputKey, tokenBalanceIsFetched } = props
 
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
 
   const { trigger, setValue } = form
-  // const token = prizePoolTokens?.token
-  // const usersBalances = usersBalancesData?.balances
 
   // If the user input a larger amount than their wallet balance before connecting a wallet
   useEffect(() => {
@@ -152,7 +148,6 @@ const Input = (props: InputProps) => {
     <input
       className={classNames(
         'bg-transparent w-full outline-none focus:outline-none active:outline-none text-right py-4 pr-8 pl-4 font-semibold'
-        // 'rounded-lg'
       )}
       placeholder='0.0'
       {...register(inputKey, { required: true, pattern, validate })}
@@ -168,15 +163,9 @@ const Input = (props: InputProps) => {
 const useDepositValidationRules = (tokenBalance, ticketBalance) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  // const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
 
-  // const token = prizePoolTokens?.token
   const decimals = tokenBalance?.decimals
   const minimumDepositAmount = useMinimumDepositAmount(tokenBalance)
-  // const usersBalances = usersBalancesData?.balances
-  // const tokenBalance = usersBalances?.token
-  // const ticketBalance = usersBalances?.ticket
 
   return {
     isValid: (v: string) => {
