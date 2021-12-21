@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import classNames from 'classnames'
+import { TokenWithBalance } from '@pooltogether/hooks'
 import { useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
@@ -14,7 +15,10 @@ import WalletIcon from 'assets/images/icon-wallet.svg'
 
 interface GenericDepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>
-  prizePool: object
+  tokenBalanceIsFetched: Boolean
+  tokenBalance: TokenWithBalance
+  ticketBalance: TokenWithBalance
+  prizePool: { chainId: number }
   inputKey: string
   className?: string
   widthClassName?: string
@@ -26,13 +30,13 @@ interface GenericDepositAmountInputProps {
  * @returns
  */
 export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps) => {
-  const { prizePool, className, widthClassName, form, inputKey } = props
+  const { className, widthClassName } = props
 
   return (
     <div
       className={classNames(className, widthClassName, 'flex flex-col', 'font-inter', 'text-xl')}
     >
-      <GenericDepositInputHeader prizePool={prizePool} form={form} inputKey={inputKey} />
+      <GenericDepositInputHeader {...props} />
 
       <div
         className={classNames(
@@ -42,8 +46,8 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
         )}
       >
         <div className='bg-tertiary w-full rounded-lg flex'>
-          <DepositToken prizePool={prizePool} />
-          <Input prizePool={prizePool} form={form} inputKey={inputKey} />
+          <DepositToken {...props} />
+          <Input {...props} />
         </div>
       </div>
     </div>
@@ -54,27 +58,17 @@ GenericDepositAmountInput.defaultProps = {
   widthClassName: 'w-full'
 }
 
-interface GenericDepositInputHeaderProps {
-  form: UseFormReturn<FieldValues, object>
-  prizePool: object
-  inputKey: string
-}
+interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
 
 const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
-  const { form, prizePool, inputKey } = props
+  const { form, prizePool, tokenBalance, inputKey, tokenBalanceIsFetched } = props
 
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  // const { data: usersBalancesData, isFetched: isUsersBalancesFetched } = useUsersPrizePoolBalances(
-  //   usersAddress,
-  //   prizePool
-  // )
 
   const { trigger, setValue } = form
-  const token = prizePoolTokens?.token
-  const usersBalances = usersBalancesData?.balances
-  const tokenBalance = usersBalances?.token
+  // const token = prizePoolTokens?.token
+  // const usersBalances = usersBalancesData?.balances
 
   // If the user input a larger amount than their wallet balance before connecting a wallet
   useEffect(() => {
@@ -96,24 +90,26 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
           }}
         >
           <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
-          {!isUsersBalancesFetched ? (
+          {!tokenBalanceIsFetched ? (
             <ThemedClipSpinner sizeClassName='w-3 h-3' className='mr-2 opacity-50' />
           ) : (
             <span className='mr-1'>{tokenBalance?.amountPretty || 0}</span>
           )}
-          <span>{token?.symbol}</span>
+          <span>{tokenBalance?.symbol}</span>
         </button>
       )}
     </div>
   )
 }
 
-const DepositToken = (props: { prizePool: object }) => {
-  const { prizePool } = props
-  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const token = prizePoolTokens?.token
+interface DepositTokenProps extends GenericDepositAmountInputProps {}
 
-  if (!token) {
+const DepositToken = (props: DepositTokenProps) => {
+  const { prizePool, tokenBalance } = props
+  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
+  // const token = prizePoolTokens?.token
+
+  if (!tokenBalance) {
     return null
   }
 
@@ -129,26 +125,22 @@ const DepositToken = (props: { prizePool: object }) => {
         sizeClassName='w-6 h-6'
         className='mr-2'
         chainId={prizePool.chainId}
-        address={token.address}
+        address={tokenBalance.address}
       />
-      <span className='font-bold'>{token.symbol}</span>
+      <span className='font-bold'>{tokenBalance.symbol}</span>
     </div>
   )
 }
 
-interface InputProps {
-  prizePool: object
-  form: UseFormReturn<FieldValues, object>
-  inputKey: string
-}
+interface InputProps extends GenericDepositAmountInputProps {}
 
 const Input = (props: InputProps) => {
-  const { form, inputKey, prizePool } = props
+  const { form, inputKey, prizePool, tokenBalance } = props
   const { t } = useTranslation()
 
   const { register } = form
 
-  const validate = useDepositValidationRules(prizePool)
+  const validate = useDepositValidationRules(tokenBalance, prizePool)
 
   const pattern = {
     value: /^\d*\.?\d*$/,
@@ -172,18 +164,18 @@ const Input = (props: InputProps) => {
  * @param prizePool
  * @returns
  */
-const useDepositValidationRules = (prizePool: object) => {
+const useDepositValidationRules = (tokenBalance, ticketBalance) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  // const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
+  // const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
 
-  const token = prizePoolTokens?.token
-  const decimals = token?.decimals
-  const minimumDepositAmount = useMinimumDepositAmount(token)
-  const usersBalances = usersBalancesData?.balances
-  const tokenBalance = usersBalances?.token
-  const ticketBalance = usersBalances?.ticket
+  // const token = prizePoolTokens?.token
+  const decimals = tokenBalance?.decimals
+  const minimumDepositAmount = useMinimumDepositAmount(tokenBalance)
+  // const usersBalances = usersBalancesData?.balances
+  // const tokenBalance = usersBalances?.token
+  // const ticketBalance = usersBalances?.ticket
 
   return {
     isValid: (v: string) => {
