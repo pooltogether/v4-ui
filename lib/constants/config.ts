@@ -1,70 +1,21 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
+import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
-/**
- * "Network" meaning:
- *    Ethereum - mainnet, rinkeby, goerli, etc
- *    Polygon - matic, mumbai
- *    etc.
- */
-export enum Network {
-  ethereum = 'ethereum',
-  polygon = 'polygon',
-  avalanche = 'avalanche'
-}
-
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
+  [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))),
+  [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
 })
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
-
-/**
- * Ethereum
- * Mainnet - mainnet
- * Testnet - rinkeby
- */
-export const ETHEREUM_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
-})
-
-/**
- * Polygon
- * Mainnet - polygon
- * Testnet - mumbai
- */
-export const POLYGON_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
-})
-
-/**
- * Polygon
- * Mainnet - avalanche
- * Testnet - fuji
- */
-export const AVALANCHE_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.avalanche,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
-})
-
-export const getEnvironmentChainIds = (appEnv: string) => {
-  return {
-    [Network.ethereum]: ETHEREUM_CHAIN_IDS[appEnv],
-    [Network.polygon]: POLYGON_CHAIN_IDS[appEnv],
-    [Network.avalanche]: AVALANCHE_CHAIN_IDS[appEnv]
-  }
-}
 
 // Native currency symbols in app
 export const CHAIN_NATIVE_CURRENCY = Object.freeze({
@@ -125,34 +76,4 @@ const EXCHANGE_URLS = Object.freeze({
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.avalanche]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
   [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
-})
-
-/**
- * Prize Distributors to display in app
- */
-export const PRIZE_DISTRIBUTORS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: {
-    [CHAIN_ID.mainnet]: '0xb9a179DcA5a7bf5f8B9E088437B3A85ebB495eFe',
-    [CHAIN_ID.polygon]: '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056'
-  },
-  [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0xeB58099f058CBb55463447740777384811c14e25',
-    [CHAIN_ID.mumbai]: '0x3a5E08dD7f4A03C35974dE1cD62d7b1b37cF5806',
-    [CHAIN_ID.fuji]: '0x28b949aF1513F9F1E94257c4eDC0eE50996054BE'
-  }
-})
-
-/**
- * Prize Pools to display in app
- */
-export const PRIZE_POOLS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: {
-    [CHAIN_ID.mainnet]: '0xd89a09084555a7D0ABe7B111b1f78DFEdDd638Be',
-    [CHAIN_ID.polygon]: '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60'
-  },
-  [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0x691710F4fF1E02428240258bF651C7bE023B08dB',
-    [CHAIN_ID.mumbai]: '0x43f6fD467F14470345927b60679d98765757A6C7',
-    [CHAIN_ID.fuji]: '0x5999699A56e5dF9F860535749f6a0F254ab29f31'
-  }
 })
