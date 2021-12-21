@@ -1,11 +1,10 @@
 import React, { useMemo, useState } from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { BigNumber } from 'ethers'
+import { ethers, BigNumber } from 'ethers'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
-import { PrizePool } from '@pooltogether/v4-js-client'
 import { useForm } from 'react-hook-form'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Trans } from 'react-i18next'
@@ -45,6 +44,7 @@ import {
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
 
+import Erc20Abi from 'abis/ERC20Abi'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -69,7 +69,7 @@ export interface TokenFaucetDripToken {
 }
 
 export interface StakingPoolTokens {
-  underlyingToken: object
+  underlyingToken: UnderlyingToken
   tokenFaucetDripToken: TokenFaucetDripToken
 }
 
@@ -82,7 +82,7 @@ export const StakingDeposits = () => {
   const { t } = useTranslation()
   return (
     <div id='staking'>
-      <h4 className='mb-2'>{t('staking')}</h4>
+      <h4 className='mb-2'>{t('poolToken', 'POOL Token')}</h4>
 
       <StakingDepositsList />
     </div>
@@ -132,11 +132,11 @@ interface StakingDepositItemProps {
   network: number
   chainId: number
   stakingPool: StakingPool
-  prizePool: PrizePool
+  prizePool: BalanceBottomSheetPrizePool
 }
 
 const StakingDepositItem = (props: StakingDepositItemProps) => {
-  const { prizePool, chainId, stakingPool, wallet, network, usersAddress } = props
+  const { prizePool, stakingPool, wallet, network, usersAddress } = props
 
   const { t } = useTranslation()
 
@@ -169,6 +169,8 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const { tokens } = stakingPool || {}
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
+  const callTransaction = useApproveTx({ amount: 0, prizePool, underlyingToken })
+
   const apr = useStakingAPR(
     prizePool.chainId,
     underlyingToken,
@@ -196,7 +198,6 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   }
 
   const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
-  console.log({ depositAllowance })
 
   const depositView = (
     <DepositView
@@ -216,7 +217,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       depositAllowance={depositAllowance}
       balances={balances}
       setView={setView}
-      callTransaction={() => {}}
+      callTransaction={callTransaction}
       refetch={userLPChainDataRefetch}
       isFetched={userLPChainDataIsFetched}
     />
@@ -483,10 +484,7 @@ const BlankStateView = (props) => {
   return (
     <>
       <p className='text-sm'>
-        {t(
-          'lpStakingRewardsDescription',
-          'Add liquidity to the POOL/ETH pair on Uniswap and deposit LP tokens to earn extra POOL!'
-        )}
+        {t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')}
       </p>
       <h5 className='mt-3'>
         <span
@@ -512,7 +510,7 @@ const BlankStateView = (props) => {
       </h5>
       <div className='flex items-end justify-end w-full mt-4'>
         <button
-          className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+          className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
           onClick={() => {
             setSelectedChainId(prizePool.chainId)
             setIsOpen(true)
@@ -536,7 +534,8 @@ const StakingBalanceStats = (props) => {
     <div className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-6'>
       <ul className='space-y-4'>
         <li className='flex items-center justify-between font-semibold text-lg'>
-          {t('deposit', 'Deposit')} <StakingDepositBalance {...props} balances={props.balances} />
+          {t('deposited', 'Deposited')}{' '}
+          <StakingDepositBalance {...props} balances={props.balances} />
         </li>
         <li className='flex items-center justify-between font-semibold text-lg'>
           {t('rewards', 'Rewards')} <StakingRewardsBalance {...props} balances={props.balances} />
@@ -558,7 +557,7 @@ const ManageDepositButton = (props) => {
   return (
     <div className='flex items-end justify-end w-full mt-4'>
       <button
-        className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100'
+        className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
         onClick={() => {
           setSelectedChainId(prizePool.chainId)
           setIsOpen(true)
@@ -686,8 +685,13 @@ const StakingBlockTitle = (props) => {
   )
 }
 
+export interface UnderlyingToken {
+  allowance: BigNumber
+  address: string
+}
+
 export interface UserLPChainData {
-  userData: { underlyingToken: { allowance: BigNumber } }
+  userData: { underlyingToken: UnderlyingToken }
   balances: object
 }
 
@@ -860,4 +864,41 @@ const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?:
   }
 
   return depositAllowance
+}
+
+export interface UseApproveTxArgs {
+  amount: number
+  prizePool: BalanceBottomSheetPrizePool
+  underlyingToken: UnderlyingToken
+}
+
+// const callTransaction = async (
+//   provider: JsonRpcProvider,
+//   contractAddress: string,
+//   contractAbi: object[],
+//   method: string,
+//   params: any[]
+// ): Promise<TransactionResponse> =>
+
+const useApproveTx = (args: UseApproveTxArgs) => {
+  const { amount, underlyingToken, prizePool } = args
+
+  const { provider } = useOnboard()
+  const signer = provider.getSigner()
+
+  const params = [prizePool.address, amount]
+
+  const contract = new ethers.Contract(underlyingToken.address, Erc20Abi, signer)
+  // let gasEstimate
+  // try {
+  //   gasEstimate = await contract.estimateGas[method](...params)
+  // } catch (e) {
+  //   console.warn(`error while estimating gas: `, e)
+  // }
+  // Increase the gas limit by 1.15x as many tx's fail when gas estimate is left at 1x
+  // const gasLimit = gasEstimate ? gasEstimate.mul(115).div(100) : undefined
+  const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)
+  return contractCall
+  // return contract['approve'](...params)
+  // return await contract[method](...params, { gasLimit })
 }

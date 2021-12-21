@@ -63,13 +63,14 @@ export const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
     setApproveTxId(txId)
   }
 
+  let disabled
   if (!isFetched || depositAllowance.allowanceUnformatted.isZero()) {
-    return null
+    disabled = true
   }
 
   if (approveTx?.sent && !approveTx?.cancelled) {
     return (
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex'>
+      <div className='flex justify-between bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4'>
         <span>
           {' '}
           {t('revokePoolAllowance', {
@@ -85,6 +86,7 @@ export const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
 
   return (
     <SquareButton
+      disabled={disabled}
       onClick={handleRevokeAllowanceClick}
       className='flex w-full items-center justify-center'
     >
