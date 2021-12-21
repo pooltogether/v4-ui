@@ -3,21 +3,26 @@ import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { BigNumber } from 'ethers'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useForm } from 'react-hook-form'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Trans } from 'react-i18next'
 import {
   snapTo90,
-  BalanceBottomSheetBackButton,
-  BalanceBottomSheetTitle,
-  BalanceBottomSheetButtonTheme,
+  addTokenToMetamask,
+  SquareButton,
   DefaultBalanceSheetViews,
+  BalanceBottomSheetPrizePool,
+  BalanceBottomSheetBackButton,
+  BalanceBottomSheetButtonTheme,
+  BalanceBottomSheetTitle,
   BalanceBottomSheet,
+  LinkToContractItem,
   NetworkIcon,
-  TokenIcon
+  TokenIcon,
+  poolToast
 } from '@pooltogether/react-components'
 import {
   getNetworkNiceNameByChainId,
@@ -34,25 +39,29 @@ import {
   useTokenBalances,
   useCoingeckoTokenPrices,
   TokenWithBalance,
+  Transaction,
   Token,
-  Amount,
-  Transaction
+  Amount
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
 
-import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
-// import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-// import { ManageBalanceSheet } from './ManageBalanceSheet'
+import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
-// import { DelegateTicketsSection } from './DelegateTicketsSection'
+import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
+import { RevokeAllowanceButton } from 'lib/views/RevokeAllowanceButton'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
+
+const TOKEN_IMG_URL = {
+  PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
+}
 
 export interface TokenFaucetDripToken {
   address: string
@@ -60,6 +69,7 @@ export interface TokenFaucetDripToken {
 }
 
 export interface StakingPoolTokens {
+  underlyingToken: object
   tokenFaucetDripToken: TokenFaucetDripToken
 }
 
@@ -107,6 +117,7 @@ const StakingDepositsList = () => {
         key={`staking-pool-${prizePool.chainId}-${prizePool.address}`}
         usersAddress={usersAddress}
         wallet={wallet}
+        chainId={prizePool.chainId}
         network={network}
         stakingPool={stakingPool}
         prizePool={prizePool}
@@ -115,16 +126,17 @@ const StakingDepositsList = () => {
   })
 }
 
-interface StakingDepositItemsProps {
+interface StakingDepositItemProps {
   usersAddress: string
   wallet: object
-  network: object
+  network: number
+  chainId: number
   stakingPool: StakingPool
   prizePool: PrizePool
 }
 
-const StakingDepositItem = (props) => {
-  const { prizePool, stakingPool, wallet, network, usersAddress } = props
+const StakingDepositItem = (props: StakingDepositItemProps) => {
+  const { prizePool, chainId, stakingPool, wallet, network, usersAddress } = props
 
   const { t } = useTranslation()
 
@@ -183,6 +195,9 @@ const StakingDepositItem = (props) => {
     ticketBalance = balances.ticket
   }
 
+  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
+  console.log({ depositAllowance })
+
   const depositView = (
     <DepositView
       {...props}
@@ -195,6 +210,17 @@ const StakingDepositItem = (props) => {
     />
   )
   const withdrawView = <div>hi</div>
+  const moreInfoView = (
+    <MoreInfoView
+      {...props}
+      depositAllowance={depositAllowance}
+      balances={balances}
+      setView={setView}
+      callTransaction={() => {}}
+      refetch={userLPChainDataRefetch}
+      isFetched={userLPChainDataIsFetched}
+    />
+  )
 
   const buttons = [
     {
@@ -217,7 +243,7 @@ const StakingDepositItem = (props) => {
 
   const view = (
     <>
-      <StakingBalanceStats {...props} t={t} balances={balances} />
+      <StakingBalanceStats {...props} apr={apr} t={t} balances={balances} />
 
       <ManageDepositButton
         {...props}
@@ -229,7 +255,7 @@ const StakingDepositItem = (props) => {
 
   // const view = balances.ticket.hasBalance ? (
   //   <>
-  //     <StakingBalanceStats {...props} t={t} balances={balances} />
+  //     <StakingBalanceStats {...props} apr={apr} t={t} balances={balances} />
 
   //     <ManageDepositButton
   //       {...props}
@@ -278,6 +304,7 @@ const StakingDepositItem = (props) => {
         depositTx={depositTx}
         withdrawView={withdrawView}
         withdrawTx={withdrawTx}
+        moreInfoView={moreInfoView}
         network={network}
         wallet={wallet}
         label={`Staking Balance sheet`}
@@ -285,6 +312,101 @@ const StakingDepositItem = (props) => {
         buttons={buttons}
       />
     </div>
+  )
+}
+
+interface MoreInfoViewProps {
+  chainId: number
+  prizePool: BalanceBottomSheetPrizePool
+  balances: UsersPrizePoolBalances
+  setView: Function
+  isFetched: Boolean
+  depositAllowance: DepositAllowance
+  callTransaction: () => Promise<TransactionResponse>
+  refetch: () => {}
+}
+
+const MoreInfoView = (props: MoreInfoViewProps) => {
+  const { chainId, prizePool, balances, setView } = props
+  const { ticket, token } = balances
+
+  // depositAllowance={DepositAllowance}
+  // isFetched={isFetched}
+  // callTransaction={callTransaction}
+  // refetch={refetch}
+
+  const { t } = useTranslation()
+
+  const isMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+
+  const handleAddTokenToMetaMask = async () => {
+    if (!ticket) {
+      return
+    }
+
+    if (!isWalletOnProperNetwork) {
+      poolToast.warn(
+        t('switchToNetworkToAddToken', `Switch to {{networkName}} to add token '{{token}}'`, {
+          networkName: getNetworkNiceNameByChainId(prizePool.chainId),
+          token: token.symbol
+        })
+      )
+      return null
+    }
+
+    addTokenToMetamask(
+      ticket.symbol,
+      ticket.address,
+      Number(ticket.decimals),
+      TOKEN_IMG_URL[ticket.symbol]
+    )
+  }
+
+  return (
+    <>
+      <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
+
+      <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
+        <div className='opacity-50 font-bold flex justify-between'>
+          <span>{t('contract', 'Contract')}</span>
+          <span>{t('explorer', 'Explorer')}</span>
+        </div>
+        <LinkToContractItem
+          i18nKey='prizePool'
+          chainId={prizePool.chainId}
+          address={prizePool.address}
+        />
+        <LinkToContractItem
+          i18nKey='ticketToken'
+          chainId={prizePool.chainId}
+          address={ticket.address}
+        />
+        <LinkToContractItem
+          i18nKey='underlyingToken'
+          chainId={prizePool.chainId}
+          address={token.address}
+        />
+      </ul>
+      {isMetaMask && (
+        <SquareButton
+          onClick={handleAddTokenToMetaMask}
+          className='flex w-full items-center justify-center'
+        >
+          <FeatherIcon icon='plus-circle' className='w-5 mr-1' />{' '}
+          {t('addTicketTokenToMetamask', {
+            token: ticket?.symbol
+          })}
+        </SquareButton>
+      )}
+      <RevokeAllowanceButton
+        {...props}
+        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        chainId={prizePool.chainId}
+        token={token}
+      />
+      <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />
+    </>
   )
 }
 
@@ -459,12 +581,13 @@ const NetworkLabel = (props: { chainId: number }) => (
   </div>
 )
 
-interface StakingDepositItemsProps {
+interface StakingDepositStatProps {
   stakingPool: StakingPool
   balances: UsersPrizePoolBalances
+  apr: string
 }
 
-const StakingDepositBalance = (props: StakingDepositItemsProps) => {
+const StakingDepositBalance = (props: StakingDepositStatProps) => {
   const { balances, stakingPool } = props
 
   if (!balances) {
@@ -480,13 +603,13 @@ const StakingDepositBalance = (props: StakingDepositItemsProps) => {
         className='mr-2 my-auto'
       />
       <span className={classnames('font-bold text-lg mr-3')}>
-        ${ticket.amountPretty} {ticket.symbol}
+        {ticket.amountPretty} {ticket.symbol}
       </span>
     </div>
   )
 }
 
-const StakingRewardsBalance = (props: StakingDepositItemsProps) => {
+const StakingRewardsBalance = (props: StakingDepositStatProps) => {
   const { balances, stakingPool } = props
 
   if (!balances) {
@@ -507,8 +630,8 @@ const StakingRewardsBalance = (props: StakingDepositItemsProps) => {
   )
 }
 
-const StakingEarningBalance = (props: StakingDepositItemsProps) => {
-  const { balances, stakingPool } = props
+const StakingEarningBalance = (props: StakingDepositStatProps) => {
+  const { balances, stakingPool, apr } = props
 
   const { t } = useTranslation()
 
@@ -526,7 +649,7 @@ const StakingEarningBalance = (props: StakingDepositItemsProps) => {
         className='mr-2 my-auto'
       />
       <span className='font-bold text-lg mr-3'>
-        <VAPRTooltip t={t} />
+        {apr}% <VAPRTooltip t={t} />
       </span>
     </div>
   )
@@ -648,16 +771,18 @@ const DepositFormView = (props: DepositFormViewProps) => {
     symbol: tokenBalance.symbol
   }
 
-  const { userData } = userLPChainData
-  const { underlyingToken } = userData
-  const isApproved = amountToDeposit.amountUnformatted
-    ? underlyingToken.allowance.gt(amountToDeposit.amountUnformatted)
-    : false
-  const depositAllowance: DepositAllowance = {
-    isApproved,
-    allowanceUnformatted: underlyingToken.allowance
-  }
+  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData, amountToDeposit)
   console.log({ depositAllowance })
+
+  // import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+  // const user = useSelectedChainIdUser()
+  // const {
+  //   data: depositAllowance,
+  //   refetch: refetchUsersDepositAllowance,
+  //   isFetched
+  // } = useUsersDepositAllowance(prizePool)
+  // const callTransaction = async () => user.approveDeposits(BigNumber.from(0))
+  // const refetch = () => refetchUsersDepositAllowance()
 
   return (
     <>
@@ -714,3 +839,25 @@ const LoadingList = () => (
     <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
   </ul>
 )
+
+const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?: Amount) => {
+  const { userData } = userLPChainData
+  const { underlyingToken } = userData
+
+  let isApproved = false
+
+  // When depositing we want to check if they have a certain amount they want to deposit
+  // When revoking allowance we just want to make sure their allowance is more than 0
+  if (amountToDeposit?.amountUnformatted) {
+    isApproved = underlyingToken.allowance.gt(amountToDeposit.amountUnformatted)
+  } else {
+    isApproved = underlyingToken.allowance.gt(0)
+  }
+
+  const depositAllowance: DepositAllowance = {
+    isApproved,
+    allowanceUnformatted: underlyingToken.allowance
+  }
+
+  return depositAllowance
+}
