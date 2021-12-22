@@ -46,6 +46,7 @@ import {
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
 
+import PrizePoolAbi from 'abis/PrizePool'
 import Erc20Abi from 'abis/ERC20Abi'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
@@ -214,16 +215,17 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const depositView = (
     <DepositView
       {...props}
-      setView={setView}
       userLPChainData={userLPChainData}
-      userLPChainDataRefetch={userLPChainDataRefetch}
-      tokenBalanceIsFetched={userLPChainDataIsFetched}
       ticketBalance={ticketBalance}
       tokenBalance={tokenBalance}
-      setDepositTxId={setDepositTxId}
+      tokenBalanceIsFetched={userLPChainDataIsFetched}
       depositTx={depositTx}
-      setApproveTxId={setApproveTxId}
       approveTx={approveTx}
+      setView={setView}
+      userLPChainDataRefetch={userLPChainDataRefetch}
+      closeInitialSheet={() => setIsOpen(false)}
+      setDepositTxId={setDepositTxId}
+      setApproveTxId={setApproveTxId}
     />
   )
   const withdrawView = <div>hi</div>
@@ -713,6 +715,7 @@ export interface DepositViewProps {
   approveTx: Transaction
   underlyingToken: UnderlyingToken
   usersAddress: string
+  closeInitialSheet: () => void
   setDepositTxId: (number) => void
   setApproveTxId: (number) => void
   setView: (view: DefaultBalanceSheetViews) => void
@@ -735,12 +738,12 @@ const DepositView = (props: DepositViewProps) => {
   })
   const { watch } = form
 
-  const setReviewDepositView = () => {
-    setDepositView(DepositViews.review)
-  }
-
   const setDepositFormView = () => {
     setDepositView(DepositViews.depositForm)
+  }
+
+  const setReviewDepositView = () => {
+    setDepositView(DepositViews.review)
   }
 
   const quantity = watch(DEPOSIT_QUANTITY_KEY)
@@ -878,6 +881,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     ticketBalance,
     tokenBalance,
     userLPChainData,
+    closeInitialSheet,
     setDepositTxId,
     setApproveTxId,
     setDepositFormView,
@@ -895,15 +899,16 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   const token = getToken(tokenBalance)
 
   const showConfirmModal = isOpen
-  const closeModal = () => {
-    setIsOpen(false)
+
+  const closeDepositModal = () => {
     setDepositFormView()
+    setIsOpen(false)
   }
 
   const onSuccess = (tx: Transaction) => {
-    // setCompletedDepositTxId(tx.id, prizePool)
     setDepositTxId(0)
-    closeModal()
+    closeDepositModal()
+    closeInitialSheet()
   }
 
   const sendApproveTx = async () => {
@@ -932,7 +937,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
     const callTransaction = buildDepositTx({
       provider,
-      amount: BigNumber.from(0),
+      amount: amountToDeposit.amountUnformatted,
       prizePool,
       ticket: balances.ticket,
       usersAddress
@@ -954,18 +959,15 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     <DepositConfirmationModal
       {...props}
       isOpen={showConfirmModal}
-      closeModal={closeModal}
+      closeModal={closeDepositModal}
       label='deposit confirmation modal'
       token={getToken(tokenBalance)}
       ticket={getTicket(ticketBalance)}
       isDataFetched={true}
       amountToDeposit={amountToDeposit}
       depositAllowance={depositAllowance}
-      // approveTx={approveTx}
-      // depositTx={depositTx}
       sendApproveTx={sendApproveTx}
       sendDepositTx={sendDepositTx}
-      // prizePool={{ chainId, address: prizePool.address }}
       resetState={() => {}}
     />
   )
@@ -1034,21 +1036,9 @@ const buildDepositTx = (args: BuildDepositTxArgs) => {
 
   const signer = provider.getSigner()
 
-  // const params = [prizePool.address, amount]
-  // const params= []
-  //   usersAddress,
-  //   ethers.utils.parseUnits(quantity, decimals),
-  //   ticket.address,
-  //   ethers.constants.AddressZero
-  // ]
-
-  // const contractMethod = 'depositTo'
-  // const callTransaction = async () => contract.deposit(amountToDeposit.amountUnformatted)
-  // const callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
-
   const params = [usersAddress, amount, ticket.address, ethers.constants.AddressZero]
 
-  const contract = new ethers.Contract(prizePool.address, Erc20Abi, signer)
+  const contract = new ethers.Contract(prizePool.address, PrizePoolAbi, signer)
 
   const contractCall: () => Promise<TransactionResponse> = contract['depositTo'].bind(
     null,

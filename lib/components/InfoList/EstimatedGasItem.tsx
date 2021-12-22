@@ -65,7 +65,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 
 interface EstimatedTxWithAmountProps {
   chainId: number
-  amountUnformatted: BigNumber
+  amountUnformatted?: BigNumber
 }
 
 // hard-coded gas used while testing in Wei
