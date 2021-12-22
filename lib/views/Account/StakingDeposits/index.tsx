@@ -54,6 +54,7 @@ import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
+import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { RevokeAllowanceButton } from 'lib/views/RevokeAllowanceButton'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
@@ -161,6 +162,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const [depositTxId, setDepositTxId] = useState(0)
   const depositTx = useTransaction(depositTxId)
 
+  const [approveTxId, setApproveTxId] = useState(0)
+  const approveTx = useTransaction(approveTxId)
+
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
 
@@ -184,10 +188,10 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     return <LoadingList />
   }
 
-  const refetch = () => {
-    stakingPoolChainDataRefetch()
-    userLPChainDataRefetch()
-  }
+  // const refetch = () => {
+  //   stakingPoolChainDataRefetch()
+  //   userLPChainDataRefetch()
+  // }
 
   let balances, tokenBalance, ticketBalance
 
@@ -208,6 +212,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       ticketBalance={ticketBalance}
       tokenBalance={tokenBalance}
       depositTx={depositTx}
+      approveTx={approveTx}
     />
   )
   const withdrawView = <div>hi</div>
@@ -704,6 +709,7 @@ export interface DepositViewProps {
   userLPChainData: UserLPChainData
   setView: (view: DefaultBalanceSheetViews) => void
   depositTx: Transaction
+  approveTx: Transaction
 }
 
 export enum DepositViews {
@@ -712,7 +718,7 @@ export enum DepositViews {
 }
 
 const DepositView = (props: DepositViewProps) => {
-  const { depositTx } = props
+  const { tokenBalance, userLPChainData } = props
 
   const [depositView, setDepositView] = useState(DepositViews.deposit)
 
@@ -720,47 +726,11 @@ const DepositView = (props: DepositViewProps) => {
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
+  const { watch } = form
 
   const setReviewDeposit = () => {
     setDepositView(DepositViews.review)
   }
-
-  switch (depositView) {
-    case DepositViews.deposit:
-      return (
-        <DepositFormView
-          {...props}
-          form={form}
-          depositTx={depositTx}
-          setDepositView={setDepositView}
-          setReviewDeposit={setReviewDeposit}
-        />
-      )
-    case DepositViews.review:
-      return <DepositReviewView {...props} setDepositView={setDepositView} />
-  }
-}
-
-export interface DepositFormViewProps extends DepositViewProps {
-  form: UseFormReturn<FieldValues, object>
-  // amountToDeposit: Amount
-  setDepositView: (view: DepositViews) => void
-  setReviewDeposit: () => void
-}
-
-const DepositFormView = (props: DepositFormViewProps) => {
-  const { userLPChainData, setReviewDeposit, prizePool, setView, form, depositTx, tokenBalance } =
-    props
-
-  const { t } = useTranslation()
-
-  const { isWalletConnected } = useOnboard()
-
-  const {
-    handleSubmit,
-    formState: { isValid, isDirty, errors },
-    watch
-  } = form
 
   const quantity = watch(DEPOSIT_QUANTITY_KEY)
   const amountToDeposit = useMemo(
@@ -768,25 +738,60 @@ const DepositFormView = (props: DepositFormViewProps) => {
     [quantity, tokenBalance?.decimals]
   )
 
-  const token: Token = {
-    address: tokenBalance.address,
-    decimals: tokenBalance.decimals,
-    name: tokenBalance.name,
-    symbol: tokenBalance.symbol
-  }
-
   const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData, amountToDeposit)
-  console.log({ depositAllowance })
 
-  // import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
-  // const user = useSelectedChainIdUser()
-  // const {
-  //   data: depositAllowance,
-  //   refetch: refetchUsersDepositAllowance,
-  //   isFetched
-  // } = useUsersDepositAllowance(prizePool)
-  // const callTransaction = async () => user.approveDeposits(BigNumber.from(0))
-  // const refetch = () => refetchUsersDepositAllowance()
+  switch (depositView) {
+    case DepositViews.deposit:
+      return (
+        <DepositFormView
+          {...props}
+          form={form}
+          depositAllowance={depositAllowance}
+          amountToDeposit={amountToDeposit}
+          setDepositView={setDepositView}
+          setReviewDeposit={setReviewDeposit}
+        />
+      )
+    case DepositViews.review:
+      return (
+        <DepositReviewView
+          {...props}
+          depositAllowance={depositAllowance}
+          amountToDeposit={amountToDeposit}
+          setDepositView={setDepositView}
+        />
+      )
+  }
+}
+
+export interface DepositFormViewProps extends DepositViewProps {
+  form: UseFormReturn<FieldValues, object>
+  amountToDeposit: Amount
+  depositAllowance: DepositAllowance
+  setDepositView: (view: DepositViews) => void
+  setReviewDeposit: () => void
+}
+
+const DepositFormView = (props: DepositFormViewProps) => {
+  const {
+    amountToDeposit,
+
+    setReviewDeposit,
+    prizePool,
+    setView,
+    form,
+    depositTx,
+    tokenBalance
+  } = props
+
+  const { t } = useTranslation()
+
+  const { isWalletConnected } = useOnboard()
+
+  const {
+    handleSubmit,
+    formState: { isValid, isDirty, errors }
+  } = form
 
   return (
     <>
@@ -805,21 +810,21 @@ const DepositFormView = (props: DepositFormViewProps) => {
         </div>
 
         <DepositInfoBox
+          {...props}
           className='mt-3'
           chainId={prizePool.chainId}
           depositTx={depositTx}
-          depositAllowance={depositAllowance}
-          amountToDeposit={amountToDeposit}
           errors={isDirty ? errors : null}
         />
 
         <BottomButton
+          {...props}
           className='mt-4 w-full'
           disabled={(!isValid && isDirty) || depositTx?.inFlight}
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
           tokenBalance={tokenBalance}
-          token={token}
+          token={token(tokenBalance)}
           amountToDeposit={amountToDeposit}
         />
       </form>
@@ -829,12 +834,107 @@ const DepositFormView = (props: DepositFormViewProps) => {
   )
 }
 
+const token = (tokenBalance) => {
+  const token: Token = {
+    address: tokenBalance.address,
+    decimals: tokenBalance.decimals,
+    name: tokenBalance.name,
+    symbol: tokenBalance.symbol
+  }
+
+  return token
+}
+
+const ticket = (ticketBalance) => {
+  const ticket: Token = {
+    address: ticketBalance.address,
+    decimals: ticketBalance.decimals,
+    name: ticketBalance.name,
+    symbol: ticketBalance.symbol
+  }
+
+  return ticket
+}
+
 export interface DepositReviewViewProps extends DepositViewProps {
   setDepositView: (view: DepositViews) => void
+  depositAllowance: DepositAllowance
+  amountToDeposit: Amount
 }
 
 const DepositReviewView = (props: DepositReviewViewProps) => {
-  return null
+  const { amountToDeposit, prizePool, depositAllowance, chainId, ticketBalance, tokenBalance } =
+    props
+
+  const [isOpen, setIsOpen] = useState(true)
+
+  const showConfirmModal = isOpen
+  const closeModal = () => {
+    setIsOpen(false)
+  }
+
+  const sendApproveTx = async () => {
+    // const name = t(`allowTickerPool`, { ticker: token.symbol })
+    // const txId = await sendTx({
+    //   name,
+    //   method: 'approve',
+    //   callTransaction: async () => user.approveDeposits(),
+    //   callbacks: {
+    //     refetch: () => refetchUsersDepositAllowance()
+    //   }
+    // })
+    // setApproveTxId(txId, prizePool)
+    return null
+  }
+
+  const sendDepositTx = async () => {
+    return null
+    // const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    // const overrides: Overrides = { gasLimit: 750000 }
+    // let contractMethod
+    // let callTransaction
+    // if (ticketDelegate === ethers.constants.AddressZero) {
+    //   contractMethod = 'depositToAndDelegate'
+    //   callTransaction = async () =>
+    //     user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
+    // } else {
+    //   contractMethod = 'depositTo'
+    //   callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
+    // }
+
+    // const txId = await sendTx({
+    //   name,
+    //   method: contractMethod,
+    //   callTransaction,
+    //   callbacks: {
+    //     onSuccess,
+    //     refetch: () => {
+    //       refetchUsersBalances()
+    //     }
+    //   }
+    // })
+    // setDepositTxId(txId, prizePool)
+  }
+
+  return (
+    <DepositConfirmationModal
+      {...props}
+      isOpen={showConfirmModal}
+      closeModal={closeModal}
+      label='deposit confirmation modal'
+      token={token(tokenBalance)}
+      ticket={ticket(ticketBalance)}
+      isDataFetched={true}
+      amountToDeposit={amountToDeposit}
+      depositAllowance={depositAllowance}
+      // approveTx={approveTx}
+      // depositTx={depositTx}
+      sendApproveTx={sendApproveTx}
+      sendDepositTx={sendDepositTx}
+      // prizePool={{ chainId, address: prizePool.address }}
+      resetState={() => {}}
+    />
+  )
 }
 
 const LoadingList = () => (
@@ -872,14 +972,6 @@ export interface UseApproveTxArgs {
   underlyingToken: UnderlyingToken
 }
 
-// const callTransaction = async (
-//   provider: JsonRpcProvider,
-//   contractAddress: string,
-//   contractAbi: object[],
-//   method: string,
-//   params: any[]
-// ): Promise<TransactionResponse> =>
-
 const useApproveTx = (args: UseApproveTxArgs) => {
   const { amount, underlyingToken, prizePool } = args
 
@@ -889,16 +981,8 @@ const useApproveTx = (args: UseApproveTxArgs) => {
   const params = [prizePool.address, amount]
 
   const contract = new ethers.Contract(underlyingToken.address, Erc20Abi, signer)
-  // let gasEstimate
-  // try {
-  //   gasEstimate = await contract.estimateGas[method](...params)
-  // } catch (e) {
-  //   console.warn(`error while estimating gas: `, e)
-  // }
-  // Increase the gas limit by 1.15x as many tx's fail when gas estimate is left at 1x
-  // const gasLimit = gasEstimate ? gasEstimate.mul(115).div(100) : undefined
+
   const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)
+
   return contractCall
-  // return contract['approve'](...params)
-  // return await contract[method](...params, { gasLimit })
 }
