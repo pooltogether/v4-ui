@@ -29,7 +29,9 @@ import {
   calculateAPR,
   calculateLPTokenPrice,
   amountMultByUsd,
-  toScaledUsdBigNumber
+  toScaledUsdBigNumber,
+  numberWithCommas,
+  getMaxPrecision
 } from '@pooltogether/utilities'
 import {
   useTransaction,
@@ -248,6 +250,11 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       onClick: () => setView(DefaultBalanceSheetViews.deposit)
     },
     {
+      theme: BalanceBottomSheetButtonTheme.primary,
+      label: t('claimRewards'),
+      onClick: () => setView(DefaultBalanceSheetViews.deposit)
+    },
+    {
       theme: BalanceBottomSheetButtonTheme.secondary,
       label: t('withdraw'),
       disabled: !balances.ticket.hasBalance,
@@ -260,9 +267,15 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     }
   ]
 
-  const view = (
+  const view = balances.ticket.hasBalance ? (
     <>
-      <StakingBalanceStats {...props} apr={apr} t={t} balances={balances} />
+      <StakingBalanceStats
+        {...props}
+        apr={apr}
+        t={t}
+        balances={balances}
+        userLPChainData={userLPChainData}
+      />
 
       <ManageDepositButton
         {...props}
@@ -270,26 +283,14 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
         setSelectedChainId={setSelectedChainId}
       />
     </>
+  ) : (
+    <BlankStateView
+      {...props}
+      setIsOpen={setIsOpen}
+      setSelectedChainId={setSelectedChainId}
+      apr={apr}
+    />
   )
-
-  // const view = balances.ticket.hasBalance ? (
-  //   <>
-  //     <StakingBalanceStats {...props} apr={apr} t={t} balances={balances} />
-
-  //     <ManageDepositButton
-  //       {...props}
-  //       setIsOpen={setIsOpen}
-  //       setSelectedChainId={setSelectedChainId}
-  //     />
-  //   </>
-  // ) : (
-  //   <BlankStateView
-  //     {...props}
-  //     setIsOpen={setIsOpen}
-  //     setSelectedChainId={setSelectedChainId}
-  //     apr={apr}
-  //   />
-  // )
 
   return (
     <div
@@ -596,6 +597,7 @@ const NetworkLabel = (props: { chainId: number }) => (
 interface StakingDepositStatProps {
   stakingPool: StakingPool
   balances: UsersPrizePoolBalances
+  userLPChainData: UserLPChainData
   apr: string
 }
 
@@ -622,13 +624,15 @@ const StakingDepositBalance = (props: StakingDepositStatProps) => {
 }
 
 const StakingRewardsBalance = (props: StakingDepositStatProps) => {
-  const { balances, stakingPool } = props
+  const { balances, stakingPool, userLPChainData } = props
 
   if (!balances) {
     return null
   }
 
+  const { userData } = userLPChainData
   const { tokenFaucetDripToken } = stakingPool.tokens
+  const amount = userData.claimableBalance
 
   return (
     <div className='flex'>
@@ -637,7 +641,9 @@ const StakingRewardsBalance = (props: StakingDepositStatProps) => {
         address={tokenFaucetDripToken.address}
         className='mr-2 my-auto'
       />
-      <span className='font-bold text-lg mr-3'> num {tokenFaucetDripToken.symbol}</span>
+      <span className='font-bold text-lg mr-3'>
+        {numberWithCommas(amount)} {tokenFaucetDripToken.symbol}
+      </span>
     </div>
   )
 }
