@@ -41,6 +41,7 @@ import {
   TokenWithBalance,
   Transaction,
   Token,
+  UserLPChainData,
   Amount
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
@@ -118,7 +119,6 @@ const StakingDepositsList = () => {
     return (
       <StakingDepositItem
         key={`staking-pool-${prizePool.chainId}-${prizePool.address}`}
-        usersAddress={usersAddress}
         wallet={wallet}
         chainId={prizePool.chainId}
         network={network}
@@ -130,7 +130,6 @@ const StakingDepositsList = () => {
 }
 
 interface StakingDepositItemProps {
-  usersAddress: string
   wallet: object
   network: number
   chainId: number
@@ -139,7 +138,9 @@ interface StakingDepositItemProps {
 }
 
 const StakingDepositItem = (props: StakingDepositItemProps) => {
-  const { prizePool, stakingPool, wallet, network, usersAddress } = props
+  const { prizePool, stakingPool, wallet, network } = props
+
+  const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()
 
@@ -177,21 +178,13 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
   let balances, tokenBalance, ticketBalance
-
+  let depositAllowance: DepositAllowance
   if (userLPChainData) {
     balances = userLPChainData.balances
     tokenBalance = balances.token
     ticketBalance = balances.ticket
+    depositAllowance = getDepositAllowance(userLPChainData)
   }
-
-  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
-
-  const callTransaction = useApproveTx({
-    provider,
-    amount: BigNumber.from(0),
-    prizePool,
-    token: balances.token
-  })
 
   const apr = useStakingAPR(
     prizePool.chainId,
@@ -205,6 +198,13 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   if (!isFetched) {
     return <LoadingList />
   }
+
+  const callTransaction = buildApproveTx({
+    provider,
+    amount: BigNumber.from(0),
+    prizePool,
+    token: balances.token
+  })
 
   // const refetch = () => {
   //   stakingPoolChainDataRefetch()
@@ -346,11 +346,6 @@ interface MoreInfoViewProps {
 const MoreInfoView = (props: MoreInfoViewProps) => {
   const { chainId, prizePool, balances, setView } = props
   const { ticket, token } = balances
-
-  // depositAllowance={DepositAllowance}
-  // isFetched={isFetched}
-  // callTransaction={callTransaction}
-  // refetch={refetch}
 
   const { t } = useTranslation()
 
@@ -702,15 +697,9 @@ const StakingBlockTitle = (props) => {
 }
 
 export interface UnderlyingToken {
+  balance: string
+  balanceUnformatted: BigNumber
   allowance: BigNumber
-  address: string
-  name: string
-  symbol: string
-}
-
-export interface UserLPChainData {
-  userData: { underlyingToken: UnderlyingToken }
-  balances: object
 }
 
 export interface DepositViewProps {
@@ -723,8 +712,9 @@ export interface DepositViewProps {
   depositTx: Transaction
   approveTx: Transaction
   underlyingToken: UnderlyingToken
-  setDepositTxId: (number) => {}
-  setApproveTxId: (number) => {}
+  usersAddress: string
+  setDepositTxId: (number) => void
+  setApproveTxId: (number) => void
   setView: (view: DefaultBalanceSheetViews) => void
   userLPChainDataRefetch: () => {}
 }
@@ -888,6 +878,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     ticketBalance,
     tokenBalance,
     userLPChainData,
+    setDepositTxId,
     setApproveTxId,
     setDepositFormView,
     userLPChainDataRefetch
@@ -897,6 +888,9 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   const { provider } = useOnboard()
   const sendTx = useSendTransaction()
   const [isOpen, setIsOpen] = useState(true)
+  const usersAddress = useUsersAddress()
+
+  const balances = userLPChainData.balances
 
   const token = getToken(tokenBalance)
 
@@ -906,15 +900,20 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     setDepositFormView()
   }
 
+  const onSuccess = (tx: Transaction) => {
+    // setCompletedDepositTxId(tx.id, prizePool)
+    setDepositTxId(0)
+    closeModal()
+  }
+
   const sendApproveTx = async () => {
-    const callTransaction = useApproveTx({
+    const callTransaction = buildApproveTx({
       provider,
       amount: MaxUint256,
       prizePool,
       token: tokenBalance
     })
 
-    // tokenContract.approve(prizePoolAddress, amount || MaxUint256, overrides)
     const name = t(`allowTickerPool`, { ticker: token.symbol })
     const txId = await sendTx({
       name,
@@ -928,32 +927,27 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   }
 
   const sendDepositTx = async () => {
-    return null
-    // const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
     // const overrides: Overrides = { gasLimit: 750000 }
-    // let contractMethod
-    // let callTransaction
-    // if (ticketDelegate === ethers.constants.AddressZero) {
-    //   contractMethod = 'depositToAndDelegate'
-    //   callTransaction = async () =>
-    //     user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
-    // } else {
-    //   contractMethod = 'depositTo'
-    //   callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
-    // }
 
-    // const txId = await sendTx({
-    //   name,
-    //   method: contractMethod,
-    //   callTransaction,
-    //   callbacks: {
-    //     onSuccess,
-    //     refetch: () => {
-    //       refetchUsersBalances()
-    //     }
-    //   }
-    // })
-    // setDepositTxId(txId, prizePool)
+    const callTransaction = buildDepositTx({
+      provider,
+      amount: BigNumber.from(0),
+      prizePool,
+      ticket: balances.ticket,
+      usersAddress
+    })
+
+    const txId = await sendTx({
+      name,
+      method: 'depositTo',
+      callTransaction,
+      callbacks: {
+        onSuccess,
+        refetch: userLPChainDataRefetch
+      }
+    })
+    setDepositTxId(txId)
   }
 
   return (
@@ -1006,14 +1000,14 @@ const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?:
   return depositAllowance
 }
 
-export interface UseApproveTxArgs {
+export interface BuildApproveTxArgs {
   amount: BigNumber
   prizePool: BalanceBottomSheetPrizePool
   provider: ethers.providers.Web3Provider
   token: Token
 }
 
-const useApproveTx = (args: UseApproveTxArgs) => {
+const buildApproveTx = (args: BuildApproveTxArgs) => {
   const { amount, token, prizePool, provider } = args
 
   const signer = provider.getSigner()
@@ -1023,6 +1017,43 @@ const useApproveTx = (args: UseApproveTxArgs) => {
   const contract = new ethers.Contract(token.address, Erc20Abi, signer)
 
   const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)
+
+  return contractCall
+}
+
+export interface BuildDepositTxArgs {
+  amount: BigNumber
+  prizePool: BalanceBottomSheetPrizePool
+  provider: ethers.providers.Web3Provider
+  ticket: Token
+  usersAddress: string
+}
+
+const buildDepositTx = (args: BuildDepositTxArgs) => {
+  const { amount, prizePool, usersAddress, ticket, provider } = args
+
+  const signer = provider.getSigner()
+
+  // const params = [prizePool.address, amount]
+  // const params= []
+  //   usersAddress,
+  //   ethers.utils.parseUnits(quantity, decimals),
+  //   ticket.address,
+  //   ethers.constants.AddressZero
+  // ]
+
+  // const contractMethod = 'depositTo'
+  // const callTransaction = async () => contract.deposit(amountToDeposit.amountUnformatted)
+  // const callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
+
+  const params = [usersAddress, amount, ticket.address, ethers.constants.AddressZero]
+
+  const contract = new ethers.Contract(prizePool.address, Erc20Abi, signer)
+
+  const contractCall: () => Promise<TransactionResponse> = contract['depositTo'].bind(
+    null,
+    ...params
+  )
 
   return contractCall
 }
