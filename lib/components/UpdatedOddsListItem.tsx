@@ -17,6 +17,11 @@ export const UpdatedOdds = (props: {
   const { amount, prizePool, action } = props
   const { t } = useTranslation()
 
+  // If this is a V3 prize pool don't show odds
+  if (!prizePool.contractMetadataList) {
+    return null
+  }
+
   return (
     <InfoListItem
       label={

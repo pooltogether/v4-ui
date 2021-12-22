@@ -70,9 +70,6 @@ const DepositInputHeader = (props: DepositInputHeaderProps) => {
     prizePool
   )
 
-  console.log({ prizePoolTokens })
-  console.log({ usersBalancesData })
-
   const { trigger, setValue } = form
   const token = prizePoolTokens?.token
   const usersBalances = usersBalancesData?.balances
