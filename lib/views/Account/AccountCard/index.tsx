@@ -2,19 +2,16 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import Image from 'next/image'
-
+import { ethers } from 'ethers'
 import { User } from '@pooltogether/v4-js-client'
+
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { TotalWinnings } from './TotalWinnings'
-
 import walletIllustration from 'public/wallet-illustration.png'
 import { useUsersTotalPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersTotalPrizePoolBalances'
 import { CountUp } from 'lib/components/CountUp'
 import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
-import { ethers } from 'ethers'
 
 interface AccountCardProps {
   className?: string
@@ -27,7 +24,7 @@ export const AccountCard = (props: AccountCardProps) => {
     <div className='flex flex-col p-4 pink-purple-gradient rounded-2xl space-y-2'>
       <div className='flex justify-between p-4'>
         <TotalBalance user={user} />
-        <img src={walletIllustration} style={{ width: '55px', height: '60px' }} />
+        <img src={walletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
         <DailyOdds />

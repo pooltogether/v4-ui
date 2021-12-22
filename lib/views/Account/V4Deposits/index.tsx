@@ -13,28 +13,20 @@ import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from 'lib/components/Text/CardTitle'
-import { CardSecondary } from 'lib/components/Text/CardSecondary'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
+  const usersAddress = useUsersAddress()
+  const { data } = useUsersV4Balances(usersAddress)
+
   return (
     <div id='deposits'>
-      <div className='flex space-x-2 items-center'>
-        <CardTitle>{t('deposits')}</CardTitle>
-        <V4DepositAmount />
-      </div>
+      <CardTitle title={t('deposits')} secondary={`$${data?.totalValueUsd.amountPretty}`} />
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>
     </div>
   )
-}
-
-const V4DepositAmount = () => {
-  const usersAddress = useUsersAddress()
-  const { data, isFetched } = useUsersV4Balances(usersAddress)
-  if (!isFetched) return null
-  return <CardSecondary>${data.totalValueUsd.amountPretty}</CardSecondary>
 }
 
 const DepositsList = () => {
@@ -107,3 +99,5 @@ const LoadingList = () => (
     <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
   </ul>
 )
+
+// t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })

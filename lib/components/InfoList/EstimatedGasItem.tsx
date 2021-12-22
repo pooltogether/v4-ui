@@ -11,7 +11,7 @@ import { numberWithCommas } from '@pooltogether/utilities'
 //   useApproveDepositsGasEstimate,
 //   useDepositGasEstimate,
 //   useWithdrawGasEstimate
-// } from 'lib/hooks/Tsunami/PrizePool/useGasEstimates'
+// } from 'lib/hooks/v4/PrizePool/useGasEstimates'
 import { InfoListItem } from 'lib/components/InfoList'
 import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 

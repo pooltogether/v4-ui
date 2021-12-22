@@ -3,7 +3,7 @@ import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 import { useQueries } from 'react-query'
 
-import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
+import { useTicketDecimals } from 'lib/hooks/v4/PrizePool/useTicketDecimals'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
 import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
