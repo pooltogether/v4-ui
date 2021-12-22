@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { ethers, BigNumber } from 'ethers'
+import { MaxUint256 } from '@ethersproject/constants'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useTranslation } from 'react-i18next'
@@ -57,6 +58,7 @@ import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { RevokeAllowanceButton } from 'lib/views/RevokeAllowanceButton'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -144,6 +146,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
 
+  const { provider } = useOnboard()
   const { setSelectedChainId } = useSelectedChainId()
 
   const {
@@ -173,7 +176,22 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const { tokens } = stakingPool || {}
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
-  const callTransaction = useApproveTx({ amount: 0, prizePool, underlyingToken })
+  let balances, tokenBalance, ticketBalance
+
+  if (userLPChainData) {
+    balances = userLPChainData.balances
+    tokenBalance = balances.token
+    ticketBalance = balances.ticket
+  }
+
+  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
+
+  const callTransaction = useApproveTx({
+    provider,
+    amount: BigNumber.from(0),
+    prizePool,
+    token: balances.token
+  })
 
   const apr = useStakingAPR(
     prizePool.chainId,
@@ -193,25 +211,18 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   //   userLPChainDataRefetch()
   // }
 
-  let balances, tokenBalance, ticketBalance
-
-  if (userLPChainData) {
-    balances = userLPChainData.balances
-    tokenBalance = balances.token
-    ticketBalance = balances.ticket
-  }
-
-  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
-
   const depositView = (
     <DepositView
       {...props}
       setView={setView}
       userLPChainData={userLPChainData}
+      userLPChainDataRefetch={userLPChainDataRefetch}
       tokenBalanceIsFetched={userLPChainDataIsFetched}
       ticketBalance={ticketBalance}
       tokenBalance={tokenBalance}
+      setDepositTxId={setDepositTxId}
       depositTx={depositTx}
+      setApproveTxId={setApproveTxId}
       approveTx={approveTx}
     />
   )
@@ -411,7 +422,7 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
         chainId={prizePool.chainId}
         token={token}
       />
-      <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />
+      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
     </>
   )
 }
@@ -693,6 +704,8 @@ const StakingBlockTitle = (props) => {
 export interface UnderlyingToken {
   allowance: BigNumber
   address: string
+  name: string
+  symbol: string
 }
 
 export interface UserLPChainData {
@@ -701,26 +714,30 @@ export interface UserLPChainData {
 }
 
 export interface DepositViewProps {
-  prizePool: { chainId: number }
+  prizePool: BalanceBottomSheetPrizePool
   tokenBalanceIsFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
   stakingPool: object
   userLPChainData: UserLPChainData
-  setView: (view: DefaultBalanceSheetViews) => void
   depositTx: Transaction
   approveTx: Transaction
+  underlyingToken: UnderlyingToken
+  setDepositTxId: (number) => {}
+  setApproveTxId: (number) => {}
+  setView: (view: DefaultBalanceSheetViews) => void
+  userLPChainDataRefetch: () => {}
 }
 
 export enum DepositViews {
-  'deposit',
+  'depositForm',
   'review'
 }
 
 const DepositView = (props: DepositViewProps) => {
   const { tokenBalance, userLPChainData } = props
 
-  const [depositView, setDepositView] = useState(DepositViews.deposit)
+  const [depositView, setDepositView] = useState(DepositViews.depositForm)
 
   const form = useForm({
     mode: 'onChange',
@@ -728,8 +745,12 @@ const DepositView = (props: DepositViewProps) => {
   })
   const { watch } = form
 
-  const setReviewDeposit = () => {
+  const setReviewDepositView = () => {
     setDepositView(DepositViews.review)
+  }
+
+  const setDepositFormView = () => {
+    setDepositView(DepositViews.depositForm)
   }
 
   const quantity = watch(DEPOSIT_QUANTITY_KEY)
@@ -741,15 +762,14 @@ const DepositView = (props: DepositViewProps) => {
   const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData, amountToDeposit)
 
   switch (depositView) {
-    case DepositViews.deposit:
+    case DepositViews.depositForm:
       return (
         <DepositFormView
           {...props}
           form={form}
           depositAllowance={depositAllowance}
           amountToDeposit={amountToDeposit}
-          setDepositView={setDepositView}
-          setReviewDeposit={setReviewDeposit}
+          setReviewDepositView={setReviewDepositView}
         />
       )
     case DepositViews.review:
@@ -758,7 +778,7 @@ const DepositView = (props: DepositViewProps) => {
           {...props}
           depositAllowance={depositAllowance}
           amountToDeposit={amountToDeposit}
-          setDepositView={setDepositView}
+          setDepositFormView={setDepositFormView}
         />
       )
   }
@@ -768,20 +788,18 @@ export interface DepositFormViewProps extends DepositViewProps {
   form: UseFormReturn<FieldValues, object>
   amountToDeposit: Amount
   depositAllowance: DepositAllowance
-  setDepositView: (view: DepositViews) => void
-  setReviewDeposit: () => void
+  setReviewDepositView: () => void
 }
 
 const DepositFormView = (props: DepositFormViewProps) => {
   const {
     amountToDeposit,
-
-    setReviewDeposit,
     prizePool,
-    setView,
     form,
     depositTx,
-    tokenBalance
+    tokenBalance,
+    setView,
+    setReviewDepositView
   } = props
 
   const { t } = useTranslation()
@@ -797,7 +815,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
     <>
       <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
 
-      <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>
+      <form onSubmit={handleSubmit(setReviewDepositView)} className='w-full'>
         <div className='w-full mx-auto'>
           <GenericDepositAmountInput
             {...props}
@@ -824,17 +842,17 @@ const DepositFormView = (props: DepositFormViewProps) => {
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
           tokenBalance={tokenBalance}
-          token={token(tokenBalance)}
+          token={getToken(tokenBalance)}
           amountToDeposit={amountToDeposit}
         />
       </form>
 
-      <BalanceBottomSheetBackButton onClick={() => setView(DefaultBalanceSheetViews.main)} />
+      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
     </>
   )
 }
 
-const token = (tokenBalance) => {
+const getToken = (tokenBalance) => {
   const token: Token = {
     address: tokenBalance.address,
     decimals: tokenBalance.decimals,
@@ -845,7 +863,7 @@ const token = (tokenBalance) => {
   return token
 }
 
-const ticket = (ticketBalance) => {
+const getTicket = (ticketBalance) => {
   const ticket: Token = {
     address: ticketBalance.address,
     decimals: ticketBalance.decimals,
@@ -857,34 +875,56 @@ const ticket = (ticketBalance) => {
 }
 
 export interface DepositReviewViewProps extends DepositViewProps {
-  setDepositView: (view: DepositViews) => void
-  depositAllowance: DepositAllowance
   amountToDeposit: Amount
+  depositAllowance: DepositAllowance
+  setDepositFormView: () => void
 }
 
 const DepositReviewView = (props: DepositReviewViewProps) => {
-  const { amountToDeposit, prizePool, depositAllowance, chainId, ticketBalance, tokenBalance } =
-    props
+  const {
+    amountToDeposit,
+    prizePool,
+    depositAllowance,
+    ticketBalance,
+    tokenBalance,
+    userLPChainData,
+    setApproveTxId,
+    setDepositFormView,
+    userLPChainDataRefetch
+  } = props
 
+  const { t } = useTranslation()
+  const { provider } = useOnboard()
+  const sendTx = useSendTransaction()
   const [isOpen, setIsOpen] = useState(true)
+
+  const token = getToken(tokenBalance)
 
   const showConfirmModal = isOpen
   const closeModal = () => {
     setIsOpen(false)
+    setDepositFormView()
   }
 
   const sendApproveTx = async () => {
-    // const name = t(`allowTickerPool`, { ticker: token.symbol })
-    // const txId = await sendTx({
-    //   name,
-    //   method: 'approve',
-    //   callTransaction: async () => user.approveDeposits(),
-    //   callbacks: {
-    //     refetch: () => refetchUsersDepositAllowance()
-    //   }
-    // })
-    // setApproveTxId(txId, prizePool)
-    return null
+    const callTransaction = useApproveTx({
+      provider,
+      amount: MaxUint256,
+      prizePool,
+      token: tokenBalance
+    })
+
+    // tokenContract.approve(prizePoolAddress, amount || MaxUint256, overrides)
+    const name = t(`allowTickerPool`, { ticker: token.symbol })
+    const txId = await sendTx({
+      name,
+      method: 'approve',
+      callTransaction,
+      callbacks: {
+        refetch: userLPChainDataRefetch
+      }
+    })
+    setApproveTxId(txId)
   }
 
   const sendDepositTx = async () => {
@@ -922,8 +962,8 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       isOpen={showConfirmModal}
       closeModal={closeModal}
       label='deposit confirmation modal'
-      token={token(tokenBalance)}
-      ticket={ticket(ticketBalance)}
+      token={getToken(tokenBalance)}
+      ticket={getTicket(ticketBalance)}
       isDataFetched={true}
       amountToDeposit={amountToDeposit}
       depositAllowance={depositAllowance}
@@ -967,20 +1007,20 @@ const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?:
 }
 
 export interface UseApproveTxArgs {
-  amount: number
+  amount: BigNumber
   prizePool: BalanceBottomSheetPrizePool
-  underlyingToken: UnderlyingToken
+  provider: ethers.providers.Web3Provider
+  token: Token
 }
 
 const useApproveTx = (args: UseApproveTxArgs) => {
-  const { amount, underlyingToken, prizePool } = args
+  const { amount, token, prizePool, provider } = args
 
-  const { provider } = useOnboard()
   const signer = provider.getSigner()
 
   const params = [prizePool.address, amount]
 
-  const contract = new ethers.Contract(underlyingToken.address, Erc20Abi, signer)
+  const contract = new ethers.Contract(token.address, Erc20Abi, signer)
 
   const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)
 
