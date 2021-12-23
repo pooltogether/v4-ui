@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react'
-import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { ethers, BigNumber } from 'ethers'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -13,10 +12,7 @@ import {
   // snapTo90,
   addTokenToMetamask,
   SquareButton,
-  // BalanceBottomSheetPrizePool,
   BalanceBottomSheetBackButton,
-  // BalanceBottomSheetButtonTheme,
-  // BalanceBottomSheetTitle,
   BalanceBottomSheet,
   ContractLink,
   NetworkIcon,
@@ -84,13 +80,19 @@ export enum DefaultBalanceSheetViews {
 
 export interface StakingPoolTokens {
   ticket: Token
-  underlyingToken: Token
+  underlyingToken: UnderlyingToken
   tokenFaucetDripToken: Token
 }
 
 export interface StakingPool {
   prizePool: { chainId: number; address: string }
   tokens: StakingPoolTokens
+}
+
+export interface UnderlyingToken {
+  balance: string
+  balanceUnformatted: BigNumber
+  allowance: BigNumber
 }
 
 export const StakingDeposits = () => {
@@ -107,34 +109,26 @@ export const StakingDeposits = () => {
 const StakingDepositsList = () => {
   const stakingPools = useStakingPools()
 
-  const { wallet, network } = useOnboard()
-
   return stakingPools.map((stakingPool) => {
     const { prizePool } = stakingPool
 
     return (
       <StakingDepositItem
         key={`staking-pool-${prizePool.chainId}-${prizePool.address}`}
-        wallet={wallet}
         chainId={prizePool.chainId}
-        network={network}
         stakingPool={stakingPool}
-        prizePool={prizePool}
       />
     )
   })
 }
 
 interface StakingDepositItemProps {
-  wallet: object
-  network: number
   chainId: number
   stakingPool: StakingPool
-  prizePool: BalanceBottomSheetPrizePool
 }
 
 const StakingDepositItem = (props: StakingDepositItemProps) => {
-  const { chainId, prizePool, stakingPool, wallet, network } = props
+  const { chainId, stakingPool } = props
 
   const usersAddress = useUsersAddress()
 
@@ -171,8 +165,8 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const [claimTxId, setClaimTxId] = useState(0)
   const claimTx = useTransaction(claimTxId)
 
-  const [withdrawTxId, setWithdrawTxId] = useState(0)
-  const withdrawTx = useTransaction(withdrawTxId)
+  // const [withdrawTxId, setWithdrawTxId] = useState(0)
+  // const withdrawTx = useTransaction(withdrawTxId)
 
   const { tokenFaucetData, underlyingTokenData, ticketsData } = stakingPoolChainData || {}
   const { dripRatePerDayUnformatted } = tokenFaucetData || {}
@@ -187,13 +181,29 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     tokenFaucetDripToken.address
   ])
 
-  const apr = useStakingAPR(
-    prizePool.chainId,
+  console.log({ underlyingToken })
+  console.log({ tokens })
+  const { data: lPTokenBalances, isFetched: tokenBalancesIsFetched } = useTokenBalances(
+    chainId,
+    underlyingToken.address,
+    [token1.address, token2.address]
+  )
+
+  const dripTokenUsd = tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
+
+  const lpTokenPrice = useLpTokenPrice(
+    lPTokenBalances,
     tokenPrices,
     tokenPricesIsFetched,
+    tokenBalancesIsFetched,
     underlyingToken,
+    underlyingTokenData
+  )
+
+  const apr = useStakingAPR(
+    lpTokenPrice,
     underlyingTokenData,
-    tokenFaucetDripToken,
+    dripTokenUsd,
     dripRatePerDayUnformatted,
     ticketsData
   )
@@ -203,24 +213,23 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   }
 
   const balances = userLPChainData.balances
-  console.log(userLPChainData)
-  console.log(stakingPool)
-  console.log(balances)
   const tokenBalance = balances.token
   const ticketBalance = balances.ticket
   const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
-  const { userData } = userLPChainData
+  // const { userData } = userLPChainData
 
   const callTransaction = buildApproveTx({
     provider,
     amount: BigNumber.from(0),
-    prizePool,
+    prizePoolAddress: stakingPool.prizePool.address,
     token: balances.token
   })
 
   const depositView = (
     <DepositView
       {...props}
+      underlyingToken={underlyingToken}
+      usersAddress={usersAddress}
       userLPChainData={userLPChainData}
       ticketBalance={ticketBalance}
       tokenBalance={tokenBalance}
@@ -234,6 +243,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       setApproveTxId={setApproveTxId}
     />
   )
+
   const claimView = (
     <ClaimView
       {...props}
@@ -248,18 +258,27 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       userLPChainDataRefetch={userLPChainDataRefetch}
     />
   )
-  const withdrawView = <div>hi</div>
-  const moreInfoView = (
-    <MoreInfoView
-      {...props}
-      depositAllowance={depositAllowance}
-      balances={balances}
-      setView={setView}
-      callTransaction={callTransaction}
-      refetch={userLPChainDataRefetch}
-      isFetched={userLPChainDataIsFetched}
-    />
+  const withdrawView = (
+    <>
+      <ModalTitle
+        chainId={chainId}
+        title={`${t('withdraw')}: ${tokenBalance.symbol}`}
+        className='mb-4'
+      />
+    </>
   )
+
+  // const moreInfoView = (
+  //   <MoreInfoView
+  //     {...props}
+  //     depositAllowance={depositAllowance}
+  //     balances={balances}
+  //     setView={setView}
+  //     callTransaction={callTransaction}
+  //     refetch={userLPChainDataRefetch}
+  //     isFetched={userLPChainDataIsFetched}
+  //   />
+  // )
 
   const accountView = balances.ticket.hasBalance ? (
     <>
@@ -305,25 +324,14 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       label: t('withdraw'),
       theme: SquareButtonTheme.tealOutline
     }
-    // {
-    //   id: 'moreInfo',
-    //   view: () => moreInfoView,
-    //   label: t('moreInfo'),
-    //   theme: SquareButtonTheme.teal
-    // }
   ]
 
   const contractLinks: ContractLink[] = [
     {
       i18nKey: 'prizePool',
       chainId,
-      address: prizePool.address
+      address: stakingPool.prizePool.address
     },
-    // {
-    //   i18nKey: 'prizeStrategy',
-    //   chainId,
-    //   address: prizePool.prizeStrategy.address
-    // },
     {
       i18nKey: 'depositToken',
       chainId,
@@ -369,28 +377,19 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
         // snapPoints={snapTo90}
         contractLinks={contractLinks}
         balance={getAmountFromString(ticketBalance.amount, '18')}
-        balanceUsd={getAmountFromString('1234.124', '18')}
-        // balances={balances}
+        balanceUsd={getAmountFromString(
+          (Number(ticketBalance.amount) * lpTokenPrice.toNumber()).toString(),
+          '18'
+        )}
         token={getToken(ticketBalance)}
-        // prizePool={prizePool}
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
-        // setView={setView}
-        // selectedView={selectedView}
-        // claimView={claimView}
-        // depositView={depositView}
-        // depositTx={depositTx}
-        // withdrawView={withdrawView}
-        // withdrawTx={withdrawTx}
-        // moreInfoView={moreInfoView}
         // network={network}
         // wallet={wallet}
         tx={null}
-        label={`Staking Balance sheet`}
         className='space-y-4'
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
-        // buttons={buttons}
       />
     </div>
   )
@@ -441,7 +440,7 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
 
   return (
     <>
-      <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
+      {/* <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} /> */}
 
       {/* <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
         <div className='opacity-50 font-bold flex justify-between'>
@@ -478,7 +477,7 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
       <RevokeAllowanceButton
         {...props}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
-        chainId={prizePool.chainId}
+        chainId={chainId}
         token={token}
       />
       <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
@@ -486,23 +485,15 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
   )
 }
 
-const useStakingAPR = (
-  chainId,
+const useLpTokenPrice = (
+  lPTokenBalances,
   tokenPrices,
   tokenPricesIsFetched,
+  tokenBalancesIsFetched,
   underlyingToken,
-  underlyingTokenData,
-  tokenFaucetDripToken,
-  dripRatePerDayUnformatted,
-  ticketsData
+  underlyingTokenData
 ) => {
   const { token1, token2 } = underlyingToken
-
-  const { data: lPTokenBalances, isFetched: tokenBalancesIsFetched } = useTokenBalances(
-    chainId,
-    underlyingToken.address,
-    [token1.address, token2.address]
-  )
 
   if (
     !tokenPricesIsFetched ||
@@ -513,7 +504,7 @@ const useStakingAPR = (
     return null
   }
 
-  const lpTokenPrice = calculateLPTokenPrice(
+  return calculateLPTokenPrice(
     formatUnits(
       lPTokenBalances[token1.address].amountUnformatted,
       lPTokenBalances[token1.address].decimals
@@ -526,11 +517,21 @@ const useStakingAPR = (
     tokenPrices[token2.address.toLowerCase()]?.usd || 0,
     underlyingTokenData.totalSupply
   )
+}
 
-  const totalDailyValueUnformatted = amountMultByUsd(
-    dripRatePerDayUnformatted,
-    tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
-  )
+const useStakingAPR = (
+  lpTokenPrice,
+
+  underlyingTokenData,
+  dripTokenUsd,
+  dripRatePerDayUnformatted,
+  ticketsData
+) => {
+  if (!lpTokenPrice) {
+    return null
+  }
+
+  const totalDailyValueUnformatted = amountMultByUsd(dripRatePerDayUnformatted, dripTokenUsd)
 
   const totalDailyValue = formatUnits(totalDailyValueUnformatted, underlyingTokenData.decimals)
   const totalDailyValueScaled = toScaledUsdBigNumber(totalDailyValue)
@@ -673,7 +674,7 @@ const StakingDepositBalance = (props: StakingDepositStatProps) => {
         address={ticket.address}
         className='mr-2 my-auto'
       />
-      <span className={classnames('font-bold text-lg mr-3')}>
+      <span className='font-bold text-lg mr-3'>
         {ticket.amountPretty} {ticket.symbol}
       </span>
     </div>
@@ -732,10 +733,9 @@ const StakingEarningBalance = (props: StakingDepositStatProps) => {
 }
 
 const StakingBlockTitle = (props) => {
-  const { t, stakingPool, prizePool } = props
+  const { t, chainId, stakingPool } = props
 
   const { pair, symbol } = stakingPool.tokens.underlyingToken
-  const { chainId } = prizePool
   const { tokenFaucetDripToken } = stakingPool.tokens
   const { address } = tokenFaucetDripToken
 
@@ -769,7 +769,7 @@ export interface UnderlyingToken {
 }
 
 export interface DepositViewProps {
-  prizePool: BalanceBottomSheetPrizePool
+  chainId: number
   tokenBalanceIsFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
@@ -851,10 +851,11 @@ export interface DepositFormViewProps extends DepositViewProps {
 const DepositFormView = (props: DepositFormViewProps) => {
   const {
     amountToDeposit,
-    prizePool,
+    chainId,
     form,
     depositTx,
     tokenBalance,
+    ticketBalance,
     setView,
     setReviewDepositView
   } = props
@@ -870,16 +871,22 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
   return (
     <>
-      <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
+      <ModalTitle
+        chainId={chainId}
+        title={`${t('deposit')}: ${tokenBalance.symbol}`}
+        className='mb-4'
+      />
 
       <form onSubmit={handleSubmit(setReviewDepositView)} className='w-full'>
         <div className='w-full mx-auto'>
           <GenericDepositAmountInput
             {...props}
             depositTokenClassName='w-96'
-            prizePool={prizePool}
+            chainId={chainId}
             className=''
             form={form}
+            tokenBalance={tokenBalance}
+            ticketBalance={ticketBalance}
             inputKey={DEPOSIT_QUANTITY_KEY}
           />
         </div>
@@ -887,7 +894,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
         <DepositInfoBox
           {...props}
           className='mt-3'
-          chainId={prizePool.chainId}
+          chainId={chainId}
           depositTx={depositTx}
           errors={isDirty ? errors : null}
         />
@@ -1134,13 +1141,19 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
 
   return (
     <>
-      <h3 className='pt-12 text-center'>
+      <ModalTitle
+        chainId={chainId}
+        title={`${t('claim')}: ${tokenFaucetDripToken.symbol}`}
+        className='mb-4'
+      />
+
+      <h5 className='pt-4 text-center'>
         {t('unclaimedRewards', 'Unclaimed rewards')}{' '}
         <span className='opacity-50 font-normal'>
           {' '}
           ${numberWithCommas(Number(userData.claimableBalance) * dripTokenUsd)}
         </span>
-      </h3>
+      </h5>
 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
         <span className={'text-3xl mx-auto font-bold leading-none'}>
@@ -1240,17 +1253,17 @@ const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?:
 
 export interface BuildApproveTxArgs {
   amount: BigNumber
-  prizePool: BalanceBottomSheetPrizePool
+  prizePoolAddress: string
   provider: ethers.providers.Web3Provider
   token: Token
 }
 
 const buildApproveTx = (args: BuildApproveTxArgs) => {
-  const { amount, token, prizePool, provider } = args
+  const { amount, token, prizePoolAddress, provider } = args
 
   const signer = provider.getSigner()
 
-  const params = [prizePool.address, amount]
+  const params = [prizePoolAddress, amount]
 
   const contract = new ethers.Contract(token.address, Erc20Abi, signer)
 

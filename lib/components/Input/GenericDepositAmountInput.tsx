@@ -12,11 +12,11 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import WalletIcon from 'assets/images/icon-wallet.svg'
 
 interface GenericDepositAmountInputProps {
+  chainId: number
   form: UseFormReturn<FieldValues, object>
   tokenBalanceIsFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
-  prizePool: { chainId: number }
   inputKey: string
   className?: string
   widthClassName?: string
@@ -103,7 +103,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
 interface DepositTokenProps extends GenericDepositAmountInputProps {}
 
 const DepositToken = (props: DepositTokenProps) => {
-  const { prizePool, tokenBalance, depositTokenClassName } = props
+  const { chainId, tokenBalance, depositTokenClassName } = props
 
   if (!tokenBalance) {
     return null
@@ -121,7 +121,7 @@ const DepositToken = (props: DepositTokenProps) => {
       <TokenIcon
         sizeClassName='w-6 h-6'
         className='mr-2'
-        chainId={prizePool.chainId}
+        chainId={chainId}
         address={tokenBalance.address}
       />
       <span className='font-bold'>{tokenBalance.symbol}</span>
@@ -132,12 +132,12 @@ const DepositToken = (props: DepositTokenProps) => {
 interface InputProps extends GenericDepositAmountInputProps {}
 
 const Input = (props: InputProps) => {
-  const { form, inputKey, prizePool, tokenBalance } = props
+  const { form, inputKey, ticketBalance, tokenBalance } = props
   const { t } = useTranslation()
 
   const { register } = form
 
-  const validate = useDepositValidationRules(tokenBalance, prizePool)
+  const validate = useDepositValidationRules(tokenBalance, ticketBalance)
 
   const pattern = {
     value: /^\d*\.?\d*$/,
