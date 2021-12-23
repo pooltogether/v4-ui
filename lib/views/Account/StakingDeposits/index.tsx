@@ -22,7 +22,8 @@ import {
   LinkToContractItem,
   NetworkIcon,
   TokenIcon,
-  poolToast
+  poolToast,
+  SquareButtonTheme
 } from '@pooltogether/react-components'
 import {
   getNetworkNiceNameByChainId,
@@ -141,7 +142,7 @@ interface StakingDepositItemProps {
 }
 
 const StakingDepositItem = (props: StakingDepositItemProps) => {
-  const { prizePool, stakingPool, wallet, network } = props
+  const { chainId, prizePool, stakingPool, wallet, network } = props
 
   const usersAddress = useUsersAddress()
 
@@ -172,6 +173,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const [approveTxId, setApproveTxId] = useState(0)
   const approveTx = useTransaction(approveTxId)
 
+  const [claimTxId, setClaimTxId] = useState(0)
+  const claimTx = useTransaction(claimTxId)
+
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
 
@@ -180,17 +184,18 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const { tokens } = stakingPool || {}
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
-  let balances, tokenBalance, ticketBalance
-  let depositAllowance: DepositAllowance
-  if (userLPChainData) {
-    balances = userLPChainData.balances
-    tokenBalance = balances.token
-    ticketBalance = balances.ticket
-    depositAllowance = getDepositAllowance(userLPChainData)
-  }
+  const { token1, token2 } = underlyingToken
+
+  const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(chainId, [
+    token1.address,
+    token2.address,
+    tokenFaucetDripToken.address
+  ])
 
   const apr = useStakingAPR(
     prizePool.chainId,
+    tokenPrices,
+    tokenPricesIsFetched,
     underlyingToken,
     underlyingTokenData,
     tokenFaucetDripToken,
@@ -202,17 +207,18 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     return <LoadingList />
   }
 
+  const balances = userLPChainData.balances
+  const tokenBalance = balances.token
+  const ticketBalance = balances.ticket
+  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
+  const { userData } = userLPChainData
+
   const callTransaction = buildApproveTx({
     provider,
     amount: BigNumber.from(0),
     prizePool,
     token: balances.token
   })
-
-  // const refetch = () => {
-  //   stakingPoolChainDataRefetch()
-  //   userLPChainDataRefetch()
-  // }
 
   const depositView = (
     <DepositView
@@ -228,6 +234,19 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       closeInitialSheet={() => setIsOpen(false)}
       setDepositTxId={setDepositTxId}
       setApproveTxId={setApproveTxId}
+    />
+  )
+  const claimView = (
+    <ClaimView
+      {...props}
+      apr={apr}
+      claimTx={claimTx}
+      userLPChainData={userLPChainData}
+      tokenPrices={tokenPrices}
+      tokenFaucetDripToken={tokenFaucetDripToken}
+      setView={setView}
+      setClaimTxId={setClaimTxId}
+      userLPChainDataRefetch={userLPChainDataRefetch}
     />
   )
   const withdrawView = <div>hi</div>
@@ -250,9 +269,10 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       onClick: () => setView(DefaultBalanceSheetViews.deposit)
     },
     {
-      theme: BalanceBottomSheetButtonTheme.primary,
-      label: t('claimRewards'),
-      onClick: () => setView(DefaultBalanceSheetViews.deposit)
+      theme: BalanceBottomSheetButtonTheme.rainbow,
+      label: t('rewards'),
+      disabled: !userData.claimableBalanceUnformatted.gt(0),
+      onClick: () => setView(DefaultBalanceSheetViews.claim)
     },
     {
       theme: BalanceBottomSheetButtonTheme.secondary,
@@ -320,6 +340,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
         onDismiss={() => setIsOpen(false)}
         setView={setView}
         selectedView={selectedView}
+        claimView={claimView}
         depositView={depositView}
         depositTx={depositTx}
         withdrawView={withdrawView}
@@ -339,9 +360,9 @@ interface MoreInfoViewProps {
   chainId: number
   prizePool: BalanceBottomSheetPrizePool
   balances: UsersPrizePoolBalances
-  setView: Function
   isFetched: Boolean
   depositAllowance: DepositAllowance
+  setView: (view: DefaultBalanceSheetViews) => void
   callTransaction: () => Promise<TransactionResponse>
   refetch: () => {}
 }
@@ -427,6 +448,8 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
 
 const useStakingAPR = (
   chainId,
+  tokenPrices,
+  tokenPricesIsFetched,
   underlyingToken,
   underlyingTokenData,
   tokenFaucetDripToken,
@@ -440,12 +463,6 @@ const useStakingAPR = (
     underlyingToken.address,
     [token1.address, token2.address]
   )
-
-  const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(chainId, [
-    token1.address,
-    token2.address,
-    tokenFaucetDripToken.address
-  ])
 
   if (
     !tokenPricesIsFetched ||
@@ -630,8 +647,9 @@ const StakingRewardsBalance = (props: StakingDepositStatProps) => {
     return null
   }
 
-  const { userData } = userLPChainData
   const { tokenFaucetDripToken } = stakingPool.tokens
+
+  const { userData } = userLPChainData
   const amount = userData.claimableBalance
 
   return (
@@ -977,6 +995,130 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       resetState={() => {}}
     />
   )
+}
+
+export interface ClaimViewProps {
+  prizePool: BalanceBottomSheetPrizePool
+  // tokenBalanceIsFetched: Boolean
+  // tokenBalance: TokenWithBalance
+  // ticketBalance: TokenWithBalance
+  tokenPrices: object
+  tokenFaucetDripToken: Token
+  chainId: number
+  stakingPool: object
+  userLPChainData: UserLPChainData
+  claimTx: Transaction
+  apr: string
+  // underlyingToken: UnderlyingToken
+  // usersAddress: string
+  // closeInitialSheet: () => void
+  setClaimTxId: (number) => void
+  setView: (view: DefaultBalanceSheetViews) => void
+  userLPChainDataRefetch: () => {}
+}
+
+export enum ClaimViews {
+  'main',
+  'claiming'
+}
+
+const ClaimView = (props: ClaimViewProps) => {
+  const {} = props
+
+  const [claimView, setClaimView] = useState(ClaimViews.main)
+
+  switch (claimView) {
+    case ClaimViews.main:
+      return <ClaimMainView {...props} setClaimView={setClaimView} />
+    case ClaimViews.claiming:
+      return <ClaimClaimingView {...props} />
+  }
+}
+
+export interface ClaimMainViewProps extends ClaimViewProps {
+  setClaimView: (claimView: ClaimViews) => void
+}
+
+const ClaimMainView = (props: ClaimMainViewProps) => {
+  const {
+    tokenPrices,
+    userLPChainData,
+    setView,
+    tokenFaucetDripToken,
+    setClaimView,
+    chainId,
+    apr
+  } = props
+  const { t } = useTranslation()
+
+  const { userData } = userLPChainData
+  // setClaimView(ClaimViews.claiming)
+  const dripTokenUsd = tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
+
+  return (
+    <>
+      <div
+        className='relative rounded-lg p-4 text-white mt-8 text-center font-semibold'
+        style={{
+          backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+        }}
+      >
+        <Trans
+          i18nKey='earningPercentageVAPR'
+          defaults='Earning {{percentage}}% <tooltip>vAPR</tooltip>'
+          values={{ percentage: apr }}
+          components={{
+            tooltip: <VAPRTooltip t={t} />
+          }}
+        />
+      </div>
+
+      <h2 className='pt-12'>
+        {t('unclaimedRewards', 'Unclaimed rewards')}{' '}
+        <span className='opacity-50 font-normal'>
+          {' '}
+          ${numberWithCommas(Number(userData.claimableBalance) * dripTokenUsd)}
+        </span>
+      </h2>
+      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col'>
+        <span className={'text-3xl mx-auto font-bold leading-none'}>
+          {numberWithCommas(userData.claimableBalance)}
+        </span>
+        <span className='mx-auto flex'>
+          <TokenIcon
+            chainId={chainId}
+            address={tokenFaucetDripToken.address}
+            sizeClassName='w-6 h-6'
+          />
+          <span className='ml-2 opacity-50'>{tokenFaucetDripToken.symbol}</span>
+        </span>
+      </div>
+
+      <div className='pt-12'>
+        <SquareButton
+          onClick={() => {
+            alert('hi')
+          }}
+          className='flex w-full items-center justify-center'
+          theme={SquareButtonTheme.rainbow}
+        >
+          {t('claim', 'Claim')}
+        </SquareButton>
+      </div>
+
+      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
+    </>
+  )
+}
+
+const ClaimClaimingView = (props) => {
+  const { setClaimView, chainId } = props
+  const { t } = useTranslation()
+
+  // setClaimView(ClaimViews.claiming)
+  // setClaimView(ClaimViews.main)
+
+  return <></>
 }
 
 const LoadingList = () => (
