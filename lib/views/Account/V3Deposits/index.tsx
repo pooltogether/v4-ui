@@ -1,5 +1,6 @@
 import {
   BalanceBottomSheet,
+  ContractLink,
   NetworkIcon,
   SquareButtonTheme,
   TokenIcon
@@ -66,6 +67,29 @@ const DepositItem = (props: DepositItemsProps) => {
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
+  const contractLinks: ContractLink[] = [
+    {
+      i18nKey: 'prizePool',
+      chainId,
+      address: prizePool.prizePool.address
+    },
+    {
+      i18nKey: 'prizeStrategy',
+      chainId,
+      address: prizePool.prizeStrategy.address
+    },
+    {
+      i18nKey: 'depositToken',
+      chainId,
+      address: prizePool.tokens.underlyingToken.address
+    },
+    {
+      i18nKey: 'ticketToken',
+      chainId,
+      address: prizePool.tokens.ticket.address
+    }
+  ]
+
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
       <button
@@ -95,11 +119,11 @@ const DepositItem = (props: DepositItemsProps) => {
           }
         ]}
         tx={null}
-        ticket={ticket}
+        token={ticket}
         balance={balance}
         balanceUsd={balanceUsd}
         t={t}
-        contractLinks={[]}
+        contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
       />

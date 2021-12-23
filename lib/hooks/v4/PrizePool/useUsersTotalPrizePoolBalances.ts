@@ -25,14 +25,6 @@ export const useUsersTotalPrizePoolBalances = () => {
     const totalV4BalanceUsd = getAmountFromBigNumber(v4TotalBalanceUsdScaled, '2')
     const totalV3BalanceUsd = getAmountFromBigNumber(v3TotalBalanceUsdScaled, '2')
 
-    console.log({
-      v4TotalBalanceUsdScaled,
-      v3TotalBalanceUsdScaled,
-      isV4Fetched,
-      isV3Fetched,
-      totalBalanceUsdScaled
-    })
-
     return {
       data: {
         totalV4BalanceUsd,

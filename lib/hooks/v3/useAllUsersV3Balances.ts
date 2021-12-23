@@ -1,5 +1,5 @@
 import { batch, contract } from '@pooltogether/etherplex'
-import { Amount, useReadProviders } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, useReadProviders } from '@pooltogether/hooks'
 import { useQueries } from 'react-query'
 import { Provider } from '@ethersproject/abstract-provider'
 import { BigNumber } from 'ethers'
