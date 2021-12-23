@@ -87,6 +87,7 @@ export interface StakingPoolTokens {
 export interface StakingPool {
   prizePool: { chainId: number; address: string }
   tokens: StakingPoolTokens
+  tokenFaucet: { address: string }
 }
 
 export interface UnderlyingToken {
@@ -181,15 +182,13 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     tokenFaucetDripToken.address
   ])
 
-  console.log({ underlyingToken })
-  console.log({ tokens })
   const { data: lPTokenBalances, isFetched: tokenBalancesIsFetched } = useTokenBalances(
     chainId,
     underlyingToken.address,
     [token1.address, token2.address]
   )
 
-  const dripTokenUsd = tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
+  const dripTokenUsd = tokenPrices?.[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
 
   const lpTokenPrice = useLpTokenPrice(
     lPTokenBalances,
@@ -548,7 +547,7 @@ const useStakingAPR = (
 }
 
 const BlankStateView = (props) => {
-  const { setSelectedChainId, setIsOpen, prizePool, stakingPool, apr } = props
+  const { setSelectedChainId, chainId, setIsOpen, stakingPool, apr } = props
   const { tokenFaucetDripToken } = stakingPool.tokens
 
   const { t } = useTranslation()
@@ -566,7 +565,7 @@ const BlankStateView = (props) => {
           }}
         >
           <TokenIcon
-            chainId={prizePool.chainId}
+            chainId={chainId}
             address={tokenFaucetDripToken.address}
             sizeClassName='w-6 h-6'
           />
@@ -584,7 +583,7 @@ const BlankStateView = (props) => {
         <button
           className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
           onClick={() => {
-            setSelectedChainId(prizePool.chainId)
+            setSelectedChainId(chainId)
             setIsOpen(true)
           }}
         >
@@ -773,7 +772,7 @@ export interface DepositViewProps {
   tokenBalanceIsFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
-  stakingPool: object
+  stakingPool: StakingPool
   userLPChainData: UserLPChainData
   depositTx: Transaction
   approveTx: Transaction
@@ -946,8 +945,9 @@ export interface DepositReviewViewProps extends DepositViewProps {
 
 const DepositReviewView = (props: DepositReviewViewProps) => {
   const {
+    chainId,
     amountToDeposit,
-    prizePool,
+    stakingPool,
     depositAllowance,
     ticketBalance,
     tokenBalance,
@@ -986,7 +986,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     const callTransaction = buildApproveTx({
       provider,
       amount: MaxUint256,
-      prizePool,
+      prizePool: stakingPool.prizePool.address,
       token: tokenBalance
     })
 
@@ -1009,7 +1009,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     const callTransaction = buildDepositTx({
       provider,
       amount: amountToDeposit.amountUnformatted,
-      prizePool,
+      prizePoolAddress: stakingPool.prizePool.address,
       ticket: balances.ticket,
       usersAddress
     })
@@ -1029,6 +1029,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   return (
     <DepositConfirmationModal
       {...props}
+      chainId={chainId}
       isOpen={showConfirmModal}
       closeModal={closeDepositModal}
       label='deposit confirmation modal'
@@ -1045,11 +1046,10 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 }
 
 export interface ClaimViewProps {
-  prizePool: BalanceBottomSheetPrizePool
   tokenPrices: object
   tokenFaucetDripToken: Token
   chainId: number
-  stakingPool: object
+  stakingPool: StakingPool
   userLPChainData: UserLPChainData
   claimTx: Transaction
   apr: string
@@ -1274,20 +1274,20 @@ const buildApproveTx = (args: BuildApproveTxArgs) => {
 
 export interface BuildDepositTxArgs {
   amount: BigNumber
-  prizePool: BalanceBottomSheetPrizePool
   provider: ethers.providers.Web3Provider
   ticket: Token
+  prizePoolAddress: string
   usersAddress: string
 }
 
 const buildDepositTx = (args: BuildDepositTxArgs) => {
-  const { amount, prizePool, usersAddress, ticket, provider } = args
+  const { amount, usersAddress, ticket, prizePoolAddress, provider } = args
 
   const signer = provider.getSigner()
 
   const params = [usersAddress, amount, ticket.address, ethers.constants.AddressZero]
 
-  const contract = new ethers.Contract(prizePool.address, PrizePoolAbi, signer)
+  const contract = new ethers.Contract(prizePoolAddress, PrizePoolAbi, signer)
 
   const contractCall: () => Promise<TransactionResponse> = contract['depositTo'].bind(
     null,

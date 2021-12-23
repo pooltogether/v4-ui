@@ -33,6 +33,7 @@ import classNames from 'classnames'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
+  chainId: number
   prizePool: PrizePool
   token: Token
   ticket: Token
@@ -48,6 +49,7 @@ interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
 
 export const DepositConfirmationModal = (props: DepositConfirmationModalProps) => {
   const {
+    chainId,
     prizePool,
     token,
     ticket,
@@ -62,9 +64,9 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isOpen,
     closeModal
   } = props
-  const { amount, amountUnformatted } = amountToDeposit
 
-  const { chainId } = useSelectedChainId()
+  const { amountUnformatted } = amountToDeposit
+
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
@@ -167,12 +169,12 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       open={isOpen}
       onDismiss={closeModal}
     >
-      <ModalTitle chainId={prizePool.chainId} title={t('depositConfirmation')} />
+      <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
 
       <div className='w-full mx-auto mt-8'>
         <AmountBeingSwapped
           title={t('depositTicker', { ticker: token.symbol })}
-          chainId={prizePool.chainId}
+          chainId={chainId}
           from={token}
           to={ticket}
           amount={amountToDeposit}
@@ -185,10 +187,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             action={EstimateAction.deposit}
           />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItem
-            chainId={prizePool.chainId}
-            amountUnformatted={amountUnformatted}
-          />
+          <EstimatedDepositGasItem chainId={chainId} amountUnformatted={amountUnformatted} />
         </ModalInfoList>
 
         <TxButtonNetworkGated
