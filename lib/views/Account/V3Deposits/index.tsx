@@ -106,7 +106,8 @@ const DepositItem = (props: DepositItemsProps) => {
         <DepositBalance {...props} />
       </button>
       <BalanceBottomSheet
-        title={t('withdrawTicker', { ticker: underlyingToken.symbol })}
+        banner={<DeprecatedBanner />}
+        title={`V3 ${t('prizePoolTicker', { ticker: underlyingToken.symbol })}`}
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
         chainId={chainId}
@@ -128,6 +129,16 @@ const DepositItem = (props: DepositItemsProps) => {
         isWalletMetaMask={isWalletMetaMask}
       />
     </li>
+  )
+}
+
+const DeprecatedBanner = () => {
+  const { t } = useTranslation()
+  return (
+    <div className='flex justify-center bg-gradient-yellow bg-opacity-50 dark:bg-opacity-100 dark:text-actually-black p-4 rounded w-full mb-4'>
+      <FeatherIcon icon='bell' className='w-4 h-4 mr-2 my-auto' />
+      <span>{t('v3PrizePoolsAreBeingDeprecated')}</span>
+    </div>
   )
 }
 

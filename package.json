@@ -57,7 +57,7 @@
     "@pooltogether/evm-chains-extended": "^0.6.4-beta.1",
     "@pooltogether/hooks": "^1.4.7",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "^1.6.15",
+    "@pooltogether/react-components": "^1.6.16",
     "@pooltogether/utilities": "^0.3.5",
     "@pooltogether/v4-js-client": "^0.9.6",
     "@pooltogether/v4-pool-data": "^1.6.0",
