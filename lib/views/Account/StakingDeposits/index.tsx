@@ -10,16 +10,15 @@ import { useForm } from 'react-hook-form'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Trans } from 'react-i18next'
 import {
-  snapTo90,
+  // snapTo90,
   addTokenToMetamask,
   SquareButton,
-  DefaultBalanceSheetViews,
-  BalanceBottomSheetPrizePool,
+  // BalanceBottomSheetPrizePool,
   BalanceBottomSheetBackButton,
-  BalanceBottomSheetButtonTheme,
-  BalanceBottomSheetTitle,
+  // BalanceBottomSheetButtonTheme,
+  // BalanceBottomSheetTitle,
   BalanceBottomSheet,
-  LinkToContractItem,
+  ContractLink,
   NetworkIcon,
   TokenIcon,
   poolToast,
@@ -75,14 +74,18 @@ const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
 }
 
-export interface TokenFaucetDripToken {
-  address: string
-  symbol: string
+export enum DefaultBalanceSheetViews {
+  'main',
+  'deposit',
+  'withdraw',
+  'claim',
+  'more'
 }
 
 export interface StakingPoolTokens {
-  underlyingToken: UnderlyingToken
-  tokenFaucetDripToken: TokenFaucetDripToken
+  ticket: Token
+  underlyingToken: Token
+  tokenFaucetDripToken: Token
 }
 
 export interface StakingPool {
@@ -102,24 +105,9 @@ export const StakingDeposits = () => {
 }
 
 const StakingDepositsList = () => {
-  const usersAddress = useUsersAddress()
-  // const queryResults = useUsersStakingBalances(usersAddress)
   const stakingPools = useStakingPools()
 
   const { wallet, network } = useOnboard()
-
-  // const user = useSelectedChainIdUser()
-  // console.log({ user })
-
-  // const { isTestnets } = useIsTestnets()
-  // const chainId = isTestnets ? NETWORK.rinkeby : NETWORK.mainnet
-
-  // const queryResults = useUsersV4Balances(usersAddress)
-  // const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-
-  // if (!isFetched) {
-  //   return <LoadingList />
-  // }
 
   return stakingPools.map((stakingPool) => {
     const { prizePool } = stakingPool
@@ -151,6 +139,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const usersAddress = useUsersAddress()
 
   const { t } = useTranslation()
+
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   const [isOpen, setIsOpen] = useState(false)
   const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
@@ -212,6 +203,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   }
 
   const balances = userLPChainData.balances
+  console.log(userLPChainData)
+  console.log(stakingPool)
+  console.log(balances)
   const tokenBalance = balances.token
   const ticketBalance = balances.ticket
   const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
@@ -267,32 +261,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     />
   )
 
-  const buttons = [
-    {
-      theme: BalanceBottomSheetButtonTheme.primary,
-      label: t('deposit'),
-      onClick: () => setView(DefaultBalanceSheetViews.deposit)
-    },
-    {
-      theme: BalanceBottomSheetButtonTheme.rainbow,
-      label: t('rewards'),
-      disabled: !userData.claimableBalanceUnformatted.gt(0),
-      onClick: () => setView(DefaultBalanceSheetViews.claim)
-    },
-    {
-      theme: BalanceBottomSheetButtonTheme.secondary,
-      label: t('withdraw'),
-      disabled: !balances.ticket.hasBalance,
-      onClick: () => setView(DefaultBalanceSheetViews.withdraw)
-    },
-    {
-      theme: BalanceBottomSheetButtonTheme.tertiary,
-      label: t('moreInfo'),
-      onClick: () => setView(DefaultBalanceSheetViews.more)
-    }
-  ]
-
-  const view = balances.ticket.hasBalance ? (
+  const accountView = balances.ticket.hasBalance ? (
     <>
       <StakingBalanceStats
         {...props}
@@ -317,6 +286,56 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     />
   )
 
+  const views = [
+    {
+      id: 'deposit',
+      view: () => depositView,
+      label: t('deposit'),
+      theme: SquareButtonTheme.teal
+    },
+    {
+      id: 'claim',
+      view: () => claimView,
+      label: t('rewards'),
+      theme: SquareButtonTheme.rainbow
+    },
+    {
+      id: 'withdraw',
+      view: () => withdrawView,
+      label: t('withdraw'),
+      theme: SquareButtonTheme.tealOutline
+    }
+    // {
+    //   id: 'moreInfo',
+    //   view: () => moreInfoView,
+    //   label: t('moreInfo'),
+    //   theme: SquareButtonTheme.teal
+    // }
+  ]
+
+  const contractLinks: ContractLink[] = [
+    {
+      i18nKey: 'prizePool',
+      chainId,
+      address: prizePool.address
+    },
+    // {
+    //   i18nKey: 'prizeStrategy',
+    //   chainId,
+    //   address: prizePool.prizeStrategy.address
+    // },
+    {
+      i18nKey: 'depositToken',
+      chainId,
+      address: stakingPool.tokens.underlyingToken.address
+    },
+    {
+      i18nKey: 'ticketToken',
+      chainId,
+      address: stakingPool.tokens.ticket.address
+    }
+  ]
+
   return (
     <div
       className='relative rounded-lg p-4 text-white'
@@ -333,29 +352,45 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
       <StakingBlockTitle {...props} t={t} />
 
-      {view}
+      {accountView}
+
+      {/* <RevokeAllowanceButton
+        {...props}
+        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        chainId={prizePool.chainId}
+        token={token}
+      /> */}
 
       <BalanceBottomSheet
         {...props}
         t={t}
-        snapPoints={snapTo90}
-        balances={balances}
-        prizePool={prizePool}
+        views={views}
+        title={`${t('manage')}: ${underlyingToken.symbol}`}
+        // snapPoints={snapTo90}
+        contractLinks={contractLinks}
+        balance={getAmountFromString(ticketBalance.amount, '18')}
+        balanceUsd={getAmountFromString('1234.124', '18')}
+        // balances={balances}
+        token={getToken(ticketBalance)}
+        // prizePool={prizePool}
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
-        setView={setView}
-        selectedView={selectedView}
-        claimView={claimView}
-        depositView={depositView}
-        depositTx={depositTx}
-        withdrawView={withdrawView}
-        withdrawTx={withdrawTx}
-        moreInfoView={moreInfoView}
-        network={network}
-        wallet={wallet}
+        // setView={setView}
+        // selectedView={selectedView}
+        // claimView={claimView}
+        // depositView={depositView}
+        // depositTx={depositTx}
+        // withdrawView={withdrawView}
+        // withdrawTx={withdrawTx}
+        // moreInfoView={moreInfoView}
+        // network={network}
+        // wallet={wallet}
+        tx={null}
         label={`Staking Balance sheet`}
         className='space-y-4'
-        buttons={buttons}
+        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        isWalletMetaMask={isWalletMetaMask}
+        // buttons={buttons}
       />
     </div>
   )
@@ -408,7 +443,7 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
     <>
       <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} />
 
-      <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
+      {/* <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
         <div className='opacity-50 font-bold flex justify-between'>
           <span>{t('contract', 'Contract')}</span>
           <span>{t('explorer', 'Explorer')}</span>
@@ -428,7 +463,7 @@ const MoreInfoView = (props: MoreInfoViewProps) => {
           chainId={prizePool.chainId}
           address={token.address}
         />
-      </ul>
+      </ul> */}
       {isMetaMask && (
         <SquareButton
           onClick={handleAddTokenToMetaMask}
@@ -1099,8 +1134,41 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
 
   return (
     <>
+      <h3 className='pt-12 text-center'>
+        {t('unclaimedRewards', 'Unclaimed rewards')}{' '}
+        <span className='opacity-50 font-normal'>
+          {' '}
+          ${numberWithCommas(Number(userData.claimableBalance) * dripTokenUsd)}
+        </span>
+      </h3>
+
+      <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+        <span className={'text-3xl mx-auto font-bold leading-none'}>
+          {numberWithCommas(userData.claimableBalance)}
+        </span>
+        <span className='mx-auto flex mt-1'>
+          <TokenIcon
+            chainId={chainId}
+            address={tokenFaucetDripToken.address}
+            sizeClassName='w-6 h-6'
+          />
+          <span className='ml-2 opacity-50'>{tokenFaucetDripToken.symbol}</span>
+        </span>
+      </div>
+
+      <div className='mb-6'>
+        <SquareButton
+          disabled={!userData.claimableBalanceUnformatted.gt(0)}
+          onClick={sendClaimTx}
+          className='flex w-full items-center justify-center'
+          theme={SquareButtonTheme.rainbow}
+        >
+          {t('claim', 'Claim')}
+        </SquareButton>
+      </div>
+
       <div
-        className='relative rounded-lg p-4 text-white mt-8 text-center font-semibold'
+        className='relative rounded-lg p-4 text-white mt-2 text-center font-semibold'
         style={{
           backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
         }}
@@ -1113,38 +1181,6 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
             tooltip: <VAPRTooltip t={t} />
           }}
         />
-      </div>
-
-      <h2 className='pt-12'>
-        {t('unclaimedRewards', 'Unclaimed rewards')}{' '}
-        <span className='opacity-50 font-normal'>
-          {' '}
-          ${numberWithCommas(Number(userData.claimableBalance) * dripTokenUsd)}
-        </span>
-      </h2>
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col'>
-        <span className={'text-3xl mx-auto font-bold leading-none'}>
-          {numberWithCommas(userData.claimableBalance)}
-        </span>
-        <span className='mx-auto flex'>
-          <TokenIcon
-            chainId={chainId}
-            address={tokenFaucetDripToken.address}
-            sizeClassName='w-6 h-6'
-          />
-          <span className='ml-2 opacity-50'>{tokenFaucetDripToken.symbol}</span>
-        </span>
-      </div>
-
-      <div className='pt-12'>
-        <SquareButton
-          disabled={!userData.claimableBalanceUnformatted.gt(0)}
-          onClick={sendClaimTx}
-          className='flex w-full items-center justify-center'
-          theme={SquareButtonTheme.rainbow}
-        >
-          {t('claim', 'Claim')}
-        </SquareButton>
       </div>
 
       <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />

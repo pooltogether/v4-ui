@@ -50,13 +50,12 @@ interface DepositItemsProps {
 
 const DepositItem = (props: DepositItemsProps) => {
   const { prizePool, balances } = props
-  // console.log({ prizePool })
-  // console.log({ balances })
+
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedChainId } = useSelectedChainId()
 
   return (
-    <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
+    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
       <button
         className='p-4 w-full flex justify-between items-center'
         onClick={() => {
