@@ -49,10 +49,14 @@ import {
 } from '@pooltogether/hooks'
 import { formatUnits } from 'ethers/lib/utils'
 
+import TokenFaucetAbi from 'abis/TokenFaucet'
 import PrizePoolAbi from 'abis/PrizePool'
 import Erc20Abi from 'abis/ERC20Abi'
+
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
+import { ModalTitle } from 'lib/components/Modal/ModalTitle'
+import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
@@ -244,6 +248,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       userLPChainData={userLPChainData}
       tokenPrices={tokenPrices}
       tokenFaucetDripToken={tokenFaucetDripToken}
+      closeInitialSheet={() => setIsOpen(false)}
       setView={setView}
       setClaimTxId={setClaimTxId}
       userLPChainDataRefetch={userLPChainDataRefetch}
@@ -999,9 +1004,6 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
 export interface ClaimViewProps {
   prizePool: BalanceBottomSheetPrizePool
-  // tokenBalanceIsFetched: Boolean
-  // tokenBalance: TokenWithBalance
-  // ticketBalance: TokenWithBalance
   tokenPrices: object
   tokenFaucetDripToken: Token
   chainId: number
@@ -1009,9 +1011,7 @@ export interface ClaimViewProps {
   userLPChainData: UserLPChainData
   claimTx: Transaction
   apr: string
-  // underlyingToken: UnderlyingToken
-  // usersAddress: string
-  // closeInitialSheet: () => void
+  closeInitialSheet: () => void
   setClaimTxId: (number) => void
   setView: (view: DefaultBalanceSheetViews) => void
   userLPChainDataRefetch: () => {}
@@ -1031,7 +1031,7 @@ const ClaimView = (props: ClaimViewProps) => {
     case ClaimViews.main:
       return <ClaimMainView {...props} setClaimView={setClaimView} />
     case ClaimViews.claiming:
-      return <ClaimClaimingView {...props} />
+      return <ClaimClaimingView {...props} setClaimView={setClaimView} />
   }
 }
 
@@ -1043,16 +1043,58 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const {
     tokenPrices,
     userLPChainData,
-    setView,
+    stakingPool,
     tokenFaucetDripToken,
-    setClaimView,
     chainId,
-    apr
+    apr,
+    claimTx,
+    setClaimView,
+    setClaimTxId,
+    userLPChainDataRefetch,
+    setView
   } = props
+
   const { t } = useTranslation()
+  const { provider } = useOnboard()
+  const sendTx = useSendTransaction()
+  const usersAddress = useUsersAddress()
+
+  const tokenFaucet = stakingPool.tokenFaucet
+  const tokenFaucetAddress = tokenFaucet.address
 
   const { userData } = userLPChainData
-  // setClaimView(ClaimViews.claiming)
+
+  const onSuccess = (tx: Transaction) => {
+    setClaimTxId(0)
+  }
+
+  const sendClaimTx = async () => {
+    const callTransaction = buildClaimTx({
+      provider,
+      tokenFaucetAddress,
+      usersAddress
+    })
+
+    const name = t(`claimAmountTicker`, 'Claim {{amount}} {{ticker}}', {
+      amount: numberWithCommas(userData.claimableBalance),
+      ticker: tokenFaucetDripToken.symbol
+    })
+    const txId = await sendTx({
+      name,
+      method: 'claim',
+      callTransaction,
+      callbacks: {
+        onSuccess,
+        refetch: userLPChainDataRefetch
+      }
+    })
+    setClaimTxId(txId)
+  }
+
+  if (claimTx && claimTx.sent) {
+    return <ClaimClaimingView {...props} setClaimView={setClaimView} />
+  }
+
   const dripTokenUsd = tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
 
   return (
@@ -1096,9 +1138,8 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
 
       <div className='pt-12'>
         <SquareButton
-          onClick={() => {
-            alert('hi')
-          }}
+          disabled={!userData.claimableBalanceUnformatted.gt(0)}
+          onClick={sendClaimTx}
           className='flex w-full items-center justify-center'
           theme={SquareButtonTheme.rainbow}
         >
@@ -1111,14 +1152,25 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   )
 }
 
-const ClaimClaimingView = (props) => {
-  const { setClaimView, chainId } = props
+export interface ClaimClaimingViewProps extends ClaimViewProps {
+  setClaimView: (claimView: ClaimViews) => void
+}
+
+const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
+  const { chainId, closeInitialSheet, claimTx } = props
   const { t } = useTranslation()
 
-  // setClaimView(ClaimViews.claiming)
-  // setClaimView(ClaimViews.main)
-
-  return <></>
+  return (
+    <>
+      <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
+      <ModalTransactionSubmitted
+        className='mt-8'
+        chainId={chainId}
+        tx={claimTx}
+        closeModal={closeInitialSheet}
+      />
+    </>
+  )
 }
 
 const LoadingList = () => (
@@ -1192,6 +1244,27 @@ const buildDepositTx = (args: BuildDepositTxArgs) => {
     null,
     ...params
   )
+
+  return contractCall
+}
+
+export interface BuildClaimTxArgs {
+  provider: ethers.providers.Web3Provider
+  tokenFaucetAddress: string
+  usersAddress: string
+}
+
+const buildClaimTx = (args: BuildClaimTxArgs) => {
+  const { tokenFaucetAddress, usersAddress, provider } = args
+
+  const signer = provider.getSigner()
+
+  const params = [usersAddress]
+  //           disabled={claimableBalanceUnformatted.isZero()}
+
+  const contract = new ethers.Contract(tokenFaucetAddress, TokenFaucetAbi, signer)
+
+  const contractCall: () => Promise<TransactionResponse> = contract['claim'].bind(null, ...params)
 
   return contractCall
 }
