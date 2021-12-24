@@ -64,10 +64,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     resetState,
     closeModal
   } = props
-<<<<<<< HEAD
-  const { amountUnformatted } = amountToDeposit
-=======
->>>>>>> pool-1944-bring-pool-staking-into-v4-app
 
   const { amountUnformatted } = amountToDeposit
 
