@@ -1151,7 +1151,6 @@ const LoadingList = () => (
 
 const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?: Amount) => {
   const { userData } = userLPChainData
-  console.log(userData)
   const { underlyingToken } = userData
 
   let isApproved = false
