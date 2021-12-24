@@ -8,6 +8,7 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
+import { StakingDeposits } from './StakingDeposits'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -32,6 +33,7 @@ export const AccountUI = (props) => {
   return (
     <PagePadding className='space-y-8'>
       <AccountCard user={user} />
+      <StakingDeposits />
       <V4Deposits />
       <div className='mt-4'>
         <BackToV3Banner />

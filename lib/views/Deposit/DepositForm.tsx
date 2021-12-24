@@ -8,7 +8,10 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { InfoList } from 'lib/components/InfoList'
 import { TxHashRow } from 'lib/components/TxHashRow'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import {
+  DepositAllowance,
+  useUsersDepositAllowance
+} from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,
@@ -17,6 +20,7 @@ import {
 import { ConnectWalletButton } from 'lib/components/ConnectWalletButton'
 import { InfoListItem } from 'lib/components/InfoList'
 import { DepositAmountInput } from 'lib/components/Input/DepositAmountInput'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -41,6 +45,7 @@ export const DepositForm = (props: DepositFormProps) => {
   const { form, prizePool, depositTx, amountToDeposit, token, tokenBalance, openModal } = props
 
   const { isWalletConnected } = useOnboard()
+  const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
 
   const {
     handleSubmit,
@@ -72,7 +77,7 @@ export const DepositForm = (props: DepositFormProps) => {
         <DepositInfoBox
           className='mt-3'
           depositTx={depositTx}
-          prizePool={prizePool}
+          depositAllowance={depositAllowance}
           amountToDeposit={amountToDeposit}
           errors={isDirty ? errors : null}
         />
@@ -101,7 +106,7 @@ interface BottomButtonProps {
   amountToDeposit: Amount
 }
 
-const BottomButton = (props: BottomButtonProps) => {
+export const BottomButton = (props: BottomButtonProps) => {
   const { isWalletConnected } = props
 
   if (!isWalletConnected) {
@@ -139,17 +144,16 @@ const DepositButton = (props: BottomButtonProps) => {
 interface DepositInfoBoxProps {
   className?: string
   depositTx: Transaction
+  chainId: number
   amountToDeposit: Amount
-  prizePool: PrizePool
+  depositAllowance?: DepositAllowance
   errors?: { [x: string]: { message: string } }
 }
 
 export const DepositInfoBox = (props: DepositInfoBoxProps) => {
-  const { className, prizePool, amountToDeposit, depositTx, errors } = props
+  const { chainId, className, depositAllowance, amountToDeposit, depositTx, errors } = props
 
   const { t } = useTranslation()
-
-  const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
 
   const errorMessages = errors ? Object.values(errors) : null
   if (
@@ -174,7 +178,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   if (depositTx?.inFlight) {
     return (
       <InfoList className={className}>
-        <TxHashRow depositTx={depositTx} chainId={prizePool.chainId} />
+        <TxHashRow depositTx={depositTx} chainId={chainId} />
       </InfoList>
     )
   }
@@ -183,12 +187,12 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     <InfoList className={className}>
       {depositAllowance?.isApproved ? (
         <EstimatedDepositGasItem
-          prizePool={prizePool}
+          chainId={chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
         />
       ) : (
         <EstimatedApproveAndDepositGasItem
-          prizePool={prizePool}
+          chainId={chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
         />
       )}

@@ -2756,10 +2756,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/hardhat-deploy-markdown-export/-/hardhat-deploy-markdown-export-0.1.1.tgz#95c8fb6b63d4b721146917e11f53d24fc06f11cf"
   integrity sha512-qawd7dakhNIzk4CHbAI5lbEM25PuZXHfeIwLBQP5qxAVkDJnR7H7vAxksGdlHYYi4XddmC0W+QPlIFSAi8jTaA==
 
-"@pooltogether/hooks@^1.4.5":
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.4.5.tgz#6d8018c31ccafe35472eff73da61083476757025"
-  integrity sha512-tTbqDusTsTFy9uaJqbWIjD2xfd1TMiV/cWe3NNycvfRCM9e18W5kGWnNGTfR+HErf5DAjcOQ8V1NI1ql2xm3jQ==
+"@pooltogether/hooks@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.4.8.tgz#4d886fc6c64dc7ad66c4c2fcbb1701bd7b285d02"
+  integrity sha512-px84qiv5Z7CHrGZ8Mez7EHsQULyoXwwnKgyfz2qdx5o25OfGFTunqA6SM5LVlU5DQWNV3+toQMD3QN/rEc1RDQ==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
@@ -2789,10 +2789,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.4.0.tgz#310b9667a1123cfcce718aa6d8eba7c434a53c75"
   integrity sha512-dNgDpDsCMxUxaz8u6OfpjSBtMOdcp8QkLC3cwJ6E++4ux0qY2ON+ZqJEHIC3q4ZVJ4Xf6FikMJF0a8SVNtl8Zw==
 
-"@pooltogether/react-components@^1.6.13":
-  version "1.6.13"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.13.tgz#d98e0be386ad12a04e5e07663fb6abd939514cad"
-  integrity sha512-69oQoa8IiojVmyb+CsL8obn+ttefLdpfa+sI3RL9z3ENaKGgkOZzyiPCFK8g0vzAnDCRRXOP8LOVKD3vE7TeJQ==
+"@pooltogether/react-components@^1.6.18":
+  version "1.6.18"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.18.tgz#4ff1e2d545b8abe1828b5ba96b2ccbbe2ef91756"
+  integrity sha512-lMiNsZ/JOwvgLC1BOl184AoJgpQfQatf2vsqIIgScUChKRNcGdMIEBBZTqzNxJk46ow5yL3YgI81Axo1eqVubw==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2820,10 +2820,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/uniform-random-number/-/uniform-random-number-1.0.0-beta.1.tgz#72257401fe8536e95f9f812f1d249262659084a7"
   integrity sha512-V4iqLOpNFNhnUqfKRlvqUeRwvKaODdz+qn4Qi65C3iMOnDb0J31tBvyhwKbhP4wauNuUN64WfepqkkxET9U7EQ==
 
-"@pooltogether/utilities@^0.3.5":
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.5.tgz#8ca6dc80257c0bf9f6565944fbc6b37581038ec6"
-  integrity sha512-wMEzPd4oL5NcapckcP1aHJzwiCkxlwXbX3Cci8g9BtHzbWlKx8+2G56KLHl/lZQXAHamKTN4VHpFmRjHwnRCfg==
+"@pooltogether/utilities@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.6.tgz#33038de731b2d71e82036a1995f6e31efa66de3e"
+  integrity sha512-vNgzKtHQYBPkDGQK5l2NqtXEzLM9OqYxxUILLWslrBwTD8hlOSfYuJ2RKcomywIst4e0hWRVlbRHkNkLYe0aiQ==
 
 "@pooltogether/v4-core@^1.2.0":
   version "1.2.0"

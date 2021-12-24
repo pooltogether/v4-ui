@@ -1,13 +1,17 @@
+import React, { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
+import { useTransaction } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import { useTranslation } from 'react-i18next'
+import { BigNumber } from 'ethers'
+
 import { BottomSheet } from 'lib/components/BottomSheet'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
+import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { MainView } from './MainView'
 import { MoreView } from './MoreView'
 import { WithdrawView } from './WithdrawView'
-import { useTransaction } from '@pooltogether/hooks'
 
 interface ManageBalanceSheetProps {
   open: boolean
@@ -29,13 +33,33 @@ export const ManageBalanceSheet = (props: ManageBalanceSheetProps) => {
   const [withdrawTxId, setWithdrawTxId] = useState(0)
   const withdrawTx = useTransaction(withdrawTxId)
 
+  const user = useSelectedChainIdUser()
+  const {
+    data: depositAllowance,
+    refetch: refetchUsersDepositAllowance,
+    isFetched
+  } = useUsersDepositAllowance(prizePool)
+  const callTransaction = async () => user.approveDeposits(BigNumber.from(0))
+  const refetch = () => refetchUsersDepositAllowance()
+
   let view
   switch (selectedView) {
     case ManageSheetViews.main:
       view = <MainView {...props} withdrawTx={withdrawTx} setView={setView} />
       break
     case ManageSheetViews.more:
-      view = <MoreView {...props} setView={setView} />
+      view = (
+        <MoreView
+          {...props}
+          chainId={prizePool.chainId}
+          prizePool={prizePool}
+          setView={setView}
+          depositAllowance={depositAllowance}
+          isFetched={isFetched}
+          callTransaction={callTransaction}
+          refetch={refetch}
+        />
+      )
       break
     case ManageSheetViews.withdraw:
       view = (

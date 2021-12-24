@@ -1,29 +1,44 @@
+import React, { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
+import { PrizePool } from '@pooltogether/v4-js-client'
+import { BigNumber } from 'ethers'
+import { TransactionResponse } from '@ethersproject/abstract-provider'
 import {
   addTokenToMetamask,
   BlockExplorerLink,
   poolToast,
   SquareButton
 } from '@pooltogether/react-components'
+import { useTranslation } from 'react-i18next'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { Token, useTransaction } from '@pooltogether/hooks'
+
+import { BackButton, ManageSheetViews } from '.'
+import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { useTranslation } from 'react-i18next'
-import { BackButton, ManageSheetViews, ViewProps } from '.'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
+import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { BigNumber } from 'ethers'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { useState } from 'react'
 import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
-import { PrizePool } from '@pooltogether/v4-js-client'
 
 const TOKEN_IMG_URL = {
   PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
 }
 
-export const MoreView = (props: ViewProps) => {
+interface MoreViewProps {
+  chainId: number
+  prizePool: PrizePool
+  balances: UsersPrizePoolBalances
+  setView: Function
+  isFetched: Boolean
+  depositAllowance: DepositAllowance
+  callTransaction: () => Promise<TransactionResponse>
+  refetch: () => {}
+}
+
+export const MoreView = (props: MoreViewProps) => {
   const { prizePool, balances, setView } = props
   const { t } = useTranslation()
   const { ticket, token } = balances
@@ -92,11 +107,13 @@ export const MoreView = (props: ViewProps) => {
           })}
         </SquareButton>
       )}
+
       <RevokeAllowanceButton
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         prizePool={prizePool}
         token={token}
       />
+
       <BackButton onClick={() => setView(ManageSheetViews.main)} />
     </>
   )
@@ -119,6 +136,7 @@ interface RevokeAllowanceButtonProps {
   token: Token
 }
 
+// TODO: Swap this out for RevokeAllowanceButton in React Components lib
 const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
   const { isWalletOnProperNetwork, prizePool, token } = props
   const { t } = useTranslation()
