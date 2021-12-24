@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import { BigNumber } from 'ethers'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import {
   addTokenToMetamask,
   BlockExplorerLink,
-  LinkToContractItem,
   poolToast,
   SquareButton
 } from '@pooltogether/react-components'
@@ -18,7 +18,6 @@ import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAll
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
-import { RevokeAllowanceButton } from 'lib/views/RevokeAllowanceButton'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
@@ -110,13 +109,105 @@ export const MoreView = (props: MoreViewProps) => {
       )}
 
       <RevokeAllowanceButton
-        {...props}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
-        chainId={prizePool.chainId}
+        prizePool={prizePool}
         token={token}
       />
 
       <BackButton onClick={() => setView(ManageSheetViews.main)} />
     </>
+  )
+}
+
+const LinkToContractItem = (props: { chainId: number; i18nKey: string; address: string }) => {
+  const { chainId, i18nKey, address } = props
+  const { t } = useTranslation()
+  return (
+    <li className='w-full flex justify-between'>
+      <span className='font-bold'>{t(i18nKey)}</span>
+      <BlockExplorerLink shorten chainId={chainId} address={address} />
+    </li>
+  )
+}
+
+interface RevokeAllowanceButtonProps {
+  isWalletOnProperNetwork: boolean
+  prizePool: PrizePool
+  token: Token
+}
+
+// TODO: Swap this out for RevokeAllowanceButton in React Components lib
+const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
+  const { isWalletOnProperNetwork, prizePool, token } = props
+  const { t } = useTranslation()
+  const user = useSelectedChainIdUser()
+  const sendTx = useSendTransaction()
+  const [approveTxId, setApproveTxId] = useState(0)
+  const approveTx = useTransaction(approveTxId)
+
+  const {
+    data: depositAllowance,
+    refetch: refetchUsersDepositAllowance,
+    isFetched
+  } = useUsersDepositAllowance(prizePool)
+
+  const handleRevokeAllowanceClick = async () => {
+    if (!isWalletOnProperNetwork) {
+      poolToast.warn(
+        t(
+          'switchToNetworkToRevokeToken',
+          `Switch to {{networkName}} to revoke '{{token}}' token allowance`,
+          {
+            networkName: getNetworkNiceNameByChainId(prizePool.chainId),
+            token: token.symbol
+          }
+        )
+      )
+      return null
+    }
+
+    const name = t(`revokePoolAllowance`, { ticker: token.symbol })
+    const txId = await sendTx({
+      name,
+      method: 'approve',
+      callTransaction: async () => user.approveDeposits(BigNumber.from(0)),
+      callbacks: {
+        refetch: () => refetchUsersDepositAllowance()
+      }
+    })
+
+    setApproveTxId(txId)
+  }
+
+  if (!isFetched || depositAllowance.allowanceUnformatted.isZero()) {
+    return null
+  }
+
+  if (approveTx?.sent && !approveTx?.cancelled) {
+    return (
+      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex'>
+        <span>
+          {' '}
+          {t('revokePoolAllowance', {
+            ticker: token?.symbol
+          })}
+        </span>
+        <span>
+          <BlockExplorerLink shorten chainId={prizePool.chainId} txHash={approveTx.hash} />
+        </span>
+      </div>
+    )
+  }
+
+  return (
+    <SquareButton
+      onClick={handleRevokeAllowanceClick}
+      className='flex w-full items-center justify-center'
+    >
+      <FeatherIcon icon='minus-circle' className='w-5 mr-1' />{' '}
+      {t('revokePoolAllowance', {
+        ticker: token?.symbol
+      })}
+    </SquareButton>
   )
 }

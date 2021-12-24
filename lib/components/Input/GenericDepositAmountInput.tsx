@@ -6,10 +6,9 @@ import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
+import { WalletSvg } from 'lib/components/Icons/SvgComponents'
 import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-
-import WalletIcon from 'assets/images/icon-wallet.svg'
 
 interface GenericDepositAmountInputProps {
   chainId: number
@@ -87,7 +86,8 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
             setValue(inputKey, tokenBalance.amount, { shouldValidate: true })
           }}
         >
-          <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
+          {/* <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} /> */}
+          <WalletSvg className='mr-2' />
           {!tokenBalanceIsFetched ? (
             <ThemedClipSpinner sizeClassName='w-3 h-3' className='mr-2 opacity-50' />
           ) : (

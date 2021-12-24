@@ -12,7 +12,6 @@ import {
   // snapTo90,
   addTokenToMetamask,
   SquareButton,
-  BalanceBottomSheetBackButton,
   BalanceBottomSheet,
   ContractLink,
   NetworkIcon,
@@ -60,23 +59,10 @@ import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
-import { RevokeAllowanceButton } from 'lib/views/RevokeAllowanceButton'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
-
-const TOKEN_IMG_URL = {
-  PTaUSDC: 'https://app.pooltogether.com/ptausdc@2x.png'
-}
-
-export enum DefaultBalanceSheetViews {
-  'main',
-  'deposit',
-  'withdraw',
-  'claim',
-  'more'
-}
 
 export interface StakingPoolTokens {
   ticket: Token
@@ -98,6 +84,7 @@ export interface UnderlyingToken {
 
 export const StakingDeposits = () => {
   const { t } = useTranslation()
+
   return (
     <div id='staking'>
       <h4 className='mb-2'>{t('poolToken', 'POOL Token')}</h4>
@@ -123,52 +110,7 @@ const StakingDepositsList = () => {
   })
 }
 
-interface StakingDepositItemProps {
-  chainId: number
-  stakingPool: StakingPool
-}
-
-const StakingDepositItem = (props: StakingDepositItemProps) => {
-  const { chainId, stakingPool } = props
-
-  const usersAddress = useUsersAddress()
-
-  const { t } = useTranslation()
-
-  const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedView, setView] = useState(DefaultBalanceSheetViews.main)
-
-  const { provider } = useOnboard()
-  const { setSelectedChainId } = useSelectedChainId()
-
-  const {
-    data: stakingPoolChainData,
-    refetch: stakingPoolChainDataRefetch,
-    isFetched: stakingPoolChainDataIsFetched
-  } = useStakingPoolChainData(stakingPool)
-  const {
-    data: userLPChainData,
-    refetch: userLPChainDataRefetch,
-    isFetched: userLPChainDataIsFetched
-  } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
-
-  const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
-
-  const [depositTxId, setDepositTxId] = useState(0)
-  const depositTx = useTransaction(depositTxId)
-
-  const [approveTxId, setApproveTxId] = useState(0)
-  const approveTx = useTransaction(approveTxId)
-
-  const [claimTxId, setClaimTxId] = useState(0)
-  const claimTx = useTransaction(claimTxId)
-
-  // const [withdrawTxId, setWithdrawTxId] = useState(0)
-  // const withdrawTx = useTransaction(withdrawTxId)
-
+const useLpPriceData = (chainId, stakingPoolChainData, stakingPool) => {
   const { tokenFaucetData, underlyingTokenData, ticketsData } = stakingPoolChainData || {}
   const { dripRatePerDayUnformatted } = tokenFaucetData || {}
   const { tokens } = stakingPool || {}
@@ -207,86 +149,58 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     ticketsData
   )
 
+  return { apr, lpTokenPrice, tokenPrices }
+}
+
+interface StakingDepositItemProps {
+  chainId: number
+  stakingPool: StakingPool
+}
+
+const StakingDepositItem = (props: StakingDepositItemProps) => {
+  const { stakingPool } = props
+
+  const usersAddress = useUsersAddress()
+
+  const { t } = useTranslation()
+
+  const [isOpen, setIsOpen] = useState(false)
+
+  const { setSelectedChainId } = useSelectedChainId()
+
+  const {
+    data: stakingPoolChainData,
+    refetch: stakingPoolChainDataRefetch,
+    isFetched: stakingPoolChainDataIsFetched
+  } = useStakingPoolChainData(stakingPool)
+  const {
+    data: userLPChainData,
+    refetch: userLPChainDataRefetch,
+    isFetched: userLPChainDataIsFetched
+  } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
+
+  const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
+
+  const refetch = () => {
+    console.log('running refetch user lp chain data, staking pool chain data')
+    stakingPoolChainDataRefetch()
+    userLPChainDataRefetch()
+  }
+
   if (!isFetched) {
     return <LoadingList />
   }
 
   const balances = userLPChainData.balances
-  const tokenBalance = balances.token
-  const ticketBalance = balances.ticket
-  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
-  // const { userData } = userLPChainData
 
-  const callTransaction = buildApproveTx({
-    provider,
-    amount: BigNumber.from(0),
-    prizePoolAddress: stakingPool.prizePool.address,
-    token: balances.token
-  })
-
-  const depositView = (
-    <DepositView
-      {...props}
-      underlyingToken={underlyingToken}
-      usersAddress={usersAddress}
-      userLPChainData={userLPChainData}
-      ticketBalance={ticketBalance}
-      tokenBalance={tokenBalance}
-      tokenBalanceIsFetched={userLPChainDataIsFetched}
-      depositTx={depositTx}
-      approveTx={approveTx}
-      setView={setView}
-      userLPChainDataRefetch={userLPChainDataRefetch}
-      closeInitialSheet={() => setIsOpen(false)}
-      setDepositTxId={setDepositTxId}
-      setApproveTxId={setApproveTxId}
-    />
-  )
-
-  const claimView = (
-    <ClaimView
-      {...props}
-      apr={apr}
-      claimTx={claimTx}
-      userLPChainData={userLPChainData}
-      tokenPrices={tokenPrices}
-      tokenFaucetDripToken={tokenFaucetDripToken}
-      closeInitialSheet={() => setIsOpen(false)}
-      setView={setView}
-      setClaimTxId={setClaimTxId}
-      userLPChainDataRefetch={userLPChainDataRefetch}
-    />
-  )
-  const withdrawView = (
-    <>
-      <ModalTitle
-        chainId={chainId}
-        title={`${t('withdraw')}: ${tokenBalance.symbol}`}
-        className='mb-4'
-      />
-    </>
-  )
-
-  // const moreInfoView = (
-  //   <MoreInfoView
-  //     {...props}
-  //     depositAllowance={depositAllowance}
-  //     balances={balances}
-  //     setView={setView}
-  //     callTransaction={callTransaction}
-  //     refetch={userLPChainDataRefetch}
-  //     isFetched={userLPChainDataIsFetched}
-  //   />
-  // )
-
-  const accountView = balances.ticket.hasBalance ? (
+  const accountPageView = balances.ticket.hasBalance ? (
     <>
       <StakingBalanceStats
         {...props}
-        apr={apr}
         t={t}
         balances={balances}
         userLPChainData={userLPChainData}
+        stakingPoolChainData={stakingPoolChainData}
       />
 
       <ManageDepositButton
@@ -298,10 +212,140 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   ) : (
     <BlankStateView
       {...props}
+      stakingPoolChainData={stakingPoolChainData}
       setIsOpen={setIsOpen}
       setSelectedChainId={setSelectedChainId}
-      apr={apr}
     />
+  )
+
+  return (
+    <div
+      className='relative rounded-lg p-4 text-white'
+      style={{
+        backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+      }}
+    >
+      <div
+        className='absolute r-4 t-3 w-6 h-6 text-xl'
+        style={{ textShadow: '2px 2px 0px rgba(50, 10, 100, 0.3)' }}
+      >
+        💎
+      </div>
+
+      <StakingBlockTitle {...props} t={t} />
+
+      {accountPageView}
+
+      <StakingBalanceBottomSheet
+        {...props}
+        isOpen={isOpen}
+        userLPChainData={userLPChainData}
+        isFetched={isFetched}
+        stakingPoolChainData={stakingPoolChainData}
+        refetch={refetch}
+        setIsOpen={setIsOpen}
+      />
+    </div>
+  )
+}
+
+interface StakingBalanceBottomSheetProps {
+  chainId: number
+  stakingPool: StakingPool
+  isOpen: boolean
+  isFetched: boolean
+  userLPChainData: UserLPChainData
+  setIsOpen: Function
+  stakingPoolChainData: object
+  refetch: () => void
+}
+
+const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
+  const {
+    chainId,
+    stakingPool,
+    setIsOpen,
+    isFetched,
+    isOpen,
+    stakingPoolChainData,
+    userLPChainData,
+    refetch
+  } = props
+
+  const { t } = useTranslation()
+
+  const { tokens } = stakingPool || {}
+  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
+
+  const { provider } = useOnboard()
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+
+  // const [withdrawTxId, setWithdrawTxId] = useState(0)
+  // const withdrawTx = useTransaction(withdrawTxId)
+
+  const [depositTxId, setDepositTxId] = useState(0)
+  const depositTx = useTransaction(depositTxId)
+
+  const [approveTxId, setApproveTxId] = useState(0)
+  const approveTx = useTransaction(approveTxId)
+
+  const [claimTxId, setClaimTxId] = useState(0)
+  const claimTx = useTransaction(claimTxId)
+
+  const balances = userLPChainData.balances
+  const tokenBalance = balances.token
+  const ticketBalance = balances.ticket
+
+  const depositAllowance: DepositAllowance = getDepositAllowance(userLPChainData)
+
+  const revokeAllowanceCallTransaction = buildApproveTx({
+    provider,
+    amount: BigNumber.from(0),
+    prizePoolAddress: stakingPool.prizePool.address,
+    token: balances.token
+  })
+
+  const { lpTokenPrice } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+
+  const depositView = (
+    <DepositView
+      {...props}
+      underlyingToken={underlyingToken}
+      userLPChainData={userLPChainData}
+      ticketBalance={ticketBalance}
+      tokenBalance={tokenBalance}
+      tokenBalanceIsFetched={isFetched}
+      depositTx={depositTx}
+      approveTx={approveTx}
+      refetch={refetch}
+      closeInitialSheet={() => setIsOpen(false)}
+      setDepositTxId={setDepositTxId}
+      setApproveTxId={setApproveTxId}
+    />
+  )
+
+  const claimView = (
+    <ClaimView
+      {...props}
+      claimTx={claimTx}
+      userLPChainData={userLPChainData}
+      tokenFaucetDripToken={tokenFaucetDripToken}
+      stakingPoolChainData={stakingPoolChainData}
+      closeInitialSheet={() => setIsOpen(false)}
+      setClaimTxId={setClaimTxId}
+      refetch={refetch}
+    />
+  )
+
+  const withdrawView = (
+    <>
+      <ModalTitle
+        chainId={chainId}
+        title={`${t('withdraw')}: ${tokenBalance.symbol}`}
+        className='mb-4'
+      />
+    </>
   )
 
   const views = [
@@ -316,13 +360,13 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       view: () => claimView,
       label: t('rewards'),
       theme: SquareButtonTheme.rainbow
-    },
-    {
-      id: 'withdraw',
-      view: () => withdrawView,
-      label: t('withdraw'),
-      theme: SquareButtonTheme.tealOutline
     }
+    // {
+    //   id: 'withdraw',
+    //   view: () => withdrawView,
+    //   label: t('withdraw'),
+    //   theme: SquareButtonTheme.tealOutline
+    // }
   ]
 
   const contractLinks: ContractLink[] = [
@@ -343,144 +387,31 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     }
   ]
 
-  return (
-    <div
-      className='relative rounded-lg p-4 text-white'
-      style={{
-        backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
-      }}
-    >
-      <div
-        className='absolute r-4 t-3 w-6 h-6 text-xl'
-        style={{ textShadow: '2px 2px 0px rgba(50, 10, 100, 0.3)' }}
-      >
-        💎
-      </div>
-
-      <StakingBlockTitle {...props} t={t} />
-
-      {accountView}
-
-      {/* <RevokeAllowanceButton
-        {...props}
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
-        chainId={prizePool.chainId}
-        token={token}
-      /> */}
-
-      <BalanceBottomSheet
-        {...props}
-        t={t}
-        views={views}
-        title={`${t('manage')}: ${underlyingToken.symbol}`}
-        // snapPoints={snapTo90}
-        contractLinks={contractLinks}
-        balance={getAmountFromString(ticketBalance.amount, '18')}
-        balanceUsd={getAmountFromString(
-          (Number(ticketBalance.amount) * lpTokenPrice.toNumber()).toString(),
-          '18'
-        )}
-        token={getToken(ticketBalance)}
-        open={isOpen}
-        onDismiss={() => setIsOpen(false)}
-        // network={network}
-        // wallet={wallet}
-        tx={null}
-        className='space-y-4'
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
-        isWalletMetaMask={isWalletMetaMask}
-      />
-    </div>
-  )
-}
-
-interface MoreInfoViewProps {
-  chainId: number
-  prizePool: BalanceBottomSheetPrizePool
-  balances: UsersPrizePoolBalances
-  isFetched: Boolean
-  depositAllowance: DepositAllowance
-  setView: (view: DefaultBalanceSheetViews) => void
-  callTransaction: () => Promise<TransactionResponse>
-  refetch: () => {}
-}
-
-const MoreInfoView = (props: MoreInfoViewProps) => {
-  const { chainId, prizePool, balances, setView } = props
-  const { ticket, token } = balances
-
-  const { t } = useTranslation()
-
-  const isMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-
-  const handleAddTokenToMetaMask = async () => {
-    if (!ticket) {
-      return
-    }
-
-    if (!isWalletOnProperNetwork) {
-      poolToast.warn(
-        t('switchToNetworkToAddToken', `Switch to {{networkName}} to add token '{{token}}'`, {
-          networkName: getNetworkNiceNameByChainId(prizePool.chainId),
-          token: token.symbol
-        })
-      )
-      return null
-    }
-
-    addTokenToMetamask(
-      ticket.symbol,
-      ticket.address,
-      Number(ticket.decimals),
-      TOKEN_IMG_URL[ticket.symbol]
-    )
-  }
+  const balanceUsd = isFetched
+    ? getAmountFromString('', '18')
+    : getAmountFromString((Number(ticketBalance.amount) * lpTokenPrice.toNumber()).toString(), '18')
 
   return (
-    <>
-      {/* <BalanceBottomSheetTitle t={t} chainId={prizePool.chainId} /> */}
-
-      {/* <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
-        <div className='opacity-50 font-bold flex justify-between'>
-          <span>{t('contract', 'Contract')}</span>
-          <span>{t('explorer', 'Explorer')}</span>
-        </div>
-        <LinkToContractItem
-          i18nKey='prizePool'
-          chainId={prizePool.chainId}
-          address={prizePool.address}
-        />
-        <LinkToContractItem
-          i18nKey='ticketToken'
-          chainId={prizePool.chainId}
-          address={ticket.address}
-        />
-        <LinkToContractItem
-          i18nKey='underlyingToken'
-          chainId={prizePool.chainId}
-          address={token.address}
-        />
-      </ul> */}
-      {isMetaMask && (
-        <SquareButton
-          onClick={handleAddTokenToMetaMask}
-          className='flex w-full items-center justify-center'
-        >
-          <FeatherIcon icon='plus-circle' className='w-5 mr-1' />{' '}
-          {t('addTicketTokenToMetamask', {
-            token: ticket?.symbol
-          })}
-        </SquareButton>
-      )}
-      <RevokeAllowanceButton
-        {...props}
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
-        chainId={chainId}
-        token={token}
-      />
-      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
-    </>
+    <BalanceBottomSheet
+      {...props}
+      t={t}
+      views={views}
+      title={`${t('manage')}: ${underlyingToken.symbol}`}
+      // snapPoints={snapTo90}
+      contractLinks={contractLinks}
+      balance={getAmountFromString(ticketBalance.amount, '18')}
+      balanceUsd={balanceUsd}
+      token={getToken(ticketBalance)}
+      open={isOpen}
+      onDismiss={() => setIsOpen(false)}
+      tx={null}
+      className='space-y-4'
+      isWalletOnProperNetwork={isWalletOnProperNetwork}
+      isWalletMetaMask={isWalletMetaMask}
+      revokeAllowanceCallTransaction={revokeAllowanceCallTransaction}
+      useSendTransaction={useSendTransaction}
+      depositAllowance={depositAllowance}
+    />
   )
 }
 
@@ -547,8 +478,10 @@ const useStakingAPR = (
 }
 
 const BlankStateView = (props) => {
-  const { setSelectedChainId, chainId, setIsOpen, stakingPool, apr } = props
+  const { setSelectedChainId, chainId, setIsOpen, stakingPool, stakingPoolChainData } = props
   const { tokenFaucetDripToken } = stakingPool.tokens
+
+  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
 
   const { t } = useTranslation()
 
@@ -652,7 +585,9 @@ const NetworkLabel = (props: { chainId: number }) => (
 )
 
 interface StakingDepositStatProps {
+  chainId: number
   stakingPool: StakingPool
+  stakingPoolChainData: object
   balances: UsersPrizePoolBalances
   userLPChainData: UserLPChainData
   apr: string
@@ -707,9 +642,11 @@ const StakingRewardsBalance = (props: StakingDepositStatProps) => {
 }
 
 const StakingEarningBalance = (props: StakingDepositStatProps) => {
-  const { balances, stakingPool, apr } = props
+  const { balances, chainId, stakingPool, stakingPoolChainData } = props
 
   const { t } = useTranslation()
+
+  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
 
   if (!balances) {
     return null
@@ -777,12 +714,10 @@ export interface DepositViewProps {
   depositTx: Transaction
   approveTx: Transaction
   underlyingToken: UnderlyingToken
-  usersAddress: string
   closeInitialSheet: () => void
   setDepositTxId: (number) => void
   setApproveTxId: (number) => void
-  setView: (view: DefaultBalanceSheetViews) => void
-  userLPChainDataRefetch: () => {}
+  refetch: () => void
 }
 
 export enum DepositViews {
@@ -855,7 +790,6 @@ const DepositFormView = (props: DepositFormViewProps) => {
     depositTx,
     tokenBalance,
     ticketBalance,
-    setView,
     setReviewDepositView
   } = props
 
@@ -909,8 +843,6 @@ const DepositFormView = (props: DepositFormViewProps) => {
           amountToDeposit={amountToDeposit}
         />
       </form>
-
-      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
     </>
   )
 }
@@ -956,7 +888,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     setDepositTxId,
     setApproveTxId,
     setDepositFormView,
-    userLPChainDataRefetch
+    refetch
   } = props
 
   const { t } = useTranslation()
@@ -986,7 +918,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     const callTransaction = buildApproveTx({
       provider,
       amount: MaxUint256,
-      prizePool: stakingPool.prizePool.address,
+      prizePoolAddress: stakingPool.prizePool.address,
       token: tokenBalance
     })
 
@@ -996,7 +928,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       method: 'approve',
       callTransaction,
       callbacks: {
-        refetch: userLPChainDataRefetch
+        refetch
       }
     })
     setApproveTxId(txId)
@@ -1020,7 +952,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       callTransaction,
       callbacks: {
         onSuccess,
-        refetch: userLPChainDataRefetch
+        refetch
       }
     })
     setDepositTxId(txId)
@@ -1031,32 +963,30 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       {...props}
       chainId={chainId}
       isOpen={showConfirmModal}
-      closeModal={closeDepositModal}
       label='deposit confirmation modal'
-      token={getToken(tokenBalance)}
-      ticket={getTicket(ticketBalance)}
       isDataFetched={true}
       amountToDeposit={amountToDeposit}
       depositAllowance={depositAllowance}
+      resetState={() => {}}
+      token={getToken(tokenBalance)}
+      ticket={getTicket(ticketBalance)}
+      closeModal={closeDepositModal}
       sendApproveTx={sendApproveTx}
       sendDepositTx={sendDepositTx}
-      resetState={() => {}}
     />
   )
 }
 
 export interface ClaimViewProps {
-  tokenPrices: object
   tokenFaucetDripToken: Token
   chainId: number
+  stakingPoolChainData: object
   stakingPool: StakingPool
   userLPChainData: UserLPChainData
   claimTx: Transaction
-  apr: string
   closeInitialSheet: () => void
   setClaimTxId: (number) => void
-  setView: (view: DefaultBalanceSheetViews) => void
-  userLPChainDataRefetch: () => {}
+  refetch: () => void
 }
 
 export enum ClaimViews {
@@ -1065,20 +995,21 @@ export enum ClaimViews {
 }
 
 const ClaimView = (props: ClaimViewProps) => {
-  const {} = props
+  const { chainId, stakingPoolChainData, stakingPool, claimTx } = props
 
-  const [claimView, setClaimView] = useState(ClaimViews.main)
-
-  switch (claimView) {
-    case ClaimViews.main:
-      return <ClaimMainView {...props} setClaimView={setClaimView} />
-    case ClaimViews.claiming:
-      return <ClaimClaimingView {...props} setClaimView={setClaimView} />
+  if (claimTx && claimTx.sent) {
+    return <ClaimClaimingView {...props} />
   }
+
+  const { apr, tokenPrices } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+
+  return <ClaimMainView {...props} apr={apr} tokenPrices={tokenPrices} />
 }
 
 export interface ClaimMainViewProps extends ClaimViewProps {
-  setClaimView: (claimView: ClaimViews) => void
+  apr: string
+  tokenPrices: object
+  refetch: () => void
 }
 
 const ClaimMainView = (props: ClaimMainViewProps) => {
@@ -1089,11 +1020,8 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
     tokenFaucetDripToken,
     chainId,
     apr,
-    claimTx,
-    setClaimView,
     setClaimTxId,
-    userLPChainDataRefetch,
-    setView
+    refetch
   } = props
 
   const { t } = useTranslation()
@@ -1127,14 +1055,10 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
       callTransaction,
       callbacks: {
         onSuccess,
-        refetch: userLPChainDataRefetch
+        refetch
       }
     })
     setClaimTxId(txId)
-  }
-
-  if (claimTx && claimTx.sent) {
-    return <ClaimClaimingView {...props} setClaimView={setClaimView} />
   }
 
   const dripTokenUsd = tokenPrices[tokenFaucetDripToken.address.toLowerCase()]?.usd || 0
@@ -1169,19 +1093,8 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         </span>
       </div>
 
-      <div className='mb-6'>
-        <SquareButton
-          disabled={!userData.claimableBalanceUnformatted.gt(0)}
-          onClick={sendClaimTx}
-          className='flex w-full items-center justify-center'
-          theme={SquareButtonTheme.rainbow}
-        >
-          {t('claim', 'Claim')}
-        </SquareButton>
-      </div>
-
       <div
-        className='relative rounded-lg p-4 text-white mt-2 text-center font-semibold'
+        className='relative rounded-lg p-4 text-white mt-2 mb-4 text-center font-semibold'
         style={{
           backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
         }}
@@ -1196,14 +1109,21 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         />
       </div>
 
-      <BalanceBottomSheetBackButton t={t} onClick={() => setView(DefaultBalanceSheetViews.main)} />
+      <div className='mt-6'>
+        <SquareButton
+          disabled={!userData.claimableBalanceUnformatted.gt(0)}
+          onClick={sendClaimTx}
+          className='flex w-full items-center justify-center'
+          theme={SquareButtonTheme.rainbow}
+        >
+          {t('claim', 'Claim')}
+        </SquareButton>
+      </div>
     </>
   )
 }
 
-export interface ClaimClaimingViewProps extends ClaimViewProps {
-  setClaimView: (claimView: ClaimViews) => void
-}
+export interface ClaimClaimingViewProps extends ClaimViewProps {}
 
 const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
   const { chainId, closeInitialSheet, claimTx } = props
@@ -1211,7 +1131,7 @@ const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
 
   return (
     <>
-      <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
+      <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
       <ModalTransactionSubmitted
         className='mt-8'
         chainId={chainId}
@@ -1231,6 +1151,7 @@ const LoadingList = () => (
 
 const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?: Amount) => {
   const { userData } = userLPChainData
+  console.log(userData)
   const { underlyingToken } = userData
 
   let isApproved = false

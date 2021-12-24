@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { Transaction } from '@pooltogether/hooks'
@@ -10,21 +9,19 @@ import {
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-js-client'
 
-import { InfoList, ModalInfoList } from 'lib/components/InfoList'
+import { ModalInfoList } from 'lib/components/InfoList'
 import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 
 interface ModalApproveGateProps {
   className?: string
-  prizePool: PrizePool
   chainId: number
   approveTx: Transaction
   sendApproveTx: () => void
 }
 
 export const ModalApproveGate = (props: ModalApproveGateProps) => {
-  const { prizePool, className, chainId, approveTx, sendApproveTx } = props
+  const { className, chainId, approveTx, sendApproveTx } = props
 
   const { t } = useTranslation()
 
@@ -77,7 +74,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </p>
       </div>
       <ModalInfoList className='mb-6'>
-        <EstimatedApproveDepositsGasItem chainId={prizePool.chainId} />
+        <EstimatedApproveDepositsGasItem chainId={chainId} />
       </ModalInfoList>
       <SquareButton className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}

@@ -2,34 +2,26 @@ import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
   Tooltip,
-  Modal,
   ModalProps,
   SquareButton,
-  SquareButtonTheme,
-  TokenIcon
+  SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { DownArrow } from 'lib/components/DownArrow'
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import { InfoList, InfoListItem, ModalInfoList } from 'lib/components/InfoList'
+import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { BottomSheet } from 'lib/components/BottomSheet'
-import classNames from 'classnames'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
@@ -58,10 +50,10 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isDataFetched,
     approveTx,
     depositTx,
+    isOpen,
     sendApproveTx,
     sendDepositTx,
     resetState,
-    isOpen,
     closeModal
   } = props
 
@@ -107,7 +99,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
           chainId={chainId}
-          prizePool={prizePool}
           approveTx={approveTx}
           sendApproveTx={sendApproveTx}
           className='mt-8'
