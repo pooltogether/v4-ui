@@ -387,9 +387,10 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     }
   ]
 
-  const balanceUsd = isFetched
-    ? getAmountFromString('', '18')
-    : getAmountFromString((Number(ticketBalance.amount) * lpTokenPrice.toNumber()).toString(), '18')
+  const balanceUsd = getAmountFromString(
+    (Number(ticketBalance.amount) * lpTokenPrice?.toNumber()).toString(),
+    '18'
+  )
 
   return (
     <BalanceBottomSheet
