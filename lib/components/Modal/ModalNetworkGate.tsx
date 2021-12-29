@@ -25,7 +25,7 @@ export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
         <p className='mb-4'>
           {t(
             'thePrizePoolLivesOnTheNetwork',
-            'The Prize Pool you are intertacting with lives on the {{networkName}} network.',
+            'The Prize Pool you are interacting with lives on the {{networkName}} network.',
             { networkName }
           )}
         </p>
