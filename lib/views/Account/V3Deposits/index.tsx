@@ -41,11 +41,12 @@ const DepositsList = () => {
   if (!isFetched) {
     return <LoadingList />
   }
+
   return (
     <ul className='space-y-4'>
       {data.balances.map((balance) => (
         <DepositItem
-          key={'deposit-balance-' + balance.prizePool.prizePool.address + balance.prizePool.chainId}
+          key={'deposit-balance-' + balance.address + balance.prizePool.chainId}
           {...balance}
         />
       ))}
@@ -111,10 +112,17 @@ const DepositItem = (props: DepositItemsProps) => {
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
         chainId={chainId}
+        externalLinks={[
+          {
+            id: prizePool.prizePool.address,
+            label: t('viewOnV3App', 'View on V3 app'),
+            href: `https://app.pooltogether.com/account`
+          }
+        ]}
         views={[
           {
             id: 'withdraw',
-            view: () => <WithdrawView />,
+            view: () => <WithdrawView prizePool={prizePool} />,
             label: t('withdraw'),
             theme: SquareButtonTheme.teal
           }
@@ -135,9 +143,14 @@ const DepositItem = (props: DepositItemsProps) => {
 const DeprecatedBanner = () => {
   const { t } = useTranslation()
   return (
-    <div className='flex justify-center bg-gradient-yellow bg-opacity-50 dark:bg-opacity-100 dark:text-actually-black p-4 rounded w-full mb-4'>
-      <FeatherIcon icon='bell' className='w-4 h-4 mr-2 my-auto' />
-      <span>{t('v3PrizePoolsAreBeingDeprecated')}</span>
+    <div className=' bg-gradient-yellow bg-opacity-50 dark:bg-opacity-100 dark:text-actually-black p-4 rounded w-full mb-4'>
+      <div className='flex justify-center'>
+        <FeatherIcon icon='bell' className='w-4 h-4 mr-2 my-auto' />
+        <span>{t('v3PrizePoolsAreBeingDeprecated')}</span>
+      </div>
+      <span className='flex justify-center'>
+        {t('visitV3ToClaimRewards', 'Visit the V3 app to claim any remaining rewards.')}
+      </span>
     </div>
   )
 }
