@@ -13,6 +13,8 @@ const walletConnectOptions = {
   infuraKey: INFURA_ID,
   preferred: true,
   rpc: {
+    43113: 'https://api.avax-test.network/ext/bc/C/rpc',
+    43114: 'https://api.avax.network/ext/bc/C/rpc',
     42220: 'https://forno.celo.org',
     44787: 'https://alfajores-forno.celo-testnet.org',
     62320: 'https://baklava-forno.celo-testnet.org',
