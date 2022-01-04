@@ -8,15 +8,15 @@ import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { Trans } from 'react-i18next'
+
 import {
   // snapTo90,
-  addTokenToMetamask,
   SquareButton,
   BalanceBottomSheet,
   ContractLink,
   NetworkIcon,
   TokenIcon,
-  poolToast,
+  ThemedClipSpinner,
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import {
@@ -26,7 +26,7 @@ import {
   amountMultByUsd,
   toScaledUsdBigNumber,
   numberWithCommas,
-  getMaxPrecision
+  NETWORK
 } from '@pooltogether/utilities'
 import {
   useTransaction,
@@ -35,6 +35,7 @@ import {
   useStakingPools,
   useTokenBalances,
   useCoingeckoTokenPrices,
+  usePoolTokenData,
   TokenWithBalance,
   Transaction,
   Token,
@@ -47,6 +48,7 @@ import TokenFaucetAbi from 'abis/TokenFaucet'
 import PrizePoolAbi from 'abis/PrizePool'
 import Erc20Abi from 'abis/ERC20Abi'
 
+import { POOL_ADDRESS } from 'lib/constants/constants'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
@@ -89,7 +91,37 @@ export const StakingDeposits = () => {
     <div id='staking'>
       <h4 className='mb-2'>{t('poolToken', 'POOL Token')}</h4>
 
+      <PoolTokenBalance />
+
       <StakingDepositsList />
+    </div>
+  )
+}
+
+const PoolTokenBalance = () => {
+  const { t } = useTranslation()
+  const usersAddress = useUsersAddress()
+
+  const { data: tokenData, isFetched } = usePoolTokenData(usersAddress, usersAddress)
+
+  const { usersBalance } = tokenData || {}
+  const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
+
+  return (
+    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg p-4 mb-4'>
+      <div className='flex items-center justify-between font-semibold text-lg'>
+        {t('yourPool', 'Your POOL Balance')}
+        <span>
+          <TokenIcon chainId={NETWORK.mainnet} address={POOL_ADDRESS} className='mr-2 my-auto' />
+          <span className='font-bold'>
+            {!isFetched || !usersBalance ? (
+              <ThemedClipSpinner sizeClassName='w-4 h-4' />
+            ) : (
+              balanceFormatted
+            )}
+          </span>
+        </span>
+      </div>
     </div>
   )
 }
