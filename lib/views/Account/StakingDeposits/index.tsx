@@ -157,6 +157,8 @@ const StakingDepositsList = () => {
   })
 }
 
+const stakingPoolIsLp = (stakingPool) => Boolean(stakingPool?.tokens.underlyingToken.dex)
+
 const useLpPriceData = (chainId, stakingPoolChainData, stakingPool) => {
   const { tokenFaucetData, underlyingTokenData, ticketsData } = stakingPoolChainData || {}
   const { dripRatePerDayUnformatted } = tokenFaucetData || {}
@@ -164,6 +166,10 @@ const useLpPriceData = (chainId, stakingPoolChainData, stakingPool) => {
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
   const { token1, token2 } = underlyingToken
+
+  if (!stakingPoolIsLp(stakingPool)) {
+    return {}
+  }
 
   const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(chainId, [
     token1.address,
@@ -267,9 +273,11 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   return (
     <div
-      className='relative rounded-lg p-4 text-white'
+      className='relative rounded-lg p-4 text-white mb-4'
       style={{
-        backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+        backgroundImage: stakingPoolIsLp(stakingPool)
+          ? 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+          : 'linear-gradient(300deg, #46279A 0%, #7E46F2 100%)'
       }}
     >
       <div
@@ -499,7 +507,6 @@ const useLpTokenPrice = (
 
 const useStakingAPR = (
   lpTokenPrice,
-
   underlyingTokenData,
   dripTokenUsd,
   dripRatePerDayUnformatted,
@@ -838,6 +845,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
     depositTx,
     tokenBalance,
     ticketBalance,
+    stakingPool,
     setReviewDepositView
   } = props
 
@@ -862,7 +870,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
         <div className='w-full mx-auto'>
           <GenericDepositAmountInput
             {...props}
-            depositTokenClassName='w-96'
+            depositTokenClassName={stakingPoolIsLp(stakingPool) && 'w-96'}
             chainId={chainId}
             className=''
             form={form}
