@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
-import { CHAIN_ID } from 'lib/constants/constants'
+import { BUTTON_MIN_WIDTH, CHAIN_ID } from 'lib/constants/constants'
 import { getExchangeUrl } from 'lib/constants/config'
 
 interface SwapTokensModalProps extends Omit<ModalProps, 'children'> {
@@ -49,4 +49,41 @@ export const SwapTokensModal = (props: SwapTokensModalProps) => {
 
 SwapTokensModal.defaultProps = {
   chainId: CHAIN_ID.mainnet
+}
+
+interface SwapTokensModalTriggerProps {
+  buttonLabel?: string
+  chainId?: number
+  outputCurrencyAddress?: string
+}
+
+export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
+  const { buttonLabel, chainId, outputCurrencyAddress } = props
+  const [showModal, setShowModal] = useState(false)
+
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <button
+        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        onClick={() => setShowModal(true)}
+        style={{ minWidth: BUTTON_MIN_WIDTH }}
+      >
+        <FeatherIcon
+          icon={'refresh-cw'}
+          className='relative w-4 h-4 mr-1 inline-block'
+          style={{ left: -2, top: -2 }}
+        />{' '}
+        {buttonLabel || t('swapTokens', 'Swap tokens')}
+      </button>
+      <SwapTokensModal
+        label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
+        chainId={chainId}
+        tokenAddress={outputCurrencyAddress}
+        isOpen={showModal}
+        closeModal={() => setShowModal(false)}
+      />
+    </>
+  )
 }

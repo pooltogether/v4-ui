@@ -48,19 +48,20 @@ import TokenFaucetAbi from 'abis/TokenFaucet'
 import PrizePoolAbi from 'abis/PrizePool'
 import Erc20Abi from 'abis/ERC20Abi'
 
-import { POOL_ADDRESS } from 'lib/constants/constants'
+import { MAINNET_POOL_ADDRESS, POLYGON_POOL_ADDRESS } from 'lib/constants/constants'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { SwapTokensModalTrigger } from 'lib/components/Modal/SwapTokensModal'
 import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
 import { UsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
+import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
-import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 
@@ -107,21 +108,35 @@ const PoolTokenBalance = () => {
   const { usersBalance } = tokenData || {}
   const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
 
+  // Only support mainnet for the moment ...
+  const chainId = NETWORK.mainnet
+  const poolTokenAddress = MAINNET_POOL_ADDRESS
+  // const poolTokenAddress = chainId === NETWORK.mainnet ? MAINNET_POOL_ADDRESS : POLYGON_POOL_ADDRESS
+
   return (
-    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg p-4 mb-4'>
+    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
       <div className='flex items-center justify-between font-semibold text-lg'>
         {t('yourPool', 'Your POOL Balance')}
         <span>
-          <TokenIcon chainId={NETWORK.mainnet} address={POOL_ADDRESS} className='mr-2 my-auto' />
+          <TokenIcon
+            chainId={NETWORK.mainnet}
+            address={MAINNET_POOL_ADDRESS}
+            className='mr-2 my-auto'
+          />
           <span className='font-bold'>
-            {!isFetched || !usersBalance ? (
-              <ThemedClipSpinner sizeClassName='w-4 h-4' />
-            ) : (
-              balanceFormatted
-            )}
+            {!isFetched ? <ThemedClipSpinner sizeClassName='w-4 h-4' /> : balanceFormatted}
           </span>
         </span>
       </div>
+      {usersBalance === 0 && (
+        <div className='flex items-center justify-end font-semibold'>
+          <SwapTokensModalTrigger
+            buttonLabel={t('getPool', 'Get POOL')}
+            chainId={chainId}
+            outputCurrencyAddress={poolTokenAddress}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -523,7 +538,7 @@ const BlankStateView = (props) => {
       <p className='text-sm'>
         {t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')}
       </p>
-      <h5 className='mt-3'>
+      <h6 className='mt-3'>
         <span
           className='relative -mt-2 inline-block mr-1'
           style={{
@@ -544,7 +559,7 @@ const BlankStateView = (props) => {
             tooltip: <VAPRTooltip t={t} />
           }}
         />
-      </h5>
+      </h6>
       <div className='flex items-end justify-end w-full mt-4'>
         <button
           className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
