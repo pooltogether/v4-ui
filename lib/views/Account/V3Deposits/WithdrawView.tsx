@@ -1,9 +1,8 @@
-import { Amount, Transaction, useV3ExitFee } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, Transaction, useV3ExitFee } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { prettyNumber } from '@pooltogether/utilities'
 
 import { DepositItemsProps } from '.'
 import { WithdrawStepContent } from './WithdrawStepContent'
@@ -12,6 +11,7 @@ import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { numberWithCommas } from '@pooltogether/utilities'
 
 export enum WithdrawalSteps {
   input,
@@ -28,7 +28,16 @@ interface WithdrawViewProps extends DepositItemsProps {
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, refetchBalances, setWithdrawTxId, withdrawTx, onDismiss, balance } = props
+  const {
+    prizePool,
+    refetchBalances,
+    setWithdrawTxId,
+    withdrawTx,
+    onDismiss,
+    balance,
+    address,
+    symbol
+  } = props
 
   const chainId = prizePool.chainId
 
@@ -43,42 +52,25 @@ export const WithdrawView = (props: WithdrawViewProps) => {
 
   const usersAddress = useUsersAddress()
   const poolAddress = prizePool.prizePool.address
-  const ticket = prizePool.tokens.ticket
-  const ticketAddress = ticket.address
 
   const {
     data: exitFee,
     isFetched: isExitFeeFetched,
     isFetching: isExitFeeFetching
-  } = useV3ExitFee(
-    chainId,
-    poolAddress,
-    ticketAddress,
-    usersAddress,
-    amountToWithdraw?.amountUnformatted
-  )
-
-  console.log({
-    amount: amountToWithdraw?.amountPretty,
-    exitFee,
-    isExitFeeFetched,
-    isExitFeeFetching
-  })
+  } = useV3ExitFee(chainId, poolAddress, address, usersAddress, amountToWithdraw?.amountUnformatted)
 
   const sendWithdrawTx = async (e) => {
     e.preventDefault()
 
-    const tokenSymbol = prizePool.tokens.underlyingToken.symbol
+    const params = [usersAddress, amountToWithdraw?.amountUnformatted, address, exitFee]
 
-    const params = [usersAddress, amountToWithdraw?.amountUnformatted, ticketAddress, exitFee]
-
-    const withdrawalAmountPretty = prettyNumber(
+    const withdrawalAmountPretty = numberWithCommas(
       amountToWithdraw.amountUnformatted.sub(exitFee),
-      prizePool.tokens.underlyingToken.decimals
+      { decimals: prizePool.tokens.underlyingToken.decimals }
     )
 
     const txId = await sendTx({
-      name: `${t('withdraw')} ${withdrawalAmountPretty} ${tokenSymbol}`,
+      name: `${t('withdraw')} ${withdrawalAmountPretty} ${symbol}`,
       method: 'withdrawInstantlyFrom',
       contractAddress: poolAddress,
       contractAbi: PrizePoolAbi,
@@ -107,6 +99,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   return (
     <>
       <WithdrawStepContent
+        tokenAddress={address}
         form={form}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}

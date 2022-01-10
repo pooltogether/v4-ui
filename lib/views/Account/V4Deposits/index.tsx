@@ -12,7 +12,10 @@ import FeatherIcon from 'feather-icons-react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
+import { useTransaction } from '@pooltogether/hooks'
 import classNames from 'classnames'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useUsersV4Balances } from 'lib/hooks/v4/PrizePool/useUsersV4Balances'
@@ -23,9 +26,6 @@ import { CardTitle } from 'lib/components/Text/CardTitle'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useTransaction } from '.yalc/@pooltogether/hooks/dist'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -48,7 +48,6 @@ const DepositsList = () => {
   if (!isFetched) {
     return <LoadingList />
   }
-  // pass balance data all the way down
   return (
     <ul className='space-y-4'>
       {data.balances.map((balance) => (

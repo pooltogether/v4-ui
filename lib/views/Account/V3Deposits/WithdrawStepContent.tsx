@@ -1,15 +1,19 @@
-import { Amount, Token, Transaction } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
   CheckboxInputGroup,
   ErrorsBox,
   SquareButton,
   SquareButtonTheme
-} from '.yalc/@pooltogether/react-components/dist'
+} from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
-import { getMaxPrecision, prettyNumber } from '@pooltogether/utilities'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
+
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
@@ -19,15 +23,13 @@ import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { WithdrawalSteps } from './WithdrawView'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import { useState } from 'react'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
 interface WithdrawStepContentProps {
+  tokenAddress: string
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
   prizePool: any
@@ -56,6 +58,7 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     exitFee,
     isExitFeeFetched,
     isExitFeeFetching,
+    tokenAddress,
     sendWithdrawTx,
     setWithdrawTxId,
     setCurrentStep,
@@ -67,7 +70,9 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const { t } = useTranslation()
 
   const chainId = prizePool.chainId
-  const ticket = prizePool.tokens.ticket
+  const ticket: Token = Object.values(prizePool.tokens).find(
+    (token) => token.address === tokenAddress
+  )
   const token = prizePool.tokens.underlyingToken
 
   if (currentStep === WithdrawalSteps.viewTxReceipt) {
@@ -255,7 +260,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
-        disabled={isTxInWallet || !isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed}
+        disabled={!isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed}
       >
         <span>{t('confirmWithdrawal')}</span>
       </TxButtonNetworkGated>
@@ -281,7 +286,15 @@ const ExitFeeWarning = (props: {
       <div className='bg-pt-red bg-opacity-50 dark:bg-opacity-80 p-4 rounded w-full mb-4'>
         <div className='flex justify-center'>
           <FeatherIcon icon='alert-triangle' className='w-4 h-4 mr-2 my-auto' />
-          <span>There is an exit fee of {prettyNumber(exitFee, token.decimals)}. Learn more.</span>
+          <span>
+            {t('withdrawalFeeOfAmount', {
+              amount: `${numberWithCommas(exitFee, { decimals: token.decimals })} ${token.symbol}`
+            })}{' '}
+            <a href='https://docs.pooltogether.com/protocol/prize-pool/fairness' target='_blank'>
+              {t('learnMore')}
+            </a>
+            .
+          </span>
         </div>
       </div>
       <div className='flex justify-center'>

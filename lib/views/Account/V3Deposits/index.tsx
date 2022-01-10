@@ -9,6 +9,8 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import classNames from 'classnames'
+import { Amount, useTransaction } from '@pooltogether/hooks'
+import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { CardTitle } from 'lib/components/Text/CardTitle'
@@ -17,8 +19,6 @@ import { V3Token } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawView } from './WithdrawView'
-import { Amount, useTransaction } from '.yalc/@pooltogether/hooks/dist'
-import { BigNumber } from 'ethers'
 
 export const V3Deposits = () => {
   const { t } = useTranslation()
@@ -50,7 +50,7 @@ const V3AppLink = () => {
       className='my-auto opacity-50 hover:opacity-100 flex transition-opacity'
       href='https://v3.pooltogether.com'
     >
-      {t('app')}
+      {t('legacyApp', 'Legacy app')}
       <FeatherIcon icon='external-link' className='w-4 h-4 my-auto ml-1' />
     </a>
   )
