@@ -4,22 +4,20 @@ import {
   Tooltip,
   ModalProps,
   SquareButton,
-  SquareButtonTheme,
   SquareLink,
-  ButtonLink,
-  SquareButtonSize
+  SquareButtonSize,
+  SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { msToS } from '@pooltogether/utilities'
 
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
-import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
@@ -33,9 +31,9 @@ import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButto
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
 import { addDays } from 'lib/utils/date'
 import { getTimestampString } from 'lib/utils/getTimestampString'
-import { msToS } from '@pooltogether/utilities'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
+  chainId: number
   prizePool: PrizePool
   token: Token
   ticket: Token
@@ -51,6 +49,7 @@ interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
 
 export const DepositConfirmationModal = (props: DepositConfirmationModalProps) => {
   const {
+    chainId,
     prizePool,
     token,
     ticket,
@@ -59,15 +58,15 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isDataFetched,
     approveTx,
     depositTx,
+    isOpen,
     sendApproveTx,
     sendDepositTx,
     resetState,
-    isOpen,
     closeModal
   } = props
+
   const { amountUnformatted } = amountToDeposit
 
-  const { chainId } = useSelectedChainId()
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
@@ -111,7 +110,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
           chainId={chainId}
-          prizePool={prizePool}
           approveTx={approveTx}
           sendApproveTx={sendApproveTx}
           className='mt-8'
@@ -173,12 +171,12 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       onDismiss={closeModal}
       className='flex flex-col space-y-4'
     >
-      <ModalTitle chainId={prizePool.chainId} title={t('depositConfirmation')} />
+      <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
 
       <div className='w-full mx-auto mt-8'>
         <AmountBeingSwapped
           title={t('depositTicker', { ticker: token.symbol })}
-          chainId={prizePool.chainId}
+          chainId={chainId}
           from={token}
           to={ticket}
           amount={amountToDeposit}
@@ -191,7 +189,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             action={EstimateAction.deposit}
           />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
+          <EstimatedDepositGasItem chainId={chainId} amountUnformatted={amountUnformatted} />
         </ModalInfoList>
 
         <TxButtonNetworkGated

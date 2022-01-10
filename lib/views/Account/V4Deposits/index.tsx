@@ -100,7 +100,7 @@ const DepositItem = (props: DepositItemsProps) => {
   const onDismiss = () => setIsOpen(false)
 
   return (
-    <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
+    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
       <button
         className='p-4 w-full flex justify-between items-center'
         onClick={() => {
@@ -186,5 +186,3 @@ const LoadingList = () => (
     <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
   </ul>
 )
-
-// t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })

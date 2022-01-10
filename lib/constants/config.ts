@@ -84,6 +84,7 @@ const EXCHANGE_URLS = Object.freeze({
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.avalanche]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
+  [CHAIN_ID.avalanche]: (tokenAddress: string) =>
+    `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
   [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })
