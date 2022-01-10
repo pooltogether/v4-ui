@@ -44,9 +44,11 @@ export const useUsersV4Balances = (usersAddress: string) => {
     const data = queryResults.map((queryResult) => queryResult.data)
     const totalValueUsdScaled = getTotalValueUsdScaled(data)
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+    const refetch = () => queryResults.map((queryResult) => queryResult.refetch())
     return {
       isFetched,
       isFetching,
+      refetch,
       data: {
         balances: data,
         totalValueUsd,

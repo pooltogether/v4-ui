@@ -38,14 +38,13 @@ interface WithdrawStepContentProps {
   user: User
   prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
-  isUsersBalancesFetched: boolean
   withdrawTx: Transaction
   amountToWithdraw: Amount
   sendWithdrawTx: (e: any) => Promise<void>
   setWithdrawTxId: (txId: number) => void
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
-  refetchUsersBalances: () => void
+  refetchBalances: () => void
 }
 
 export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
@@ -54,7 +53,6 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     user,
     prizePool,
     usersBalances,
-    isUsersBalancesFetched,
     currentStep,
     amountToWithdraw,
     withdrawTx,
@@ -62,20 +60,11 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     setWithdrawTxId,
     setCurrentStep,
     setAmountToWithdraw,
-    refetchUsersBalances
+    refetchBalances
   } = props
 
-  const chainId = user.chainId
-
-  if (!isUsersBalancesFetched) {
-    return (
-      <div className='h-full sm:h-28 flex flex-col justify-center'>
-        <LoadingDots className='mx-auto' />
-      </div>
-    )
-  }
-
   const { ticket, token } = usersBalances
+  const chainId = user.chainId
 
   if (currentStep === WithdrawalSteps.review) {
     return (
@@ -90,7 +79,7 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
         sendWithdrawTx={sendWithdrawTx}
         setCurrentStep={setCurrentStep}
         setTxId={setWithdrawTxId}
-        refetchUsersBalances={refetchUsersBalances}
+        refetchBalances={refetchBalances}
       />
     )
   }
@@ -171,7 +160,7 @@ interface WithdrawReviewStepProps {
   sendWithdrawTx: (e: any) => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
   setTxId: (txId: number) => void
-  refetchUsersBalances: () => void
+  refetchBalances: () => void
 }
 
 /**
@@ -181,7 +170,7 @@ interface WithdrawReviewStepProps {
  * @returns
  */
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
-  const { prizePool, chainId, amountToWithdraw, token, ticket, tx, sendWithdrawTx } = props
+  const { prizePool, amountToWithdraw, token, ticket, tx, sendWithdrawTx } = props
 
   const { t } = useTranslation()
 

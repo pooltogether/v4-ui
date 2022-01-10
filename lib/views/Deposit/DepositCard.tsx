@@ -1,25 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
-import {
-  Amount,
-  Token,
-  Transaction,
-  useTransaction,
-  useIsWalletMetamask
-} from '@pooltogether/hooks'
+import { Transaction, useTransaction, useIsWalletMetamask } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { SquareLink, TokenIcon } from '@pooltogether/react-components'
-import {
-  AddTokenToMetamaskButton,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize
-} from '@pooltogether/react-components'
+import { TokenIcon } from '@pooltogether/react-components'
+import { AddTokenToMetamaskButton } from '@pooltogether/react-components'
 import { ethers, Overrides } from 'ethers'
 
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
@@ -35,7 +23,6 @@ import { useUsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizeP
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
-import { TxHashRow } from 'lib/components/TxHashRow'
 import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 

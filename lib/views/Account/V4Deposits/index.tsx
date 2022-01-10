@@ -1,5 +1,13 @@
 import { useState } from 'react'
-import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import {
+  BalanceBottomSheet,
+  ContractLink,
+  NetworkIcon,
+  SquareButtonSize,
+  SquareButtonTheme,
+  SquareLink,
+  TokenIcon
+} from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
@@ -9,10 +17,15 @@ import classNames from 'classnames'
 import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useUsersV4Balances } from 'lib/hooks/v4/PrizePool/useUsersV4Balances'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { ManageBalanceSheet } from './ManageBalanceSheet'
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from 'lib/components/Text/CardTitle'
+import { WithdrawView } from './WithdrawView'
+import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { useTransaction } from '.yalc/@pooltogether/hooks/dist'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -31,43 +44,118 @@ export const V4Deposits = () => {
 
 const DepositsList = () => {
   const usersAddress = useUsersAddress()
-  const { data, isFetched } = useUsersV4Balances(usersAddress)
+  const { data, isFetched, refetch } = useUsersV4Balances(usersAddress)
   if (!isFetched) {
     return <LoadingList />
   }
+  // pass balance data all the way down
   return (
     <ul className='space-y-4'>
       {data.balances.map((balance) => (
-        <DepositItem key={'deposit-balance-' + balance.prizePool.id()} {...balance} />
+        <DepositItem
+          key={'deposit-balance-' + balance.prizePool.id()}
+          {...balance}
+          refetchBalances={refetch}
+        />
       ))}
     </ul>
   )
 }
 
-interface DepositItemsProps {
+export interface DepositItemsProps {
   balances: UsersPrizePoolBalances
   prizePool: PrizePool
+  refetchBalances: () => void
 }
 
 const DepositItem = (props: DepositItemsProps) => {
-  const { prizePool, balances } = props
+  const { prizePool, balances, refetchBalances } = props
+
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedChainId } = useSelectedChainId()
+  const { t } = useTranslation()
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
+
+  const chainId = prizePool.chainId
+  const contractLinks: ContractLink[] = [
+    {
+      i18nKey: 'prizePool',
+      chainId,
+      address: prizePool.address
+    },
+    {
+      i18nKey: 'token',
+      chainId,
+      address: balances.ticket.address
+    },
+    {
+      i18nKey: 'depositToken',
+      chainId,
+      address: balances.token.address
+    }
+  ]
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const onDismiss = () => setIsOpen(false)
 
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
       <button
         className='p-4 w-full flex justify-between items-center'
         onClick={() => {
-          setSelectedChainId(prizePool.chainId)
+          setSelectedChainId(chainId)
           setIsOpen(true)
         }}
       >
-        <NetworkLabel chainId={prizePool.chainId} />
+        <NetworkLabel chainId={chainId} />
         <DepositBalance {...props} />
       </button>
       <DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />
-      <ManageBalanceSheet {...props} open={isOpen} onDismiss={() => setIsOpen(false)} />
+      <BalanceBottomSheet
+        title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
+        open={isOpen}
+        label={`Manage deposits for ${prizePool.id()}`}
+        onDismiss={onDismiss}
+        chainId={chainId}
+        internalLinks={
+          <Link href={{ pathname: '/deposit', query: router.query }}>
+            <SquareLink
+              size={SquareButtonSize.md}
+              theme={SquareButtonTheme.teal}
+              className='w-full'
+            >
+              {t('deposit')}
+            </SquareLink>
+          </Link>
+        }
+        views={[
+          {
+            id: 'withdraw',
+            view: () => (
+              <WithdrawView
+                prizePool={prizePool}
+                balances={balances}
+                withdrawTx={tx}
+                setWithdrawTxId={setTxId}
+                onDismiss={onDismiss}
+                refetchBalances={refetchBalances}
+              />
+            ),
+            label: t('withdraw'),
+            theme: SquareButtonTheme.tealOutline
+          }
+        ]}
+        tx={tx}
+        token={balances.ticket}
+        balance={balances.ticket}
+        balanceUsd={balances.ticket}
+        t={t}
+        contractLinks={contractLinks}
+        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        isWalletMetaMask={isWalletMetaMask}
+      />
     </li>
   )
 }

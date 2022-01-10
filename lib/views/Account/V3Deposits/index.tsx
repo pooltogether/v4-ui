@@ -17,27 +17,55 @@ import { V3Token } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawView } from './WithdrawView'
+import { Amount, useTransaction } from '.yalc/@pooltogether/hooks/dist'
+import { BigNumber } from 'ethers'
 
 export const V3Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data, isFetched } = useUsersV3Balances(usersAddress)
+  const { data, isFetched, refetch } = useUsersV3Balances(usersAddress)
 
   if (!isFetched || data.totalValueUsdScaled.isZero()) return null
 
   return (
     <div>
-      <CardTitle title={`V3 ${t('deposits')}`} secondary={`$${data.totalValueUsd.amountPretty}`} />
+      <div className='flex justify-between'>
+        <CardTitle
+          title={`V3 ${t('deposits')}`}
+          secondary={`$${data.totalValueUsd.amountPretty}`}
+        />
+        <V3AppLink />
+      </div>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
-        <DepositsList />
+        <DepositsList data={data} isFetched={isFetched} refetch={refetch} />
       </div>
     </div>
   )
 }
 
-const DepositsList = () => {
-  const usersAddress = useUsersAddress()
-  const { data, isFetched } = useUsersV3Balances(usersAddress)
+const V3AppLink = () => {
+  const { t } = useTranslation()
+  return (
+    <a
+      className='my-auto opacity-50 hover:opacity-100 flex transition-opacity'
+      href='https://v3.pooltogether.com'
+    >
+      {t('app')}
+      <FeatherIcon icon='external-link' className='w-4 h-4 my-auto ml-1' />
+    </a>
+  )
+}
+
+const DepositsList = (props: {
+  data: {
+    balances: V3Token[]
+    totalValueUsdScaled: BigNumber
+    totalValueUsd: Amount
+  }
+  isFetched: boolean
+  refetch: () => void
+}) => {
+  const { data, isFetched, refetch } = props
   if (!isFetched) {
     return <LoadingList />
   }
@@ -47,6 +75,7 @@ const DepositsList = () => {
       {data.balances.map((balance) => (
         <DepositItem
           key={'deposit-balance-' + balance.address + balance.prizePool.chainId}
+          refetchBalances={refetch}
           {...balance}
         />
       ))}
@@ -54,10 +83,13 @@ const DepositsList = () => {
   )
 }
 
-interface DepositItemsProps extends V3Token {}
+export interface DepositItemsProps extends V3Token {
+  refetchBalances: () => void
+}
 
 const DepositItem = (props: DepositItemsProps) => {
-  const { prizePool, balance, balanceUsd } = props
+  const { prizePool, balance, balanceUsd, refetchBalances } = props
+
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
@@ -67,6 +99,8 @@ const DepositItem = (props: DepositItemsProps) => {
 
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
 
   const contractLinks: ContractLink[] = [
     {
@@ -90,6 +124,7 @@ const DepositItem = (props: DepositItemsProps) => {
       address: prizePool.tokens.ticket.address
     }
   ]
+  const onDismiss = () => setIsOpen(false)
 
   return (
     <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
@@ -110,7 +145,7 @@ const DepositItem = (props: DepositItemsProps) => {
         banner={<DeprecatedBanner />}
         title={`V3 ${t('prizePoolTicker', { ticker: underlyingToken.symbol })}`}
         open={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        onDismiss={onDismiss}
         chainId={chainId}
         externalLinks={[
           {
@@ -122,9 +157,18 @@ const DepositItem = (props: DepositItemsProps) => {
         views={[
           {
             id: 'withdraw',
-            view: () => <WithdrawView prizePool={prizePool} />,
+            view: () => (
+              <WithdrawView
+                {...props}
+                prizePool={prizePool}
+                onDismiss={onDismiss}
+                withdrawTx={tx}
+                setWithdrawTxId={setTxId}
+                refetchBalances={refetchBalances}
+              />
+            ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.teal
+            theme: SquareButtonTheme.tealOutline
           }
         ]}
         tx={null}

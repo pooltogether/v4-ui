@@ -27,7 +27,7 @@ export const TransactionReceiptButton = (props: TransactionReceiptButtonProps) =
       href={url}
       theme={SquareButtonTheme.tealOutline}
       size={SquareButtonSize.md}
-      className={classNames(className, 'text-center')}
+      className={className}
     >
       {t('viewReceipt', 'View receipt')}
     </SquareLink>

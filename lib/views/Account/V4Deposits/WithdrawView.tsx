@@ -1,23 +1,17 @@
-import FeatherIcon from 'feather-icons-react'
-import { SquareButton, SquareButtonTheme, TokenIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { useTranslation } from 'react-i18next'
-import { BackButton, ManageSheetViews, ViewProps } from '.'
-import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
-import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useState } from 'react'
-import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { Amount, Transaction } from '@pooltogether/hooks'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useUsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useState } from 'react'
+
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
+import { ModalTitle } from 'lib/components/Modal/ModalTitle'
+import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { WithdrawStepContent } from './WithdrawStepContent'
-
-const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
+import { DepositItemsProps } from '.'
 
 export enum WithdrawalSteps {
   input,
@@ -25,22 +19,19 @@ export enum WithdrawalSteps {
   viewTxReceipt
 }
 
-interface WithdrawViewProps extends ViewProps {
+interface WithdrawViewProps extends DepositItemsProps {
   withdrawTx: Transaction
   setWithdrawTxId: (txId: number) => void
   onDismiss: () => void
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, balances, setView, withdrawTx, setWithdrawTxId, onDismiss } = props
+  const { prizePool, balances, withdrawTx, setWithdrawTxId, onDismiss, refetchBalances } = props
   const { t } = useTranslation()
   const { token } = balances
 
-  const usersAddress = useUsersAddress()
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-  const { isFetched: isUsersBalancesFetched, refetch: refetchUsersBalances } =
-    useUsersPrizePoolBalances(usersAddress, prizePool)
   const user = useSelectedChainIdUser()
   const sendTx = useSendTransaction()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
@@ -62,7 +53,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
-          refetchUsersBalances()
+          refetchBalances()
         }
       }
     })
@@ -74,7 +65,6 @@ export const WithdrawView = (props: WithdrawViewProps) => {
       <>
         <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
-        <BackButton onClick={() => setView(ManageSheetViews.main)} />
       </>
     )
   }
@@ -93,10 +83,11 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           closeModal={onDismiss}
           hideCloseButton
         />
-        <BackButton onClick={() => setView(ManageSheetViews.main)} />
       </>
     )
   }
+
+  console.log({ balances })
 
   return (
     <>
@@ -104,7 +95,6 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         chainId={prizePool.chainId}
         title={t('withdrawTicker', { ticker: token.symbol })}
       />
-      <BackButton onClick={() => setView(ManageSheetViews.main)} />
       <WithdrawStepContent
         form={form}
         currentStep={currentStep}
@@ -112,8 +102,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         user={user}
         prizePool={prizePool}
         usersBalances={balances}
-        isUsersBalancesFetched={isUsersBalancesFetched}
-        refetchUsersBalances={refetchUsersBalances}
+        refetchBalances={refetchBalances}
         amountToWithdraw={amountToWithdraw}
         setAmountToWithdraw={setAmountToWithdraw}
         withdrawTx={withdrawTx}

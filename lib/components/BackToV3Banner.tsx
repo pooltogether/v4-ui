@@ -20,11 +20,7 @@ export const BackToV3Banner = (props) => {
           theme={SquareButtonTheme.purpleOutline}
           href='https://app.pooltogether.com'
         >
-          <FeatherIcon
-            icon={'arrow-left'}
-            className='relative w-4 h-4 mr-1 inline-block'
-            style={{ top: -1 }}
-          />
+          <FeatherIcon icon={'arrow-left'} className='w-4 h-4 mr-1 my-auto inline-block' />
           {t('backToV3', 'Back to V3')}
         </SquareLink>
       </div>

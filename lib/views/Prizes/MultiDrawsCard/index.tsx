@@ -262,7 +262,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
           theme={SquareButtonTheme.rainbow}
           size={SquareButtonSize.md}
           onClick={() => setIsModalOpen(true)}
-          className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
+          className='mx-auto xs:mx-0 w-full sm:w-auto'
           style={{ minWidth: 230 }}
         >
           {t('viewPrizes', 'View prizes')}
