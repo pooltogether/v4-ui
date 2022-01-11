@@ -20,10 +20,11 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import {
-  getNetworkNiceNameByChainId,
+  amountMultByUsd,
   calculateAPR,
   calculateLPTokenPrice,
-  amountMultByUsd,
+  displayPercentage,
+  getNetworkNiceNameByChainId,
   toScaledUsdBigNumber,
   numberWithCommas,
   NETWORK
@@ -36,6 +37,7 @@ import {
   useTokenBalances,
   useCoingeckoTokenPrices,
   usePoolTokenData,
+  usePoolByChainId,
   TokenWithBalance,
   Transaction,
   Token,
@@ -536,7 +538,7 @@ const BlankStateView = (props) => {
   const { setSelectedChainId, chainId, setIsOpen, stakingPool, stakingPoolChainData } = props
   const { tokenFaucetDripToken } = stakingPool.tokens
 
-  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+  const { apr } = usePriceData(stakingPoolChainData, stakingPool)
 
   const { t } = useTranslation()
 
@@ -561,7 +563,7 @@ const BlankStateView = (props) => {
         <Trans
           i18nKey='earnPercentageVAPR'
           defaults='Earn {{percentage}}% <tooltip>vAPR</tooltip>'
-          values={{ percentage: apr }}
+          values={{ percentage: displayPercentage(apr) }}
           components={{
             tooltip: <VAPRTooltip t={t} />
           }}
@@ -697,11 +699,11 @@ const StakingRewardsBalance = (props: StakingDepositStatProps) => {
 }
 
 const StakingEarningBalance = (props: StakingDepositStatProps) => {
-  const { balances, chainId, stakingPool, stakingPoolChainData } = props
+  const { balances, stakingPool, stakingPoolChainData } = props
 
   const { t } = useTranslation()
 
-  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+  const { apr } = usePriceData(stakingPoolChainData, stakingPool)
 
   if (!balances) {
     return null
@@ -717,7 +719,7 @@ const StakingEarningBalance = (props: StakingDepositStatProps) => {
         className='mr-2 my-auto'
       />
       <span className='font-bold text-lg mr-3'>
-        {apr}% <VAPRTooltip t={t} />
+        {displayPercentage(apr)}% <VAPRTooltip t={t} />
       </span>
     </div>
   )
@@ -1051,15 +1053,46 @@ export enum ClaimViews {
 }
 
 const ClaimView = (props: ClaimViewProps) => {
-  const { chainId, stakingPoolChainData, stakingPool, claimTx } = props
+  const { chainId, stakingPoolChainData, stakingPool, claimTx, tokenFaucetDripToken } = props
+
+  const { apr, tokenPrices } = usePriceData(stakingPoolChainData, stakingPool)
 
   if (claimTx && claimTx.sent) {
     return <ClaimClaimingView {...props} />
   }
 
-  const { apr, tokenPrices } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
-
   return <ClaimMainView {...props} apr={apr} tokenPrices={tokenPrices} />
+}
+
+const usePriceData = (stakingPoolChainData, stakingPool) => {
+  let apr
+  let tokenPrices = {}
+
+  const { prizePool, tokens } = stakingPool || {}
+  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
+  const { chainId } = prizePool
+
+  if (stakingPoolIsLp(stakingPool)) {
+    const lpPriceData = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+    apr = lpPriceData.apr
+    tokenPrices = lpPriceData.tokenPrices
+  } else {
+    const { data: pool } = usePoolByChainId(chainId, prizePool.address)
+
+    // Just get the first (and only) token faucet since the only pool this should run against
+    // is the v3 POOL prize pool
+    apr = pool?.tokenFaucets?.[0].apr
+
+    const tokenPriceData = useCoingeckoTokenPrices(chainId, [
+      underlyingToken.address,
+      tokenFaucetDripToken.address
+    ])
+    if (tokenPriceData.isFetched) {
+      tokenPrices = tokenPriceData.data
+    }
+  }
+
+  return { apr, tokenPrices }
 }
 
 export interface ClaimMainViewProps extends ClaimViewProps {
@@ -1158,7 +1191,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         <Trans
           i18nKey='earningPercentageVAPR'
           defaults='Earning {{percentage}}% <tooltip>vAPR</tooltip>'
-          values={{ percentage: apr }}
+          values={{ percentage: displayPercentage(apr) }}
           components={{
             tooltip: <VAPRTooltip t={t} />
           }}
