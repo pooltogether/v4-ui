@@ -20,10 +20,11 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import {
-  getNetworkNiceNameByChainId,
+  amountMultByUsd,
   calculateAPR,
   calculateLPTokenPrice,
-  amountMultByUsd,
+  displayPercentage,
+  getNetworkNiceNameByChainId,
   toScaledUsdBigNumber,
   numberWithCommas,
   NETWORK
@@ -36,6 +37,7 @@ import {
   useTokenBalances,
   useCoingeckoTokenPrices,
   usePoolTokenData,
+  usePoolByChainId,
   TokenWithBalance,
   Transaction,
   Token,
@@ -48,21 +50,25 @@ import TokenFaucetAbi from 'abis/TokenFaucet'
 import PrizePoolAbi from 'abis/PrizePool'
 import Erc20Abi from 'abis/ERC20Abi'
 
-import { POOL_ADDRESS } from 'lib/constants/constants'
+import { MAINNET_POOL_ADDRESS, POLYGON_POOL_ADDRESS } from 'lib/constants/constants'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
+import { CardTitle } from 'lib/components/Text/CardTitle'
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
+import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
-import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
-import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { SwapTokensModalTrigger } from 'lib/components/Modal/SwapTokensModal'
 import { BottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
-import { getAmountFromString } from 'lib/utils/getAmountFromString'
+import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
+import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -89,7 +95,8 @@ export const StakingDeposits = () => {
 
   return (
     <div id='staking'>
-      <h4 className='mb-2'>{t('poolToken', 'POOL Token')}</h4>
+      <h4 className='mb-2'></h4>
+      <CardTitle title={t('poolToken', 'POOL Token')} />
 
       <PoolTokenBalance />
 
@@ -107,21 +114,35 @@ const PoolTokenBalance = () => {
   const { usersBalance } = tokenData || {}
   const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
 
+  // Only support mainnet for the moment ...
+  const chainId = NETWORK.mainnet
+  const poolTokenAddress = MAINNET_POOL_ADDRESS
+  // const poolTokenAddress = chainId === NETWORK.mainnet ? MAINNET_POOL_ADDRESS : POLYGON_POOL_ADDRESS
+
   return (
-    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg p-4 mb-4'>
+    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
       <div className='flex items-center justify-between font-semibold text-lg'>
         {t('yourPool', 'Your POOL Balance')}
         <span>
-          <TokenIcon chainId={NETWORK.mainnet} address={POOL_ADDRESS} className='mr-2 my-auto' />
+          <TokenIcon
+            chainId={NETWORK.mainnet}
+            address={MAINNET_POOL_ADDRESS}
+            className='mr-2 my-auto'
+          />
           <span className='font-bold'>
-            {!isFetched || !usersBalance ? (
-              <ThemedClipSpinner sizeClassName='w-4 h-4' />
-            ) : (
-              balanceFormatted
-            )}
+            {!isFetched ? <ThemedClipSpinner sizeClassName='w-4 h-4' /> : balanceFormatted}
           </span>
         </span>
       </div>
+      {usersBalance === 0 && (
+        <div className='flex items-center justify-end font-semibold'>
+          <SwapTokensModalTrigger
+            buttonLabel={t('getPool', 'Get POOL')}
+            chainId={chainId}
+            outputCurrencyAddress={poolTokenAddress}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -131,6 +152,10 @@ const StakingDepositsList = () => {
 
   return stakingPools.map((stakingPool) => {
     const { prizePool } = stakingPool
+
+    // if (stakingPoolIsLp(stakingPool)) {
+    //   return
+    // }
 
     return (
       <StakingDepositItem
@@ -142,6 +167,8 @@ const StakingDepositsList = () => {
   })
 }
 
+const stakingPoolIsLp = (stakingPool) => Boolean(stakingPool?.tokens.underlyingToken.dex)
+
 const useLpPriceData = (chainId, stakingPoolChainData, stakingPool) => {
   const { tokenFaucetData, underlyingTokenData, ticketsData } = stakingPoolChainData || {}
   const { dripRatePerDayUnformatted } = tokenFaucetData || {}
@@ -149,6 +176,10 @@ const useLpPriceData = (chainId, stakingPoolChainData, stakingPool) => {
   const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
   const { token1, token2 } = underlyingToken
+
+  if (!stakingPoolIsLp(stakingPool)) {
+    return {}
+  }
 
   const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(chainId, [
     token1.address,
@@ -202,14 +233,21 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   const {
     data: stakingPoolChainData,
+    error: stakingPoolChainDataError,
     refetch: stakingPoolChainDataRefetch,
     isFetched: stakingPoolChainDataIsFetched
   } = useStakingPoolChainData(stakingPool)
   const {
     data: userLPChainData,
+    error: userLPChainDataError,
     refetch: userLPChainDataRefetch,
     isFetched: userLPChainDataIsFetched
   } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
+
+  if (stakingPoolChainDataError || userLPChainDataError) {
+    console.error(stakingPoolChainDataError)
+    // console.error(userLPChainDataError)
+  }
 
   const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
 
@@ -252,9 +290,11 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   return (
     <div
-      className='relative rounded-lg p-4 text-white'
+      className='relative rounded-lg p-4 text-white mb-4'
       style={{
-        backgroundImage: 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+        backgroundImage: stakingPoolIsLp(stakingPool)
+          ? 'linear-gradient(300deg, #eC2BB8 0%, #EA69D6 100%)'
+          : 'linear-gradient(300deg, #46279A 0%, #7E46F2 100%)'
       }}
     >
       <div
@@ -484,7 +524,6 @@ const useLpTokenPrice = (
 
 const useStakingAPR = (
   lpTokenPrice,
-
   underlyingTokenData,
   dripTokenUsd,
   dripRatePerDayUnformatted,
@@ -514,16 +553,18 @@ const BlankStateView = (props) => {
   const { setSelectedChainId, chainId, setIsOpen, stakingPool, stakingPoolChainData } = props
   const { tokenFaucetDripToken } = stakingPool.tokens
 
-  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+  const { apr } = usePriceData(stakingPoolChainData, stakingPool)
 
   const { t } = useTranslation()
 
   return (
     <>
       <p className='text-sm'>
-        {t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')}
+        {stakingPoolIsLp(stakingPool)
+          ? t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')
+          : t('poolPoolDepositDescription', 'Deposit POOL to earn rewards and vote.')}
       </p>
-      <h5 className='mt-3'>
+      <h6 className='mt-3'>
         <span
           className='relative -mt-2 inline-block mr-1'
           style={{
@@ -539,12 +580,12 @@ const BlankStateView = (props) => {
         <Trans
           i18nKey='earnPercentageVAPR'
           defaults='Earn {{percentage}}% <tooltip>vAPR</tooltip>'
-          values={{ percentage: apr }}
+          values={{ percentage: displayPercentage(apr) }}
           components={{
             tooltip: <VAPRTooltip t={t} />
           }}
         />
-      </h5>
+      </h6>
       <div className='flex items-end justify-end w-full mt-4'>
         <button
           className='flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
@@ -675,11 +716,11 @@ const StakingRewardsBalance = (props: StakingDepositStatProps) => {
 }
 
 const StakingEarningBalance = (props: StakingDepositStatProps) => {
-  const { balances, chainId, stakingPool, stakingPoolChainData } = props
+  const { balances, stakingPool, stakingPoolChainData } = props
 
   const { t } = useTranslation()
 
-  const { apr } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+  const { apr } = usePriceData(stakingPoolChainData, stakingPool)
 
   if (!balances) {
     return null
@@ -695,7 +736,7 @@ const StakingEarningBalance = (props: StakingDepositStatProps) => {
         className='mr-2 my-auto'
       />
       <span className='font-bold text-lg mr-3'>
-        {apr}% <VAPRTooltip t={t} />
+        {displayPercentage(apr)}% <VAPRTooltip t={t} />
       </span>
     </div>
   )
@@ -823,6 +864,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
     depositTx,
     tokenBalance,
     ticketBalance,
+    stakingPool,
     setReviewDepositView
   } = props
 
@@ -847,7 +889,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
         <div className='w-full mx-auto'>
           <GenericDepositAmountInput
             {...props}
-            depositTokenClassName='w-96'
+            depositTokenClassName={stakingPoolIsLp(stakingPool) && 'w-96'}
             chainId={chainId}
             className=''
             form={form}
@@ -1028,15 +1070,59 @@ export enum ClaimViews {
 }
 
 const ClaimView = (props: ClaimViewProps) => {
-  const { chainId, stakingPoolChainData, stakingPool, claimTx } = props
+  const { chainId, stakingPoolChainData, stakingPool, claimTx, tokenFaucetDripToken } = props
+
+  const { t } = useTranslation()
+
+  const { apr, tokenPrices } = usePriceData(stakingPoolChainData, stakingPool)
+
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   if (claimTx && claimTx.sent) {
     return <ClaimClaimingView {...props} />
   }
 
-  const { apr, tokenPrices } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+  if (!isWalletOnProperNetwork) {
+    return (
+      <>
+        <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
+        <ModalNetworkGate chainId={chainId} className='mt-8' />
+      </>
+    )
+  }
 
   return <ClaimMainView {...props} apr={apr} tokenPrices={tokenPrices} />
+}
+
+const usePriceData = (stakingPoolChainData, stakingPool) => {
+  let apr
+  let tokenPrices = {}
+
+  const { prizePool, tokens } = stakingPool || {}
+  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
+  const { chainId } = prizePool
+
+  if (stakingPoolIsLp(stakingPool)) {
+    const lpPriceData = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+    apr = lpPriceData.apr
+    tokenPrices = lpPriceData.tokenPrices
+  } else {
+    const { data: pool } = usePoolByChainId(chainId, prizePool.address)
+
+    // Just get the first (and only) token faucet since the only pool this should run against
+    // is the v3 POOL prize pool
+    apr = pool?.tokenFaucets?.[0].apr
+
+    const tokenPriceData = useCoingeckoTokenPrices(chainId, [
+      underlyingToken.address,
+      tokenFaucetDripToken.address
+    ])
+    if (tokenPriceData.isFetched) {
+      tokenPrices = tokenPriceData.data
+    }
+  }
+
+  return { apr, tokenPrices }
 }
 
 export interface ClaimMainViewProps extends ClaimViewProps {
@@ -1135,7 +1221,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         <Trans
           i18nKey='earningPercentageVAPR'
           defaults='Earning {{percentage}}% <tooltip>vAPR</tooltip>'
-          values={{ percentage: apr }}
+          values={{ percentage: displayPercentage(apr) }}
           components={{
             tooltip: <VAPRTooltip t={t} />
           }}

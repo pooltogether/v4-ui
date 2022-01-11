@@ -41,7 +41,7 @@ const TotalBalance = (props: { className?: string; user: User }) => {
   const { data, isFetching } = useUsersTotalPrizePoolBalances()
   return (
     <a href='#deposits' className={className}>
-      <span className='uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         $<CountUp countTo={Number(data.totalBalanceUsd.amount)} />
         {isFetching ? (

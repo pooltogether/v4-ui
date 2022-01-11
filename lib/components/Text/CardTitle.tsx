@@ -9,17 +9,14 @@ interface CardTitleProps {
 }
 
 export const CardTitle = (props: CardTitleProps) => (
-  <div className={classNames('flex space-x-2 items-center', props.className)}>
-    <h3 className={props.titleClassName}>{props.title}</h3>
-    {props.secondary && (
-      <span
-        className={classNames(
-          'opacity-50 font-light text-base xs:text-xl',
-          props.secondaryClassName
-        )}
-      >
-        {props.secondary}
-      </span>
-    )}
+  <div className={classNames('mb-2 flex space-x-2 items-center', props.className)}>
+    <h5 className={props.titleClassName}>
+      {props.title}
+      {props.secondary && (
+        <span className={classNames('opacity-50 font-light ml-2', props.secondaryClassName)}>
+          {props.secondary}
+        </span>
+      )}
+    </h5>
   </div>
 )

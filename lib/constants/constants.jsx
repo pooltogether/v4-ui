@@ -28,4 +28,7 @@ export const POOLTOGETHER_SNAPSHOT_URL = 'https://snapshot.org/#/pooltogether.et
 export const POOLTOGETHER_GOV_FORUM_URL = 'https://gov.pooltogether.com'
 export const DISCORD_INVITE_URL = 'https://pooltogether.com/discord'
 
-export const POOL_ADDRESS = '0x0cec1a9154ff802e7934fc916ed7ca50bde6844e'
+export const MAINNET_POOL_ADDRESS = '0x0cec1a9154ff802e7934fc916ed7ca50bde6844e'
+export const POLYGON_POOL_ADDRESS = '0x25788a1a171ec66da6502f9975a15b609ff54cf6'
+
+export const BUTTON_MIN_WIDTH = 100

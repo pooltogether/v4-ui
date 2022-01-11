@@ -1,5 +1,4 @@
 import React from 'react'
-import { BackToV3Banner } from 'lib/components/BackToV3Banner'
 import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
@@ -24,9 +23,6 @@ export const AccountUI = (props) => {
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
-        <div className='mt-4'>
-          <BackToV3Banner />
-        </div>
       </PagePadding>
     )
   }
@@ -37,9 +33,6 @@ export const AccountUI = (props) => {
       <V4Deposits />
       <StakingDeposits />
       <V3Deposits />
-      <div className='mt-4'>
-        <BackToV3Banner />
-      </div>
       <OddsDisclaimer className='block mt-6' />
     </PagePadding>
   )

@@ -50,7 +50,7 @@ const V3AppLink = () => {
       className='my-auto opacity-50 hover:opacity-100 flex transition-opacity'
       href='https://v3.pooltogether.com'
     >
-      {t('legacyApp', 'Legacy app')}
+      {t('v3App', 'V3 App')}
       <FeatherIcon icon='external-link' className='w-4 h-4 my-auto ml-1' />
     </a>
   )
@@ -127,7 +127,7 @@ const DepositItem = (props: DepositItemsProps) => {
   const onDismiss = () => setIsOpen(false)
 
   return (
-    <li className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg '>
+    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
       <button
         className='p-4 w-full flex justify-between items-center'
         onClick={() => {
@@ -151,7 +151,7 @@ const DepositItem = (props: DepositItemsProps) => {
           {
             id: prizePool.prizePool.address,
             label: t('viewOnV3App', 'View on V3 app'),
-            href: `https://app.pooltogether.com/account`
+            href: `https://v3.pooltogether.com/account`
           }
         ]}
         views={[
@@ -188,13 +188,18 @@ const DeprecatedBanner = () => {
   const { t } = useTranslation()
   return (
     <div className=' bg-gradient-yellow bg-opacity-50 dark:bg-opacity-100 dark:text-actually-black p-4 rounded w-full mb-4'>
-      <div className='flex justify-center'>
-        <FeatherIcon icon='bell' className='w-4 h-4 mr-2 my-auto' />
+      <div className='flex flex-col items-center justify-center text-sm'>
+        <FeatherIcon icon='bell' className='w-4 h-4 mr-2' />
         <span>{t('v3PrizePoolsAreBeingDeprecated')}</span>
+        <a
+          href='https://docs.pooltogether.com/faq/v3-to-v4-differences'
+          className='underline text-sm'
+          target='_blank'
+        >
+          {t('readMoreHere', 'read more here')}
+          <FeatherIcon icon='external-link' className='inline-block w-4 h-4 ml-1' />
+        </a>
       </div>
-      <span className='flex justify-center'>
-        {t('visitV3ToClaimRewards', 'Visit the V3 app to claim any remaining rewards.')}
-      </span>
     </div>
   )
 }
