@@ -7,7 +7,7 @@ import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { WalletSvg } from 'lib/components/Icons/SvgComponents'
-import { useMinimumDepositAmount } from 'lib/hooks/Tsunami/PrizePool/useMinimumDepositAmount'
+import { useMinimumDepositAmount } from 'lib/hooks/v4/PrizePool/useMinimumDepositAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 interface GenericDepositAmountInputProps {

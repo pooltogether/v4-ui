@@ -11,7 +11,7 @@ import { TxHashRow } from 'lib/components/TxHashRow'
 import {
   DepositAllowance,
   useUsersDepositAllowance
-} from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+} from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,
@@ -75,6 +75,7 @@ export const DepositForm = (props: DepositFormProps) => {
         </div>
 
         <DepositInfoBox
+          chainId={prizePool.chainId}
           className='mt-3'
           depositTx={depositTx}
           depositAllowance={depositAllowance}

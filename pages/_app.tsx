@@ -3,6 +3,7 @@ import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { Provider } from 'jotai'
 import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
 import {
@@ -110,6 +111,7 @@ function MyApp({ Component, pageProps, router }) {
   return (
     <Provider>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
         <InitPoolTogetherHooks>
           <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
 
@@ -121,8 +123,6 @@ function MyApp({ Component, pageProps, router }) {
               <LoadingScreen isInitialized={i18n.isInitialized}>
                 <Component {...pageProps} />
               </LoadingScreen>
-
-              {/* <ReactQueryDevtools /> */}
             </CustomErrorBoundary>
           </AllContextProviders>
         </InitPoolTogetherHooks>

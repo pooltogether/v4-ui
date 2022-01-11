@@ -6,20 +6,20 @@ import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltoget
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useAllPartialDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useAllPartialDrawDatas'
-import { useUsersClaimedAmounts } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersClaimedAmounts'
-import { DrawLock, useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
+import { useAllPartialDrawDatas } from 'lib/hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { useUsersClaimedAmounts } from 'lib/hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
+import { DrawLock, useDrawLocks } from 'lib/hooks/v4/PrizeDistributor/useDrawLocks'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
 import { CountdownString } from 'lib/components/CountdownString'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { AmountInPrizes } from 'lib/components/AmountInPrizes'
 import { ViewPrizesSheetCustomTrigger } from 'lib/components/ViewPrizesSheetButton'
 import { getTimestampStringWithTime } from 'lib/utils/getTimestampString'
-import { useUsersNormalizedBalances } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersNormalizedBalances'
+import { useUsersNormalizedBalances } from 'lib/hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
 import { BigNumber } from 'ethers'
-import { useUsersStoredDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersStoredDrawResults'
+import { useUsersStoredDrawResults } from 'lib/hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor

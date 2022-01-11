@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers'
-import { useUsersTotalTwab } from 'lib/hooks/Tsunami/PrizePool/useUsersTotalTwab'
+import { useUsersTotalTwab } from 'lib/hooks/v4/PrizePool/useUsersTotalTwab'
 import { EstimateAction, estimateOddsForAmount } from './useEstimatedOddsForAmount'
 import { useOverallOddsData } from './useOverallOddsData'
 

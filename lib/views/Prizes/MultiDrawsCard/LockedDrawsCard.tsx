@@ -8,14 +8,14 @@ import { useTranslation } from 'react-i18next'
 
 import { LoadingCard } from './LoadingCard'
 import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
-import { useLockedPartialDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useLockedPartialDrawDatas'
+import { useLockedPartialDrawDatas } from 'lib/hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { DrawData } from 'lib/types/v4'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { useTimeUntil } from 'lib/hooks/useTimeUntil'
-import { useDrawLocks } from 'lib/hooks/Tsunami/PrizeDistributor/useDrawLocks'
-import { usePropagatingDraws } from 'lib/hooks/Tsunami/PrizeDistributor/usePropagatingDraws'
+import { useDrawLocks } from 'lib/hooks/v4/PrizeDistributor/useDrawLocks'
+import { usePropagatingDraws } from 'lib/hooks/v4/PrizeDistributor/usePropagatingDraws'
 import { Time } from 'lib/components/Time'
 
 export const LockedDrawsCard = (props: {

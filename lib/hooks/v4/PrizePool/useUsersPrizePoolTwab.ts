@@ -3,7 +3,7 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import { msToS } from '@pooltogether/utilities'
 import { useQuery } from 'react-query'
 
-import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
+import { useTicketDecimals } from 'lib/hooks/v4/PrizePool/useTicketDecimals'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 export const USERS_TWAB_QUERY_KEY = 'useUsersPrizePoolTwab'

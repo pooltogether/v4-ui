@@ -41,7 +41,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </div>
         <SquareLink
           href={blockExplorerUrl}
-          className='w-full mt-6 text-center'
+          className='w-full mt-6'
           theme={SquareButtonTheme.tealOutline}
           target='_blank'
         >

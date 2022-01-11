@@ -1,4 +1,4 @@
-import { useAllPrizePoolTokens } from './Tsunami/PrizePool/useAllPrizePoolTokens'
+import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
 
 /**
  * Initial fetches required, regardless of the page loaded.

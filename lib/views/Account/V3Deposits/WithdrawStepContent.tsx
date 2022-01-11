@@ -1,117 +1,151 @@
-import React from 'react'
-import classnames from 'classnames'
+import { Amount, Token, Transaction } from '@pooltogether/hooks'
 import {
-  LoadingDots,
+  CheckboxInputGroup,
+  ErrorsBox,
   SquareButton,
-  SquareButtonTheme,
-  Tooltip,
-  ErrorsBox
+  SquareButtonTheme
 } from '@pooltogether/react-components'
-import { Amount, TokenWithBalance, Transaction } from '@pooltogether/hooks'
+import FeatherIcon from 'feather-icons-react'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
+import classnames from 'classnames'
+import { BigNumber, ethers } from 'ethers'
 import { parseUnits } from 'ethers/lib/utils'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
-import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { useState } from 'react'
 
+import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
 import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
 import { RectangularInput } from 'lib/components/Input/TextInputs'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { MaxAmountTextInputRightLabel } from 'lib/components/Input/MaxAmountTextInputRightLabel'
-import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
-import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
-import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
-import { EstimatedWithdrawalGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import { ModalTitle } from 'lib/components/Modal/ModalTitle'
+import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
-import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
-import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 import { WithdrawalSteps } from './WithdrawView'
+import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
 interface WithdrawStepContentProps {
+  tokenAddress: string
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
-  user: User
-  prizePool: PrizePool
-  usersBalances: UsersPrizePoolBalances
-  isUsersBalancesFetched: boolean
+  prizePool: any
+  usersBalance: Amount
   withdrawTx: Transaction
   amountToWithdraw: Amount
+  exitFee: BigNumber
+  isExitFeeFetched: boolean
+  isExitFeeFetching: boolean
   sendWithdrawTx: (e: any) => Promise<void>
   setWithdrawTxId: (txId: number) => void
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
-  refetchUsersBalances: () => void
+  refetchBalances: () => void
+  onDismiss: () => void
 }
 
 export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
-    user,
-    prizePool,
-    usersBalances,
-    isUsersBalancesFetched,
     currentStep,
-    amountToWithdraw,
+    prizePool,
     withdrawTx,
+    amountToWithdraw,
+    usersBalance,
+    exitFee,
+    isExitFeeFetched,
+    isExitFeeFetching,
+    tokenAddress,
     sendWithdrawTx,
     setWithdrawTxId,
     setCurrentStep,
     setAmountToWithdraw,
-    refetchUsersBalances
+    refetchBalances,
+    onDismiss
   } = props
 
-  const chainId = user.chainId
+  const { t } = useTranslation()
 
-  if (!isUsersBalancesFetched) {
+  const chainId = prizePool.chainId
+  const ticket: Token = Object.values(prizePool.tokens).find(
+    (token) => token.address === tokenAddress
+  )
+  const token = prizePool.tokens.underlyingToken
+
+  if (currentStep === WithdrawalSteps.viewTxReceipt) {
     return (
-      <div className='h-full sm:h-28 flex flex-col justify-center'>
-        <LoadingDots className='mx-auto' />
-      </div>
+      <>
+        <ModalTitle
+          chainId={prizePool.chainId}
+          title={t('withdrawalSubmitted', 'Withdrawal submitted')}
+        />
+        <ModalTransactionSubmitted
+          className='mt-8'
+          chainId={prizePool.chainId}
+          tx={withdrawTx}
+          closeModal={onDismiss}
+          hideCloseButton
+        />
+      </>
     )
   }
-
-  const { ticket, token } = usersBalances
 
   if (currentStep === WithdrawalSteps.review) {
     return (
-      <WithdrawReviewStep
-        user={user}
-        prizePool={prizePool}
-        chainId={chainId}
-        amountToWithdraw={amountToWithdraw}
-        token={token}
-        ticket={ticket}
-        tx={withdrawTx}
-        sendWithdrawTx={sendWithdrawTx}
-        setCurrentStep={setCurrentStep}
-        setTxId={setWithdrawTxId}
-        refetchUsersBalances={refetchUsersBalances}
-      />
+      <>
+        <ModalTitle
+          chainId={chainId}
+          title={t('withdrawTicker', { ticker: prizePool.tokens.underlyingToken.symbol })}
+        />
+        <WithdrawReviewStep
+          prizePool={prizePool}
+          chainId={chainId}
+          amountToWithdraw={amountToWithdraw}
+          token={token}
+          ticket={ticket}
+          tx={withdrawTx}
+          exitFee={exitFee}
+          isExitFeeFetched={isExitFeeFetched}
+          isExitFeeFetching={isExitFeeFetching}
+          sendWithdrawTx={sendWithdrawTx}
+          setCurrentStep={setCurrentStep}
+          setTxId={setWithdrawTxId}
+          refetchBalances={refetchBalances}
+        />
+      </>
     )
   }
 
+  console.log({ usersBalance })
+
   return (
-    <WithdrawInputStep
-      chainId={chainId}
-      form={form}
-      token={token}
-      ticket={ticket}
-      setCurrentStep={setCurrentStep}
-      setAmountToWithdraw={setAmountToWithdraw}
-    />
+    <>
+      <ModalTitle
+        chainId={chainId}
+        title={t('withdrawTicker', { ticker: prizePool.tokens.underlyingToken.symbol })}
+      />
+      <WithdrawInputStep
+        chainId={chainId}
+        form={form}
+        token={token}
+        ticket={ticket}
+        balance={usersBalance}
+        setCurrentStep={setCurrentStep}
+        setAmountToWithdraw={setAmountToWithdraw}
+      />
+    </>
   )
 }
 
 interface WithdrawInputStepProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  token: TokenWithBalance
-  ticket: TokenWithBalance
+  token: Token
+  ticket: Token
+  balance: Amount
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
 }
@@ -123,7 +157,7 @@ interface WithdrawInputStepProps {
  * @returns
  */
 const WithdrawInputStep = (props: WithdrawInputStepProps) => {
-  const { chainId, form, token, ticket, setCurrentStep, setAmountToWithdraw } = props
+  const { chainId, form, token, ticket, balance, setCurrentStep, setAmountToWithdraw } = props
 
   const { t } = useTranslation()
 
@@ -143,7 +177,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <WithdrawForm chainId={chainId} form={form} token={token} ticket={ticket} />
+      <WithdrawForm chainId={chainId} form={form} token={token} ticket={ticket} balance={balance} />
 
       <DownArrow />
 
@@ -161,17 +195,19 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 }
 
 interface WithdrawReviewStepProps {
-  user: User
-  prizePool: PrizePool
+  prizePool: any
   chainId: number
   amountToWithdraw: Amount
-  token: TokenWithBalance
-  ticket: TokenWithBalance
+  token: Token
+  ticket: Token
   tx: Transaction
+  exitFee: BigNumber
+  isExitFeeFetched: boolean
+  isExitFeeFetching: boolean
   sendWithdrawTx: (e: any) => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
   setTxId: (txId: number) => void
-  refetchUsersBalances: () => void
+  refetchBalances: () => void
 }
 
 /**
@@ -181,14 +217,28 @@ interface WithdrawReviewStepProps {
  * @returns
  */
 const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
-  const { prizePool, chainId, amountToWithdraw, token, ticket, tx, sendWithdrawTx } = props
+  const {
+    prizePool,
+    amountToWithdraw,
+    token,
+    ticket,
+    tx,
+    sendWithdrawTx,
+    exitFee,
+    isExitFeeFetched,
+    isExitFeeFetching
+  } = props
 
   const { t } = useTranslation()
 
+  const [exitFeeApproved, setExitFeeApproved] = useState<boolean>(false)
+
   const isTxInWallet = tx?.inWallet && !tx?.error && !tx.cancelled
 
+  const isExitFeeAgreed = exitFee?.isZero() ? true : exitFeeApproved
+
   return (
-    <>
+    <div className='space-y-4'>
       <AmountBeingSwapped
         title={t('withdrawTicker', { ticker: ticket.symbol })}
         chainId={prizePool.chainId}
@@ -197,14 +247,12 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         amount={amountToWithdraw}
       />
 
-      <div className='my-8'>
-        <UpdatedStats
-          prizePool={prizePool}
-          amountToWithdraw={amountToWithdraw}
-          token={token}
-          ticket={ticket}
-        />
-      </div>
+      <ExitFeeWarning
+        exitFee={exitFee}
+        token={token}
+        exitFeeApproved={exitFeeApproved}
+        setExitFeeApproved={setExitFeeApproved}
+      />
 
       <TxButtonNetworkGated
         chainId={prizePool.chainId}
@@ -212,10 +260,55 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
-        disabled={isTxInWallet}
+        disabled={!isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed}
       >
         <span>{t('confirmWithdrawal')}</span>
       </TxButtonNetworkGated>
+    </div>
+  )
+}
+
+const ExitFeeWarning = (props: {
+  token: Token
+  exitFee: BigNumber
+  exitFeeApproved: boolean
+  setExitFeeApproved: (isApproved: boolean) => void
+}) => {
+  const { token, exitFee, exitFeeApproved, setExitFeeApproved } = props
+  const { t } = useTranslation()
+
+  if (!exitFee || exitFee.isZero()) {
+    return null
+  }
+
+  return (
+    <>
+      <div className='bg-pt-red bg-opacity-50 dark:bg-opacity-80 p-4 rounded w-full mb-4'>
+        <div className='flex justify-center'>
+          <FeatherIcon icon='alert-triangle' className='w-4 h-4 mr-2 my-auto' />
+          <span>
+            {t('withdrawalFeeOfAmount', {
+              amount: `${numberWithCommas(exitFee, { decimals: token.decimals })} ${token.symbol}`
+            })}{' '}
+            <a href='https://docs.pooltogether.com/protocol/prize-pool/fairness' target='_blank'>
+              {t('learnMore')}
+            </a>
+            .
+          </span>
+        </div>
+      </div>
+      <div className='flex justify-center'>
+        <CheckboxInputGroup
+          large
+          id='exit-fee-agreement-toggle'
+          name='exit-fee-agreement-toggle'
+          label={'I acknowledge that there is an exit fee'}
+          checked={exitFeeApproved}
+          handleClick={() => {
+            setExitFeeApproved(!exitFeeApproved)
+          }}
+        />
+      </div>
     </>
   )
 }
@@ -233,22 +326,17 @@ const WithdrawLabel = (props) => {
 interface WithdrawFormProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  token: TokenWithBalance
-  ticket: TokenWithBalance
+  balance: Amount
+  token: Token
+  ticket: Token
   disabled?: boolean
 }
 
 const WithdrawForm = (props: WithdrawFormProps) => {
-  const { disabled, chainId, form, token, ticket } = props
+  const { disabled, chainId, form, token, ticket, balance } = props
   const { register, setValue } = form
 
-  const {
-    address: ticketAddress,
-    symbol: ticketSymbol,
-    amount,
-    amountUnformatted,
-    hasBalance
-  } = ticket
+  const { symbol: ticketSymbol } = ticket
 
   const withdrawValidationRules = {
     isValid: (v) => {
@@ -260,7 +348,7 @@ const WithdrawForm = (props: WithdrawFormProps) => {
       const valueUnformatted = parseUnits(v, decimals)
       if (valueUnformatted.isZero()) return false
       if (valueUnformatted.lt(ethers.constants.Zero)) return false
-      if (valueUnformatted.gt(amountUnformatted)) return t('insufficientFunds')
+      if (!balance || valueUnformatted.gt(balance.amountUnformatted)) return t('insufficientFunds')
       return true
     }
   }
@@ -288,9 +376,9 @@ const WithdrawForm = (props: WithdrawFormProps) => {
         <MaxAmountTextInputRightLabel
           valueKey={WITHDRAW_QUANTITY_KEY}
           setValue={setValue}
-          amount={amount}
           tokenSymbol={ticketSymbol}
-          isAmountZero={!hasBalance}
+          amount={balance.amount}
+          isAmountZero={!balance || balance.amountUnformatted.isZero()}
         />
       }
     />
@@ -341,85 +429,6 @@ const WithdrawWarning = (props) => {
         'Withdrawing funds will decrease your chances to win prizes!'
       )}
     </div>
-  )
-}
-
-const UpdatedStats = (props: {
-  className?: string
-  prizePool: PrizePool
-  amountToWithdraw: Amount
-  token: TokenWithBalance
-  ticket: TokenWithBalance
-}) => {
-  const { className, prizePool, amountToWithdraw, token, ticket } = props
-
-  return (
-    <ModalInfoList className={className}>
-      <UpdatedOdds
-        amount={amountToWithdraw}
-        prizePool={prizePool}
-        action={EstimateAction.withdraw}
-      />
-      <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
-      <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
-      <EstimatedWithdrawalGasItem
-        chainId={prizePool.chainId}
-        amountUnformatted={amountToWithdraw?.amountUnformatted}
-      />
-    </ModalInfoList>
-  )
-}
-
-const FinalTicketBalanceStat = (props: { amount: string; ticket: TokenWithBalance }) => {
-  const { amount, ticket } = props
-  const { t } = useTranslation()
-  const amountUnformatted = ethers.utils.parseUnits(amount, ticket.decimals)
-  const finalBalanceUnformatted = ticket.amountUnformatted.sub(amountUnformatted)
-  const finalBalance = ethers.utils.formatUnits(finalBalanceUnformatted, ticket.decimals)
-  const finalBalancePretty = numberWithCommas(finalBalance)
-  const fullFinalBalancePretty = numberWithCommas(finalBalance, {
-    precision: getMaxPrecision(finalBalance)
-  })
-
-  return (
-    <InfoListItem
-      label={t('finalDepositBalance', 'Remaining balance')}
-      value={
-        <Tooltip id='final-ticket-balance' tip={`${fullFinalBalancePretty} ${ticket.symbol}`}>
-          <div className='flex flex-wrap justify-end'>
-            <span>{finalBalancePretty}</span>
-            <span className='ml-1'>{ticket.symbol}</span>
-          </div>
-        </Tooltip>
-      }
-    />
-  )
-}
-
-const UnderlyingReceivedStat = (props) => {
-  const { token, amount } = props
-  const { t } = useTranslation()
-
-  const amountPretty = numberWithCommas(amount, { precision: getMaxPrecision(amount) })
-  const fullFinalBalancePretty = numberWithCommas(amount, {
-    precision: getMaxPrecision(amount)
-  })
-
-  return (
-    <InfoListItem
-      label={t('tickerToReceive', { ticker: token.symbol })}
-      value={
-        <Tooltip
-          id={`${token.symbol}-to-receive`}
-          tip={`${fullFinalBalancePretty} ${token.symbol}`}
-        >
-          <div className='flex flex-wrap justify-end'>
-            <span>{amountPretty}</span>
-            <span className='ml-1'>{token.symbol}</span>
-          </div>
-        </Tooltip>
-      }
-    />
   )
 }
 

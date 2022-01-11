@@ -12,17 +12,18 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { msToS } from '@pooltogether/utilities'
 
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
+import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
 import { BottomSheet } from 'lib/components/BottomSheet'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
@@ -30,7 +31,6 @@ import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButto
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
 import { addDays } from 'lib/utils/date'
 import { getTimestampString } from 'lib/utils/getTimestampString'
-import { msToS } from '@pooltogether/utilities'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
