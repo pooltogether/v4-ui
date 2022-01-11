@@ -149,6 +149,10 @@ const StakingDepositsList = () => {
   return stakingPools.map((stakingPool) => {
     const { prizePool } = stakingPool
 
+    // if (stakingPoolIsLp(stakingPool)) {
+    //   return
+    // }
+
     return (
       <StakingDepositItem
         key={`staking-pool-${prizePool.chainId}-${prizePool.address}`}
@@ -225,14 +229,21 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   const {
     data: stakingPoolChainData,
+    error: stakingPoolChainDataError,
     refetch: stakingPoolChainDataRefetch,
     isFetched: stakingPoolChainDataIsFetched
   } = useStakingPoolChainData(stakingPool)
   const {
     data: userLPChainData,
+    error: userLPChainDataError,
     refetch: userLPChainDataRefetch,
     isFetched: userLPChainDataIsFetched
   } = useUserLPChainData(stakingPool, stakingPoolChainData, usersAddress)
+
+  if (stakingPoolChainDataError || userLPChainDataError) {
+    console.error(stakingPoolChainDataError)
+    // console.error(userLPChainDataError)
+  }
 
   const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
 
@@ -249,11 +260,8 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   if (stakingPoolIsLp(stakingPool)) {
     return <div>hide staking pool</div>
   }
-  console.log({ stakingPool })
 
   const balances = userLPChainData.balances
-  console.log({ userLPChainData })
-  console.log({ balances })
 
   const accountPageView = balances.ticket.hasBalance ? (
     <>
@@ -279,10 +287,6 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       setSelectedChainId={setSelectedChainId}
     />
   )
-
-  console.log(stakingPool)
-  console.log(stakingPool?.tokens)
-  console.log(stakingPool?.tokens.underlyingToken)
 
   return (
     <div
@@ -556,7 +560,9 @@ const BlankStateView = (props) => {
   return (
     <>
       <p className='text-sm'>
-        {t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')}
+        {stakingPoolIsLp(stakingPool)
+          ? t('lpDepositDescription', 'Deposit Uniswap V2 POOL-ETH LP tokens to earn extra POOL!')
+          : t('poolPoolDepositDescription', 'Deposit POOL to earn rewards and vote.')}
       </p>
       <h6 className='mt-3'>
         <span
