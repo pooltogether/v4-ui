@@ -246,7 +246,14 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
     return <LoadingList />
   }
 
+  if (stakingPoolIsLp(stakingPool)) {
+    return <div>hide staking pool</div>
+  }
+  console.log({ stakingPool })
+
   const balances = userLPChainData.balances
+  console.log({ userLPChainData })
+  console.log({ balances })
 
   const accountPageView = balances.ticket.hasBalance ? (
     <>
@@ -272,6 +279,10 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
       setSelectedChainId={setSelectedChainId}
     />
   )
+
+  console.log(stakingPool)
+  console.log(stakingPool?.tokens)
+  console.log(stakingPool?.tokens.underlyingToken)
 
   return (
     <div
