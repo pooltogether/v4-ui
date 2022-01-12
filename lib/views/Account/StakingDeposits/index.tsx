@@ -153,12 +153,8 @@ const PoolTokenBalance = () => {
 const StakingDepositsList = () => {
   const stakingPools = useStakingPools()
 
-  return stakingPools.reverse().map((stakingPool) => {
+  return stakingPools.map((stakingPool) => {
     const { prizePool } = stakingPool
-
-    // if (stakingPoolIsLp(stakingPool)) {
-    //   return
-    // }
 
     return (
       <StakingDepositItem
