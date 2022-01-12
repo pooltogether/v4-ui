@@ -20,6 +20,9 @@ import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawView } from './WithdrawView'
 
+const LP_POOL_ADDRESS = '0x3af7072d29adde20fc7e173a7cb9e45307d2fb0a'
+const POOL_POOL_ADDRESS = '0x396b4489da692788e327e2e4b2b0459a5ef26791'
+
 export const V3Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
@@ -70,15 +73,23 @@ const DepositsList = (props: {
     return <LoadingList />
   }
 
+  const filteredBalances = data.balances.filter(
+    (balance) =>
+      POOL_POOL_ADDRESS !== balance.prizePool.prizePool.address &&
+      LP_POOL_ADDRESS !== balance.prizePool.prizePool.address
+  )
+
   return (
     <ul className='space-y-4'>
-      {data.balances.map((balance) => (
-        <DepositItem
-          key={'deposit-balance-' + balance.address + balance.prizePool.chainId}
-          refetchBalances={refetch}
-          {...balance}
-        />
-      ))}
+      {filteredBalances.map((balance) => {
+        return (
+          <DepositItem
+            key={'deposit-balance-' + balance.address + balance.prizePool.chainId}
+            refetchBalances={refetch}
+            {...balance}
+          />
+        )
+      })}
     </ul>
   )
 }

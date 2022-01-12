@@ -119,7 +119,8 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     )
   }
 
-  console.log({ usersBalance })
+  console.log({ token })
+  console.log({ ticket })
 
   return (
     <>

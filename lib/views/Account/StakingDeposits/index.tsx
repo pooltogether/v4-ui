@@ -57,6 +57,7 @@ import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAm
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
+import { WithdrawView } from 'lib/views/Account/V3Deposits/WithdrawView'
 
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
@@ -68,6 +69,7 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
+import { useUsersV3Balances } from 'lib/hooks/v3/useUsersV3Balances'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
@@ -150,7 +152,7 @@ const PoolTokenBalance = () => {
 const StakingDepositsList = () => {
   const stakingPools = useStakingPools()
 
-  return stakingPools.map((stakingPool) => {
+  return stakingPools.reverse().map((stakingPool) => {
     const { prizePool } = stakingPool
 
     // if (stakingPoolIsLp(stakingPool)) {
@@ -301,7 +303,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
         className='absolute r-4 t-3 w-6 h-6 text-xl'
         style={{ textShadow: '2px 2px 0px rgba(50, 10, 100, 0.3)' }}
       >
-        💎
+        {stakingPoolIsLp(stakingPool) ? '💎' : '🌡️'}
       </div>
 
       <StakingBlockTitle {...props} t={t} />
@@ -346,8 +348,18 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const { t } = useTranslation()
 
+  const usersAddress = useUsersAddress()
+  const { data: usersV3Balances, isFetched: usersV3BalancesIsFetched } =
+    useUsersV3Balances(usersAddress)
+
+  const balanceData = usersV3Balances?.balances.find(
+    (balance) => stakingPool.prizePool.address === balance.prizePool.prizePool.address
+  )
+  const prizePool = balanceData?.prizePool
+  const balance = balanceData?.balance
+
   const { tokens } = stakingPool || {}
-  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
+  const { ticket, underlyingToken, tokenFaucetDripToken } = tokens || {}
 
   const { provider } = useOnboard()
   const isWalletMetaMask = useIsWalletMetamask()
@@ -365,6 +377,9 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const [claimTxId, setClaimTxId] = useState(0)
   const claimTx = useTransaction(claimTxId)
 
+  const [withdrawTxId, setWithdrawTxId] = useState(0)
+  const withdrawTx = useTransaction(withdrawTxId)
+
   const balances = userLPChainData.balances
   const tokenBalance = balances.token
   const ticketBalance = balances.ticket
@@ -379,6 +394,8 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   })
 
   const { lpTokenPrice } = useLpPriceData(chainId, stakingPoolChainData, stakingPool)
+
+  const onDismiss = () => setIsOpen(false)
 
   const depositView = (
     <DepositView
@@ -411,13 +428,18 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   )
 
   const withdrawView = (
-    <>
-      <ModalTitle
-        chainId={chainId}
-        title={`${t('withdraw')}: ${tokenBalance.symbol}`}
-        className='mb-4'
-      />
-    </>
+    <WithdrawView
+      {...props}
+      {...balance}
+      address={prizePool.tokens.ticket.address}
+      symbol={prizePool.tokens.underlyingToken.symbol}
+      balance={balance}
+      prizePool={prizePool}
+      onDismiss={onDismiss}
+      withdrawTx={withdrawTx}
+      setWithdrawTxId={setWithdrawTxId}
+      refetchBalances={refetch}
+    />
   )
 
   const views = [
@@ -432,13 +454,13 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       view: () => claimView,
       label: t('rewards'),
       theme: SquareButtonTheme.rainbow
+    },
+    {
+      id: 'withdraw',
+      view: () => withdrawView,
+      label: t('withdraw'),
+      theme: SquareButtonTheme.tealOutline
     }
-    // {
-    //   id: 'withdraw',
-    //   view: () => withdrawView,
-    //   label: t('withdraw'),
-    //   theme: SquareButtonTheme.tealOutline
-    // }
   ]
 
   const contractLinks: ContractLink[] = [
@@ -476,7 +498,7 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       balanceUsd={balanceUsd}
       token={getToken(ticketBalance)}
       open={isOpen}
-      onDismiss={() => setIsOpen(false)}
+      onDismiss={onDismiss}
       tx={null}
       className='space-y-4'
       isWalletOnProperNetwork={isWalletOnProperNetwork}
