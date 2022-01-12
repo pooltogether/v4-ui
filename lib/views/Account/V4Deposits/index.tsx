@@ -34,7 +34,9 @@ export const V4Deposits = () => {
 
   return (
     <div id='deposits'>
-      <CardTitle title={t('deposits')} secondary={`$${data?.totalValueUsd.amountPretty}`} />
+      <div className='mb-2'>
+        <CardTitle title={t('deposits')} secondary={`$${data?.totalValueUsd.amountPretty}`} />
+      </div>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>

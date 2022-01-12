@@ -97,8 +97,9 @@ export const StakingDeposits = () => {
 
   return (
     <div id='staking'>
-      <h4 className='mb-2'></h4>
-      <CardTitle title={t('poolToken', 'POOL Token')} />
+      <div className='mb-2'>
+        <CardTitle title={t('poolToken', 'POOL Token')} />
+      </div>
 
       <PoolTokenBalance />
 

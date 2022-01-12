@@ -9,7 +9,7 @@ interface CardTitleProps {
 }
 
 export const CardTitle = (props: CardTitleProps) => (
-  <div className={classNames('mb-2 flex space-x-2 items-center', props.className)}>
+  <div className={classNames('flex space-x-2 items-center', props.className)}>
     <h5 className={props.titleClassName}>
       {props.title}
       {props.secondary && (

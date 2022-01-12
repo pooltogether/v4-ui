@@ -32,7 +32,7 @@ export const V3Deposits = () => {
 
   return (
     <div>
-      <div className='flex justify-between'>
+      <div className='mb-2 flex items-center justify-between'>
         <CardTitle
           title={`V3 ${t('deposits')}`}
           secondary={`$${data.totalValueUsd.amountPretty}`}
@@ -50,11 +50,11 @@ const V3AppLink = () => {
   const { t } = useTranslation()
   return (
     <a
-      className='my-auto opacity-50 hover:opacity-100 flex transition-opacity'
+      className='opacity-50 hover:opacity-100 flex items-center transition-opacity'
       href='https://v3.pooltogether.com'
     >
       {t('v3App', 'V3 App')}
-      <FeatherIcon icon='external-link' className='w-4 h-4 my-auto ml-1' />
+      <FeatherIcon icon='external-link' className='w-4 h-4 ml-1' />
     </a>
   )
 }
