@@ -119,9 +119,6 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     )
   }
 
-  console.log({ token })
-  console.log({ ticket })
-
   return (
     <>
       <ModalTitle

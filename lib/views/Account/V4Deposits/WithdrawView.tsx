@@ -87,8 +87,6 @@ export const WithdrawView = (props: WithdrawViewProps) => {
     )
   }
 
-  console.log({ balances })
-
   return (
     <>
       <ModalTitle

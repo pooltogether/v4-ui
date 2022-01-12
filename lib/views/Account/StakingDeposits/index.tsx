@@ -431,8 +431,8 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     <WithdrawView
       {...props}
       {...balance}
-      address={prizePool.tokens.ticket.address}
-      symbol={prizePool.tokens.underlyingToken.symbol}
+      address={prizePool?.tokens.ticket.address}
+      symbol={prizePool?.tokens.underlyingToken.symbol}
       balance={balance}
       prizePool={prizePool}
       onDismiss={onDismiss}
