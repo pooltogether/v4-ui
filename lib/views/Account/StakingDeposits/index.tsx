@@ -110,17 +110,6 @@ export const StakingDeposits = () => {
 
 const PoolTokenBalance = () => {
   const { t } = useTranslation()
-  const usersAddress = useUsersAddress()
-
-  const { data: tokenData, isFetched } = usePoolTokenData(usersAddress, usersAddress)
-
-  const { usersBalance } = tokenData || {}
-  const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
-
-  // Only support mainnet for the moment ...
-  const chainId = NETWORK.mainnet
-  const poolTokenAddress = MAINNET_POOL_ADDRESS
-  // const poolTokenAddress = chainId === NETWORK.mainnet ? MAINNET_POOL_ADDRESS : POLYGON_POOL_ADDRESS
 
   return (
     <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
@@ -133,10 +122,43 @@ const PoolTokenBalance = () => {
             className='mr-2 my-auto'
           />
           <span className='font-bold'>
-            {!isFetched ? <ThemedClipSpinner sizeClassName='w-4 h-4' /> : balanceFormatted}
+            <ChainPoolTokenBalance chainId={NETWORK.mainnet} />
+          </span>
+        </span>
+        <span>
+          <TokenIcon
+            chainId={NETWORK.mainnet}
+            address={MAINNET_POOL_ADDRESS}
+            className='mr-2 my-auto'
+          />
+          <span className='font-bold'>
+            <ChainPoolTokenBalance chainId={NETWORK.polygon} />
           </span>
         </span>
       </div>
+    </div>
+  )
+}
+
+const ChainPoolTokenBalance = (props) => {
+  const { chainId } = props
+
+  const { t } = useTranslation()
+
+  const usersAddress = useUsersAddress()
+
+  const { data: tokenData, isFetched } = usePoolTokenData(usersAddress, usersAddress, chainId)
+
+  const { usersBalance } = tokenData || {}
+  const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
+
+  const poolTokenAddress = chainId === NETWORK.mainnet ? MAINNET_POOL_ADDRESS : POLYGON_POOL_ADDRESS
+
+  return !isFetched ? (
+    <ThemedClipSpinner sizeClassName='w-4 h-4' />
+  ) : (
+    <>
+      {balanceFormatted}
       {usersBalance === 0 && (
         <div className='flex items-center justify-end font-semibold'>
           <SwapTokensModalTrigger
@@ -146,7 +168,7 @@ const PoolTokenBalance = () => {
           />
         </div>
       )}
-    </div>
+    </>
   )
 }
 
