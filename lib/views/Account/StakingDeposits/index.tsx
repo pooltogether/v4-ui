@@ -230,6 +230,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   const { setSelectedChainId } = useSelectedChainId()
 
+  const { data: usersV3Balances, isFetched: usersV3BalancesIsFetched } =
+    useUsersV3Balances(usersAddress)
+
   const {
     data: stakingPoolChainData,
     error: stakingPoolChainDataError,
@@ -245,10 +248,11 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
   if (stakingPoolChainDataError || userLPChainDataError) {
     console.error(stakingPoolChainDataError)
-    // console.error(userLPChainDataError)
+    console.error(userLPChainDataError)
   }
 
-  const isFetched = userLPChainDataIsFetched && stakingPoolChainDataIsFetched
+  const isFetched =
+    usersV3BalancesIsFetched && userLPChainDataIsFetched && stakingPoolChainDataIsFetched
 
   const refetch = () => {
     console.log('running refetch user lp chain data, staking pool chain data')
@@ -259,6 +263,12 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   if (!isFetched) {
     return <LoadingList />
   }
+
+  const balanceData = usersV3Balances?.balances.find(
+    (balance) => stakingPool.prizePool.address === balance.prizePool.prizePool.address
+  )
+  const prizePool = balanceData?.prizePool
+  const balance = balanceData?.balance
 
   const balances = userLPChainData.balances
 
@@ -309,6 +319,8 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
       <StakingBalanceBottomSheet
         {...props}
+        {...balance}
+        prizePool={prizePool}
         isOpen={isOpen}
         userLPChainData={userLPChainData}
         isFetched={isFetched}
@@ -325,9 +337,10 @@ interface StakingBalanceBottomSheetProps {
   stakingPool: StakingPool
   isOpen: boolean
   isFetched: boolean
-  userLPChainData: UserLPChainData
   setIsOpen: Function
+  prizePool: any
   stakingPoolChainData: object
+  userLPChainData: UserLPChainData
   refetch: () => void
 }
 
@@ -338,6 +351,7 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     setIsOpen,
     isFetched,
     isOpen,
+    prizePool,
     stakingPoolChainData,
     userLPChainData,
     refetch
@@ -345,25 +359,12 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const { t } = useTranslation()
 
-  const usersAddress = useUsersAddress()
-  const { data: usersV3Balances, isFetched: usersV3BalancesIsFetched } =
-    useUsersV3Balances(usersAddress)
-
-  const balanceData = usersV3Balances?.balances.find(
-    (balance) => stakingPool.prizePool.address === balance.prizePool.prizePool.address
-  )
-  const prizePool = balanceData?.prizePool
-  const balance = balanceData?.balance
-
   const { tokens } = stakingPool || {}
-  const { ticket, underlyingToken, tokenFaucetDripToken } = tokens || {}
+  const { underlyingToken, tokenFaucetDripToken } = tokens || {}
 
   const { provider } = useOnboard()
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-
-  // const [withdrawTxId, setWithdrawTxId] = useState(0)
-  // const withdrawTx = useTransaction(withdrawTxId)
 
   const [depositTxId, setDepositTxId] = useState(0)
   const depositTx = useTransaction(depositTxId)
@@ -427,11 +428,8 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const withdrawView = (
     <WithdrawView
       {...props}
-      {...balance}
       address={prizePool?.tokens.ticket.address}
       symbol={prizePool?.tokens.underlyingToken.symbol}
-      balance={balance}
-      prizePool={prizePool}
       onDismiss={onDismiss}
       withdrawTx={withdrawTx}
       setWithdrawTxId={setWithdrawTxId}
@@ -455,6 +453,7 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     {
       id: 'withdraw',
       view: () => withdrawView,
+      disabled: ticketBalance.amountUnformatted.isZero(),
       label: t('withdraw'),
       theme: SquareButtonTheme.tealOutline
     }
@@ -1367,7 +1366,6 @@ const buildClaimTx = (args: BuildClaimTxArgs) => {
   const signer = provider.getSigner()
 
   const params = [usersAddress]
-  //           disabled={claimableBalanceUnformatted.isZero()}
 
   const contract = new ethers.Contract(tokenFaucetAddress, TokenFaucetAbi, signer)
 

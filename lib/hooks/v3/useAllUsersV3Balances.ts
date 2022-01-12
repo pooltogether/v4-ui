@@ -57,7 +57,6 @@ const getUsersV3BalancesByChainId = async (
   prizePools: any[]
 ) => {
   const batchRequests = []
-
   prizePools.map((prizePool) => {
     const ticketAddress = prizePool.tokens.ticket.address
     const sponsorshipAddress = prizePool.tokens.sponsorship.address
