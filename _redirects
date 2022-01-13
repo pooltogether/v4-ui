@@ -1,1 +1,19 @@
 /     /deposit    301!
+
+### v3 redirects
+/account/pools/:networkName/:symbol/manage-tickets https://app.pooltogether.com/account/pools/[networkName]/[symbol]/manage-tickets  301!
+
+/players/:playerAddress                       https://app.pooltogether.com/players/[playerAddress]                      301!
+
+/pools/:networkName/:symbol/deposit           https://app.pooltogether.com/pools/[networkName]/[symbol]/deposit         301!
+/pools/:networkName/:symbol/manage            https://app.pooltogether.com/pools/[networkName]/[symbol]/manage          301!
+/pools/:networkName/:symbol                   https://app.pooltogether.com/pools/[networkName]/[symbol]                 301!
+/pools/:networkName                           https://app.pooltogether.com/pools/[networkName]                          301! 
+
+/prizes/:networkName/:symbol/:prizeNumber     https://app.pooltogether.com/prizes/[networkName]/[symbol]/[prizeNumber]  301!
+/prizes/:networkName/:symbol                  https://app.pooltogether.com/prizes/[networkName]/[symbol]                301!
+
+/pods/:networkName/:podAddress/deposit        https://app.pooltogether.com/pods/[networkName]/[podAddress]/deposit      301!
+/pods/:networkName/:podAddress/withdraw       https://app.pooltogether.com/pods/[networkName]/[podAddress]/withdraw     301!
+/pods                                         https://app.pooltogether.com/pods                                         301!
+### end v3 redirects
