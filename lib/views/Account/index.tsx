@@ -23,6 +23,7 @@ export const AccountUI = (props) => {
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
+        <OddsDisclaimer className='block mt-6' />
       </PagePadding>
     )
   }
