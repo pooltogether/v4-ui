@@ -113,29 +113,35 @@ const PoolTokenBalance = () => {
 
   return (
     <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
-      <div className='flex items-center justify-between font-semibold text-lg'>
-        {t('yourPool', 'Your POOL Balance')}
-        <span>
-          <TokenIcon
-            chainId={NETWORK.mainnet}
-            address={MAINNET_POOL_ADDRESS}
-            className='mr-2 my-auto'
-          />
-          <span className='font-bold'>
-            <ChainPoolTokenBalance chainId={NETWORK.mainnet} />
-          </span>
-        </span>
-        <span>
-          <TokenIcon
-            chainId={NETWORK.mainnet}
-            address={MAINNET_POOL_ADDRESS}
-            className='mr-2 my-auto'
-          />
-          <span className='font-bold'>
-            <ChainPoolTokenBalance chainId={NETWORK.polygon} />
-          </span>
-        </span>
+      <div className='flex items-center justify-between font-semibold text-base'>
+        <div className='relative' style={{ top: -2 }}>
+          <TokenIcon chainId={NETWORK.mainnet} address={MAINNET_POOL_ADDRESS} className='mr-2' />{' '}
+          {t('yourBalances', 'Your Balances')}
+        </div>
       </div>
+
+      <ul className='space-y-4 mt-4'>
+        {[NETWORK.mainnet, NETWORK.polygon].map((chainId) => (
+          <li
+            key={`pool-token-balance--network-${chainId}`}
+            className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg p-4 w-full flex justify-between items-center'
+          >
+            <div className='flex'>
+              <NetworkIcon chainId={chainId} className='mr-2 my-auto' />
+              <span className='font-bold xs:text-lg'>{getNetworkNiceNameByChainId(chainId)}</span>
+            </div>
+
+            <div className='flex items-center xs:text-lg'>
+              <TokenIcon
+                chainId={NETWORK.mainnet}
+                address={MAINNET_POOL_ADDRESS}
+                className='mr-2'
+              />{' '}
+              <ChainPoolTokenBalance chainId={chainId} />
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
@@ -147,7 +153,14 @@ const ChainPoolTokenBalance = (props) => {
 
   const usersAddress = useUsersAddress()
 
-  const { data: tokenData, isFetched } = usePoolTokenData(usersAddress, usersAddress, chainId)
+  const {
+    data: tokenData,
+    error,
+    isFetched
+  } = usePoolTokenData(usersAddress, usersAddress, chainId)
+  if (error) {
+    console.error(error)
+  }
 
   const { usersBalance } = tokenData || {}
   const balanceFormatted = usersBalance ? numberWithCommas(usersBalance) : '0.00'
