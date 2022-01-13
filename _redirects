@@ -3,6 +3,9 @@
 ### v3 redirects
 /account/pools/:networkName/:symbol/manage-tickets https://v3.pooltogether.com/account/pools/:networkName/:symbol/manage-tickets  301!
 
+# Send old rewards (staking pools) to new rewards page (account)
+/rewards                                      https://app.pooltogether.com/account                      301!
+
 /players/:playerAddress                       https://v3.pooltogether.com/players/:playerAddress                      301!
 
 /pools/:networkName/:symbol/deposit           https://v3.pooltogether.com/pools/:networkName/:symbol/deposit         301!
