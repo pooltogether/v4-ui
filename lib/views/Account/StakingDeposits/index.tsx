@@ -173,7 +173,7 @@ const ChainPoolTokenBalance = (props) => {
     <>
       {balanceFormatted}
       {usersBalance === 0 && (
-        <div className='flex items-center justify-end font-semibold'>
+        <div className='flex items-center justify-end font-semibold ml-4'>
           <SwapTokensModalTrigger
             buttonLabel={t('getPool', 'Get POOL')}
             chainId={chainId}
