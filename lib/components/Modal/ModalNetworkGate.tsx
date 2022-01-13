@@ -51,6 +51,7 @@ interface NetworkSwitchButtonProps {
 const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
   const { chainId, onSuccess } = props
 
+  const { t } = useTranslation()
   const addNetwork = useAddNetworkToMetamask(chainId, { onSuccess })
   const networkName = getNetworkNiceNameByChainId(chainId)
 
@@ -60,5 +61,9 @@ const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
     return null
   }
 
-  return <SquareButton onClick={addNetwork}>Switch to {networkName}</SquareButton>
+  return (
+    <SquareButton onClick={addNetwork}>
+      {t('switchToNetwork', { network: networkName })}
+    </SquareButton>
+  )
 }

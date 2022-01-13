@@ -1,45 +1,31 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
-import {
-  Amount,
-  Token,
-  Transaction,
-  useTransaction,
-  useIsWalletMetamask
-} from '@pooltogether/hooks'
+import { Transaction, useTransaction, useIsWalletMetamask } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { SquareLink, TokenIcon } from '@pooltogether/react-components'
-import {
-  AddTokenToMetamaskButton,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize
-} from '@pooltogether/react-components'
+import { TokenIcon } from '@pooltogether/react-components'
+import { AddTokenToMetamaskButton } from '@pooltogether/react-components'
 import { ethers, Overrides } from 'ethers'
 
+import { BUTTON_MIN_WIDTH } from 'lib/constants/constants'
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
-import { SwapTokensModal } from 'lib/components/Modal/SwapTokensModal'
+import { SwapTokensModalTrigger } from 'lib/components/Modal/SwapTokensModal'
 import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useSelectedChainIdUser } from 'lib/hooks/Tsunami/User/useSelectedChainIdUser'
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { usePrizePoolBySelectedChainId } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedChainId'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
+import { usePrizePoolBySelectedChainId } from 'lib/hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useUsersDepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
+import { useUsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
-import { TxHashRow } from 'lib/components/TxHashRow'
-import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
+import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-
-const BUTTON_MIN_WIDTH = 100
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -240,11 +226,15 @@ export const DepositCard = (props: { className?: string }) => {
         <div className='w-full flex justify-around px-2 py-4'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
           <HelpLink />
-          <SwapTokensModalTrigger prizePool={prizePool} />
+          <SwapTokensModalTrigger
+            chainId={prizePool.chainId}
+            outputCurrencyAddress={prizePoolTokens?.token.address}
+          />
         </div>
       </div>
 
       <DepositConfirmationModal
+        chainId={prizePool.chainId}
         isOpen={showConfirmModal}
         closeModal={closeModal}
         label='deposit confirmation modal'
@@ -290,37 +280,6 @@ interface ExternalLinkProps {
   prizePool: PrizePool
 }
 
-const SwapTokensModalTrigger = (props: ExternalLinkProps) => {
-  const { prizePool } = props
-  const [showModal, setShowModal] = useState(false)
-  const { data: tokens } = usePrizePoolTokens(prizePool)
-
-  const { t } = useTranslation()
-
-  return (
-    <>
-      <button
-        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
-        onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
-      >
-        <FeatherIcon
-          icon={'refresh-cw'}
-          className='relative w-4 h-4 mr-1 inline-block'
-          style={{ left: -2, top: -2 }}
-        />{' '}
-        {t('swapTokens', 'Swap tokens')}
-      </button>
-      <SwapTokensModal
-        label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
-        chainId={prizePool.chainId}
-        tokenAddress={tokens?.token.address}
-        isOpen={showModal}
-        closeModal={() => setShowModal(false)}
-      />
-    </>
-  )
-}
 const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)

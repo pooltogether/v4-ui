@@ -2,19 +2,16 @@ import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import Image from 'next/image'
-
+import { ethers } from 'ethers'
 import { User } from '@pooltogether/v4-js-client'
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
+
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { TotalWinnings } from './TotalWinnings'
-
 import walletIllustration from 'public/wallet-illustration.png'
-import { useUsersTotalPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersTotalPrizePoolBalances'
+import { useUsersTotalPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersTotalPrizePoolBalances'
 import { CountUp } from 'lib/components/CountUp'
-import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
-import { ethers } from 'ethers'
+import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 
 interface AccountCardProps {
   className?: string
@@ -27,7 +24,7 @@ export const AccountCard = (props: AccountCardProps) => {
     <div className='flex flex-col p-4 pink-purple-gradient rounded-2xl space-y-2'>
       <div className='flex justify-between p-4'>
         <TotalBalance user={user} />
-        <img src={walletIllustration} style={{ width: '55px', height: '60px' }} />
+        <img src={walletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
         <DailyOdds />
@@ -41,16 +38,17 @@ export const AccountCard = (props: AccountCardProps) => {
 const TotalBalance = (props: { className?: string; user: User }) => {
   const { className, user } = props
   const { t } = useTranslation()
-  const { data: totalBalances, isFetched } = useUsersTotalPrizePoolBalances()
+  const { data, isFetching } = useUsersTotalPrizePoolBalances()
   return (
     <a href='#deposits' className={className}>
-      <span className='uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
-      <span className='leading-none flex text-2xl xs:text-4xl font-bold'>
-        $<CountUp countTo={isFetched ? Number(totalBalances.totalBalance.amount) : 0} />
-        {!isFetched && (
-          <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
+      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
+        $<CountUp countTo={Number(data.totalBalanceUsd.amount)} />
+        {isFetching ? (
+          <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
+        ) : (
+          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
         )}
-        <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
       </span>
     </a>
   )

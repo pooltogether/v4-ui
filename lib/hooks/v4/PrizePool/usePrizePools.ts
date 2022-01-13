@@ -1,4 +1,4 @@
-import { usePrizePoolNetwork } from 'lib/hooks/Tsunami/PrizePoolNetwork/usePrizePoolNetwork'
+import { usePrizePoolNetwork } from 'lib/hooks/v4/PrizePoolNetwork/usePrizePoolNetwork'
 
 export const usePrizePools = () => {
   const prizePoolNetwork = usePrizePoolNetwork()

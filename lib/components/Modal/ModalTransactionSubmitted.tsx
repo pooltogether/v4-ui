@@ -34,7 +34,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
         href={url}
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.md}
-        className='w-full text-center'
+        className='w-full'
       >
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
@@ -43,7 +43,7 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
           onClick={() => closeModal()}
           theme={SquareButtonTheme.purpleOutline}
           size={SquareButtonSize.sm}
-          className='w-full text-center mt-4'
+          className='w-full mt-4'
         >
           {t('close', 'Close')}
         </SquareButton>

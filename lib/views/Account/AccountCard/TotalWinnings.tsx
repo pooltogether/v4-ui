@@ -2,13 +2,13 @@ import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useUsersTotalClaimedAmount } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersTotalClaimedAmount'
+import { useUsersTotalClaimedAmount } from 'lib/hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { CountUp } from 'lib/components/CountUp'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import TrophyIcon from 'assets/images/pooltogether-trophy--detailed.svg'
 import { Amount, Token } from '@pooltogether/hooks'
-import { useAllUsersPositiveClaimedAmountsWithDraws } from 'lib/hooks/Tsunami/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
+import { useAllUsersPositiveClaimedAmountsWithDraws } from 'lib/hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { Draw } from '@pooltogether/v4-js-client'
 import { getTimestampString } from 'lib/utils/getTimestampString'
 
@@ -29,10 +29,13 @@ export const TotalWinnings = () => {
           {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
         </span>
         <div className='flex'>
-          <span className='rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
-            $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
-            {!isFetched && (
-              <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
+          <span className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
+            {!isFetched ? (
+              <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
+            ) : (
+              <>
+                $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
+              </>
             )}
           </span>
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
