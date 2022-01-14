@@ -95,7 +95,7 @@ export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountPr
   const isFetched = depositIsFetched && approveIsFetched
   const error = depositError && approveError
 
-  if (isFetched && !error) {
+  if (isFetched && !error && depositTotalGasWei && depositTotalGasUsd) {
     totalGasWei = depositTotalGasWei.add(approveTotalGasWei)
     totalGasUsd = depositTotalGasUsd.add(approveTotalGasUsd)
   }
