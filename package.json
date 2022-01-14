@@ -53,6 +53,7 @@
     "@pooltogether/bnc-onboard": "1.36.0-b",
     "@pooltogether/bnc-onboard-hooks": "^1.1.0",
     "@pooltogether/current-pool-data": "^3.7.2",
+    "@pooltogether/draw-calculator-js": "^1.0.3-beta.4",
     "@pooltogether/etherplex": "^1.1.1",
     "@pooltogether/evm-chains-extended": "^0.6.4-beta.1",
     "@pooltogether/hooks": "^1.4.13",

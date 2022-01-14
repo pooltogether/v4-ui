@@ -9,7 +9,14 @@ import {
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4-js-client'
+import {
+  PrizeDistributor,
+  Draw,
+  DrawResults,
+  PrizePool,
+  PrizeAwardable,
+  filterResultsByValue
+} from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 
@@ -33,6 +40,7 @@ import { useAtom } from 'jotai'
 import { useHasUserCheckedAllDraws } from 'lib/hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { BigNumber, ethers } from 'ethers'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -302,8 +310,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   const [storedDrawResults, setStoredDrawResults] = useAtom(drawResultsAtom)
 
   let btnJsx, url
-  const drawDataList = drawDatas ? Object.values(drawDatas) : []
-  const draws = drawDataList.map((drawData) => drawData.draw)
+  const drawDataList: DrawData[] = drawDatas ? Object.values(drawDatas) : []
 
   if (claimTx?.hash) {
     url = formatBlockExplorerTxUrl(claimTx.hash, claimTx.ethersTx.chainId)
@@ -368,7 +375,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         onClick={() =>
           getUsersDrawResults(
             prizeDistributor,
-            draws,
+            drawDataList,
             usersAddress,
             setWinningDrawResults,
             setCheckedState,
@@ -400,7 +407,7 @@ MultiDrawsClaimButton.defaultProps = {
 
 const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
-  draws: Draw[],
+  drawData: DrawData[],
   usersAddress: string,
   setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
   setCheckedState: (state: CheckedState) => void,
@@ -413,26 +420,32 @@ const getUsersDrawResults = async (
   const winningDrawResults: { [drawId: string]: DrawResults } = {}
   const newDrawResults: { [drawId: string]: DrawResults } = {}
 
-  const drawResultsPromises = draws.map(async (draw) => {
+  const drawResultsPromises = drawData.map(async (drawData) => {
+    const { draw, prizeDistribution } = drawData
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
       drawResults = storedDrawResult
     } else {
       try {
-        const url = getDrawCalcUrl(
+        const url = getPrizesApiUrl(
           prizeDistributor.chainId,
           prizeDistributor.address,
           usersAddress,
           draw.drawId
         )
         const response = await fetch(url)
-        const drawResultsJson = await response.json()
-        drawResults = deserializeBigNumbers(drawResultsJson)
+        const allPrizesJson = await response.json()
+        const allPrizes: Prize[] = deserializeBigNumbers(allPrizesJson)
+        drawResults = prizesToDrawResults(draw.drawId, allPrizes, prizeDistribution.maxPicksPerUser)
         // Store draw result
       } catch (e) {
-        console.log(e.message)
-        drawResults = await prizeDistributor.calculateUsersPrizes(usersAddress, draw)
+        console.log(`No prizes won for draw ${draw.drawId}`)
+        drawResults = {
+          drawId: draw.drawId,
+          totalValue: ethers.constants.Zero,
+          prizes: []
+        } as DrawResults
       }
       newDrawResults[draw.drawId] = drawResults
     }
@@ -455,3 +468,40 @@ const getDrawCalcUrl = (
   drawId: number
 ) =>
   `https://tsunami-prizes-production.pooltogether-api.workers.dev/${chainId}/${prizeDistributorAddress}/prizes/${usersAddress}/${drawId}/`
+
+const getPrizesApiUrl = (
+  chainId: number,
+  prizeDistributorAddress: string,
+  usersAddress: string,
+  drawId: number
+) =>
+  `https://api.pooltogether.com/prizes/${chainId}/${prizeDistributorAddress}/draw/${drawId}/${usersAddress}.json`
+
+interface Prize {
+  address: string
+  pick: string
+  tier: number
+  amount: string
+}
+
+const prizesToDrawResults = (
+  drawId: number,
+  _allPrizes: Prize[],
+  maxPicksPerUser: number
+): DrawResults => {
+  const prizes: PrizeAwardable[] = _allPrizes.map((prize) => ({
+    amount: BigNumber.from(prize.amount),
+    distributionIndex: prize.tier,
+    pick: BigNumber.from(prize.pick)
+  }))
+  let totalValue: BigNumber = ethers.constants.Zero
+
+  return filterResultsByValue(
+    {
+      drawId,
+      totalValue,
+      prizes
+    } as DrawResults,
+    maxPicksPerUser
+  )
+}
