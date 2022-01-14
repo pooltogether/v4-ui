@@ -494,9 +494,12 @@ const prizesToDrawResults = (
     distributionIndex: prize.tier,
     pick: BigNumber.from(prize.pick)
   }))
-  let totalValue: BigNumber = ethers.constants.Zero
+  const totalValue: BigNumber = prizes.reduce(
+    (sum, prize) => sum.add(prize.amount),
+    ethers.constants.Zero
+  )
 
-  return filterResultsByValue(
+  const drawResults = filterResultsByValue(
     {
       drawId,
       totalValue,
@@ -504,4 +507,6 @@ const prizesToDrawResults = (
     } as DrawResults,
     maxPicksPerUser
   )
+
+  return drawResults
 }
