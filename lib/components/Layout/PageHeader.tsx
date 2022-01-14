@@ -27,8 +27,8 @@ export const PageHeader = (props) => {
   return (
     <PageHeaderContainer
       Link={Link}
-      as='/deposit'
-      href='/deposit'
+      as='https://pooltogether.com'
+      href='https://pooltogether.com'
       className='sticky top-0 bg-page-header'
       style={{ zIndex: 3 }}
     >
