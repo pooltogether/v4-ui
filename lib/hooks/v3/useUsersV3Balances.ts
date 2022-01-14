@@ -30,7 +30,10 @@ export const useUsersV3Balances = (usersAddress: string) => {
     let totalValueUsdScaled = BigNumber.from(0)
 
     queryResults.forEach((queryResult) => {
-      const tokens = Object.values(queryResult.data.tokens)
+      let tokens = []
+      if (queryResult?.data?.tokens) {
+        tokens = Object.values(queryResult.data.tokens)
+      }
 
       tokens.forEach((token) => {
         if (!token.balance.amountUnformatted.isZero()) {
