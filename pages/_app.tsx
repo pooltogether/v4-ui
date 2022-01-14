@@ -24,6 +24,7 @@ import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
 import { useSelectedChainIdWatcher } from 'lib/hooks/useSelectedChainId'
+import { sentryLog } from 'lib/services/sentryLog'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -140,7 +141,8 @@ const InitPoolTogetherHooks = ({ children }) => {
     fortmaticKey: process.env.NEXT_JS_FORTMATIC_API_KEY,
     portisKey: process.env.NEXT_JS_PORTIS_API_KEY,
     defaultNetworkName: 'homestead',
-    customWalletsConfig: CUSTOM_WALLETS_CONFIG
+    customWalletsConfig: CUSTOM_WALLETS_CONFIG,
+    sentryLog
   })
   return children
 }
