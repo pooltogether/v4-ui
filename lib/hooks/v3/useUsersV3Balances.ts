@@ -13,8 +13,6 @@ import { useAllUsersV3Balances, V3Token } from './useAllUsersV3Balances'
 export const useUsersV3Balances = (usersAddress: string) => {
   const queryResults = useAllUsersV3Balances(usersAddress)
 
-  console.log(queryResults)
-
   return useMemo(() => {
     const refetch = async () => queryResults.forEach((queryResult) => queryResult.refetch())
 
@@ -37,8 +35,6 @@ export const useUsersV3Balances = (usersAddress: string) => {
       if (queryResult?.data?.tokens) {
         tokens = Object.values(queryResult.data.tokens)
       }
-      console.log(queryResult)
-      console.log(tokens)
 
       tokens.forEach((token) => {
         if (!token.balance.amountUnformatted.isZero()) {

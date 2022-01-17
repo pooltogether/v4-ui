@@ -27,7 +27,7 @@ export const V3Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data, isFetched, refetch } = useUsersV3Balances(usersAddress)
-  console.log(data)
+  console.log({ data })
 
   if (!isFetched || data.totalValueUsdScaled.isZero()) return null
 

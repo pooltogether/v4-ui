@@ -6,7 +6,6 @@ import { BigNumber } from 'ethers'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 
 import ERC20Abi from 'abis/ERC20Abi'
-import PodAbi from 'abis/PodAbi'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useV3ChainIds } from './useV3ChainIds'
 import { useV3PrizePools } from './useV3PrizePools'
@@ -78,7 +77,7 @@ const getUsersV3BalancesByChainId = async (
 
   podTickets.map((podTicket) => {
     const ticketAddress = podTicket.address
-    const ticketContract = contract(ticketAddress, PodAbi, ticketAddress)
+    const ticketContract = contract(ticketAddress, ERC20Abi, ticketAddress)
     batchRequests.push(ticketContract.balanceOf(usersAddress))
   })
 
@@ -88,6 +87,7 @@ const getUsersV3BalancesByChainId = async (
   Object.keys(results).forEach((tokenAddress) => {
     const podTicket = podTickets.find((podTicket) => podTicket.address === tokenAddress)
     const isPod = Boolean(podTicket)
+    console.log({ isPod })
 
     const balanceUnformatted = results[tokenAddress].balanceOf[0]
 
@@ -99,17 +99,18 @@ const getUsersV3BalancesByChainId = async (
     const balanceUsd = getAmountFromBigNumber(balanceValueUsdUnformatted, tokenData.decimals)
     const balanceValueUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
 
+    console.log(balance)
+
     tokens[tokenAddress] = {
       prizePool,
       ...tokenData,
+      isPod,
       usdPrice: tokenData.usd,
       balance,
       balanceValueUsdScaled,
       balanceUsd
     }
   })
-
-  console.log(tokens)
 
   return {
     chainId,
