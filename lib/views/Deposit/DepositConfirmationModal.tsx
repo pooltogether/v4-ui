@@ -1,5 +1,6 @@
 import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
+import FeatherIcon from 'feather-icons-react'
 import {
   Tooltip,
   ModalProps,
@@ -18,7 +19,7 @@ import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
-import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import { EstimatedDepositGasItems } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
@@ -31,6 +32,8 @@ import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButto
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
 import { addDays } from 'lib/utils/date'
 import { getTimestampString } from 'lib/utils/getTimestampString'
+import { CHAIN_ID } from 'lib/constants/constants'
+import { BigNumber } from 'ethers'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -172,8 +175,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       className='flex flex-col space-y-4'
     >
       <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
-
-      <div className='w-full mx-auto mt-8'>
+      <div className='w-full mx-auto mt-8 space-y-8'>
         <AmountBeingSwapped
           title={t('depositTicker', { ticker: token.symbol })}
           chainId={chainId}
@@ -182,14 +184,16 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           amount={amountToDeposit}
         />
 
-        <ModalInfoList className='mt-8'>
+        <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
+
+        <ModalInfoList>
           <UpdatedOdds
             amount={amountToDeposit}
             prizePool={prizePool}
             action={EstimateAction.deposit}
           />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItem chainId={chainId} amountUnformatted={amountUnformatted} />
+          <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
         </ModalInfoList>
 
         <TxButtonNetworkGated
@@ -263,5 +267,35 @@ const AccountPageButton = () => {
         {t('viewAccount', 'View account')}
       </SquareLink>
     </Link>
+  )
+}
+
+const MINIMUM_AMOUNTS = {
+  [CHAIN_ID.mainnet]: BigNumber.from(1000),
+  [CHAIN_ID.rinkeby]: BigNumber.from(1000)
+}
+
+const DepositLowAmountWarning = (props: { chainId: number; amountToDeposit: Amount }) => {
+  const { chainId, amountToDeposit } = props
+
+  const { t } = useTranslation()
+
+  const minimumAmount = MINIMUM_AMOUNTS[chainId]
+  const amountToDepositBN = BigNumber.from(amountToDeposit.amount)
+
+  if (!minimumAmount || amountToDepositBN.gt(minimumAmount)) return null
+
+  return (
+    <div className='bg-pt-red bg-opacity-50 dark:bg-opacity-80 p-4 rounded flex space-x-4'>
+      <div className='flex items-center px-2'>
+        <FeatherIcon icon='alert-triangle' className='w-6 h-6' />
+      </div>
+      <span>
+        {t(
+          'smallDepositNotRecommendedTryADifferentChain',
+          `A deposit of this size is not recommended due to the network's gas fees. Try a different blockchain for lower gas fees.`
+        )}
+      </span>
+    </div>
   )
 }
