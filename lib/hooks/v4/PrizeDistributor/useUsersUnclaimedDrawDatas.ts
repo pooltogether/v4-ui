@@ -11,6 +11,7 @@ import { useValidDrawDatas } from './useValidDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useLockedDrawIds } from './useLockedDrawIds'
+import { msToS } from '@pooltogether/utilities'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
@@ -23,6 +24,7 @@ import { useLockedDrawIds } from './useLockedDrawIds'
  * - with stored draw results that have been claimed
  * - where user had 0 average balance during the draw period
  * - that are locked
+ * - that are expired
  * Reruns
  * - When the draw beacon period is updated
  * - When draw locks are updated
@@ -69,7 +71,7 @@ export const useUsersUnclaimedDrawDatas = (
     isClaimedAmountsFetched &&
     userAddressesMatch
 
-  const lockeDrawsKey = lockedDrawIds ? 'lockedDraws-' + lockedDrawIds.join(',') : ''
+  const lockedDrawsKey = lockedDrawIds ? 'lockedDraws-' + lockedDrawIds.join(',') : ''
   const claimedAmountsKey = claimedAmounts
     ? 'claimedAmounts-' +
       Object.values(claimedAmounts)
@@ -89,7 +91,7 @@ export const useUsersUnclaimedDrawDatas = (
       'useUsersUnclaimedDrawDatas',
       prizeDistributor?.id(),
       usersAddress,
-      lockeDrawsKey,
+      lockedDrawsKey,
       claimedAmountsKey,
       normalizedBalancesKey,
       drawDatasKey
@@ -123,6 +125,10 @@ const getUnclaimedDrawDatas = async (
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
 
+  console.log('getUnclaimedDrawDatas', { drawDatas })
+
+  const currentTimestampSeconds = msToS(Date.now())
+
   drawIds.forEach((drawId) => {
     const drawData = drawDatas[drawId]
     const claimedAmount = claimedAmounts[drawId]
@@ -130,14 +136,20 @@ const getUnclaimedDrawDatas = async (
     const isLocked = lockedDrawIds.includes(drawId)
     const drawResult = drawResults?.[drawId]
 
+    const { draw, prizeDistribution } = drawData
+    const drawTimestampSeconds = draw.timestamp.toNumber()
+    const drawExpirationTimestampSeconds = prizeDistribution.expiryDuration + drawTimestampSeconds
+
     // Filter draws with claimed amounts
     // Filter draws with no normalized balance during that period
     // Filter draws that are locked
+    // Filter draws that are expired
     if (
       !claimedAmount.amountUnformatted.isZero() ||
       normalizedBalance.isZero() ||
       isLocked ||
-      (Boolean(drawResult) && drawResult.totalValue.isZero())
+      (Boolean(drawResult) && drawResult.totalValue.isZero()) ||
+      drawExpirationTimestampSeconds <= currentTimestampSeconds
     ) {
       return
     }

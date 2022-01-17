@@ -87,7 +87,6 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
         )
       },
       callbacks: {
-        // onSuccess: onSuccessfulClaim,
         refetch: () => {
           refetchClaimedAmounts()
         }

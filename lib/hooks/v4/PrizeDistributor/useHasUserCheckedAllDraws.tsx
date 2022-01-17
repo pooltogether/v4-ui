@@ -2,7 +2,7 @@ import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useMemo } from 'react'
 
 import { getStoredDrawResults } from 'lib/utils/drawResultsStorage'
-import { useUnlockedDrawIds } from './useUnlockedDrawIds'
+import { useUnclaimedDrawIds } from './useUnclaimedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 
@@ -15,7 +15,10 @@ export const useHasUserCheckedAllDraws = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
 ) => {
-  const { data: drawIds, isFetched: isDrawIdsFetched } = useUnlockedDrawIds(prizeDistributor)
+  const { data: drawIds, isFetched: isDrawIdsFetched } = useUnclaimedDrawIds(
+    usersAddress,
+    prizeDistributor
+  )
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
     usersAddress,
     prizeDistributor
@@ -24,7 +27,7 @@ export const useHasUserCheckedAllDraws = (
     useUsersNormalizedBalances(usersAddress, prizeDistributor)
 
   /**
-   * This is kind of cheeky. We're reading straight from local storage to get the "checked" draw results (Draw results for draws that the user has clicked "Check for prizes" on). If the user hasn't checked the draw before we fetch them when the user clicks "Check for prizes" and then store them in the local storage. This update to local storage WILL NOT trigger this useMemo to rerun. We want that. Otherwise there ma be some other state jumps where the UI expects thte user to not have checked all before, but becaues it was immediately saved, they technically have.
+   * This is kind of cheeky. We're reading straight from local storage to get the "checked" draw results (Draw results for draws that the user has clicked "Check for prizes" on). If the user hasn't checked the draw before we fetch them when the user clicks "Check for prizes" and then store them in the local storage. This update to local storage WILL NOT trigger this useMemo to rerun. We want that. Otherwise there may be some other state jumps where the UI expects the user to not have checked all before, but becaues it was immediately saved, they technically have.
    */
   return useMemo((): {
     data: {
@@ -51,7 +54,7 @@ export const useHasUserCheckedAllDraws = (
     }
 
     const drawResults = getStoredDrawResults(usersAddress, prizeDistributor)
-    const claimedDrawIds = []
+    const claimedDrawIds: number[] = []
 
     Object.keys(claimedAmounts).forEach((drawId) => {
       const amount = claimedAmounts[drawId]
@@ -74,6 +77,7 @@ export const useHasUserCheckedAllDraws = (
         claimedDrawIds.includes(drawId) ||
         drawIdsWithoutANormalizedBalance.includes(drawId)
     )
+    console.log({ hasUserCheckedAllDraws, drawIds, drawResults })
     return {
       data: {
         [usersAddress]: hasUserCheckedAllDraws

@@ -381,7 +381,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
       >
         {isChecking ? (
           <>
-            <ThemedClipSpinner size={12} className='mr-2' />
+            <ThemedClipSpinner size={12} className='my-auto mr-2' />
             {t('checkingForPrizes', 'Checking for prizes')}
           </>
         ) : (
