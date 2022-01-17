@@ -2825,6 +2825,11 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.6.tgz#33038de731b2d71e82036a1995f6e31efa66de3e"
   integrity sha512-vNgzKtHQYBPkDGQK5l2NqtXEzLM9OqYxxUILLWslrBwTD8hlOSfYuJ2RKcomywIst4e0hWRVlbRHkNkLYe0aiQ==
 
+"@pooltogether/utilities@^0.3.7":
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.7.tgz#e63a5296c4f1ec816c7e3d0b9ae544cd075f13b5"
+  integrity sha512-IBUPY7QAhf6wbKIJ96UA02lJPImAnfSDvAFjkiSVzfRIKXKwOZu+5/mjTXADd2pj18MP/w3h8Wszp0J2jFHYYw==
+
 "@pooltogether/v4-core@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-core/-/v4-core-1.2.0.tgz#361aae0e661f441ae490bfff64dc07aa44d1cb47"
@@ -2837,15 +2842,16 @@
     "@pooltogether/yield-source-interface" "1.3.0"
     deploy-eip-1820 "1.0.0"
 
-"@pooltogether/v4-js-client@^0.9.6":
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.9.6.tgz#f2ac460e8c9462cea050f0ccf6fa32ccb35175f9"
-  integrity sha512-LXmCtUj/0OjIhS3xAvxUIs1ntFt2fzO0yGtAhC/s7BzLAxsip/3mQT9fE3HiSnt3dQtmhAOV1/BQXBBUxjNoOg==
+"@pooltogether/v4-js-client@^0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-js-client/-/v4-js-client-0.9.7.tgz#3ada0bfbf371e004ec59e235078cc5c8853b8fd1"
+  integrity sha512-DMR8A2m7vFdJKqL5dx4KzrD//xko9IZo8VmTQQZcFeJzBaTEGbNbzGOk/G87e46GNwJqQOk7x4fGWyQ6FXzBvw==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/draw-calculator-js" "^1.0.3-beta.2"
     "@pooltogether/etherplex" "^1.1.2"
+    "@pooltogether/utilities" "^0.3.7"
     debug "^4.3.3"
 
 "@pooltogether/v4-mainnet@1.1.0":
