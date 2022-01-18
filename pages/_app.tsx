@@ -3,6 +3,7 @@ import * as Fathom from 'fathom-client'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { Provider } from 'jotai'
 import { CUSTOM_WALLETS_CONFIG } from 'lib/customWalletsConfig'
 import {
@@ -22,7 +23,7 @@ import { useTranslation } from 'react-i18next'
 import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from 'lib/components/CustomErrorBoundary'
-import { useSelectedNetworkWatcher } from 'lib/hooks/useSelectedNetwork'
+import { useSelectedChainIdWatcher } from 'lib/hooks/useSelectedChainId'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -32,8 +33,12 @@ import 'react-toastify/dist/ReactToastify.css'
 // Carousel for Prizes
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
 
+// Bottom sheet
+import 'react-spring-bottom-sheet/dist/style.css'
+import 'assets/styles/bottomSheet.css'
+
 // Custom css
-import 'assets/styles/pageHeader.css'
+import 'assets/styles/gradients.css'
 import 'assets/styles/index.css'
 import 'assets/styles/tsunami.css'
 
@@ -63,7 +68,7 @@ function MyApp({ Component, pageProps, router }) {
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_JS_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
-        includedDomains: ['vote.pooltogether.com']
+        includedDomains: ['app.pooltogether.com', 'v4.pooltogether.com']
       })
 
       const onRouteChangeComplete = (url) => {
@@ -106,6 +111,7 @@ function MyApp({ Component, pageProps, router }) {
   return (
     <Provider>
       <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
         <InitPoolTogetherHooks>
           <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
 
@@ -117,8 +123,6 @@ function MyApp({ Component, pageProps, router }) {
               <LoadingScreen isInitialized={i18n.isInitialized}>
                 <Component {...pageProps} />
               </LoadingScreen>
-
-              {/* <ReactQueryDevtools /> */}
             </CustomErrorBoundary>
           </AllContextProviders>
         </InitPoolTogetherHooks>
@@ -128,7 +132,7 @@ function MyApp({ Component, pageProps, router }) {
 }
 
 const InitPoolTogetherHooks = ({ children }) => {
-  useSelectedNetworkWatcher()
+  useSelectedChainIdWatcher()
   useInitReducedMotion(Boolean(process.env.NEXT_JS_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_JS_DOMAIN_NAME)
   useInitializeOnboard({

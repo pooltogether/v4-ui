@@ -1,56 +1,40 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
-import Link from 'next/link'
+import React, { useEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
-import {
-  Amount,
-  Token,
-  Transaction,
-  useTransaction,
-  useIsWalletMetamask
-} from '@pooltogether/hooks'
+import { Transaction, useTransaction, useIsWalletMetamask } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { Card, SquareLink, TokenIcon } from '@pooltogether/react-components'
-import {
-  AddTokenToMetamaskButton,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize
-} from '@pooltogether/react-components'
+import { TokenIcon } from '@pooltogether/react-components'
+import { AddTokenToMetamaskButton } from '@pooltogether/react-components'
 import { ethers, Overrides } from 'ethers'
 
+import { BUTTON_MIN_WIDTH } from 'lib/constants/constants'
 import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
-import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
+import { SwapTokensModalTrigger } from 'lib/components/Modal/SwapTokensModal'
+import { SelectAppChainIdModal } from 'lib/components/SelectAppChainIdModal'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
-import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
-import { useUsersDepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { useUsersPrizePoolBalances } from 'lib/hooks/Tsunami/PrizePool/useUsersPrizePoolBalances'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
+import { usePrizePoolBySelectedChainId } from 'lib/hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useUsersDepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
+import { useUsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from 'lib/views/Deposit/DepositForm'
-import { TxHashRow } from 'lib/components/TxHashRow'
-import { useUsersTicketDelegate } from 'lib/hooks/Tsunami/PrizePool/useUsersTicketDelegate'
-
-import SuccessBalloonsSvg from 'assets/images/success.svg'
+import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
-const BUTTON_MIN_WIDTH = 100
+export const DepositCard = (props: { className?: string }) => {
+  const { className } = props
 
-export const DepositCard = () => {
   const router = useRouter()
 
-  const prizePool = usePrizePoolBySelectedNetwork()
+  const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
-  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+  const user = useSelectedChainIdUser()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
@@ -58,7 +42,7 @@ export const DepositCard = () => {
     refetch: refetchUsersBalances,
     isFetched: isUsersBalancesFetched
   } = useUsersPrizePoolBalances(usersAddress, prizePool)
-  const usersBalances = usersBalancesData?.[usersAddress]
+  const usersBalances = usersBalancesData?.balances
   const {
     data: depositAllowance,
     refetch: refetchUsersDepositAllowance,
@@ -72,10 +56,10 @@ export const DepositCard = () => {
   } = useUsersTicketDelegate(usersAddress, prizePool)
 
   const isDataFetched =
-    isPlayerFetched &&
     isPrizePoolTokensFetched &&
     isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
+    usersBalancesData.usersAddress === usersAddress &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
   const ticketDelegate = delegateData?.[usersAddress]
@@ -91,18 +75,14 @@ export const DepositCard = () => {
 
   const sendTx = useSendTransaction()
 
-  const [depositedAmount, setDepositedAmount] = useState<Amount>()
-
   const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
-  const getKey = (prizePool: PrizePool, action: string) => `${prizePool.id()}-${action}`
+  const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
   const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
   const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
-  const completedDepositTxId = transactionIds?.[getKey(prizePool, 'completed-deposit')] || 0
 
   const approveTx = useTransaction(approveTxId)
   const depositTx = useTransaction(depositTxId)
-  const completedDepositTx = useTransaction(completedDepositTxId)
 
   const setSpecificTxId = (txId: number, prizePool: PrizePool, action: string) =>
     setTransactionIds((prevState) => ({ ...prevState, [getKey(prizePool, action)]: txId }))
@@ -110,8 +90,6 @@ export const DepositCard = () => {
     setSpecificTxId(txId, prizePool, 'approve')
   const setDepositTxId = (txId: number, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'deposit')
-  const setCompletedDepositTxId = (txId: number, prizePool: PrizePool) =>
-    setSpecificTxId(txId, prizePool, 'completed-deposit')
 
   const token = prizePoolTokens?.token
   const ticket = prizePoolTokens?.ticket
@@ -139,11 +117,17 @@ export const DepositCard = () => {
     }
   }, [])
 
+  /**
+   * Close modal and clear tx if it has completed
+   */
   const closeModal = () => {
     const { query, pathname } = router
     delete query.showConfirmModal
     router.replace({ pathname, query }, null, { scroll: false })
     setShowConfirmModal(false)
+    if (depositTx?.completed) {
+      setDepositTxId(0, prizePool)
+    }
   }
 
   const sendApproveTx = async () => {
@@ -151,7 +135,7 @@ export const DepositCard = () => {
     const txId = await sendTx({
       name,
       method: 'approve',
-      callTransaction: async () => player.approveDeposits(),
+      callTransaction: async () => user.approveDeposits(),
       callbacks: {
         refetch: () => refetchUsersDepositAllowance()
       }
@@ -160,10 +144,6 @@ export const DepositCard = () => {
   }
 
   const onSuccess = (tx: Transaction) => {
-    setDepositedAmount(amountToDeposit)
-    setCompletedDepositTxId(tx.id, prizePool)
-    setDepositTxId(0, prizePool)
-    closeModal()
     resetQueryParam()
     refetchTicketDelegate()
   }
@@ -176,10 +156,10 @@ export const DepositCard = () => {
     if (ticketDelegate === ethers.constants.AddressZero) {
       contractMethod = 'depositToAndDelegate'
       callTransaction = async () =>
-        player.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
+        user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
     } else {
       contractMethod = 'depositTo'
-      callTransaction = async () => player.deposit(amountToDeposit.amountUnformatted, overrides)
+      callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
     }
 
     const txId = await sendTx({
@@ -207,71 +187,54 @@ export const DepositCard = () => {
     reset()
     setApproveTxId(0, prizePool)
     setDepositTxId(0, prizePool)
-    setCompletedDepositTxId(0, prizePool)
-    setDepositedAmount(undefined)
   }
 
-  const { chainId } = useSelectedNetwork()
+  /**
+   * Open modal and clear tx if it has completed
+   */
+  const openModal = () => {
+    if (depositTx?.completed) {
+      setDepositTxId(0, prizePool)
+    }
+    setShowConfirmModal(true)
+  }
 
   return (
     <>
-      <div>
-        <Card
-          paddingClassName='px-4 xs:px-8 sm:px-12 py-8 xs:py-6 sm:py-10'
-          className='shadow-xs relative'
-          roundedClassName='rounded-t-xl'
-        >
-          {completedDepositTx ? (
-            <CompletedDeposit
-              chainId={prizePool.chainId}
-              resetState={resetState}
-              tx={completedDepositTx}
-              depositedAmount={depositedAmount}
-              token={token}
-              ticket={ticket}
-            />
-          ) : (
-            <>
-              <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-6 sm:mb-8'>
-                {t('deposit', 'Deposit')}
-                <TokenSymbolAndIcon
-                  className='mr-1 ml-2'
-                  sizeClassName='w-4 h-4'
-                  chainId={prizePool.chainId}
-                  token={token}
-                />{' '}
-                {t('on', 'On')}
-                <SelectedNetworkDropdown className='network-dropdown ml-1 xs:ml-2' />
-              </div>
-              <DepositForm
-                form={form}
-                player={player}
-                isPlayerFetched={isPlayerFetched}
-                prizePool={prizePool}
-                token={token}
-                ticket={ticket}
-                isPrizePoolTokensFetched={isPrizePoolTokensFetched}
-                approveTx={approveTx}
-                depositTx={depositTx}
-                isUsersBalancesFetched={isUsersBalancesFetched}
-                tokenBalance={tokenBalance}
-                ticketBalance={ticketBalance}
-                isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
-                setShowConfirmModal={setShowConfirmModal}
-                amountToDeposit={amountToDeposit}
-              />
-            </>
-          )}
-        </Card>
+      <div className={className}>
+        <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-2 mt-4'>
+          {t('depositOn', 'Deposit on')}
+          <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
+        </div>
+        <DepositForm
+          form={form}
+          user={user}
+          prizePool={prizePool}
+          token={token}
+          ticket={ticket}
+          isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+          approveTx={approveTx}
+          depositTx={depositTx}
+          isUsersBalancesFetched={isUsersBalancesFetched}
+          tokenBalance={tokenBalance}
+          ticketBalance={ticketBalance}
+          isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
+          openModal={openModal}
+          amountToDeposit={amountToDeposit}
+        />
 
-        <div className='w-full flex bg-tsunami-card-bridge justify-around px-2 py-4 rounded-b-xl'>
+        <div className='w-full flex justify-around px-2 py-4'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
           <HelpLink />
-          <GetTokensModalTrigger prizePool={prizePool} />
+          <SwapTokensModalTrigger
+            chainId={prizePool.chainId}
+            outputCurrencyAddress={prizePoolTokens?.token.address}
+          />
         </div>
       </div>
 
       <DepositConfirmationModal
+        chainId={prizePool.chainId}
         isOpen={showConfirmModal}
         closeModal={closeModal}
         label='deposit confirmation modal'
@@ -317,37 +280,6 @@ interface ExternalLinkProps {
   prizePool: PrizePool
 }
 
-const GetTokensModalTrigger = (props: ExternalLinkProps) => {
-  const { prizePool } = props
-  const [showModal, setShowModal] = useState(false)
-  const { data: tokens } = usePrizePoolTokens(prizePool)
-
-  const { t } = useTranslation()
-
-  return (
-    <>
-      <button
-        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
-        onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
-      >
-        <FeatherIcon
-          icon={'plus-circle'}
-          className='relative w-4 h-4 mr-1 inline-block'
-          style={{ left: -2, top: -2 }}
-        />{' '}
-        {t('getTokens', 'Get tokens')}
-      </button>
-      <GetTokensModal
-        label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
-        chainId={prizePool.chainId}
-        tokenAddress={tokens?.token.address}
-        isOpen={showModal}
-        closeModal={() => setShowModal(false)}
-      />
-    </>
-  )
-}
 const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   const { prizePool } = props
   const [showModal, setShowModal] = useState(false)
@@ -381,87 +313,6 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
         closeModal={() => setShowModal(false)}
       />
     </>
-  )
-}
-
-const SuccessBalloons = (props) => (
-  <img
-    src={SuccessBalloonsSvg}
-    alt='success balloons graphic'
-    width={64}
-    className={props.className}
-  />
-)
-
-interface CompletedDepositProps {
-  chainId: number
-  resetState: () => void
-  depositedAmount: Amount
-  tx: Transaction
-  token: Token
-  ticket: Token
-}
-
-const CompletedDeposit = (props: CompletedDepositProps) => {
-  const { resetState, depositedAmount, tx, token, chainId } = props
-  const { t } = useTranslation()
-  const router = useRouter()
-
-  return (
-    <div className='flex flex-col py-4'>
-      <SuccessBalloons className='mx-auto mb-6' />
-
-      <div className='leading-tight mb-4 text-inverse'>
-        <p className='font-inter max-w-xs mx-auto opacity-80 text-center text-xl'>
-          {t('successfullyDeposited', {
-            amount: depositedAmount.amountPretty,
-            ticker: token.symbol
-          })}
-        </p>
-        <p className='font-inter font-semibold max-w-xs mx-auto text-center text-3xl mb-4'>
-          {depositedAmount.amountPretty} {token.symbol}
-        </p>
-
-        <DepositAddTokenButton {...props} />
-      </div>
-
-      <div className={'w-full px-4 py-2 bg-light-purple-10 rounded-lg text-accent-1'}>
-        <TxHashRow depositTx={tx} chainId={chainId} />
-      </div>
-      <div className='w-full font-semibold font-inter gradient-new text-center px-2 xs:px-8 py-2 my-4 text-xs rounded-lg text-inverse'>
-        {t(
-          'disclaimerComeBackRegularlyToClaimWinnings',
-          'You are eligible for all future prizes! Come back to check for winnings, if you don’t claim winnings in 60 days they will expire. <Link>Learn more</Link>'
-        )}
-        <br />
-        <a
-          href='https://docs.pooltogether.com/faq/prizes-and-winning'
-          target='_blank'
-          rel='noopener noreferrer'
-          className='underline text-xs'
-        >
-          {t('learnMore', 'Learn more')}
-        </a>
-      </div>
-
-      <SquareButton
-        size={SquareButtonSize.md}
-        theme={SquareButtonTheme.tealOutline}
-        className='text-xl hover:text-inverse transition-colors mb-2'
-        onClick={resetState}
-      >
-        {t('depositMore', 'Deposit more')}
-      </SquareButton>
-      <Link href={{ pathname: '/account', query: router.query }}>
-        <SquareLink
-          size={SquareButtonSize.sm}
-          theme={SquareButtonTheme.purpleOutline}
-          className='text-xs hover:text-inverse transition-colors text-center'
-        >
-          {t('viewAccount', 'View account')}
-        </SquareLink>
-      </Link>
-    </div>
   )
 }
 

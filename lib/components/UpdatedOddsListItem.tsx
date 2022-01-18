@@ -4,9 +4,9 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 import { InfoListItem } from './InfoList'
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/Tsunami/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 
 export const UpdatedOdds = (props: {
@@ -16,6 +16,11 @@ export const UpdatedOdds = (props: {
 }) => {
   const { amount, prizePool, action } = props
   const { t } = useTranslation()
+
+  // If this is a V3 prize pool don't show odds
+  if (!prizePool) {
+    return null
+  }
 
   return (
     <InfoListItem
@@ -41,14 +46,13 @@ export const UsersOddsValue = (props: {
   const { amount, action, emptyString } = props
   const usersAddress = useUsersAddress()
 
-  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
+  const oddsData = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
     usersAddress,
     action,
     amount?.amountUnformatted
   )
-  const oddsData = data?.[usersAddress]
 
-  if (!Boolean(data)) {
+  if (!Boolean(oddsData)) {
     return <ThemedClipSpinner sizeClassName='w-3 h-3' />
   } else if (oddsData.odds === 0) {
     return <span className='opacity-80'>{emptyString || t('none')}</span>

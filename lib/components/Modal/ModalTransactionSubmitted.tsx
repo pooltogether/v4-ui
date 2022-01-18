@@ -17,40 +17,41 @@ interface ModalTransactionSubmittedProps {
   className?: string
   chainId: number
   tx: Transaction
-  closeModal: any
+  closeModal: () => void
+  hideCloseButton?: boolean
 }
 
 export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps) => {
-  const { chainId, tx, className, closeModal } = props
+  const { chainId, tx, className, closeModal, hideCloseButton } = props
   const { t } = useTranslation()
 
   const url = formatBlockExplorerTxUrl(tx?.hash, chainId)
 
   return (
     <div className={classNames('flex flex-col', className)}>
-      <ClipBoardWithCheckMark className='mx-auto mb-4 w-10' />
-
-      <span className='text-sm text-inverse mb-8 mx-auto opacity-50'>
-        {t('transactionSent', 'Transaction sent')}
-      </span>
-
       <SquareLink
         target='_blank'
         href={url}
         theme={SquareButtonTheme.tealOutline}
         size={SquareButtonSize.md}
-        className='w-full text-center'
+        className='w-full'
       >
         {t('viewReceipt', 'View receipt')}
       </SquareLink>
-      <SquareButton
-        onClick={() => closeModal()}
-        theme={SquareButtonTheme.purpleOutline}
-        size={SquareButtonSize.sm}
-        className='w-full text-center mt-4'
-      >
-        {t('close', 'Close')}
-      </SquareButton>
+      {!hideCloseButton && (
+        <SquareButton
+          onClick={() => closeModal()}
+          theme={SquareButtonTheme.purpleOutline}
+          size={SquareButtonSize.sm}
+          className='w-full mt-4'
+        >
+          {t('close', 'Close')}
+        </SquareButton>
+      )}
     </div>
   )
+}
+
+ModalTransactionSubmitted.defaultProps = {
+  hideCloseButton: false
 }

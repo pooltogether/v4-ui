@@ -1,34 +1,42 @@
 import React from 'react'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
+import FeatherIcon from 'feather-icons-react'
 import {
   Tooltip,
-  Modal,
   ModalProps,
   SquareButton,
+  SquareLink,
+  SquareButtonSize,
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { msToS } from '@pooltogether/utilities'
 
-import { DownArrow } from 'lib/components/DownArrow'
-import { TextInputGroup } from 'lib/components/Input/TextInputGroup'
-import { RectangularInput } from 'lib/components/Input/TextInputs'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
-import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { DepositAllowance } from 'lib/hooks/Tsunami/PrizePool/useUsersDepositAllowance'
-import { useSelectedNetwork } from 'lib/hooks/useSelectedNetwork'
-import { EstimatedDepositGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
+import { EstimatedDepositGasItems } from 'lib/components/InfoList/EstimatedGasItem'
 import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
-import { InfoList, InfoListItem } from 'lib/components/InfoList'
+import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { EstimateAction } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 import { UpdatedOdds } from 'lib/components/UpdatedOddsListItem'
+import { BottomSheet } from 'lib/components/BottomSheet'
+import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButton'
+import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
+import { addDays } from 'lib/utils/date'
+import { getTimestampString } from 'lib/utils/getTimestampString'
+import { CHAIN_ID } from 'lib/constants/constants'
+import { BigNumber } from 'ethers'
 
-interface DepositConfirmationModalProps extends ModalProps {
+interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
+  chainId: number
   prizePool: PrizePool
   token: Token
   ticket: Token
@@ -44,6 +52,7 @@ interface DepositConfirmationModalProps extends ModalProps {
 
 export const DepositConfirmationModal = (props: DepositConfirmationModalProps) => {
   const {
+    chainId,
     prizePool,
     token,
     ticket,
@@ -52,71 +61,74 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     isDataFetched,
     approveTx,
     depositTx,
+    isOpen,
     sendApproveTx,
     sendDepositTx,
     resetState,
-    isOpen,
     closeModal
   } = props
-  const { amount, amountUnformatted } = amountToDeposit
 
-  const { chainId } = useSelectedNetwork()
+  const { amountUnformatted } = amountToDeposit
+
   const { t } = useTranslation()
 
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
   if (!isWalletOnProperNetwork) {
     return (
-      <Modal
+      <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        open={isOpen}
+        onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
         <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </Modal>
+      </BottomSheet>
     )
   }
 
   if (!isDataFetched) {
     return (
-      <Modal
+      <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        open={isOpen}
+        onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
         <ModalLoadingGate className='mt-8' />
-      </Modal>
+      </BottomSheet>
     )
   }
 
-  if (!depositAllowance?.isApproved) {
+  if (amountUnformatted && depositAllowance?.allowanceUnformatted.lt(amountUnformatted)) {
     return (
-      <Modal
+      <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        open={isOpen}
+        onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
           chainId={chainId}
-          prizePool={prizePool}
           approveTx={approveTx}
           sendApproveTx={sendApproveTx}
           className='mt-8'
         />
-      </Modal>
+      </BottomSheet>
     )
   }
 
   if (depositTx && depositTx.sent) {
     if (depositTx.error) {
       return (
-        <Modal
+        <BottomSheet
           label={t('confirmDepositModal', 'Confirm deposit - modal')}
-          isOpen={isOpen}
-          closeModal={closeModal}
+          open={isOpen}
+          onDismiss={closeModal}
+          className='flex flex-col space-y-4'
         >
           <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
           <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -136,81 +148,53 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           >
             {t('tryAgain', 'Try again')}
           </SquareButton>
-        </Modal>
+        </BottomSheet>
       )
     }
 
     return (
-      <Modal
+      <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        isOpen={isOpen}
-        closeModal={closeModal}
+        open={isOpen}
+        onDismiss={closeModal}
+        className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={chainId}
-          tx={depositTx}
-          closeModal={closeModal}
-        />
-      </Modal>
+        <CheckBackForPrizesBox />
+        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <AccountPageButton />
+      </BottomSheet>
     )
   }
 
   return (
-    <Modal
+    <BottomSheet
       label={t('confirmDepositModal', 'Confirm deposit - modal')}
-      isOpen={isOpen}
-      closeModal={closeModal}
+      open={isOpen}
+      onDismiss={closeModal}
+      className='flex flex-col space-y-4'
     >
-      <ModalTitle chainId={prizePool.chainId} title={t('depositConfirmation')} />
-
-      <div className='w-full mx-auto mt-8'>
-        <TextInputGroup
-          readOnly
-          disabled
-          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
-          Input={RectangularInput}
-          textClassName={'text-xl text-right'}
-          className={'font-inter font-semibold opacity-100'}
-          containerBgClassName={'bg-transparent'}
-          containerRoundedClassName={'rounded-lg'}
-          id='quantity-confirm-modal'
-          name='quantity-confirm-modal'
-          register={() => {}}
-          value={amount}
-          label={
-            <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
-              {t('depositTicker', { ticker: token.symbol })}
-            </div>
-          }
+      <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
+      <div className='w-full mx-auto mt-8 space-y-8'>
+        <AmountBeingSwapped
+          title={t('depositTicker', { ticker: token.symbol })}
+          chainId={chainId}
+          from={token}
+          to={ticket}
+          amount={amountToDeposit}
         />
 
-        <DownArrow className='text-inverse' />
+        <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
 
-        <TextInputGroup
-          readOnly
-          disabled
-          symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={ticket} />}
-          Input={RectangularInput}
-          roundedClassName={'rounded-lg'}
-          containerRoundedClassName={'rounded-lg'}
-          bgVarName='var(--color-bg-readonly-tsunami)'
-          id='result-confirm-modal'
-          name='result-confirm-modal'
-          register={() => {}}
-          value={amount}
-        />
-
-        <InfoList className='mt-8'>
+        <ModalInfoList>
           <UpdatedOdds
             amount={amountToDeposit}
             prizePool={prizePool}
             action={EstimateAction.deposit}
           />
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItem prizePool={prizePool} amountUnformatted={amountUnformatted} />
-        </InfoList>
+          <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
+        </ModalInfoList>
 
         <TxButtonNetworkGated
           className='mt-8 w-full'
@@ -222,7 +206,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           {t('confirmDeposit', 'Confirm deposit')}
         </TxButtonNetworkGated>
       </div>
-    </Modal>
+    </BottomSheet>
   )
 }
 
@@ -247,5 +231,71 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
       }
       value={amount.amountPretty}
     />
+  )
+}
+const CheckBackForPrizesBox = () => {
+  const { t } = useTranslation()
+  const eligibleDate = getTimestampString(msToS(addDays(new Date(), 2).getTime()))
+
+  return (
+    <AnimatedBorderCard className='flex flex-col'>
+      <div className='mb-2'>
+        {t('disclaimerComeBackRegularlyToClaimWinnings', { date: eligibleDate })}
+      </div>
+
+      <a
+        href='https://docs.pooltogether.com/faq/prizes-and-winning'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='underline text-xs'
+      >
+        {t('learnMore', 'Learn more')}
+      </a>
+    </AnimatedBorderCard>
+  )
+}
+const AccountPageButton = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+  return (
+    <Link href={{ pathname: '/account', query: router.query }}>
+      <SquareLink
+        size={SquareButtonSize.md}
+        theme={SquareButtonTheme.tealOutline}
+        className='w-full text-center'
+      >
+        {t('viewAccount', 'View account')}
+      </SquareLink>
+    </Link>
+  )
+}
+
+const MINIMUM_AMOUNTS = {
+  [CHAIN_ID.mainnet]: BigNumber.from(1000),
+  [CHAIN_ID.rinkeby]: BigNumber.from(1000)
+}
+
+const DepositLowAmountWarning = (props: { chainId: number; amountToDeposit: Amount }) => {
+  const { chainId, amountToDeposit } = props
+
+  const { t } = useTranslation()
+
+  const minimumAmount = MINIMUM_AMOUNTS[chainId]
+  const amountToDepositBN = BigNumber.from(amountToDeposit.amount)
+
+  if (!minimumAmount || amountToDepositBN.gt(minimumAmount)) return null
+
+  return (
+    <div className='bg-pt-red bg-opacity-50 dark:bg-opacity-80 p-4 rounded flex space-x-4'>
+      <div className='flex items-center px-2'>
+        <FeatherIcon icon='alert-triangle' className='w-6 h-6' />
+      </div>
+      <span>
+        {t(
+          'smallDepositNotRecommendedTryADifferentChain',
+          `A deposit of this size is not recommended due to the network's gas fees. Try a different blockchain for lower gas fees.`
+        )}
+      </span>
+    </div>
   )
 }

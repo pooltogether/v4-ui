@@ -1,5 +1,5 @@
-import { useTicketDecimals } from 'lib/hooks/Tsunami/PrizePool/useTicketDecimals'
-import { useEstimatedOddsForAmount } from 'lib/hooks/Tsunami/useEstimatedOddsForAmount'
+import { useTicketDecimals } from 'lib/hooks/v4/PrizePool/useTicketDecimals'
+import { useEstimatedOddsForAmount } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 import React from 'react'
 import { Trans } from 'react-i18next'

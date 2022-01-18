@@ -1,14 +1,39 @@
 import classnames from 'classnames'
+import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
-export const InfoList = (
-  props: React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement>
-) => (
-  <ul
-    className={classnames('text-inverse rounded-lg py-4 px-4 bg-pt-purple-bright', props.className)}
-  >
-    {props.children}
-  </ul>
+interface InfoListProps
+  extends DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
+  bgClassName?: string
+  textClassName?: string
+}
+
+export const ModalInfoList = (props: Omit<InfoListProps, 'bgClassName' & 'textClassName'>) => (
+  <InfoList
+    {...props}
+    bgClassName='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10'
+    textClassName=''
+  />
 )
+
+export const InfoList = (props: InfoListProps) => {
+  const { className, bgClassName, textClassName, ...ulProps } = props
+  return (
+    <ul
+      {...ulProps}
+      className={classnames(
+        className,
+        bgClassName,
+        textClassName,
+        'w-full px-4 py-2 rounded-lg transition'
+      )}
+    />
+  )
+}
+
+InfoList.defaultProps = {
+  bgClassName: 'bg-tertiary',
+  textClassName: 'text-accent-1'
+}
 
 interface InfoListItemProps {
   className?: string

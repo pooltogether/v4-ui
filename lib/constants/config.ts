@@ -1,62 +1,30 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { CHAIN_ID } from 'lib/constants/constants'
+import { testnet, mainnet } from '@pooltogether/v4-pool-data'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
-/**
- * "Network" meaning:
- *    Ethereum - mainnet, rinkeby, goerli, etc
- *    Polygon - matic, mumbai
- *    etc.
- */
-export enum Network {
-  ethereum = 'ethereum',
-  polygon = 'polygon',
-  avalanche = 'avalanche'
-}
-
-export const SUPPORTED_NETWORKS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.polygon, CHAIN_ID.mainnet],
-  // [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby, CHAIN_ID.fuji]
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.mumbai, CHAIN_ID.rinkeby]
+export const SUPPORTED_CHAIN_IDS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))),
+  [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
 })
 
-export const DEFAULT_NETWORKS = Object.freeze({
+export const SUPPORTED_CHAIN_NAMES = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(
+    getNetworkNameAliasByChainId
+  ),
+  [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(
+    getNetworkNameAliasByChainId
+  )
+})
+
+export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
-})
-
-/**
- * Ethereum
- * Mainnet - mainnet
- * Testnet - rinkeby
- */
-export const ETHEREUM_NETWORK = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
-})
-
-/**
- * Polygon
- * Mainnet - polygon
- * Testnet - mumbai
- */
-export const POLYGON_NETWORK = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
-})
-
-/**
- * Polygon
- * Mainnet - avalanche
- * Testnet - fuji
- */
-export const AVALANCHE_NETWORK = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.avalanche,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.fuji
 })
 
 // Native currency symbols in app
@@ -94,7 +62,9 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ]
+  ],
+  [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
+  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }]
 })
 
 /**
@@ -113,35 +83,8 @@ const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.polygon]: (tokenAddress: string) =>
     `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`
-})
-
-/**
- * Prize Distributors to display in app
- */
-export const PRIZE_DISTRIBUTORS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: {
-    [CHAIN_ID.mainnet]: '0xb9a179DcA5a7bf5f8B9E088437B3A85ebB495eFe',
-    [CHAIN_ID.polygon]: '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056'
-  },
-  [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0xf49df4D05d9C99160777b79AdE9aA9222b202eAA',
-    [CHAIN_ID.mumbai]: '0x8F3D72C660cE938FA2A5138a5EDb6496C81fADcC'
-    // [CHAIN_ID.fuji]: '0xb29f3A6FD902A2b8971897e92D64C12105492E5E'
-  }
-})
-
-/**
- * Prize Pools to display in app
- */
-export const PRIZE_POOLS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: {
-    [CHAIN_ID.mainnet]: '0xd89a09084555a7D0ABe7B111b1f78DFEdDd638Be',
-    [CHAIN_ID.polygon]: '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60'
-  },
-  [APP_ENVIRONMENTS.testnets]: {
-    [CHAIN_ID.rinkeby]: '0x996b69422d473a9B48e4A6C980328365B45847Ca',
-    [CHAIN_ID.mumbai]: '0xF5165834Fc6ecbBFe6c4317673D6eF2C2d905BcB'
-    // [CHAIN_ID.fuji]: '0x21CCBF996eD8f9306064bdc3Da553751e27650c0'
-  }
+    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.avalanche]: (tokenAddress: string) =>
+    `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })

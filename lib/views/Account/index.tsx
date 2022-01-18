@@ -1,39 +1,40 @@
 import React from 'react'
-import { BackToV3Banner } from 'lib/components/BackToV3Banner'
-import { useSelectedNetworkPlayer } from 'lib/hooks/Tsunami/Player/useSelectedNetworkPlayer'
+import { useSelectedChainIdUser } from 'lib/hooks/v4/User/useSelectedChainIdUser'
 import { PagePadding } from 'lib/components/Layout/PagePadding'
 import { ConnectWalletCard } from 'lib/components/ConnectWalletCard'
-import { AccountCard, OddsDisclaimer } from 'lib/views/Account/AccountCard'
+import { AccountCard } from 'lib/views/Account/AccountCard'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
+import { OddsDisclaimer } from './OddsDisclaimer'
+import { V4Deposits } from './V4Deposits'
+import { V3Deposits } from './V3Deposits'
+import { StakingDeposits } from './StakingDeposits'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
 
-  const { data: player, isFetched: isPlayerFetched } = useSelectedNetworkPlayer()
+  const user = useSelectedChainIdUser()
 
   if (!isWalletConnected) {
     return (
-      <PagePadding>
+      <PagePadding className='space-y-8'>
         <Piggy className='w-20 sm:w-32 mb-2 sm:mb-4 mx-auto' />
         <span className='mx-auto mb-6 text-xs sm:text-lg block text-center'>
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
         <OddsDisclaimer className='block mt-6' />
-        <div className='mt-4'>
-          <BackToV3Banner />
-        </div>
       </PagePadding>
     )
   }
 
   return (
-    <PagePadding>
-      <AccountCard player={player} isPlayerFetched={isPlayerFetched} />
-      <div className='mt-4'>
-        <BackToV3Banner />
-      </div>
+    <PagePadding className='space-y-8'>
+      <AccountCard user={user} />
+      <V4Deposits />
+      <StakingDeposits />
+      <V3Deposits />
+      <OddsDisclaimer className='block mt-6' />
     </PagePadding>
   )
 }

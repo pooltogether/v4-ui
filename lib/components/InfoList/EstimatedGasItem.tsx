@@ -4,14 +4,8 @@ import { useGasCostEstimate } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-js-client'
 import { numberWithCommas } from '@pooltogether/utilities'
 
-// import {
-//   useApproveDepositsGasEstimate,
-//   useDepositGasEstimate,
-//   useWithdrawGasEstimate
-// } from 'lib/hooks/Tsunami/PrizePool/useGasEstimates'
 import { InfoListItem } from 'lib/components/InfoList'
 import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 
@@ -19,16 +13,15 @@ interface EstimatedGasItemProps {
   chainId: number
   isFetched: boolean
   txName: string
+  label: string
   totalGasWei?: number
   totalGasUsd?: number
   error?: unknown
 }
 
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
-  const { txName, totalGasWei, totalGasUsd, isFetched, chainId } = props
+  const { txName, totalGasWei, totalGasUsd, isFetched, chainId, label } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
-  const { t } = useTranslation()
-  const label = t('estimatedNetworkFees', 'Estimated network fees')
 
   let valueJsx
 
@@ -69,121 +62,107 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
   return <InfoListItem label={label} value={valueJsx} />
 }
 
-interface EstimatedPrizePoolGasItemProps {
-  prizePool: PrizePool
+interface EstimatedTxWithAmountProps {
+  label?: string
+  chainId: number
+  amountUnformatted?: BigNumber
 }
 
-interface EstimatedPrizePoolGasItemWithAmountProps extends EstimatedPrizePoolGasItemProps {
-  amountUnformatted: BigNumber
+interface SimpleEstimatedGasItemProps extends EstimatedTxWithAmountProps {
+  gasAmount: BigNumber
+  txName: string
 }
 
 // hard-coded gas used while testing in Wei
-const DEPOSIT_GAS_AMOUNT = BigNumber.from('243724')
-const WITHDRAW_GAS_AMOUNT = BigNumber.from('176702')
-const APPROVE_GAS_AMOUNT = BigNumber.from('46614')
+const DEPOSIT_GAS_AMOUNT = BigNumber.from('500000')
+const CLAIM_GAS_AMOUNT = BigNumber.from('400000')
+const WITHDRAW_GAS_AMOUNT = BigNumber.from('450000')
+const APPROVE_GAS_AMOUNT = BigNumber.from('50000')
 
-export const EstimatedApproveAndDepositGasItem = (
-  props: EstimatedPrizePoolGasItemWithAmountProps
-) => {
-  const { prizePool } = props
+export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountProps) => {
+  const { chainId } = props
 
   let totalGasWei, totalGasUsd
+
+  const { t } = useTranslation()
 
   const {
     totalGasWei: depositTotalGasWei,
     totalGasUsd: depositTotalGasUsd,
     isFetched: depositIsFetched,
     error: depositError
-  } = useGasCostEstimate(DEPOSIT_GAS_AMOUNT, prizePool.chainId)
+  } = useGasCostEstimate(DEPOSIT_GAS_AMOUNT, chainId)
 
   const {
     totalGasWei: approveTotalGasWei,
     totalGasUsd: approveTotalGasUsd,
     isFetched: approveIsFetched,
     error: approveError
-  } = useGasCostEstimate(APPROVE_GAS_AMOUNT, prizePool.chainId)
+  } = useGasCostEstimate(APPROVE_GAS_AMOUNT, chainId)
 
   const isFetched = depositIsFetched && approveIsFetched
   const error = depositError && approveError
 
-  if (isFetched && !error) {
+  if (isFetched && !error && depositTotalGasWei && depositTotalGasUsd) {
     totalGasWei = depositTotalGasWei.add(approveTotalGasWei)
     totalGasUsd = depositTotalGasUsd.add(approveTotalGasUsd)
   }
 
   return (
     <EstimatedGasItem
+      label={t('estimatedNetworkFees', 'Estimated network fees')}
       txName='approve-and-deposit'
       totalGasWei={totalGasWei}
       totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
+      chainId={chainId}
       isFetched={isFetched}
       error={error}
     />
   )
 }
 
-export const EstimatedDepositGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
-  const { prizePool } = props
+const SimpleEstimatedGasItem = (props: SimpleEstimatedGasItemProps) => {
+  const { chainId, label, txName, gasAmount } = props
 
-  // const { prizePool, amountUnformatted } = props
-  // const { data: gasAmount, isFetched } = useDepositGasEstimate(prizePool, amountUnformatted)
+  const { t } = useTranslation()
 
-  const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(
-    DEPOSIT_GAS_AMOUNT,
-    prizePool.chainId
-  )
+  const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(gasAmount, chainId)
 
   return (
     <EstimatedGasItem
-      txName='deposit'
+      label={label || t('estimatedNetworkFees', 'Estimated network fees')}
+      txName={txName}
       totalGasWei={totalGasWei}
       totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
+      chainId={chainId}
       isFetched={isFetched}
       error={error}
     />
   )
 }
 
-export const EstimatedWithdrawalGasItem = (props: EstimatedPrizePoolGasItemWithAmountProps) => {
-  const { prizePool, amountUnformatted } = props
-  // const { data: gasEstimate, isFetched } = useWithdrawGasEstimate(prizePool, amountUnformatted)
+export const EstimatedWithdrawalGasItem = (props: EstimatedTxWithAmountProps) => (
+  <SimpleEstimatedGasItem {...props} txName='withdraw' gasAmount={WITHDRAW_GAS_AMOUNT} />
+)
+export const EstimatedDepositGasItem = (props: EstimatedTxWithAmountProps) => (
+  <SimpleEstimatedGasItem {...props} txName='deposit' gasAmount={DEPOSIT_GAS_AMOUNT} />
+)
+export const EstimatedApproveGasItem = (props: EstimatedTxWithAmountProps) => (
+  <SimpleEstimatedGasItem {...props} txName='approve' gasAmount={APPROVE_GAS_AMOUNT} />
+)
+export const EstimatedClaimPrizesGasItem = (props: EstimatedTxWithAmountProps) => (
+  <SimpleEstimatedGasItem {...props} txName='claim' gasAmount={CLAIM_GAS_AMOUNT} />
+)
 
-  const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(
-    WITHDRAW_GAS_AMOUNT,
-    prizePool.chainId
-  )
-
-  return (
-    <EstimatedGasItem
-      txName='withdraw'
-      totalGasWei={totalGasWei}
-      totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
-      isFetched={isFetched}
-      error={error}
-    />
-  )
-}
-
-export const EstimatedApproveDepositsGasItem = (props: EstimatedPrizePoolGasItemProps) => {
-  const { prizePool } = props
-  // const { data: gasEstimate, isFetched } = useApproveDepositsGasEstimate(prizePool)
-
-  const { totalGasWei, totalGasUsd, isFetched, error } = useGasCostEstimate(
-    APPROVE_GAS_AMOUNT,
-    prizePool.chainId
-  )
+export const EstimatedDepositGasItems = (props: EstimatedTxWithAmountProps) => {
+  const { t } = useTranslation()
 
   return (
-    <EstimatedGasItem
-      txName='approve'
-      totalGasWei={totalGasWei}
-      totalGasUsd={totalGasUsd}
-      chainId={prizePool.chainId}
-      isFetched={isFetched}
-      error={error}
-    />
+    <>
+      <InfoListItem label={t('estimatedNetworkFees', 'Estimated network fees')} value={undefined} />
+      <EstimatedDepositGasItem {...props} label={t('deposit')} />
+      <EstimatedClaimPrizesGasItem {...props} label={t('prizeClaims', 'Prize claims')} />
+      <EstimatedWithdrawalGasItem {...props} label={t('withdrawal', 'Withdrawal')} />
+    </>
   )
 }

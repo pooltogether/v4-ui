@@ -3,7 +3,7 @@ import ordinal from 'ordinal'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
-import { Draw, DrawResults, PrizeAwardable, PrizeDistribution } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeAwardable } from '@pooltogether/v4-js-client'
 
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
@@ -169,7 +169,11 @@ const PrizeListHeader = (props: {
     <div className='flex w-full justify-between'>
       <div className={classNames(className, 'flex flex-col space-y-1 text-xs font-bold')}>
         <span className='text-accent-1 uppercase'>{t('drawNumber', { number: drawId })}</span>
-        <span className='text-inverse'>{getTimestampStringWithTime(draw.timestamp)}</span>
+        <span className='text-inverse'>
+          {getTimestampStringWithTime(
+            draw.beaconPeriodStartedAt.toNumber() + draw.beaconPeriodSeconds
+          )}
+        </span>
       </div>
       <div>
         <Switch enabled={enabled} setEnabled={setEnabled} />

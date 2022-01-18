@@ -3,7 +3,7 @@ import { PrizeDistributor, DrawResults } from '@pooltogether/v4-js-client'
 import { atomWithStorage } from 'jotai/utils'
 
 /**
- * Draw ids the usser doesn't want to claim
+ * Draw ids the user doesn't want to claim
  */
 const DRAW_IDS_TO_NOT_CLAIM_KEY = 'draw_ids_to_not_claim'
 export const drawIdsToNotClaimAtom = atomWithStorage(DRAW_IDS_TO_NOT_CLAIM_KEY, new Set<number>(), {

@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import React, { useMemo, useRef, useState } from 'react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
@@ -14,14 +13,14 @@ import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4
 import { useTranslation } from 'react-i18next'
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 
-import { usePrizePoolTokens } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolTokens'
+import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { PrizeClaimModal } from '../PrizeClaimModal'
+import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from 'lib/types/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
-import { useUsersUnclaimedDrawDatas } from 'lib/hooks/Tsunami/PrizeDistributor/useUsersUnclaimedDrawDatas'
+import { useUsersUnclaimedDrawDatas } from 'lib/hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import {
   drawIdsToNotClaimAtom,
@@ -31,9 +30,9 @@ import {
   updateDrawResults
 } from 'lib/utils/drawResultsStorage'
 import { useAtom } from 'jotai'
-import { useHasUserCheckedAllDraws } from 'lib/hooks/Tsunami/PrizeDistributor/useHasUserCheckedAllDraws'
+import { useHasUserCheckedAllDraws } from 'lib/hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
-import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/Tsunami/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { useUsersUnclaimedWinningDrawResults } from 'lib/hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -89,14 +88,16 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   }
 
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <MultiDrawsClaimSection
-        {...props}
-        drawDatas={drawDatas}
-        token={prizePoolTokens.token}
-        ticket={prizePoolTokens.ticket}
-      />
-    </Card>
+    <div>
+      <Card className='draw-card' paddingClassName=''>
+        <MultiDrawsClaimSection
+          {...props}
+          drawDatas={drawDatas}
+          token={prizePoolTokens.token}
+          ticket={prizePoolTokens.ticket}
+        />
+      </Card>
+    </div>
   )
 }
 
@@ -165,10 +166,10 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
           setCheckedState={setCheckedState}
           openModal={() => setIsModalOpen(true)}
           claimTx={claimTx}
-          className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
+          className='flex items-center text-center mx-auto xs:mx-0 w-full sm:w-auto'
         />
       </div>
-      <PrizeClaimModal
+      <PrizeClaimSheet
         {...props}
         setTxId={setTxId}
         claimTx={claimTx}
@@ -261,13 +262,13 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
           theme={SquareButtonTheme.rainbow}
           size={SquareButtonSize.md}
           onClick={() => setIsModalOpen(true)}
-          className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
+          className='mx-auto xs:mx-0 w-full sm:w-auto'
           style={{ minWidth: 230 }}
         >
           {t('viewPrizes', 'View prizes')}
         </SquareButton>
       </div>
-      <PrizeClaimModal
+      <PrizeClaimSheet
         {...props}
         setTxId={setTxId}
         claimTx={claimTx}
@@ -431,7 +432,7 @@ const getUsersDrawResults = async (
         // Store draw result
       } catch (e) {
         console.log(e.message)
-        drawResults = await prizeDistributor.getUsersPrizes(usersAddress, draw)
+        drawResults = await prizeDistributor.calculateUsersPrizes(usersAddress, draw)
       }
       newDrawResults[draw.drawId] = drawResults
     }

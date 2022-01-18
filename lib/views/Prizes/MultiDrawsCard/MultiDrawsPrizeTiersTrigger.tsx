@@ -1,11 +1,12 @@
 import { Token } from '@pooltogether/hooks'
 import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { DrawData } from 'lib/types/v4'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { MultiDrawPrizeBreakdownModal } from './MultiDrawPrizeBreakdownModal'
+import { MultiDrawPrizeBreakdownSheet } from './MultiDrawPrizeBreakdownSheet'
 
 export const MultiDrawsPrizeTiersTrigger = (props: {
   ticket: Token
@@ -23,16 +24,15 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 
   return (
     <>
-      <SquareButton
-        theme={SquareButtonTheme.tealOutline}
-        size={SquareButtonSize.sm}
-        className={classNames(className, textClassName)}
+      <button
+        className={classNames(className, textClassName, 'flex items-center')}
         onClick={() => setIsOpen(true)}
       >
         {label || t('viewPrizeTiers', 'View prize tiers')}
-      </SquareButton>
+        <FeatherIcon icon='chevron-right' className='w-4 h-4 ml-1' />
+      </button>
 
-      <MultiDrawPrizeBreakdownModal
+      <MultiDrawPrizeBreakdownSheet
         drawDatas={drawDatas}
         ticket={ticket}
         isOpen={isOpen}
@@ -44,5 +44,5 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
 
 MultiDrawsPrizeTiersTrigger.defaultProps = {
   textClassName:
-    'uppercase font-bold text-xxs sm:text-xs text-highlight-9 hover:text-inverse transition leading-none tracking-wide'
+    'uppercase font-bold text-xxs sm:text-xs opacity-70 hover:opacity-100 transition leading-none tracking-wide'
 }
