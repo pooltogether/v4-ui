@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Transaction } from '@pooltogether/hooks'
+import { Amount, Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
@@ -10,18 +10,20 @@ import {
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 
+import { DepositLowAmountWarning } from 'lib/views/DepositLowAmountWarning'
 import { ModalInfoList } from 'lib/components/InfoList'
-import { EstimatedApproveDepositsGasItem } from 'lib/components/InfoList/EstimatedGasItem'
+import { EstimatedDepositGasItems } from 'lib/components/InfoList/EstimatedGasItem'
 
 interface ModalApproveGateProps {
   className?: string
+  amountToDeposit?: Amount
   chainId: number
   approveTx: Transaction
   sendApproveTx: () => void
 }
 
 export const ModalApproveGate = (props: ModalApproveGateProps) => {
-  const { className, chainId, approveTx, sendApproveTx } = props
+  const { className, chainId, approveTx, sendApproveTx, amountToDeposit } = props
 
   const { t } = useTranslation()
 
@@ -73,9 +75,12 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           .
         </p>
       </div>
-      <ModalInfoList className='mb-6'>
-        <EstimatedApproveDepositsGasItem chainId={chainId} />
+      <ModalInfoList className='mb-2'>
+        <EstimatedDepositGasItems chainId={chainId} showApprove />
       </ModalInfoList>
+      <div className='mb-6'>
+        <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
+      </div>
       <SquareButton className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}
       </SquareButton>

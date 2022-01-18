@@ -1,6 +1,6 @@
 import React from 'react'
+import Link from 'next/link'
 import { Amount, Token, Transaction } from '@pooltogether/hooks'
-import FeatherIcon from 'feather-icons-react'
 import {
   Tooltip,
   ModalProps,
@@ -11,7 +11,6 @@ import {
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 
@@ -20,8 +19,6 @@ import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { EstimatedDepositGasItems } from 'lib/components/InfoList/EstimatedGasItem'
-import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
-import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
@@ -30,10 +27,11 @@ import { BottomSheet } from 'lib/components/BottomSheet'
 import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
 import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButton'
 import { AnimatedBorderCard } from 'lib/components/AnimatedCard'
+import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
+import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
+import { DepositLowAmountWarning } from 'lib/views/DepositLowAmountWarning'
 import { addDays } from 'lib/utils/date'
 import { getTimestampString } from 'lib/utils/getTimestampString'
-import { CHAIN_ID } from 'lib/constants/constants'
-import { BigNumber } from 'ethers'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -112,6 +110,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       >
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
         <ModalApproveGate
+          amountToDeposit={amountToDeposit}
           chainId={chainId}
           approveTx={approveTx}
           sendApproveTx={sendApproveTx}
@@ -254,6 +253,7 @@ const CheckBackForPrizesBox = () => {
     </AnimatedBorderCard>
   )
 }
+
 const AccountPageButton = () => {
   const { t } = useTranslation()
   const router = useRouter()
@@ -267,35 +267,5 @@ const AccountPageButton = () => {
         {t('viewAccount', 'View account')}
       </SquareLink>
     </Link>
-  )
-}
-
-const MINIMUM_AMOUNTS = {
-  [CHAIN_ID.mainnet]: BigNumber.from(1000),
-  [CHAIN_ID.rinkeby]: BigNumber.from(1000)
-}
-
-const DepositLowAmountWarning = (props: { chainId: number; amountToDeposit: Amount }) => {
-  const { chainId, amountToDeposit } = props
-
-  const { t } = useTranslation()
-
-  const minimumAmount = MINIMUM_AMOUNTS[chainId]
-  const amountToDepositBN = BigNumber.from(amountToDeposit.amount)
-
-  if (!minimumAmount || amountToDepositBN.gt(minimumAmount)) return null
-
-  return (
-    <div className='bg-pt-red bg-opacity-50 dark:bg-opacity-80 p-4 rounded flex space-x-4'>
-      <div className='flex items-center px-2'>
-        <FeatherIcon icon='alert-triangle' className='w-6 h-6' />
-      </div>
-      <span>
-        {t(
-          'smallDepositNotRecommendedTryADifferentChain',
-          `A deposit of this size is not recommended due to the network's gas fees. Try a different blockchain for lower gas fees.`
-        )}
-      </span>
-    </div>
   )
 }
