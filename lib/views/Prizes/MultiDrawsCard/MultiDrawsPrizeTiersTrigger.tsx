@@ -29,7 +29,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
         onClick={() => setIsOpen(true)}
       >
         {label || t('viewPrizeTiers', 'View prize tiers')}
-        <FeatherIcon icon='chevron-right' className='w-6 h-6 ml-1' />
+        <FeatherIcon icon='chevron-right' className='w-4 h-4 ml-1' />
       </button>
 
       <MultiDrawPrizeBreakdownSheet

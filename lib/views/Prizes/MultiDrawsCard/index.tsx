@@ -166,7 +166,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
           setCheckedState={setCheckedState}
           openModal={() => setIsModalOpen(true)}
           claimTx={claimTx}
-          className='text-center mx-auto xs:mx-0 w-full sm:w-auto'
+          className='flex items-center text-center mx-auto xs:mx-0 w-full sm:w-auto'
         />
       </div>
       <PrizeClaimSheet
@@ -381,7 +381,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
       >
         {isChecking ? (
           <>
-            <ThemedClipSpinner size={12} className='my-auto mr-2' />
+            <ThemedClipSpinner size={12} className='mr-2' />
             {t('checkingForPrizes', 'Checking for prizes')}
           </>
         ) : (
