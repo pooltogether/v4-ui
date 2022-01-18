@@ -9,7 +9,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import classNames from 'classnames'
-import { Amount, useTransaction } from '@pooltogether/hooks'
+import { Amount, Token, useTransaction } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -19,6 +19,9 @@ import { V3Token } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { WithdrawView } from './WithdrawView'
+import { useUsersV3PodBalances } from 'lib/hooks/v3/useUsersV3PodBalances'
+import { PodBalance } from 'lib/hooks/v3/useAllUsersV3PodBalances'
+import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 const LP_POOL_ADDRESS = '0x3af7072d29adde20fc7e173a7cb9e45307d2fb0a'
 const POOL_POOL_ADDRESS = '0x396b4489da692788e327e2e4b2b0459a5ef26791'
@@ -26,22 +29,39 @@ const POOL_POOL_ADDRESS = '0x396b4489da692788e327e2e4b2b0459a5ef26791'
 export const V3Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data, isFetched, refetch } = useUsersV3Balances(usersAddress)
-  console.log({ data })
+  const {
+    data: prizePoolBalances,
+    isFetched: isPrizePoolBalancesFetched,
+    refetch: refetchPrizePoolBalances
+  } = useUsersV3Balances(usersAddress)
+  const { data: podBalances, isFetched: isPodBalancesFetched } = useUsersV3PodBalances(usersAddress)
 
-  if (!isFetched || data.totalValueUsdScaled.isZero()) return null
+  // Show nothing while loading
+  if (!isPrizePoolBalancesFetched || !isPodBalancesFetched) return null
+
+  const totalValueUsdScaled = prizePoolBalances.totalValueUsdScaled.add(
+    podBalances.totalValueUsdScaled
+  )
+  const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+
+  // Show nothing if the user has no v3 balances
+  if (totalValueUsd.amountUnformatted.isZero()) {
+    return null
+  }
 
   return (
     <div>
       <div className='mb-2 flex items-center justify-between'>
-        <CardTitle
-          title={`V3 ${t('deposits')}`}
-          secondary={`$${data.totalValueUsd.amountPretty}`}
-        />
+        <CardTitle title={`V3 ${t('deposits')}`} secondary={`$${totalValueUsd.amountPretty}`} />
         <V3AppLink />
       </div>
-      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
-        <DepositsList data={data} isFetched={isFetched} refetch={refetch} />
+      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4 space-y-4'>
+        <DepositsList
+          data={prizePoolBalances}
+          isFetched={isPrizePoolBalancesFetched}
+          refetch={refetchPrizePoolBalances}
+        />
+        <PodsDepositsList data={podBalances} isFetched={isPodBalancesFetched} />
       </div>
     </div>
   )
@@ -80,6 +100,10 @@ const DepositsList = (props: {
       LP_POOL_ADDRESS !== balance.prizePool.prizePool.address
   )
 
+  if (filteredBalances.length === 0) {
+    return null
+  }
+
   return (
     <ul className='space-y-4'>
       {filteredBalances.map((balance) => {
@@ -87,6 +111,37 @@ const DepositsList = (props: {
           <DepositItem
             key={'deposit-balance-' + balance.address + balance.prizePool.chainId}
             refetchBalances={refetch}
+            {...balance}
+          />
+        )
+      })}
+    </ul>
+  )
+}
+
+const PodsDepositsList = (props: {
+  data: {
+    balances: PodBalance[]
+    totalValueUsdScaled: BigNumber
+    totalValueUsd: Amount
+  }
+  isFetched: boolean
+}) => {
+  const { data, isFetched } = props
+  if (!isFetched) {
+    return <LoadingList />
+  }
+
+  if (data.balances.length === 0) {
+    return null
+  }
+
+  return (
+    <ul className='space-y-4'>
+      {data.balances.map((balance) => {
+        return (
+          <PodDepositItem
+            key={'pod-deposit-balance-' + balance.address + balance.pod.prizePool.config.chainId}
             {...balance}
           />
         )
@@ -151,7 +206,7 @@ const DepositItem = (props: DepositItemsProps) => {
           symbol={underlyingToken.symbol}
           address={underlyingToken.address}
         />
-        <DepositBalance {...props} />
+        <DepositBalance balanceUsd={balanceUsd} chainId={chainId} ticket={ticket} />
       </button>
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -181,6 +236,93 @@ const DepositItem = (props: DepositItemsProps) => {
             ),
             label: t('withdraw'),
             theme: SquareButtonTheme.tealOutline
+          }
+        ]}
+        tx={tx}
+        token={ticket}
+        balance={balance}
+        balanceUsd={balanceUsd}
+        t={t}
+        contractLinks={contractLinks}
+        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        isWalletMetaMask={isWalletMetaMask}
+      />
+    </li>
+  )
+}
+
+export interface PodDepositItemsProps extends PodBalance {}
+
+const PodDepositItem = (props: PodDepositItemsProps) => {
+  const { pod, balance, balanceUsd } = props
+
+  const [isOpen, setIsOpen] = useState(false)
+  const { t } = useTranslation()
+
+  const prizePool = pod.prizePool
+  const chainId: number = prizePool.config.chainId
+  const underlyingToken = prizePool.tokens.underlyingToken
+  const ticket = pod.tokens.podStablecoin
+
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+
+  const contractLinks: ContractLink[] = [
+    {
+      i18nKey: 'prizePool',
+      chainId,
+      address: prizePool.prizePool.address
+    },
+    {
+      i18nKey: 'prizeStrategy',
+      chainId,
+      address: prizePool.prizeStrategy.address
+    },
+    {
+      i18nKey: 'depositToken',
+      chainId,
+      address: prizePool.tokens.underlyingToken.address
+    },
+    {
+      i18nKey: 'ticketToken',
+      chainId,
+      address: prizePool.tokens.ticket.address
+    },
+    {
+      i18nKey: 'podTicket',
+      chainId,
+      address: pod.tokens.podStablecoin.address
+    }
+  ]
+  const onDismiss = () => setIsOpen(false)
+
+  return (
+    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
+      <button
+        className='p-4 w-full flex justify-between items-center'
+        onClick={() => {
+          setIsOpen(true)
+        }}
+      >
+        <UnderlyingTokenLabel
+          isPod
+          chainId={chainId}
+          symbol={underlyingToken.symbol}
+          address={underlyingToken.address}
+        />
+        <DepositBalance balanceUsd={balanceUsd} chainId={chainId} ticket={ticket} />
+      </button>
+      <BalanceBottomSheet
+        banner={<DeprecatedBanner />}
+        title={`V3 ${t('podTicker', { ticker: underlyingToken.symbol })}`}
+        open={isOpen}
+        onDismiss={onDismiss}
+        chainId={chainId}
+        externalLinks={[
+          {
+            id: prizePool.prizePool.address,
+            label: t('withdraw'),
+            href: `https://v3.pooltogether.com/account`
           }
         ]}
         tx={null}
@@ -216,7 +358,12 @@ const DeprecatedBanner = () => {
   )
 }
 
-const UnderlyingTokenLabel = (props: { chainId: number; address: string; symbol: string }) => (
+const UnderlyingTokenLabel = (props: {
+  chainId: number
+  address: string
+  symbol: string
+  isPod?: boolean
+}) => (
   <div className='flex'>
     <div className='flex mr-4 my-auto relative'>
       <NetworkIcon
@@ -226,14 +373,20 @@ const UnderlyingTokenLabel = (props: { chainId: number; address: string; symbol:
       />
       <TokenIcon chainId={props.chainId} address={props.address} />
     </div>
-    <span className='font-bold xs:text-lg'>{props.symbol}</span>
+    <span className='font-bold xs:text-lg'>
+      {props.isPod ? `${props.symbol} Pod` : props.symbol}
+    </span>
   </div>
 )
 
-const DepositBalance = (props: DepositItemsProps) => {
-  const { balanceUsd, prizePool } = props
-  const chainId = prizePool.chainId
-  const ticket = prizePool.tokens.ticket
+interface DepositBalanceProps {
+  balanceUsd: Amount
+  chainId: number
+  ticket: Token
+}
+
+const DepositBalance = (props: DepositBalanceProps) => {
+  const { balanceUsd, chainId, ticket } = props
 
   return (
     <div className='flex'>

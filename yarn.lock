@@ -2714,20 +2714,20 @@
     chalk "^4.1.2"
     debug "^4.3.2"
 
-"@pooltogether/etherplex@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.1.tgz#330f326ce8fbfd4f4aae70d5fd02d5baa3e9195e"
-  integrity sha512-fKk3/YnAhwjdA83hP7+mXIjRQm40o/+uwdbSWdz0mIgccEwQFkHKXJRGhpM25aclwa5Yiu/p6+sxTHUTpTTM9Q==
+"@pooltogether/etherplex@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.2.tgz#fb8144f98c3543fe231871660c6a25b3add42219"
+  integrity sha512-ZJh7iGnm3X+cnA4FIogZ6RrYfehzpNexE3gTzG2+gPKD6XE0T920MBKWeGYD2MYULMcsRLravVNWnBgJgPhcfw==
   dependencies:
     debug "^4.1.1"
     lodash "^4.17.15"
     lodash.merge "^4.6.2"
     zen-observable-ts "^0.8.20"
 
-"@pooltogether/etherplex@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.2.tgz#fb8144f98c3543fe231871660c6a25b3add42219"
-  integrity sha512-ZJh7iGnm3X+cnA4FIogZ6RrYfehzpNexE3gTzG2+gPKD6XE0T920MBKWeGYD2MYULMcsRLravVNWnBgJgPhcfw==
+"@pooltogether/etherplex@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.4.tgz#d7584d43f82bc22630a9068f6c69e9a049740621"
+  integrity sha512-SFEv9Ck8ycFkDUkdU8KzQblVyQeFRmOIbdLedNNfgQZM/dNnIX6oAiNxUQrlnicl+03sWtLrenKqu/Hnl0VBjg==
   dependencies:
     debug "^4.1.1"
     lodash "^4.17.15"
@@ -2789,10 +2789,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.4.0.tgz#310b9667a1123cfcce718aa6d8eba7c434a53c75"
   integrity sha512-dNgDpDsCMxUxaz8u6OfpjSBtMOdcp8QkLC3cwJ6E++4ux0qY2ON+ZqJEHIC3q4ZVJ4Xf6FikMJF0a8SVNtl8Zw==
 
-"@pooltogether/react-components@^1.6.21":
-  version "1.6.21"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.21.tgz#10904603086ab893263107cb46fec8513d7b8998"
-  integrity sha512-oJzGZHDTG9fw7O+qVwR2kH9CpUCcvPE9sS0QLKpBQUsbA9NuTF5v5GTXP68ezPszgItqb2N390G1MjvtIGdxSg==
+"@pooltogether/react-components@^1.6.22":
+  version "1.6.22"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.22.tgz#b1b339ee1fde6bf8d8626742d33e44e83084c7c7"
+  integrity sha512-TtkcGOH7d8NTcHxangEEi7GlI4i46Bovsd2SYGHkKAqnX+MVmfNzZ4ggdDTzNogojWqt+O0YpIlHnBSDijjIGg==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"

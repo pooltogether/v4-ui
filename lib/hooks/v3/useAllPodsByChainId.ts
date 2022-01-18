@@ -13,7 +13,7 @@ import {
 import PodAbi from 'abis/PodAbi'
 import { formatUnits } from 'ethers/lib/utils'
 
-const API_URI = process.env.NEXT_JS_API_URI
+const API_URI = 'https://pooltogether-api.com'
 
 export const useAllPodsByChainId = (providersByChainId) => {
   const chainIds = usePodChainIds()

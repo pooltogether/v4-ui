@@ -1,8 +1,6 @@
 # Blank if development. Domain if production.
 export NEXT_JS_DOMAIN_NAME=
 
-export NEXT_JS_API_URI=https://pooltogether-api.com
-
 # Optional
 # API keys for extra wallet support.
 export NEXT_JS_FORTMATIC_API_KEY=

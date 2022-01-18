@@ -10,7 +10,6 @@ import { NO_REFETCH } from 'lib/constants/query'
 import { useV3ChainIds } from './useV3ChainIds'
 import { useV3PrizePools } from './useV3PrizePools'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { useUsersPodTickets } from 'lib/hooks/v3/useUsersPodTickets'
 
 export interface V3Token {
   prizePool: any
@@ -33,11 +32,7 @@ export interface V3Token {
 export const useAllUsersV3Balances = (usersAddress: string) => {
   const chainIds = useV3ChainIds()
   const providers = useReadProviders(chainIds)
-  const { data: v3PrizePools, isFetched: isPrizePoolsFetched, error } = useV3PrizePools()
-  const { data: podTickets, isFetched: isPodTicketsFetched } = useUsersPodTickets(
-    providers,
-    usersAddress
-  )
+  const { data: v3PrizePools, isFetched: isPrizePoolsFetched } = useV3PrizePools()
 
   return useQueries(
     chainIds.map((chainId) => ({
@@ -48,10 +43,9 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
           usersAddress,
           providers[chainId],
           chainId,
-          podTickets,
           v3PrizePools?.[chainId]
         ),
-      enabled: isPodTicketsFetched && isPrizePoolsFetched && Boolean(usersAddress)
+      enabled: isPrizePoolsFetched && Boolean(usersAddress)
     }))
   )
 }
@@ -60,7 +54,6 @@ const getUsersV3BalancesByChainId = async (
   usersAddress: string,
   provider: Provider,
   chainId: number,
-  podTickets: any,
   prizePools: any[]
 ) => {
   const batchRequests = []
@@ -75,24 +68,14 @@ const getUsersV3BalancesByChainId = async (
     )
   })
 
-  podTickets.map((podTicket) => {
-    const ticketAddress = podTicket.address
-    const ticketContract = contract(ticketAddress, ERC20Abi, ticketAddress)
-    batchRequests.push(ticketContract.balanceOf(usersAddress))
-  })
-
   const results = await batch(provider, ...batchRequests)
 
   const tokens: { [tokenAddress: string]: V3Token } = {}
   Object.keys(results).forEach((tokenAddress) => {
-    const podTicket = podTickets.find((podTicket) => podTicket.address === tokenAddress)
-    const isPod = Boolean(podTicket)
-    console.log({ isPod })
-
     const balanceUnformatted = results[tokenAddress].balanceOf[0]
 
-    const prizePool = isPod ? podTicket.pod.prizePool : getPrizePool(tokenAddress, prizePools)
-    const tokenData = isPod ? podTicket : getTokenData(tokenAddress, prizePool)
+    const prizePool = getPrizePool(tokenAddress, prizePools)
+    const tokenData = getTokenData(tokenAddress, prizePool)
 
     const balance = getAmountFromBigNumber(balanceUnformatted, tokenData.decimals)
     const balanceValueUsdUnformatted = amountMultByUsd(balanceUnformatted, tokenData.usd)
@@ -104,7 +87,6 @@ const getUsersV3BalancesByChainId = async (
     tokens[tokenAddress] = {
       prizePool,
       ...tokenData,
-      isPod,
       usdPrice: tokenData.usd,
       balance,
       balanceValueUsdScaled,
