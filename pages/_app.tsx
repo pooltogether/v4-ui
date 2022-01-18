@@ -68,7 +68,7 @@ function MyApp({ Component, pageProps, router }) {
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_JS_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
-        includedDomains: ['vote.pooltogether.com']
+        includedDomains: ['app.pooltogether.com', 'v4.pooltogether.com']
       })
 
       const onRouteChangeComplete = (url) => {
