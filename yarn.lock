@@ -2646,10 +2646,10 @@
     "@pooltogether/owner-manager-contracts" "1.1.0"
     "@pooltogether/yield-source-interface" "1.3.0"
 
-"@pooltogether/bnc-onboard-hooks@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/bnc-onboard-hooks/-/bnc-onboard-hooks-1.1.0.tgz#ad2e4fe26c654c3183a9fa0fa46b2854d9306bd5"
-  integrity sha512-/GR49CjI2h2Q+fbtjU/k/hNy+ez4AfG4M7Xi/ejqkf6DTrtFQq6FD8eixVVbrRVUu0pxkFhKChEoYh9tfcImCw==
+"@pooltogether/bnc-onboard-hooks@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/bnc-onboard-hooks/-/bnc-onboard-hooks-1.1.1.tgz#a012b6467ce78d1249f1d7a342aa54c2525a3259"
+  integrity sha512-YDytcDUCGckY8Dj/Ym9EheTzn9l4vB3ky1Wu+fcWNKmVnemGKJ5qSKMfZL4RfizDfAv7Z5H6z5Mm+xqunkPygA==
 
 "@pooltogether/bnc-onboard@1.36.0-b":
   version "1.36.0-b"
@@ -2756,10 +2756,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/hardhat-deploy-markdown-export/-/hardhat-deploy-markdown-export-0.1.1.tgz#95c8fb6b63d4b721146917e11f53d24fc06f11cf"
   integrity sha512-qawd7dakhNIzk4CHbAI5lbEM25PuZXHfeIwLBQP5qxAVkDJnR7H7vAxksGdlHYYi4XddmC0W+QPlIFSAi8jTaA==
 
-"@pooltogether/hooks@^1.4.13":
-  version "1.4.13"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.4.13.tgz#08d0bb6cdf9323e99d4aaa2ba248306be952bb2b"
-  integrity sha512-p3nZdVImKH2dChsgIyArMVyP39G0ugV0LkUjCCyfkaS4U51wOWeTAxHq1P/K/JsODng9bObinDRdd8mg6DDyGQ==
+"@pooltogether/hooks@^1.4.14":
+  version "1.4.14"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.4.14.tgz#f3364f346b650247651e3322ceb5b394df7a3a3d"
+  integrity sha512-VyoIUEsM3ZoWoBmDGKSOp4d1E4tGwmelso/C3wxEhkiIGj1NiGjYXSOOok4DYPZz5pFPCydwTWSeM+M2fV0WlA==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
