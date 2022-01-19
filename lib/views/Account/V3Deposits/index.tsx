@@ -229,7 +229,6 @@ const DepositItem = (props: DepositItemsProps) => {
                 {...props}
                 prizePool={prizePool}
                 onDismiss={onDismiss}
-                withdrawTx={tx}
                 setWithdrawTxId={setTxId}
                 refetchBalances={refetchBalances}
               />
