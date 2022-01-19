@@ -20,8 +20,6 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
-  prizePool: any
-  refetchBalances: () => void
   setWithdrawTxId: (txId: number) => void
   onDismiss: () => void
 }
