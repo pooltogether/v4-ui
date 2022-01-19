@@ -15,6 +15,7 @@ export const useUsersV3Balances = (usersAddress: string) => {
 
   return useMemo(() => {
     const refetch = async () => queryResults.forEach((queryResult) => queryResult.refetch())
+
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
     if (!isFetched) {

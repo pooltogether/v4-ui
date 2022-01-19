@@ -16,13 +16,6 @@ const parseUrlNetwork = () => {
   const supportedChainIds = SUPPORTED_CHAIN_IDS[appEnv]
   const supportedChainNames = SUPPORTED_CHAIN_NAMES[appEnv]
 
-  console.log({
-    appEnv,
-    urlNetwork,
-    supportedChainIds,
-    supported: supportedChainIds.includes(Number(urlNetwork))
-  })
-
   if (!urlNetwork) return null
   if (supportedChainNames.includes(urlNetwork)) {
     return getChainIdByAlias(urlNetwork)

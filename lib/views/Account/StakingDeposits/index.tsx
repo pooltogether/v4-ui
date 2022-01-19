@@ -71,6 +71,7 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useUsersV3Balances } from 'lib/hooks/v3/useUsersV3Balances'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
+import { V3Token } from 'lib/hooks/v3/useAllUsersV3Balances'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -300,10 +301,9 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   }
 
   const balanceData = usersV3Balances?.balances.find(
-    (balance) => stakingPool.prizePool.address === balance.prizePool.prizePool.address
+    (balance) => stakingPool.tokens.ticket.address === balance.prizePool.tokens.ticket.address
   )
   const prizePool = balanceData?.prizePool
-  const balance = balanceData?.balance
 
   const balances = userLPChainData.balances
 
@@ -354,7 +354,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 
       <StakingBalanceBottomSheet
         {...props}
-        {...balance}
+        balanceData={balanceData}
         prizePool={prizePool}
         isOpen={isOpen}
         userLPChainData={userLPChainData}
@@ -368,19 +368,21 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
 }
 
 interface StakingBalanceBottomSheetProps {
+  prizePool: any
+  stakingPoolChainData: object
   chainId: number
+  balanceData: V3Token
   stakingPool: StakingPool
   isOpen: boolean
   isFetched: boolean
-  setIsOpen: Function
-  prizePool: any
-  stakingPoolChainData: object
   userLPChainData: UserLPChainData
+  setIsOpen: (x: boolean) => void
   refetch: () => void
 }
 
 const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const {
+    balanceData,
     chainId,
     stakingPool,
     setIsOpen,
@@ -462,11 +464,10 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const withdrawView = (
     <WithdrawView
-      {...props}
+      {...balanceData}
       address={prizePool?.tokens.ticket.address}
       symbol={prizePool?.tokens.underlyingToken.symbol}
       onDismiss={onDismiss}
-      withdrawTx={withdrawTx}
       setWithdrawTxId={setWithdrawTxId}
       refetchBalances={refetch}
     />
@@ -523,7 +524,6 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       t={t}
       views={views}
       title={`${t('manage')}: ${underlyingToken.symbol}`}
-      // snapPoints={snapTo90}
       contractLinks={contractLinks}
       balance={getAmountFromString(ticketBalance.amount, '18')}
       balanceUsd={balanceUsd}
@@ -534,9 +534,6 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       className='space-y-4'
       isWalletOnProperNetwork={isWalletOnProperNetwork}
       isWalletMetaMask={isWalletMetaMask}
-      revokeAllowanceCallTransaction={revokeAllowanceCallTransaction}
-      useSendTransaction={useSendTransaction}
-      depositAllowance={depositAllowance}
     />
   )
 }
