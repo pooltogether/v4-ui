@@ -154,12 +154,22 @@ export const EstimatedClaimPrizesGasItem = (props: EstimatedTxWithAmountProps) =
   <SimpleEstimatedGasItem {...props} txName='claim' gasAmount={CLAIM_GAS_AMOUNT} />
 )
 
-export const EstimatedDepositGasItems = (props: EstimatedTxWithAmountProps) => {
+interface EstimatedDepositGasItems extends EstimatedTxWithAmountProps {
+  showApprove?: boolean
+}
+
+export const EstimatedDepositGasItems = (props: EstimatedDepositGasItems) => {
   const { t } = useTranslation()
 
   return (
     <>
-      <InfoListItem label={t('estimatedNetworkFees', 'Estimated network fees')} value={undefined} />
+      <InfoListItem
+        className='font-semibold text-pt-purple-light'
+        label={t('estimatedNetworkFees', 'Estimated network fees')}
+        value={undefined}
+      />
+
+      {props.showApprove && <EstimatedApproveGasItem {...props} label={t('approveDeposits')} />}
       <EstimatedDepositGasItem {...props} label={t('deposit')} />
       <EstimatedClaimPrizesGasItem {...props} label={t('prizeClaims', 'Prize claims')} />
       <EstimatedWithdrawalGasItem {...props} label={t('withdrawal', 'Withdrawal')} />
