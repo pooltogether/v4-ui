@@ -466,7 +466,6 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       address={prizePool?.tokens.ticket.address}
       symbol={prizePool?.tokens.underlyingToken.symbol}
       onDismiss={onDismiss}
-      withdrawTx={withdrawTx}
       setWithdrawTxId={setWithdrawTxId}
       refetchBalances={refetch}
     />
