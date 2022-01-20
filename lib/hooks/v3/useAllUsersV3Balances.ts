@@ -82,8 +82,6 @@ const getUsersV3BalancesByChainId = async (
     const balanceUsd = getAmountFromBigNumber(balanceValueUsdUnformatted, tokenData.decimals)
     const balanceValueUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
 
-    console.log(balance)
-
     tokens[tokenAddress] = {
       prizePool,
       ...tokenData,
