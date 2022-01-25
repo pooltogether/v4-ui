@@ -55,7 +55,7 @@
     "@pooltogether/current-pool-data": "^3.7.2",
     "@pooltogether/etherplex": "^1.1.4",
     "@pooltogether/evm-chains-extended": "^0.6.4-beta.1",
-    "@pooltogether/hooks": "^1.4.13",
+    "@pooltogether/hooks": "file:.yalc/@pooltogether/hooks",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
     "@pooltogether/react-components": "^1.6.22",
     "@pooltogether/utilities": "^0.3.6",

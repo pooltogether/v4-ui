@@ -180,7 +180,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           chainId={chainId}
           from={token}
           to={ticket}
-          amount={amountToDeposit}
+          amountFrom={amountToDeposit}
+          amountTo={amountToDeposit}
         />
 
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />

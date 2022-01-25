@@ -1,22 +1,21 @@
-import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 
+import { useAllUsersV3Balances, V3TokenBalance } from './useAllUsersV3Balances'
+import { BigNumber } from 'ethers'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { useAllUsersV3Balances, V3Token } from './useAllUsersV3Balances'
 
 /**
  * Returns a users balances for V3 Prize Pools.
- * Filters out the Mainnet POOL Pool.
+ * Filters zero balances.
  * @param usersAddress
  * @returns
  */
 export const useUsersV3Balances = (usersAddress: string) => {
-  const queryResults = useAllUsersV3Balances(usersAddress)
+  const queriesResult = useAllUsersV3Balances(usersAddress)
 
   return useMemo(() => {
-    const refetch = async () => queryResults.forEach((queryResult) => queryResult.refetch())
-
-    const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+    const refetch = async () => queriesResult.forEach((queryResult) => queryResult.refetch())
+    const isFetched = queriesResult.every((queryResult) => queryResult.isFetched)
 
     if (!isFetched) {
       return {
@@ -27,33 +26,27 @@ export const useUsersV3Balances = (usersAddress: string) => {
       }
     }
 
-    const balances: V3Token[] = []
+    const balances: V3TokenBalance[] = []
+
     let totalValueUsdScaled = BigNumber.from(0)
 
-    queryResults.forEach((queryResult) => {
-      let tokens = []
-      if (queryResult?.data?.tokens) {
-        tokens = Object.values(queryResult.data.tokens)
-      }
-
-      tokens.forEach((token) => {
-        if (!token.balance.amountUnformatted.isZero()) {
-          balances.push(token)
-          totalValueUsdScaled = totalValueUsdScaled.add(token.balanceValueUsdScaled)
+    queriesResult.forEach((queryResult) => {
+      const { data: balancesForChainId } = queryResult
+      balancesForChainId.balances.forEach((balance) => {
+        if (balance.ticket.hasBalance) {
+          balances.push(balance)
+          totalValueUsdScaled = totalValueUsdScaled.add(balance.balanceUsdScaled)
         }
       })
     })
+
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
 
     return {
       isFetching: false,
       isFetched: true,
       refetch,
-      data: {
-        balances,
-        totalValueUsdScaled,
-        totalValueUsd
-      }
+      data: { balances, totalValueUsd, totalValueUsdScaled }
     }
-  }, [queryResults])
+  }, [queriesResult])
 }

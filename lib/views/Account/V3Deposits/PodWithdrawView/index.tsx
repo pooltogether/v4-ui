@@ -1,17 +1,19 @@
-import { Amount, Transaction, useTransaction, useV3ExitFee } from '@pooltogether/hooks'
+import { Amount, useTransaction } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { numberWithCommas } from '@pooltogether/utilities'
 
-import { DepositItemsProps } from '.'
+import PodAbi from 'abis/V3_Pod'
+import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
-import PrizePoolAbi from 'abis/V3_3PrizePoolAbi'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { usePodExitFee } from 'lib/hooks/v3/usePodExitFee'
+import { parseUnits } from '@ethersproject/units'
+import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 export enum WithdrawalSteps {
   input,
@@ -24,14 +26,16 @@ interface WithdrawViewProps extends DepositItemsProps {
   onDismiss: () => void
 }
 
-export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, balance, address, symbol } = props
+export const PodWithdrawView = (props: WithdrawViewProps) => {
+  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, ticket, token, pricePerShare } =
+    props
 
   const chainId = prizePool.chainId
 
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
+  const [amountToReceive, setAmountToReceive] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
   const sendTx = useSendTransaction()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
@@ -40,30 +44,31 @@ export const WithdrawView = (props: WithdrawViewProps) => {
     reValidateMode: 'onChange'
   })
 
-  const usersAddress = useUsersAddress()
-  const poolAddress = prizePool.prizePool.address
-
   const {
-    data: exitFee,
+    data: podExitFee,
     isFetched: isExitFeeFetched,
     isFetching: isExitFeeFetching
-  } = useV3ExitFee(chainId, poolAddress, address, usersAddress, amountToWithdraw?.amountUnformatted)
+  } = usePodExitFee(
+    chainId,
+    prizePool.addresses.pod,
+    prizePool.addresses.token,
+    amountToWithdraw?.amountUnformatted || null,
+    token.decimals
+  )
 
   const sendWithdrawTx = async (e) => {
     e.preventDefault()
 
-    const params = [usersAddress, amountToWithdraw?.amountUnformatted, address, exitFee]
-
-    const withdrawalAmountPretty = numberWithCommas(
-      amountToWithdraw.amountUnformatted.sub(exitFee),
-      { decimals: prizePool.tokens.underlyingToken.decimals }
-    )
+    const params = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]
+    const txName = `${t('withdraw')} ${numberWithCommas(amountToWithdraw.amountPretty)} ${
+      token.symbol
+    }`
 
     const txId = await sendTx({
-      name: `${t('withdraw')} ${withdrawalAmountPretty} ${symbol}`,
-      method: 'withdrawInstantlyFrom',
-      contractAddress: poolAddress,
-      contractAbi: PrizePoolAbi,
+      name: txName,
+      contractAbi: PodAbi,
+      contractAddress: prizePool.addresses.pod,
+      method: 'withdraw',
       params,
       callbacks: {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
@@ -74,6 +79,20 @@ export const WithdrawView = (props: WithdrawViewProps) => {
     })
     setWithdrawTxId(txId)
     setTxId(txId)
+  }
+
+  const setStateForWithdrawal = (amount: Amount) => {
+    setAmountToWithdraw(amount)
+    setAmountToReceive(
+      getAmountFromBigNumber(
+        amount.amountUnformatted
+          .mul(parseUnits('1', ticket.decimals))
+          .mul(pricePerShare.amountUnformatted)
+          .div(parseUnits('1', ticket.decimals))
+          .div(parseUnits('1', ticket.decimals)),
+        ticket.decimals
+      )
+    )
   }
 
   const { t } = useTranslation()
@@ -90,20 +109,23 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   return (
     <>
       <WithdrawStepContent
-        tokenAddress={address}
+        prizePool={prizePool}
+        ticket={ticket}
+        token={token}
         form={form}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
-        prizePool={prizePool}
-        usersBalance={balance}
+        usersBalance={ticket}
         refetchBalances={refetchBalances}
         amountToWithdraw={amountToWithdraw}
-        setAmountToWithdraw={setAmountToWithdraw}
+        amountToReceive={amountToReceive}
+        pricePerShare={pricePerShare}
+        setAmountToWithdraw={setStateForWithdrawal}
         withdrawTx={tx}
         setWithdrawTxId={setWithdrawTxId}
         sendWithdrawTx={sendWithdrawTx}
         onDismiss={onDismiss}
-        exitFee={exitFee}
+        exitFee={podExitFee?.exitFee.amountUnformatted}
         isExitFeeFetched={isExitFeeFetched}
         isExitFeeFetching={isExitFeeFetching}
       />

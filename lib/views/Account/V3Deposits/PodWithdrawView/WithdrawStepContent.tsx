@@ -9,7 +9,7 @@ import FeatherIcon from 'feather-icons-react'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
@@ -23,19 +23,24 @@ import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { WithdrawalSteps } from './WithdrawView'
+import { WithdrawalSteps } from '.'
 import { DownArrow as DefaultDownArrow } from 'lib/components/DownArrow'
+import { V3PrizePool } from 'lib/hooks/v3/useV3PrizePools'
+import { AmountToReceive } from 'lib/components/AmountToReceive'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
 interface WithdrawStepContentProps {
-  tokenAddress: string
+  prizePool: V3PrizePool
+  token: Token
+  ticket: Token
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
-  prizePool: any
   usersBalance: Amount
   withdrawTx: Transaction
   amountToWithdraw: Amount
+  amountToReceive: Amount
+  pricePerShare: Amount
   exitFee: BigNumber
   isExitFeeFetched: boolean
   isExitFeeFetching: boolean
@@ -49,16 +54,19 @@ interface WithdrawStepContentProps {
 
 export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
+    prizePool,
+    ticket,
+    token,
     form,
     currentStep,
-    prizePool,
     withdrawTx,
     amountToWithdraw,
+    amountToReceive,
+    pricePerShare,
     usersBalance,
     exitFee,
     isExitFeeFetched,
     isExitFeeFetching,
-    tokenAddress,
     sendWithdrawTx,
     setWithdrawTxId,
     setCurrentStep,
@@ -70,10 +78,6 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const { t } = useTranslation()
 
   const chainId = prizePool.chainId
-  const ticket: Token = Object.values(prizePool.tokens).find(
-    (token) => token.address === tokenAddress
-  )
-  const token = prizePool.tokens.underlyingToken
 
   if (currentStep === WithdrawalSteps.viewTxReceipt) {
     return (
@@ -96,14 +100,12 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   if (currentStep === WithdrawalSteps.review) {
     return (
       <>
-        <ModalTitle
-          chainId={chainId}
-          title={t('withdrawTicker', { ticker: prizePool.tokens.underlyingToken.symbol })}
-        />
+        <ModalTitle chainId={chainId} title={t('withdrawTicker', { ticker: token.symbol })} />
         <WithdrawReviewStep
           prizePool={prizePool}
           chainId={chainId}
           amountToWithdraw={amountToWithdraw}
+          amountToReceive={amountToReceive}
           token={token}
           ticket={ticket}
           tx={withdrawTx}
@@ -121,16 +123,14 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
 
   return (
     <>
-      <ModalTitle
-        chainId={chainId}
-        title={t('withdrawTicker', { ticker: prizePool.tokens.underlyingToken.symbol })}
-      />
+      <ModalTitle chainId={chainId} title={t('withdrawTicker', { ticker: token.symbol })} />
       <WithdrawInputStep
         chainId={chainId}
         form={form}
         token={token}
         ticket={ticket}
         balance={usersBalance}
+        pricePerShare={pricePerShare}
         setCurrentStep={setCurrentStep}
         setAmountToWithdraw={setAmountToWithdraw}
       />
@@ -144,6 +144,7 @@ interface WithdrawInputStepProps {
   token: Token
   ticket: Token
   balance: Amount
+  pricePerShare: Amount
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
 }
@@ -155,7 +156,16 @@ interface WithdrawInputStepProps {
  * @returns
  */
 const WithdrawInputStep = (props: WithdrawInputStepProps) => {
-  const { chainId, form, token, ticket, balance, setCurrentStep, setAmountToWithdraw } = props
+  const {
+    chainId,
+    form,
+    token,
+    ticket,
+    balance,
+    pricePerShare,
+    setCurrentStep,
+    setAmountToWithdraw
+  } = props
 
   const { t } = useTranslation()
 
@@ -166,6 +176,10 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
   } = form
 
   const amount = watch(WITHDRAW_QUANTITY_KEY)
+  const amountToReceive = getAmountFromString(
+    String(Number(amount) * Number(pricePerShare.amount)),
+    token.decimals
+  )
 
   const onSubmit = (data) => {
     const amount = data[WITHDRAW_QUANTITY_KEY]
@@ -179,7 +193,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <DownArrow />
 
-      <SquaredTokenAmountContainer chainId={chainId} amount={amount} token={token} />
+      <AmountToReceive chainId={chainId} amount={amountToReceive} token={token} />
 
       <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
 
@@ -196,6 +210,7 @@ interface WithdrawReviewStepProps {
   prizePool: any
   chainId: number
   amountToWithdraw: Amount
+  amountToReceive: Amount
   token: Token
   ticket: Token
   tx: Transaction
@@ -218,6 +233,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
   const {
     prizePool,
     amountToWithdraw,
+    amountToReceive,
     token,
     ticket,
     tx,
@@ -242,7 +258,8 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         chainId={prizePool.chainId}
         from={ticket}
         to={token}
-        amount={amountToWithdraw}
+        amountFrom={amountToWithdraw}
+        amountTo={amountToReceive}
       />
 
       <ExitFeeWarning
@@ -391,20 +408,10 @@ const SquaredTokenAmountContainer = (props) => {
   const { chainId, amount, token } = props
 
   return (
-    <TextInputGroup
-      readOnly
-      disabled
-      symbolAndIcon={<TokenSymbolAndIcon chainId={chainId} token={token} />}
-      Input={RectangularInput}
-      roundedClassName={'rounded-lg'}
-      containerRoundedClassName={'rounded-lg'}
-      placeholder='0.0'
-      id='result'
-      name='result'
-      register={() => {}}
-      label={null}
-      value={amount}
-    />
+    <div className='rounded-lg flex flex-row justify-between'>
+      <TokenSymbolAndIcon chainId={chainId} token={token} />
+      <span>{amount.amountPretty}</span>
+    </div>
   )
 }
 

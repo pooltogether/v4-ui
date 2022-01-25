@@ -47,8 +47,8 @@ import {
 import { formatUnits } from 'ethers/lib/utils'
 
 import TokenFaucetAbi from 'abis/TokenFaucet'
-import PrizePoolAbi from 'abis/PrizePool'
-import Erc20Abi from 'abis/ERC20Abi'
+import PrizePoolAbi from 'abis/V3_PrizePool'
+import Erc20Abi from 'abis/ERC20'
 
 import { MAINNET_POOL_ADDRESS, POLYGON_POOL_ADDRESS } from 'lib/constants/constants'
 import { VAPRTooltip } from 'lib/components/VAPRTooltip'
@@ -57,7 +57,7 @@ import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAm
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from 'lib/components/Modal/ModalTransactionSubmitted'
-import { WithdrawView } from 'lib/views/Account/V3Deposits/WithdrawView'
+import { PrizePoolWithdrawView } from 'lib/views/Account/V3Deposits/PrizePoolWithdrawView'
 
 import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { UsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
@@ -71,7 +71,6 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useUsersV3Balances } from 'lib/hooks/v3/useUsersV3Balances'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { V3Token } from 'lib/hooks/v3/useAllUsersV3Balances'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -463,7 +462,7 @@ const StakingBalanceBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   )
 
   const withdrawView = (
-    <WithdrawView
+    <PrizePoolWithdrawView
       {...balanceData}
       address={prizePool?.tokens.ticket.address}
       symbol={prizePool?.tokens.underlyingToken.symbol}

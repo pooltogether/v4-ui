@@ -183,7 +183,8 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         chainId={prizePool.chainId}
         from={ticket}
         to={token}
-        amount={amountToWithdraw}
+        amountFrom={amountToWithdraw}
+        amountTo={amountToWithdraw}
       />
 
       <div className='my-8'>

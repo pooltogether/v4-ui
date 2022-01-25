@@ -32,7 +32,8 @@ export const AccountUI = (props) => {
     <PagePadding className='space-y-8'>
       <AccountCard user={user} />
       <V4Deposits />
-      <StakingDeposits />
+      {/* TODO: LP and POOL */}
+      {/* <StakingDeposits /> */}
       <V3Deposits />
       <OddsDisclaimer className='block mt-6' />
     </PagePadding>
