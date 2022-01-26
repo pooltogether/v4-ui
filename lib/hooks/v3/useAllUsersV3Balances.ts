@@ -1,7 +1,7 @@
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import {
   Token,
-  TokenWithBalance,
+  TokenWithUsdBalance,
   useReadProviders,
   useCoingeckoTokenPricesAcrossChains,
   TokenPrices,
@@ -9,23 +9,21 @@ import {
 } from '@pooltogether/hooks'
 import { useQueries } from 'react-query'
 import { Provider } from '@ethersproject/abstract-provider'
+import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { parseUnits } from '@ethersproject/units'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import ERC20Abi from 'abis/ERC20'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useV3ChainIds } from './useV3ChainIds'
-import { useV3PrizePools, V3PrizePool } from './useV3PrizePools'
+import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
-import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
 
-export interface V3TokenBalance {
+export interface V3PrizePoolBalances {
   chainId: number
-  ticket: TokenWithBalance
-  token: TokenWithBalance
+  ticket: TokenWithUsdBalance
+  token: TokenWithUsdBalance
   prizePool: V3PrizePool
-  balanceUsd: Amount
-  balanceUsdScaled: BigNumber
   pricePerShare?: Amount
   isPod?: boolean
   isSponsorship?: boolean
@@ -40,8 +38,9 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
   const chainIds = useV3ChainIds()
   const providers = useReadProviders(chainIds)
   const { data: v3PrizePools, isFetched } = useV3PrizePools()
-  const { data: tokenPrices, isFetched: isTokenPricesFetched } =
-    useCoingeckoTokenPricesAcrossChains(isFetched ? formatTokens(v3PrizePools) : null)
+  const { data: tokenPrices } = useCoingeckoTokenPricesAcrossChains(
+    isFetched ? getTokenAddressesFromPrizePools(v3PrizePools) : null
+  )
 
   return useQueries(
     chainIds.map((chainId) => ({
@@ -55,7 +54,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
           v3PrizePools[chainId],
           tokenPrices
         ),
-      enabled: isFetched && isTokenPricesFetched && Boolean(usersAddress)
+      enabled: isFetched && Boolean(usersAddress)
     }))
   )
 }
@@ -100,44 +99,45 @@ const getUsersV3BalancesByChainId = async (
   const balanceOfResults = await batch(provider, ...batchRequests)
 
   // Format balances, merge USD data
-  const balances: V3TokenBalance[] = []
+  const balances: V3PrizePoolBalances[] = []
 
   prizePools.forEach((prizePool) => {
     const { ticket, token, sponsorship, podStablecoin } = prizePool.tokens
 
-    const ticketWithBalance = makeTokenWithBalance(ticket, balanceOfResults)
-    const tokenWithBalance = makeTokenWithBalance(token, balanceOfResults)
-    const sponsorshipWithBalance = makeTokenWithBalance(sponsorship, balanceOfResults)
-    const podStablecoinWithBalance = podStablecoin
-      ? makeTokenWithBalance(podStablecoin, balanceOfResults)
+    const tokenUsd = tokenPrices?.[token.address]?.usd
+    const tokenWithUsdBalance = makeTokenWithUsdBalance(token, tokenUsd, balanceOfResults)
+    const ticketWithUsdBalance = makeTokenWithUsdBalance(ticket, tokenUsd, balanceOfResults)
+    const sponsorshipWithUsdBalance = makeTokenWithUsdBalance(
+      sponsorship,
+      tokenUsd,
+      balanceOfResults
+    )
+    const podStablecoinWithUsdBalance = podStablecoin
+      ? makePodStablecoinTokenWithUsdBalance(podStablecoin, tokenUsd, balanceOfResults)
       : null
 
-    const tokenUsd = tokenPrices[token.address].usd
-
-    const ticketBalance = makeV3TokenWithBalance(
+    const ticketBalance: V3PrizePoolBalances = {
       chainId,
-      prizePool,
-      ticketWithBalance,
-      tokenWithBalance,
-      tokenUsd
-    )
-    const sponsorshipBalance = makeV3TokenWithBalance(
+      ticket: ticketWithUsdBalance,
+      token: tokenWithUsdBalance,
+      prizePool
+    }
+    const sponsorshipBalance: V3PrizePoolBalances = {
       chainId,
+      ticket: sponsorshipWithUsdBalance,
+      token: tokenWithUsdBalance,
       prizePool,
-      sponsorshipWithBalance,
-      tokenWithBalance,
-      tokenUsd,
-      { isSponsorship: true }
-    )
-    const podBalance = podStablecoinWithBalance
-      ? makeV3TokenWithBalance(
+      isSponsorship: true
+    }
+    const podBalance: V3PrizePoolBalances = podStablecoinWithUsdBalance
+      ? {
           chainId,
+          ticket: podStablecoinWithUsdBalance,
+          token: tokenWithUsdBalance,
           prizePool,
-          podStablecoinWithBalance,
-          tokenWithBalance,
-          tokenUsd,
-          { isPod: true, pricePerShare: podStablecoin.pricePerShare }
-        )
+          pricePerShare: podStablecoin.pricePerShare,
+          isPod: true
+        }
       : null
 
     balances.push(ticketBalance, sponsorshipBalance)
@@ -148,21 +148,83 @@ const getUsersV3BalancesByChainId = async (
 
   return {
     chainId,
-    balances: balances
+    balances: balances,
+    isTokenPricesFetched: Boolean(tokenPrices)
   }
 }
 
-const makeTokenWithBalance = (token: Token, etherplexBalanceOfResults): TokenWithBalance => {
+/**
+ * Format data. Calculate USD value of token balance.
+ * @param token
+ * @param usdPerToken
+ * @param etherplexBalanceOfResults
+ * @returns
+ */
+const makeTokenWithUsdBalance = (
+  token: Token,
+  usdPerToken: number,
+  etherplexBalanceOfResults
+): TokenWithUsdBalance => {
   const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
   const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balanceUsdUnformatted = usdPerToken
+    ? amountMultByUsd(balanceUnformatted, usdPerToken)
+    : BigNumber.from(0)
+  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,
     ...balance,
+    usdPerToken,
+    balanceUsd,
+    balanceUsdScaled,
     hasBalance: !balance.amountUnformatted.isZero()
   }
 }
 
-const formatTokens = (v3PrizePools: {
+/**
+ * Format data. Calculate USD value of token balance.
+ * Converts balance of pod stablecoin to the amount of the underlying token then multiplies by price.
+ * @param token
+ * @param usdPerToken
+ * @param etherplexBalanceOfResults
+ * @returns
+ */
+const makePodStablecoinTokenWithUsdBalance = (
+  token: PodToken,
+  usdPerToken: number,
+  etherplexBalanceOfResults
+): TokenWithUsdBalance => {
+  const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
+  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balanceUsdUnformatted = usdPerToken
+    ? amountMultByUsd(
+        balanceUnformatted
+          .mul(parseUnits('1', token.decimals))
+          .mul(token.pricePerShare.amountUnformatted)
+          .div(parseUnits('1', token.decimals))
+          .div(parseUnits('1', token.decimals)),
+        usdPerToken
+      )
+    : BigNumber.from(0)
+  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
+  return {
+    ...token,
+    ...balance,
+    usdPerToken,
+    balanceUsd,
+    balanceUsdScaled,
+    hasBalance: !balance.amountUnformatted.isZero()
+  }
+}
+
+/**
+ * Pulls token addresses from prize pools
+ * @param v3PrizePools
+ * @returns
+ */
+const getTokenAddressesFromPrizePools = (v3PrizePools: {
   [chainId: number]: V3PrizePool[]
 }): { [chainId: number]: string[] } => {
   const tokens: {
@@ -179,47 +241,4 @@ const formatTokens = (v3PrizePools: {
     })
 
   return tokens
-}
-
-/**
- * Formats for V3TokenBalance, calculating USD value
- * @param chainId
- * @param prizePool
- * @param ticket
- * @param token
- * @param usd
- * @returns
- */
-const makeV3TokenWithBalance = (
-  chainId: number,
-  prizePool: V3PrizePool,
-  ticket: TokenWithBalance,
-  token: TokenWithBalance,
-  usd: number,
-  additionalData?: { isSponsorship?: boolean; isPod?: boolean; pricePerShare?: Amount }
-): V3TokenBalance => {
-  const balanceUsdUnformatted = additionalData?.isPod
-    ? amountMultByUsd(
-        ticket.amountUnformatted
-          .mul(parseUnits('1', ticket.decimals))
-          .mul(additionalData.pricePerShare.amountUnformatted)
-          .div(parseUnits('1', ticket.decimals))
-          .div(parseUnits('1', ticket.decimals)),
-        usd
-      )
-    : amountMultByUsd(ticket.amountUnformatted, usd)
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, ticket.decimals)
-  const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
-
-  return {
-    balanceUsdScaled,
-    balanceUsd,
-    chainId,
-    ticket,
-    token,
-    prizePool,
-    pricePerShare: additionalData?.pricePerShare,
-    isPod: additionalData?.isPod,
-    isSponsorship: additionalData?.isSponsorship
-  }
 }

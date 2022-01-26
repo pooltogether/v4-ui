@@ -10,8 +10,6 @@ interface AmountToReceiveProps {
 export const AmountToReceive = (props: AmountToReceiveProps) => {
   const { chainId, amount, token } = props
 
-  console.log({ amount })
-
   return (
     <div className='w-full py-4 px-8 trans leading-none border-2 rounded-lg flex flex-row justify-between cursor-not-allowed font-inter font-semibold text-accent-4 border-body bg-body'>
       <TokenSymbolAndIcon chainId={chainId} token={token} className='text-inverse text-lg' />

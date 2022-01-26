@@ -26,6 +26,7 @@ import { CardTitle } from 'lib/components/Text/CardTitle'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { LoadingList } from 'lib/components/Loaders/LoadingList'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -34,9 +35,11 @@ export const V4Deposits = () => {
 
   return (
     <div id='deposits'>
-      <div className='mb-2'>
-        <CardTitle title={t('deposits')} secondary={`$${data?.totalValueUsd.amountPretty}`} />
-      </div>
+      <CardTitle
+        className='mb-2'
+        title={t('deposits')}
+        secondary={`$${data?.totalValueUsd.amountPretty}`}
+      />
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
         <DepositsList />
       </div>
@@ -180,10 +183,3 @@ const DepositBalance = (props: DepositItemsProps) => {
     </div>
   )
 }
-
-const LoadingList = () => (
-  <ul className='space-y-4'>
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-  </ul>
-)

@@ -69,7 +69,7 @@ import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useUsersV3Balances } from 'lib/hooks/v3/useUsersV3Balances'
+import { useUsersV3PrizePoolBalances } from 'lib/hooks/v3/useUsersV3PrizePoolBalances'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
@@ -104,44 +104,6 @@ export const StakingDeposits = () => {
       <PoolTokenBalance />
 
       <StakingDepositsList />
-    </div>
-  )
-}
-
-const PoolTokenBalance = () => {
-  const { t } = useTranslation()
-
-  return (
-    <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
-      <div className='flex items-center justify-between font-semibold text-base'>
-        <div className='relative' style={{ top: -2 }}>
-          <TokenIcon chainId={NETWORK.mainnet} address={MAINNET_POOL_ADDRESS} className='mr-2' />{' '}
-          {t('yourBalances', 'Your Balances')}
-        </div>
-      </div>
-
-      <ul className='space-y-4 mt-4'>
-        {[NETWORK.mainnet, NETWORK.polygon].map((chainId) => (
-          <li
-            key={`pool-token-balance--network-${chainId}`}
-            className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg p-4 w-full flex justify-between items-center'
-          >
-            <div className='flex'>
-              <NetworkIcon chainId={chainId} className='mr-2 my-auto' />
-              <span className='font-bold xs:text-lg'>{getNetworkNiceNameByChainId(chainId)}</span>
-            </div>
-
-            <div className='flex items-center xs:text-lg'>
-              <TokenIcon
-                chainId={NETWORK.mainnet}
-                address={MAINNET_POOL_ADDRESS}
-                className='mr-2'
-              />{' '}
-              <ChainPoolTokenBalance chainId={chainId} />
-            </div>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }
@@ -266,7 +228,7 @@ const StakingDepositItem = (props: StakingDepositItemProps) => {
   const { setSelectedChainId } = useSelectedChainId()
 
   const { data: usersV3Balances, isFetched: usersV3BalancesIsFetched } =
-    useUsersV3Balances(usersAddress)
+    useUsersV3PrizePoolBalances(usersAddress)
 
   const {
     data: stakingPoolChainData,

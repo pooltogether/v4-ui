@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 
 interface CardTitleProps {
-  title: string
-  secondary?: string
+  title: React.ReactNode
+  secondary?: React.ReactNode
   className?: string
   titleClassName?: string
   secondaryClassName?: string

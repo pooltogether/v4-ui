@@ -1,8 +1,8 @@
-import { prizePoolContracts } from '@pooltogether/current-pool-data'
 import { useQuery } from 'react-query'
 import { Amount, Token, useReadProviders } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { batch, Context, contract } from '@pooltogether/etherplex'
+import { getAddress } from '@ethersproject/address'
 
 import { useV3ChainIds } from './useV3ChainIds'
 import ERC20Abi from 'abis/ERC20'
@@ -10,38 +10,12 @@ import PrizePoolAbi from 'abis/V3_PrizePool'
 import PodAbi from 'abis/V3_Pod'
 import PrizeStrategyAbi from 'abis/V3_PrizeStrategy'
 import { NO_REFETCH } from 'lib/constants/query'
-import { CHAIN_ID } from 'lib/constants/constants'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
+import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from 'lib/constants/v3'
 
-interface PodToken extends Token {
+export interface PodToken extends Token {
   pricePerShare: Amount
 }
-
-const PRIZE_POOL_ADDRESSES_TO_FILTER = Object.freeze({
-  [CHAIN_ID.rinkeby]: ['0xc7d56c06F136EFff93e349C7BF8cc46bBF5D902c']
-})
-
-const POD_ADDRESSES = Object.freeze({
-  [CHAIN_ID.mainnet]: [
-    {
-      // DAI Pod
-      pod: '0x2f994e2E4F3395649eeE8A89092e63Ca526dA829',
-      prizePool: '0xEBfb47A7ad0FD6e57323C8A42B2E5A6a4F68fc1a'
-    },
-    {
-      // USDC Pod
-      pod: '0x386EB78f2eE79AddE8Bdb0a0e27292755ebFea58',
-      prizePool: '0xde9ec95d7708B8319CCca4b8BC92c0a3B70bf416'
-    }
-  ],
-  [CHAIN_ID.rinkeby]: [
-    {
-      // DAI Pod
-      pod: '0x4A26b34A902045CFb573aCb681550ba30AA79783',
-      prizePool: '0x4706856FA8Bb747D50b4EF8547FE51Ab5Edc4Ac2'
-    }
-  ]
-})
 
 export interface V3PrizePool {
   chainId: number
@@ -100,13 +74,11 @@ const getV3PrizePools = async (
     })
   )
 
-  console.log({ prizePoolsByChainId })
-
   return prizePoolsByChainId
 }
 
 /**
- * Filter the current-pool-data for just the prize pool addresses
+ * Filter the constant for just the prize pool addresses
  * @param chainIds
  * @returns
  */
@@ -116,17 +88,10 @@ const getPrizePoolAddresses = (chainIds: number[]) => {
   } = {}
 
   chainIds.forEach((chainId) => {
-    const { governance, community } = prizePoolContracts[chainId]
-
-    const addressesToFilter = PRIZE_POOL_ADDRESSES_TO_FILTER[chainId]
-
-    const prizePoolAddressesForChainId: string[] = [
-      ...governance.map((prizePool) => prizePool.prizePool.address),
-      ...community.map((prizePool) => prizePool.prizePool.address)
-    ].filter((address) => !addressesToFilter?.includes(address))
-
-    prizePoolAddresses[chainId] = prizePoolAddressesForChainId
+    prizePoolAddresses[chainId] =
+      V3_PRIZE_POOL_ADDRESSES?.[chainId]?.map((prizePool) => prizePool.prizePool) || []
   })
+
   return prizePoolAddresses
 }
 
@@ -240,8 +205,6 @@ const getPrizePools = async (chainId: number, provider: Provider, prizePoolAddre
     })
   })
 
-  console.log({ v3PrizePools })
-
   return v3PrizePools
 }
 
@@ -288,6 +251,6 @@ const makePodToken = (tokenAddress: string, etherplexTokenResponse): PodToken =>
 const getPodAddress = (chainId: number, prizePoolAddress: string) => {
   const pods = POD_ADDRESSES?.[chainId]
   return pods
-    ? pods.find((pod) => pod.prizePool.toLowerCase() === prizePoolAddress.toLowerCase())?.pod
+    ? pods.find((pod) => getAddress(pod.prizePool) === getAddress(prizePoolAddress))?.pod
     : null
 }

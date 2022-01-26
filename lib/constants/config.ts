@@ -13,6 +13,7 @@ export const V4_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
 })
 
+// TODO: Link this to the v3 constants
 export const V3_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.mainnet, CHAIN_ID.bsc, CHAIN_ID.polygon, CHAIN_ID.celo],
   [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai]

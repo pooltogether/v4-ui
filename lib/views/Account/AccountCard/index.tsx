@@ -9,7 +9,7 @@ import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/us
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { TotalWinnings } from './TotalWinnings'
 import walletIllustration from 'public/wallet-illustration.png'
-import { useUsersTotalBalances } from 'lib/hooks/v4/PrizePool/useUsersTotalBalances'
+import { useUsersTotalBalances } from 'lib/hooks/useUsersTotalBalances'
 import { CountUp } from 'lib/components/CountUp'
 import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
 

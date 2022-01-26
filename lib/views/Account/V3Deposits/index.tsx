@@ -14,31 +14,28 @@ import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { CardTitle } from 'lib/components/Text/CardTitle'
-import { useUsersV3Balances } from 'lib/hooks/v3/useUsersV3Balances'
+import { useUsersV3PrizePoolBalances } from 'lib/hooks/v3/useUsersV3PrizePoolBalances'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
-import { V3PrizePool } from 'lib/hooks/v3/useV3PrizePools'
-import { V3TokenBalance } from 'lib/hooks/v3/useAllUsersV3Balances'
+import { V3PrizePoolBalances } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { PodWithdrawView } from 'lib/views/Account/V3Deposits/PodWithdrawView'
 
-const LP_POOL_ADDRESS = '0x3af7072d29adde20fc7e173a7cb9e45307d2fb0a'
-const POOL_POOL_ADDRESS = '0x396b4489da692788e327e2e4b2b0459a5ef26791'
-
+// TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
 export const V3Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const {
-    data: balances,
+    data,
     isFetched: isBalancesFetched,
     refetch: refetchBalances
-  } = useUsersV3Balances(usersAddress)
+  } = useUsersV3PrizePoolBalances(usersAddress)
 
   // Show nothing while loading
   if (!isBalancesFetched) return null
 
   // Show nothing if the user has no v3 balances
-  if (balances.totalValueUsd.amountUnformatted.isZero()) {
+  if (data.balances.length === 0) {
     return null
   }
 
@@ -47,12 +44,12 @@ export const V3Deposits = () => {
       <div className='mb-2 flex items-center justify-between'>
         <CardTitle
           title={`V3 ${t('deposits')}`}
-          secondary={`$${balances.totalValueUsd.amountPretty}`}
+          secondary={`$${data.totalValueUsd.amountPretty}`}
         />
         <V3AppLink />
       </div>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4 space-y-4'>
-        <DepositsList data={balances} isFetched={isBalancesFetched} refetch={refetchBalances} />
+        <DepositsList data={data} refetch={refetchBalances} />
       </div>
     </div>
   )
@@ -73,31 +70,17 @@ const V3AppLink = () => {
 
 const DepositsList = (props: {
   data: {
-    balances: V3TokenBalance[]
+    balances: V3PrizePoolBalances[]
     totalValueUsdScaled: BigNumber
     totalValueUsd: Amount
   }
-  isFetched: boolean
   refetch: () => void
 }) => {
-  const { data, isFetched, refetch } = props
-  if (!isFetched) {
-    return <LoadingList />
-  }
-
-  const filteredBalances = data.balances.filter(
-    (balance) =>
-      POOL_POOL_ADDRESS !== balance.prizePool.addresses.prizePool &&
-      LP_POOL_ADDRESS !== balance.prizePool.addresses.prizePool
-  )
-
-  if (filteredBalances.length === 0) {
-    return null
-  }
+  const { data, refetch } = props
 
   return (
     <ul className='space-y-4'>
-      {filteredBalances.map((balance) => {
+      {data.balances.map((balance) => {
         return (
           <DepositItem
             key={'deposit-balance-' + balance.ticket.address + balance.prizePool.chainId}
@@ -110,13 +93,7 @@ const DepositsList = (props: {
   )
 }
 
-export interface DepositItemsProps extends V3TokenBalance {
-  chainId: number
-  token: TokenWithBalance
-  ticket: TokenWithBalance
-  prizePool: V3PrizePool
-  balanceUsd: Amount
-  balanceUsdScaled: BigNumber
+export interface DepositItemsProps extends V3PrizePoolBalances {
   refetchBalances: () => void
 }
 
@@ -131,7 +108,7 @@ const DepositItem = (props: DepositItemsProps) => {
 }
 
 const PrizePoolDepositItem = (props: DepositItemsProps) => {
-  const { prizePool, chainId, token, ticket, balanceUsd, refetchBalances, isSponsorship } = props
+  const { prizePool, chainId, token, ticket, refetchBalances, isSponsorship } = props
 
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
@@ -184,7 +161,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
           address={token.address}
           isSponsorship={isSponsorship}
         />
-        <DepositBalance balanceUsd={balanceUsd} chainId={chainId} ticket={ticket} />
+        <DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />
       </button>
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -218,7 +195,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
         tx={tx}
         token={ticket}
         balance={ticket}
-        balanceUsd={balanceUsd}
+        balanceUsd={ticket.balanceUsd}
         t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
@@ -229,7 +206,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
 }
 
 const PodDepositItem = (props: DepositItemsProps) => {
-  const { chainId, ticket, token, prizePool, balanceUsd, refetchBalances } = props
+  const { chainId, ticket, token, prizePool, refetchBalances } = props
 
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
@@ -277,7 +254,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
           symbol={token.symbol}
           address={token.address}
         />
-        <DepositBalance balanceUsd={balanceUsd} chainId={chainId} ticket={ticket} />
+        <DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />
       </button>
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -311,7 +288,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
         tx={tx}
         token={ticket}
         balance={ticket}
-        balanceUsd={balanceUsd}
+        balanceUsd={ticket.balanceUsd}
         t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
