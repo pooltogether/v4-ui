@@ -9,6 +9,11 @@ import {
   TestnetSettingsItem,
   ThemeSettingsItem
 } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
+import { PrizePool } from '@pooltogether/v4-js-client'
+import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
+import { usePrizePoolBySelectedNetwork } from 'lib/hooks/Tsunami/PrizePool/usePrizePoolBySelectedNetwork'
+
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
@@ -42,15 +47,49 @@ export const PageHeader = (props) => {
 
 const Settings = () => {
   const { t } = useTranslation()
+  const prizePool = usePrizePoolBySelectedNetwork()
 
   return (
     <SettingsContainer t={t} className='ml-1 my-auto' title='Settings' sizeClassName='w-6 h-6'>
       <LanguagePicker />
       <ThemeSettingsItem t={t} />
+      <BridgeTokensModalTrigger prizePool={prizePool} />
       <TestnetSettingsItem t={t} />
     </SettingsContainer>
   )
 }
+
+const BUTTON_MIN_WIDTH = 100
+interface ExternalLinkProps {
+  prizePool: PrizePool
+}
+const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
+  const { prizePool } = props
+  const [showModal, setShowModal] = useState(false)
+
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <SettingsItem label={t('Bridge')}>
+        <button
+          className='text-center text-inverse opacity-100 hover:opacity-80 transition-opacity'
+          onClick={() => setShowModal(true)}
+          style={{ minWidth: BUTTON_MIN_WIDTH }}
+        >
+          {t('bridgeTokens', 'Bridge tokens')}
+        </button>
+        <BridgeTokensModal
+          label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
+          chainId={prizePool.chainId}
+          isOpen={showModal}
+          closeModal={() => setShowModal(false)}
+        />
+      </SettingsItem>
+    </>
+  )
+}
+
 
 const LanguagePicker = () => {
   const { i18n: i18next, t } = useTranslation()

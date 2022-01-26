@@ -23,7 +23,6 @@ import {
 import { ethers, Overrides } from 'ethers'
 import transakSDK from '@transak/transak-sdk'
 
-import { BridgeTokensModal } from 'lib/components/Modal/BridgeTokensModal'
 import { GetTokensModal } from 'lib/components/Modal/GetTokensModal'
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 import { SelectedNetworkDropdown } from 'lib/components/SelectedNetworkDropdown'
@@ -263,8 +262,8 @@ export const DepositCard = () => {
         </Card>
 
         <div className='w-full flex bg-tsunami-card-bridge justify-around px-2 py-4 rounded-b-xl'>
-          <BridgeTokensModalTrigger prizePool={prizePool} />
           <CryptoOnrampModalTrigger />
+          <HelpLink />
           <GetTokensModalTrigger prizePool={prizePool} />
         </div>
       </div>
@@ -402,41 +401,6 @@ const GetTokensModalTrigger = (props: ExternalLinkProps) => {
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
         chainId={prizePool.chainId}
         tokenAddress={tokens?.token.address}
-        isOpen={showModal}
-        closeModal={() => setShowModal(false)}
-      />
-    </>
-  )
-}
-const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
-  const { prizePool } = props
-  const [showModal, setShowModal] = useState(false)
-
-  const { t } = useTranslation()
-
-  return (
-    <>
-      <button
-        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
-        onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
-      >
-        <FeatherIcon
-          icon={'arrow-left'}
-          className='relative w-3 h-3  inline-block'
-          style={{ top: -2 }}
-        />
-        <FeatherIcon
-          icon={'arrow-right'}
-          className='relative w-3 h-3 mr-1 inline-block'
-          style={{ top: -2, left: -5 }}
-        />
-
-        {t('bridgeTokens', 'Bridge tokens')}
-      </button>
-      <BridgeTokensModal
-        label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
-        chainId={prizePool.chainId}
         isOpen={showModal}
         closeModal={() => setShowModal(false)}
       />
