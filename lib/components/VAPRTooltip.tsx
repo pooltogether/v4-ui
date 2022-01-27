@@ -1,7 +1,9 @@
 import React from 'react'
 import { Tooltip } from '@pooltogether/react-components'
+import { useTranslation } from 'react-i18next'
 
-export const VAPRTooltip = ({ t }) => {
+export const VAPRTooltip = () => {
+  const { t } = useTranslation()
   return (
     <span className='border-b border-dotted border-white'>
       <Tooltip

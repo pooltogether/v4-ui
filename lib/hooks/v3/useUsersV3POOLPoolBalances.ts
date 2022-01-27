@@ -38,8 +38,10 @@ export const useUsersV3POOLPoolBalances = (usersAddress: string) => {
 
         // Filter POOL Pools.
         const isPOOLPool = POOLPoolAddresses.includes(balance.prizePool.addresses.prizePool)
+        // Only add if ticket, not sponsorship or pod
+        const isTicket = balance.ticket.address === balance.prizePool.addresses.ticket
 
-        if (isPOOLPool) {
+        if (isTicket && isPOOLPool) {
           balances.push(balance)
           if (balance.ticket.balanceUsdScaled) {
             totalValueUsdScaled = totalValueUsdScaled.add(balance.ticket.balanceUsdScaled)

@@ -13,11 +13,11 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
+import { BigNumber } from 'ethers'
 
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { ModalTitle } from 'lib/components/Modal/ModalTitle'
-import { DepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { EstimatedDepositGasItems } from 'lib/components/InfoList/EstimatedGasItem'
 import { InfoListItem, ModalInfoList } from 'lib/components/InfoList'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
@@ -35,14 +35,14 @@ import { getTimestampString } from 'lib/utils/getTimestampString'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
-  prizePool: PrizePool
   token: Token
   ticket: Token
   amountToDeposit: Amount
-  depositAllowance: DepositAllowance
+  depositAllowanceUnformatted: BigNumber
   isDataFetched: boolean
   approveTx: Transaction
   depositTx: Transaction
+  prizePool?: PrizePool
   sendApproveTx: () => void
   sendDepositTx: () => void
   resetState: () => void
@@ -55,7 +55,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     token,
     ticket,
     amountToDeposit,
-    depositAllowance,
+    depositAllowanceUnformatted,
     isDataFetched,
     approveTx,
     depositTx,
@@ -100,7 +100,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     )
   }
 
-  if (amountUnformatted && depositAllowance?.allowanceUnformatted.lt(amountUnformatted)) {
+  if (amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
     return (
       <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
@@ -187,11 +187,13 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
 
         <ModalInfoList>
-          <UpdatedOdds
-            amount={amountToDeposit}
-            prizePool={prizePool}
-            action={EstimateAction.deposit}
-          />
+          {prizePool && (
+            <UpdatedOdds
+              amount={amountToDeposit}
+              prizePool={prizePool}
+              action={EstimateAction.deposit}
+            />
+          )}
           <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
           <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
         </ModalInfoList>

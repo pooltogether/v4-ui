@@ -55,10 +55,10 @@ const DepositsList = () => {
   }
   return (
     <ul className='space-y-4'>
-      {data.balances.map((balance) => (
+      {data.balances.map((balances) => (
         <DepositItem
-          key={'deposit-balance-' + balance.prizePool.id()}
-          {...balance}
+          key={'deposit-balance-' + balances.prizePool.id()}
+          {...balances}
           refetchBalances={refetch}
         />
       ))}

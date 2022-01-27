@@ -13,7 +13,7 @@ import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import ERC20Abi from 'abis/ERC20'
+import Erc20Abi from 'abis/ERC20'
 import { NO_REFETCH } from 'lib/constants/query'
 import { useV3ChainIds } from './useV3ChainIds'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
@@ -80,11 +80,11 @@ const getUsersV3BalancesByChainId = async (
   prizePools.forEach((prizePool) => {
     const { ticket, token, sponsorship, podStablecoin } = prizePool.tokens
 
-    const tokenContract = contract(token.address, ERC20Abi, token.address)
-    const ticketContract = contract(ticket.address, ERC20Abi, ticket.address)
-    const sponsorshipContract = contract(sponsorship.address, ERC20Abi, sponsorship.address)
+    const tokenContract = contract(token.address, Erc20Abi, token.address)
+    const ticketContract = contract(ticket.address, Erc20Abi, ticket.address)
+    const sponsorshipContract = contract(sponsorship.address, Erc20Abi, sponsorship.address)
     const podStablecoinContract = podStablecoin
-      ? contract(podStablecoin.address, ERC20Abi, podStablecoin.address)
+      ? contract(podStablecoin.address, Erc20Abi, podStablecoin.address)
       : null
 
     batchRequests.push(
@@ -145,6 +145,8 @@ const getUsersV3BalancesByChainId = async (
       balances.push(podBalance)
     }
   })
+
+  console.log('useAllUsersV3Balances', { balances })
 
   return {
     chainId,

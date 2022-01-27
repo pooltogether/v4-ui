@@ -13,7 +13,7 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 interface GenericDepositAmountInputProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  tokenBalanceIsFetched: Boolean
+  isTokenBalanceFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
   inputKey: string
@@ -60,7 +60,7 @@ GenericDepositAmountInput.defaultProps = {
 interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
 
 const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
-  const { form, tokenBalance, inputKey, tokenBalanceIsFetched } = props
+  const { form, tokenBalance, inputKey, isTokenBalanceFetched } = props
 
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
@@ -88,7 +88,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
         >
           {/* <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} /> */}
           <WalletSvg className='mr-2' />
-          {!tokenBalanceIsFetched ? (
+          {!isTokenBalanceFetched ? (
             <ThemedClipSpinner sizeClassName='w-3 h-3' className='mr-2 opacity-50' />
           ) : (
             <span className='mr-1'>{tokenBalance?.amountPretty || 0}</span>

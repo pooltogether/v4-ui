@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
 import PodAbi from 'abis/V3_Pod'
-import ERC20Abi from 'abis/ERC20'
+import Erc20Abi from 'abis/ERC20'
 import { batch, contract } from '@pooltogether/etherplex'
 import { NO_REFETCH } from 'lib/constants/query'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
@@ -41,7 +41,7 @@ const getPodExitFee = async (
 ) => {
   const batchCalls = []
   const podContract = contract(podAddress, PodAbi, podAddress)
-  const underlyingTokenContract = contract(underlyingTokenAddress, ERC20Abi, underlyingTokenAddress)
+  const underlyingTokenContract = contract(underlyingTokenAddress, Erc20Abi, underlyingTokenAddress)
 
   batchCalls.push(
     podContract.getEarlyExitFee(amountToWithdrawUnformatted),

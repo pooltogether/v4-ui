@@ -746,9 +746,7 @@ const StakingEarningBalance = (props: StakingDepositStatProps) => {
         address={tokenFaucetDripToken.address}
         className='mr-2 my-auto'
       />
-      <span className='font-bold text-lg mr-3'>
-        {displayPercentage(apr)}% <VAPRTooltip t={t} />
-      </span>
+      <span className='font-bold text-lg mr-3'></span>
     </div>
   )
 }
@@ -1299,27 +1297,6 @@ const getDepositAllowance = (userLPChainData: UserLPChainData, amountToDeposit?:
   }
 
   return depositAllowance
-}
-
-export interface BuildApproveTxArgs {
-  amount: BigNumber
-  prizePoolAddress: string
-  provider: ethers.providers.Web3Provider
-  token: Token
-}
-
-const buildApproveTx = (args: BuildApproveTxArgs) => {
-  const { amount, token, prizePoolAddress, provider } = args
-
-  const signer = provider.getSigner()
-
-  const params = [prizePoolAddress, amount]
-
-  const contract = new ethers.Contract(token.address, Erc20Abi, signer)
-
-  const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)
-
-  return contractCall
 }
 
 export interface BuildDepositTxArgs {

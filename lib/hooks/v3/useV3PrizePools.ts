@@ -5,7 +5,7 @@ import { batch, Context, contract } from '@pooltogether/etherplex'
 import { getAddress } from '@ethersproject/address'
 
 import { useV3ChainIds } from './useV3ChainIds'
-import ERC20Abi from 'abis/ERC20'
+import Erc20Abi from 'abis/ERC20'
 import PrizePoolAbi from 'abis/V3_PrizePool'
 import PodAbi from 'abis/V3_Pod'
 import PrizeStrategyAbi from 'abis/V3_PrizeStrategy'
@@ -73,6 +73,8 @@ const getV3PrizePools = async (
       prizePoolsByChainId[chainId] = prizePools
     })
   )
+
+  console.log('useV3PrizePools', { prizePoolsByChainId })
 
   return prizePoolsByChainId
 }
@@ -142,11 +144,11 @@ const getPrizePools = async (chainId: number, provider: Provider, prizePoolAddre
     const ticketAddress = prizeStrategyAddresses.ticket[0]
     const sponsorshipTicketAddress = prizeStrategyAddresses.sponsorship[0]
 
-    const ticketContract = contract(ticketAddress, ERC20Abi, ticketAddress)
-    const tokenContract = contract(tokenAddress, ERC20Abi, tokenAddress)
+    const ticketContract = contract(ticketAddress, Erc20Abi, ticketAddress)
+    const tokenContract = contract(tokenAddress, Erc20Abi, tokenAddress)
     const sponsorshipTicketContract = contract(
       sponsorshipTicketAddress,
-      ERC20Abi,
+      Erc20Abi,
       sponsorshipTicketAddress
     )
 

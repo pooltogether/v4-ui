@@ -44,7 +44,7 @@ export const DepositCard = (props: { className?: string }) => {
   } = useUsersPrizePoolBalances(usersAddress, prizePool)
   const usersBalances = usersBalancesData?.balances
   const {
-    data: depositAllowance,
+    data: depositAllowanceUnformatted,
     refetch: refetchUsersDepositAllowance,
     isFetched: isUsersDepositAllowanceFetched
   } = useUsersDepositAllowance(prizePool)
@@ -91,10 +91,8 @@ export const DepositCard = (props: { className?: string }) => {
   const setDepositTxId = (txId: number, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'deposit')
 
-  const token = prizePoolTokens?.token
-  const ticket = prizePoolTokens?.ticket
-  const tokenBalance = usersBalances?.token
-  const ticketBalance = usersBalances?.ticket
+  const token = usersBalances?.token
+  const ticket = usersBalances?.ticket
 
   const { setValue, watch, reset } = form
 
@@ -216,8 +214,6 @@ export const DepositCard = (props: { className?: string }) => {
           approveTx={approveTx}
           depositTx={depositTx}
           isUsersBalancesFetched={isUsersBalancesFetched}
-          tokenBalance={tokenBalance}
-          ticketBalance={ticketBalance}
           isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
           openModal={openModal}
           amountToDeposit={amountToDeposit}
@@ -242,7 +238,7 @@ export const DepositCard = (props: { className?: string }) => {
         ticket={ticket}
         isDataFetched={isDataFetched}
         amountToDeposit={amountToDeposit}
-        depositAllowance={depositAllowance}
+        depositAllowanceUnformatted={depositAllowanceUnformatted}
         approveTx={approveTx}
         depositTx={depositTx}
         sendApproveTx={sendApproveTx}

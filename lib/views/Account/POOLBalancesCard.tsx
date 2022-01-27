@@ -22,13 +22,8 @@ export const POOLBalancesCard = () => {
       <CardTitle
         className='mb-2'
         title={t('poolToken', 'POOL Token')}
-        secondary={
-          isFetched ? (
-            `$${data.totalValueUsd.amountPretty}`
-          ) : (
-            <ThemedClipSpinner sizeClassName='w-3 h-3' />
-          )
-        }
+        secondary={`$${data?.totalValueUsd.amountPretty}`}
+        loading={!isFetched}
       />
       <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
         <POOLBalancesList data={data} isFetched={isFetched} />
