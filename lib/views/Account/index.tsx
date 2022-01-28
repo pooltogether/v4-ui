@@ -8,9 +8,9 @@ import { XDollarsGetsYou } from 'lib/components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
-import { StakingDeposits } from './V3StakingDeposits'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { POOLStakingCards } from './V3StakingDeposits/POOLStakingCards'
+import { LPStakingCards } from './V3StakingDeposits/LPStakingCards'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -36,7 +36,7 @@ export const AccountUI = (props) => {
       <V4Deposits />
       <POOLBalancesCard />
       <POOLStakingCards />
-      {/* <StakingDeposits /> */}
+      <LPStakingCards />
       <V3Deposits />
       <OddsDisclaimer className='block mt-6' />
     </PagePadding>

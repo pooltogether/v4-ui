@@ -21,13 +21,12 @@ interface StakingBalanceBottomSheetProps {
   chainId: number
   balances: V3PrizePoolBalances
   isOpen: boolean
-  underlyingTokenValueUsd: number
   setIsOpen: (x: boolean) => void
   refetch: () => void
 }
 
 export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
-  const { balances, chainId, underlyingTokenValueUsd, isOpen, setIsOpen, refetch } = props
+  const { balances, chainId, isOpen, setIsOpen, refetch } = props
 
   const { t } = useTranslation()
 
@@ -74,16 +73,10 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     chainId,
     tokenFaucetAddress,
     prizePool,
-    underlyingTokenValueUsd
+    balances.token
   )
   const { data: tokenFaucetRewards, isFetched: isTokenFaucetRewardsFetched } =
-    useUsersTokenFaucetRewards(
-      chainId,
-      usersAddress,
-      prizePool,
-      tokenFaucetAddress,
-      underlyingTokenValueUsd
-    )
+    useUsersTokenFaucetRewards(chainId, usersAddress, prizePool, tokenFaucetAddress, balances.token)
 
   const revokeAllowanceCallTransaction = buildApproveTx(
     provider,
@@ -175,6 +168,11 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       i18nKey: 'ticketToken',
       chainId,
       address: prizePool.addresses.ticket
+    },
+    {
+      i18nKey: 'tokenFaucet',
+      chainId,
+      address: tokenFaucetAddress
     }
   ]
 
@@ -191,9 +189,9 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       isWalletOnProperNetwork={isWalletOnProperNetwork}
       isWalletMetaMask={isWalletMetaMask}
       chainId={chainId}
-      token={token}
-      balance={token}
-      balanceUsd={token.balanceUsd}
+      token={ticket}
+      balance={ticket}
+      balanceUsd={ticket.balanceUsd}
     />
   )
 }

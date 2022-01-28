@@ -10,40 +10,81 @@ import { V3PrizePoolBalances } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { StakingBottomSheet } from './StakingBottomSheet'
 import classNames from 'classnames'
 
-interface StakingCardProps
-  extends StakingCardTitleProps,
-    DepositedStateProps,
-    NotDepositedStateProps {
+interface StakingCardProps {
+  chainId: number
   balances: V3PrizePoolBalances
   colorFrom: string
   colorTo: string
+  tokenLabel: string
+  poolEmoji: string
+  vapr: number
+  tokenFaucetRewards: TokenWithBalance
+  tokenIcon: React.ReactNode
+  isTokenFaucetRewardsFetched: boolean
+  isTokenFaucetDataFetched: boolean
+  depositPrompt: string
   refetch: () => void
 }
 
 export const StakingCard = (props: StakingCardProps) => {
-  const { balances, colorFrom, colorTo, refetch } = props
+  const {
+    balances,
+    colorFrom,
+    colorTo,
+    tokenLabel,
+    poolEmoji,
+    tokenIcon,
+    vapr,
+    chainId,
+    tokenFaucetRewards,
+    isTokenFaucetRewardsFetched,
+    isTokenFaucetDataFetched,
+    depositPrompt,
+    refetch
+  } = props
   const [isOpen, setIsOpen] = useState(false)
+
+  console.log('StakingCard', { balances })
+
+  const { ticket, token } = balances
+
+  const openBottomSheet = () => setIsOpen(true)
 
   return (
     <>
       <div
-        className='rounded-lg p-4 text-white mb-4'
+        className='rounded-lg p-4 text-white flex flex-col space-y-4'
         style={{
           backgroundImage: `linear-gradient(300deg, ${colorFrom} 0%, ${colorTo} 100%)`
         }}
       >
-        <StakingCardTitle {...props} />
+        <StakingCardTitle tokenLabel={tokenLabel} tokenIcon={tokenIcon} poolEmoji={poolEmoji} />
         {balances.ticket.hasBalance ? (
-          <DepositedState {...props} />
+          <ManageState
+            vapr={vapr}
+            chainId={chainId}
+            ticket={ticket}
+            tokenFaucetRewards={tokenFaucetRewards}
+            isTokenFaucetRewardsFetched={isTokenFaucetRewardsFetched}
+            isTokenFaucetDataFetched={isTokenFaucetDataFetched}
+            openBottomSheet={openBottomSheet}
+          />
         ) : (
-          <NotDepositedState {...props} openBottomSheet={() => setIsOpen(true)} />
+          <DepositState
+            chainId={chainId}
+            vapr={vapr}
+            depositPrompt={depositPrompt}
+            tokenFaucetRewards={tokenFaucetRewards}
+            isTokenFaucetRewardsFetched={isTokenFaucetRewardsFetched}
+            isTokenFaucetDataFetched={isTokenFaucetDataFetched}
+            openBottomSheet={openBottomSheet}
+          />
         )}
       </div>
       <StakingBottomSheet
         chainId={balances.chainId}
         balances={balances}
         isOpen={isOpen}
-        underlyingTokenValueUsd={balances.token.usdPerToken}
         setIsOpen={setIsOpen}
         refetch={refetch}
       />
@@ -61,7 +102,7 @@ const StakingCardTitle = (props: StakingCardTitleProps) => {
   const { tokenLabel, tokenIcon, poolEmoji } = props
   const { t } = useTranslation()
   return (
-    <div className='flex w-full justify-between mb-4'>
+    <div className='flex w-full justify-between'>
       <div className='flex items-center'>
         {tokenIcon}
         <span className='ml-2 font-semibold text-xl'>
@@ -75,7 +116,7 @@ const StakingCardTitle = (props: StakingCardTitleProps) => {
   )
 }
 
-interface DepositedStateProps {
+interface ManageStateProps {
   vapr: number
   chainId: number
   ticket: TokenWithUsdBalance
@@ -84,7 +125,7 @@ interface DepositedStateProps {
   isTokenFaucetDataFetched: boolean
   openBottomSheet: () => void
 }
-const DepositedState = (props: DepositedStateProps) => {
+const ManageState = (props: ManageStateProps) => {
   const {
     chainId,
     ticket,
@@ -95,6 +136,7 @@ const DepositedState = (props: DepositedStateProps) => {
     openBottomSheet
   } = props
   const { t } = useTranslation()
+  console.log('ManageState', { props })
   return (
     <>
       <ul className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-4 space-y-2'>
@@ -120,12 +162,13 @@ const DepositedState = (props: DepositedStateProps) => {
               chainId={chainId}
               token={tokenFaucetRewards}
               vapr={vapr}
-              isFetched={isTokenFaucetDataFetched}
+              isTokenFaucetDataFetched={isTokenFaucetDataFetched}
+              isTokenFetched={isTokenFaucetRewardsFetched}
             />
           }
         />
       </ul>
-      <OpenModalButton onClick={openBottomSheet} label={t('manage')} />
+      <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('manage')} />
     </>
   )
 }
@@ -146,7 +189,7 @@ const TokenAndAmount = (props: {
   isFetched?: boolean
 }) => (
   <div className='flex space-x-2 font-bold text-lg'>
-    <TokenIcon chainId={props.chainId} address={props.token?.address} sizeClassName='w-6 h-6' />
+    <TokenIconOrLoading chainId={props.chainId} token={props.token} isFetched={props.isFetched} />
     {props.isFetched ? (
       <>
         <span>{props.amount.amountPretty}</span>
@@ -166,43 +209,59 @@ const TokenAndVAPR = (props: {
   chainId: number
   token: Token
   vapr: number
-  isFetched: boolean
+  isTokenFaucetDataFetched: boolean
+  isTokenFetched: boolean
 }) => (
   <div className='flex space-x-2 font-bold text-lg'>
-    <TokenIcon chainId={props.chainId} address={props.token.address} sizeClassName='w-6 h-6' />
+    <TokenIconOrLoading
+      chainId={props.chainId}
+      token={props.token}
+      isFetched={props.isTokenFetched}
+    />
     <span>
-      {props.isFetched ? (
-        `${displayPercentage(String(props.vapr))}%`
-      ) : (
-        <ThemedClipSpinner sizeClassName='w-4 h-4 opacity-50' />
-      )}{' '}
+      <VAPROrLoading vapr={props.vapr} isFetched={props.isTokenFaucetDataFetched} />
       <VAPRTooltip />
     </span>
   </div>
 )
 
-interface NotDepositedStateProps {
+interface DepositStateProps {
   chainId: number
   vapr: number
   depositPrompt: string
   tokenFaucetRewards: TokenWithBalance
+  isTokenFaucetRewardsFetched: boolean
+  isTokenFaucetDataFetched: boolean
   openBottomSheet: () => void
 }
-const NotDepositedState = (props: NotDepositedStateProps) => {
-  const { vapr, depositPrompt, tokenFaucetRewards, chainId, openBottomSheet } = props
+const DepositState = (props: DepositStateProps) => {
+  const {
+    vapr,
+    depositPrompt,
+    tokenFaucetRewards,
+    isTokenFaucetRewardsFetched,
+    isTokenFaucetDataFetched,
+    chainId,
+    openBottomSheet
+  } = props
   const { t } = useTranslation()
   return (
-    <div className='space-y-2 flex flex-col'>
-      <p className='text-sm'>{depositPrompt}</p>
-      <div className='flex space-x-2 font-bold text-lg items-center'>
-        <TokenIcon chainId={chainId} address={tokenFaucetRewards.address} sizeClassName='w-6 h-6' />
-        <span>{t('earn')}</span>
-        <span>
-          {displayPercentage(String(vapr))}% <VAPRTooltip />
-        </span>
+    <>
+      <div className='space-y-2 flex flex-col'>
+        <p className='text-sm'>{depositPrompt}</p>
+        <div className='flex space-x-2 font-bold text-lg items-center'>
+          <TokenIconOrLoading
+            chainId={chainId}
+            token={tokenFaucetRewards}
+            isFetched={isTokenFaucetRewardsFetched}
+          />
+          <span>{t('earn')}</span>
+          <VAPROrLoading vapr={vapr} isFetched={isTokenFaucetDataFetched} />
+          <VAPRTooltip />
+        </div>
       </div>
-      <OpenModalButton onClick={openBottomSheet} label={t('deposit')} />
-    </div>
+      <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('deposit')} />
+    </>
   )
 }
 
@@ -220,4 +279,24 @@ const OpenModalButton = (props: { className?: string; onClick: () => void; label
       className='transition w-6 h-6 opacity-50 hover:opacity-100 my-auto ml-1'
     />
   </button>
+)
+
+const TokenIconOrLoading = (props: { chainId: number; token: Token; isFetched: boolean }) => (
+  <>
+    {props.isFetched ? (
+      <TokenIcon chainId={props.chainId} address={props.token.address} sizeClassName='w-6 h-6' />
+    ) : (
+      <ThemedClipSpinner sizeClassName='w-6 h-6' className='opacity-50' />
+    )}
+  </>
+)
+
+const VAPROrLoading = (props: { vapr: number; isFetched: boolean }) => (
+  <>
+    {props.isFetched ? (
+      <span>{displayPercentage(String(props.vapr))}%</span>
+    ) : (
+      <ThemedClipSpinner sizeClassName='w-4 h-4 opacity-50' />
+    )}{' '}
+  </>
 )

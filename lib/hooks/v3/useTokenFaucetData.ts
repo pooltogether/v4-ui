@@ -1,10 +1,15 @@
-import { getCoingeckoTokenPrices, Token, useReadProvider } from '.yalc/@pooltogether/hooks/dist'
+import {
+  getCoingeckoTokenPrices,
+  Token,
+  TokenWithUsdBalance,
+  useReadProvider
+} from '.yalc/@pooltogether/hooks/dist'
 import { Provider } from '@ethersproject/abstract-provider'
 import { useQuery } from 'react-query'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from '.yalc/@pooltogether/hooks/dist/constants'
-import { amountMultByUsd } from '@pooltogether/utilities'
+import { amountMultByUsd, calculateAPR } from '@pooltogether/utilities'
 import { formatUnits } from 'ethers/lib/utils'
 
 import TokenFaucetAbi from 'abis/TokenFaucet'
@@ -16,16 +21,15 @@ export const useTokenFaucetData = (
   chainId: number,
   tokenFaucetAddress: string,
   prizePool: V3PrizePool,
-  underlyingTokenValueUsd: number
+  token: TokenWithUsdBalance
 ) => {
   const provider = useReadProvider(chainId)
 
-  const enabled = !!underlyingTokenValueUsd
+  const enabled = !!token?.usdPerToken
 
   return useQuery(
     ['useTokenFaucetData', chainId, tokenFaucetAddress],
-    () =>
-      getTokenFaucetData(provider, chainId, tokenFaucetAddress, prizePool, underlyingTokenValueUsd),
+    () => getTokenFaucetData(provider, chainId, tokenFaucetAddress, prizePool, token),
     { ...NO_REFETCH, enabled }
   )
 }
@@ -35,7 +39,7 @@ const getTokenFaucetData = async (
   chainId: number,
   tokenFaucetAddress: string,
   prizePool: V3PrizePool,
-  underlyingTokenValueUsd: number
+  token: TokenWithUsdBalance
 ) => {
   let batchRequests: Context[] = []
 
@@ -44,9 +48,10 @@ const getTokenFaucetData = async (
   batchRequests.push(tokenFaucetContract.dripRatePerSecond().measure().asset().totalUnclaimed())
   const tokenFaucetResults = await batch(provider, ...batchRequests)
   batchRequests = []
+  console.log('getTokenFaucetData', { tokenFaucetResults })
 
   const dripTokenAddress: string = tokenFaucetResults[tokenFaucetAddress].asset[0]
-  const measureTokenAddress: string = tokenFaucetResults[tokenFaucetAddress].measureTokenAddress[0]
+  const measureTokenAddress: string = tokenFaucetResults[tokenFaucetAddress].measure[0]
 
   // Fetch data from tokens
   const dripTokenContract = contract(dripTokenAddress, Erc20Abi, dripTokenAddress)
@@ -57,10 +62,12 @@ const getTokenFaucetData = async (
   )
   const tokenResults = await batch(provider, ...batchRequests)
   batchRequests = []
+  console.log('getTokenFaucetData', { tokenResults })
 
   // Fetch token price
   // TODO: Error handling for if CoinGecko API is down
   const tokenPrices = await getCoingeckoTokenPrices(chainId, [dripTokenAddress])
+  console.log('getTokenFaucetData', { tokenPrices, dripTokenAddress })
 
   const measureToken: Token = getMeasureToken(measureTokenAddress, prizePool)
   const dripToken: Token = {
@@ -106,7 +113,7 @@ const getTokenFaucetData = async (
 
   const totalMeasureTokenValueUsdUnformatted = amountMultByUsd(
     measureTokenTotalSupplyUnformatted,
-    underlyingTokenValueUsd
+    token.usdPerToken
   )
   const totalMeasureTokenValueUsd = Number(
     formatUnits(totalMeasureTokenValueUsdUnformatted, measureToken.decimals)
@@ -117,12 +124,20 @@ const getTokenFaucetData = async (
     vapr = (totalDripDailyValue / totalMeasureTokenValueUsd) * 365 * 100
   }
 
+  console.log('getTokenFaucetData', {
+    vapr,
+    dripToken,
+    dripTokenValueUsd,
+    measureToken,
+    measureTokenValueUsd: token.usdPerToken
+  })
+
   return {
     vapr,
     dripToken,
     dripTokenValueUsd,
     measureToken,
-    measureTokenValueUsd: underlyingTokenValueUsd
+    measureTokenValueUsd: token.usdPerToken
   }
 }
 

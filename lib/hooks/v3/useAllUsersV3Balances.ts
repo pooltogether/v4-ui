@@ -45,7 +45,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
   return useQueries(
     chainIds.map((chainId) => ({
       ...NO_REFETCH,
-      queryKey: ['useAllUsersV3Balances', usersAddress, chainId],
+      queryKey: ['useAllUsersV3Balances', usersAddress, chainId, tokenPrices],
       queryFn: async () =>
         getUsersV3BalancesByChainId(
           chainId,
@@ -103,6 +103,10 @@ const getUsersV3BalancesByChainId = async (
 
   prizePools.forEach((prizePool) => {
     const { ticket, token, sponsorship, podStablecoin } = prizePool.tokens
+
+    if (token.address === '0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e') {
+      console.log('POOL', { tokenPrices, poolUsd: tokenPrices?.[token.address] })
+    }
 
     const tokenUsd = tokenPrices?.[token.address]?.usd
     const tokenWithUsdBalance = makeTokenWithUsdBalance(token, tokenUsd, balanceOfResults)

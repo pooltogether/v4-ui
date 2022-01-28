@@ -131,6 +131,12 @@ export const V3_PRIZE_POOL_ADDRESSES: {
       prizePool: '0x7355f97fBA5237aEdFE2CdAad50A4eA3cF070A98',
       symbol: 'FAST-DAI-0x7355f9',
       subgraphVersion: '3.3.8'
+    },
+    {
+      prizePool: '0x8A358f613ddCca865D005414c1690920E4e9b132',
+      symbol: 'LP',
+      subgraphVersion: '',
+      tokenFaucets: ['0x97B99693613aaA74A3fa0B2f05378b8F6A74a893']
     }
   ],
   [CHAIN_ID.bsc]: [

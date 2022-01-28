@@ -1,6 +1,7 @@
 import {
   Token,
   TokenWithBalance,
+  TokenWithUsdBalance,
   useCoingeckoTokenPrices,
   useReadProvider
 } from '.yalc/@pooltogether/hooks/dist'
@@ -20,7 +21,7 @@ export const useUsersTokenFaucetRewards = (
   usersAddress: string,
   prizePool: V3PrizePool,
   tokenFaucetAddress: string,
-  underlyingTokenValueUsd: number
+  token: TokenWithUsdBalance
 ) => {
   const provider = useReadProvider(chainId)
 
@@ -28,10 +29,10 @@ export const useUsersTokenFaucetRewards = (
     chainId,
     tokenFaucetAddress,
     prizePool,
-    underlyingTokenValueUsd
+    token
   )
 
-  const enabled = isTokenFaucetDataFetched && !!underlyingTokenValueUsd
+  const enabled = isTokenFaucetDataFetched && !!token
 
   return useQuery(
     ['useUsersTokenFaucetRewards', chainId, usersAddress, tokenFaucetAddress],
@@ -57,6 +58,8 @@ const getTokenFaucetRewards = async (
   // Fetch asset and claimable amount
   const tokenFaucetContract = contract(tokenFaucetAddress, TokenFaucetAbi, tokenFaucetAddress)
   const tokenFaucetResults = await batch(provider, tokenFaucetContract.claim(usersAddress))
+
+  console.log({ tokenFaucetResults, usersAddress })
 
   const claimableAmountUnformatted: BigNumber = tokenFaucetResults[tokenFaucetAddress].claim[0]
   const claimableAmount = getAmountFromBigNumber(claimableAmountUnformatted, dripToken.decimals)
