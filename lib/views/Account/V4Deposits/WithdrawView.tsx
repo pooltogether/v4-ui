@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
-import { Amount, Transaction } from '@pooltogether/hooks'
+import { Amount, Transaction, useTransaction } from '@pooltogether/hooks'
 import { useState } from 'react'
 
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
@@ -20,16 +20,17 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
-  withdrawTx: Transaction
   setWithdrawTxId: (txId: number) => void
   onDismiss: () => void
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, balances, withdrawTx, setWithdrawTxId, onDismiss, refetchBalances } = props
+  const { prizePool, balances, setWithdrawTxId, onDismiss, refetchBalances } = props
   const { t } = useTranslation()
   const { token } = balances
 
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
   const user = useSelectedChainIdUser()
@@ -58,6 +59,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
       }
     })
     setWithdrawTxId(txId)
+    setTxId(txId)
   }
 
   if (!isWalletOnProperNetwork) {
@@ -79,7 +81,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         <ModalTransactionSubmitted
           className='mt-8'
           chainId={prizePool.chainId}
-          tx={withdrawTx}
+          tx={tx}
           closeModal={onDismiss}
           hideCloseButton
         />
@@ -103,7 +105,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         refetchBalances={refetchBalances}
         amountToWithdraw={amountToWithdraw}
         setAmountToWithdraw={setAmountToWithdraw}
-        withdrawTx={withdrawTx}
+        withdrawTx={tx}
         setWithdrawTxId={setWithdrawTxId}
         sendWithdrawTx={sendWithdrawTx}
       />

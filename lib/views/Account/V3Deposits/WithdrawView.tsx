@@ -1,4 +1,4 @@
-import { Amount, Transaction, useV3ExitFee } from '@pooltogether/hooks'
+import { Amount, Transaction, useTransaction, useV3ExitFee } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -20,27 +20,17 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
-  prizePool: any
-  withdrawTx: Transaction
-  refetchBalances: () => void
   setWithdrawTxId: (txId: number) => void
   onDismiss: () => void
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const {
-    prizePool,
-    refetchBalances,
-    setWithdrawTxId,
-    withdrawTx,
-    onDismiss,
-    balance,
-    address,
-    symbol
-  } = props
+  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, balance, address, symbol } = props
 
   const chainId = prizePool.chainId
 
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
   const sendTx = useSendTransaction()
@@ -83,6 +73,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
       }
     })
     setWithdrawTxId(txId)
+    setTxId(txId)
   }
 
   const { t } = useTranslation()
@@ -108,7 +99,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         refetchBalances={refetchBalances}
         amountToWithdraw={amountToWithdraw}
         setAmountToWithdraw={setAmountToWithdraw}
-        withdrawTx={withdrawTx}
+        withdrawTx={tx}
         setWithdrawTxId={setWithdrawTxId}
         sendWithdrawTx={sendWithdrawTx}
         onDismiss={onDismiss}
