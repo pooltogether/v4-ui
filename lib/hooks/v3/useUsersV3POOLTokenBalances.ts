@@ -62,8 +62,6 @@ export const useUsersV3POOLTokenBalances = (usersAddress: string) => {
     })
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
 
-    console.log({ balancesByChainId, totalValueUsd })
-
     return {
       isFetching: false,
       isFetched: true,

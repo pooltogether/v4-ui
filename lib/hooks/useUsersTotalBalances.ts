@@ -56,7 +56,7 @@ export const useUsersTotalBalances = () => {
 
     // Fallback in case there is no token price data
     const totalV4Balance = v4BalancesData.balances.reduce((total, balance) => {
-      if (balance.balances.ticket.amount) {
+      if (balance?.balances.ticket.amount) {
         return total + Number(balance.balances.ticket.amount)
       } else {
         return total

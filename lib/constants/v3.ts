@@ -286,7 +286,7 @@ export const LP_PRIZE_POOL_METADATA = Object.freeze({
 
 export const POOL_PRIZE_POOL_ADDRESSES = Object.freeze({
   [CHAIN_ID.mainnet]: ['0x396b4489da692788e327e2e4b2b0459a5ef26791'],
-  // [CHAIN_ID.polygon]: ['0x2aC049f07d56Ed04F84Ff80022A71a1A2d8cE19b'], // Don't show staking for Polygon pool
+  [CHAIN_ID.polygon]: ['0x2aC049f07d56Ed04F84Ff80022A71a1A2d8cE19b'], // Don't show staking for Polygon pool
   [CHAIN_ID.rinkeby]: ['0x4706856fa8bb747d50b4ef8547fe51ab5edc4ac2']
 })
 

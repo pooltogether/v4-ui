@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { POOL_PRIZE_POOL_ADDRESSES } from 'lib/constants/v3'
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
+import { CHAIN_ID } from 'lib/constants/constants'
 
 /**
  * Returns a users POOL Pool balances.
@@ -34,7 +35,10 @@ export const useUsersV3POOLPoolBalances = (usersAddress: string) => {
       const { data: balancesForChainId } = queryResult
       balancesForChainId.balances.forEach((balance) => {
         const chainId = balance.chainId
-        const POOLPoolAddresses = POOL_PRIZE_POOL_ADDRESSES[chainId] || []
+
+        // NOTE: Hide Polygon POOL staking.
+        const POOLPoolAddresses =
+          chainId === CHAIN_ID.polygon ? [] : POOL_PRIZE_POOL_ADDRESSES[chainId] || []
 
         // Filter POOL Pools.
         const isPOOLPool = POOLPoolAddresses.includes(balance.prizePool.addresses.prizePool)
