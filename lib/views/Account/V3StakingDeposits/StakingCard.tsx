@@ -44,8 +44,6 @@ export const StakingCard = (props: StakingCardProps) => {
   } = props
   const [isOpen, setIsOpen] = useState(false)
 
-  console.log('StakingCard', { balances })
-
   const { ticket, token } = balances
 
   const openBottomSheet = () => setIsOpen(true)
@@ -136,7 +134,6 @@ const ManageState = (props: ManageStateProps) => {
     openBottomSheet
   } = props
   const { t } = useTranslation()
-  console.log('ManageState', { props })
   return (
     <>
       <ul className='rounded-lg bg-pt-purple-darker bg-opacity-20 px-8 py-4 space-y-2'>

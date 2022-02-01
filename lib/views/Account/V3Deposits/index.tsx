@@ -9,7 +9,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import classNames from 'classnames'
-import { Amount, Token, TokenWithBalance, useTransaction } from '@pooltogether/hooks'
+import { Amount, Token, TokenWithUsdBalance, useTransaction } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -20,6 +20,9 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 import { V3PrizePoolBalances } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { PodWithdrawView } from 'lib/views/Account/V3Deposits/PodWithdrawView'
+import { PrizePoolDepositList } from 'lib/components/PrizePoolDepositList'
+import { PrizePoolDepositListItem } from 'lib/components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { PrizePoolDepositBalance } from 'lib/components/PrizePoolDepositList/PrizePoolDepositBalance'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
 export const V3Deposits = () => {
@@ -48,9 +51,7 @@ export const V3Deposits = () => {
         />
         <V3AppLink />
       </div>
-      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4 space-y-4'>
-        <DepositsList data={data} refetch={refetchBalances} />
-      </div>
+      <DepositsList data={data} refetch={refetchBalances} />
     </div>
   )
 }
@@ -79,7 +80,7 @@ const DepositsList = (props: {
   const { data, refetch } = props
 
   return (
-    <ul className='space-y-4'>
+    <PrizePoolDepositList>
       {data.balances.map((balances) => {
         return (
           <DepositItem
@@ -89,7 +90,7 @@ const DepositsList = (props: {
           />
         )
       })}
-    </ul>
+    </PrizePoolDepositList>
   )
 }
 
@@ -148,21 +149,21 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
   const onDismiss = () => setIsOpen(false)
 
   return (
-    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
-      <button
-        className='p-4 w-full flex justify-between items-center'
+    <>
+      <PrizePoolDepositListItem
         onClick={() => {
           setIsOpen(true)
         }}
-      >
-        <UnderlyingTokenLabel
-          chainId={chainId}
-          symbol={token.symbol}
-          address={token.address}
-          isSponsorship={isSponsorship}
-        />
-        <DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />
-      </button>
+        left={
+          <UnderlyingTokenLabel
+            chainId={chainId}
+            symbol={token.symbol}
+            address={token.address}
+            isSponsorship={isSponsorship}
+          />
+        }
+        right={<DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />}
+      />
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
         title={`V3 ${t('prizePoolTicker', { ticker: token.symbol })}`}
@@ -201,7 +202,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
       />
-    </li>
+    </>
   )
 }
 
@@ -254,7 +255,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
           symbol={token.symbol}
           address={token.address}
         />
-        <DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />
+        <DepositBalance chainId={chainId} ticket={ticket} />
       </button>
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -343,32 +344,11 @@ const UnderlyingTokenLabel = (props: {
 )
 
 interface DepositBalanceProps {
-  balanceUsd: Amount
   chainId: number
-  ticket: Token
+  ticket: TokenWithUsdBalance
 }
 
 const DepositBalance = (props: DepositBalanceProps) => {
-  const { balanceUsd, chainId, ticket } = props
-
-  return (
-    <div className='flex'>
-      <TokenIcon chainId={chainId} address={ticket.address} className='mr-2 my-auto' />
-      <span
-        className={classNames('font-bold text-lg mr-3', {
-          'opacity-50': balanceUsd.amountUnformatted.isZero()
-        })}
-      >
-        ${balanceUsd.amountPretty}
-      </span>
-      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
-    </div>
-  )
+  const { chainId, ticket } = props
+  return <PrizePoolDepositBalance chainId={chainId} token={ticket} />
 }
-
-const LoadingList = () => (
-  <ul className='space-y-4'>
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-  </ul>
-)

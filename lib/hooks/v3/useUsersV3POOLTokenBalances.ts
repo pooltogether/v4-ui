@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-
+import { TokenWithUsdBalance } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
+
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { POOL_PRIZE_POOL_ADDRESSES } from 'lib/constants/v3'
-import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
-import { TokenWithUsdBalance } from '.yalc/@pooltogether/hooks/dist'
+import { useAllUsersV3Balances } from './useAllUsersV3Balances'
 
 /**
  * Returns a users POOL balances.

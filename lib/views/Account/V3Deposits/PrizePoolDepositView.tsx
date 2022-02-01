@@ -2,37 +2,43 @@ import {
   Amount,
   TokenWithBalance,
   Transaction,
+  useTokenAllowance,
   useTransaction
-} from '.yalc/@pooltogether/hooks/dist'
+} from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { ModalTitle } from '@pooltogether/react-components'
+import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { useState } from 'react'
 import { BigNumber } from 'ethers'
+import { useForm, UseFormReturn } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+import { MaxUint256 } from '@ethersproject/constants'
+
 import { GenericDepositAmountInput } from 'lib/components/Input/GenericDepositAmountInput'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { V3PrizePool } from 'lib/hooks/v3/useV3PrizePools'
 import { buildApproveTx } from 'lib/transactions/buildApproveTx'
 import { getAmountFromString } from 'lib/utils/getAmountFromString'
-import { DepositConfirmationModal } from 'lib/views/Deposit/DepositConfirmationModal'
+import { AccountPageButton } from 'lib/views/Deposit/DepositConfirmationModal'
 import { DepositBottomButton, DepositInfoBox } from 'lib/views/Deposit/DepositForm'
-import { useState } from 'react'
-import { useForm, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { MaxUint256 } from '@ethersproject/constants'
 import { buildDepositTx } from 'lib/transactions/buildV3DepositTx'
+import { useUsersV3PrizePoolBalance } from 'lib/hooks/v3/useUsersV3PrizePoolBalance'
+import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
+import { ModalApproveGate } from 'lib/views/Deposit/ModalApproveGate'
+import { TransactionReceiptButton } from 'lib/components/TransactionReceiptButton'
+import { AmountBeingSwapped } from 'lib/components/AmountBeingSwapped'
+import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
+import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 export interface DepositViewProps {
   chainId: number
   prizePool: V3PrizePool
-  token: TokenWithBalance
-  ticket: TokenWithBalance
-  depositAllowanceUnformatted: BigNumber
-  isTokenAllowanceFetched: boolean
-  closeInitialSheet: () => void
   setExternalDepositTxId: (number) => void
   setExternalApproveTxId: (number) => void
+  onDismiss: () => void
   refetch: () => void
 }
 
@@ -41,20 +47,28 @@ export enum DepositViews {
   'review'
 }
 
-// TODO: Transactions must be read directly from useTransaction isnide here
 export const PrizePoolDepositView = (props: DepositViewProps) => {
-  const {
+  const { chainId, prizePool, onDismiss, setExternalDepositTxId, setExternalApproveTxId, refetch } =
+    props
+
+  const usersAddress = useUsersAddress()
+  const { data: prizePoolBalance, refetch: refetchPrizePoolBalances } = useUsersV3PrizePoolBalance(
+    usersAddress,
     chainId,
-    prizePool,
-    token,
-    ticket,
-    depositAllowanceUnformatted,
-    isTokenAllowanceFetched,
-    closeInitialSheet,
-    setExternalDepositTxId,
-    setExternalApproveTxId,
-    refetch
-  } = props
+    prizePool.addresses.prizePool,
+    prizePool.addresses.ticket
+  )
+  const { ticket, token } = prizePoolBalance
+  const {
+    data: depositAllowanceUnformatted,
+    isFetched: isTokenAllowanceFetched,
+    refetch: refetchDepositAllowance
+  } = useTokenAllowance(
+    chainId,
+    usersAddress,
+    prizePool.addresses.prizePool,
+    prizePool.addresses.token
+  )
 
   const [depositView, setDepositView] = useState(DepositViews.depositForm)
 
@@ -77,10 +91,6 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
   const setApproveTxId = (txId: number) => {
     setExternalApproveTxId(txId)
     setInternalApproveTxId(txId)
-  }
-
-  const setDepositFormView = () => {
-    setDepositView(DepositViews.depositForm)
   }
 
   const setReviewDepositView = () => {
@@ -116,11 +126,14 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
           depositAllowanceUnformatted={depositAllowanceUnformatted}
           approveTx={approveTx}
           depositTx={depositTx}
-          setDepositFormView={setDepositFormView}
-          closeInitialSheet={closeInitialSheet}
+          onDismiss={onDismiss}
           setApproveTxId={setApproveTxId}
           setDepositTxId={setDepositTxId}
-          refetch={refetch}
+          refetch={() => {
+            refetch()
+            refetchDepositAllowance()
+            refetchPrizePoolBalances()
+          }}
         />
       )
   }
@@ -181,6 +194,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
           isWalletConnected={isWalletConnected}
           token={token}
           amountToDeposit={amountToDeposit}
+          isUsersBalancesFetched
         />
       </form>
     </>
@@ -196,8 +210,7 @@ export interface DepositReviewViewProps {
   depositAllowanceUnformatted: BigNumber
   approveTx: Transaction
   depositTx: Transaction
-  setDepositFormView: () => void
-  closeInitialSheet: () => void
+  onDismiss: () => void
   setApproveTxId: (txId: number) => void
   setDepositTxId: (txId: number) => void
   refetch: () => void
@@ -213,8 +226,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     depositAllowanceUnformatted,
     approveTx,
     depositTx,
-    setDepositFormView,
-    closeInitialSheet,
+    onDismiss,
     setApproveTxId,
     setDepositTxId,
     refetch
@@ -223,21 +235,8 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   const { t } = useTranslation()
   const { provider } = useOnboard()
   const sendTx = useSendTransaction()
-  const [isOpen, setIsOpen] = useState(true)
   const usersAddress = useUsersAddress()
-
-  const showConfirmModal = isOpen
-
-  const closeDepositModal = () => {
-    setDepositFormView()
-    setIsOpen(false)
-  }
-
-  const onSuccess = (tx: Transaction) => {
-    setDepositTxId(0)
-    closeDepositModal()
-    closeInitialSheet()
-  }
+  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
 
   const sendApproveTx = async () => {
     const callTransaction = buildApproveTx(
@@ -261,7 +260,6 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
   const sendDepositTx = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    // const overrides: Overrides = { gasLimit: 750000 }
 
     const callTransaction = buildDepositTx(
       provider,
@@ -276,29 +274,100 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
       method: 'depositTo',
       callTransaction,
       callbacks: {
-        onSuccess,
         refetch
       }
     })
     setDepositTxId(txId)
   }
 
+  if (!isWalletOnProperNetwork) {
+    return (
+      <>
+        <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
+        <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
+      </>
+    )
+  }
+
+  if (!depositAllowanceUnformatted) {
+    return (
+      <>
+        <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
+        <ModalLoadingGate className='mt-8' />
+      </>
+    )
+  }
+
+  if (amountToDeposit && depositAllowanceUnformatted?.lt(amountToDeposit.amountUnformatted)) {
+    return (
+      <>
+        <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
+        <ModalApproveGate
+          amountToDeposit={amountToDeposit}
+          chainId={chainId}
+          approveTx={approveTx}
+          sendApproveTx={sendApproveTx}
+          className='mt-8'
+        />
+      </>
+    )
+  }
+
+  if (depositTx && depositTx.sent) {
+    if (depositTx.error) {
+      return (
+        <>
+          <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
+          <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
+          <p className='mb-8 text-accent-1 text-center mx-8'>
+            {t(
+              'somethingWentWrongWhileProcessingYourTransaction',
+              'Something went wrong while processing your transaction.'
+            )}
+          </p>
+          <SquareButton
+            theme={SquareButtonTheme.tealOutline}
+            className='w-full'
+            onClick={onDismiss}
+          >
+            {t('tryAgain', 'Try again')}
+          </SquareButton>
+        </>
+      )
+    }
+
+    return (
+      <>
+        <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
+        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <AccountPageButton />
+      </>
+    )
+  }
+
   return (
-    <DepositConfirmationModal
-      chainId={chainId}
-      isOpen={showConfirmModal}
-      label='deposit confirmation modal'
-      isDataFetched={true}
-      amountToDeposit={amountToDeposit}
-      depositAllowanceUnformatted={depositAllowanceUnformatted}
-      resetState={() => {}}
-      token={token}
-      ticket={ticket}
-      closeModal={closeDepositModal}
-      sendApproveTx={sendApproveTx}
-      sendDepositTx={sendDepositTx}
-      approveTx={approveTx}
-      depositTx={depositTx}
-    />
+    <>
+      <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
+      <div className='w-full mx-auto mt-8 space-y-8'>
+        <AmountBeingSwapped
+          title={t('depositTicker', { ticker: token.symbol })}
+          chainId={chainId}
+          from={token}
+          to={ticket}
+          amountFrom={amountToDeposit}
+          amountTo={amountToDeposit}
+        />
+
+        <TxButtonNetworkGated
+          className='mt-8 w-full'
+          chainId={chainId}
+          toolTipId={`deposit-tx-${chainId}`}
+          onClick={sendDepositTx}
+          disabled={depositTx?.inWallet && !depositTx.cancelled && !depositTx.completed}
+        >
+          {t('confirmDeposit', 'Confirm deposit')}
+        </TxButtonNetworkGated>
+      </div>
+    </>
   )
 }

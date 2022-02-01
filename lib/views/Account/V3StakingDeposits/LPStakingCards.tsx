@@ -1,5 +1,7 @@
 import { TokenIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
+import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 
 import { StakingCard } from './StakingCard'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
@@ -10,8 +12,6 @@ import { V3PrizePoolBalances } from 'lib/hooks/v3/useAllUsersV3Balances'
 import { getLPPrizePoolMetadata, useLPTokenUsdValue } from 'lib/hooks/v3/useLPTokenUsdValue'
 import { useUsersV3LPPoolBalances } from 'lib/hooks/v3/useUsersV3LPPoolBalances'
 import { LPTokenIcon } from 'lib/components/LPTokenIcon'
-import { TokenWithBalance, TokenWithUsdBalance } from '.yalc/@pooltogether/hooks/dist'
-import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 export const LPStakingCards = () => {

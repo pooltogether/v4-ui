@@ -26,7 +26,10 @@ import { CardTitle } from 'lib/components/Text/CardTitle'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { LoadingList } from 'lib/components/Loaders/LoadingList'
+import { LoadingList } from 'lib/components/PrizePoolDepositList/LoadingList'
+import { PrizePoolDepositList } from 'lib/components/PrizePoolDepositList'
+import { PrizePoolDepositListItem } from 'lib/components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { PrizePoolDepositBalance } from 'lib/components/PrizePoolDepositList/PrizePoolDepositBalance'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -40,9 +43,7 @@ export const V4Deposits = () => {
         title={t('deposits')}
         secondary={`$${data?.totalValueUsd.amountPretty}`}
       />
-      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
-        <DepositsList />
-      </div>
+      <DepositsList />
     </div>
   )
 }
@@ -54,7 +55,7 @@ const DepositsList = () => {
     return <LoadingList />
   }
   return (
-    <ul className='space-y-4'>
+    <PrizePoolDepositList>
       {data.balances.map((balances) => (
         <DepositItem
           key={'deposit-balance-' + balances.prizePool.id()}
@@ -62,7 +63,7 @@ const DepositsList = () => {
           refetchBalances={refetch}
         />
       ))}
-    </ul>
+    </PrizePoolDepositList>
   )
 }
 
@@ -105,18 +106,16 @@ const DepositItem = (props: DepositItemsProps) => {
   const onDismiss = () => setIsOpen(false)
 
   return (
-    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
-      <button
-        className='p-4 w-full flex justify-between items-center'
+    <>
+      <PrizePoolDepositListItem
         onClick={() => {
           setSelectedChainId(chainId)
           setIsOpen(true)
         }}
-      >
-        <NetworkLabel chainId={chainId} />
-        <DepositBalance {...props} />
-      </button>
-      <DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />
+        left={<NetworkLabel chainId={chainId} />}
+        right={<DepositBalance {...props} />}
+        bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
+      />
       <BalanceBottomSheet
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
         open={isOpen}
@@ -159,7 +158,7 @@ const DepositItem = (props: DepositItemsProps) => {
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
       />
-    </li>
+    </>
   )
 }
 
@@ -173,13 +172,5 @@ const NetworkLabel = (props: { chainId: number }) => (
 const DepositBalance = (props: DepositItemsProps) => {
   const { balances, prizePool } = props
   const { ticket } = balances
-  return (
-    <div className='flex'>
-      <TokenIcon chainId={prizePool.chainId} address={ticket.address} className='mr-2 my-auto' />
-      <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
-        ${ticket.amountPretty}
-      </span>
-      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
-    </div>
-  )
+  return <PrizePoolDepositBalance chainId={prizePool.chainId} token={ticket} />
 }

@@ -1,15 +1,18 @@
-import { Amount, TokenWithUsdBalance } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { BigNumber } from '@ethersproject/bignumber'
-import { NetworkIcon, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
+import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { LoadingList } from 'lib/components/Loaders/LoadingList'
+import { useTranslation } from 'react-i18next'
+
+import { LoadingList } from 'lib/components/PrizePoolDepositList/LoadingList'
 import { SwapTokensModalTrigger } from 'lib/components/Modal/SwapTokensModal'
 import { CardTitle } from 'lib/components/Text/CardTitle'
 import { CHAIN_ID } from 'lib/constants/constants'
 import { POOL_ADDRESSES } from 'lib/constants/v3'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useUsersV3POOLTokenBalances } from 'lib/hooks/v3/useUsersV3POOLTokenBalances'
-import { useTranslation } from 'react-i18next'
+import { PrizePoolDepositList } from 'lib/components/PrizePoolDepositList'
 
 export const POOLBalancesCard = () => {
   const { t } = useTranslation()
@@ -19,15 +22,23 @@ export const POOLBalancesCard = () => {
 
   return (
     <div>
-      <CardTitle
-        className='mb-2'
-        title={t('poolToken', 'POOL Token')}
-        secondary={`$${data?.totalValueUsd.amountPretty}`}
-        loading={!isFetched}
-      />
-      <div className='relative bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple rounded-lg px-4 py-4 mb-4'>
-        <POOLBalancesList data={data} isFetched={isFetched} />
+      <div className='mb-2 flex items-center justify-between'>
+        <CardTitle
+          title={t('poolToken', 'POOL Token')}
+          secondary={`$${data?.totalValueUsd.amountPretty}`}
+          loading={!isFetched}
+        />
+        <a
+          className='opacity-50 hover:opacity-100 flex items-center transition-opacity'
+          target='_blank'
+          rel='noopener noreferrer'
+          href={`https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e&inputCurrency=ETH`}
+        >
+          {t('getPool')}
+          <FeatherIcon icon='external-link' className='w-4 h-4 ml-1' />
+        </a>
       </div>
+      <POOLBalancesList data={data} isFetched={isFetched} />
     </div>
   )
 }
@@ -45,13 +56,18 @@ const POOLBalancesList = (props: {
   const { data, isFetched } = props
 
   if (!isFetched) {
-    return <LoadingList listItems={2} />
+    return (
+      <LoadingList
+        listItems={2}
+        bgClassName='bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple'
+      />
+    )
   }
 
   const chainIds = Object.keys(data.balances).map(Number)
 
   return (
-    <ul className='space-y-4'>
+    <PrizePoolDepositList bgClassName='bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple'>
       {chainIds.map((chainId) =>
         data.balances[chainId].flatMap((token) => (
           <POOLTokenBalanceItem
@@ -61,7 +77,7 @@ const POOLBalancesList = (props: {
           />
         ))
       )}
-    </ul>
+    </PrizePoolDepositList>
   )
 }
 

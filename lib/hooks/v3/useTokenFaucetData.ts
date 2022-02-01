@@ -3,33 +3,33 @@ import {
   Token,
   TokenWithUsdBalance,
   useReadProvider
-} from '.yalc/@pooltogether/hooks/dist'
+} from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { useQuery } from 'react-query'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
-import { NO_REFETCH } from '.yalc/@pooltogether/hooks/dist/constants'
-import { amountMultByUsd, calculateAPR } from '@pooltogether/utilities'
+import { amountMultByUsd } from '@pooltogether/utilities'
 import { formatUnits } from 'ethers/lib/utils'
 
 import TokenFaucetAbi from 'abis/TokenFaucet'
 import Erc20Abi from 'abis/ERC20'
 import { SECONDS_PER_DAY } from 'lib/constants/constants'
 import { V3PrizePool } from './useV3PrizePools'
+import { NO_REFETCH } from 'lib/constants/query'
 
 export const useTokenFaucetData = (
   chainId: number,
   tokenFaucetAddress: string,
   prizePool: V3PrizePool,
-  token: TokenWithUsdBalance
+  underlyingToken: TokenWithUsdBalance
 ) => {
   const provider = useReadProvider(chainId)
 
-  const enabled = !!token?.usdPerToken
+  const enabled = !!underlyingToken?.usdPerToken
 
   return useQuery(
     ['useTokenFaucetData', chainId, tokenFaucetAddress],
-    () => getTokenFaucetData(provider, chainId, tokenFaucetAddress, prizePool, token),
+    () => getTokenFaucetData(provider, chainId, tokenFaucetAddress, prizePool, underlyingToken),
     { ...NO_REFETCH, enabled }
   )
 }
@@ -39,7 +39,7 @@ const getTokenFaucetData = async (
   chainId: number,
   tokenFaucetAddress: string,
   prizePool: V3PrizePool,
-  token: TokenWithUsdBalance
+  underlyingToken: TokenWithUsdBalance
 ) => {
   let batchRequests: Context[] = []
 
@@ -48,7 +48,6 @@ const getTokenFaucetData = async (
   batchRequests.push(tokenFaucetContract.dripRatePerSecond().measure().asset().totalUnclaimed())
   const tokenFaucetResults = await batch(provider, ...batchRequests)
   batchRequests = []
-  console.log('getTokenFaucetData', { tokenFaucetResults })
 
   const dripTokenAddress: string = tokenFaucetResults[tokenFaucetAddress].asset[0]
   const measureTokenAddress: string = tokenFaucetResults[tokenFaucetAddress].measure[0]
@@ -62,12 +61,6 @@ const getTokenFaucetData = async (
   )
   const tokenResults = await batch(provider, ...batchRequests)
   batchRequests = []
-  console.log('getTokenFaucetData', { tokenResults })
-
-  // Fetch token price
-  // TODO: Error handling for if CoinGecko API is down
-  const tokenPrices = await getCoingeckoTokenPrices(chainId, [dripTokenAddress])
-  console.log('getTokenFaucetData', { tokenPrices, dripTokenAddress })
 
   const measureToken: Token = getMeasureToken(measureTokenAddress, prizePool)
   const dripToken: Token = {
@@ -76,68 +69,67 @@ const getTokenFaucetData = async (
     name: tokenResults[dripTokenAddress].name[0],
     symbol: tokenResults[dripTokenAddress].symbol[0]
   }
-  const dripTokenValueUsd = tokenPrices[dripTokenAddress].usd
 
-  const dripRatePerSecondUnformatted: BigNumber =
-    tokenFaucetResults[tokenFaucetAddress].dripRatePerSecond[0]
-  const dripRatePerDayUnformatted = dripRatePerSecondUnformatted.mul(SECONDS_PER_DAY)
-  const dripRatePerSecond: string = formatUnits(dripRatePerSecondUnformatted, dripToken.decimals)
+  try {
+    // Fetch drip token price
+    const tokenPrices = await getCoingeckoTokenPrices(chainId, [dripTokenAddress])
 
-  const totalUnclaimedUnformatted: BigNumber =
-    tokenFaucetResults[tokenFaucetAddress].totalUnclaimed[0]
-  const totalUnclaimed = formatUnits(totalUnclaimedUnformatted, dripToken.decimals)
+    const dripTokenValueUsd = tokenPrices[dripTokenAddress].usd
 
-  const faucetsDripTokenBalanceUnformatted: BigNumber = tokenResults[dripTokenAddress].balanceOf[0]
-  const faucetsDripTokenBalance = formatUnits(
-    faucetsDripTokenBalanceUnformatted,
-    dripToken.decimals
-  )
+    const dripRatePerSecondUnformatted: BigNumber =
+      tokenFaucetResults[tokenFaucetAddress].dripRatePerSecond[0]
+    const dripRatePerDayUnformatted = dripRatePerSecondUnformatted.mul(SECONDS_PER_DAY)
+    const dripRatePerSecond: string = formatUnits(dripRatePerSecondUnformatted, dripToken.decimals)
 
-  const remainingDripTokenBalanceUnformatted =
-    faucetsDripTokenBalanceUnformatted.sub(totalUnclaimedUnformatted)
-  const remainingDripTokenBalance = formatUnits(
-    remainingDripTokenBalanceUnformatted,
-    dripToken.decimals
-  )
+    const totalUnclaimedUnformatted: BigNumber =
+      tokenFaucetResults[tokenFaucetAddress].totalUnclaimed[0]
 
-  let remainingDaysUnformatted = remainingDripTokenBalanceUnformatted
-    .mul(100)
-    .div(dripRatePerDayUnformatted)
-  const remainingDays = Number(remainingDaysUnformatted.toString()) / 100
-  remainingDaysUnformatted = remainingDaysUnformatted.div(100)
+    const faucetsDripTokenBalanceUnformatted: BigNumber =
+      tokenResults[dripTokenAddress].balanceOf[0]
 
-  const measureTokenTotalSupplyUnformatted = tokenResults[measureTokenAddress].totalSupply[0]
+    const remainingDripTokenBalanceUnformatted =
+      faucetsDripTokenBalanceUnformatted.sub(totalUnclaimedUnformatted)
 
-  const totalDripPerDay = Number(dripRatePerSecond) * SECONDS_PER_DAY
-  const totalDripDailyValue = totalDripPerDay * dripTokenValueUsd
+    let remainingDaysUnformatted = remainingDripTokenBalanceUnformatted
+      .mul(100)
+      .div(dripRatePerDayUnformatted)
+    const remainingDays = Number(remainingDaysUnformatted.toString()) / 100
+    remainingDaysUnformatted = remainingDaysUnformatted.div(100)
 
-  const totalMeasureTokenValueUsdUnformatted = amountMultByUsd(
-    measureTokenTotalSupplyUnformatted,
-    token.usdPerToken
-  )
-  const totalMeasureTokenValueUsd = Number(
-    formatUnits(totalMeasureTokenValueUsdUnformatted, measureToken.decimals)
-  )
+    const measureTokenTotalSupplyUnformatted = tokenResults[measureTokenAddress].totalSupply[0]
 
-  let vapr: number = 0
-  if (remainingDays > 0) {
-    vapr = (totalDripDailyValue / totalMeasureTokenValueUsd) * 365 * 100
-  }
+    const totalDripPerDay = Number(dripRatePerSecond) * SECONDS_PER_DAY
+    const totalDripDailyValue = totalDripPerDay * dripTokenValueUsd
 
-  console.log('getTokenFaucetData', {
-    vapr,
-    dripToken,
-    dripTokenValueUsd,
-    measureToken,
-    measureTokenValueUsd: token.usdPerToken
-  })
+    const totalMeasureTokenValueUsdUnformatted = amountMultByUsd(
+      measureTokenTotalSupplyUnformatted,
+      underlyingToken.usdPerToken
+    )
+    const totalMeasureTokenValueUsd = Number(
+      formatUnits(totalMeasureTokenValueUsdUnformatted, measureToken.decimals)
+    )
 
-  return {
-    vapr,
-    dripToken,
-    dripTokenValueUsd,
-    measureToken,
-    measureTokenValueUsd: token.usdPerToken
+    let vapr: number = 0
+    if (remainingDays > 0) {
+      vapr = (totalDripDailyValue / totalMeasureTokenValueUsd) * 365 * 100
+    }
+
+    return {
+      vapr,
+      dripToken,
+      dripTokenValueUsd,
+      measureToken,
+      measureTokenValueUsd: underlyingToken.usdPerToken
+    }
+  } catch (e) {
+    console.log(e.message)
+    return {
+      vapr: 0,
+      dripToken,
+      dripTokenValueUsd: 0,
+      measureToken,
+      measureTokenValueUsd: underlyingToken.usdPerToken
+    }
   }
 }
 

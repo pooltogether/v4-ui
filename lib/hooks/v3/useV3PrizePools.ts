@@ -74,8 +74,6 @@ const getV3PrizePools = async (
     })
   )
 
-  console.log('useV3PrizePools', { prizePoolsByChainId })
-
   return prizePoolsByChainId
 }
 

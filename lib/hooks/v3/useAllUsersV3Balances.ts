@@ -150,8 +150,6 @@ const getUsersV3BalancesByChainId = async (
     }
   })
 
-  console.log('useAllUsersV3Balances', { balances })
-
   return {
     chainId,
     balances: balances,

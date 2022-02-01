@@ -1,4 +1,4 @@
-import { Token } from '.yalc/@pooltogether/hooks/dist'
+import { Token } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
 

@@ -159,7 +159,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         className='flex flex-col space-y-4'
       >
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
-        <CheckBackForPrizesBox />
+        {prizePool && <CheckBackForPrizesBox />}
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
       </BottomSheet>
@@ -184,19 +184,23 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           amountTo={amountToDeposit}
         />
 
-        <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
+        {prizePool && (
+          <>
+            <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
 
-        <ModalInfoList>
-          {prizePool && (
-            <UpdatedOdds
-              amount={amountToDeposit}
-              prizePool={prizePool}
-              action={EstimateAction.deposit}
-            />
-          )}
-          <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
-          <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
-        </ModalInfoList>
+            <ModalInfoList>
+              {prizePool && (
+                <UpdatedOdds
+                  amount={amountToDeposit}
+                  prizePool={prizePool}
+                  action={EstimateAction.deposit}
+                />
+              )}
+              <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
+              <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
+            </ModalInfoList>
+          </>
+        )}
 
         <TxButtonNetworkGated
           className='mt-8 w-full'
@@ -257,7 +261,7 @@ const CheckBackForPrizesBox = () => {
   )
 }
 
-const AccountPageButton = () => {
+export const AccountPageButton = () => {
   const { t } = useTranslation()
   const router = useRouter()
   return (

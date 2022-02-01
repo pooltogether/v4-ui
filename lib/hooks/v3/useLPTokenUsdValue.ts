@@ -1,4 +1,4 @@
-import { useCoingeckoTokenPrices, useTokenBalances } from '.yalc/@pooltogether/hooks/dist'
+import { useCoingeckoTokenPrices, useTokenBalances } from '@pooltogether/hooks'
 import { calculateLPTokenPrice } from '@pooltogether/utilities'
 import { formatUnits } from 'ethers/lib/utils'
 import { LP_PRIZE_POOL_METADATA } from 'lib/constants/v3'

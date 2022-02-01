@@ -1,21 +1,15 @@
-import { useTokenAllowance, useTransaction } from '.yalc/@pooltogether/hooks/dist'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { BigNumber } from 'ethers'
+import { useTransaction } from '@pooltogether/hooks'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BalanceBottomSheet, ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
 
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
-import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { V3PrizePoolBalances } from 'lib/hooks/v3/useAllUsersV3Balances'
-import { buildApproveTx } from 'lib/transactions/buildApproveTx'
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
 import { TokenFaucetClaimView } from '../V3Deposits/TokenFaucetClaimView'
 import { V3_PRIZE_POOL_ADDRESSES } from 'lib/constants/v3'
-import { useUsersTokenFaucetRewards } from 'lib/hooks/v3/useUsersTokenFaucetRewards'
-import { useTokenFaucetData } from 'lib/hooks/v3/useTokenFaucetData'
 
 interface StakingBalanceBottomSheetProps {
   chainId: number
@@ -31,7 +25,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const { t } = useTranslation()
 
   const prizePool = balances.prizePool
-  const { provider } = useOnboard()
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
 
@@ -49,41 +42,17 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const { token, ticket } = balances
 
-  const closeInitialSheet = () => setIsOpen(false)
-
-  const usersAddress = useUsersAddress()
-  const {
-    data: depositAllowanceUnformatted,
-    isFetched: isTokenAllowanceFetched,
-    refetch: refetchDepositAllowance
-  } = useTokenAllowance(
-    chainId,
-    usersAddress,
-    prizePool.addresses.prizePool,
-    prizePool.addresses.token
-  )
-
   const tokenFaucetAddress = getTokenFaucetAddressTokenFaucetAddress(
     chainId,
     prizePool.addresses.prizePool
   )
 
-  // TODO: Could just funnel this through props
-  const { data: tokenFaucetData, isFetched: isTokenFaucetDataFetched } = useTokenFaucetData(
-    chainId,
-    tokenFaucetAddress,
-    prizePool,
-    balances.token
-  )
-  const { data: tokenFaucetRewards, isFetched: isTokenFaucetRewardsFetched } =
-    useUsersTokenFaucetRewards(chainId, usersAddress, prizePool, tokenFaucetAddress, balances.token)
-
-  const revokeAllowanceCallTransaction = buildApproveTx(
-    provider,
-    BigNumber.from(0),
-    prizePool.addresses.prizePool,
-    balances.token
-  )
+  // const revokeAllowanceCallTransaction = buildApproveTx(
+  //   provider,
+  //   BigNumber.from(0),
+  //   prizePool.addresses.prizePool,
+  //   balances.token
+  // )
 
   const onDismiss = () => setIsOpen(false)
 
@@ -91,17 +60,10 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     <PrizePoolDepositView
       chainId={chainId}
       prizePool={prizePool}
-      token={token}
-      ticket={ticket}
-      depositAllowanceUnformatted={depositAllowanceUnformatted}
-      isTokenAllowanceFetched={isTokenAllowanceFetched}
-      closeInitialSheet={closeInitialSheet}
+      onDismiss={() => setIsOpen(false)}
       setExternalDepositTxId={setDepositTxId}
       setExternalApproveTxId={setApproveTxId}
-      refetch={() => {
-        refetchDepositAllowance()
-        refetch()
-      }}
+      refetch={refetch}
     />
   )
 
@@ -110,10 +72,9 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     <TokenFaucetClaimView
       chainId={chainId}
       tokenFaucetAddress={tokenFaucetAddress}
-      tokenFaucetRewards={tokenFaucetRewards}
-      vapr={tokenFaucetData?.vapr}
-      isTokenFaucetDataFetched={isTokenFaucetDataFetched}
-      closeInitialSheet={closeInitialSheet}
+      prizePool={prizePool}
+      underlyingToken={token}
+      onDismiss={() => setIsOpen(false)}
       setExternalClaimTxId={setClaimTxId}
       refetch={refetch}
     />

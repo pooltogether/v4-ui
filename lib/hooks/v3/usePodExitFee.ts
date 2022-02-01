@@ -1,4 +1,4 @@
-import { useReadProvider } from '.yalc/@pooltogether/hooks/dist'
+import { useReadProvider } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'

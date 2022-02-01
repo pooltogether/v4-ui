@@ -1,4 +1,9 @@
-import { TokenWithBalance, Transaction, useTransaction } from '.yalc/@pooltogether/hooks/dist'
+import {
+  TokenWithBalance,
+  TokenWithUsdBalance,
+  Transaction,
+  useTransaction
+} from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   ModalTitle,
@@ -18,14 +23,16 @@ import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { buildTokenFaucetClaimTx } from 'lib/transactions/buildTokenFaucetClaimTx'
+import { useUsersTokenFaucetRewards } from 'lib/hooks/v3/useUsersTokenFaucetRewards'
+import { V3PrizePool } from 'lib/hooks/v3/useV3PrizePools'
+import { useTokenFaucetData } from 'lib/hooks/v3/useTokenFaucetData'
 
 interface TokenFaucetClaimViewProps {
   chainId: number
   tokenFaucetAddress: string
-  tokenFaucetRewards: TokenWithBalance
-  vapr: number
-  isTokenFaucetDataFetched: boolean
-  closeInitialSheet: () => void
+  prizePool: V3PrizePool
+  underlyingToken: TokenWithUsdBalance
+  onDismiss: () => void
   setExternalClaimTxId: (txId: number) => void
   refetch: () => void
 }
@@ -38,17 +45,32 @@ export enum ClaimViews {
 export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
   const {
     chainId,
-    tokenFaucetRewards,
-    vapr,
     tokenFaucetAddress,
-    isTokenFaucetDataFetched,
-    closeInitialSheet,
+    prizePool,
+    underlyingToken,
+    onDismiss,
     setExternalClaimTxId,
     refetch
   } = props
 
   const [claimTxId, setInternalClaimTxId] = useState(0)
   const claimTx = useTransaction(claimTxId)
+
+  const usersAddress = useUsersAddress()
+  const { data: tokenFaucetRewards, refetch: refetchTokenFaucetRewards } =
+    useUsersTokenFaucetRewards(
+      chainId,
+      usersAddress,
+      prizePool,
+      tokenFaucetAddress,
+      underlyingToken
+    )
+  const { data: tokenFaucetData, isFetched: isTokenFaucetDataFetched } = useTokenFaucetData(
+    chainId,
+    tokenFaucetAddress,
+    prizePool,
+    underlyingToken
+  )
 
   const setClaimTxId = (txId: number) => {
     setInternalClaimTxId(txId)
@@ -76,13 +98,7 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
   }
 
   if (claimTx && claimTx.sent) {
-    return (
-      <ClaimClaimingView
-        chainId={chainId}
-        claimTx={claimTx}
-        closeInitialSheet={closeInitialSheet}
-      />
-    )
+    return <ClaimClaimingView chainId={chainId} claimTx={claimTx} onDismiss={onDismiss} />
   }
 
   if (!isWalletOnProperNetwork) {
@@ -99,9 +115,12 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
       chainId={chainId}
       tokenFaucetAddress={tokenFaucetAddress}
       tokenFaucetRewards={tokenFaucetRewards}
-      vapr={vapr}
+      vapr={tokenFaucetData?.vapr}
       setClaimTxId={setClaimTxId}
-      refetch={refetch}
+      refetch={() => {
+        refetch()
+        refetchTokenFaucetRewards()
+      }}
     />
   )
 }
@@ -109,11 +128,11 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
 interface ClaimClaimingViewProps {
   claimTx: Transaction
   chainId: number
-  closeInitialSheet: () => void
+  onDismiss: () => void
 }
 
 const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
-  const { chainId, closeInitialSheet, claimTx } = props
+  const { chainId, onDismiss, claimTx } = props
   const { t } = useTranslation()
 
   return (
@@ -123,7 +142,7 @@ const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
         className='mt-8'
         chainId={chainId}
         tx={claimTx}
-        closeModal={closeInitialSheet}
+        closeModal={onDismiss}
       />
     </>
   )

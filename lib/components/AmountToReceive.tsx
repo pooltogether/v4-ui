@@ -1,4 +1,5 @@
-import { Amount, Token } from '.yalc/@pooltogether/hooks/dist'
+import { Amount, Token } from '@pooltogether/hooks'
+
 import { TokenSymbolAndIcon } from 'lib/components/TokenSymbolAndIcon'
 
 interface AmountToReceiveProps {

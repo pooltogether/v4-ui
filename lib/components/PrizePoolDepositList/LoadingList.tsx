@@ -1,15 +1,19 @@
-import classNames from 'classnames'
+import { PrizePoolDepositList } from '.'
 import { loopXTimes } from 'lib/utils/loopXTimes'
 
-export const LoadingList = (props: { listItems: number; className?: string }) => (
-  <ul className={classNames('space-y-4', props.className)}>
+export const LoadingList = (props: {
+  listItems: number
+  bgClassName?: string
+  className?: string
+}) => (
+  <PrizePoolDepositList className={props.className} bgClassName={props.bgClassName}>
     {loopXTimes(props.listItems, (i) => (
       <li
         key={`loading-list-${i}`}
         className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10'
       />
     ))}
-  </ul>
+  </PrizePoolDepositList>
 )
 
 LoadingList.defaultProps = {

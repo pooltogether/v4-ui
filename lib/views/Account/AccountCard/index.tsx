@@ -12,6 +12,7 @@ import walletIllustration from 'public/wallet-illustration.png'
 import { useUsersTotalBalances } from 'lib/hooks/useUsersTotalBalances'
 import { CountUp } from 'lib/components/CountUp'
 import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
+import { Amount } from '@pooltogether/hooks'
 
 interface AccountCardProps {
   className?: string
@@ -36,14 +37,18 @@ export const AccountCard = (props: AccountCardProps) => {
 }
 
 const TotalBalance = (props: { className?: string; user: User }) => {
-  const { className, user } = props
+  const { className } = props
   const { t } = useTranslation()
-  const { data, isFetching } = useUsersTotalBalances()
+  const { data, isFetching, isFetched } = useUsersTotalBalances()
   return (
     <a href='#deposits' className={className}>
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
-        $<CountUp countTo={Number(data.totalBalanceUsd.amount)} />
+        <TotalBalanceAmount
+          isFetched={isFetched}
+          totalBalanceUsd={data.totalBalanceUsd}
+          totalV4Balance={data.totalV4Balance}
+        />
         {isFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
@@ -52,6 +57,30 @@ const TotalBalance = (props: { className?: string; user: User }) => {
       </span>
     </a>
   )
+}
+
+const TotalBalanceAmount = (props: {
+  totalBalanceUsd: Amount
+  totalV4Balance: number
+  isFetched: boolean
+}) => {
+  const { totalBalanceUsd, totalV4Balance, isFetched } = props
+  // If not fetched
+  // If no token price or balance
+  // If token price
+  if (
+    !isFetched ||
+    !totalBalanceUsd.amountUnformatted.isZero() ||
+    (totalBalanceUsd.amountUnformatted.isZero() && !totalV4Balance)
+  ) {
+    return (
+      <>
+        $<CountUp countTo={Number(totalBalanceUsd.amount)} />
+      </>
+    )
+  }
+
+  return <CountUp countTo={Number(totalV4Balance)} />
 }
 
 const DailyOdds = () => <OddsBox i18nKey='dailyOdds' daysOfPrizes={1} />

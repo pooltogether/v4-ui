@@ -1,27 +1,21 @@
-import {
-  Token,
-  TokenWithBalance,
-  TokenWithUsdBalance,
-  useCoingeckoTokenPrices,
-  useReadProvider
-} from '.yalc/@pooltogether/hooks/dist'
+import { Token, TokenWithBalance, TokenWithUsdBalance, useReadProvider } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { useQuery } from 'react-query'
-
-import TokenFaucetAbi from 'abis/TokenFaucet'
 import { batch, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
-import { NO_REFETCH } from '.yalc/@pooltogether/hooks/dist/constants'
+
+import TokenFaucetAbi from 'abis/TokenFaucet'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 import { useTokenFaucetData } from './useTokenFaucetData'
 import { V3PrizePool } from './useV3PrizePools'
+import { NO_REFETCH } from 'lib/constants/query'
 
 export const useUsersTokenFaucetRewards = (
   chainId: number,
   usersAddress: string,
   prizePool: V3PrizePool,
   tokenFaucetAddress: string,
-  token: TokenWithUsdBalance
+  underlyingToken: TokenWithUsdBalance
 ) => {
   const provider = useReadProvider(chainId)
 
@@ -29,10 +23,10 @@ export const useUsersTokenFaucetRewards = (
     chainId,
     tokenFaucetAddress,
     prizePool,
-    token
+    underlyingToken
   )
 
-  const enabled = isTokenFaucetDataFetched && !!token
+  const enabled = isTokenFaucetDataFetched && !!underlyingToken
 
   return useQuery(
     ['useUsersTokenFaucetRewards', chainId, usersAddress, tokenFaucetAddress],
@@ -58,8 +52,6 @@ const getTokenFaucetRewards = async (
   // Fetch asset and claimable amount
   const tokenFaucetContract = contract(tokenFaucetAddress, TokenFaucetAbi, tokenFaucetAddress)
   const tokenFaucetResults = await batch(provider, tokenFaucetContract.claim(usersAddress))
-
-  console.log({ tokenFaucetResults, usersAddress })
 
   const claimableAmountUnformatted: BigNumber = tokenFaucetResults[tokenFaucetAddress].claim[0]
   const claimableAmount = getAmountFromBigNumber(claimableAmountUnformatted, dripToken.decimals)

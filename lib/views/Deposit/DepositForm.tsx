@@ -38,7 +38,8 @@ interface DepositFormProps {
 }
 
 export const DepositForm = (props: DepositFormProps) => {
-  const { form, prizePool, depositTx, amountToDeposit, token, openModal } = props
+  const { form, prizePool, depositTx, isUsersBalancesFetched, amountToDeposit, token, openModal } =
+    props
 
   const { isWalletConnected } = useOnboard()
   const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
@@ -84,6 +85,7 @@ export const DepositForm = (props: DepositFormProps) => {
           disabled={(!isValid && isDirty) || depositTx?.inFlight}
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
+          isUsersBalancesFetched={isUsersBalancesFetched}
           token={token}
           amountToDeposit={amountToDeposit}
         />
@@ -94,10 +96,11 @@ export const DepositForm = (props: DepositFormProps) => {
 
 interface DepositBottomButtonProps {
   className?: string
+  disabled: boolean
   isWalletConnected: boolean
+  isUsersBalancesFetched: boolean
   token: TokenWithBalance
   depositTx: Transaction
-  disabled: boolean
   amountToDeposit: Amount
 }
 
@@ -112,7 +115,7 @@ export const DepositBottomButton = (props: DepositBottomButtonProps) => {
 }
 
 const DepositButton = (props: DepositBottomButtonProps) => {
-  const { className, token, depositTx, disabled, amountToDeposit } = props
+  const { className, token, depositTx, disabled, isUsersBalancesFetched, amountToDeposit } = props
   const { t } = useTranslation()
 
   const { amountUnformatted } = amountToDeposit
@@ -130,7 +133,7 @@ const DepositButton = (props: DepositBottomButtonProps) => {
       className={className}
       inFlight={depositTx?.inFlight}
       label={label}
-      inFlightLabel={t('depositingAmountTicker', { ticker: token.symbol })}
+      inFlightLabel={t('depositingAmountTicker', { ticker: token?.symbol })}
       type='submit'
     />
   )
