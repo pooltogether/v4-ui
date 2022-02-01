@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { numberWithCommas } from '@pooltogether/utilities'
+import { parseUnits } from '@ethersproject/units'
 
 import PodAbi from 'abis/V3_Pod'
 import { DepositItemsProps } from '..'
@@ -12,7 +13,6 @@ import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { usePodExitFee } from 'lib/hooks/v3/usePodExitFee'
-import { parseUnits } from '@ethersproject/units'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 export enum WithdrawalSteps {

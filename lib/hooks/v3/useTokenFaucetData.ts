@@ -9,7 +9,7 @@ import { useQuery } from 'react-query'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
 import { amountMultByUsd } from '@pooltogether/utilities'
-import { formatUnits } from 'ethers/lib/utils'
+import { formatUnits } from '@ethersproject/units'
 
 import TokenFaucetAbi from 'abis/TokenFaucet'
 import Erc20Abi from 'abis/ERC20'

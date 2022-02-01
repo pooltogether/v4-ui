@@ -1,8 +1,6 @@
 import { CHAIN_ID } from './constants'
 
-// List of prize pools for the flagship app
-// Note: Addresses are all lower case
-
+// List of V3 prize pools to maintain withdrawal support for
 export const V3_PRIZE_POOL_ADDRESSES: {
   [chainId: number]: {
     prizePool: string

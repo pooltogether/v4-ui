@@ -37,11 +37,6 @@ interface TokenFaucetClaimViewProps {
   refetch: () => void
 }
 
-export enum ClaimViews {
-  'main',
-  'claiming'
-}
-
 export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
   const {
     chainId,
@@ -165,10 +160,6 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
 
-  const onSuccess = (tx: Transaction) => {
-    setClaimTxId(0)
-  }
-
   const sendClaimTx = async () => {
     const callTransaction = buildTokenFaucetClaimTx(provider, tokenFaucetAddress, usersAddress)
 
@@ -181,7 +172,6 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
       method: 'claim',
       callTransaction,
       callbacks: {
-        onSuccess,
         refetch
       }
     })
@@ -196,12 +186,8 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         className='mb-4'
       />
 
-      {/* <h5 className='pt-4 text-center'>
-        {t('unclaimedRewards', 'Unclaimed rewards')}{' '}
-        <span className='opacity-50 font-normal'> ${dripToken.balanceUsd.amountPretty}</span>
-      </h5> */}
-
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+        <h5 className='text-center'>{t('unclaimedRewards', 'Unclaimed rewards')}</h5>
         <span className={'text-3xl mx-auto font-bold leading-none'}>
           {tokenFaucetRewards.amountPretty}
         </span>

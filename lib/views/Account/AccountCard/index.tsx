@@ -4,15 +4,15 @@ import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import { User } from '@pooltogether/v4-js-client'
+import { Amount } from '@pooltogether/hooks'
 
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from 'lib/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { TotalWinnings } from './TotalWinnings'
-import walletIllustration from 'public/wallet-illustration.png'
 import { useUsersTotalBalances } from 'lib/hooks/useUsersTotalBalances'
 import { CountUp } from 'lib/components/CountUp'
 import { EstimateAction } from 'lib/hooks/v4/useEstimatedOddsForAmount'
-import { Amount } from '@pooltogether/hooks'
+import walletIllustration from 'public/wallet-illustration.png'
 
 interface AccountCardProps {
   className?: string

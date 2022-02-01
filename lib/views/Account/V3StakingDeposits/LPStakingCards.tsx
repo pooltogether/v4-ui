@@ -73,7 +73,6 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
 
   return (
     <StakingCard
-      // TODO: Overwrite ticket and token in useLPPrizePool so it gets funnelled with proper pricing.
       balances={balances}
       refetch={refetch}
       tokenLabel={`${lpPrizePoolMetadata.tokens.underlyingToken.pair} ${lpPrizePoolMetadata.tokens.underlyingToken.symbol}`}
