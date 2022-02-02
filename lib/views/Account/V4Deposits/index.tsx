@@ -30,6 +30,10 @@ import { LoadingList } from 'lib/components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositList } from 'lib/components/PrizePoolDepositList'
 import { PrizePoolDepositListItem } from 'lib/components/PrizePoolDepositList/PrizePoolDepositListItem'
 import { PrizePoolDepositBalance } from 'lib/components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { DelegateView } from './DelegateView'
+import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
+import { getAddress } from 'ethers/lib/utils'
+import { ethers } from 'ethers'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -82,6 +86,9 @@ const DepositItem = (props: DepositItemsProps) => {
   const { t } = useTranslation()
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
+  const usersAddress = useUsersAddress()
+  const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
+  const delegate = getDelegateAddress(usersAddress, delegateData)
 
   const chainId = prizePool.chainId
   const contractLinks: ContractLink[] = [
@@ -122,6 +129,7 @@ const DepositItem = (props: DepositItemsProps) => {
         label={`Manage deposits for ${prizePool.id()}`}
         onDismiss={onDismiss}
         chainId={chainId}
+        delegate={delegate}
         internalLinks={
           <Link href={{ pathname: '/deposit', query: router.query }}>
             <SquareLink
@@ -149,6 +157,20 @@ const DepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.tealOutline
           }
         ]}
+        moreInfoViews={[
+          {
+            id: 'delegate',
+            view: () => (
+              <DelegateView
+                prizePool={prizePool}
+                balances={balances}
+                refetchBalances={refetchBalances}
+              />
+            ),
+            label: t('delegateDeposits', 'Delegate deposits'),
+            theme: SquareButtonTheme.teal
+          }
+        ]}
         tx={tx}
         token={balances.ticket}
         balance={balances.ticket}
@@ -173,4 +195,26 @@ const DepositBalance = (props: DepositItemsProps) => {
   const { balances, prizePool } = props
   const { ticket } = balances
   return <PrizePoolDepositBalance chainId={prizePool.chainId} token={ticket} />
+}
+
+/**
+ * Returns the delegate address if it has been set manually.
+ * @param usersAddress
+ * @param delegateData
+ * @returns
+ */
+const getDelegateAddress = (
+  usersAddress: string,
+  delegateData: { [usersAddress: string]: string }
+): string => {
+  const delegateAddress = delegateData?.[usersAddress]
+  if (
+    !delegateAddress ||
+    getAddress(usersAddress) === delegateAddress ||
+    ethers.constants.AddressZero === delegateAddress
+  ) {
+    return null
+  } else {
+    return delegateAddress
+  }
 }

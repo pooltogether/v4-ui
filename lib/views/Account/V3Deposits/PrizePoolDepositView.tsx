@@ -170,6 +170,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
       <form onSubmit={handleSubmit(setReviewDepositView)} className='w-full'>
         <div className='w-full mx-auto'>
           <GenericDepositAmountInput
+            bgClassName='bg-body'
             chainId={chainId}
             form={form}
             tokenBalance={token}
@@ -181,6 +182,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
         <DepositInfoBox
           className='mt-3'
+          bgClassName='bg-body'
           chainId={chainId}
           depositTx={depositTx}
           errors={isDirty ? errors : null}
