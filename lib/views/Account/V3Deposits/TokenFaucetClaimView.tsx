@@ -26,6 +26,7 @@ import { buildTokenFaucetClaimTx } from 'lib/transactions/buildTokenFaucetClaimT
 import { useUsersTokenFaucetRewards } from 'lib/hooks/v3/useUsersTokenFaucetRewards'
 import { V3PrizePool } from 'lib/hooks/v3/useV3PrizePools'
 import { useTokenFaucetData } from 'lib/hooks/v3/useTokenFaucetData'
+import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 
 interface TokenFaucetClaimViewProps {
   chainId: number
@@ -217,16 +218,16 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         />
       </div>
 
-      <div className='mt-6'>
-        <SquareButton
-          disabled={!tokenFaucetRewards.amountUnformatted.gt(0)}
-          onClick={sendClaimTx}
-          className='flex w-full items-center justify-center'
-          theme={SquareButtonTheme.rainbow}
-        >
-          {t('claim', 'Claim')}
-        </SquareButton>
-      </div>
+      <TxButtonNetworkGated
+        toolTipId='token-faucet-claim-tooltip'
+        chainId={chainId}
+        disabled={!tokenFaucetRewards.amountUnformatted.gt(0)}
+        onClick={sendClaimTx}
+        className='mt-6 flex w-full items-center justify-center'
+        theme={SquareButtonTheme.rainbow}
+      >
+        {t('claim', 'Claim')}
+      </TxButtonNetworkGated>
     </>
   )
 }
