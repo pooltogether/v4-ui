@@ -167,7 +167,8 @@ const DepositItem = (props: DepositItemsProps) => {
                 refetchBalances={refetchBalances}
               />
             ),
-            label: t('delegateDeposits', 'Delegate deposits'),
+            icon: 'user-plus',
+            label: t('delegateDeposit', 'Delegate deposit'),
             theme: SquareButtonTheme.teal
           }
         ]}

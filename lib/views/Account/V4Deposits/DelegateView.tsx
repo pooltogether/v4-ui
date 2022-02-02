@@ -12,7 +12,7 @@ import { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { useTransaction } from '@pooltogether/hooks'
+import { Transaction, useTransaction } from '@pooltogether/hooks'
 
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
@@ -45,7 +45,7 @@ export const DelegateView = (props: DelegateViewProps) => {
       <ModalTitle
         className='mb-4'
         chainId={prizePool.chainId}
-        title={t('delegateDeposits', 'Delegate deposits')}
+        title={t('delegateDeposit', 'Delegate deposit')}
       />
       <p className='mb-2'>
         {t(
@@ -145,37 +145,46 @@ const DelegateDisplay = (props: DelegateDisplayProps) => {
   }
 }
 
-interface DelegateWriteStateProps extends DelegateFormProps {
+interface DelegateWriteStateProps {
+  prizePool: PrizePool
+  refetchDelegate: () => void
   setReadView: () => void
 }
 
 const DelegateWriteState = (props: DelegateWriteStateProps) => {
   const { setReadView } = props
   const { t } = useTranslation()
+  const [txId, setTxId] = useState(0)
+  const tx = useTransaction(txId)
+
   return (
     <div className='flex flex-col w-full space-y-4'>
-      <DelegateForm {...props} />
-      <SquareButton theme={SquareButtonTheme.tealOutline} onClick={setReadView}>
-        {t('cancel')}
-      </SquareButton>
+      <DelegateForm {...props} setTxId={setTxId} tx={tx} />
+      {!tx?.sent && (
+        <SquareButton theme={SquareButtonTheme.tealOutline} onClick={setReadView}>
+          {t('cancel')}
+        </SquareButton>
+      )}
     </div>
   )
 }
 
 interface DelegateFormProps {
   prizePool: PrizePool
+  tx: Transaction
+  setTxId: (txId: number) => void
   refetchDelegate: () => void
 }
 
 const DelegateForm = (props: DelegateFormProps) => {
-  const { prizePool, refetchDelegate } = props
+  const { prizePool, refetchDelegate, setTxId, tx } = props
 
   const {
     handleSubmit,
     register,
     setValue,
     trigger,
-    formState: { errors, isValid, isDirty }
+    formState: { errors, isValid }
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -184,15 +193,13 @@ const DelegateForm = (props: DelegateFormProps) => {
   const usersAddress = useUsersAddress()
   const sendTx = useSendTransaction()
   const user = useUser(prizePool)
-  const [txId, setTxId] = useState(0)
-  const tx = useTransaction(txId)
   const isUserOnRightNetwork = useIsWalletOnNetwork(prizePool.chainId)
 
   const sendDelegateTx = async (x: FieldValues) => {
     const delegate = x[DELEGATE_ADDRESS_KEY]
 
     const txId = await sendTx({
-      name: t('delegateDeposits', 'Delegate deposits'),
+      name: t('delegateDeposit', 'Delegate deposit'),
       method: 'delegate',
       callTransaction: () => user.delegateTickets(delegate),
       callbacks: {
@@ -213,7 +220,7 @@ const DelegateForm = (props: DelegateFormProps) => {
 
   if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
     return (
-      <InfoList>
+      <InfoList bgClassName='bg-body'>
         <TxHashRow depositTx={tx} chainId={prizePool.chainId} />
       </InfoList>
     )
@@ -240,7 +247,7 @@ const DelegateForm = (props: DelegateFormProps) => {
         chainId={prizePool.chainId}
         className='w-full'
         type='submit'
-        disabled={!isDirty || !isValid || !isUserOnRightNetwork}
+        disabled={!isValid || !isUserOnRightNetwork}
       >
         {t('updateDelegate', 'Update delegate')}
       </TxButtonNetworkGated>
