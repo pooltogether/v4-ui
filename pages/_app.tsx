@@ -14,11 +14,9 @@ import {
 import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
   ToastContainer,
-  LoadingScreen,
   TransactionStatusChecker,
   TxRefetchListener
 } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
 
 import '../i18n'
 import { AllContextProviders } from 'lib/components/contextProviders/AllContextProviders'
@@ -66,8 +64,6 @@ if (process.env.NEXT_JS_SENTRY_DSN) {
 }
 
 function MyApp({ Component, pageProps, router }) {
-  const { i18n } = useTranslation()
-
   useEffect(() => {
     const fathomSiteId = process.env.NEXT_JS_FATHOM_SITE_ID
 
@@ -126,9 +122,7 @@ function MyApp({ Component, pageProps, router }) {
               <TransactionStatusChecker />
               <TxRefetchListener />
 
-              <LoadingScreen isInitialized={i18n.isInitialized}>
-                <Component {...pageProps} />
-              </LoadingScreen>
+              <Component {...pageProps} />
             </CustomErrorBoundary>
           </AllContextProviders>
         </InitPoolTogetherHooks>
