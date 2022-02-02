@@ -26,6 +26,14 @@ import { CardTitle } from 'lib/components/Text/CardTitle'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from 'lib/hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
+import { LoadingList } from 'lib/components/PrizePoolDepositList/LoadingList'
+import { PrizePoolDepositList } from 'lib/components/PrizePoolDepositList'
+import { PrizePoolDepositListItem } from 'lib/components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { PrizePoolDepositBalance } from 'lib/components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { DelegateView } from './DelegateView'
+import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
+import { getAddress } from 'ethers/lib/utils'
+import { ethers } from 'ethers'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -34,12 +42,12 @@ export const V4Deposits = () => {
 
   return (
     <div id='deposits'>
-      <div className='mb-2'>
-        <CardTitle title={t('deposits')} secondary={`$${data?.totalValueUsd.amountPretty}`} />
-      </div>
-      <div className='bg-pt-purple-lightest dark:bg-pt-purple rounded-lg p-4'>
-        <DepositsList />
-      </div>
+      <CardTitle
+        className='mb-2'
+        title={t('deposits')}
+        secondary={`$${data?.totalValueUsd.amountPretty}`}
+      />
+      <DepositsList />
     </div>
   )
 }
@@ -51,15 +59,15 @@ const DepositsList = () => {
     return <LoadingList />
   }
   return (
-    <ul className='space-y-4'>
-      {data.balances.map((balance) => (
+    <PrizePoolDepositList>
+      {data.balances.map((balances) => (
         <DepositItem
-          key={'deposit-balance-' + balance.prizePool.id()}
-          {...balance}
+          key={'deposit-balance-' + balances.prizePool.id()}
+          {...balances}
           refetchBalances={refetch}
         />
       ))}
-    </ul>
+    </PrizePoolDepositList>
   )
 }
 
@@ -78,6 +86,9 @@ const DepositItem = (props: DepositItemsProps) => {
   const { t } = useTranslation()
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
+  const usersAddress = useUsersAddress()
+  const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
+  const delegate = getDelegateAddress(usersAddress, delegateData)
 
   const chainId = prizePool.chainId
   const contractLinks: ContractLink[] = [
@@ -102,24 +113,23 @@ const DepositItem = (props: DepositItemsProps) => {
   const onDismiss = () => setIsOpen(false)
 
   return (
-    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
-      <button
-        className='p-4 w-full flex justify-between items-center'
+    <>
+      <PrizePoolDepositListItem
         onClick={() => {
           setSelectedChainId(chainId)
           setIsOpen(true)
         }}
-      >
-        <NetworkLabel chainId={chainId} />
-        <DepositBalance {...props} />
-      </button>
-      <DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />
+        left={<NetworkLabel chainId={chainId} />}
+        right={<DepositBalance {...props} />}
+        bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
+      />
       <BalanceBottomSheet
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
         open={isOpen}
         label={`Manage deposits for ${prizePool.id()}`}
         onDismiss={onDismiss}
         chainId={chainId}
+        delegate={delegate}
         internalLinks={
           <Link href={{ pathname: '/deposit', query: router.query }}>
             <SquareLink
@@ -147,6 +157,21 @@ const DepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.tealOutline
           }
         ]}
+        moreInfoViews={[
+          {
+            id: 'delegate',
+            view: () => (
+              <DelegateView
+                prizePool={prizePool}
+                balances={balances}
+                refetchBalances={refetchBalances}
+              />
+            ),
+            icon: 'user-plus',
+            label: t('delegateDeposit', 'Delegate deposit'),
+            theme: SquareButtonTheme.teal
+          }
+        ]}
         tx={tx}
         token={balances.ticket}
         balance={balances.ticket}
@@ -156,7 +181,7 @@ const DepositItem = (props: DepositItemsProps) => {
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
       />
-    </li>
+    </>
   )
 }
 
@@ -170,20 +195,27 @@ const NetworkLabel = (props: { chainId: number }) => (
 const DepositBalance = (props: DepositItemsProps) => {
   const { balances, prizePool } = props
   const { ticket } = balances
-  return (
-    <div className='flex'>
-      <TokenIcon chainId={prizePool.chainId} address={ticket.address} className='mr-2 my-auto' />
-      <span className={classNames('font-bold text-lg mr-3', { 'opacity-50': !ticket.hasBalance })}>
-        ${ticket.amountPretty}
-      </span>
-      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
-    </div>
-  )
+  return <PrizePoolDepositBalance chainId={prizePool.chainId} token={ticket} />
 }
 
-const LoadingList = () => (
-  <ul className='space-y-4'>
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-    <li className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10' />
-  </ul>
-)
+/**
+ * Returns the delegate address if it has been set manually.
+ * @param usersAddress
+ * @param delegateData
+ * @returns
+ */
+const getDelegateAddress = (
+  usersAddress: string,
+  delegateData: { [usersAddress: string]: string }
+): string => {
+  const delegateAddress = delegateData?.[usersAddress]
+  if (
+    !delegateAddress ||
+    getAddress(usersAddress) === delegateAddress ||
+    ethers.constants.AddressZero === delegateAddress
+  ) {
+    return null
+  } else {
+    return delegateAddress
+  }
+}

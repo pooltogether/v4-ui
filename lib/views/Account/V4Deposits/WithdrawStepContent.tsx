@@ -10,7 +10,7 @@ import {
 import { Amount, TokenWithBalance, Transaction } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { parseUnits } from 'ethers/lib/utils'
+import { parseUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import { User, PrizePool } from '@pooltogether/v4-js-client'
@@ -183,7 +183,8 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         chainId={prizePool.chainId}
         from={ticket}
         to={token}
-        amount={amountToWithdraw}
+        amountFrom={amountToWithdraw}
+        amountTo={amountToWithdraw}
       />
 
       <div className='my-8'>

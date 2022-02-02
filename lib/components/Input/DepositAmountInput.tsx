@@ -1,15 +1,13 @@
 import { TokenAmountInput } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import classNames from 'classnames'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
 import { useMinimumDepositAmount } from 'lib/hooks/v4/PrizePool/useMinimumDepositAmount'
 import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersPrizePoolBalances } from 'lib/hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { useEffect } from 'react'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import WalletIcon from 'assets/images/icon-wallet.svg'
 
 interface DepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>

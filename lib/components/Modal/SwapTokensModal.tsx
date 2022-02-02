@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { BUTTON_MIN_WIDTH, CHAIN_ID } from 'lib/constants/constants'
 import { getExchangeUrl } from 'lib/constants/config'
+import classNames from 'classnames'
 
 interface SwapTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -55,10 +56,11 @@ interface SwapTokensModalTriggerProps {
   buttonLabel?: string
   chainId?: number
   outputCurrencyAddress?: string
+  className?: string
 }
 
 export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
-  const { buttonLabel, chainId, outputCurrencyAddress } = props
+  const { buttonLabel, chainId, outputCurrencyAddress, className } = props
   const [showModal, setShowModal] = useState(false)
 
   const { t } = useTranslation()
@@ -66,7 +68,10 @@ export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
   return (
     <>
       <button
-        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        className={classNames(
+          'text-center text-inverse opacity-70 hover:opacity-100 transition-opacity',
+          className
+        )}
         onClick={() => setShowModal(true)}
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >

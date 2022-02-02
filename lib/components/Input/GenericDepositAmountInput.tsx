@@ -13,11 +13,12 @@ import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 interface GenericDepositAmountInputProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
-  tokenBalanceIsFetched: Boolean
+  isTokenBalanceFetched: Boolean
   tokenBalance: TokenWithBalance
   ticketBalance: TokenWithBalance
   inputKey: string
   className?: string
+  bgClassName?: string
   widthClassName?: string
   depositTokenClassName?: string
 }
@@ -28,7 +29,7 @@ interface GenericDepositAmountInputProps {
  * @returns
  */
 export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps) => {
-  const { className, widthClassName } = props
+  const { className, bgClassName, widthClassName } = props
 
   return (
     <div
@@ -38,12 +39,13 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 
       <div
         className={classNames(
-          'p-0.5 bg-tertiary rounded-lg overflow-hidden',
+          bgClassName,
+          'p-0.5 rounded-lg overflow-hidden',
           'transition-all hover:bg-gradient-cyan focus-within:bg-pt-gradient',
           'cursor-pointer'
         )}
       >
-        <div className='bg-tertiary w-full rounded-lg flex'>
+        <div className={classNames(bgClassName, 'w-full rounded-lg flex')}>
           <DepositToken {...props} />
           <Input {...props} />
         </div>
@@ -54,13 +56,14 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 
 GenericDepositAmountInput.defaultProps = {
   widthClassName: 'w-full',
+  bgClassName: 'bg-tertiary',
   depositTokenClassName: 'text-xl'
 }
 
 interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
 
 const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
-  const { form, tokenBalance, inputKey, tokenBalanceIsFetched } = props
+  const { form, tokenBalance, inputKey, isTokenBalanceFetched } = props
 
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
@@ -88,7 +91,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
         >
           {/* <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} /> */}
           <WalletSvg className='mr-2' />
-          {!tokenBalanceIsFetched ? (
+          {!isTokenBalanceFetched ? (
             <ThemedClipSpinner sizeClassName='w-3 h-3' className='mr-2 opacity-50' />
           ) : (
             <span className='mr-1'>{tokenBalance?.amountPretty || 0}</span>
