@@ -9,11 +9,12 @@ interface AmountBeingSwappedProps {
   chainId: number
   from: Token
   to: Token
-  amount: Amount
+  amountFrom: Amount
+  amountTo: Amount
 }
 
 export const AmountBeingSwapped = (props: AmountBeingSwappedProps) => {
-  const { title, chainId, from, to, amount } = props
+  const { title, chainId, from, to, amountFrom, amountTo } = props
   return (
     <div>
       <span className='mb-3 font-bold opacity-50 uppercase'>{title}</span>
@@ -26,13 +27,13 @@ export const AmountBeingSwapped = (props: AmountBeingSwappedProps) => {
         <div className='flex justify-between items-center border-b border-pt-purple-light dark:border-pt-purple-darkest p-4'>
           <TokenAndSymbol chainId={chainId} token={from} />
           <span>
-            {numberWithCommas(amount.amount, { precision: getMaxPrecision(amount.amount) })}
+            {numberWithCommas(amountFrom.amount, { precision: getMaxPrecision(amountFrom.amount) })}
           </span>
         </div>
         <div className='flex justify-between items-center border-t border-pt-purple-light dark:border-pt-purple-darkest p-4'>
           <TokenAndSymbol chainId={chainId} token={to} />
           <span>
-            {numberWithCommas(amount.amount, { precision: getMaxPrecision(amount.amount) })}
+            {numberWithCommas(amountTo.amount, { precision: getMaxPrecision(amountTo.amount) })}
           </span>
         </div>
       </div>

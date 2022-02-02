@@ -77,7 +77,6 @@ export const useHasUserCheckedAllDraws = (
         claimedDrawIds.includes(drawId) ||
         drawIdsWithoutANormalizedBalance.includes(drawId)
     )
-    console.log({ hasUserCheckedAllDraws, drawIds, drawResults })
     return {
       data: {
         [usersAddress]: hasUserCheckedAllDraws
