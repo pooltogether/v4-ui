@@ -141,6 +141,7 @@ const DepositButton = (props: DepositBottomButtonProps) => {
 
 interface DepositInfoBoxProps {
   className?: string
+  bgClassName?: string
   depositTx: Transaction
   chainId: number
   amountToDeposit: Amount
@@ -149,7 +150,8 @@ interface DepositInfoBoxProps {
 }
 
 export const DepositInfoBox = (props: DepositInfoBoxProps) => {
-  const { chainId, className, depositAllowance, amountToDeposit, depositTx, errors } = props
+  const { chainId, bgClassName, className, depositAllowance, amountToDeposit, depositTx, errors } =
+    props
 
   const { t } = useTranslation()
 
@@ -175,14 +177,14 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   if (depositTx?.inFlight) {
     return (
-      <InfoList className={className}>
+      <InfoList bgClassName={bgClassName} className={className}>
         <TxHashRow depositTx={depositTx} chainId={chainId} />
       </InfoList>
     )
   }
 
   return (
-    <InfoList className={className}>
+    <InfoList bgClassName={bgClassName} className={className}>
       {depositAllowance?.gt(0) ? (
         <EstimatedDepositGasItem
           chainId={chainId}

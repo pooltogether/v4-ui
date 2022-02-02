@@ -18,6 +18,7 @@ interface GenericDepositAmountInputProps {
   ticketBalance: TokenWithBalance
   inputKey: string
   className?: string
+  bgClassName?: string
   widthClassName?: string
   depositTokenClassName?: string
 }
@@ -28,7 +29,7 @@ interface GenericDepositAmountInputProps {
  * @returns
  */
 export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps) => {
-  const { className, widthClassName } = props
+  const { className, bgClassName, widthClassName } = props
 
   return (
     <div
@@ -38,12 +39,13 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 
       <div
         className={classNames(
-          'p-0.5 bg-tertiary rounded-lg overflow-hidden',
+          bgClassName,
+          'p-0.5 rounded-lg overflow-hidden',
           'transition-all hover:bg-gradient-cyan focus-within:bg-pt-gradient',
           'cursor-pointer'
         )}
       >
-        <div className='bg-tertiary w-full rounded-lg flex'>
+        <div className={classNames(bgClassName, 'w-full rounded-lg flex')}>
           <DepositToken {...props} />
           <Input {...props} />
         </div>
@@ -54,6 +56,7 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 
 GenericDepositAmountInput.defaultProps = {
   widthClassName: 'w-full',
+  bgClassName: 'bg-tertiary',
   depositTokenClassName: 'text-xl'
 }
 
