@@ -34,7 +34,9 @@ export function CustomErrorBoundary (props) {
       <>
         <Sentry.ErrorBoundary
           beforeCapture={(scope) => {
+            console.log(scope)
             scope.setTag('web3', walletName)
+            console.log(walletName)
 
             scope.setContext('wallet', {
               name: walletName
