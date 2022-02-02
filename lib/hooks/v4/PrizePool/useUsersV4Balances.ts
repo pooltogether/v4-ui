@@ -15,18 +15,16 @@ import {
 
 export const useUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
-  const allPrizePoolTokens = useAllPrizePoolTokens()
+  const queriesResult = useAllPrizePoolTokens()
 
-  const isAllPrizePoolTokensFetched = allPrizePoolTokens.every(
-    (queryResult) => queryResult.isFetched
-  )
+  const isAllPrizePoolTokensFetched = queriesResult.every((queryResult) => queryResult.isFetched)
 
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       return {
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => {
-          const queryResult = allPrizePoolTokens?.find((queryResult) => {
+          const queryResult = queriesResult?.find((queryResult) => {
             const { data: tokens } = queryResult
             return tokens.prizePoolId === prizePool.id()
           })

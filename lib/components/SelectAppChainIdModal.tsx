@@ -5,9 +5,9 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { useSelectedChainId } from 'lib/hooks/useSelectedChainId'
 import { BottomSheet } from './BottomSheet'
-import { useSupportedChainIds } from 'lib/hooks/useSupportedChainIds'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useV4ChainIds } from 'lib/hooks/useV4ChainIds'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -19,7 +19,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
-  const supportedChainIds = useSupportedChainIds()
+  const supportedChainIds = useV4ChainIds()
   const { chainId: selectedChainId, setSelectedChainId } = useSelectedChainId()
 
   return (

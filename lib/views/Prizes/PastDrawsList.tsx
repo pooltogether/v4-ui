@@ -240,7 +240,6 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
 
   const drawResults = storedDrawResults?.[usersAddress]
 
-  // TODO: Move stored draw results to a hook so this reacts when pushing new results
   const drawResult = drawResults?.[draw.drawId]
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()

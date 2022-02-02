@@ -1,14 +1,15 @@
-import { TokenWithBalance, useRefetchInterval } from '@pooltogether/hooks'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { Token, TokenWithUsdBalance, useRefetchInterval } from '@pooltogether/hooks'
+import { PrizePool, PrizePoolTokenBalances } from '@pooltogether/v4-js-client'
 import { formatUnits } from '@ethersproject/units'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { amountMultByUsd, numberWithCommas, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { PrizePoolTokens, usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
+import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
 
 export interface UsersPrizePoolBalances {
-  ticket: TokenWithBalance
-  token: TokenWithBalance
+  ticket: TokenWithUsdBalance
+  token: TokenWithUsdBalance
 }
 
 export const USERS_PRIZE_POOL_BALANCES_QUERY_KEY = 'useUsersPrizePoolBalances'
@@ -29,9 +30,6 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
   )
 }
 
-const prettyNumber = (amount: BigNumber, decimals: string): string =>
-  numberWithCommas(amount, { decimals }) as string
-
 export const getUsersPrizePoolBalances = async (
   prizePool: PrizePool,
   usersAddress: string,
@@ -48,20 +46,26 @@ export const getUsersPrizePoolBalances = async (
     prizePool,
     usersAddress,
     balances: {
-      ticket: {
-        ...ticket,
-        hasBalance: !balances.ticket.isZero(),
-        amountUnformatted: balances.ticket,
-        amount: formatUnits(balances.ticket, ticket.decimals),
-        amountPretty: prettyNumber(balances.ticket, ticket.decimals)
-      },
-      token: {
-        ...token,
-        hasBalance: !balances.token.isZero(),
-        amountUnformatted: balances.token,
-        amount: formatUnits(balances.token, token.decimals),
-        amountPretty: prettyNumber(balances.token, token.decimals)
-      }
+      ticket: makeTokenWithUsdBalance(ticket, balances.ticket),
+      token: makeTokenWithUsdBalance(token, balances.token)
     }
+  }
+}
+
+/**
+ * NOTE: Assumes token is a stablecoin.
+ * @param token
+ * @param balances
+ */
+const makeTokenWithUsdBalance = (token: Token, balanceUnformatted: BigNumber) => {
+  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balanceUsdScaled = toScaledUsdBigNumber(balance.amount)
+  return {
+    ...token,
+    ...balance,
+    hasBalance: !balanceUnformatted.isZero(),
+    balanceUsd: balance,
+    usdPerToken: 1,
+    balanceUsdScaled
   }
 }

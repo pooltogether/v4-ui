@@ -8,9 +8,30 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
-export const SUPPORTED_CHAIN_IDS = Object.freeze({
+export const V4_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))),
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
+})
+
+// TODO: Link this to the v3 constants
+export const V3_CHAIN_IDS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.mainnet, CHAIN_ID.bsc, CHAIN_ID.polygon, CHAIN_ID.celo],
+  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai]
+})
+
+export const SUPPORTED_CHAIN_IDS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: Array.from(
+    new Set([
+      ...V3_CHAIN_IDS[APP_ENVIRONMENTS.mainnets],
+      ...V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets]
+    ])
+  ),
+  [APP_ENVIRONMENTS.testnets]: Array.from(
+    new Set([
+      ...V3_CHAIN_IDS[APP_ENVIRONMENTS.testnets],
+      ...V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets]
+    ])
+  )
 })
 
 export const SUPPORTED_CHAIN_NAMES = Object.freeze({

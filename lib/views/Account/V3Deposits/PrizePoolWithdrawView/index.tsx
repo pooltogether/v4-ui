@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { DepositItemsProps } from '.'
+import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
-import PrizePoolAbi from 'abis/V3_3PrizePoolAbi'
+import PrizePoolAbi from 'abis/V3_PrizePool'
 import { ModalNetworkGate } from 'lib/components/Modal/ModalNetworkGate'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -24,8 +24,8 @@ interface WithdrawViewProps extends DepositItemsProps {
   onDismiss: () => void
 }
 
-export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, balance, address, symbol } = props
+export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
+  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, ticket, token } = props
 
   const chainId = prizePool.chainId
 
@@ -41,26 +41,32 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   })
 
   const usersAddress = useUsersAddress()
-  const poolAddress = prizePool.prizePool.address
+  const poolAddress = prizePool.addresses.prizePool
 
   const {
     data: exitFee,
     isFetched: isExitFeeFetched,
     isFetching: isExitFeeFetching
-  } = useV3ExitFee(chainId, poolAddress, address, usersAddress, amountToWithdraw?.amountUnformatted)
+  } = useV3ExitFee(
+    chainId,
+    poolAddress,
+    ticket.address,
+    usersAddress,
+    amountToWithdraw?.amountUnformatted
+  )
 
   const sendWithdrawTx = async (e) => {
     e.preventDefault()
 
-    const params = [usersAddress, amountToWithdraw?.amountUnformatted, address, exitFee]
+    const params = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]
 
     const withdrawalAmountPretty = numberWithCommas(
       amountToWithdraw.amountUnformatted.sub(exitFee),
-      { decimals: prizePool.tokens.underlyingToken.decimals }
+      { decimals: token.decimals }
     )
 
     const txId = await sendTx({
-      name: `${t('withdraw')} ${withdrawalAmountPretty} ${symbol}`,
+      name: `${t('withdraw')} ${withdrawalAmountPretty} ${token.symbol}`,
       method: 'withdrawInstantlyFrom',
       contractAddress: poolAddress,
       contractAbi: PrizePoolAbi,
@@ -90,12 +96,13 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   return (
     <>
       <WithdrawStepContent
-        tokenAddress={address}
+        prizePool={prizePool}
+        ticket={ticket}
+        token={token}
         form={form}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
-        prizePool={prizePool}
-        usersBalance={balance}
+        usersBalance={ticket}
         refetchBalances={refetchBalances}
         amountToWithdraw={amountToWithdraw}
         setAmountToWithdraw={setAmountToWithdraw}
