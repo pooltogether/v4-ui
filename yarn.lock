@@ -2796,10 +2796,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.4.0.tgz#310b9667a1123cfcce718aa6d8eba7c434a53c75"
   integrity sha512-dNgDpDsCMxUxaz8u6OfpjSBtMOdcp8QkLC3cwJ6E++4ux0qY2ON+ZqJEHIC3q4ZVJ4Xf6FikMJF0a8SVNtl8Zw==
 
-"@pooltogether/react-components@^1.6.26":
-  version "1.6.27"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.27.tgz#62db9350a40ce41ad2260100487f3fcdf978c3c1"
-  integrity sha512-G0cxvQHijLn045ZAf8qcZtsxr9WcoTuq83YrumYdfBVbaHqcPEk81+iQ+djA/RicByGvmEIBI1NaF68S6H7DWQ==
+"@pooltogether/react-components@^1.6.29":
+  version "1.6.29"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.6.29.tgz#542540fdf6dbf42af0e506f4c3292a618e5b91a4"
+  integrity sha512-CHbteXy9smWqDQQlEz/HgvPLfRSsEScYcHFcDBoa4M4qJbsLKLJBalffzAGsaxK4toE/Nk/9MQ944EGjmAvEKA==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2827,15 +2827,15 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/uniform-random-number/-/uniform-random-number-1.0.0-beta.1.tgz#72257401fe8536e95f9f812f1d249262659084a7"
   integrity sha512-V4iqLOpNFNhnUqfKRlvqUeRwvKaODdz+qn4Qi65C3iMOnDb0J31tBvyhwKbhP4wauNuUN64WfepqkkxET9U7EQ==
 
-"@pooltogether/utilities@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.6.tgz#33038de731b2d71e82036a1995f6e31efa66de3e"
-  integrity sha512-vNgzKtHQYBPkDGQK5l2NqtXEzLM9OqYxxUILLWslrBwTD8hlOSfYuJ2RKcomywIst4e0hWRVlbRHkNkLYe0aiQ==
-
 "@pooltogether/utilities@^0.3.7":
   version "0.3.7"
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.7.tgz#e63a5296c4f1ec816c7e3d0b9ae544cd075f13b5"
   integrity sha512-IBUPY7QAhf6wbKIJ96UA02lJPImAnfSDvAFjkiSVzfRIKXKwOZu+5/mjTXADd2pj18MP/w3h8Wszp0J2jFHYYw==
+
+"@pooltogether/utilities@^0.3.8":
+  version "0.3.8"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.8.tgz#f4fa0e9618c97a152e637575560ee226d9e9752d"
+  integrity sha512-+9+Lw7IP6B1wvLXK/Dwi8SPkPetaCd4ayr6fS+xWwJup9xdMZmyRR+sc3VwwF/1whu5GmfhZe2X0OV6FTcXWKw==
 
 "@pooltogether/v4-core@^1.2.0":
   version "1.2.0"

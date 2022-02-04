@@ -24,10 +24,10 @@ export const useUsersUnclaimedWinningDrawResults = (
 
   return useMemo(() => {
     if (
-      !isClaimedAmountsFetched ||
       !usersAddress ||
       !prizeDistributor ||
-      usersAddress !== claimedAmountsData.usersAddress
+      !isClaimedAmountsFetched ||
+      usersAddress !== claimedAmountsData?.usersAddress
     ) {
       return { data: null, isFetched: false }
     }
