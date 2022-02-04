@@ -22,17 +22,17 @@ const Layout = (props: LayoutProps) => {
 
   return (
     <div className={classNames(className, 'min-h-screen')}>
-      <PageHeader />
-
       {isReady ? (
-        children
+        <>
+          <PageHeader />
+          {children}
+          <BottomNavigation />
+        </>
       ) : (
         <div className='flex flex-col h-screen absolute top-0 w-screen'>
           <LoadingLogo className='m-auto' />
         </div>
       )}
-
-      <BottomNavigation />
     </div>
   )
 }
