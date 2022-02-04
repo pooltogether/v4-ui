@@ -7,6 +7,7 @@ import {
   SettingsContainer,
   SettingsItem,
   TestnetSettingsItem,
+  FeatureRequestSettingsItem,
   ThemeSettingsItem,
   SocialLinks
 } from '@pooltogether/react-components'
@@ -51,6 +52,7 @@ const Settings = () => {
           <LanguagePicker />
           <ThemeSettingsItem t={t} />
           <TestnetSettingsItem t={t} />
+          <FeatureRequestSettingsItem t={t} />
         </div>
         <div className='sm:pt-24 pb-4 sm:pb-0'>
           <SocialLinks t={t} />

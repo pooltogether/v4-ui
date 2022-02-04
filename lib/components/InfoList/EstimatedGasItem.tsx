@@ -22,6 +22,7 @@ interface EstimatedGasItemProps {
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
   const { txName, totalGasWei, totalGasUsd, isFetched, chainId, label } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
+  const { t } = useTranslation()
 
   let valueJsx
 
