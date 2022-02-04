@@ -14,7 +14,7 @@ class MyDocument extends Document {
   render() {
     const title = 'PoolTogether - v4'
     const url = `https://pooltogether.com`
-    const description = `A new way for more winners to to pool and save with their friends.`
+    const description = `A new way for more winners to pool and save with their friends.`
     const keywords = 'ethereum polygon bsc binance'
     const twitterHandle = '@PoolTogether_'
 
