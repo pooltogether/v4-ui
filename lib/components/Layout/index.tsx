@@ -1,6 +1,7 @@
 import React from 'react'
-import { LoadingLogo } from '@pooltogether/react-components'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { LoadingLogo } from '@pooltogether/react-components'
 
 import { PageHeader } from 'lib/components/Layout/PageHeader'
 import { useInitialLoad } from 'lib/hooks/useInitialLoad'
@@ -13,25 +14,25 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
   const { children, className } = props
-  const isInitialized = useInitialLoad()
 
-  if (!isInitialized) {
-    return (
-      <div className={classNames(className, 'min-h-screen')}>
-        <PageHeader />
-        <div className='flex flex-col h-screen absolute top-0 w-screen'>
-          <LoadingLogo className='m-auto' />
-        </div>
-        <BottomNavigation />
-      </div>
-    )
-  }
+  const isInitialized = useInitialLoad()
+  const { i18n } = useTranslation()
+
+  const isReady = isInitialized && i18n.isInitialized
 
   return (
     <div className={classNames(className, 'min-h-screen')}>
-      <PageHeader />
-      {children}
-      <BottomNavigation />
+      {isReady ? (
+        <>
+          <PageHeader />
+          {children}
+          <BottomNavigation />
+        </>
+      ) : (
+        <div className='flex flex-col h-screen absolute top-0 w-screen'>
+          <LoadingLogo className='m-auto' />
+        </div>
+      )}
     </div>
   )
 }

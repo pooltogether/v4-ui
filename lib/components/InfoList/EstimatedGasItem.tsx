@@ -22,6 +22,7 @@ interface EstimatedGasItemProps {
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
   const { txName, totalGasWei, totalGasUsd, isFetched, chainId, label } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
+  const { t } = useTranslation()
 
   let valueJsx
 
@@ -89,18 +90,18 @@ export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountPr
   const {
     totalGasWei: depositTotalGasWei,
     totalGasUsd: depositTotalGasUsd,
-    isFetched: depositIsFetched,
+    isFetched: isDepositFetched,
     error: depositError
   } = useGasCostEstimate(DEPOSIT_GAS_AMOUNT, chainId)
 
   const {
     totalGasWei: approveTotalGasWei,
     totalGasUsd: approveTotalGasUsd,
-    isFetched: approveIsFetched,
+    isFetched: isApproveFetched,
     error: approveError
   } = useGasCostEstimate(APPROVE_GAS_AMOUNT, chainId)
 
-  const isFetched = depositIsFetched && approveIsFetched
+  const isFetched = isDepositFetched && isApproveFetched
   const error = depositError && approveError
 
   if (isFetched && !error && depositTotalGasWei && depositTotalGasUsd) {

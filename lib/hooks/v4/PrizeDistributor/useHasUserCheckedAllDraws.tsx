@@ -38,10 +38,11 @@ export const useHasUserCheckedAllDraws = (
     if (
       !isDrawIdsFetched ||
       !usersAddress ||
-      !isClaimedAmountsFetched ||
       !prizeDistributor ||
       !isNormalizedBalancesFetched ||
-      usersAddress !== claimedAmountsData.usersAddress
+      !Boolean(normalizedBalancesData?.[usersAddress]) ||
+      !isClaimedAmountsFetched ||
+      usersAddress !== claimedAmountsData?.usersAddress
     ) {
       return { data: null, isFetched: false }
     }
@@ -77,7 +78,6 @@ export const useHasUserCheckedAllDraws = (
         claimedDrawIds.includes(drawId) ||
         drawIdsWithoutANormalizedBalance.includes(drawId)
     )
-    console.log({ hasUserCheckedAllDraws, drawIds, drawResults })
     return {
       data: {
         [usersAddress]: hasUserCheckedAllDraws

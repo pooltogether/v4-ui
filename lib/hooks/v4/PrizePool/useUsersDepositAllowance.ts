@@ -4,19 +4,15 @@ import { NO_REFETCH } from 'lib/constants/query'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { useQuery, UseQueryOptions } from 'react-query'
 
-export interface DepositAllowance {
-  allowanceUnformatted: BigNumber
-  isApproved: boolean
-}
-
 export const useUsersDepositAllowance = (prizePool: PrizePool) => {
   const usersAddress = useUsersAddress()
   const enabled = Boolean(prizePool) && Boolean(usersAddress)
   return useQuery(
     ['useUsersDepositAllowance', prizePool?.id(), usersAddress],
     async () => {
-      return await prizePool.getUsersDepositAllowance(usersAddress)
+      const depositAllowance = await prizePool.getUsersDepositAllowance(usersAddress)
+      return depositAllowance.allowanceUnformatted
     },
-    { ...NO_REFETCH, enabled } as UseQueryOptions<DepositAllowance>
+    { ...NO_REFETCH, enabled } as UseQueryOptions<BigNumber>
   )
 }
