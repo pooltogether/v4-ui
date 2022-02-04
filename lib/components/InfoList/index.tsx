@@ -67,6 +67,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
     <li className={classnames('flex justify-between', className, fontSizeClassName)}>
       <div className={classnames('flex space-x-1 items-center', labelClassName)}>
         <span className='capitalize'>{label}</span>
+        {labelToolTip && <Tooltip id={`info-item-${label}`} tip={labelToolTip} />}
         {labelLink && (
           <a
             href={labelLink}
@@ -77,7 +78,6 @@ export const InfoListItem = (props: InfoListItemProps) => {
             <FeatherIcon icon='external-link' className='h-4 w-4' />
           </a>
         )}
-        {labelToolTip && <Tooltip id={`info-item-${label}`} tip={labelToolTip} />}
       </div>
       <span className={classnames('text-right', valueClassName, { 'opacity-80': dimValue })}>
         {loading ? <ThemedClipSpinner sizeClassName='w-3 h-3' className='opacity-50' /> : value}
@@ -88,4 +88,20 @@ export const InfoListItem = (props: InfoListItemProps) => {
 
 InfoListItem.defaultProps = {
   fontSizeClassName: 'text-xxs xs:text-xs'
+}
+
+interface InfoListHeaderProps {
+  label: React.ReactNode
+  className?: string
+  textColorClassName?: string
+  textClassName?: string
+}
+
+export const InfoListHeader = (props: InfoListHeaderProps) => {
+  const { label, className, textColorClassName, textClassName } = props
+  return <li className={classnames(className, textColorClassName, textClassName)}>{label}</li>
+}
+
+InfoListHeader.defaultProps = {
+  textClassName: 'font-semibold capitalize'
 }

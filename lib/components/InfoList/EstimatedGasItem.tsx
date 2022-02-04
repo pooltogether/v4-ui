@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 
-import { InfoListItem } from 'lib/components/InfoList'
+import { InfoListHeader, InfoListItem } from 'lib/components/InfoList'
 import { useChainNativeCurrency } from 'lib/hooks/useChainNativeCurrency'
 
 interface EstimatedGasItemProps {
@@ -191,12 +191,11 @@ export const EstimatedDepositGasItems = (props: EstimatedDepositGasItems) => {
 
   return (
     <>
-      <InfoListItem
-        className='font-semibold text-pt-purple-light'
+      <InfoListHeader
+        className='mt-2'
+        textColorClassName='text-pt-purple-light'
         label={t('estimatedNetworkFees', 'Estimated network fees')}
-        value={undefined}
       />
-
       {props.showApprove && <EstimatedApproveGasItem {...props} label={t('approveDeposits')} />}
       <EstimatedDepositGasItem {...props} label={t('deposit')} />
       <EstimatedClaimPrizesGasItem {...props} label={t('prizeClaims', 'Prize claims')} />

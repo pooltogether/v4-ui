@@ -196,7 +196,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
                   <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
                 </>
               )}
-              <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
               <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
             </ModalInfoList>
           </>

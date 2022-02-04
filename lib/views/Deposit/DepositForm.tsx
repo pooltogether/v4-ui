@@ -209,6 +209,11 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   return (
     <InfoList bgClassName={bgClassName} className={className}>
+      <EstimatedAPRItem
+        chainId={chainId}
+        labelClassName={labelClassName}
+        valueClassName={valueClassName}
+      />
       {depositAllowance?.gt(0) ? (
         <EstimatedDepositGasItem
           chainId={chainId}
@@ -224,11 +229,6 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
           valueClassName={valueClassName}
         />
       )}
-      <EstimatedAPRItem
-        chainId={chainId}
-        labelClassName={labelClassName}
-        valueClassName={valueClassName}
-      />
     </InfoList>
   )
 }
