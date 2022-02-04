@@ -125,8 +125,6 @@ const getUnclaimedDrawDatas = async (
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
 
-  console.log('getUnclaimedDrawDatas', { drawDatas })
-
   const currentTimestampSeconds = msToS(Date.now())
 
   drawIds.forEach((drawId) => {

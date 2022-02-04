@@ -57,9 +57,9 @@ export const DepositCard = (props: { className?: string }) => {
 
   const isDataFetched =
     isPrizePoolTokensFetched &&
-    isUsersBalancesFetched &&
     isUsersDepositAllowanceFetched &&
-    usersBalancesData.usersAddress === usersAddress &&
+    isUsersBalancesFetched &&
+    usersBalancesData?.usersAddress === usersAddress &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
   const ticketDelegate = delegateData?.[usersAddress]
