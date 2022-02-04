@@ -193,11 +193,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
               {prizePool && (
                 <>
                   <EstimatedAPRItem chainId={prizePool.chainId} />
-                  <UpdatedOdds
-                    amount={amountToDeposit}
-                    prizePool={prizePool}
-                    action={EstimateAction.deposit}
-                  />
+                  <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
                 </>
               )}
               <AmountToRecieve amount={amountToDeposit} ticket={ticket} />

@@ -2,7 +2,6 @@ import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from 'react-query'
 import { Amount } from '@pooltogether/hooks'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { NO_REFETCH } from '@pooltogether/hooks/dist/constants'
 
 import { InfoListItem } from '.'
@@ -33,10 +32,9 @@ export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
         'estimatedAverageAprTooltip',
         'Estimated average APR is a rough estimate based on the current TVL and daily prizes'
       )}
+      loading={!isFetched}
       labelLink='https://docs.pooltogether.com/faq/prizes-and-winning#what-is-the-prize-apr'
-      value={
-        isFetched ? `${apr}%` : <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-50' />
-      }
+      value={`${apr}%`}
     />
   )
 }
@@ -46,10 +44,14 @@ export const useV4Apr = () => {
   const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTotalSupply()
   const enabled = isPrizeTierFetched && isTotalSupplyFetched
-  return useQuery(['useV4Apr'], () => getV4Apr(totalSupply, prizeTier.prize), {
-    ...NO_REFETCH,
-    enabled
-  })
+  return useQuery(
+    ['useV4Apr', prizeTier, totalSupply],
+    () => getV4Apr(totalSupply, prizeTier.prize),
+    {
+      ...NO_REFETCH,
+      enabled
+    }
+  )
 }
 
 const getV4Apr = async (totalSupply: Amount, dailyPrizeAmountUnformatted: BigNumber) => {
@@ -57,14 +59,6 @@ const getV4Apr = async (totalSupply: Amount, dailyPrizeAmountUnformatted: BigNum
 
   const totalTotalSupply = Number(totalSupply.amount)
   const totalYearlyPrizes = totalYearlyPrizesUnformatted.div(1e6).toNumber()
-
-  console.log('getV4Apr', {
-    totalSupply,
-    dailyPrizeAmountUnformatted: dailyPrizeAmountUnformatted.toString(),
-    totalYearlyPrizesUnformatted: totalYearlyPrizesUnformatted.toString(),
-    totalTotalSupply,
-    totalYearlyPrizes
-  })
 
   return ((totalYearlyPrizes / totalTotalSupply) * 100).toFixed(2)
 }

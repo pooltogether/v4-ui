@@ -34,13 +34,4 @@ export const TxReceiptItem = (props: TxReceiptItemProps) => {
       }
     />
   )
-
-  // return (
-  //   <div className='flex flex-row justify-between'>
-  //     <div>{}:</div>
-  //     <BlockExplorerLink className='text-xs' chainId={chainId} txHash={depositTx.hash}>
-  //       <span className='underline'>{shorten({ hash: depositTx.hash })}</span>
-  //     </BlockExplorerLink>
-  //   </div>
-  // )
 }

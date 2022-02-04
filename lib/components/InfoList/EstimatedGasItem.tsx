@@ -37,10 +37,6 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 
   let valueJsx
 
-  if (!isFetched) {
-    valueJsx = <ThemedClipSpinner className='my-auto' size={16} />
-  }
-
   if (isFetched && totalGasWei) {
     valueJsx = (
       <Tooltip
@@ -73,6 +69,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 
   return (
     <InfoListItem
+      loading={!isFetched}
       label={label}
       value={valueJsx}
       labelClassName={labelClassName}
@@ -83,6 +80,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
 
 interface EstimatedTxWithAmountProps {
   label?: string
+  loading?: string
   chainId: number
   amountUnformatted?: BigNumber
   labelClassName?: string
@@ -179,7 +177,12 @@ export const EstimatedClaimPrizesGasItem = (props: EstimatedTxWithAmountProps) =
   <SimpleEstimatedGasItem {...props} txName='claim' gasAmount={CLAIM_GAS_AMOUNT} />
 )
 
-interface EstimatedDepositGasItems extends EstimatedTxWithAmountProps {
+interface EstimatedDepositGasItems {
+  loading?: string
+  chainId: number
+  amountUnformatted?: BigNumber
+  labelClassName?: string
+  valueClassName?: string
   showApprove?: boolean
 }
 

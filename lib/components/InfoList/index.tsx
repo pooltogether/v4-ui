@@ -1,4 +1,4 @@
-import { Tooltip } from '@pooltogether/react-components'
+import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
@@ -39,6 +39,7 @@ InfoList.defaultProps = {
 export interface InfoListItemProps {
   label: React.ReactNode
   value: React.ReactNode
+  loading?: boolean
   labelToolTip?: React.ReactNode
   labelLink?: string
   dimValue?: boolean
@@ -52,6 +53,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
   const {
     label,
     value,
+    loading,
     labelToolTip,
     labelLink,
     className,
@@ -78,7 +80,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
         {labelToolTip && <Tooltip id={`info-item-${label}`} tip={labelToolTip} />}
       </div>
       <span className={classnames('text-right', valueClassName, { 'opacity-80': dimValue })}>
-        {value}
+        {loading ? <ThemedClipSpinner sizeClassName='w-3 h-3' className='opacity-50' /> : value}
       </span>
     </li>
   )
