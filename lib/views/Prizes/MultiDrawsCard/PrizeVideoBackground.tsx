@@ -26,7 +26,7 @@ enum VideoClip {
 }
 
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState, extension: string) =>
-  `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}`
+  `https://github.com/pooltogether/v4-ui/blob/135321740cc3dafeac05c51f47b4c8a530afc036/public/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}?raw=true`
 
 export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   const {

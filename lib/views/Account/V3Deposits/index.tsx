@@ -162,7 +162,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             isSponsorship={isSponsorship}
           />
         }
-        right={<DepositBalance balanceUsd={ticket.balanceUsd} chainId={chainId} ticket={ticket} />}
+        right={<DepositBalance chainId={chainId} ticket={ticket} />}
       />
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
