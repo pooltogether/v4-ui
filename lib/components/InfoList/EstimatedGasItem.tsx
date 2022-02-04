@@ -17,10 +17,21 @@ interface EstimatedGasItemProps {
   totalGasWei?: number
   totalGasUsd?: number
   error?: unknown
+  labelClassName?: string
+  valueClassName?: string
 }
 
 export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
-  const { txName, totalGasWei, totalGasUsd, isFetched, chainId, label } = props
+  const {
+    txName,
+    totalGasWei,
+    totalGasUsd,
+    isFetched,
+    chainId,
+    label,
+    labelClassName,
+    valueClassName
+  } = props
   const nativeCurrency = useChainNativeCurrency(chainId)
   const { t } = useTranslation()
 
@@ -40,7 +51,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
           </>
         }
       >
-        <span className='text-inverse'>${numberWithCommas(totalGasUsd, { precision: 2 })}</span>
+        <span>${numberWithCommas(totalGasUsd, { precision: 2 })}</span>
       </Tooltip>
     )
   }
@@ -60,13 +71,22 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
     )
   }
 
-  return <InfoListItem label={label} value={valueJsx} />
+  return (
+    <InfoListItem
+      label={label}
+      value={valueJsx}
+      labelClassName={labelClassName}
+      valueClassName={valueClassName}
+    />
+  )
 }
 
 interface EstimatedTxWithAmountProps {
   label?: string
   chainId: number
   amountUnformatted?: BigNumber
+  labelClassName?: string
+  valueClassName?: string
 }
 
 interface SimpleEstimatedGasItemProps extends EstimatedTxWithAmountProps {
@@ -81,7 +101,7 @@ const WITHDRAW_GAS_AMOUNT = BigNumber.from('450000')
 const APPROVE_GAS_AMOUNT = BigNumber.from('50000')
 
 export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountProps) => {
-  const { chainId } = props
+  const { chainId, labelClassName, valueClassName } = props
 
   let totalGasWei, totalGasUsd
 
@@ -111,6 +131,8 @@ export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountPr
 
   return (
     <EstimatedGasItem
+      labelClassName={labelClassName}
+      valueClassName={valueClassName}
       label={t('estimatedNetworkFees', 'Estimated network fees')}
       txName='approve-and-deposit'
       totalGasWei={totalGasWei}
@@ -123,7 +145,7 @@ export const EstimatedApproveAndDepositGasItem = (props: EstimatedTxWithAmountPr
 }
 
 const SimpleEstimatedGasItem = (props: SimpleEstimatedGasItemProps) => {
-  const { chainId, label, txName, gasAmount } = props
+  const { chainId, label, txName, gasAmount, labelClassName, valueClassName } = props
 
   const { t } = useTranslation()
 
@@ -131,6 +153,8 @@ const SimpleEstimatedGasItem = (props: SimpleEstimatedGasItemProps) => {
 
   return (
     <EstimatedGasItem
+      labelClassName={labelClassName}
+      valueClassName={valueClassName}
       label={label || t('estimatedNetworkFees', 'Estimated network fees')}
       txName={txName}
       totalGasWei={totalGasWei}

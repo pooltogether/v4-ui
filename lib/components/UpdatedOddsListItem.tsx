@@ -19,14 +19,8 @@ export const UpdatedOdds = (props: {
 
   return (
     <InfoListItem
-      label={
-        <Tooltip
-          id={`tooltip-deposit-updated-odds`}
-          tip={t('oddsToWinOnePrize', 'Your estimated odds of winning at least one prize')}
-        >
-          {t('updatedWinningOdds', 'Updated winning odds')}
-        </Tooltip>
-      }
+      label={t('updatedWinningOdds', 'Updated winning odds')}
+      labelToolTip={t('oddsToWinOnePrize', 'Your estimated odds of winning at least one prize')}
       value={<UsersOddsValue amount={amount} action={action} />}
     />
   )

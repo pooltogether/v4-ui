@@ -7,7 +7,7 @@ import { User, PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { InfoList } from 'lib/components/InfoList'
-import { TxHashRow } from 'lib/components/TxHashRow'
+import { TxReceiptItem } from 'lib/components/InfoList/TxReceiptItem'
 import { useUsersDepositAllowance } from 'lib/hooks/v4/PrizePool/useUsersDepositAllowance'
 import { TxButtonInFlight } from 'lib/components/Input/TxButtonInFlight'
 import {
@@ -19,6 +19,7 @@ import { InfoListItem } from 'lib/components/InfoList'
 import { DepositAmountInput } from 'lib/components/Input/DepositAmountInput'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
 import { BigNumber } from '@ethersproject/bignumber'
+import { EstimatedAPRItem } from 'lib/components/InfoList/EstimatedAPRItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -78,6 +79,8 @@ export const DepositForm = (props: DepositFormProps) => {
           depositAllowance={depositAllowance}
           amountToDeposit={amountToDeposit}
           errors={isDirty ? errors : null}
+          labelClassName='text-accent-1'
+          valueClassName='text-inverse'
         />
 
         <DepositBottomButton
@@ -146,12 +149,23 @@ interface DepositInfoBoxProps {
   chainId: number
   amountToDeposit: Amount
   depositAllowance?: BigNumber
+  labelClassName?: string
+  valueClassName?: string
   errors?: { [x: string]: { message: string } }
 }
 
 export const DepositInfoBox = (props: DepositInfoBoxProps) => {
-  const { chainId, bgClassName, className, depositAllowance, amountToDeposit, depositTx, errors } =
-    props
+  const {
+    chainId,
+    bgClassName,
+    className,
+    depositAllowance,
+    amountToDeposit,
+    valueClassName,
+    labelClassName,
+    depositTx,
+    errors
+  } = props
 
   const { t } = useTranslation()
 
@@ -170,7 +184,12 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
     return (
       <InfoList bgClassName='bg-pt-purple-lighter dark:bg-pt-purple-dark' className={className}>
-        <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
+        <InfoListItem
+          label={t('issues', 'Issues')}
+          value={<div>{messages}</div>}
+          labelClassName={labelClassName}
+          valueClassName={valueClassName}
+        />
       </InfoList>
     )
   }
@@ -178,7 +197,12 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   if (depositTx?.inFlight) {
     return (
       <InfoList bgClassName={bgClassName} className={className}>
-        <TxHashRow depositTx={depositTx} chainId={chainId} />
+        <TxReceiptItem
+          depositTx={depositTx}
+          chainId={chainId}
+          labelClassName={labelClassName}
+          valueClassName={valueClassName}
+        />
       </InfoList>
     )
   }
@@ -189,13 +213,22 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
         <EstimatedDepositGasItem
           chainId={chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
+          labelClassName={labelClassName}
+          valueClassName={valueClassName}
         />
       ) : (
         <EstimatedApproveAndDepositGasItem
           chainId={chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
+          labelClassName={labelClassName}
+          valueClassName={valueClassName}
         />
       )}
+      <EstimatedAPRItem
+        chainId={chainId}
+        labelClassName={labelClassName}
+        valueClassName={valueClassName}
+      />
     </InfoList>
   )
 }

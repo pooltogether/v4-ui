@@ -8,7 +8,7 @@ import { TokenBalance, useTransaction } from '@pooltogether/hooks'
 
 import { InfoList } from 'lib/components/InfoList'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
-import { TxHashRow } from 'lib/components/TxHashRow'
+import { TxReceiptItem } from 'lib/components/InfoList/TxReceiptItem'
 import { useUser } from 'lib/hooks/v4/User/useUser'
 import { useUsersTicketDelegate } from 'lib/hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
@@ -90,7 +90,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
   if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
     return (
       <InfoList>
-        <TxHashRow depositTx={tx} chainId={prizePool.chainId} />
+        <TxReceiptItem depositTx={tx} chainId={prizePool.chainId} />
       </InfoList>
     )
   }

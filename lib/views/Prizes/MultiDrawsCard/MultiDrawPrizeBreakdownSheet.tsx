@@ -10,7 +10,7 @@ import React, { useMemo, useState } from 'react'
 
 import { DrawData } from 'lib/types/v4'
 import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { PrizeBreakdown } from 'lib/components/PrizeBreakdown'
 import { PrizeWLaurels } from 'lib/components/Images/PrizeWithLaurels'
 import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
@@ -67,7 +67,30 @@ export const MultiDrawPrizeBreakdownSheet = (
           ))}
         </select>
       </div>
+
       <PrizeWLaurels className='mx-auto' />
+      <div className='font-inter font-semibold text-sm capitalize text-inverse my-3 text-center'>
+        {t('prizeBreakdown', 'Prize breakdown')}
+      </div>
+
+      <p className='text-accent-1 text-xs text-center'>
+        <Trans
+          i18nKey='prizeTierExplainer'
+          components={{
+            a: (
+              <a
+                className='text-highlight-1 hover:opacity-70 transition-opacity'
+                href='https://docs.pooltogether.com/faq/prizes-and-winning'
+                target='_blank'
+                rel='noopener noreferrer'
+              />
+            )
+          }}
+        />
+      </p>
+
+      <hr className='opacity-10 border-pt-purple dark:border-white w-80' />
+
       <PrizeBreakdown className='w-full mx-auto' prizeTier={prizeDistribution} ticket={ticket} />
     </BottomSheet>
   )
