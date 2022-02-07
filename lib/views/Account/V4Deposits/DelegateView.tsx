@@ -20,7 +20,7 @@ import { DepositItemsProps } from '.'
 import { useUser } from 'lib/hooks/v4/User/useUser'
 import { useSendTransaction } from 'lib/hooks/useSendTransaction'
 import { InfoList } from 'lib/components/InfoList'
-import { TxHashRow } from 'lib/components/TxHashRow'
+import { TxReceiptItem } from 'lib/components/InfoList/TxReceiptItem'
 import { useIsWalletOnNetwork } from 'lib/hooks/useIsWalletOnNetwork'
 import { TxButtonNetworkGated } from 'lib/components/Input/TxButtonNetworkGated'
 
@@ -221,7 +221,7 @@ const DelegateForm = (props: DelegateFormProps) => {
   if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
     return (
       <InfoList bgClassName='bg-body'>
-        <TxHashRow depositTx={tx} chainId={prizePool.chainId} />
+        <TxReceiptItem depositTx={tx} chainId={prizePool.chainId} />
       </InfoList>
     )
   }
