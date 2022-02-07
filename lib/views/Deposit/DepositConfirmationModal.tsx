@@ -10,7 +10,7 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
@@ -176,6 +176,21 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     >
       <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
       <div className='w-full mx-auto mt-8 space-y-8'>
+        <p className='text-center'>
+          <Trans
+            i18nKey='checkDailyForMoreInfoSeeHere'
+            components={{
+              a: (
+                <a
+                  href='https://v4.docs.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-highlight-1 hover:opacity-70 transition-opacity'
+                />
+              )
+            }}
+          />
+        </p>
         <AmountBeingSwapped
           title={t('depositTicker', { ticker: token.symbol })}
           chainId={chainId}
