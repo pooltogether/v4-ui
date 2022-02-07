@@ -1,6 +1,6 @@
 # PoolTogether V4 UI
 
-Interact with V4 of the PoolTogether prize-savings protocol.
+The user interface for interacting with V4 of the PoolTogether prize-savings protocol.
 
 # Setup
 

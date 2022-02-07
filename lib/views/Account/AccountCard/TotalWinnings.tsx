@@ -163,7 +163,7 @@ const NumberOfPrizesDisclaimer = () => {
           a: (
             <a
               className='underline text-xxs hover:opacity-100'
-              href='https://v4.docs.pooltogether.com/protocol/reference/smart-contracts#draw-beacon--draw-buffer'
+              href='https://v4.docs.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
             ></a>
           )
         }}
