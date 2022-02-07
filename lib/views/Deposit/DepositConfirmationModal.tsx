@@ -176,7 +176,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     >
       <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
       <div className='w-full mx-auto mt-8 space-y-8'>
-        <p className='text-center'>
+        <p className='text-center text-xs'>
           <Trans
             i18nKey='checkDailyForMoreInfoSeeHere'
             components={{
