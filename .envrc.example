@@ -1,20 +1,25 @@
 # Blank if development. Domain if production.
 export NEXT_JS_DOMAIN_NAME=
 
+# Locize API keys for localization.
+export NEXT_JS_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
+export NEXT_JS_LOCIZE_VERSION=latest
+
+# Optional
+# Sentry DSN
+export NEXT_JS_SENTRY_DSN=
+
 # Optional
 # API keys for extra wallet support.
 export NEXT_JS_FORTMATIC_API_KEY=
 export NEXT_JS_FORTMATIC_PRODUCTION_API_KEY=
 export NEXT_JS_PORTIS_API_KEY=
 
-# Locize API keys for localization.
-export NEXT_JS_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
-export NEXT_JS_LOCIZE_VERSION=latest
-
 # Optional
 # Locize Dev API key for writing values.
 export NEXT_JS_LOCIZE_DEV_API_KEY=
 
+# Optional
 # Fathom API keys for analytics tracking.
 export NEXT_JS_FATHOM_SITE_ID=
 

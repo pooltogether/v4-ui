@@ -29,9 +29,6 @@ import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-// Carousel for Prizes
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-
 // Bottom sheet
 import 'react-spring-bottom-sheet/dist/style.css'
 import 'assets/styles/bottomSheet.css'
