@@ -13,6 +13,7 @@ import { getLPPrizePoolMetadata, useLPTokenUsdValue } from 'lib/hooks/v3/useLPTo
 import { useUsersV3LPPoolBalances } from 'lib/hooks/v3/useUsersV3LPPoolBalances'
 import { LPTokenIcon } from 'lib/components/LPTokenIcon'
 import { getAmountFromBigNumber } from 'lib/utils/getAmountFromBigNumber'
+import { BigNumber } from 'ethers'
 
 export const LPStakingCards = () => {
   const usersAddress = useUsersAddress()
@@ -98,7 +99,9 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
 }
 
 const makeTokenWithUsdBalance = (token: TokenWithBalance, usd: number): TokenWithUsdBalance => {
-  const balanceUsdUnformatted = amountMultByUsd(token.amountUnformatted, usd)
+  const balanceUsdUnformatted = usd
+    ? amountMultByUsd(token.amountUnformatted, usd)
+    : BigNumber.from(0)
   const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
