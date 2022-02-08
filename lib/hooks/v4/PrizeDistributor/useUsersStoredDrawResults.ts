@@ -12,6 +12,6 @@ export const useUsersStoredDrawResults = (
   }
 } => {
   const [drawResults] = useAtom(drawResultsAtom)
-  const usersDrawResults = drawResults[usersAddress]?.[prizeDistributor.id()] || {}
+  const usersDrawResults = drawResults?.[usersAddress]?.[prizeDistributor.id()] || {}
   return { [usersAddress]: usersDrawResults }
 }
