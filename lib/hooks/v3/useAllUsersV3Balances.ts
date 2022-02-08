@@ -35,9 +35,9 @@ export interface V3PrizePoolBalances {
  * @returns
  */
 export const useAllUsersV3Balances = (usersAddress: string) => {
-  const chainIds = useV3ChainIds()
-  const providers = useReadProviders(chainIds)
   const { data: v3PrizePools, isFetched } = useV3PrizePools()
+  const chainIds = isFetched ? Object.keys(v3PrizePools).map(Number) : []
+  const providers = useReadProviders(chainIds)
   const { data: tokenPrices } = useCoingeckoTokenPricesAcrossChains(
     isFetched ? getTokenAddressesFromPrizePools(v3PrizePools) : null
   )

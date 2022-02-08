@@ -28,18 +28,14 @@ export const useLPTokenUsdValue = (prizePool: V3PrizePool) => {
   )
 
   const isFetched = isTokenPricesFetched && tokenBalancesIsFetched
+  const token1BalanceData = tokenBalancesIsFetched && lPTokenBalances[token1Address]
+  const token2BalanceData = tokenBalancesIsFetched && lPTokenBalances[token2Address]
 
   const lpTokenValueUsd =
-    isFetched && Boolean(lPTokenBalances)
+    isFetched && !!token1BalanceData && !!token2BalanceData
       ? calculateLPTokenPrice(
-          formatUnits(
-            lPTokenBalances[token1Address].amountUnformatted,
-            lPTokenBalances[token1Address].decimals
-          ),
-          formatUnits(
-            lPTokenBalances[token2Address].amountUnformatted,
-            lPTokenBalances[token2Address].decimals
-          ),
+          formatUnits(token1BalanceData.amountUnformatted, token1BalanceData.decimals),
+          formatUnits(token2BalanceData.amountUnformatted, token2BalanceData.decimals),
           tokenPrices[token1Address]?.usd,
           tokenPrices[token2Address]?.usd,
           lPTokenBalances[lpTokenAddress].totalSupply
