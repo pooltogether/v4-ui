@@ -11,7 +11,7 @@
     "postexport": "node post-export.js",
     "dist": "yarn build",
     "export": "next export",
-    "distrelease": "export NEXT_JS_RELEASE_VERSION=$SENTRY_PROJECT:$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
+    "distrelease": "export NEXT_JS_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
     "sentryrelease": "./scripts/sentry-release.sh",
     "start": "NODE_ENV=production PORT=80 node server.js",
     "test": "jest",
