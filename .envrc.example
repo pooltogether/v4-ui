@@ -8,6 +8,10 @@ export NEXT_JS_LOCIZE_VERSION=latest
 # Optional
 # Sentry DSN
 export NEXT_JS_SENTRY_DSN=
+export NEXT_JS_SENTRY_ENV=
+export SENTRY_REPO_NAME=pooltogether/v4-ui
+export SENTRY_PROJECT=v4-ui
+export SENTRY_ORG=pooltogether
 
 # Optional
 # API keys for extra wallet support.
