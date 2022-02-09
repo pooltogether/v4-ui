@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import * as Fathom from 'fathom-client'
-import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { Provider } from 'jotai'
@@ -29,9 +27,6 @@ import '@reach/menu-button/styles.css'
 import '@reach/tooltip/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-// Carousel for Prizes
-import 'react-responsive-carousel/lib/styles/carousel.min.css'
-
 // Bottom sheet
 import 'react-spring-bottom-sheet/dist/style.css'
 import 'assets/styles/bottomSheet.css'
@@ -40,6 +35,7 @@ import 'assets/styles/bottomSheet.css'
 import 'assets/styles/gradients.css'
 import 'assets/styles/index.css'
 import 'assets/styles/tsunami.css'
+import { initSentry } from 'lib/services/initSentry'
 
 const queryClient = new QueryClient()
 
@@ -50,18 +46,8 @@ initProviderApiKeys({
   infura: process.env.NEXT_JS_INFURA_ID
 })
 
-if (process.env.NEXT_JS_SENTRY_DSN) {
-  Sentry.init({
-    dsn: process.env.NEXT_JS_SENTRY_DSN,
-    release: process.env.NEXT_JS_RELEASE_VERSION,
-    integrations: [
-      new Integrations.BrowserTracing(),
-      new Sentry.Integrations.Breadcrumbs({
-        console: false
-      })
-    ]
-  })
-}
+// Initialize Sentry error logging
+initSentry()
 
 function MyApp({ Component, pageProps, router }) {
   useEffect(() => {

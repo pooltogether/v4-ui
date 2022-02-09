@@ -1,15 +1,15 @@
-import { BottomSheet, snapTo90 } from 'lib/components/BottomSheet'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { ThemedClipSpinner, TokenIcon, CountUp } from '@pooltogether/react-components'
+import { Amount, Token } from '@pooltogether/hooks'
+import { Draw } from '@pooltogether/v4-js-client'
+
+import { BottomSheet } from 'lib/components/BottomSheet'
 import { useUsersTotalClaimedAmount } from 'lib/hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useUsersAddress } from 'lib/hooks/useUsersAddress'
-import { CountUp } from 'lib/components/CountUp'
-import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import TrophyIcon from 'assets/images/pooltogether-trophy--detailed.svg'
-import { Amount, Token } from '@pooltogether/hooks'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from 'lib/hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
-import { Draw } from '@pooltogether/v4-js-client'
 import { getTimestampString } from 'lib/utils/getTimestampString'
 
 export const TotalWinnings = () => {
@@ -163,7 +163,7 @@ const NumberOfPrizesDisclaimer = () => {
           a: (
             <a
               className='underline text-xxs hover:opacity-100'
-              href='https://v4.docs.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
+              href='https://dev.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
             ></a>
           )
         }}

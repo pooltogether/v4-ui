@@ -66,11 +66,15 @@ const getV3PrizePools = async (
     [chainId: number]: V3PrizePool[]
   } = {}
 
-  await Promise.all(
+  await Promise.allSettled(
     chainIds.map(async (chainId) => {
       const prizePoolAddresses = prizePoolAddressByChainId[chainId]
-      const prizePools = await getPrizePools(chainId, providers[chainId], prizePoolAddresses)
-      prizePoolsByChainId[chainId] = prizePools
+      try {
+        const prizePools = await getPrizePools(chainId, providers[chainId], prizePoolAddresses)
+        prizePoolsByChainId[chainId] = prizePools
+      } catch (e) {
+        console.log(e.message)
+      }
     })
   )
 
