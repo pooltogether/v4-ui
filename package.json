@@ -7,7 +7,7 @@
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "npm-run-all --parallel start:app",
     "start:app": "PORT=3000 node --max-old-space-size=8192 server.js",
-    "build": "NODE_OPTIONS=\"--max_old_space_size=16384\" next build && next export && yarn postexport",
+    "build": "NODE_OPTIONS=\"--max_old_space_size=65536\" next build && next export && yarn postexport",
     "postexport": "node post-export.js",
     "dist": "yarn build",
     "export": "next export",
