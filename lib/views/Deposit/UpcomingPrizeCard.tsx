@@ -1,6 +1,9 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { Token } from '@pooltogether/hooks'
+import { PrizeTier } from '@pooltogether/v4-js-client'
 
 import { usePrizePoolBySelectedChainId } from 'lib/hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from 'lib/hooks/v4/PrizePool/usePrizePoolTokens'
@@ -10,11 +13,7 @@ import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
 import { ViewPrizesSheetCustomTrigger } from 'lib/components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from 'lib/hooks/useUpcomingPrizeTier'
 import { Time } from 'lib/components/Time'
-import { PrizeTier } from '@pooltogether/v4-js-client'
-import { Token } from '@pooltogether/hooks'
 import { calculateTotalNumberOfPrizes } from 'lib/utils/calculateTotalNumberOfPrizes'
-import { CountUp } from 'lib/components/CountUp'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props

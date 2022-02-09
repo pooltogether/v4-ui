@@ -182,7 +182,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             components={{
               a: (
                 <a
-                  href='https://v4.docs.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
+                  href='https://docs.pooltogether.com/faq/prizes-and-winning'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-highlight-1 hover:opacity-70 transition-opacity'
