@@ -1,7 +1,7 @@
 {
-  "name": "pooltogether-skeleton-ui",
+  "name": "v4-ui",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "author": "PoolTogether Inc.",
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
@@ -12,7 +12,7 @@
     "dist": "yarn build",
     "export": "next export",
     "distrelease": "yarn dist && yarn sentryrelease",
-    "sentryrelease": "export NEXT_JS_RELEASE_VERSION=$SENTRY_PROJECT:$(sentry-cli releases propose-version) && ./scripts/sentry-release.sh",
+    "sentryrelease": "./scripts/sentry-release.sh",
     "start": "NODE_ENV=production PORT=80 node server.js",
     "test": "jest",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",

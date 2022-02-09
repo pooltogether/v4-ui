@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Assumes you're in a git repository
-export SENTRY_ORG=pooltogether
+# Set release version based on commit hash
+NEXT_JS_RELEASE_VERSION=$(sentry-cli releases propose-version)
 
 if [[ -z "$NEXT_JS_RELEASE_VERSION" ]]; then
     echo "Must provide NEXT_JS_RELEASE_VERSION in environment" 1>&2
