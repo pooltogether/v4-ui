@@ -58,6 +58,7 @@ export const ErrorLinks = () => {
     <div className='flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:space-x-8'>
       {ERROR_LINKS.map((link) => (
         <a
+          key={link.href}
           target='_blank'
           rel='noopener noreferrer'
           href={link.href}
