@@ -101,9 +101,9 @@ const StakingCardTitle = (props: StakingCardTitleProps) => {
   const { t } = useTranslation()
   return (
     <div className='flex w-full justify-between'>
-      <div className='flex items-center'>
+      <div className='flex flex-col xs:flex-row xs:items-center'>
         {tokenIcon}
-        <span className='ml-2 font-semibold text-xl'>
+        <span className='xs:ml-2 font-semibold text-sm xs:text-xl'>
           {t('stake')} {tokenLabel}
         </span>
       </div>
@@ -173,7 +173,7 @@ const ManageState = (props: ManageStateProps) => {
 const ListItem = (props: { title: string; content: React.ReactNode }) => {
   return (
     <li className='flex w-full justify-between items-center'>
-      <span className='font-bold text-lg'>{props.title}</span>
+      <span className='font-bold text-sm xs:text-lg'>{props.title}</span>
       {props.content}
     </li>
   )
@@ -185,7 +185,7 @@ const TokenAndAmount = (props: {
   amount: Amount
   isFetched?: boolean
 }) => (
-  <div className='flex space-x-2 font-bold text-lg'>
+  <div className='flex space-x-2 font-bold text-sm xs:text-lg items-center'>
     <TokenIconOrLoading chainId={props.chainId} token={props.token} isFetched={props.isFetched} />
     {props.isFetched ? (
       <>
@@ -193,7 +193,7 @@ const TokenAndAmount = (props: {
         <span>{props.token.symbol}</span>
       </>
     ) : (
-      <ThemedClipSpinner sizeClassName='w-4 h-4 opacity-50' />
+      <ThemedClipSpinner sizeClassName='w-3 h-3 xs:w-4 xs:h-4 opacity-50' />
     )}
   </div>
 )
@@ -209,7 +209,7 @@ const TokenAndVAPR = (props: {
   isTokenFaucetDataFetched: boolean
   isTokenFetched: boolean
 }) => (
-  <div className='flex space-x-2 font-bold text-lg'>
+  <div className='flex space-x-2 font-bold text-lg items-center'>
     <TokenIconOrLoading
       chainId={props.chainId}
       token={props.token}
@@ -281,9 +281,13 @@ const OpenModalButton = (props: { className?: string; onClick: () => void; label
 const TokenIconOrLoading = (props: { chainId: number; token: Token; isFetched: boolean }) => (
   <>
     {props.isFetched ? (
-      <TokenIcon chainId={props.chainId} address={props.token.address} sizeClassName='w-6 h-6' />
+      <TokenIcon
+        chainId={props.chainId}
+        address={props.token.address}
+        sizeClassName='w-4 h-4 xs:w-6 xs:h-6'
+      />
     ) : (
-      <ThemedClipSpinner sizeClassName='w-6 h-6' className='opacity-50' />
+      <ThemedClipSpinner sizeClassName='w-4 h-4 xs:w-6 xs:h-6' className='opacity-50' />
     )}
   </>
 )
@@ -293,7 +297,7 @@ const VAPROrLoading = (props: { vapr: number; isFetched: boolean }) => (
     {props.isFetched ? (
       <span>{displayPercentage(String(props.vapr))}%</span>
     ) : (
-      <ThemedClipSpinner sizeClassName='w-4 h-4 opacity-50' />
+      <ThemedClipSpinner sizeClassName='w-3 h-3 xs:w-4 xs:h-4 opacity-50' />
     )}{' '}
   </>
 )
