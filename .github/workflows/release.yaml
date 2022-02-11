@@ -2,7 +2,7 @@ name: Release
 on:
   # Triggers the workflow on push but only for the main branch
   push:
-    branches: [main]
+    branches: [ipfs]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
