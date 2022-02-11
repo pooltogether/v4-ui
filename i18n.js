@@ -6,7 +6,7 @@ import { initReactI18next } from 'react-i18next'
 import Locize from 'i18next-locize-backend/cjs'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
-const supportedLocales = ['en', 'es', 'de', 'fr', 'it', 'ko', 'pt', 'tr', 'zh']
+const supportedLocales = ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh']
 
 // NOTE: For future reference:
 // https://dev.to/adrai/how-to-properly-internationalize-a-react-application-using-i18next-3hdb
