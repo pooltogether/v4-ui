@@ -57,16 +57,19 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
   }
 
   const showPrizeOrNoPrize = () => {
-    setCurrentVideoState(VideoState.transition)
-
-    if (!didUserWinAPrize) {
-      setCurrentVideoClip(VideoClip.noPrize)
-      c1.current.play()
-      c2.current.load()
-    } else {
-      setCurrentVideoClip(VideoClip.prize)
-      d1.current.play()
-      d2.current.load()
+    try {
+      setCurrentVideoState(VideoState.transition)
+      if (!didUserWinAPrize) {
+        setCurrentVideoClip(VideoClip.noPrize)
+        c1.current.play()
+        c2.current.load()
+      } else {
+        setCurrentVideoClip(VideoClip.prize)
+        d1.current.play()
+        d2.current.load()
+      }
+    } catch (e) {
+      console.log(e.message)
     }
   }
 
@@ -107,13 +110,17 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b1.current.load()
         }}
         onEnded={() => {
-          if (checkedState !== CheckedState.unchecked) {
-            b1.current.play()
-            b2.current.load()
-            setCurrentVideoClip(VideoClip.reveal)
-            setCurrentVideoState(VideoState.transition)
-          } else {
-            a2.current.play()
+          try {
+            if (checkedState !== CheckedState.unchecked) {
+              b1.current.play()
+              b2.current.load()
+              setCurrentVideoClip(VideoClip.reveal)
+              setCurrentVideoState(VideoState.transition)
+            } else {
+              a2.current.play()
+            }
+          } catch (e) {
+            console.log(e.message)
           }
         }}
       >
@@ -137,10 +144,14 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
           b2.current.load()
         }}
         onEnded={() => {
-          setCurrentVideoState(VideoState.loop)
-          b2.current.play()
-          c1.current.load()
-          d1.current.load()
+          try {
+            setCurrentVideoState(VideoState.loop)
+            b2.current.play()
+            c1.current.load()
+            d1.current.load()
+          } catch (e) {
+            console.log(e.message)
+          }
         }}
       >
         <source
@@ -161,10 +172,14 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         playsInline
         muted
         onEnded={() => {
-          if (checkedState === CheckedState.checking && didUserWinAPrize === undefined) {
-            b2.current.play()
-          } else {
-            showPrizeOrNoPrize()
+          try {
+            if (checkedState === CheckedState.checking && didUserWinAPrize === undefined) {
+              b2.current.play()
+            } else {
+              showPrizeOrNoPrize()
+            }
+          } catch (e) {
+            console.log(e.message)
           }
         }}
       >
@@ -186,8 +201,12 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         muted
         onPlay={() => setCheckedAnimationFinished()}
         onEnded={() => {
-          setCurrentVideoState(VideoState.loop)
-          c2.current.play()
+          try {
+            setCurrentVideoState(VideoState.loop)
+            c2.current.play()
+          } catch (e) {
+            console.log(e.message)
+          }
         }}
       >
         <source
@@ -208,7 +227,11 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         playsInline
         muted
         onEnded={() => {
-          c2.current.play()
+          try {
+            c2.current.play()
+          } catch (e) {
+            console.log(e.message)
+          }
         }}
       >
         <source
@@ -232,8 +255,12 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         muted
         onPlay={() => setCheckedAnimationFinished()}
         onEnded={() => {
-          setCurrentVideoState(VideoState.loop)
-          d2.current.play()
+          try {
+            setCurrentVideoState(VideoState.loop)
+            d2.current.play()
+          } catch (e) {
+            console.log(e.message)
+          }
         }}
       >
         <source
@@ -254,7 +281,11 @@ export const PrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
         playsInline
         muted
         onEnded={() => {
-          d2.current.play()
+          try {
+            d2.current.play()
+          } catch (e) {
+            console.log(e.message)
+          }
         }}
       >
         <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')} type='video/webm' />

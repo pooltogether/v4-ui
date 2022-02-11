@@ -33,10 +33,14 @@ export function CustomErrorBoundary (props) {
     return (
       <>
         <Sentry.ErrorBoundary
+          onError={(error) => {
+            const chunkFailedMessage = /Loading chunk [\d]+ failed/
+            if (chunkFailedMessage.test(error.message)) {
+              window.location.reload()
+            }
+          }}
           beforeCapture={(scope) => {
-            console.log(scope)
             scope.setTag('web3', walletName)
-            console.log(walletName)
 
             scope.setContext('wallet', {
               name: walletName

@@ -9,7 +9,9 @@ export const useUnclaimedDrawIds = (usersAddress: string, prizeDistributor: Priz
     ...useQueryResponse
   } = useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
 
-  if (!isFetched) return { data: null, isFetched, ...useQueryResponse }
+  if (!isFetched || !unclaimedDrawDatas?.[usersAddress]) {
+    return { data: null, isFetched, ...useQueryResponse }
+  }
 
   const drawDatas = unclaimedDrawDatas[usersAddress]
   const drawIds = drawDatas ? Object.keys(drawDatas).map(Number) : null

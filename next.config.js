@@ -17,6 +17,7 @@ const nextConfig = {
     strictPostcssConfiguration: true
   },
   compress: false,
+  productionBrowserSourceMaps: true,
   inlineImageLimit: 48, // make it tiny so that it doesn't inline,
   typescript: {
     // !! WARN !!

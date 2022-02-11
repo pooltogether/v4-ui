@@ -10,7 +10,7 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
@@ -32,6 +32,7 @@ import { ModalLoadingGate } from 'lib/views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from 'lib/views/DepositLowAmountWarning'
 import { addDays } from 'lib/utils/date'
 import { getTimestampString } from 'lib/utils/getTimestampString'
+import { EstimatedAPRItem } from 'lib/components/InfoList/EstimatedAPRItem'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -175,6 +176,21 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     >
       <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
       <div className='w-full mx-auto mt-8 space-y-8'>
+        <p className='text-center text-xs'>
+          <Trans
+            i18nKey='checkDailyForMoreInfoSeeHere'
+            components={{
+              a: (
+                <a
+                  href='https://docs.pooltogether.com/faq/prizes-and-winning'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-highlight-1 hover:opacity-70 transition-opacity'
+                />
+              )
+            }}
+          />
+        </p>
         <AmountBeingSwapped
           title={t('depositTicker', { ticker: token.symbol })}
           chainId={chainId}
@@ -190,13 +206,11 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
 
             <ModalInfoList>
               {prizePool && (
-                <UpdatedOdds
-                  amount={amountToDeposit}
-                  prizePool={prizePool}
-                  action={EstimateAction.deposit}
-                />
+                <>
+                  <EstimatedAPRItem chainId={prizePool.chainId} />
+                  <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
+                </>
               )}
-              <AmountToRecieve amount={amountToDeposit} ticket={ticket} />
               <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
             </ModalInfoList>
           </>
@@ -221,20 +235,12 @@ const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
   const { t } = useTranslation()
   return (
     <InfoListItem
-      label={
-        <>
-          <Tooltip
-            id={`tooltip-ticket-representes-${ticket.address}`}
-            tip={t(
-              'ticketRepresentsChanceToWin',
-              'The {{ticket}} token represents your chance to win.',
-              { ticket: ticket.symbol }
-            )}
-          >
-            {t('tickerToReceive', { ticker: ticket.symbol })}
-          </Tooltip>
-        </>
-      }
+      labelToolTip={t(
+        'ticketRepresentsChanceToWin',
+        'The {{ticket}} token represents your chance to win.',
+        { ticket: ticket.symbol }
+      )}
+      label={t('tickerToReceive', { ticker: ticket.symbol })}
       value={amount.amountPretty}
     />
   )

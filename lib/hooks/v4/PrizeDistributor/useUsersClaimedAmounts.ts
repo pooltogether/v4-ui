@@ -4,7 +4,6 @@ import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from 'lib/constants/query'
 import { roundPrizeAmount } from 'lib/utils/roundPrizeAmount'
-import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
 import { useValidDrawIds } from './useValidDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
 

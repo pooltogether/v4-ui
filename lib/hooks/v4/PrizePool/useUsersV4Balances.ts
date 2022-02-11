@@ -39,7 +39,7 @@ export const useUsersV4Balances = (usersAddress: string) => {
   return useMemo(() => {
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
     const isFetching = queryResults.some((queryResult) => queryResult.isFetching)
-    const data = queryResults.map((queryResult) => queryResult.data)
+    const data = queryResults.map((queryResult) => queryResult.data).filter(Boolean)
     const totalValueUsdScaled = getTotalValueUsdScaled(data)
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
     const refetch = () => queryResults.map((queryResult) => queryResult.refetch())

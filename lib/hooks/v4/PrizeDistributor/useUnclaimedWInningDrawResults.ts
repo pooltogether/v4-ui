@@ -3,7 +3,14 @@ import { useMemo } from 'react'
 
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
+import { useValidDrawIds } from './useValidDrawIds'
 
+/**
+ * Returns a users unclaimed winning draw results for valid draw ids
+ * @param usersAddress
+ * @param prizeDistributor
+ * @returns
+ */
 export const useUsersUnclaimedWinningDrawResults = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
@@ -15,6 +22,7 @@ export const useUsersUnclaimedWinningDrawResults = (
   }
   isFetched: boolean
 } => {
+  const { data: drawIdData, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
     usersAddress,
     prizeDistributor
@@ -27,21 +35,27 @@ export const useUsersUnclaimedWinningDrawResults = (
       !usersAddress ||
       !prizeDistributor ||
       !isClaimedAmountsFetched ||
-      usersAddress !== claimedAmountsData?.usersAddress
+      !isDrawIdsFetched ||
+      usersAddress !== claimedAmountsData?.usersAddress ||
+      drawIdData.prizeDistributorId !== prizeDistributor.id()
     ) {
       return { data: null, isFetched: false }
     }
     const claimedAmounts = claimedAmountsData.claimedAmounts
     const unclaimedWinningDrawResults: { [drawId: number]: DrawResults } = {}
-    Object.keys(drawResults)
-      .map(Number)
-      .forEach((drawId) => {
-        const claimedAmount = claimedAmounts[drawId]
-        const drawResult = drawResults[drawId]
-        if (claimedAmount.amountUnformatted.isZero() && !drawResult.totalValue.isZero()) {
-          unclaimedWinningDrawResults[drawId] = drawResult
-        }
-      })
+    drawIdData.drawIds.forEach((drawId) => {
+      const claimedAmount = claimedAmounts[drawId]
+      const drawResult = drawResults[drawId]
+      // Locked draws will be returned in claimed amount but not draw result since we block checking in the UI until the timelock finishes
+      if (
+        claimedAmount &&
+        drawResult &&
+        claimedAmount.amountUnformatted.isZero() &&
+        !drawResult.totalValue.isZero()
+      ) {
+        unclaimedWinningDrawResults[drawId] = drawResult
+      }
+    })
     return {
       data: { [usersAddress]: unclaimedWinningDrawResults },
       isFetched: true

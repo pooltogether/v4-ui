@@ -6,16 +6,16 @@ import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { Meta } from 'lib/components/Meta'
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx) {
+  static async getInitialProps (ctx) {
     const initialProps = await Document.getInitialProps(ctx)
     return { ...initialProps }
   }
 
-  render() {
+  render () {
     const title = 'PoolTogether - v4'
     const url = `https://pooltogether.com`
-    const description = `A new way for more winners to to pool and save with their friends.`
-    const keywords = 'ethereum polygon bsc binance'
+    const description = `A new way to save money and have a chance to win every week.`
+    const keywords = 'ethereum polygon avalanche prize savings win save protocol'
     const twitterHandle = '@PoolTogether_'
 
     return (
