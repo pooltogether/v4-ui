@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { DISCORD_INVITE_URL } from '../constants/constants'
 
-export function ErrorPage() {
+export function ErrorPage () {
   const { t } = useTranslation()
 
   return (
@@ -18,7 +18,7 @@ export function ErrorPage() {
         <div className='content mx-auto'>
           <div className='my-0 text-inverse pt-32 px-2 xs:pt-32 space-y-4'>
             <h1 className=''>👋</h1>
-            <h2 className=''>{t('anErrorOccurredAndWeveBeenNotified')}</h2>
+            <h4 className=''>{t('anErrorOccurredAndWeveBeenNotified')}</h4>
             <h6 className='text-accent-1'>{t('pleaseTryAgainSoon')}</h6>
             <ErrorLinks />
           </div>
