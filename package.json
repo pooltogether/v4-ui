@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^11.0.1",
+    "@sentry/cli": "^1.72.2",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
@@ -45,8 +46,7 @@
     "jest": "^27.0.6",
     "nock": "^13.1.1",
     "npm-run-all": "^4.1.5",
-    "typescript": "^4.4.4",
-    "@sentry/cli": "^1.72.2"
+    "typescript": "^4.4.4"
   },
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.14.5",
@@ -57,7 +57,7 @@
     "@pooltogether/evm-chains-extended": "^0.6.4-beta.1",
     "@pooltogether/hooks": "^1.5.1",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "^1.6.29",
+    "@pooltogether/react-components": "^1.6.30",
     "@pooltogether/utilities": "^0.3.8",
     "@pooltogether/v4-js-client": "^0.9.7",
     "@pooltogether/v4-pool-data": "^1.6.0",
