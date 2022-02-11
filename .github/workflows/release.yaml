@@ -52,11 +52,11 @@ jobs:
           web3_token: ${{ secrets.WEB3_STORAGE_TOKEN }}
           path_to_add: 'out'
 
-          # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-          - run: echo ${{ steps.web3.outputs.cid }}
+      # "bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+      - run: echo ${{ steps.web3.outputs.cid }}
 
-          # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
-          - run: echo ${{ steps.web3.outputs.url }}
+      # "https://dweb.link/ipfs/bafkreicysg23kiwv34eg2d7qweipxwosdo2py4ldv42nbauguluen5v6am"
+      - run: echo ${{ steps.web3.outputs.url }}
 
       # - name: Pin to IPFS
       #   id: upload
