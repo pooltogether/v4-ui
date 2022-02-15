@@ -5,51 +5,29 @@
   "author": "PoolTogether Inc.",
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
-    "dev": "npm-run-all --parallel start:app",
-    "start:app": "PORT=3000 node --max-old-space-size=8192 server.js",
-    "build": "NODE_OPTIONS=\"--max_old_space_size=65536\" next build && next export && yarn postexport",
+    "dev": "next dev",
+    "build": "next build && next export && yarn postexport",
     "postexport": "node post-export.js",
     "dist": "yarn build",
     "export": "next export",
-    "distrelease": "export NEXT_JS_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
+    "distrelease": "export NEXT_PUBLIC_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
     "sentryrelease": "./scripts/sentry-release.sh",
-    "start": "NODE_ENV=production PORT=80 node server.js",
+    "start": "yarn start",
     "test": "jest",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
     "watch": "yarn run test --watch"
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "lib/**/*.{ts,js}"
-    ],
-    "coverageReporters": [
-      "text",
-      "html"
-    ],
-    "moduleNameMapper": {
-      "^lib/(.*)$": "<rootDir>/lib/$1",
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      "\\.(css|less)$": "identity-obj-proxy"
-    },
-    "verbose": true
-  },
   "devDependencies": {
-    "@next/bundle-analyzer": "^11.0.1",
     "@sentry/cli": "^1.72.2",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
-    "babel-jest": "^27.0.6",
-    "colors": "^1.4.0",
-    "csvtojson": "^2.0.10",
-    "express": "^4.17.1",
-    "jest": "^27.0.6",
-    "nock": "^13.1.1",
-    "npm-run-all": "^4.1.5",
+    "jest": "^27.5.1",
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@babel/plugin-transform-react-jsx": "^7.14.5",
     "@pooltogether/bnc-onboard": "1.36.0-b",
     "@pooltogether/bnc-onboard-hooks": "^1.1.1",
     "@pooltogether/current-pool-data": "^3.7.2",
@@ -86,9 +64,9 @@
     "js-cookie": "^3.0.0",
     "lodash": "^4.17.21",
     "lodash.clonedeep": "^4.5.0",
-    "next": "^10.2.3",
-    "next-images": "^1.8.1",
+    "next": "12",
     "ordinal": "^1.0.3",
+    "postcss": "^8.4.6",
     "postcss-custom-properties-fallback": "^1.0.1",
     "postcss-easy-import": "^3.0.0",
     "react": "17.0.2",
@@ -102,7 +80,6 @@
     "react-spring-bottom-sheet": "^3.4.0",
     "react-toastify": "^7.0.4",
     "react-tooltip": "^4.2.21",
-    "tailwindcss": "^2.2.19",
-    "webpack": "5.47.0"
+    "tailwindcss": "^2.2.19"
   }
 }
