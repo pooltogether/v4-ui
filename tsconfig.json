@@ -21,7 +21,7 @@
       "@constants/*": ["./src/constants/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@pages/*": ["./src/pages/*"],
-      "@interfaces/*": ["src/interfaces/*"],
+      "@interfaces/*": ["./src/interfaces/*"],
       "@utils/*": ["./src/utils/*"],
       "@views/*": ["./src/views/*"]
     }
