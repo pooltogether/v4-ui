@@ -15,11 +15,15 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
-      "@src/*": ["./src/*"],
+      "@abis/*": ["./src/abis/*"],
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
+      "@constants/*": ["./src/constants/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@abis/*": ["./src/abis/*"]
+      "@pages/*": ["./src/pages/*"],
+      "@interfaces/*": ["src/interfaces/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@views/*": ["./src/views/*"]
     }
   },
   "include": ["src", "next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],

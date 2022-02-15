@@ -1,6 +1,6 @@
 import { Amount, Token } from '@pooltogether/hooks'
 
-import { TokenSymbolAndIcon } from '@src/components/TokenSymbolAndIcon'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 
 interface AmountToReceiveProps {
   chainId: number

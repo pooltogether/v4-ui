@@ -1,4 +1,4 @@
-import { useSelectedChainId } from '@src/hooks/useSelectedChainId'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolByChainId } from '../PrizePool/usePrizePoolByChainId'
 import { useUser } from './useUser'
 

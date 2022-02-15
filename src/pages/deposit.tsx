@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Layout from '@src/components/Layout'
-import { DepositUI } from '@src/views/Deposit'
+import Layout from '@components/Layout'
+import { DepositUI } from '@views/Deposit'
 
 export default function IndexPage(props) {
   return (

@@ -5,12 +5,12 @@ import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
 import { DrawResults, PrizeAwardable } from '@pooltogether/v4-js-client'
 
-import { TokenSymbolAndIcon } from '@src/components/TokenSymbolAndIcon'
-import { roundPrizeAmount } from '@src/utils/roundPrizeAmount'
-import { sortByBigNumber } from '@src/utils/sortByBigNumber'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import { sortByBigNumber } from '@utils/sortByBigNumber'
 import classNames from 'classnames'
-import { DrawData } from '@src/types/v4'
-import { getTimestampStringWithTime } from '@src/utils/getTimestampString'
+import { DrawData } from '@interfaces/v4'
+import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import React from 'react'
 
 interface PrizeListProps

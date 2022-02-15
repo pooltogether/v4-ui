@@ -4,7 +4,7 @@ import { useAddNetworkToMetamask } from '@pooltogether/hooks'
 import { SquareButton } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-import { useIsWalletMetamask } from '@src/hooks/useIsWalletMetamask'
+import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 
 interface ModalNetworkGateProps {
   className?: string

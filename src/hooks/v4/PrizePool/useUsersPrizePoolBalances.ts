@@ -4,8 +4,8 @@ import { formatUnits } from '@ethersproject/units'
 import { amountMultByUsd, numberWithCommas, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { PrizePoolTokens, usePrizePoolTokens } from '@src/hooks/v4/PrizePool/usePrizePoolTokens'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { PrizePoolTokens, usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenWithUsdBalance

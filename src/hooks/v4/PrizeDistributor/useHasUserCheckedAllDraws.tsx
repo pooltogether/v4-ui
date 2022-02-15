@@ -1,7 +1,7 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useMemo } from 'react'
 
-import { getStoredDrawResults } from '@src/utils/drawResultsStorage'
+import { getStoredDrawResults } from '@utils/drawResultsStorage'
 import { useUnclaimedDrawIds } from './useUnclaimedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'

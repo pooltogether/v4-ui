@@ -6,20 +6,20 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { User, PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
-import { InfoList } from '@src/components/InfoList'
-import { TxReceiptItem } from '@src/components/InfoList/TxReceiptItem'
-import { useUsersDepositAllowance } from '@src/hooks/v4/PrizePool/useUsersDepositAllowance'
-import { TxButtonInFlight } from '@src/components/Input/TxButtonInFlight'
+import { InfoList } from '@components/InfoList'
+import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
+import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
+import { TxButtonInFlight } from '@components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,
   EstimatedDepositGasItem
-} from '@src/components/InfoList/EstimatedGasItem'
-import { ConnectWalletButton } from '@src/components/ConnectWalletButton'
-import { InfoListItem } from '@src/components/InfoList'
-import { DepositAmountInput } from '@src/components/Input/DepositAmountInput'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+} from '@components/InfoList/EstimatedGasItem'
+import { ConnectWalletButton } from '@components/ConnectWalletButton'
+import { InfoListItem } from '@components/InfoList'
+import { DepositAmountInput } from '@components/Input/DepositAmountInput'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 import { BigNumber } from '@ethersproject/bignumber'
-import { EstimatedAPRItem } from '@src/components/InfoList/EstimatedAPRItem'
+import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 

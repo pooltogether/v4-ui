@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-import { ModalTitle } from '@src/components/Modal/ModalTitle'
-import { CHAIN_ID } from '@src/constants'
-import { getBridgeUrls } from '@src/constants/config'
+import { ModalTitle } from '@components/Modal/ModalTitle'
+import { CHAIN_ID } from '@constants'
+import { getBridgeUrls } from '@constants/config'
 
 interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

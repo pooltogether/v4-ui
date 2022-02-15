@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'

@@ -1,7 +1,7 @@
 import { Token } from '@pooltogether/hooks'
 
-import { useUpcomingPrizeTier } from '@src/hooks/useUpcomingPrizeTier'
-import { getAmountFromString } from '@src/utils/getAmountFromString'
+import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { getAmountFromString } from '@utils/getAmountFromString'
 
 /**
  * Brendan promised that the bit range size would be consistent.

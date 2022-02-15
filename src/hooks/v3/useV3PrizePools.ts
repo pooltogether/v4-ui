@@ -9,9 +9,9 @@ import Erc20Abi from '@abis/ERC20'
 import PrizePoolAbi from '@abis/V3_PrizePool'
 import PodAbi from '@abis/V3_Pod'
 import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
-import { NO_REFETCH } from '@src/constants/query'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
-import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@src/constants/v3'
+import { NO_REFETCH } from '@constants/query'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 
 export interface PodToken extends Token {
   pricePerShare: Amount

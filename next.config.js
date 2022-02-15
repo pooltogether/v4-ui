@@ -35,11 +35,15 @@ const nextConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@src': path.resolve(__dirname, './src'),
-      '@components': path.resolve(__dirname, './src/components'),
-      '@hooks': path.resolve(__dirname, './src/hooks'),
-      '@assets': path.resolve(__dirname, './src/assets'),
       '@abis': path.resolve(__dirname, './src/abis'),
+      '@assets': path.resolve(__dirname, './src/assets'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@constants': path.resolve(__dirname, './src/constants'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@interfaces': path.resolve(__dirname, './src/interfaces'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@views': path.resolve(__dirname, './src/views'),
     };
 
     config.module.rules = [

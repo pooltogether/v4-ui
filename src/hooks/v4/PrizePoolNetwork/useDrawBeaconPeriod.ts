@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { sToMs } from '@pooltogether/utilities'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { usePrizePoolNetwork } from './usePrizePoolNetwork'

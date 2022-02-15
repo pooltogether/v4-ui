@@ -5,7 +5,7 @@ import { useQuery } from 'react-query'
 
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 
 export interface DrawLock {
   endTimeSeconds: BigNumber

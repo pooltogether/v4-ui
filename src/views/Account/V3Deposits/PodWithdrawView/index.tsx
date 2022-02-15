@@ -9,11 +9,11 @@ import { parseUnits } from '@ethersproject/units'
 import PodAbi from '@abis/V3_Pod'
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
-import { ModalNetworkGate } from '@src/components/Modal/ModalNetworkGate'
-import { useIsWalletOnNetwork } from '@src/hooks/useIsWalletOnNetwork'
-import { useSendTransaction } from '@src/hooks/useSendTransaction'
-import { usePodExitFee } from '@src/hooks/v3/usePodExitFee'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
+import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { usePodExitFee } from '@hooks/v3/usePodExitFee'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export enum WithdrawalSteps {
   input,

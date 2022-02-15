@@ -7,7 +7,7 @@ import {
   overrideToolTipPosition
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { useIsWalletOnNetwork } from '@src/hooks/useIsWalletOnNetwork'
+import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 
 export interface TxButtonNetworkGatedProps extends SquareButtonProps {
   chainId: number

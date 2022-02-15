@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
 import { BigNumber } from 'ethers'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
-import { POOL_PRIZE_POOL_ADDRESSES } from '@src/constants/v3'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
-import { CHAIN_ID } from '@src/constants'
+import { CHAIN_ID } from '@constants'
 
 /**
  * Returns a users POOL Pool balances.

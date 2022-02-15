@@ -3,11 +3,11 @@ import FeatherIcon from 'feather-icons-react'
 import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-import { useSelectedChainId } from '@src/hooks/useSelectedChainId'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { BottomSheet } from './BottomSheet'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useV4ChainIds } from '@src/hooks/useV4ChainIds'
+import { useV4ChainIds } from '@hooks/useV4ChainIds'
 
 interface SelectAppChainIdModalProps {
   className?: string

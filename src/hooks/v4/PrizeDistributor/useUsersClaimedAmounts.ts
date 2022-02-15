@@ -2,8 +2,8 @@ import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@src/constants/query'
-import { roundPrizeAmount } from '@src/utils/roundPrizeAmount'
+import { NO_REFETCH } from '@constants/query'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { useValidDrawIds } from './useValidDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
 

@@ -8,15 +8,15 @@ import { useTranslation } from 'react-i18next'
 
 import { LoadingCard } from './LoadingCard'
 import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
-import { useLockedPartialDrawDatas } from '@src/hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
+import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
-import { DrawData } from '@src/types/v4'
+import { DrawData } from '../../../interfaces/v4'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
-import { useTimeUntil } from '@src/hooks/useTimeUntil'
-import { useDrawLocks } from '@src/hooks/v4/PrizeDistributor/useDrawLocks'
-import { usePropagatingDraws } from '@src/hooks/v4/PrizeDistributor/usePropagatingDraws'
-import { Time } from '@src/components/Time'
+import { useTimeUntil } from '@hooks/useTimeUntil'
+import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
+import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDraws'
+import { Time } from '@components/Time'
 
 export const LockedDrawsCard = (props: {
   prizeDistributor: PrizeDistributor

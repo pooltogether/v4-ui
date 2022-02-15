@@ -1,4 +1,4 @@
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { usePrizePools } from './usePrizePools'
 import {

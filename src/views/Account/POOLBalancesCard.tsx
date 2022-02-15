@@ -5,14 +5,14 @@ import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 
-import { LoadingList } from '@src/components/PrizePoolDepositList/LoadingList'
-import { SwapTokensModalTrigger } from '@src/components/Modal/SwapTokensModal'
-import { CardTitle } from '@src/components/Text/CardTitle'
-import { CHAIN_ID } from '@src/constants'
-import { POOL_ADDRESSES } from '@src/constants/v3'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
-import { useUsersV3POOLTokenBalances } from '@src/hooks/v3/useUsersV3POOLTokenBalances'
-import { PrizePoolDepositList } from '@src/components/PrizePoolDepositList'
+import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
+import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
+import { CardTitle } from '@components/Text/CardTitle'
+import { CHAIN_ID } from '@constants'
+import { POOL_ADDRESSES } from '@constants/v3'
+import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersV3POOLTokenBalances } from '@hooks/v3/useUsersV3POOLTokenBalances'
+import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 
 export const POOLBalancesCard = () => {
   const { t } = useTranslation()

@@ -6,8 +6,8 @@ import { useQuery } from 'react-query'
 import PodAbi from '@abis/V3_Pod'
 import Erc20Abi from '@abis/ERC20'
 import { batch, contract } from '@pooltogether/etherplex'
-import { NO_REFETCH } from '@src/constants/query'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { NO_REFETCH } from '@constants/query'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export const usePodExitFee = (
   chainId: number,

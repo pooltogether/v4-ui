@@ -1,4 +1,4 @@
-import { useSelectedChainId } from '@src/hooks/useSelectedChainId'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizeDistributorByChainId } from './usePrizeDistributorByChainId'
 
 export const usePrizeDistributorBySelectedChainId = () => {

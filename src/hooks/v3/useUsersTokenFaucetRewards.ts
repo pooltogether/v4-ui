@@ -5,10 +5,10 @@ import { batch, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
 
 import TokenFaucetAbi from '@abis/TokenFaucet'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useTokenFaucetData } from './useTokenFaucetData'
 import { V3PrizePool } from './useV3PrizePools'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 
 export const useUsersTokenFaucetRewards = (
   chainId: number,

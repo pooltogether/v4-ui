@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { LoadingLogo } from '@pooltogether/react-components'
 
-import { PageHeader } from '@src/components/Layout/PageHeader'
-import { useInitialLoad } from '@src/hooks/useInitialLoad'
+import { PageHeader } from '@components/Layout/PageHeader'
+import { useInitialLoad } from '@hooks/useInitialLoad'
 import { BottomNavigation } from './Navigation'
 
 interface LayoutProps {

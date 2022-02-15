@@ -1,7 +1,7 @@
 import { Draw } from '@pooltogether/v4-js-client'
 
-import { getTimestampStringWithTime } from '@src/utils/getTimestampString'
-import { sortDrawsByDrawIdAsc } from '@src/utils/sortByDrawId'
+import { getTimestampStringWithTime } from '@utils/getTimestampString'
+import { sortDrawsByDrawIdAsc } from '@utils/sortByDrawId'
 
 export const MultipleDrawsDate = (props: {
   partialDrawDatas: { [drawId: number]: { draw: Draw } }

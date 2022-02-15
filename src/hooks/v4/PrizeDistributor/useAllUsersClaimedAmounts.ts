@@ -1,5 +1,5 @@
 import { Amount, Token } from '@pooltogether/hooks'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './useAllValidDrawIds'

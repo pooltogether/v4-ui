@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 
-import { InfoListHeader, InfoListItem } from '@src/components/InfoList'
-import { useChainNativeCurrency } from '@src/hooks/useChainNativeCurrency'
+import { InfoListHeader, InfoListItem } from '@components/InfoList'
+import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
 
 interface EstimatedGasItemProps {
   chainId: number

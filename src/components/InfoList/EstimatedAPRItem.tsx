@@ -5,8 +5,8 @@ import { Amount } from '@pooltogether/hooks'
 import { NO_REFETCH } from '@pooltogether/hooks/dist/constants'
 
 import { InfoListItem } from '.'
-import { useUpcomingPrizeTier } from '@src/hooks/useUpcomingPrizeTier'
-import { usePrizePoolNetworkTicketTotalSupply } from '@src/hooks/v4/PrizePool/usePrizePoolNetworkTicketTotalSupply'
+import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolNetworkTicketTotalSupply'
 
 interface EstimatedAPRItemProps {
   chainId: number

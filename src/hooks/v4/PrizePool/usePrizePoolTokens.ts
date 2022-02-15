@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export interface PrizePoolTokens {

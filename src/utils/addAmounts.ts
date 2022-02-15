@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export const addAmounts = (a: Amount, b: Amount, decimals: string) => {
   const total = a.amountUnformatted.add(b.amountUnformatted)

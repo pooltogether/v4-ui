@@ -6,11 +6,11 @@ import { ethers } from 'ethers'
 import { User } from '@pooltogether/v4-js-client'
 import { Amount } from '@pooltogether/hooks'
 
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@src/hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 import { TotalWinnings } from './TotalWinnings'
-import { useUsersTotalBalances } from '@src/hooks/useUsersTotalBalances'
-import { EstimateAction } from '@src/hooks/v4/useEstimatedOddsForAmount'
+import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
+import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
 
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 

@@ -1,16 +1,16 @@
 import React from 'react'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
-import { PagePadding } from '@src/components/Layout/PagePadding'
-import { ConnectWalletCard } from '@src/components/ConnectWalletCard'
-import { AccountCard } from '@src/views/Account/AccountCard'
-import { XDollarsGetsYou } from '@src/components/XDollarsGetsYou'
+import { PagePadding } from '@components/Layout/PagePadding'
+import { ConnectWalletCard } from '@components/ConnectWalletCard'
+import { AccountCard } from '@views/Account/AccountCard'
+import { XDollarsGetsYou } from '@components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
-import { useSelectedChainIdUser } from '@src/hooks/v4/User/useSelectedChainIdUser'
+import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()

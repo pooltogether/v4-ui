@@ -13,9 +13,9 @@ import { formatUnits } from '@ethersproject/units'
 
 import TokenFaucetAbi from '@abis/TokenFaucet'
 import Erc20Abi from '@abis/ERC20'
-import { SECONDS_PER_DAY } from '@src/constants'
+import { SECONDS_PER_DAY } from '@constants'
 import { V3PrizePool } from './useV3PrizePools'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 
 export const useTokenFaucetData = (
   chainId: number,

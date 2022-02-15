@@ -5,8 +5,8 @@ import { displayPercentage } from '@pooltogether/utilities'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { VAPRTooltip } from '@src/components/VAPRTooltip'
-import { V3PrizePoolBalances } from '@src/hooks/v3/useAllUsersV3Balances'
+import { VAPRTooltip } from '@components/VAPRTooltip'
+import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { StakingBottomSheet } from './StakingBottomSheet'
 import classNames from 'classnames'
 

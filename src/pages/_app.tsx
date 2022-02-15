@@ -17,11 +17,11 @@ import {
 import type { AppProps } from 'next/app'
 
 import '../../i18n'
-import { CUSTOM_WALLETS_CONFIG } from '@src/customWalletsConfig'
-import { AllContextProviders } from '@src/components/contextProviders/AllContextProviders'
-import { CustomErrorBoundary } from '@src/components/CustomErrorBoundary'
-import { useSelectedChainIdWatcher } from '@src/hooks/useSelectedChainId'
-import { sentryLog } from '@src/services/sentryLog'
+import { CUSTOM_WALLETS_CONFIG } from '@constants/customWalletsConfig'
+import { AllContextProviders } from '@components/contextProviders/AllContextProviders'
+import { CustomErrorBoundary } from '@components/CustomErrorBoundary'
+import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
+import { sentryLog } from '@utils/services/sentryLog'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -36,7 +36,7 @@ import '@assets/styles/bottomSheet.css'
 import '@assets/styles/gradients.css'
 import '@assets/styles/index.css'
 import '@assets/styles/tsunami.css'
-import { initSentry } from '@src/services/initSentry'
+import { initSentry } from '@utils/services/initSentry'
 
 const queryClient = new QueryClient()
 

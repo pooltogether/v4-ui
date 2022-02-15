@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 
 export const PRIZE_DISTRIBUTOR_TOKEN_QUERY_KEY = 'usePrizeDistributorToken'

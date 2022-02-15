@@ -1,4 +1,4 @@
-import { ErrorLinks } from '@src/views/ErrorPage'
+import { ErrorLinks } from '@views/ErrorPage'
 import { useTranslation } from 'react-i18next'
 
 const Custom404 = () => {

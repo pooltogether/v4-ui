@@ -13,14 +13,14 @@ import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4
 import { useTranslation } from 'react-i18next'
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 
-import { usePrizePoolTokens } from '@src/hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 import { PrizeClaimSheet } from './PrizeClaimSheet'
-import { DrawData } from '@src/types/v4'
+import { DrawData } from '../../../interfaces/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
-import { useUsersUnclaimedDrawDatas } from '@src/hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
+import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import {
   drawIdsToNotClaimAtom,
@@ -28,11 +28,11 @@ import {
   getStoredDrawResults,
   StoredDrawResults,
   updateDrawResults
-} from '@src/utils/drawResultsStorage'
+} from '@utils/drawResultsStorage'
 import { useAtom } from 'jotai'
-import { useHasUserCheckedAllDraws } from '@src/hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
+import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
-import { useUsersUnclaimedWinningDrawResults } from '@src/hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor

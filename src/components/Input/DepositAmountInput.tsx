@@ -4,10 +4,10 @@ import { PrizePool } from '@pooltogether/v4-js-client'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { useMinimumDepositAmount } from '@src/hooks/v4/PrizePool/useMinimumDepositAmount'
-import { usePrizePoolTokens } from '@src/hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersPrizePoolBalances } from '@src/hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 
 interface DepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>

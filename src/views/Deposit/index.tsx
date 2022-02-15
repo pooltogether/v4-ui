@@ -1,8 +1,8 @@
 import React from 'react'
 import { Trans } from 'react-i18next'
 
-import { DepositCard } from '@src/views/Deposit/DepositCard'
-import { PagePadding } from '@src/components/Layout/PagePadding'
+import { DepositCard } from '@views/Deposit/DepositCard'
+import { PagePadding } from '@components/Layout/PagePadding'
 import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 
 export const DepositUI = () => {

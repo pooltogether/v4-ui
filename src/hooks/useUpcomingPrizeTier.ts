@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useDrawBeaconPeriod } from './v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizePoolNetwork } from './v4/PrizePoolNetwork/usePrizePoolNetwork'
 

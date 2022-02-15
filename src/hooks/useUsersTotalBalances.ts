@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { useUsersAddress } from '@hooks/useUsersAddress'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useUsersV4Balances } from './v4/PrizePool/useUsersV4Balances'
-import { useUsersV3PrizePoolBalances } from '@src/hooks/v3/useUsersV3PrizePoolBalances'
+import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
 

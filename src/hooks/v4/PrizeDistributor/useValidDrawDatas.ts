@@ -1,10 +1,11 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { NO_REFETCH } from '@src/constants/query'
-import { DrawData } from '@src/types/v4'
+
+import { DrawData } from '../../../interfaces/v4'
 import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDraws } from './useValidDraws'
 import { useValidPrizeDistributions } from './useValidPrizeDistributions'
+import { NO_REFETCH } from '@constants/query'
 
 /**
  * Returns the valid Draws and PrizeDistributions for the provided PrizeDistributor

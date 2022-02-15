@@ -10,9 +10,9 @@ import {
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 
-import { DepositLowAmountWarning } from '@src/views/DepositLowAmountWarning'
-import { ModalInfoList } from '@src/components/InfoList'
-import { EstimatedDepositGasItems } from '@src/components/InfoList/EstimatedGasItem'
+import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
+import { ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 
 interface ModalApproveGateProps {
   className?: string

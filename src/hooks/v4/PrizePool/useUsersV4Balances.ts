@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
 import {

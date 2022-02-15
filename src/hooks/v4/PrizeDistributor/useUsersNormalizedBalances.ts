@@ -2,7 +2,7 @@ import { PrizeDistributor } from '@pooltogether/v4-js-client'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import React from 'react'
 
-import { TransactionReceiptButton } from '@src/components/TransactionReceiptButton'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 
 interface ModalTransactionSubmittedProps {
   className?: string

@@ -3,8 +3,8 @@ import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 import { useQueries } from 'react-query'
 
-import { useTicketDecimals } from '@src/hooks/v4/PrizePool/useTicketDecimals'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { useTicketDecimals } from '@hooks/v4/PrizePool/useTicketDecimals'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
 import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
 

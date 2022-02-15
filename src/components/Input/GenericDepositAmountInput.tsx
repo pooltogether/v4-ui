@@ -6,9 +6,9 @@ import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
-import { WalletSvg } from '@src/components/Icons/SvgComponents'
-import { useMinimumDepositAmount } from '@src/hooks/v4/PrizePool/useMinimumDepositAmount'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { WalletSvg } from '@components/Icons/SvgComponents'
+import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 
 interface GenericDepositAmountInputProps {
   chainId: number

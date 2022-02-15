@@ -1,5 +1,5 @@
 import { PrizePool } from '@pooltogether/v4-js-client'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePoolTicketTotalSupply } from './PrizePool/usePrizePoolTicketTotalSupply'
 import { useTicketDecimals } from './PrizePool/useTicketDecimals'
 import { getNumberOfPrizes } from './useOverallOddsData'

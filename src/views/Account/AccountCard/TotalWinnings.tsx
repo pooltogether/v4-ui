@@ -5,12 +5,12 @@ import { ThemedClipSpinner, TokenIcon, CountUp } from '@pooltogether/react-compo
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-js-client'
 
-import { BottomSheet } from '@src/components/BottomSheet'
-import { useUsersTotalClaimedAmount } from '@src/hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { BottomSheet } from '@components/BottomSheet'
+import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
-import { useAllUsersPositiveClaimedAmountsWithDraws } from '@src/hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
-import { getTimestampString } from '@src/utils/getTimestampString'
+import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
+import { getTimestampString } from '@utils/getTimestampString'
 
 export const TotalWinnings = () => {
   const [isOpen, setIsOpen] = useState(false)

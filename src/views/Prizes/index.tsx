@@ -1,19 +1,19 @@
 import React from 'react'
 
-import { usePrizePoolBySelectedChainId } from '@src/hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { PagePadding } from '@src/components/Layout/PagePadding'
-import { useUsersAddress } from '@src/hooks/useUsersAddress'
+import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { PagePadding } from '@components/Layout/PagePadding'
+import { useUsersAddress } from '@hooks/useUsersAddress'
 import { PastDrawsList } from './PastDrawsList'
-import { usePrizeDistributorBySelectedChainId } from '@src/hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
+import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
-import { SelectAppChainIdModal } from '@src/components/SelectAppChainIdModal'
+import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import classNames from 'classnames'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
-import { usePrizePoolTokens } from '@src/hooks/v4/PrizePool/usePrizePoolTokens'
-import { useLockedDrawIdsWatcher } from '@src/hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',

@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BalanceBottomSheet, ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
 
-import { useIsWalletMetamask } from '@src/hooks/useIsWalletMetamask'
-import { useIsWalletOnNetwork } from '@src/hooks/useIsWalletOnNetwork'
-import { V3PrizePoolBalances } from '@src/hooks/v3/useAllUsersV3Balances'
+import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
+import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
 import { TokenFaucetClaimView } from '../V3Deposits/TokenFaucetClaimView'
-import { V3_PRIZE_POOL_ADDRESSES } from '@src/constants/v3'
+import { V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 
 interface StakingBalanceBottomSheetProps {
   chainId: number

@@ -8,7 +8,7 @@ import {
 } from '@pooltogether/v4-js-client'
 import { useTranslation } from 'react-i18next'
 
-import { roundPrizeAmount } from '@src/utils/roundPrizeAmount'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeTier: PrizeTier

@@ -1,6 +1,6 @@
 import React from 'react'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
-import { InfoListItem } from '@src/components/InfoList'
+import { InfoListItem } from '@components/InfoList'
 import { useTranslation } from 'react-i18next'
 import { Tooltip } from '@pooltogether/react-components'
 

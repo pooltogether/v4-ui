@@ -15,8 +15,8 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
-import { TopNavigation } from '@src/components/Layout/Navigation'
-import { useSupportedChainIds } from '@src/hooks/useSupportedChainIds'
+import { TopNavigation } from '@components/Layout/Navigation'
+import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
 
 export enum ContentPaneState {
   deposit = 'deposit',

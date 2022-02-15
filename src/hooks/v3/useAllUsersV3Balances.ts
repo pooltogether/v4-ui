@@ -14,10 +14,10 @@ import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import Erc20Abi from '@abis/ERC20'
-import { NO_REFETCH } from '@src/constants/query'
+import { NO_REFETCH } from '@constants/query'
 import { useV3ChainIds } from './useV3ChainIds'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
-import { getAmountFromBigNumber } from '@src/utils/getAmountFromBigNumber'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export interface V3PrizePoolBalances {
   chainId: number

@@ -1,5 +1,5 @@
 import { PrizeDistributor } from '@pooltogether/v4-js-client'
-import { getStoredDrawResult } from '@src/utils/drawResultsStorage'
+import { getStoredDrawResult } from '@utils/drawResultsStorage'
 import { useMemo } from 'react'
 import { useUsersAddress } from '../useUsersAddress'
 
