@@ -19,11 +19,11 @@ const TestApi = () => {
   return (
     <button
       onClick={() => {
-        PrizeApi.getUsersDrawResultsByDraws(
+        PrizeApi.getUsersDrawResultsByDraw(
           137,
           '0xe507F2d7dE97c783a60FeF9f1c4A4dade2b0a989',
           '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056',
-          [122],
+          122,
           2
         )
         PrizeApi.getDrawResultsFromPrizeApi(
@@ -33,13 +33,13 @@ const TestApi = () => {
           122,
           2
         )
-        PrizeApi.calculateDrawResults(
+        PrizeApi.computeDrawResultsOnCloudFlareWorker(
           137,
           '0xe507F2d7dE97c783a60FeF9f1c4A4dade2b0a989',
           '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056',
           122
         )
-        PrizeApi.calculateDrawResultsOnCloudFlareWorker(
+        PrizeApi.computeDrawResults(
           137,
           '0xe507F2d7dE97c783a60FeF9f1c4A4dade2b0a989',
           '0x8141BcFBcEE654c5dE17C4e2B2AF26B67f9B9056',

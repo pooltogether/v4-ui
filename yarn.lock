@@ -625,7 +625,7 @@
   dependencies:
     "@ethersproject/bignumber" "^5.5.0"
 
-"@ethersproject/contracts@5.5.0":
+"@ethersproject/contracts@5.5.0", "@ethersproject/contracts@^5.5.0":
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/contracts/-/contracts-5.5.0.tgz#b735260d4bd61283a670a82d5275e2a38892c197"
   integrity sha512-2viY7NzyvJkh+Ug17v7g3/IJC8HqZBDcOjYARZLdzRxrfGlRgmYgl6xPRKVbEzy1dWKw/iv7chDcS83pg6cLxg==
@@ -789,7 +789,7 @@
     elliptic "6.5.4"
     hash.js "1.1.7"
 
-"@ethersproject/solidity@5.5.0":
+"@ethersproject/solidity@5.5.0", "@ethersproject/solidity@^5.5.0":
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/solidity/-/solidity-5.5.0.tgz#2662eb3e5da471b85a20531e420054278362f93f"
   integrity sha512-9NgZs9LhGMj6aCtHXhtmFQ4AN4sth5HuFXVvAQtzmm0jpSCNOTGtrHZJAeYTh7MBjRR8brylWZxBZR9zDStXbw==
@@ -825,7 +825,7 @@
     "@ethersproject/rlp" "^5.5.0"
     "@ethersproject/signing-key" "^5.5.0"
 
-"@ethersproject/units@5.5.0":
+"@ethersproject/units@5.5.0", "@ethersproject/units@^5.5.0":
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/units/-/units-5.5.0.tgz#104d02db5b5dc42cc672cc4587bafb87a95ee45e"
   integrity sha512-7+DpjiZk4v6wrikj+TCyWWa9dXLNU73tSTa7n0TSJDxkYbV3Yf1eRh9ToMLlZtuctNYu9RDNNy2USq3AdqSbag==
@@ -1555,14 +1555,6 @@
     chalk "^4.1.2"
     debug "^4.3.2"
 
-"@pooltogether/draw-calculator-js@^1.0.3-beta.2", "@pooltogether/draw-calculator-js@^1.0.3-beta.4":
-  version "1.0.3-beta.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/draw-calculator-js/-/draw-calculator-js-1.0.3-beta.4.tgz#24f46c360ebf6a070e193a95d81c026b7209ce89"
-  integrity sha512-JAh3/gjPdebJm9M8rPP9KRIrVAlBIAe/uZ/5jpDzmQUuEiUBp5FNrUyFFUdK8ATF4x3dVLjxvcwACBQYHPPr8w==
-  dependencies:
-    chalk "^4.1.2"
-    debug "^4.3.2"
-
 "@pooltogether/etherplex@^1.1.2", "@pooltogether/etherplex@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@pooltogether/etherplex/-/etherplex-1.1.4.tgz#d7584d43f82bc22630a9068f6c69e9a049740621"
@@ -1663,17 +1655,17 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.8.tgz#f4fa0e9618c97a152e637575560ee226d9e9752d"
   integrity sha512-+9+Lw7IP6B1wvLXK/Dwi8SPkPetaCd4ayr6fS+xWwJup9xdMZmyRR+sc3VwwF/1whu5GmfhZe2X0OV6FTcXWKw==
 
-"@pooltogether/v4-client-js@^0.10.2":
+"@pooltogether/v4-client-js@file:.yalc/@pooltogether/v4-client-js":
   version "0.10.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.10.2.tgz#7c90222e50e1a1a724090c0c31f628b5bb81b2b5"
-  integrity sha512-UYD/OIxqBRhXNjxbWaC2DIqQ4g+ZEKOhe/+oV67zl5IRBLIRfsrae7xhEeHZB1JtiREA/73kTDITbn1DqNcIdw==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
-    "@pooltogether/draw-calculator-js" "^1.0.3-beta.2"
     "@pooltogether/etherplex" "^1.1.2"
+    "@pooltogether/evm-chains-extended" "^0.6.4-beta.1"
     "@pooltogether/utilities" "^0.3.7"
+    "@pooltogether/v4-utils-js" "^0.1.0"
     debug "^4.3.3"
+    ethers "^5.4.6"
 
 "@pooltogether/v4-core@^1.2.0":
   version "1.2.0"
@@ -1749,6 +1741,25 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-timelocks/-/v4-timelocks-1.1.0.tgz#c34389917f210c4802ad8d37ba8c3356ce0d23a9"
   integrity sha512-8YaBUy9HaF9zuyPNtt4dt4KA6NFYawhxfqEuxZSHv/lMgU/cSltaZu4DomFRncEDzlGbRvZ4oSMVsO11FIGjgw==
+
+"@pooltogether/v4-utils-js@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-utils-js/-/v4-utils-js-0.1.0.tgz#558f12905f31965bede910b6ee95f0b73fcadab6"
+  integrity sha512-UIDXNqKsG/bmeJAbF9v7tocSxOuEULf9YoOAyKlC/97D9xPyo17RlagsOGLgBckRSKh+xiCQ2txGEuL0aM88eg==
+  dependencies:
+    "@ethersproject/abi" "^5.5.0"
+    "@ethersproject/address" "^5.5.0"
+    "@ethersproject/bignumber" "^5.5.0"
+    "@ethersproject/bytes" "^5.5.0"
+    "@ethersproject/contracts" "^5.5.0"
+    "@ethersproject/keccak256" "^5.5.0"
+    "@ethersproject/networks" "^5.5.0"
+    "@ethersproject/solidity" "^5.5.0"
+    "@ethersproject/strings" "^5.5.0"
+    "@ethersproject/units" "^5.5.0"
+    "@pooltogether/contract-list-schema" "^0.1.4"
+    ethers "^5.5.1"
+    lodash "^4.17.21"
 
 "@pooltogether/yield-source-interface@1.3.0", "@pooltogether/yield-source-interface@^1.0.1":
   version "1.3.0"
@@ -6772,7 +6783,7 @@ ethers@^4.0.45, ethers@^4.0.46:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.13, ethers@^5.4.6, ethers@^5.4.7:
+ethers@^5.0.13, ethers@^5.4.6, ethers@^5.4.7, ethers@^5.5.1:
   version "5.5.4"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.4.tgz#e1155b73376a2f5da448e4a33351b57a885f4352"
   integrity sha512-N9IAXsF8iKhgHIC6pquzRgPBJEzc9auw3JoRkaKe+y4Wl/LFBtDDunNe7YmdomontECAcC5APaAgWZBiu1kirw==

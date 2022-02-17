@@ -1,11 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import { Token } from '@pooltogether/hooks'
-import {
-  calculateNumberOfPrizesForIndex,
-  calculatePrizeForDistributionIndex,
-  PrizeTier
-} from '@pooltogether/v4-client-js'
+import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
@@ -77,8 +73,16 @@ interface PrizeBreakdownTableRowProps {
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
   const { index, prizeTier, ticket } = props
 
-  const prizeForDistributionUnformatted = calculatePrizeForDistributionIndex(index, prizeTier)
-  const numberOfWinners = calculateNumberOfPrizesForIndex(prizeTier.bitRangeSize, index)
+  const prizeForDistributionUnformatted = calculate.calculatePrizeForTierPercentage(
+    index,
+    prizeTier.tiers[index],
+    prizeTier.bitRangeSize,
+    prizeTier.prize
+  )
+  const numberOfWinners = calculate.calculateNumberOfPrizesForTierIndex(
+    prizeTier.bitRangeSize,
+    index
+  )
 
   // Hide rows that don't have a prize
   if (prizeForDistributionUnformatted.isZero()) {
