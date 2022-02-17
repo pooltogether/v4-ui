@@ -41,8 +41,8 @@ i18n
 
     // Locize config
     backend: {
-      projectId: process.env.NEXT_JS_LOCIZE_PROJECT_ID,
-      apiKey: process.env.NEXT_JS_LOCIZE_DEV_API_KEY,
+      projectId: process.env.NEXT_PUBLIC_LOCIZE_PROJECT_ID,
+      apiKey: process.env.NEXT_PUBLIC_LOCIZE_DEV_API_KEY,
       referenceLng: 'en'
     },
 
