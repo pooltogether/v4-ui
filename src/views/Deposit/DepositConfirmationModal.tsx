@@ -9,7 +9,7 @@ import {
   SquareButtonSize,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'

@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 

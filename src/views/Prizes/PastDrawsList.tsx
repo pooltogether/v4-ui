@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 

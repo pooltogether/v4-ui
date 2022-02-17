@@ -1,5 +1,5 @@
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'

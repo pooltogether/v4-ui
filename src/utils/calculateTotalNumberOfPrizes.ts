@@ -1,4 +1,4 @@
-import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-js-client'
+import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-client-js'
 
 export const calculateTotalNumberOfPrizes = (prizeTier: PrizeTier): number => {
   return prizeTier.tiers.reduce((acc, curr, index) => {

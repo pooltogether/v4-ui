@@ -3,7 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { Amount } from '@pooltogether/hooks'
 
-import { CHAIN_ID } from '@constants'
+import { CHAIN_ID } from '@constants/misc'
 import { BigNumber } from 'ethers'
 
 const MINIMUM_AMOUNTS = {

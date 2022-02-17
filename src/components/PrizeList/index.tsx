@@ -3,7 +3,7 @@ import ordinal from 'ordinal'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
-import { DrawResults, PrizeAwardable } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeAwardable } from '@pooltogether/v4-client-js'
 
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'

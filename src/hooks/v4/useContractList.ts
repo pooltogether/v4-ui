@@ -1,4 +1,4 @@
-import { ContractList } from '@pooltogether/v4-js-client'
+import { ContractList } from '@pooltogether/v4-client-js'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { useIsTestnets } from '@pooltogether/hooks'
 

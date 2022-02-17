@@ -1,4 +1,4 @@
-import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-js-client'
+import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-client-js'
 
 import { useUpcomingPrizeTier } from '../useUpcomingPrizeTier'
 import { usePrizePoolNetworkTicketTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTotalSupply'

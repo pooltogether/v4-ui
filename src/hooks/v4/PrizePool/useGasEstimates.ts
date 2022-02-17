@@ -1,4 +1,4 @@
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { sToMs } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { QueryKey, useQuery, UseQueryOptions } from 'react-query'

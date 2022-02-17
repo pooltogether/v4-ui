@@ -5,7 +5,7 @@ import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@poo
 
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS, SUPPORTED_CHAIN_NAMES } from '@constants/config'
-import { CHAIN_ID } from '@constants'
+import { CHAIN_ID } from '@constants/misc'
 import { getChainIdByAlias, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 const parseUrlNetwork = () => {

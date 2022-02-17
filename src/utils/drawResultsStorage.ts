@@ -1,5 +1,5 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
-import { PrizeDistributor, DrawResults } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, DrawResults } from '@pooltogether/v4-client-js'
 import { atomWithStorage } from 'jotai/utils'
 
 /**

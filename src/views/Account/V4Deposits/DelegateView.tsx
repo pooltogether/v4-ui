@@ -11,7 +11,7 @@ import { ethers } from 'ethers'
 import { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { Transaction, useTransaction } from '@pooltogether/hooks'
 
 import { useUsersAddress } from '@hooks/useUsersAddress'

@@ -3,7 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
-import { User } from '@pooltogether/v4-js-client'
+import { User } from '@pooltogether/v4-client-js'
 import { Amount } from '@pooltogether/hooks'
 
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'

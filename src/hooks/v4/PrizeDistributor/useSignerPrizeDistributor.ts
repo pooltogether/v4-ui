@@ -1,5 +1,5 @@
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
 
 export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributor) => {

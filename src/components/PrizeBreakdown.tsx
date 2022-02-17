@@ -5,7 +5,7 @@ import {
   calculateNumberOfPrizesForIndex,
   calculatePrizeForDistributionIndex,
   PrizeTier
-} from '@pooltogether/v4-js-client'
+} from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'

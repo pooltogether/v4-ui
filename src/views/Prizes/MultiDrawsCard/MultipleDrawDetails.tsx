@@ -8,7 +8,7 @@ import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { ethers } from 'ethers'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import classNames from 'classnames'
-import { Draw } from '@pooltogether/v4-js-client'
+import { Draw } from '@pooltogether/v4-client-js'
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }

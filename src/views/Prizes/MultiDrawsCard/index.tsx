@@ -9,7 +9,7 @@ import {
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 import { deserializeBigNumbers } from '@pooltogether/utilities'
 

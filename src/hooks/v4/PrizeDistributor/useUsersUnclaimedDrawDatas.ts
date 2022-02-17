@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 

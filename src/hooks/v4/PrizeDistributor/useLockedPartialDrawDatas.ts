@@ -1,4 +1,4 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 
 import { useAllPartialDrawDatas } from './useAllPartialDrawDatas'
 import { useDrawLocks } from './useDrawLocks'

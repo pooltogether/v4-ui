@@ -11,7 +11,7 @@ import {
 import FeatherIcon from 'feather-icons-react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/hooks'
 import classNames from 'classnames'
 import Link from 'next/link'

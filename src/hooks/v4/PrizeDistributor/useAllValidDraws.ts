@@ -1,4 +1,4 @@
-import { Draw } from '@pooltogether/v4-js-client'
+import { Draw } from '@pooltogether/v4-client-js'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useAllValidDrawIds } from './useAllValidDrawIds'

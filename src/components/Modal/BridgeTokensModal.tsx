@@ -5,7 +5,7 @@ import { Modal, ModalProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { ModalTitle } from '@components/Modal/ModalTitle'
-import { CHAIN_ID } from '@constants'
+import { CHAIN_ID } from '@constants/misc'
 import { getBridgeUrls } from '@constants/config'
 
 interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {

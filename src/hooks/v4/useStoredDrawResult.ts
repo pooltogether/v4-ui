@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { getStoredDrawResult } from '@utils/drawResultsStorage'
 import { useMemo } from 'react'
 import { useUsersAddress } from '../useUsersAddress'

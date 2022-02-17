@@ -1,4 +1,4 @@
-import { CHAIN_ID } from '.'
+import { CHAIN_ID } from './misc'
 
 // List of V3 prize pools to maintain withdrawal support for
 export const V3_PRIZE_POOL_ADDRESSES: {
