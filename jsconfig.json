@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "jsx": "react",
-    "checkJs": true
-  },
-  "exclude": ["out", "functions-out", "node_modules", ".yalc"]
-}
