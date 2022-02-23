@@ -73,9 +73,6 @@ export const useHasUserCheckedAllDraws = (
           claimedDrawIds.includes(drawId) ||
           drawIdsWithoutANormalizedBalance.includes(drawId)
       )
-      console.log({
-        hasUserCheckedAllDraws
-      })
       setHasUserCheckedAllDraws(hasUserCheckedAllDraws)
     }
   }, [isDataFetched, hasUserCheckedAllDraws])

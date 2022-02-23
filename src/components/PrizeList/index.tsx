@@ -88,7 +88,6 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { prizeDistribution } = drawData
   const { tiers } = prizeDistribution
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
-  console.log({ prize })
 
   const { t } = useTranslation()
 

@@ -124,7 +124,6 @@ const getUnclaimedDrawDatas = async (
     [drawId: number]: DrawResults
   }
 ): Promise<{ [usersAddress: string]: { [drawId: number]: DrawData } }> => {
-  console.log('Running useUsersUnclaimedDrawDatas')
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
 
