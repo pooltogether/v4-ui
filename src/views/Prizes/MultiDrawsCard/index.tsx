@@ -211,10 +211,14 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
     if (!winningDrawResults) {
       return null
     }
-    const drawIds = Object.keys(winningDrawResults).map(Number)
+    // Use draw ids from drawDatas as source of truth for expired and locked draws
+    const drawIds = Object.keys(drawDatas).map(Number)
     const winningDrawData: { [drawId: number]: DrawData } = {}
     drawIds.forEach((drawId) => {
-      winningDrawData[drawId] = drawDatas[drawId]
+      const drawResult = winningDrawResults[drawId]
+      if (drawResult) {
+        winningDrawData[drawId] = drawDatas[drawId]
+      }
     })
     return winningDrawData
   }, [winningDrawResults, drawDatas])
