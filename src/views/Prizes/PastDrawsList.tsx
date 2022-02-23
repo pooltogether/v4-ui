@@ -83,7 +83,7 @@ export const PastDrawsList = (props: {
                 token={prizePoolTokens.token}
                 ticket={prizePoolTokens.ticket}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
-                normalizedBalance={normalizedBalancesData?.[usersAddress][drawId]}
+                normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
                 drawLock={drawLocks[drawId]}
               />
             )

@@ -34,7 +34,8 @@ const getUsersNormalizedBalances = async (
   prizeDistributor: PrizeDistributor,
   drawIds: number[]
 ): Promise<{
-  [usersAddress: string]: {
+  usersAddress: string
+  normalizedBalances: {
     [drawId: number]: BigNumber
   }
 }> => {
@@ -51,6 +52,7 @@ const getUsersNormalizedBalances = async (
     normalizedBalancesKeyedByDrawId[drawId] = normalizedBalances[index]
   })
   return {
-    [usersAddress]: normalizedBalancesKeyedByDrawId
+    usersAddress,
+    normalizedBalances: normalizedBalancesKeyedByDrawId
   }
 }

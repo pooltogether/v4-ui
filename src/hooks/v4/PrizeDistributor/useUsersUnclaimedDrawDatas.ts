@@ -53,7 +53,8 @@ export const useUsersUnclaimedDrawDatas = (
   )
 
   const drawResults = storedDrawResults?.[usersAddress]
-  const normalizedBalances = normalizedBalancesData?.[usersAddress]
+  const normalizedBalances = normalizedBalancesData?.normalizedBalances
+  const normalizedBalancesUsersAddress = normalizedBalancesData?.usersAddress
   const claimedAmounts = claimedAmountsData?.claimedAmounts
   const claimedAmountsUsersAddress = claimedAmountsData?.usersAddress
 
@@ -61,7 +62,8 @@ export const useUsersUnclaimedDrawDatas = (
   const userAddressesMatch =
     Boolean(drawResults) &&
     Boolean(normalizedBalances) &&
-    claimedAmountsUsersAddress === usersAddress
+    claimedAmountsUsersAddress === usersAddress &&
+    normalizedBalancesUsersAddress === usersAddress
 
   const enabled =
     Boolean(prizeDistributor) &&
@@ -122,6 +124,7 @@ const getUnclaimedDrawDatas = async (
     [drawId: number]: DrawResults
   }
 ): Promise<{ [usersAddress: string]: { [drawId: number]: DrawData } }> => {
+  console.log('Running useUsersUnclaimedDrawDatas')
   const unclaimedDrawDatas: { [drawId: number]: DrawData } = {}
   const drawIds = Object.keys(drawDatas).map(Number)
 

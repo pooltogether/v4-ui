@@ -63,7 +63,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   }
 
   const drawDatas = unclaimedDrawDatasData[usersAddress]
-  const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData[usersAddress]
+  const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData.hasUserCheckedAllDraws
 
   if (Boolean(drawDatas) && Object.keys(drawDatas).length === 0) {
     return (

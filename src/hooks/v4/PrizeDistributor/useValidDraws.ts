@@ -14,8 +14,9 @@ export const VALID_DRAWS_QUERY_KEY = 'useValidDraws'
 export const useValidDraws = (prizeDistributor: PrizeDistributor) => {
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
-  const enabled = isDrawBeaconFetched && isDrawIdsFetched && Boolean(prizeDistributor)
   const drawIds = data?.drawIds
+  const enabled =
+    isDrawBeaconFetched && isDrawIdsFetched && Boolean(prizeDistributor) && drawIds.length > 0
 
   return useQuery(
     [VALID_DRAWS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
