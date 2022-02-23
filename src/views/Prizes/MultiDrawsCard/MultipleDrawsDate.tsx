@@ -9,6 +9,7 @@ export const MultipleDrawsDate = (props: {
 }) => {
   const { partialDrawDatas } = props
   const drawList = Object.values(partialDrawDatas)
+    .filter((drawData) => Boolean(drawData.draw))
     .map((drawData) => drawData.draw)
     .sort(sortDrawsByDrawIdAsc)
   const firstDraw = drawList[0]

@@ -42,7 +42,16 @@ export const PastDrawsList = (props: {
   )
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeDistributionsFetched || !isDrawLocksFetched) {
+  const isDataForCurrentUser =
+    usersAddress === normalizedBalancesData?.usersAddress &&
+    usersAddress === claimedAmountsData?.usersAddress
+
+  if (
+    !isPrizePoolTokensFetched ||
+    !isDrawsAndPrizeDistributionsFetched ||
+    !isDrawLocksFetched ||
+    !isDataForCurrentUser
+  ) {
     return (
       <>
         <PastDrawsListHeader className={classNames(className, 'mb-1')} />
