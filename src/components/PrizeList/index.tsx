@@ -87,12 +87,13 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
   const { prizeDistribution } = drawData
   const { tiers } = prizeDistribution
-  const { amount: amountUnformatted, distributionIndex } = prize
+  const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
+  console.log({ prize })
 
   const { t } = useTranslation()
 
   const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
-  const tierIndex = filteredTiers.indexOf(tiers[distributionIndex])
+  const tierIndex = filteredTiers.indexOf(tiers[_tierIndex])
 
   const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
 
@@ -115,23 +116,10 @@ const PrizeRow = (props: PrizeRowProps) => {
           <span className='mr-2'>{amountPretty}</span>{' '}
           <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </span>
-        <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')}${getEmoji(tierIndex)}`}</span>
+        <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')} 🏆`}</span>
       </div>
     </li>
   )
-}
-
-const getEmoji = (distributionIndex) => {
-  return ' 🏆'
-
-  if (distributionIndex === 0) {
-    return ' 🏆'
-  } else if (distributionIndex === 1) {
-    return ' 🥈'
-  } else if (distributionIndex === 2) {
-    return ' 🥉'
-  }
-  return ''
 }
 
 const LoadingPrizeRow = () => <li className='w-full h-6 animate-pulse bg-darkened rounded-xl' />
