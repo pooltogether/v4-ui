@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { TokenBalance, Transaction, Token, Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-client-js'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { InfoList } from '@components/InfoList'

@@ -1,5 +1,5 @@
 import { Amount, useRefetchInterval } from '@pooltogether/hooks'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { msToS } from '@pooltogether/utilities'
 import { useQuery } from 'react-query'
 

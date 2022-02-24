@@ -1,4 +1,4 @@
-import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { Card, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'

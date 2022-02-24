@@ -13,7 +13,7 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
-import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-client-js'
 
 import { TextInputGroup } from '@components/Input/TextInputGroup'
 import { RectangularInput } from '@components/Input/TextInputs'

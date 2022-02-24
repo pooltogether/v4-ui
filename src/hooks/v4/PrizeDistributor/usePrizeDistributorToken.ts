@@ -1,5 +1,5 @@
 import { Token } from '@pooltogether/hooks'
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 

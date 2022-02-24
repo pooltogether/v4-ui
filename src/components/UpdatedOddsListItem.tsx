@@ -1,6 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 

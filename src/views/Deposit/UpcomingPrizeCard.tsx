@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
-import { PrizeTier } from '@pooltogether/v4-js-client'
+import { PrizeTier } from '@pooltogether/v4-client-js'
 
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'

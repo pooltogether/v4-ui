@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
-import { CHAIN_ID } from '@constants'
+import { CHAIN_ID } from '@constants/misc'
 
 /**
  * Returns a users POOL Pool balances.

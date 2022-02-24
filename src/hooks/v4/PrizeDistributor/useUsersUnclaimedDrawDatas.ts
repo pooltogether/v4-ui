@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { DrawResults, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -53,7 +53,8 @@ export const useUsersUnclaimedDrawDatas = (
   )
 
   const drawResults = storedDrawResults?.[usersAddress]
-  const normalizedBalances = normalizedBalancesData?.[usersAddress]
+  const normalizedBalances = normalizedBalancesData?.normalizedBalances
+  const normalizedBalancesUsersAddress = normalizedBalancesData?.usersAddress
   const claimedAmounts = claimedAmountsData?.claimedAmounts
   const claimedAmountsUsersAddress = claimedAmountsData?.usersAddress
 
@@ -61,7 +62,8 @@ export const useUsersUnclaimedDrawDatas = (
   const userAddressesMatch =
     Boolean(drawResults) &&
     Boolean(normalizedBalances) &&
-    claimedAmountsUsersAddress === usersAddress
+    claimedAmountsUsersAddress === usersAddress &&
+    normalizedBalancesUsersAddress === usersAddress
 
   const enabled =
     Boolean(prizeDistributor) &&

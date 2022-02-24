@@ -1,4 +1,4 @@
-import { calculateNumberOfPrizesForIndex, PrizeTier } from '@pooltogether/v4-js-client'
+import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
 
 import { useUpcomingPrizeTier } from '../useUpcomingPrizeTier'
 import { usePrizePoolNetworkTicketTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTotalSupply'
@@ -27,6 +27,9 @@ export const useOverallOddsData = () => {
 export const getNumberOfPrizes = (prizeTier: PrizeTier) => {
   return prizeTier.tiers.reduce((totalNumberPrizes: number, currentTier: number, index: number) => {
     if (currentTier === 0) return totalNumberPrizes
-    return totalNumberPrizes + calculateNumberOfPrizesForIndex(prizeTier.bitRangeSize, index)
+    return (
+      totalNumberPrizes +
+      calculate.calculateNumberOfPrizesForTierIndex(prizeTier.bitRangeSize, index)
+    )
   }, 0)
 }

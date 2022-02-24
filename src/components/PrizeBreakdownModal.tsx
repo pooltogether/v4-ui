@@ -6,7 +6,7 @@ import {
   SquareButtonSize,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import { PrizeTier } from '@pooltogether/v4-js-client'
+import { PrizeTier } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { BottomSheet } from './BottomSheet'

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
@@ -9,9 +9,8 @@ import {
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizeDistributor, Draw, DrawResults, PrizePool } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, DrawResults, PrizePool, PrizeApi } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
-import { deserializeBigNumbers } from '@pooltogether/utilities'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from '@hooks/useUsersAddress'
@@ -64,7 +63,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   }
 
   const drawDatas = unclaimedDrawDatasData[usersAddress]
-  const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData[usersAddress]
+  const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData.hasUserCheckedAllDraws
 
   if (Boolean(drawDatas) && Object.keys(drawDatas).length === 0) {
     return (
@@ -212,10 +211,14 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
     if (!winningDrawResults) {
       return null
     }
-    const drawIds = Object.keys(winningDrawResults).map(Number)
+    // Use draw ids from drawDatas as source of truth for expired and locked draws
+    const drawIds = Object.keys(drawDatas).map(Number)
     const winningDrawData: { [drawId: number]: DrawData } = {}
     drawIds.forEach((drawId) => {
-      winningDrawData[drawId] = drawDatas[drawId]
+      const drawResult = winningDrawResults[drawId]
+      if (drawResult) {
+        winningDrawData[drawId] = drawDatas[drawId]
+      }
     })
     return winningDrawData
   }, [winningDrawResults, drawDatas])
@@ -303,7 +306,6 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
 
   let btnJsx, url
   const drawDataList = drawDatas ? Object.values(drawDatas) : []
-  const draws = drawDataList.map((drawData) => drawData.draw)
 
   if (claimTx?.hash) {
     url = formatBlockExplorerTxUrl(claimTx.hash, claimTx.ethersTx.chainId)
@@ -368,7 +370,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         onClick={() =>
           getUsersDrawResults(
             prizeDistributor,
-            draws,
+            drawDataList,
             usersAddress,
             setWinningDrawResults,
             setCheckedState,
@@ -400,7 +402,7 @@ MultiDrawsClaimButton.defaultProps = {
 
 const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
-  draws: Draw[],
+  drawDataList: DrawData[],
   usersAddress: string,
   setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
   setCheckedState: (state: CheckedState) => void,
@@ -413,26 +415,28 @@ const getUsersDrawResults = async (
   const winningDrawResults: { [drawId: string]: DrawResults } = {}
   const newDrawResults: { [drawId: string]: DrawResults } = {}
 
-  const drawResultsPromises = draws.map(async (draw) => {
+  const drawResultsPromises = drawDataList.map(async (drawData, index) => {
+    const { prizeDistribution, draw } = drawData
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
       drawResults = storedDrawResult
     } else {
       try {
-        const url = getDrawCalcUrl(
-          prizeDistributor.chainId,
-          prizeDistributor.address,
+        drawResults = await prizeDistributor.getUsersDrawResultsForDrawId(
           usersAddress,
-          draw.drawId
+          draw.drawId,
+          prizeDistribution.maxPicksPerUser
         )
-        const response = await fetch(url)
-        const drawResultsJson = await response.json()
-        drawResults = deserializeBigNumbers(drawResultsJson)
         // Store draw result
       } catch (e) {
         console.log(e.message)
-        drawResults = await prizeDistributor.calculateUsersPrizes(usersAddress, draw)
+        drawResults = await PrizeApi.computeDrawResults(
+          prizeDistributor.chainId,
+          usersAddress,
+          prizeDistributor.address,
+          draw.drawId
+        )
       }
       newDrawResults[draw.drawId] = drawResults
     }
@@ -447,11 +451,3 @@ const getUsersDrawResults = async (
   setWinningDrawResults(winningDrawResults)
   setCheckedState(CheckedState.checked)
 }
-
-const getDrawCalcUrl = (
-  chainId: number,
-  prizeDistributorAddress: string,
-  usersAddress: string,
-  drawId: number
-) =>
-  `https://tsunami-prizes-production.pooltogether-api.workers.dev/${chainId}/${prizeDistributorAddress}/prizes/${usersAddress}/${drawId}/`

@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 
 import { DrawData } from '../../../interfaces/v4'
 import { useQuery } from 'react-query'

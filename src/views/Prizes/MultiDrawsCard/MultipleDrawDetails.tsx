@@ -8,7 +8,7 @@ import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { ethers } from 'ethers'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import classNames from 'classnames'
-import { Draw } from '@pooltogether/v4-js-client'
+import { Draw } from '@pooltogether/v4-client-js'
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }
@@ -53,9 +53,11 @@ export const TotalPrizes = (props: {
     return null
   }
 
-  const totalAmountUnformatted = Object.values(drawDatas).reduce((acc, drawData) => {
-    return acc.add(drawData.prizeDistribution.prize)
-  }, ethers.constants.Zero)
+  const totalAmountUnformatted = Object.values(drawDatas)
+    .filter((drawData) => Boolean(drawData.prizeDistribution))
+    .reduce((acc, drawData) => {
+      return acc.add(drawData.prizeDistribution.prize)
+    }, ethers.constants.Zero)
   const { amountPretty } = roundPrizeAmount(totalAmountUnformatted, token.decimals)
 
   return (

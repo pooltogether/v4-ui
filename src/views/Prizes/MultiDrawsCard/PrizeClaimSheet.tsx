@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import { Token, Transaction } from '@pooltogether/hooks'
 import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
-import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 

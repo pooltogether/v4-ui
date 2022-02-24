@@ -3,7 +3,7 @@ import ordinal from 'ordinal'
 import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
-import { DrawResults, PrizeAwardable } from '@pooltogether/v4-js-client'
+import { DrawResults, PrizeAwardable } from '@pooltogether/v4-client-js'
 
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
@@ -87,12 +87,12 @@ const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
   const { prizeDistribution } = drawData
   const { tiers } = prizeDistribution
-  const { amount: amountUnformatted, distributionIndex } = prize
+  const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()
 
   const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
-  const tierIndex = filteredTiers.indexOf(tiers[distributionIndex])
+  const tierIndex = filteredTiers.indexOf(tiers[_tierIndex])
 
   const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
 
@@ -115,23 +115,10 @@ const PrizeRow = (props: PrizeRowProps) => {
           <span className='mr-2'>{amountPretty}</span>{' '}
           <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </span>
-        <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')}${getEmoji(tierIndex)}`}</span>
+        <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')} 🏆`}</span>
       </div>
     </li>
   )
-}
-
-const getEmoji = (distributionIndex) => {
-  return ' 🏆'
-
-  if (distributionIndex === 0) {
-    return ' 🏆'
-  } else if (distributionIndex === 1) {
-    return ' 🥈'
-  } else if (distributionIndex === 2) {
-    return ' 🥉'
-  }
-  return ''
 }
 
 const LoadingPrizeRow = () => <li className='w-full h-6 animate-pulse bg-darkened rounded-xl' />
