@@ -1,20 +1,24 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
-import { PrizeDistributor, DrawResults } from '@pooltogether/v4-js-client'
+import { PrizeDistributor, DrawResults } from '@pooltogether/v4-client-js'
 import { atomWithStorage } from 'jotai/utils'
 
 /**
  * Draw ids the user doesn't want to claim
  */
 const DRAW_IDS_TO_NOT_CLAIM_KEY = 'draw_ids_to_not_claim'
-export const drawIdsToNotClaimAtom = atomWithStorage(DRAW_IDS_TO_NOT_CLAIM_KEY, new Set<number>(), {
-  getItem: (key: string) => {
-    const item = localStorage.getItem(key)
-    return item ? new Set(item.split(',').map(Number)) : new Set<number>()
-  },
-  setItem: (key: string, value: Set<number>) => {
-    localStorage.setItem(key, Array.from(value).join(','))
+export const drawIdsToNotClaimAtom = atomWithStorage<Set<number>>(
+  DRAW_IDS_TO_NOT_CLAIM_KEY,
+  new Set<number>(),
+  {
+    getItem: (key: string) => {
+      const item = localStorage.getItem(key)
+      return item ? new Set(item.split(',').map(Number)) : new Set<number>()
+    },
+    setItem: async (key: string, value: Set<number>) => {
+      localStorage.setItem(key, Array.from(value).join(','))
+    }
   }
-})
+)
 
 export interface StoredDrawResults {
   [usersAddress: string]: {
@@ -36,7 +40,7 @@ export const drawResultsAtom = atomWithStorage<StoredDrawResults>(
       const item = localStorage.getItem(key)
       return item ? deserializeBigNumbers(JSON.parse(item)) : {}
     },
-    setItem: (key: string, value: any) => {
+    setItem: async (key: string, value: StoredDrawResults) => {
       localStorage.setItem(key, JSON.stringify(value))
     }
   }

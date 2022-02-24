@@ -1,6 +1,6 @@
 import { TokenAmountInput } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 

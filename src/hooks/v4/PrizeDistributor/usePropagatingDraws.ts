@@ -1,4 +1,4 @@
-import { Draw, PrizeDistributor } from '@pooltogether/v4-js-client'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useAllPartialDrawDatas } from './useAllPartialDrawDatas'
 
 export const usePropagatingDraws = (prizeDistributor: PrizeDistributor) => {

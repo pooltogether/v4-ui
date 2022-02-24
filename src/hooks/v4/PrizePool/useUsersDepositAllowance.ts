@@ -1,4 +1,4 @@
-import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from '@constants/query'
 import { useUsersAddress } from '@hooks/useUsersAddress'

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { SquareButtonSize } from '@pooltogether/react-components'
 import { TokenBalance, useTransaction } from '@pooltogether/hooks'
 

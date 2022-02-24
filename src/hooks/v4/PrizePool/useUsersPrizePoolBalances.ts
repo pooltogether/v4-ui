@@ -1,5 +1,5 @@
 import { Token, TokenWithUsdBalance, useRefetchInterval } from '@pooltogether/hooks'
-import { PrizePool, PrizePoolTokenBalances } from '@pooltogether/v4-js-client'
+import { PrizePool, PrizePoolTokenBalances } from '@pooltogether/v4-client-js'
 import { formatUnits } from '@ethersproject/units'
 import { amountMultByUsd, numberWithCommas, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'

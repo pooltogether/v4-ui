@@ -1,4 +1,4 @@
-import { PrizePool } from '@pooltogether/v4-js-client'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
 export const useUsersTicketDelegate = (usersAddress: string, prizePool: PrizePool) => {

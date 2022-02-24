@@ -1,5 +1,5 @@
 import { useIsTestnets } from '@pooltogether/hooks'
-import { CHAIN_ID } from '@constants'
+import { CHAIN_ID } from '@constants/misc'
 
 // TODO: Should probably get this from the contract list somehow rather than hardcoding it
 export const useAppEnvBeaconChain = () => {

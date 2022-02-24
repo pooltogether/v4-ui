@@ -53,6 +53,7 @@ const Settings = () => {
           <ThemeSettingsItem t={t} />
           <TestnetSettingsItem t={t} />
           <FeatureRequestSettingsItem t={t} />
+          <ClearLocalStorageSettingsItem />
         </div>
         <div className='sm:pt-24 pb-4 sm:pb-0'>
           <SocialLinks t={t} />
@@ -121,5 +122,31 @@ const UsersAccount = () => {
         walletName={walletName}
       />
     </>
+  )
+}
+
+const ClearLocalStorageSettingsItem = () => {
+  const { t } = useTranslation()
+  return (
+    <SettingsItem label={t('clearStorage', 'Clear storage')}>
+      <button
+        className='font-semibold text-pt-red-light transition-colors hover:text-pt-red'
+        onClick={() => {
+          if (
+            window.confirm(
+              t(
+                'clearingStorageWarning',
+                'Continuing will clear the websites storage in your browser. This DOES NOT have any effect on your deposits.'
+              )
+            )
+          ) {
+            localStorage.clear()
+            window.location.reload()
+          }
+        }}
+      >
+        {t('clear', 'Clear')}
+      </button>
+    </SettingsItem>
   )
 }

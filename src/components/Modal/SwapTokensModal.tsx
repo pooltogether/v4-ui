@@ -3,7 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
-import { BUTTON_MIN_WIDTH, CHAIN_ID } from '@constants'
+import { BUTTON_MIN_WIDTH, CHAIN_ID } from '@constants/misc'
 import { getExchangeUrl } from '@constants/config'
 import classNames from 'classnames'
 

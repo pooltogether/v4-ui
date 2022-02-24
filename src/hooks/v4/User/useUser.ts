@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { User, PrizePool } from '@pooltogether/v4-js-client'
+import { User, PrizePool } from '@pooltogether/v4-client-js'
 
 export const useUser = (prizePool: PrizePool) => {
   const { provider } = useOnboard()

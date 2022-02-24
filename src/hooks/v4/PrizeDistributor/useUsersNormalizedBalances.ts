@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '@pooltogether/v4-js-client'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -34,7 +34,8 @@ const getUsersNormalizedBalances = async (
   prizeDistributor: PrizeDistributor,
   drawIds: number[]
 ): Promise<{
-  [usersAddress: string]: {
+  usersAddress: string
+  normalizedBalances: {
     [drawId: number]: BigNumber
   }
 }> => {
@@ -51,6 +52,7 @@ const getUsersNormalizedBalances = async (
     normalizedBalancesKeyedByDrawId[drawId] = normalizedBalances[index]
   })
   return {
-    [usersAddress]: normalizedBalancesKeyedByDrawId
+    usersAddress,
+    normalizedBalances: normalizedBalancesKeyedByDrawId
   }
 }
