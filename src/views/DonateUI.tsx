@@ -1,8 +1,8 @@
 import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { BlockExplorerLink, LoadingScreen } from '@pooltogether/react-components'
-import { Transaction, useTransaction } from '@pooltogether/hooks'
+import { BlockExplorerLink, LoadingScreen, TokenIcon } from '@pooltogether/react-components'
+import { Transaction, useReadProvider, useTransaction } from '@pooltogether/hooks'
 import { useEffect, useState } from 'react'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from '@hooks/useUsersAddress'
@@ -13,10 +13,13 @@ import { useTranslation } from 'react-i18next'
 import { useUser } from '@hooks/v4/User/useUser'
 import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { ethers } from 'ethers'
+import { Contract, ethers } from 'ethers'
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { useQuery } from 'react-query'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { msToS } from '@pooltogether/utilities'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'
 
@@ -38,7 +41,7 @@ export const DonateUI = () => {
     <>
       <h2 className='mb-4'>PoolTogether No Loss Donation</h2>
 
-      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10 space-y-4'>
+      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4 space-y-4'>
         <h4>Support Ukraine Every Day 🤝🇺🇦</h4>
 
         <p>
@@ -55,7 +58,9 @@ export const DonateUI = () => {
         </p>
       </div>
 
-      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10'>
+      <DonationAmount />
+
+      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4'>
         <h4>How to donate</h4>
         <p>
           1. Deposit into PoolTogether v4{' '}
@@ -90,7 +95,8 @@ export const DonateUI = () => {
           <AlreadyDonating />
         )}
       </div>
-      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10'>
+
+      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4'>
         <h4>How it works</h4>
         <p>
           <a
@@ -210,5 +216,45 @@ const AlreadyDonating = () => {
         .
       </span>
     </div>
+  )
+}
+
+const DonationAmount = () => {
+  const { data: balance, isFetched } = useBalance()
+
+  if (!isFetched) return null
+
+  return (
+    <div className='rounded-lg flex p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4 space-x-2 justify-center'>
+      <TokenIcon
+        address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+        chainId={CHAIN_ID.polygon}
+        className='my-auto'
+        sizeClassName='w-8 h-8'
+      />
+      <span className='flex space-x-2'>
+        <span className='text-flashy text-4xl font-bold leading-none'>{`${Number(balance).toFixed(
+          2
+        )}`}</span>
+        <span className='my-auto font-bold'>USDC Delegated</span>
+      </span>
+    </div>
+  )
+}
+
+const useBalance = () => {
+  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  return useQuery(
+    ['donation'],
+    async () => {
+      const ticketContract = await prizePool.getTicketContract()
+      const timestamp = Math.floor(msToS(Date.now()))
+      console.log({ ticketContract, timestamp })
+      const r = await ticketContract.getBalanceAt(UKRAINE_ADDRESS, timestamp)
+      return ethers.utils.formatUnits(r, 6)
+    },
+    {
+      refetchInterval: 5000
+    }
   )
 }
