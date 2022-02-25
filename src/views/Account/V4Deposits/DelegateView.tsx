@@ -176,7 +176,7 @@ interface DelegateFormProps {
   refetchDelegate: () => void
 }
 
-const DelegateForm = (props: DelegateFormProps) => {
+export const DelegateForm = (props: DelegateFormProps) => {
   const { prizePool, refetchDelegate, setTxId, tx } = props
 
   const {
