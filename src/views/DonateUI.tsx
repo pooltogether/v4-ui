@@ -46,15 +46,15 @@ export const DonateUI = () => {
 
         <p>
           What if instead of making a one-time donation to support the humanitarian crisis, you
-          could donate every day. PT’s help Urkaine initiative allows you to do just that.
+          could donate every day. PT’s help Ukraine initiative allows you to do just that.
         </p>
 
         <p>
           Every week PoolTogether gives away $120,225 to people deposited in the protocol. But
-          instead of keeping that prize money for yourself, you can give that prize money to the
-          people of Ukraine, continually until the crisis ends. When it does, you can send your
-          deposit as a donation or keep it back for yourself. Either way, you can help the People of
-          Ukraine, every day, until this is over.
+          instead of having a chance to win the prize money for yourself, you can give that chance
+          to the people of Ukraine, continually until the crisis ends. You maintain full control of
+          your funds and can withdraw or take back your chances to win at any time. You can help the
+          People of Ukraine, every day, until this is over.
         </p>
       </div>
 
@@ -83,8 +83,8 @@ export const DonateUI = () => {
             rel='noreferrer noopener'
           >
             Unchain
-          </a>
-          .
+          </a>{' '}
+          below.
         </p>
         {(!usersAddress ||
           !isFetched ||
@@ -98,16 +98,31 @@ export const DonateUI = () => {
 
       <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4'>
         <h4>How it works</h4>
-        <p>
+        <p className='mb-4'>
           <a
             className='text-pt-teal hover:opacity-70'
             href='https://docs.pooltogether.com/faq/general'
+            target='_blank'
+            rel='noreferrer noopener'
           >
             PoolTogether
           </a>{' '}
           is a no loss prize protocol. The protocol supports a "delegation" feature. This feature
           allows any depositor to give their chances to win prizes to any other address, while
           maintaining full custody of their funds.
+        </p>
+        <p>
+          <a
+            className='text-pt-teal hover:opacity-70'
+            href='https://unchain.fund/'
+            target='_blank'
+            rel='noreferrer noopener'
+          >
+            Unchain
+          </a>{' '}
+          is a charity project created by blockchain activists. Their big goal is to help Ukraine
+          become the country it deserves to be: peaceful, successful, substantive, friendly,
+          educated, and free. Let’s unchain the real power of blockchain for the good.
         </p>
       </div>
     </>
