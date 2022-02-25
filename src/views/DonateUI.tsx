@@ -36,9 +36,27 @@ export const DonateUI = () => {
 
   return (
     <>
-      <CardTitle title={'PoolTogether No Loss Donation'} />
+      <h2 className='mb-4'>PoolTogether No Loss Donation</h2>
+
+      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10 space-y-4'>
+        <h4>Support Ukraine Every Day 🤝🇺🇦</h4>
+
+        <p>
+          What if instead of making a one-time donation to support the humanitarian crisis, you
+          could donate every day. PT’s help Urkaine initiative allows you to do just that.
+        </p>
+
+        <p>
+          Every week PoolTogether gives away $120,225 to people deposited in the protocol. But
+          instead of keeping that prize money for yourself, you can give that prize money to the
+          people of Ukraine, continually until the crisis ends. When it does, you can send your
+          deposit as a donation or keep it back for yourself. Either way, you can help the People of
+          Ukraine, every day, until this is over.
+        </p>
+      </div>
+
       <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10'>
-        <h4>How to donate:</h4>
+        <h4>How to donate</h4>
         <p>
           1. Deposit into PoolTogether v4{' '}
           <a
@@ -63,7 +81,28 @@ export const DonateUI = () => {
           </a>
           .
         </p>
-        <DelegateForm prizePool={prizePool} tx={tx} setTxId={setTxId} refetchDelegate={refetch} />
+        {(!usersAddress ||
+          !isFetched ||
+          delegate[usersAddress].toLowerCase() !== UKRAINE_ADDRESS.toLowerCase()) && (
+          <DelegateForm prizePool={prizePool} tx={tx} setTxId={setTxId} refetchDelegate={refetch} />
+        )}
+        {isFetched && delegate[usersAddress].toLowerCase() === UKRAINE_ADDRESS.toLowerCase() && (
+          <AlreadyDonating />
+        )}
+      </div>
+      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-10'>
+        <h4>How it works</h4>
+        <p>
+          <a
+            className='text-pt-teal hover:opacity-70'
+            href='https://docs.pooltogether.com/faq/general'
+          >
+            PoolTogether
+          </a>{' '}
+          is a no loss prize protocol. The protocol supports a "delegation" feature. This feature
+          allows any depositor to give their chances to win prizes to any other address, while
+          maintaining full custody of their funds.
+        </p>
       </div>
     </>
   )
@@ -103,12 +142,10 @@ export const DelegateForm = (props: DelegateFormProps) => {
   const isUserOnRightNetwork = useIsWalletOnNetwork(prizePool.chainId)
 
   const sendDelegateTx = async (x: FieldValues) => {
-    const delegate = x[DELEGATE_ADDRESS_KEY]
-
     const txId = await sendTx({
       name: t('delegateDeposit', 'Delegate deposit'),
       method: 'delegate',
-      callTransaction: () => user.delegateTickets(delegate),
+      callTransaction: () => user.delegateTickets(UKRAINE_ADDRESS),
       callbacks: {
         refetch: () => {
           refetchDelegate()
@@ -152,5 +189,26 @@ export const DelegateForm = (props: DelegateFormProps) => {
         {t('updateDelegate', 'Update delegate')}
       </TxButtonNetworkGated>
     </form>
+  )
+}
+
+const AlreadyDonating = () => {
+  return (
+    <div className='flex flex-col'>
+      <span>
+        🤝 Thank you. Every day, the charity wallet has a better chance of winning prizes thanks to
+        your deposit.
+      </span>
+      <span>
+        To reset your delegation follow{' '}
+        <a
+          className='text-pt-teal hover:opacity-70'
+          href='https://docs.pooltogether.com/how-to/how-to-delegate'
+        >
+          these instructions
+        </a>
+        .
+      </span>
+    </div>
   )
 }
