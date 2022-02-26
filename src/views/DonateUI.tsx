@@ -19,11 +19,13 @@ import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
 import { useQuery } from 'react-query'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { msToS } from '@pooltogether/utilities'
+import { msToS, numberWithCommas } from '@pooltogether/utilities'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'
 
-const UKRAINE_ADDRESS = '0xb37b3b78022E6964fe80030C9161525880274010'
+const UNCHAIN_ADDRESS = '0xb37b3b78022E6964fe80030C9161525880274010'
 
 export const DonateUI = () => {
   useSetPolygonOnMount()
@@ -50,11 +52,9 @@ export const DonateUI = () => {
         </p>
 
         <p>
-          Every week PoolTogether gives away $120,225 to people deposited in the protocol. But
-          instead of having a chance to win the prize money for yourself, you can give that chance
-          to the people of Ukraine, continually until the crisis ends. You maintain full control of
-          your funds and can withdraw or take back your chances to win at any time. You can help the
-          People of Ukraine, every day, until this is over.
+          Every week PoolTogether gives away $120,225 to people deposited in the protocol. By
+          delegating your deposit, any prizes you would have won are automatically donated to the
+          people of Ukraine, continually until the crisis ends.
         </p>
       </div>
 
@@ -88,10 +88,10 @@ export const DonateUI = () => {
         </p>
         {(!usersAddress ||
           !isFetched ||
-          delegate[usersAddress].toLowerCase() !== UKRAINE_ADDRESS.toLowerCase()) && (
+          delegate[usersAddress].toLowerCase() !== UNCHAIN_ADDRESS.toLowerCase()) && (
           <DelegateForm prizePool={prizePool} tx={tx} setTxId={setTxId} refetchDelegate={refetch} />
         )}
-        {isFetched && delegate[usersAddress].toLowerCase() === UKRAINE_ADDRESS.toLowerCase() && (
+        {isFetched && delegate[usersAddress].toLowerCase() === UNCHAIN_ADDRESS.toLowerCase() && (
           <AlreadyDonating />
         )}
       </div>
@@ -108,8 +108,10 @@ export const DonateUI = () => {
             PoolTogether
           </a>{' '}
           is a no loss prize protocol. The protocol supports a "delegation" feature. This feature
-          allows any depositor to give their chances to win prizes to any other address, while
-          maintaining full custody of their funds.
+          allows any depositor to give their chances to win prizes to any other address. When
+          delegating you maintain full control of your funds and can withdraw or take back your
+          chances to win at any time. You can help the People of Ukraine, every day, until this is
+          over.
         </p>
         <p>
           <a
@@ -166,7 +168,7 @@ export const DelegateForm = (props: DelegateFormProps) => {
     const txId = await sendTx({
       name: t('delegateDeposit', 'Delegate deposit'),
       method: 'delegate',
-      callTransaction: () => user.delegateTickets(UKRAINE_ADDRESS),
+      callTransaction: () => user.delegateTickets(UNCHAIN_ADDRESS),
       callbacks: {
         refetch: () => {
           refetchDelegate()
@@ -195,7 +197,7 @@ export const DelegateForm = (props: DelegateFormProps) => {
     <form onSubmit={handleSubmit(sendDelegateTx)} className='flex flex-col'>
       <div className='bg-pt-purple-lightest dark:bg-pt-purple-darkest rounded-sm p-4 flex justify-between'>
         <span>Unchain charity address: </span>
-        <BlockExplorerLink shorten chainId={CHAIN_ID.polygon} address={UKRAINE_ADDRESS} />
+        <BlockExplorerLink shorten chainId={CHAIN_ID.polygon} address={UNCHAIN_ADDRESS} />
       </div>
       <div className='h-8 text-pt-red text-center'>
         <span>{errorMessage}</span>
@@ -240,19 +242,22 @@ const DonationAmount = () => {
   if (!isFetched) return null
 
   return (
-    <div className='rounded-lg flex p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4 space-x-2 justify-center'>
-      <TokenIcon
-        address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
-        chainId={CHAIN_ID.polygon}
-        className='my-auto'
-        sizeClassName='w-8 h-8'
-      />
-      <span className='flex space-x-2'>
-        <span className='text-flashy text-4xl font-bold leading-none'>{`${Number(balance).toFixed(
-          2
-        )}`}</span>
-        <span className='my-auto font-bold'>USDC Delegated</span>
-      </span>
+    <div className='rounded-lg flex-col p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple mb-4 space-x-2'>
+      <div className='flex space-x-2 justify-center'>
+        <TokenIcon
+          address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+          chainId={CHAIN_ID.polygon}
+          className='my-auto'
+          sizeClassName='w-8 h-8'
+        />
+        <span className='flex space-x-2'>
+          <span className='text-flashy text-4xl font-bold leading-none'>
+            {numberWithCommas(balance)}
+          </span>
+          <span className='my-auto font-bold'>USDC Delegated</span>
+        </span>
+      </div>
+      <OddsOfWinning />
     </div>
   )
 }
@@ -264,12 +269,33 @@ const useBalance = () => {
     async () => {
       const ticketContract = await prizePool.getTicketContract()
       const timestamp = Math.floor(msToS(Date.now()))
-      console.log({ ticketContract, timestamp })
-      const r = await ticketContract.getBalanceAt(UKRAINE_ADDRESS, timestamp)
+      const r = await ticketContract.getBalanceAt(UNCHAIN_ADDRESS, timestamp)
       return ethers.utils.formatUnits(r, 6)
     },
     {
       refetchInterval: 5000
     }
+  )
+}
+
+const OddsOfWinning = () => {
+  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
+    UNCHAIN_ADDRESS,
+    EstimateAction.none,
+    ethers.constants.Zero,
+    1
+  )
+  if (!data) return null
+
+  const { oneOverOdds } = data
+  const oneOverOddstring = Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds.toFixed(2)
+
+  return (
+    <div className='flex space-x-2 justify-center'>
+      <span className='font-bold flex text-lg'>1:{oneOverOddstring}</span>
+      <span className='my-auto opacity-50 font-bold uppercase'>
+        Daily odds to win at least 1 prize
+      </span>
+    </div>
   )
 }
