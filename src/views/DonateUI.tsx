@@ -13,7 +13,13 @@ import { useEffect, useState } from 'react'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { CardTitle } from '@components/Text/CardTitle'
-import { PrizeAwardable, PrizePool } from '@pooltogether/v4-client-js'
+import {
+  Draw,
+  PrizeAwardable,
+  PrizeDistribution,
+  PrizeDistributor,
+  PrizePool
+} from '@pooltogether/v4-client-js'
 import { FieldValues, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useUser } from '@hooks/v4/User/useUser'
@@ -51,8 +57,8 @@ export const DonateUI = () => {
     <PagePadding className='px-2 xs:px-12 lg:px-40 pb-20'>
       <Title />
       <div className='flex flex-col justify-between sm:flex-row mb-4 sm:mb-12 space-y-4 sm:space-y-0'>
-        <InfoCard />
-        <DelegateCard />
+        <InfoCard className='' />
+        <DelegateCard className='' />
       </div>
       <PrizesWon />
 
@@ -82,9 +88,9 @@ const Card = (props) => {
   )
 }
 
-const InfoCard = () => {
+const InfoCard = (props) => {
   return (
-    <Card className='w-full sm:w-auto sm:max-w-xl'>
+    <Card className={props.className}>
       <DonationAmount />
       <h4>Support Ukraine Every Day</h4>
 
@@ -103,7 +109,7 @@ const InfoCard = () => {
   )
 }
 
-const DelegateCard = () => {
+const DelegateCard = (props) => {
   const usersAddress = useUsersAddress()
   const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
   const [txId, setTxId] = useState(0)
@@ -111,7 +117,7 @@ const DelegateCard = () => {
   const { data: delegate, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)
 
   return (
-    <Card className='w-full sm:w-96 sm:ml-2'>
+    <Card className={props.className}>
       <h4>How to help</h4>
       <p>
         1. Deposit into PoolTogether v4{' '}
@@ -368,8 +374,14 @@ const PrizesWon = (props) => {
     <Card className=''>
       <ul className={classNames('text-inverse max-h-80 overflow-y-auto space-y-2 pr-2')}>
         <TotalWon amount={totalWon} />
-        {prizesWon.map((prizeWon) => (
-          <PrizeRow {...prizeWon} chainId={CHAIN_ID.polygon} ticket={ticket} token={token} />
+        {prizesWon.map((prizeWon, index) => (
+          <PrizeRow
+            key={`${prizeWon.drawData.draw.drawId}-${index}`}
+            {...prizeWon}
+            chainId={CHAIN_ID.polygon}
+            ticket={ticket}
+            token={token}
+          />
         ))}
       </ul>
     </Card>
@@ -404,42 +416,59 @@ const usePrizesWon = () => {
   return useQuery(
     ['getPrizesWon'],
     async () => {
-      const maxPicksPerUserPerDraw = data.drawIds.map(
-        (drawId) => partialDrawData[drawId].prizeDistribution.maxPicksPerUser
-      )
-
-      const drawResults = await prizeDistributor.getUsersDrawResultsForDrawIds(
-        UNCHAIN_ADDRESS,
-        data.drawIds,
-        maxPicksPerUserPerDraw
-      )
-
-      const winningDrawResults = Object.values(drawResults).filter(
-        (drawResult) => !drawResult.totalValue.isZero()
-      )
-
-      let totalWon = ethers.BigNumber.from(0)
-
-      const prizesWon: { prize: PrizeAwardable; drawData: DrawData }[] = []
-      winningDrawResults.reverse().forEach((drawResults) => {
-        totalWon = totalWon.add(drawResults.totalValue)
-        drawResults.prizes.forEach((prize) => {
-          prizesWon.push({
-            prize,
-            drawData: partialDrawData[drawResults.drawId] as DrawData
-          })
-        })
-      })
-
-      const amount = getAmountFromBigNumber(totalWon, '6')
-
-      return {
-        prizesWon,
-        totalWon: amount
-      }
+      return getPrizesWon(data.drawIds, partialDrawData, prizeDistributor)
     },
     { ...NO_REFETCH, enabled }
   )
+}
+
+const getPrizesWon = async (
+  drawIds: number[],
+  partialDrawData: {
+    [drawId: number]: {
+      draw: Draw
+      prizeDistribution?: PrizeDistribution
+    }
+  },
+  prizeDistributor: PrizeDistributor
+) => {
+  try {
+    const maxPicksPerUserPerDraw = drawIds.map(
+      (drawId) => partialDrawData[drawId].prizeDistribution.maxPicksPerUser
+    )
+
+    const drawResults = await prizeDistributor.getUsersDrawResultsForDrawIds(
+      UNCHAIN_ADDRESS,
+      drawIds,
+      maxPicksPerUserPerDraw
+    )
+
+    const winningDrawResults = Object.values(drawResults).filter(
+      (drawResult) => !drawResult.totalValue.isZero()
+    )
+
+    let totalWon = ethers.BigNumber.from(0)
+
+    const prizesWon: { prize: PrizeAwardable; drawData: DrawData }[] = []
+    winningDrawResults.reverse().forEach((drawResults) => {
+      totalWon = totalWon.add(drawResults.totalValue)
+      drawResults.prizes.forEach((prize) => {
+        prizesWon.push({
+          prize,
+          drawData: partialDrawData[drawResults.drawId] as DrawData
+        })
+      })
+    })
+
+    const amount = getAmountFromBigNumber(totalWon, '6')
+
+    return {
+      prizesWon,
+      totalWon: amount
+    }
+  } catch (e) {
+    return getPrizesWon(drawIds.slice(0, drawIds.length - 1), partialDrawData, prizeDistributor)
+  }
 }
 
 export const PagePadding = (props) => {
