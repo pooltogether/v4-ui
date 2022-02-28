@@ -32,6 +32,7 @@ import { useAtom } from 'jotai'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
