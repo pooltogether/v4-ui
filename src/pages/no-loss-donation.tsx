@@ -7,9 +7,7 @@ import { DonateUI } from '@views/DonateUI'
 export default function Donate(props) {
   return (
     <Layout>
-      <PagePadding className='flex flex-col'>
-        <DonateUI />
-      </PagePadding>
+      <DonateUI />
     </Layout>
   )
 }
