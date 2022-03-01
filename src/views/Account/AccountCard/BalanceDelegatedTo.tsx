@@ -1,51 +1,77 @@
-import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
+import { BigNumber } from 'ethers'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, TokenIcon, CountUp } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
 
-import { BottomSheet } from '@components/BottomSheet'
-import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
-import { useUsersAddress } from '@hooks/useUsersAddress'
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
+import { BottomSheet } from '@components/BottomSheet'
+import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
+import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { getTimestampString } from '@utils/getTimestampString'
 
-export const TotalWinnings = () => {
+export const BalanceDelegatedTo = () => {
   const [isOpen, setIsOpen] = useState(false)
   const usersAddress = useUsersAddress()
-  const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmount(usersAddress)
   const { t } = useTranslation()
+
+  const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
+  const { data, isFetched } = useUsersTotalBalances()
+
+  if (!isTwabsFetched || !isFetched || !twabs) {
+    return null
+  }
+
+  const totalV4Balance = data?.totalV4Balance.toString()
+  const usersTotalV4TwabBalance = twabs.twab.amount
+  const delegatedToAmount = Number(usersTotalV4TwabBalance) - Number(totalV4Balance)
+
+  if (delegatedToAmount <= 0) {
+    // return null
+    return (
+      <>
+        This won't be visible because delegatedToAmount is {delegatedToAmount}
+        <br />
+        {totalV4Balance} total v4 balance
+        <br />
+        {usersTotalV4TwabBalance} usersTotalV4TwabBalance
+        <br />
+      </>
+    )
+  }
+
+  console.log(delegatedToAmount)
 
   return (
     <>
+      {totalV4Balance} total v4 balance
+      <br />
+      {usersTotalV4TwabBalance} usersTotalV4TwabBalance
+      <br />
       <button
         onClick={() => setIsOpen(true)}
-        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
+        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'
       >
         <span>
-          <span className='mr-1'>{'🎉 '}</span>
-          {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
+          <span className='mr-1'>{'🎁 '}</span>
+          {t('totalDelegatedToYou', 'Total delegated to you')}
         </span>
         <div className='flex'>
           <span className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
-            {!isFetched ? (
-              <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
-            ) : (
-              <>
-                $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
-              </>
-            )}
+            $<CountUp countTo={delegatedToAmount} />
           </span>
-          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
+          {/* <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' /> */}
         </div>
       </button>
-      <TotalWinningsSheet
+      {/* <TotalWinningsSheet
         totalClaimedAmount={totalClaimedAmount}
         open={isOpen}
         onDismiss={() => setIsOpen(false)}
-      />
+      /> */}
     </>
   )
 }

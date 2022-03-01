@@ -5,15 +5,13 @@ import {
   NetworkIcon,
   SquareButtonSize,
   SquareButtonTheme,
-  SquareLink,
-  TokenIcon
+  SquareLink
 } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
+
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/hooks'
-import classNames from 'classnames'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 

@@ -8,6 +8,7 @@ import { Amount } from '@pooltogether/hooks'
 
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from '@hooks/useUsersAddress'
+import { BalanceDelegatedTo } from './BalanceDelegatedTo'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
@@ -31,6 +32,7 @@ export const AccountCard = (props: AccountCardProps) => {
         <DailyOdds />
         <WeeklyOdds />
       </div>
+      <BalanceDelegatedTo />
       <TotalWinnings />
     </div>
   )
