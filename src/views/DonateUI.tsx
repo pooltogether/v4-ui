@@ -102,14 +102,17 @@ const InfoCard = (props) => {
 
       <p>
         Instead of making a one-time donation to support the humanitarian crisis, you can donate
-        every day, for free. PoolTogether’s No Loss Donation initiative to help Ukraine allows you
-        to do just that.
+        every day, for free.
       </p>
 
       <p>
-        Every week PoolTogether gives away <b>$120,225</b> to people deposited in the protocol. By
-        delegating your deposit, any prizes you would have won are automatically donated to the
-        people of Ukraine, continually until the crisis ends.
+        With every dollar you deposit, PoolTogether gives you a chance to win that resets every day.
+        By delegating your deposit, 100% of the prizes you win go directly to the people of Ukraine.
+      </p>
+
+      <p>
+        Plus, because you never lose your initial deposit — you can get back to winning yourself or
+        discover new charitable causes to support when this crisis is over.
       </p>
     </Card>
   )
