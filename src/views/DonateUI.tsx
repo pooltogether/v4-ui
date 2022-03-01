@@ -1,6 +1,11 @@
 import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { BlockExplorerLink, LoadingScreen, TokenIcon } from '@pooltogether/react-components'
+import {
+  BlockExplorerLink,
+  LoadingScreen,
+  ThemedClipSpinner,
+  TokenIcon
+} from '@pooltogether/react-components'
 import {
   Amount,
   Token,
@@ -45,6 +50,7 @@ import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import ordinal from 'ordinal'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { NO_REFETCH } from '@constants/query'
+import { loopXTimes } from '@utils/loopXTimes'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'
 
@@ -56,11 +62,11 @@ export const DonateUI = () => {
   return (
     <PagePadding className='px-2 xs:px-12 lg:px-40 pb-20'>
       <Title />
-      <div className='flex flex-col justify-between sm:flex-row mb-4 sm:mb-12 space-y-4 sm:space-y-0'>
-        <InfoCard className='' />
-        <DelegateCard className='' />
+      <div className='mb-4 sm:mb-12 space-y-4 sm:space-y-0 grid grid-cols-3 gap-4'>
+        <InfoCard className='col-span-3 sm:col-span-2 px-8' />
+        <DelegateCard className='col-span-3 sm:col-span-1' />
+        <PrizesWon className='col-span-3' />
       </div>
-      <PrizesWon />
 
       <ExplainerCard />
     </PagePadding>
@@ -68,7 +74,7 @@ export const DonateUI = () => {
 }
 
 const Title = () => (
-  <div className='flex justify-center space-x-4 xs:space-x-8 mt-10 mb-4 sm:mt-20 sm:mb-12 px-8'>
+  <div className='flex justify-center space-x-4 xs:space-x-8 mt-10 mb-4 sm:mb-12 px-8'>
     <h1 className='opacity-80 my-auto'>PoolTogether No Loss Donation</h1>
     <span className='text-4xl sm:text-9xl'>🤝</span>
     <span className='text-4xl sm:text-9xl'>🇺🇦</span>
@@ -79,7 +85,7 @@ const Card = (props) => {
   return (
     <div
       className={classNames(
-        'rounded-lg p-4 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple space-y-4',
+        'rounded-lg px-4 pt-6 py-12 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple space-y-4',
         props.className
       )}
     >
@@ -345,14 +351,20 @@ const OddsOfWinning = () => {
     ethers.constants.Zero,
     1
   )
-  if (!data) return null
 
-  const { oneOverOdds } = data
-  const oneOverOddstring = Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds.toFixed(2)
+  const oneOverOddstring = Boolean(data)
+    ? Number(data.oneOverOdds.toFixed(2)) < 1.01
+      ? 1
+      : data.oneOverOdds.toFixed(2)
+    : null
 
   return (
     <div className='flex space-x-2 justify-center'>
-      <span className='font-bold flex text-lg'>1:{oneOverOddstring}</span>
+      {oneOverOddstring ? (
+        <span className='font-bold flex text-lg'>1:{oneOverOddstring}</span>
+      ) : (
+        <ThemedClipSpinner className='my-auto' sizeClassName='w-3 h-3' />
+      )}
       <span className='my-auto opacity-50 font-bold uppercase'>
         Daily odds to win at least 1 prize
       </span>
@@ -365,15 +377,29 @@ const PrizesWon = (props) => {
   const { data, isFetched } = usePrizesWon()
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
 
-  if (!isFetched || !isTokensFetched) return null
+  if (!isFetched || !isTokensFetched) {
+    return (
+      <Card className={props.className}>
+        <TotalWon isLoading />
+        <ul className='flex flex-col space-y-2'>
+          {loopXTimes(5, (i) => (
+            <li
+              key={`loading-list-${i}`}
+              className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10'
+            />
+          ))}
+        </ul>
+      </Card>
+    )
+  }
 
   const { ticket, token } = tokens
   const { prizesWon, totalWon } = data
 
   return (
-    <Card className=''>
+    <Card className={props.className}>
+      <TotalWon amount={totalWon} />
       <ul className={classNames('text-inverse max-h-80 overflow-y-auto space-y-2 pr-2')}>
-        <TotalWon amount={totalWon} />
         {prizesWon.map((prizeWon, index) => (
           <PrizeRow
             key={`${prizeWon.drawData.draw.drawId}-${index}`}
@@ -388,9 +414,7 @@ const PrizesWon = (props) => {
   )
 }
 
-const TotalWon = (props: { amount: Amount }) => {
-  const { amountPretty } = props.amount
-
+const TotalWon = (props: { amount?: Amount; isLoading?: boolean }) => {
   return (
     <div className='flex space-x-2 justify-center mb-4'>
       <TokenIcon
@@ -400,7 +424,13 @@ const TotalWon = (props: { amount: Amount }) => {
         sizeClassName='w-4 h-4 xs:w-8 xs:h-8'
       />
       <span className='flex space-x-2'>
-        <h1 className='text-flashy font-bold leading-none'>{amountPretty}</h1>
+        <h1 className='text-flashy font-bold leading-none'>
+          {props.isLoading ? (
+            <ThemedClipSpinner sizeClassName='w-4 h-4 sm:w-8 sm:h-8' />
+          ) : (
+            numberWithCommas(props.amount.amount)
+          )}
+        </h1>
         <span className='my-auto font-bold opacity-80'>USDC in Prizes so far</span>
       </span>
     </div>
