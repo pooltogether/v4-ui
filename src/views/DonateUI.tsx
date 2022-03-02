@@ -62,8 +62,8 @@ export const DonateUI = () => {
   return (
     <PagePadding className='px-2 xs:px-12 lg:px-40 pb-20'>
       <Title />
-      <div className='mb-4 sm:mb-12 space-y-4 sm:space-y-0 grid grid-cols-3 gap-4'>
-        <InfoCard className='col-span-3 sm:col-span-2 px-8' />
+      <div className='mb-4 space-y-4 sm:space-y-0 grid grid-cols-3 gap-4'>
+        <InfoCard className='col-span-3 sm:col-span-2' />
         <DelegateCard className='col-span-3 sm:col-span-1' />
         <PrizesWon className='col-span-3' />
       </div>
@@ -74,10 +74,12 @@ export const DonateUI = () => {
 }
 
 const Title = () => (
-  <div className='flex justify-center space-x-4 xs:space-x-8 mt-10 mb-4 sm:mb-12 px-8'>
-    <h1 className='opacity-80 my-auto'>PoolTogether No Loss Donation</h1>
-    <span className='text-4xl sm:text-9xl'>🤝</span>
-    <span className='text-4xl sm:text-9xl'>🇺🇦</span>
+  <div className='flex flex-col items-center justify-center mt-4 sm:mt-10 mb-4 sm:mb-12 px-8'>
+    <div className='flex'>
+      <span className='text-4xl sm:text-9xl'>🤝</span>
+      <span className='text-4xl sm:text-9xl'>🇺🇦</span>
+    </div>
+    <h4 className='opacity-80 text-center'>PoolTogether No Loss Donation</h4>
   </div>
 )
 
@@ -85,7 +87,7 @@ const Card = (props) => {
   return (
     <div
       className={classNames(
-        'rounded-lg px-4 pt-6 py-12 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple space-y-4',
+        'rounded-lg px-4 py-6 xs:p-8 bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple space-y-4',
         props.className
       )}
     >
@@ -100,17 +102,17 @@ const InfoCard = (props) => {
       <DonationAmount />
       <h4>Support Ukraine Every Day</h4>
 
-      <p>
+      <p className='sm:text-sm'>
         Instead of making a one-time donation to support the humanitarian crisis, you can donate
         every day, for free.
       </p>
 
-      <p>
+      <p className='sm:text-sm'>
         With every dollar you deposit, PoolTogether gives you a chance to win that resets every day.
         By delegating your deposit, 100% of the prizes you win go directly to the people of Ukraine.
       </p>
 
-      <p>
+      <p className='sm:text-sm'>
         Plus, because you never lose your initial deposit — you can get back to winning yourself or
         discover new charitable causes to support when this crisis is over.
       </p>
@@ -166,9 +168,9 @@ const DelegateCard = (props) => {
 
 const ExplainerCard = () => {
   return (
-    <div className='p-4 mx-auto mt-20'>
+    <div className='p-4 mx-auto'>
       <h4>How it works</h4>
-      <p className='mb-4'>
+      <p className='mt-2 mb-4'>
         <a
           className='text-pt-teal hover:opacity-70'
           href='https://docs.pooltogether.com/faq/general'
@@ -312,21 +314,24 @@ const DonationAmount = () => {
 
   return (
     <>
-      <div className='flex space-x-2 justify-center'>
-        <TokenIcon
-          address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
-          chainId={CHAIN_ID.polygon}
-          className='my-auto'
-          sizeClassName='w-8 h-8 sm:w-14 sm:h-14'
-        />
-        <span className='flex space-x-2'>
-          <span className='text-flashy text-2xl xs:text-4xl sm:text-14xl font-bold leading-none text-'>
-            {numberWithCommas(balance)}
+      <div className='flex justify-center items-start'>
+        <div className='flex mr-2 space-x-2 justify-center items-start w-1/2'>
+          <TokenIcon
+            address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+            chainId={CHAIN_ID.polygon}
+            sizeClassName='w-6 h-6 mt-1 sm:mt-3 sm:w-8 sm:h-8'
+          />
+          <span className='flex flex-col'>
+            <span className='text-flashy text-2xl xs:text-4xl sm:text-7xl font-bold leading-none'>
+              {numberWithCommas(balance)}
+            </span>
+            <span className='my-auto font-bold opacity-80'>USDC DELEGATED</span>
           </span>
-          <span className='my-auto font-bold opacity-80'>USDC Delegated</span>
-        </span>
+        </div>
+        <div className='flex w-1/2 flex-col justify-center'>
+          <OddsOfWinning />
+        </div>
       </div>
-      <OddsOfWinning />
     </>
   )
 }
@@ -362,16 +367,16 @@ const OddsOfWinning = () => {
     : null
 
   return (
-    <div className='flex space-x-2 justify-center'>
+    <>
       {oneOverOddstring ? (
-        <span className='font-bold flex text-lg'>1:{oneOverOddstring}</span>
+        <span className='text-flashy text-2xl xs:text-4xl sm:text-7xl font-bold leading-none'>
+          1:{oneOverOddstring}
+        </span>
       ) : (
-        <ThemedClipSpinner className='my-auto' sizeClassName='w-3 h-3' />
+        <ThemedClipSpinner sizeClassName='w-3 h-3' />
       )}
-      <span className='my-auto opacity-50 font-bold uppercase'>
-        Daily odds to win at least 1 prize
-      </span>
-    </div>
+      <span className='opacity-50 font-bold uppercase'>Daily odds to win at least 1 prize</span>
+    </>
   )
 }
 
@@ -419,23 +424,24 @@ const PrizesWon = (props) => {
 
 const TotalWon = (props: { amount?: Amount; isLoading?: boolean }) => {
   return (
-    <div className='flex space-x-2 justify-center mb-4'>
-      <TokenIcon
-        address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
-        chainId={CHAIN_ID.polygon}
-        className='my-auto'
-        sizeClassName='w-4 h-4 xs:w-8 xs:h-8'
-      />
-      <span className='flex space-x-2'>
-        <h1 className='text-flashy font-bold leading-none'>
-          {props.isLoading ? (
-            <ThemedClipSpinner sizeClassName='w-4 h-4 sm:w-8 sm:h-8' />
-          ) : (
-            numberWithCommas(props.amount.amount)
-          )}
-        </h1>
-        <span className='my-auto font-bold opacity-80'>USDC in Prizes so far</span>
-      </span>
+    <div className='flex space-x-2 justify-center mb-4 sm:mb-8'>
+      <div className='flex mr-2 space-x-2 justify-center items-start'>
+        <TokenIcon
+          address='0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+          chainId={CHAIN_ID.polygon}
+          sizeClassName='w-6 h-6 mt-1 sm:mt-2 sm:w-8 sm:h-8'
+        />
+        <span className='flex flex-col'>
+          <span className='text-flashy text-2xl xs:text-4xl  font-bold leading-none'>
+            {props.isLoading ? (
+              <ThemedClipSpinner sizeClassName='w-4 h-4 sm:w-8 sm:h-8' />
+            ) : (
+              numberWithCommas(props.amount.amount)
+            )}
+          </span>
+          <span className='my-auto font-bold opacity-80'>USDC IN PRIZES SO FAR</span>
+        </span>
+      </div>
     </div>
   )
 }
