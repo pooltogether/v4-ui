@@ -30,28 +30,30 @@ export const BalanceDelegatedTo = () => {
   const usersTotalV4TwabBalance = twabs.twab.amount
   const delegatedToAmount = Number(usersTotalV4TwabBalance) - Number(totalV4Balance)
 
+  const debugBox = (
+    <div className='shadow-2xl absolute r-8 b-2 w-128 h-32 bg-white rounded-xl text-primary p-4 font-bold z-40'>
+      <div className='inline-block w-48 font-normal text-black'>usersTotalV4TwabBalance:</div>{' '}
+      {usersTotalV4TwabBalance}
+      <br />
+      <div className='inline-block w-48 font-normal text-black'>totalV4Balance:</div>{' '}
+      {totalV4Balance}
+      <br />
+      <hr className='my-1 bg-pt-purple w-full' />
+      <div className='inline-block w-48 font-normal text-black'>delegatedToAmount:</div>{' '}
+      {delegatedToAmount}
+    </div>
+  )
+
   if (delegatedToAmount <= 0) {
     // return null
-    return (
-      <>
-        This won't be visible because delegatedToAmount is {delegatedToAmount}
-        <br />
-        {totalV4Balance} total v4 balance
-        <br />
-        {usersTotalV4TwabBalance} usersTotalV4TwabBalance
-        <br />
-      </>
-    )
+    return <>{debugBox}</>
   }
 
   console.log(delegatedToAmount)
 
   return (
     <>
-      {totalV4Balance} total v4 balance
-      <br />
-      {usersTotalV4TwabBalance} usersTotalV4TwabBalance
-      <br />
+      {debugBox}
       <button
         onClick={() => setIsOpen(true)}
         className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'
