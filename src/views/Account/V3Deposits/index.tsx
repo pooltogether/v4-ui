@@ -8,7 +8,6 @@ import {
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import classNames from 'classnames'
 import { Amount, Token, TokenWithUsdBalance, useTransaction } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 
