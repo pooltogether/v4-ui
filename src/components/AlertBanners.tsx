@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { SquareButtonSize } from '@pooltogether/react-components'
@@ -23,19 +22,16 @@ export const AlertBanners = () => {
 }
 
 const DelegateTicketsBanner = () => {
-  // const { className, balance, prizePool } = props
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const router = useRouter()
 
-  const { data, isFetched, refetch } = useUsersV4Balances(usersAddress)
+  const { data, isFetched: usersV4BalancesIsFetched } = useUsersV4Balances(usersAddress)
 
-  if (!isFetched) {
+  if (!usersV4BalancesIsFetched) {
     return null
   }
-
+  console.log(data)
   // const queriesResult = useAllPrizePoolTokens()
-
   // const isAllPrizePoolTokensFetched = queriesResult.every((queryResult) => queryResult.isFetched)
 
   // const queryResults = useQueries(
@@ -58,13 +54,7 @@ const DelegateTicketsBanner = () => {
   const showWarning = data.balances.map(
     (balances) => console.log(balances)
     // balances.prizePool
-
     // balances.prizePool.id()
-    // <DepositItem
-    //   key={'deposit-balance-' + balances.prizePool.id()}
-    //   {...balances}
-    //   refetchBalances={refetch}
-    // />
   )
 
   // const {
