@@ -21,6 +21,7 @@ import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from '@components/Text/CardTitle'
+import { BalanceDelegatedTo } from './BalanceDelegatedTo'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
@@ -65,6 +66,8 @@ const DepositsList = () => {
           refetchBalances={refetch}
         />
       ))}
+
+      <BalanceDelegatedTo />
     </PrizePoolDepositList>
   )
 }

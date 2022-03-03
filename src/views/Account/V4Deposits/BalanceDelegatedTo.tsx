@@ -42,28 +42,33 @@ export const BalanceDelegatedTo = () => {
 
   return (
     <>
-      <button className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'>
-        <span className='flex items-center '>
-          <span className='mr-1'>{'🎁 '}</span>
-          {t('totalDelegatedToYou', 'Total delegated to you')}
-          <span className='ml-1'>
-            <Tooltip
-              id={`tooltip-total-delegated-to-you`}
-              tip={t(
-                'delegationDescription',
-                'Other people can delegate their chances of winning to you. This is typically used for winners of competitions or for charity.'
-              )}
-              iconClassName='opacity-50 relative hover:opacity-100 transition'
-            />
+      <li>
+        <hr />
+      </li>
+
+      <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
+        <button className='p-4 w-full flex justify-between items-center'>
+          <span className='flex w-full items-center font-semibold text-sm xs:text-lg'>
+            <span className='mr-2'>{'🎁 '}</span>
+            {t('totalDelegatedToYou', 'Total delegated to you')}
+            <span className='ml-1'>
+              <Tooltip
+                id={`tooltip-total-delegated-to-you`}
+                tip={t(
+                  'delegationDescription',
+                  'Other people can delegate their chances of winning to you. This is typically used for winners of competitions or for charity.'
+                )}
+                iconClassName='opacity-50 relative hover:opacity-100 transition'
+              />
+            </span>
           </span>
-        </span>
-        <div className='flex'>
-          <span className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
+
+          <span className='leading-none font-bold text-sm xs:text-lg mr-3'>
             $<CountUp countTo={numberWithCommas(delegatedToAmount)} />
           </span>
-          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
-        </div>
-      </button>
+          {/* <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' /> */}
+        </button>
+      </li>
     </>
   )
 }
