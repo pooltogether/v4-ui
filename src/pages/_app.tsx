@@ -19,6 +19,7 @@ import type { AppProps } from 'next/app'
 import '../../i18n'
 import { CUSTOM_WALLETS_CONFIG } from '@constants/customWalletsConfig'
 import { AllContextProviders } from '@components/contextProviders/AllContextProviders'
+import { AlertBanners } from '@components/AlertBanners'
 import { CustomErrorBoundary } from '@components/CustomErrorBoundary'
 import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
 import { sentryLog } from '@utils/services/sentryLog'
@@ -106,6 +107,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
           <AllContextProviders>
             <CustomErrorBoundary>
+              <AlertBanners />
               <TransactionStatusChecker />
               <TxRefetchListener />
 
