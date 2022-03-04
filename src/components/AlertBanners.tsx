@@ -1,20 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { SquareButtonSize } from '@pooltogether/react-components'
-import { useTransaction } from '@pooltogether/hooks'
 import { constants } from 'ethers'
 
-import { InfoList } from '@components/InfoList'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
-import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { useUser } from '@hooks/v4/User/useUser'
 import { useUsersTicketDelegateAllPools } from '@hooks/v4/PrizePool/useUsersTicketDelegateAllPools'
-import { useSendTransaction } from '@hooks/useSendTransaction'
 import { useUsersAddress } from '@hooks/useUsersAddress'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 export const AlertBanners = () => {
   return <DelegateTicketsBanner />
