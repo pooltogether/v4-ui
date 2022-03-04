@@ -1,9 +1,7 @@
 import React from 'react'
-import FeatherIcon from 'feather-icons-react'
 import { formatUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { Tooltip, CountUp } from '@pooltogether/react-components'
-import { numberWithCommas } from '@pooltogether/utilities'
 
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useUsersTicketDelegateAllPools } from '@hooks/v4/PrizePool/useUsersTicketDelegateAllPools'
@@ -15,8 +13,8 @@ export const BalanceDelegatedTo = () => {
 
   const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
 
-  let usersTotalV4TwabBalanceUnformatted = twabs?.twab.amountUnformatted
-  let delegatedToAmount = ''
+  let usersTotalV4TwabBalance = Number(twabs?.twab.amount)
+  let delegatedToAmount = null
 
   const queryResults = useUsersTicketDelegateAllPools()
 
@@ -25,15 +23,17 @@ export const BalanceDelegatedTo = () => {
   if (isFetched) {
     queryResults.forEach((queryResult) => {
       const result = queryResult.data
-      const delegatedToSelf = result?.[usersAddress] === usersAddress
+      const delegatedToSelf = result?.[usersAddress].toLowerCase() === usersAddress.toLowerCase()
+
       if (delegatedToSelf) {
-        usersTotalV4TwabBalanceUnformatted = usersTotalV4TwabBalanceUnformatted.sub(
-          result?.ticketData.ticket
+        const amountToSubtract = Number(
+          formatUnits(result?.ticketData.ticket, result?.ticketDecimals)
         )
+        usersTotalV4TwabBalance = usersTotalV4TwabBalance - amountToSubtract
       }
     })
 
-    delegatedToAmount = formatUnits(usersTotalV4TwabBalanceUnformatted, 6)
+    delegatedToAmount = usersTotalV4TwabBalance
   }
 
   if (!delegatedToAmount || delegatedToAmount === '0.0') {
@@ -64,9 +64,8 @@ export const BalanceDelegatedTo = () => {
           </span>
 
           <span className='leading-none font-bold text-sm xs:text-lg mr-3'>
-            $<CountUp countTo={numberWithCommas(delegatedToAmount)} />
+            $<CountUp countTo={delegatedToAmount} />
           </span>
-          {/* <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' /> */}
         </button>
       </li>
     </>
