@@ -23,7 +23,7 @@ export const BalanceDelegatedTo = () => {
   if (isFetched) {
     queryResults.forEach((queryResult) => {
       const result = queryResult.data
-      const delegatedToSelf = result?.[usersAddress].toLowerCase() === usersAddress.toLowerCase()
+      const delegatedToSelf = result?.[usersAddress]?.toLowerCase() === usersAddress.toLowerCase()
 
       if (delegatedToSelf) {
         const amountToSubtract = Number(
@@ -36,7 +36,7 @@ export const BalanceDelegatedTo = () => {
     delegatedToAmount = usersTotalV4TwabBalance
   }
 
-  if (!delegatedToAmount || delegatedToAmount === '0.0') {
+  if (!delegatedToAmount || delegatedToAmount < 1) {
     return null
   }
 
