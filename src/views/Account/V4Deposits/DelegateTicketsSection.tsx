@@ -43,7 +43,9 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
   return (
     <>
       <div className={classNames('flex flex-col mx-auto text-center px-4 pb-4', className)}>
-        <span className='my-auto opacity-50 px-2'>{t('toWinPrizesNeedToActivate')}</span>
+        <span className='my-auto px-2 text-orange font-semibold'>
+          {t('toWinPrizesNeedToActivate')}
+        </span>
 
         <ActivateTicketsButton
           className='mt-4 w-full mx-auto'

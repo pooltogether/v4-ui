@@ -22,10 +22,10 @@ export const TotalWinnings = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse'
+        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
       >
         <span>
-          {'🎉 '}
+          <span className='mr-1'>{'🎉 '}</span>
           {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
         </span>
         <div className='flex'>

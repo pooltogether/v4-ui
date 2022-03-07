@@ -26,7 +26,7 @@ export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => 
       >
         {balanceToDisplay}
       </span>
-      <FeatherIcon icon='chevron-right' className='my-auto h-8 w-8 opacity-50' />
+      <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
     </div>
   )
 }
