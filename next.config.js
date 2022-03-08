@@ -26,6 +26,15 @@ const nextConfig = {
       }
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: '/pooltogether.tokenlist.json',
+        destination: 'https://raw.githubusercontent.com/pooltogether/pooltogether-token-list/main/pooltogether.tokenlist.json',
+        basePath: undefined,
+      },
+    ]
+  },
   publicRuntimeConfig: {
     locizeProjectId: process.env.NEXT_PUBLIC_LOCIZE_PROJECT_ID,
     locizeApiKey: process.env.NEXT_PUBLIC_LOCIZE_DEV_API_KEY,
