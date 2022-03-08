@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import axios from 'axios'
 import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
@@ -312,6 +313,10 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     url = formatBlockExplorerTxUrl(claimTx.hash, claimTx.ethersTx.chainId)
   }
 
+  const sendCheckForPrizesToWorkerKV = () => {
+    axios.get(`https://check-for-prizes.pooltogether-api.workers.dev/check?address=${usersAddress}`)
+  }
+
   if (claimTx?.inFlight) {
     btnJsx = (
       <SquareLink
@@ -368,7 +373,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     btnJsx = (
       <SquareButton
         size={size}
-        onClick={() =>
+        onClick={() => {
           getUsersDrawResults(
             prizeDistributor,
             drawDataList,
@@ -377,7 +382,8 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
             setCheckedState,
             setStoredDrawResults
           )
-        }
+          sendCheckForPrizesToWorkerKV()
+        }}
         disabled={isChecking}
         className={className}
         style={{ minWidth: 230 }}
