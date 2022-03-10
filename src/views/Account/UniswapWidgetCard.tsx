@@ -18,12 +18,13 @@ export function UniswapWidgetCard() {
       ...(ptTheme === 'dark' ? darkTheme : lightTheme),
       fontFamily:
         'Titillium Web, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji',
-      accent: 'rgb(76, 36, 159)',
-      container: ptTheme === 'dark' ? '#341771' : 'rgb(242, 237, 254)',
+      accent: '#4d249e',
+      container: ptTheme === 'dark' ? '#341771' : '#f2edfe',
       dialog: ptTheme === 'dark' ? '#341771' : '#fff',
-      interactive: ptTheme === 'dark' ? '#4C29A1' : 'rgb(76, 36, 159)',
-      onInteractive: ptTheme === 'dark' ? '#fff' : '#fff',
+      interactive: ptTheme === 'dark' ? '#4C29A1' : '#4c249f',
       module: ptTheme === 'dark' ? '#301566' : '#fff',
+      onInteractive: '#fff',
+      secondary: 'rgba(255, 255, 255, 0.5)',
       tokenColorExtraction: false
     }),
     [ptTheme]
