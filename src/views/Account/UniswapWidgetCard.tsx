@@ -1,4 +1,6 @@
 import { RPC_URL } from '@constants/customWalletsConfig'
+import { CHAIN_ID } from '@constants/misc'
+import { POOL_ADDRESSES } from '@constants/v3'
 import { useTheme } from '@hooks/useTheme'
 import { useUniswapSupportsNetwork } from '@hooks/useUniswapSupportsNetwork'
 import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
@@ -9,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 export function UniswapWidgetCard() {
   const { t } = useTranslation()
 
-  const { provider } = useOnboard()
+  const { provider, network } = useOnboard()
   const { theme: ptTheme } = useTheme()
   const theme: Theme = useMemo(
     () => ({
@@ -29,6 +31,13 @@ export function UniswapWidgetCard() {
 
   const supportsUniswap = useUniswapSupportsNetwork()
 
+  const POOLAddress = useMemo(() => {
+    if (network === CHAIN_ID.polygon) {
+      return POOL_ADDRESSES[CHAIN_ID.polygon].polygon_bridge
+    }
+    return POOL_ADDRESSES[network]?.pool ?? POOL_ADDRESSES[CHAIN_ID.mainnet].pool
+  }, [network])
+
   if (!supportsUniswap) {
     return null
   }
@@ -42,6 +51,8 @@ export function UniswapWidgetCard() {
           provider={provider}
           className='mx-auto my-2'
           width={'100%'}
+          defaultInputTokenAddress='NATIVE'
+          defaultOutputTokenAddress={POOLAddress}
           tokenList='https://raw.githubusercontent.com/pooltogether/pooltogether-token-list/main/pooltogether.tokenlist.json'
         />
       </div>
