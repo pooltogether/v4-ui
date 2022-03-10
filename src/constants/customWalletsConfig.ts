@@ -4,7 +4,7 @@ const APP_NAME = 'PoolTogether'
 
 const INFURA_ID = process.env.NEXT_PUBLIC_INFURA_ID
 
-const RPC_URL =
+export const RPC_URL =
   defaultNetworkName && INFURA_ID
     ? `https://${defaultNetworkName}.infura.io/v3/${INFURA_ID}`
     : 'http://localhost:8545'

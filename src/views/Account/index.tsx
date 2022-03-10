@@ -11,6 +11,7 @@ import { V3Deposits } from './V3Deposits'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
 import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
+import { UniswapWidgetCard } from './UniswapWidgetCard'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -35,6 +36,7 @@ export const AccountUI = (props) => {
       <AccountCard user={user} />
       <V4Deposits />
       <POOLBalancesCard />
+      <UniswapWidgetCard />
       <V3StakingCards />
       <V3Deposits />
       <OddsDisclaimer className='block mt-6' />
