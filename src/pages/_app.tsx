@@ -107,7 +107,6 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
           <AllContextProviders>
             <CustomErrorBoundary>
-              <AlertBanners />
               <TransactionStatusChecker />
               <TxRefetchListener />
 

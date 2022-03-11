@@ -1,3 +1,4 @@
+import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import {
   Account,
@@ -9,7 +10,11 @@ import {
   TestnetSettingsItem,
   FeatureRequestSettingsItem,
   ThemeSettingsItem,
-  SocialLinks
+  SocialLinks,
+  Modal,
+  NetworkIcon,
+  Banner,
+  BannerTheme
 } from '@pooltogether/react-components'
 import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +22,8 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { TopNavigation } from '@components/Layout/Navigation'
 import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
+import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -101,6 +108,7 @@ const UsersAccount = () => {
 
   return (
     <>
+      <NetworkWarning />
       <NetworkSelector
         supportedNetworks={supportedNetworks}
         className='mx-1 my-auto'
@@ -148,5 +156,47 @@ const ClearLocalStorageSettingsItem = () => {
         {t('clear', 'Clear')}
       </button>
     </SettingsItem>
+  )
+}
+
+const NetworkWarning = () => {
+  const [isOpen, setIsOpen] = useState(true)
+  const chainIds = CHAIN_IDS_TO_BLOCK
+  const { t } = useTranslation()
+
+  if (chainIds.length === 0) return null
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)} className='mr-1'>
+        <FeatherIcon icon='alert-triangle' className='text-pt-red-light w-6 h-6' />
+      </button>
+      <Modal
+        label='network-warning-modal'
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        className='border-2 border-pt-red-light flex flex-col text-center rounded bg-darkened py-8 px-4 space-y-4'
+      >
+        <FeatherIcon icon='alert-triangle' className='text-pt-red-light w-12 h-12 mx-auto' />
+        <p className='text-lg font-bold'>
+          {t(
+            'issuesContactingBlockchain',
+            `We're having issues contacting one or more blockchains.`
+          )}
+        </p>
+        <p className='opacity-70'>
+          {t(
+            'followingChainsHaveDegradedService',
+            'The following networks will have degraded service in app:'
+          )}
+        </p>
+        {CHAIN_IDS_TO_BLOCK.map((chainId) => (
+          <div className='flex space-x-2 items-center mx-auto w-full justify-center'>
+            <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
+            <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
+          </div>
+        ))}
+      </Modal>
+    </>
   )
 }

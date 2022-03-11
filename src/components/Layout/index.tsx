@@ -6,6 +6,7 @@ import { LoadingLogo } from '@pooltogether/react-components'
 import { PageHeader } from '@components/Layout/PageHeader'
 import { useInitialLoad } from '@hooks/useInitialLoad'
 import { BottomNavigation } from './Navigation'
+import { AlertBanners } from '@components/AlertBanners'
 
 interface LayoutProps {
   className?: string
@@ -24,6 +25,7 @@ const Layout = (props: LayoutProps) => {
     <div className={classNames(className, 'min-h-screen')}>
       {isReady ? (
         <>
+          <AlertBanners />
           <PageHeader />
           {children}
           <BottomNavigation />
