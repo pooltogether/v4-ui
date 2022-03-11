@@ -10,7 +10,7 @@ import { CHAIN_ID } from '@constants/misc'
 /////////////////////////////////////////////////////////////////////
 
 // NOTE: Should be empty. Add a chain id to hide it in app.
-export const CHAIN_IDS_TO_BLOCK = Object.freeze([CHAIN_ID.polygon])
+export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
 export const V4_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
@@ -61,7 +61,7 @@ export const SUPPORTED_CHAIN_NAMES = Object.freeze({
 
 // TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
+  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
 
