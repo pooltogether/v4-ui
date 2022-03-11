@@ -1,5 +1,6 @@
 import { RPC_URL } from '@constants/customWalletsConfig'
 import { CHAIN_ID } from '@constants/misc'
+import tokenList from '@constants/swapTokenList'
 import { POOL_ADDRESSES } from '@constants/v3'
 import { useTheme } from '@hooks/useTheme'
 import { useUniswapSupportsNetwork } from '@hooks/useUniswapSupportsNetwork'
@@ -10,8 +11,8 @@ import { useTranslation } from 'react-i18next'
 
 export function UniswapWidgetCard() {
   const { t } = useTranslation()
+  const { wallet, network } = useOnboard()
 
-  const { provider, network } = useOnboard()
   const { theme: ptTheme } = useTheme()
   const theme: Theme = useMemo(
     () => ({
@@ -49,12 +50,12 @@ export function UniswapWidgetCard() {
         <SwapWidget
           jsonRpcEndpoint={RPC_URL}
           theme={theme}
-          provider={provider}
+          provider={wallet.provider}
           className='mx-auto my-2'
           width={'100%'}
           defaultInputTokenAddress='NATIVE'
           defaultOutputTokenAddress={POOLAddress}
-          tokenList='https://raw.githubusercontent.com/pooltogether/pooltogether-token-list/main/pooltogether.tokenlist.json'
+          tokenList={tokenList}
         />
       </div>
     </div>
