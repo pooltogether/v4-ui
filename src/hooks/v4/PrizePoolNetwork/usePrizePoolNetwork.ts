@@ -10,6 +10,7 @@ export const usePrizePoolNetwork = (): PrizePoolNetwork => {
   const readProviders = useReadProviders(chainIds)
 
   return useMemo(() => {
+    console.log('INIT PRIZE POOL NETWORK')
     return new PrizePoolNetwork(readProviders, prizePoolNetworkContractList)
   }, [prizePoolNetworkContractList])
 }

@@ -9,17 +9,32 @@ import { CHAIN_ID } from '@constants/misc'
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
+// NOTE: Should be empty. Add a chain id to hide it in app.
+export const CHAIN_IDS_TO_BLOCK = Object.freeze([CHAIN_ID.polygon])
+
 export const V4_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))),
-  [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId)))
+  [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
+    (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  ),
+  [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId))).filter(
+    (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  )
 })
 
 // TODO: Link this to the v3 constants
 export const V3_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: [CHAIN_ID.mainnet, CHAIN_ID.bsc, CHAIN_ID.polygon, CHAIN_ID.celo],
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai]
+  [APP_ENVIRONMENTS.mainnets]: [
+    CHAIN_ID.mainnet,
+    CHAIN_ID.bsc,
+    CHAIN_ID.polygon,
+    CHAIN_ID.celo
+  ].filter((chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)),
+  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai].filter(
+    (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  )
 })
 
+// TODO: Filter here
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(
     new Set([
@@ -44,9 +59,10 @@ export const SUPPORTED_CHAIN_NAMES = Object.freeze({
   )
 })
 
+// TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
+  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
 
 // Native currency symbols in app
