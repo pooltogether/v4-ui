@@ -1655,6 +1655,11 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.8.tgz#f4fa0e9618c97a152e637575560ee226d9e9752d"
   integrity sha512-+9+Lw7IP6B1wvLXK/Dwi8SPkPetaCd4ayr6fS+xWwJup9xdMZmyRR+sc3VwwF/1whu5GmfhZe2X0OV6FTcXWKw==
 
+"@pooltogether/utilities@^0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.9.tgz#af6ded2c0128face483731205eb7f87e3d4879bc"
+  integrity sha512-rQMRX0oBvFoZISBty+VAmD62fb6gzXzL3f8Z6bnqDQ5EuR8+cM/6a7acW72yb8nl5o1hBlVo6bw4VYHIelLoIg==
+
 "@pooltogether/v4-client-js@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.11.0.tgz#46b42ca2fb07700dfc2d3ec85e8b048256b72013"
