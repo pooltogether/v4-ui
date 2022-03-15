@@ -1,4 +1,3 @@
-import { RPC_URL } from '@constants/customWalletsConfig'
 import { CHAIN_ID } from '@constants/misc'
 import tokenList from '@constants/swapTokenList'
 import { POOL_ADDRESSES } from '@constants/v3'
@@ -8,10 +7,21 @@ import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { darkTheme, lightTheme, SwapWidget, Theme } from '@uniswap/widgets'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { getRpcUrl } from '@pooltogether/utilities'
 
 export function UniswapWidgetCard() {
   const { t } = useTranslation()
   const { wallet, network } = useOnboard()
+
+  const rpcUrl = useMemo(
+    () =>
+      getRpcUrl(network, {
+        alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+        etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+        infura: process.env.NEXT_PUBLIC_INFURA_ID
+      }),
+    [network]
+  )
 
   const { theme: ptTheme } = useTheme()
   const theme: Theme = useMemo(
@@ -48,7 +58,7 @@ export function UniswapWidgetCard() {
       <h5 className='mb-2'>{t('getPool')}</h5>
       <div>
         <SwapWidget
-          jsonRpcEndpoint={RPC_URL}
+          jsonRpcEndpoint={rpcUrl}
           theme={theme}
           provider={wallet.provider}
           width={'100%'}

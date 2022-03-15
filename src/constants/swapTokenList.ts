@@ -28,35 +28,6 @@ const tokenList: TokenInfo[] = [
     logoURI: 'ipfs://QmPqZ8pVyBCdw2N365t47yJ6n6beZ5X2ZxE5d1zMo4Gh2U'
   },
 
-  // DAI
-  {
-    name: 'Dai Stablecoin',
-    address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-    symbol: 'DAI',
-    decimals: 18,
-    chainId: CHAIN_ID.mainnet,
-    logoURI:
-      'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png'
-  },
-  {
-    name: 'Dai Stablecoin',
-    address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
-    symbol: 'DAI',
-    decimals: 18,
-    chainId: CHAIN_ID.polygon,
-    logoURI:
-      'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png'
-  },
-  {
-    name: 'Dai Stablecoin',
-    address: '0xc7AD46e0b8a400Bb3C915120d284AafbA8fc4735',
-    symbol: 'DAI',
-    decimals: 18,
-    chainId: CHAIN_ID.rinkeby,
-    logoURI:
-      'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png'
-  },
-
   // USDC
   {
     name: 'USDCoin',
@@ -113,6 +84,24 @@ const tokenList: TokenInfo[] = [
     chainId: CHAIN_ID.rinkeby,
     logoURI:
       'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
+  },
+
+  // WMATIC
+  {
+    address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+    chainId: CHAIN_ID.polygon,
+    decimals: 18,
+    name: 'Wrapped Matic',
+    symbol: 'WMATIC',
+    logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png'
+  },
+  {
+    address: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
+    chainId: CHAIN_ID.mumbai,
+    decimals: 18,
+    name: 'Wrapped Matic',
+    symbol: 'WMATIC',
+    logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png'
   }
 ]
 
