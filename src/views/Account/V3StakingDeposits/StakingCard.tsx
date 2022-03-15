@@ -44,7 +44,7 @@ export const StakingCard = (props: StakingCardProps) => {
   } = props
   const [isOpen, setIsOpen] = useState(false)
 
-  const { ticket, token } = balances
+  const { ticket } = balances
 
   const openBottomSheet = () => setIsOpen(true)
 
