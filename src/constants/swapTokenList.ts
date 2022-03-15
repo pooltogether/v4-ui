@@ -40,6 +40,15 @@ const tokenList: TokenInfo[] = [
   },
   {
     name: 'USDCoin',
+    address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+    symbol: 'USDC',
+    decimals: 6,
+    chainId: CHAIN_ID.mumbai,
+    logoURI:
+      'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png'
+  },
+  {
+    name: 'USDCoin',
     address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
     symbol: 'USDC',
     decimals: 6,
@@ -84,6 +93,16 @@ const tokenList: TokenInfo[] = [
     chainId: CHAIN_ID.rinkeby,
     logoURI:
       'https://raw.githubusercontent.com/uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
+  },
+
+  // MATIC on Ethereum
+  {
+    address: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
+    chainId: CHAIN_ID.mainnet,
+    decimals: 18,
+    name: 'Matic',
+    symbol: 'MATIC',
+    logoURI: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/polygon/assets/0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270/logo.png'
   },
 
   // WMATIC
