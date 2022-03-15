@@ -46,6 +46,7 @@
     "@reach/visually-hidden": "^0.15.2",
     "@sentry/react": "^6.17.5",
     "@sentry/tracing": "^6.17.5",
+    "@uniswap/widgets": "^0.0.23-beta",
     "autoprefixer": "^10.3.1",
     "beautiful-react-hooks": "^1.0.2",
     "classnames": "^2.3.1",
@@ -77,10 +78,12 @@
     "react-i18next": "11.11.4",
     "react-query": "^3.34.0",
     "react-query-devtools": "^2.6.3",
+    "react-redux": "^7.2.6",
     "react-rewards": "^1.1.2",
     "react-spring-bottom-sheet": "^3.4.0",
     "react-toastify": "^7.0.4",
     "react-tooltip": "^4.2.21",
+    "redux": "^4.1.2",
     "tailwindcss": "^2.2.19"
   }
 }
