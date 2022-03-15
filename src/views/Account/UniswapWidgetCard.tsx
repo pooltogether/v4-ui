@@ -19,13 +19,13 @@ export function UniswapWidgetCard() {
       ...(ptTheme === 'dark' ? darkTheme : lightTheme),
       fontFamily:
         'Titillium Web, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji',
-      accent: '#4d249e',
-      container: ptTheme === 'dark' ? '#341771' : '#f2edfe',
-      dialog: ptTheme === 'dark' ? '#341771' : '#fff',
-      interactive: ptTheme === 'dark' ? '#4C29A1' : '#4c249f',
-      module: ptTheme === 'dark' ? '#301566' : '#fff',
-      onInteractive: '#fff',
-      secondary: 'rgba(255, 255, 255, 0.5)',
+      accent: ptTheme === 'dark' ? '#4d249e' : '#7e46f2', // main buttons
+      container: ptTheme === 'dark' ? '#341771' : '#f2edfe', // input background
+      dialog: ptTheme === 'dark' ? '#341771' : '#fff', // confirmation background
+      interactive: ptTheme === 'dark' ? '#4C29A1' : '#7e46f2', // token select buttons
+      module: ptTheme === 'dark' ? '#301566' : '#fff', // output background
+      onInteractive: '#fff', // text on interactive
+      secondary: ptTheme === 'dark' ? 'rgba(255, 255, 255, 0.5)' : lightTheme.secondary,
       tokenColorExtraction: false
     }),
     [ptTheme]
@@ -51,7 +51,6 @@ export function UniswapWidgetCard() {
           jsonRpcEndpoint={RPC_URL}
           theme={theme}
           provider={wallet.provider}
-          className='mx-auto my-2'
           width={'100%'}
           defaultInputTokenAddress='NATIVE'
           defaultOutputTokenAddress={POOLAddress}
