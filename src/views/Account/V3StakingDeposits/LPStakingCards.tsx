@@ -50,7 +50,7 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
   )
 
   const lpTokenWithUsdBalance = isLPTokenUsdValueFetched
-    ? makeTokenWithUsdBalance(balances.token, lpTokenUsdValue)
+    ? makeTokenWithUsdBalance(balances.ticket, lpTokenUsdValue)
     : null
 
   const { t } = useTranslation()
@@ -61,6 +61,11 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
     balances.prizePool,
     lpTokenWithUsdBalance
   )
+
+  // For LP Staking, merge/replace the LP Token USD value in the ticket balance
+  if (lpTokenWithUsdBalance) {
+    balances.ticket = { ...balances.ticket, ...lpTokenWithUsdBalance }
+  }
 
   // NOTE: Assumes there is a single token faucet for the prize pool
   const { data: tokenFaucetRewards, isFetched: isTokenFaucetRewardsFetched } =
@@ -102,6 +107,7 @@ const makeTokenWithUsdBalance = (token: TokenWithBalance, usd: number): TokenWit
   const balanceUsdUnformatted = usd
     ? amountMultByUsd(token.amountUnformatted, usd)
     : BigNumber.from(0)
+
   const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
