@@ -46,7 +46,7 @@
     "@reach/visually-hidden": "^0.15.2",
     "@sentry/react": "^6.17.5",
     "@sentry/tracing": "^6.17.5",
-    "@uniswap/widgets": "^0.0.23-beta",
+    "@uniswap/widgets": "^0.0.24-beta",
     "autoprefixer": "^10.3.1",
     "beautiful-react-hooks": "^1.0.2",
     "classnames": "^2.3.1",
