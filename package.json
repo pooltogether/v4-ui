@@ -83,6 +83,7 @@
     "react-spring-bottom-sheet": "^3.4.0",
     "react-toastify": "^7.0.4",
     "react-tooltip": "^4.2.21",
+    "redux": "^4.1.2",
     "tailwindcss": "^2.2.19"
   }
 }
