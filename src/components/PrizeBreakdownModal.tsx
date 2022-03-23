@@ -25,7 +25,7 @@ export const PrizeBreakdownModal = (
       label='Prize breakdown modal'
     >
       <PrizeWLaurels className='mx-auto' />
-      <div className='font-inter font-semibold text-sm capitalize text-inverse my-3 text-center'>
+      <div className='font-semibold text-sm capitalize text-inverse my-3 text-center'>
         {t('prizeBreakdown', 'Prize breakdown')}
       </div>
 

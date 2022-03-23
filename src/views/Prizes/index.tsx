@@ -85,11 +85,13 @@ const CheckForPrizesOnNetwork = (props: {
   return (
     <div
       className={classNames(
-        'font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg',
+        'font-semibold flex items-center justify-center text-xs xs:text-sm',
         className
       )}
     >
-      <span>{t('prizesOn', 'Prizes on')}</span>
+      <span className='uppercase text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
+        {t('prizesOn', 'Prizes on')}
+      </span>
       <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
     </div>
   )

@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as Fathom from 'fathom-client'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { Provider } from 'jotai'
+import { ScreenSize, useScreenSize } from '@pooltogether/hooks'
 import {
   useInitCookieOptions,
   useInitReducedMotion,
@@ -10,10 +11,12 @@ import {
 } from '@pooltogether/hooks'
 import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
 import {
-  ToastContainer,
+  ThemeContext,
   TransactionStatusChecker,
   TxRefetchListener
 } from '@pooltogether/react-components'
+import { Flip, ToastContainer, ToastContainerProps } from 'react-toastify'
+
 import type { AppProps } from 'next/app'
 
 import '../../i18n'
@@ -103,7 +106,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
         <InitPoolTogetherHooks>
-          <ToastContainer className='pool-toast' position='top-center' autoClose={7000} />
+          <ThemedToastContainer />
 
           <AllContextProviders>
             <CustomErrorBoundary>
@@ -116,6 +119,27 @@ function MyApp({ Component, pageProps, router }: AppProps) {
         </InitPoolTogetherHooks>
       </QueryClientProvider>
     </Provider>
+  )
+}
+
+const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
+  // TODO: When we update to latest wallet connection lib (wagmi) use this:
+  // This doesn't quite fit here, it needs to be nested below Jotai though.
+  // useUpdateStoredPendingTransactions()
+
+  const { theme } = useContext(ThemeContext)
+  const screenSize = useScreenSize()
+  return (
+    <ToastContainer
+      {...props}
+      limit={3}
+      style={{ zIndex: '99999' }}
+      position={screenSize > ScreenSize.sm ? 'bottom-right' : 'top-center'}
+      autoClose={7000}
+      theme={theme}
+      transition={Flip}
+      closeOnClick={false}
+    />
   )
 }
 

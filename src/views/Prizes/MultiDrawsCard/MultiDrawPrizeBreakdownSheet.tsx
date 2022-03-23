@@ -49,14 +49,14 @@ export const MultiDrawPrizeBreakdownSheet = (
       label='Prize breakdown modal'
       className='flex flex-col'
     >
-      <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-6 space-x-2'>
+      <div className='font-semibold uppercase text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter flex items-center justify-center text-xs mb-6 space-x-2'>
         <span>{t('prizesFrom', 'Prizes from')}</span>
         <select
           name='drawIds'
           id='drawIds'
           className={classNames(
-            'font-inter transition border border-accent-4 hover:border-default rounded-lg',
-            'px-3 flex flex-row text-xs xs:text-sm hover:text-inverse bg-tertiary'
+            'font-semibold transition border-2 border-accent-4 hover:border-default rounded-lg',
+            'px-3 flex flex-row text-xs xs:text-sm hover:text-inverse bg-primary'
           )}
           onChange={(event) => setSelectedDrawId(Number(event.target.value))}
         >
@@ -69,7 +69,7 @@ export const MultiDrawPrizeBreakdownSheet = (
       </div>
 
       <PrizeWLaurels className='mx-auto' />
-      <div className='font-inter font-semibold text-sm capitalize text-inverse my-3 text-center'>
+      <div className='font-semibold text-sm capitalize text-inverse my-3 text-center'>
         {t('prizeBreakdown', 'Prize breakdown')}
       </div>
 

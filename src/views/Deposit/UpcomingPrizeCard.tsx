@@ -102,7 +102,7 @@ const DrawCountdown = (props) => {
         <DrawNumberString>
           <span>{t('drawNumber', 'Draw #{{number}}', { number: drawId })}</span>
         </DrawNumberString>
-        <span className='mt-1 h-14 uppercase font-semibold text-accent-1 text-2xl mx-auto'>
+        <span className='mt-1 h-14 uppercase font-semibold text-accent-1 text-xl mx-auto'>
           {t('closingSoon', 'Closing soon')}
         </span>
       </div>

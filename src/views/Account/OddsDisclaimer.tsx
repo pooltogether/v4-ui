@@ -12,7 +12,7 @@ export const OddsDisclaimer = (props: { className?: string }) => {
         rel='noopener noreferrer'
         className='underline ml-1 text-xxxs'
       >
-        {t('readMore')}.
+        {t('readMore')}
       </a>
     </span>
   )

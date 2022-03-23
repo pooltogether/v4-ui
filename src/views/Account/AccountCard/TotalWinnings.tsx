@@ -5,10 +5,10 @@ import { ThemedClipSpinner, TokenIcon, CountUp } from '@pooltogether/react-compo
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
 
+import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
 import { BottomSheet } from '@components/BottomSheet'
 import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useUsersAddress } from '@hooks/useUsersAddress'
-import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { getTimestampString } from '@utils/getTimestampString'
 
@@ -22,7 +22,7 @@ export const TotalWinnings = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='px-2 py-4 xs:px-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
+        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
       >
         <span>
           <span className='mr-1'>{'🎉 '}</span>
