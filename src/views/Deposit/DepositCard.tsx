@@ -200,8 +200,10 @@ export const DepositCard = (props: { className?: string }) => {
   return (
     <>
       <div className={className}>
-        <div className='font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg mb-2 mt-4'>
-          {t('depositOn', 'Deposit on')}
+        <div className='font-semibold uppercase flex items-center justify-center text-xs xs:text-sm mb-2 mt-4'>
+          <span className='text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter font-inter'>
+            {t('depositOn', 'Deposit on')}
+          </span>
           <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
         </div>
         <DepositForm
@@ -258,7 +260,7 @@ const HelpLink = () => {
       href='https://docs.pooltogether.com/how-to/how-to-deposit'
       target='_blank'
       rel='noreferrer noopener'
-      className='text-center text-xs text-inverse opacity-70 hover:opacity-100 transition-opacity xs:-ml-3'
+      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3'
       style={{ minWidth: BUTTON_MIN_WIDTH }}
     >
       <FeatherIcon
@@ -285,7 +287,7 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='text-center text-inverse opacity-70 hover:opacity-100 transition-opacity'
+        className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity'
         onClick={() => setShowModal(true)}
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
