@@ -1,19 +1,20 @@
 import React from 'react'
-
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { PagePadding } from '@components/Layout/PagePadding'
-import { useUsersAddress } from '@hooks/useUsersAddress'
-import { PastDrawsList } from './PastDrawsList'
-import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
-import { PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
-import { useTranslation } from 'react-i18next'
-import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
-import { MultiDrawsCard } from './MultiDrawsCard'
 import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+
+import { PoolPartySeason1CTA } from '@components/PoolPartySeason1CTA'
+import { PagePadding } from '@components/Layout/PagePadding'
+import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useUsersAddress } from '@hooks/useUsersAddress'
+import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
+import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
+import { MultiDrawsCard } from './MultiDrawsCard'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
+import { PastDrawsList } from './PastDrawsList'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -36,7 +37,7 @@ export const PrizesUI = () => {
         <CheckForPrizesOnNetwork
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
-          className='mb-6'
+          className='mb-3'
         />
         <LoadingCard />
       </PagePadding>
@@ -46,10 +47,11 @@ export const PrizesUI = () => {
   if (!usersAddress) {
     return (
       <PagePadding className='flex flex-col'>
+        <PoolPartySeason1CTA />
         <CheckForPrizesOnNetwork
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
-          className='mb-6'
+          className='mb-3'
         />
         <LockedDrawsCard
           prizeDistributor={prizeDistributor}
@@ -64,10 +66,11 @@ export const PrizesUI = () => {
   return (
     <>
       <PagePadding className='flex flex-col'>
+        <PoolPartySeason1CTA />
         <CheckForPrizesOnNetwork
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
-          className='mb-6'
+          className='mb-3'
         />
         <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
@@ -85,11 +88,13 @@ const CheckForPrizesOnNetwork = (props: {
   return (
     <div
       className={classNames(
-        'font-semibold font-inter flex items-center justify-center text-xs xs:text-sm sm:text-lg',
+        'font-semibold flex items-center justify-center text-xs xs:text-sm',
         className
       )}
     >
-      <span>{t('prizesOn', 'Prizes on')}</span>
+      <span className='uppercase text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
+        {t('prizesOn', 'Prizes on')}
+      </span>
       <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
     </div>
   )

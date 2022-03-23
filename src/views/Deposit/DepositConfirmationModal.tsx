@@ -250,7 +250,7 @@ const CheckBackForPrizesBox = () => {
   const eligibleDate = getTimestampString(msToS(addDays(new Date(), 2).getTime()))
 
   return (
-    <AnimatedBorderCard className='flex flex-col'>
+    <AnimatedBorderCard className='flex flex-col text-center'>
       <div className='mb-2'>
         {t('disclaimerComeBackRegularlyToClaimWinnings', { date: eligibleDate })}
       </div>

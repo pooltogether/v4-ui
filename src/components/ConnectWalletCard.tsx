@@ -17,7 +17,7 @@ export const ConnectWalletCard = (props: ConnectWalletCardProps) => {
 
   return (
     <Card className={classNames('flex flex-col mx-auto', className)}>
-      <div className='text-xs text-accent-1 font-inter mx-auto mt-2 mb-8 flex flex-col space-y-4'>
+      <div className='text-xs text-accent-1 mx-auto mt-2 mb-8 flex flex-col space-y-4'>
         <span className='text-lg text-inverse font-semibold'>
           {t(
             'poolTogetherIsACrossChainProtocol',

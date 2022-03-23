@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { Amount } from '@pooltogether/hooks'
 
 import { CHAIN_ID } from '@constants/misc'
-import { BigNumber } from 'ethers'
 
 const MINIMUM_AMOUNTS = {
   [CHAIN_ID.mainnet]: 5000,

@@ -34,7 +34,7 @@ export const TopNavigation = (props: { className?: string }) => {
       className={classnames(
         className,
         'hidden sm:flex flex-row justify-center',
-        'bg-pt-purple-bright shadow-lg rounded-xl p-1 font-inter',
+        'bg-pt-purple-bright shadow-lg rounded-xl p-1',
         'w-max'
       )}
     >
@@ -59,7 +59,7 @@ export const BottomNavigation = (props: { className?: string }) => {
       className={classnames(
         className,
         'p-1',
-        'flex flex-row justify-center font-inter',
+        'flex flex-row justify-center',
         'sm:hidden',
         'bg-pt-purple-bright shadow-lg',
         'fixed bottom-0 inset-x-0'

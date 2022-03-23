@@ -160,7 +160,7 @@ export const TextInputGroup = (props) => {
             <div className='relative w-full'>
               <div
                 className={classnames(
-                  'rounded-xl font-inter absolute font-semibold text-lg cursor-default z-10',
+                  'rounded-xl absolute font-semibold text-lg cursor-default z-10',
                   {
                     'text-accent-4': readOnly
                   }

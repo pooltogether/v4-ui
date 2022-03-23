@@ -69,7 +69,7 @@ export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
     <>
       <button
         className={classNames(
-          'text-center text-inverse opacity-70 hover:opacity-100 transition-opacity',
+          'text-center text-inverse opacity-60 hover:opacity-100 transition-opacity',
           className
         )}
         onClick={() => setShowModal(true)}

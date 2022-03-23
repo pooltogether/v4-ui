@@ -130,5 +130,5 @@ RectangularInput.defaultProps = {
   bgClassName: 'bg-transparent',
   textClassName: 'text-xl text-right',
   roundedClassName: 'rounded-lg',
-  className: 'font-inter font-semibold'
+  className: 'font-semibold'
 }

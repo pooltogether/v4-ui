@@ -110,7 +110,7 @@ interface PrizeTableCellProps
 const PrizeTableCell = (props: PrizeTableCellProps) => (
   <div
     {...props}
-    className={classnames(props.className, 'font-inter text-sm xs:text-lg capitalize my-1 w-full', {
+    className={classnames(props.className, 'text-sm xs:text-lg capitalize my-1 w-full', {
       'text-flashy font-bold': props.index === 0,
       'opacity-70 text-inverse font-semibold': props.index !== 0
     })}
