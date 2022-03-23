@@ -32,9 +32,7 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
   const { className, bgClassName, widthClassName } = props
 
   return (
-    <div
-      className={classNames(className, widthClassName, 'flex flex-col', 'font-inter', 'text-xl')}
-    >
+    <div className={classNames(className, widthClassName, 'flex flex-col text-xl')}>
       <GenericDepositInputHeader {...props} />
 
       <div
@@ -76,7 +74,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
   }, [usersAddress, tokenBalance])
 
   return (
-    <div className='flex justify-between font-inter text-xs uppercase font-semibold text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter mb-1'>
+    <div className='flex justify-between text-xs uppercase font-semibold text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter mb-1'>
       <span className={classNames('')}>{t('amount')}</span>
       {usersAddress && (
         <button

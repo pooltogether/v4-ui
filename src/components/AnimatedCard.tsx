@@ -53,7 +53,7 @@ export const AnimatedBorderCard = (props: AnimatedBorderCardProps) => {
 
 AnimatedBorderCard.defaultProps = {
   borderGradient: BorderGradient.rainbow,
-  paddingClassName: 'p-4 xs:py-6 xs:px-8',
+  paddingClassName: 'p-4',
   roundedClassName: 'rounded-lg',
   innerBackgroundColorDark: '#1c0454',
   innerBackgroundColorLight: '#f0e9ff'

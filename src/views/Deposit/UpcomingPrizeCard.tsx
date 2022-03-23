@@ -124,7 +124,7 @@ const DrawCountdown = (props) => {
 }
 
 const DrawNumberString = (props) => (
-  <span {...props} className='uppercase font-semibold text-accent-4 text-xs xs:text-lg mx-auto' />
+  <span {...props} className='uppercase font-semibold text-accent-4 text-xs xs:text-xs mx-auto' />
 )
 
 const LightningBolt = (props: {
