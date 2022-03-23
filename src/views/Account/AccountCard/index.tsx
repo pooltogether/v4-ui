@@ -22,7 +22,7 @@ export const AccountCard = (props: AccountCardProps) => {
   const { user } = props
 
   return (
-    <div className='flex flex-col p-4 pink-purple-gradient rounded-2xl space-y-2'>
+    <div className='flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2'>
       <div className='flex justify-between p-4'>
         <TotalBalance user={user} />
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
