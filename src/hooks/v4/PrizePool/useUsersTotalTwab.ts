@@ -3,24 +3,20 @@ import { Amount } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 import { useQueries } from 'react-query'
 
-import { useTicketDecimals } from '@hooks/v4/PrizePool/useTicketDecimals'
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
 import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
 
-export const useUsersTotalTwab = (
-  usersAddress: string
-): {
-  data: {
-    usersAddress: string
-    twab: Amount
-  }
-  isFetching: boolean
-  isFetched: boolean
-  refetch: () => void
-} => {
+/**
+ * NOTE: Assumes all prize pool tickets have the same decimals
+ * @param usersAddress
+ * @returns
+ */
+export const useUsersTotalTwab = (usersAddress: string) => {
   // NOTE: Assumes all prize pool tickets have the same decimals
-  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
+  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
+    useSelectedPrizePoolTicketDecimals()
   const prizePools = usePrizePools()
 
   const queryResults = useQueries(
@@ -36,11 +32,11 @@ export const useUsersTotalTwab = (
   return useMemo(() => {
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
     const isFetching = queryResults.some((queryResult) => queryResult.isFetching)
-    const twabDatas = queryResults.map((queryResults) => queryResults.data)
+    const twabDataPerChain = queryResults.map((queryResults) => queryResults.data)
     const refetch = () => queryResults.forEach((queryResult) => queryResult.refetch())
 
     const twabAmounts: Amount[] = []
-    twabDatas.forEach((twabData) => {
+    twabDataPerChain.forEach((twabData) => {
       if (twabData && !twabData.twab.amountUnformatted.isZero()) {
         twabAmounts.push(twabData.twab)
       }
@@ -50,7 +46,8 @@ export const useUsersTotalTwab = (
     return {
       data: {
         usersAddress,
-        twab
+        twab,
+        twabDataPerChain
       },
       isFetching,
       isFetched,

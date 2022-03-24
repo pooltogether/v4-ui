@@ -2399,6 +2399,17 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-timelocks/-/v4-timelocks-1.1.0.tgz#c34389917f210c4802ad8d37ba8c3356ce0d23a9"
   integrity sha512-8YaBUy9HaF9zuyPNtt4dt4KA6NFYawhxfqEuxZSHv/lMgU/cSltaZu4DomFRncEDzlGbRvZ4oSMVsO11FIGjgw==
 
+"@pooltogether/v4-twab-delegator-js@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-twab-delegator-js/-/v4-twab-delegator-js-0.1.0.tgz#460e6f3913c5c9be76d1ab560e90f2b377cb7d80"
+  integrity sha512-8+ZUh0m49X21R64MQGq7Y8Z7tWd6qHw3XAh7ZcrC73uHZW4FtXn4L6ybyMpReyQFb4GGDbsqPrz7FjjhTsnE6Q==
+  dependencies:
+    "@ethersproject/abi" "^5.1.0"
+    "@pooltogether/etherplex" "^1.1.4"
+    "@pooltogether/utilities" "^0.3.9"
+    eth-permit "^0.2.1"
+    ethers "^5.4.6"
+
 "@pooltogether/v4-utils-js@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-utils-js/-/v4-utils-js-0.1.3.tgz#c45b4b090a87fc80f80ebf2ae5901297bac45174"
@@ -7789,6 +7800,13 @@ eth-lib@^0.1.26:
     servify "^0.1.12"
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
+
+eth-permit@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/eth-permit/-/eth-permit-0.2.1.tgz#360bbf33bfeb70ad212e9cfa820370e8f827bdff"
+  integrity sha512-+a91Il8JDsKXnib6a5CWEwBc9OOR93IYM1GRGlcnEa+NwMHkWLg4P8lyEHnUmoMVfjutoQTz8wnEWr5Y+k3QOQ==
+  dependencies:
+    utf8 "^3.0.0"
 
 eth-provider@^0.6.1:
   version "0.6.1"

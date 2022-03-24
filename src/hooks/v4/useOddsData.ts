@@ -1,11 +1,12 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePoolTicketTotalSupply } from './PrizePool/usePrizePoolTicketTotalSupply'
-import { useTicketDecimals } from './PrizePool/useTicketDecimals'
+import { useSelectedPrizePoolTicketDecimals } from './PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getNumberOfPrizes } from './useOverallOddsData'
 
 export const useOddsData = (prizePool: PrizePool) => {
-  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } = useTicketDecimals()
+  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
+    useSelectedPrizePoolTicketDecimals()
   const { data: ticketTotalSupplyUnformatted, isFetched: isTicketTotalSupplyFetched } =
     usePrizePoolTicketTotalSupply(prizePool)
 

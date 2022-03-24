@@ -12,7 +12,8 @@ export const useUsersV3PrizePoolBalance = (
 
   return useMemo(() => {
     const refetch = async () => queriesResult.forEach((queryResult) => queryResult.refetch())
-    const isFetched = queriesResult.every((queryResult) => queryResult.isFetched)
+    const isFetched =
+      queriesResult.length > 0 && queriesResult.every((queryResult) => queryResult.isFetched)
 
     if (!isFetched) {
       return {

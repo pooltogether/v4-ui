@@ -13,13 +13,12 @@ export const AlertBanners = () => {
 const DelegateTicketsBanner = () => {
   const { t } = useTranslation()
 
-  const usersAddress = useUsersAddress()
   const queriesResult = useUsersTicketDelegateAllPools()
 
   const booleanResults = queriesResult.map((queryResult) => {
     const result = queryResult.data
-    const notDelegated = result?.[usersAddress] === constants.AddressZero
-    const hasTicketBalance = result?.ticketData.ticket.gt(0)
+    const notDelegated = result?.delegate === constants.AddressZero
+    const hasTicketBalance = result?.prizePoolBalances?.ticket.gt(0)
     return notDelegated && hasTicketBalance
   })
 

@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { numberWithCommas, stringWithPrecision } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 
 const EMPTY_AMOUNT: Amount = {
@@ -19,13 +19,15 @@ export const getAmountFromString = (amount: string, decimals: string): Amount =>
     if (!amount || amount === undefined) {
       return EMPTY_AMOUNT
     }
+    const trimmedAmount = stringWithPrecision(amount, { precision: Number(decimals) })
 
     return {
       amount,
-      amountUnformatted: ethers.utils.parseUnits(amount, decimals),
-      amountPretty: numberWithCommas(amount) as string
+      amountUnformatted: ethers.utils.parseUnits(trimmedAmount, decimals),
+      amountPretty: numberWithCommas(trimmedAmount) as string
     }
   } catch (e) {
+    console.error(e.message)
     return EMPTY_AMOUNT
   }
 }
