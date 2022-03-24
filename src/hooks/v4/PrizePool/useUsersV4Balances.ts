@@ -12,7 +12,7 @@ import {
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
-import { useAllDelegations } from '@views/Account/V4Deposits/TwabDelegatorItem'
+import { useAllTwabDelegations } from '../useAllTwabDelegations'
 
 export const useUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
@@ -42,7 +42,7 @@ export const useUsersV4Balances = (usersAddress: string) => {
     isFetched: isDelegationsFetched,
     isFetching: isDelegationsFetching,
     refetch: refetchDelegations
-  } = useAllDelegations(usersAddress)
+  } = useAllTwabDelegations(usersAddress)
 
   return useMemo(() => {
     const isFetched =

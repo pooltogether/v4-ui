@@ -33,8 +33,9 @@ import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { getAddress } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
-import { TwabDelegatorItem, useAllDelegations } from './TwabDelegatorItem'
+import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
+import { useAllTwabDelegations } from '@hooks/v4/useAllTwabDelegations'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -229,7 +230,8 @@ const Divider: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const { data: delegatedToData, isFetched: isAmountDelegatedToFetched } =
     useTotalAmountDelegatedTo(usersAddress)
-  const { data: delegationData, isFetched: isDelegationsFetched } = useAllDelegations(usersAddress)
+  const { data: delegationData, isFetched: isDelegationsFetched } =
+    useAllTwabDelegations(usersAddress)
 
   if (
     (isDelegationsFetched && !delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero()) ||
