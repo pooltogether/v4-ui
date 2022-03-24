@@ -17,28 +17,28 @@ import { UniswapWidgetCard } from '@views/UniswapWidgetCard'
 
 export const POOLBalancesCard = () => {
   const { t } = useTranslation()
-  const [showSwapModal, setShowSwapModal] = useState(false)
+  // const [showSwapModal, setShowSwapModal] = useState(false)
 
   const usersAddress = useUsersAddress()
   const { data, isFetched } = useUsersV3POOLTokenBalances(usersAddress)
 
-  const openModal = () => {
-    setShowSwapModal(true)
-  }
+  // const openModal = () => {
+  //   setShowSwapModal(true)
+  // }
 
-  const closeModal = () => {
-    setShowSwapModal(false)
-  }
+  // const closeModal = () => {
+  //   setShowSwapModal(false)
+  // }
 
   return (
     <div>
-      <div className='mb-2 flex items-center justify-between'>
+      <div className='mb-2 flex items-center'>
         <CardTitle
           title={t('poolToken', 'POOL Token')}
           secondary={`$${data?.totalValueUsd.amountPretty}`}
           loading={!isFetched}
         />
-        <Modal label={'hi'} isOpen={showSwapModal} closeModal={closeModal}>
+        {/* <Modal label={'hi'} isOpen={showSwapModal} closeModal={closeModal}>
           <UniswapWidgetCard />
         </Modal>
         <button
@@ -51,7 +51,7 @@ export const POOLBalancesCard = () => {
             style={{ top: 1 }}
           />{' '}
           {t('getPool')}
-        </button>
+        </button> */}
       </div>
       <POOLBalancesList data={data} isFetched={isFetched} />
     </div>

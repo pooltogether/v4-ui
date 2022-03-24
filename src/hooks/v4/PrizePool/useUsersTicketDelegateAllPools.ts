@@ -23,13 +23,15 @@ export const useUsersTicketDelegateAllPools = () => {
       queryKey: ['useUsersTicketDelegateAllPools', usersAddress, prizePool.id()],
       queryFn: async () => {
         const tokens = await getPrizePoolTokens(prizePool)
-        const ticketDelegate = await prizePool.getUsersTicketDelegate(usersAddress)
-        const ticketData = await prizePool.getUsersPrizePoolBalances(usersAddress)
+        const delegate = await prizePool.getUsersTicketDelegate(usersAddress)
+        const prizePoolBalances = await prizePool.getUsersPrizePoolBalances(usersAddress)
         return {
+          chainId: prizePool.chainId,
           ticketDecimals: tokens.ticket.decimals,
           prizePool,
-          ticketData,
-          [usersAddress]: ticketDelegate
+          prizePoolBalances,
+          delegate,
+          usersAddress
         }
       },
       enabled: isFetched && Boolean(usersAddress)

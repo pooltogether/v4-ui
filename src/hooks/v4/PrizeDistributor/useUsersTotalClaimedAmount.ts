@@ -1,10 +1,10 @@
 import { BigNumber } from 'ethers'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useTicketDecimals } from '../PrizePool/useTicketDecimals'
+import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 
 export const useUsersTotalClaimedAmount = (usersAddress: string) => {
-  const { data: decimals, isFetched: isDecimalsFetched } = useTicketDecimals()
+  const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
   const claimedAmountsQueryResults = useAllUsersClaimedAmounts(usersAddress)
   const isClaimedAmountsFetched = claimedAmountsQueryResults.every(
     (queryResult) => queryResult.isFetched

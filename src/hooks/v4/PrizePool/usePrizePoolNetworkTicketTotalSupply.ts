@@ -4,13 +4,13 @@ import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'
 import { PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY } from './usePrizePoolTicketTotalSupply'
-import { useTicketDecimals } from './useTicketDecimals'
+import { useSelectedPrizePoolTicketDecimals } from './useSelectedPrizePoolTicketDecimals'
 
 // TODO: getRefetchInterval
 // NOTE: Assumes all tickets have the same decimals
 export const usePrizePoolNetworkTicketTotalSupply = () => {
   const prizePools = usePrizePools()
-  const { data: decimals } = useTicketDecimals()
+  const { data: decimals } = useSelectedPrizePoolTicketDecimals()
 
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
