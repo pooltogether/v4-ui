@@ -21,7 +21,7 @@ import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from '@components/Text/CardTitle'
-import { BalanceDelegatedTo } from './BalanceDelegatedTo'
+import { BalanceDelegatedToItem } from './BalanceDelegatedToItem'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
@@ -33,6 +33,8 @@ import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { getAddress } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
+import { TwabDelegatorItem, useAllDelegations } from './TwabDelegatorItem'
+import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -67,7 +69,9 @@ const DepositsList = () => {
         />
       ))}
 
-      <BalanceDelegatedTo />
+      <Divider usersAddress={usersAddress} />
+      <BalanceDelegatedToItem usersAddress={usersAddress} />
+      <TwabDelegatorItem delegator={usersAddress} />
     </PrizePoolDepositList>
   )
 }
@@ -168,7 +172,7 @@ const DepositItem = (props: DepositItemsProps) => {
                 refetchBalances={refetchBalances}
               />
             ),
-            icon: 'user-plus',
+            icon: 'gift',
             label: t('delegateDeposit', 'Delegate deposit'),
             theme: SquareButtonTheme.teal
           }
@@ -219,4 +223,24 @@ const getDelegateAddress = (
   } else {
     return delegateAddress
   }
+}
+
+const Divider: React.FC<{ usersAddress: string }> = (props) => {
+  const { usersAddress } = props
+  const { data: delegatedToData, isFetched: isAmountDelegatedToFetched } =
+    useTotalAmountDelegatedTo(usersAddress)
+  const { data: delegationData, isFetched: isDelegationsFetched } = useAllDelegations(usersAddress)
+
+  if (
+    (isDelegationsFetched && !delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero()) ||
+    (isAmountDelegatedToFetched && !delegatedToData.delegatedAmount.amountUnformatted.isZero())
+  ) {
+    return (
+      <li>
+        <hr />
+      </li>
+    )
+  }
+
+  return null
 }

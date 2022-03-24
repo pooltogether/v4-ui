@@ -3,7 +3,9 @@ import {
   ModalTitle,
   SquareButton,
   SquareButtonTheme,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  Collapse,
+  SquareLink
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
@@ -23,6 +25,7 @@ import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 const DELEGATE_ADDRESS_KEY = 'delegate'
 
@@ -88,24 +91,35 @@ interface DelegateReadStateProps {
 }
 
 const DelegateReadState = (props: DelegateReadStateProps) => {
-  const { isFetched, setWriteView } = props
+  const { chainId, isFetched, setWriteView } = props
 
   const { t } = useTranslation()
 
   return (
     <div className='flex flex-col w-full'>
-      <span className='text-xs opacity-70 font-bold'>
-        {t('currentDelegate', 'Current delegate')}
-      </span>
-      <DelegateDisplay {...props} className='mb-4' />
-      <SquareButton
-        onClick={setWriteView}
-        disabled={!isFetched}
-        className='flex space-x-2 items-center'
+      <SquareLink
+        href={`https://tools.pooltogether.com/delegate/?delegation_chain=${getNetworkNameAliasByChainId(
+          chainId
+        )}`}
+        className='items-center space-x-2 mb-6'
       >
-        <span>{t('editDelegate', 'Edit delegate')}</span>
-        <FeatherIcon icon='edit' className='w-4 h-4' />
-      </SquareButton>
+        <span>{t('delegateDeposit')}</span>
+        <FeatherIcon icon='external-link' className='w-5 h-5' />
+      </SquareLink>
+      <Collapse title={'Advanced'} className='mx-auto'>
+        <span className='text-xs opacity-70 font-bold'>
+          {t('currentTicketDelegate', 'Current ticket delegate')}
+        </span>
+        <DelegateDisplay {...props} className='mb-4' />
+        <SquareButton
+          onClick={setWriteView}
+          disabled={!isFetched}
+          className='flex space-x-2 items-center'
+        >
+          <FeatherIcon icon='edit' className='w-5 h-5' />
+          <span>{t('editTicketDelegate', 'Edit ticket delegate')}</span>
+        </SquareButton>
+      </Collapse>
     </div>
   )
 }

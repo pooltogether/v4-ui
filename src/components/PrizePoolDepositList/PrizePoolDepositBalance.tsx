@@ -12,7 +12,10 @@ export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => 
   const { chainId, token } = props
 
   let balanceToDisplay = token.amountPretty
-  if (!(token as TokenWithUsdBalance).balanceUsdScaled.isZero()) {
+  if (
+    (token as TokenWithUsdBalance).balanceUsdScaled &&
+    !(token as TokenWithUsdBalance).balanceUsdScaled.isZero()
+  ) {
     balanceToDisplay = `$${(token as TokenWithUsdBalance).balanceUsd.amountPretty}`
   }
 

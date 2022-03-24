@@ -1,4 +1,4 @@
-import { useTicketDecimals } from '@hooks/v4/PrizePool/useTicketDecimals'
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useEstimatedOddsForAmount } from '@hooks/v4/useEstimatedOddsForAmount'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import React from 'react'
@@ -11,7 +11,7 @@ interface XDollarsGetsYouProps
 
 export const XDollarsGetsYou = (props: XDollarsGetsYouProps) => {
   const { x, ...spanProps } = props
-  const { data: decimals, isFetched } = useTicketDecimals()
+  const { data: decimals, isFetched } = useSelectedPrizePoolTicketDecimals()
   const { data: odds } = useEstimatedOddsForAmount(
     isFetched ? getAmountFromString(x, decimals) : undefined
   )

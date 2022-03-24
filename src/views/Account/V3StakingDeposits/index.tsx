@@ -34,6 +34,8 @@ export const V3StakingCards = () => {
     }
   }, [isV3POOLPoolFetched, isV3LPPoolFetched])
 
+  if (!isFetched) return null
+
   return (
     <div className='flex flex-col space-y-2'>
       <CardTitle title={t('staking')} secondary={`$${amount.amountPretty}`} loading={!isFetched} />

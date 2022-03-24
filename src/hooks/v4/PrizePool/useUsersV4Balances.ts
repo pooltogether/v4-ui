@@ -12,6 +12,7 @@ import {
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
+import { useAllDelegations } from '@views/Account/V4Deposits/TwabDelegatorItem'
 
 export const useUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
@@ -31,23 +32,40 @@ export const useUsersV4Balances = (usersAddress: string) => {
           const { data: tokens } = queryResult
           return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
         },
-        enabled: isAllPrizePoolTokensFetched
+        enabled: isAllPrizePoolTokensFetched && !!usersAddress
       }
     })
   )
 
+  const {
+    data: delegationData,
+    isFetched: isDelegationsFetched,
+    isFetching: isDelegationsFetching,
+    refetch: refetchDelegations
+  } = useAllDelegations(usersAddress)
+
   return useMemo(() => {
-    const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-    const isFetching = queryResults.some((queryResult) => queryResult.isFetching)
+    const isFetched =
+      queryResults.every((queryResult) => queryResult.isFetched) && isDelegationsFetched
+    const isFetching =
+      queryResults.some((queryResult) => queryResult.isFetching) || isDelegationsFetching
     const data = queryResults.map((queryResult) => queryResult.data).filter(Boolean)
-    const totalValueUsdScaled = getTotalValueUsdScaled(data)
+    const totalTicketValueUsdScaled = getTotalValueUsdScaled(data)
+    const totalDelegationValueUsdScaled = isDelegationsFetched
+      ? delegationData.totalTokenWithUsdBalance.balanceUsdScaled
+      : BigNumber.from(0)
+    const totalValueUsdScaled = totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
-    const refetch = () => queryResults.map((queryResult) => queryResult.refetch())
+    const refetch = () => {
+      queryResults.map((queryResult) => queryResult.refetch())
+      refetchDelegations()
+    }
     return {
       isFetched,
       isFetching,
       refetch,
       data: {
+        delegations: isDelegationsFetched ? delegationData.delegationsPerChain : null,
         balances: data,
         totalValueUsd,
         totalValueUsdScaled
