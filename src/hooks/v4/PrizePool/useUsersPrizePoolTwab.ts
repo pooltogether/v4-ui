@@ -8,6 +8,12 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export const USERS_TWAB_QUERY_KEY = 'useUsersPrizePoolTwab'
 
+/**
+ * Fetches a users current TWAB
+ * @param usersAddress
+ * @param prizePool
+ * @returns
+ */
 export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool) => {
   const refetchInterval = useRefetchInterval(prizePool?.chainId)
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =

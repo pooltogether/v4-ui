@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
 import { constants } from 'ethers'
 
-import { useUsersTicketDelegateAllPools } from '@hooks/v4/PrizePool/useUsersTicketDelegateAllPools'
+import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 
 export const AlertBanners = () => {
   return <DelegateTicketsBanner />
@@ -13,14 +14,23 @@ export const AlertBanners = () => {
 const DelegateTicketsBanner = () => {
   const { t } = useTranslation()
 
-  const queriesResult = useUsersTicketDelegateAllPools()
+  const usersAddress = useUsersAddress()
+  const queriesResult = useAllUsersTicketDelegates(usersAddress)
+  const { data, isFetched } = useAllUsersV4Balances(usersAddress)
 
-  const booleanResults = queriesResult.map((queryResult) => {
-    const result = queryResult.data
-    const notDelegated = result?.delegate === constants.AddressZero
-    const hasTicketBalance = result?.prizePoolBalances?.ticket.gt(0)
-    return notDelegated && hasTicketBalance
-  })
+  const booleanResults = queriesResult.map(
+    ({ isFetched: isTicketDelegateFetched, data: ticketDelegateData }) => {
+      if (!isFetched || !isTicketDelegateFetched) return false
+
+      const balances = data.balances.find((balance) => {
+        return balance.prizePool.id() === ticketDelegateData.prizePool.id()
+      })
+
+      const notDelegated = ticketDelegateData.ticketDelegate === constants.AddressZero
+      const hasTicketBalance = balances.balances.ticket.hasBalance
+      return notDelegated && hasTicketBalance
+    }
+  )
 
   const showWarning = booleanResults.some((booleanResult) => booleanResult)
 

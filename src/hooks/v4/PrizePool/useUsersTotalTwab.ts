@@ -9,6 +9,7 @@ import { usePrizePools } from './usePrizePools'
 import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
 
 /**
+ * Fetches the users current TWAB across all chains and combines
  * NOTE: Assumes all prize pool tickets have the same decimals
  * @param usersAddress
  * @returns

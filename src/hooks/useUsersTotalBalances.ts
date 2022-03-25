@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useUsersV4Balances } from './v4/PrizePool/useUsersV4Balances'
+import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
@@ -15,7 +15,7 @@ export const useUsersTotalBalances = () => {
     data: v4BalancesData,
     isFetched: isV4Fetched,
     isFetching: isV4Fetching
-  } = useUsersV4Balances(usersAddress)
+  } = useAllUsersV4Balances(usersAddress)
   const {
     data: v3BalancesData,
     isFetched: isV3Fetched,

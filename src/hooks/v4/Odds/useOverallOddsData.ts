@@ -1,16 +1,16 @@
 import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
 
-import { useUpcomingPrizeTier } from '../useUpcomingPrizeTier'
-import { usePrizePoolNetworkTicketTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTotalSupply'
-import { useSelectedPrizePoolTicketDecimals } from './PrizePool/useSelectedPrizePoolTicketDecimals'
+import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolNetworkTicketTwabTotalSupply'
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 
 export const useOverallOddsData = () => {
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
     useSelectedPrizePoolTicketDecimals()
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
 
-  const { data: totalSupply, isFetched: isTotalSupplyFetched } =
-    usePrizePoolNetworkTicketTotalSupply()
+  const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
+    usePrizePoolNetworkTicketTwabTotalSupply()
 
   const isFetched = isTotalSupplyFetched && isTicketDecimalsFetched && isPrizeTierFetched
 
@@ -20,7 +20,7 @@ export const useOverallOddsData = () => {
 
   return {
     decimals: ticketDecimals,
-    totalSupply,
+    totalSupply: totalSupplyData.totalSupply,
     numberOfPrizes: getNumberOfPrizes(prizeTier)
   }
 }

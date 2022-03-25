@@ -20,6 +20,7 @@ import { DrawData } from '../../../interfaces/v4'
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { BottomSheet, snapTo90 } from '@components/BottomSheet'
 import Reward, { RewardElement } from 'react-rewards'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -66,6 +67,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
+  const {
+    refetch: refetchTotalTwab
+  } = useUsersTotalTwab(usersAddress)
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
@@ -88,6 +92,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       },
       callbacks: {
         refetch: () => {
+          refetchTotalTwab()
           refetchClaimedAmounts()
         }
       }

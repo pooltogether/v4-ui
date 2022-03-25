@@ -21,7 +21,7 @@ import { ModalTitle } from '@components/Modal/ModalTitle'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
-import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
+import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { UpdatedOdds } from '@components/UpdatedOddsListItem'
 import { BottomSheet } from '@components/BottomSheet'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
@@ -230,21 +230,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
   )
 }
 
-const AmountToRecieve = (props: { amount: Amount; ticket: Token }) => {
-  const { amount, ticket } = props
-  const { t } = useTranslation()
-  return (
-    <InfoListItem
-      labelToolTip={t(
-        'ticketRepresentsChanceToWin',
-        'The {{ticket}} token represents your chance to win.',
-        { ticket: ticket.symbol }
-      )}
-      label={t('tickerToReceive', { ticker: ticket.symbol })}
-      value={amount.amountPretty}
-    />
-  )
-}
 const CheckBackForPrizesBox = () => {
   const { t } = useTranslation()
   const eligibleDate = getTimestampString(msToS(addDays(new Date(), 2).getTime()))

@@ -37,8 +37,8 @@ import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
 import { useQuery } from 'react-query'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
+import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
 import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
@@ -156,10 +156,10 @@ const DelegateCard = (props) => {
       </p>
       {(!usersAddress ||
         !isFetched ||
-        delegate[usersAddress].toLowerCase() !== UNCHAIN_ADDRESS.toLowerCase()) && (
+        delegate.ticketDelegate.toLowerCase() !== UNCHAIN_ADDRESS.toLowerCase()) && (
         <DelegateForm prizePool={prizePool} tx={tx} setTxId={setTxId} refetchDelegate={refetch} />
       )}
-      {isFetched && delegate[usersAddress].toLowerCase() === UNCHAIN_ADDRESS.toLowerCase() && (
+      {isFetched && delegate.ticketDelegate.toLowerCase() === UNCHAIN_ADDRESS.toLowerCase() && (
         <AlreadyDonating />
       )}
     </Card>
