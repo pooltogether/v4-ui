@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { msToS } from '@pooltogether/utilities'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
@@ -6,9 +7,12 @@ import { usePrizePools } from './usePrizePools'
 import { PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY } from './usePrizePoolTicketTotalSupply'
 import { useSelectedPrizePoolTicketDecimals } from './useSelectedPrizePoolTicketDecimals'
 
-// TODO: getRefetchInterval
-// NOTE: Assumes all tickets have the same decimals
-export const usePrizePoolNetworkTicketTotalSupply = () => {
+/**
+ * Fetches the total supply of tickets that have been delegated at this current time.
+ * NOTE: Assumes all tickets have the same decimals
+ * @returns
+ */
+export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const prizePools = usePrizePools()
   const { data: decimals } = useSelectedPrizePoolTicketDecimals()
 
@@ -16,7 +20,10 @@ export const usePrizePoolNetworkTicketTotalSupply = () => {
     prizePools.map((prizePool) => {
       return {
         queryKey: [PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id()],
-        queryFn: () => prizePool?.getTicketTotalSupply(),
+        queryFn: () => {
+          const timestamp = Math.round(msToS(Date.now()))
+          return prizePool?.getTicketTwabTotalSupplyAt(timestamp)
+        },
         enabled: Boolean(decimals)
       }
     })
