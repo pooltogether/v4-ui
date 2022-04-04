@@ -35,7 +35,6 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
       action,
       amountUnformatted
     )
-    console.log('hey')
     return {
       usersAddress,
       odds,
