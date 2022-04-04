@@ -9,7 +9,7 @@ export const useOverallOddsData = () => {
     useSelectedPrizePoolTicketDecimals()
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
 
-  const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
+  const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
 
   const isFetched = isTotalSupplyFetched && isTicketDecimalsFetched && isPrizeTierFetched
@@ -20,7 +20,7 @@ export const useOverallOddsData = () => {
 
   return {
     decimals: ticketDecimals,
-    totalSupply: totalSupplyData.totalSupply,
+    totalSupply,
     numberOfPrizes: getNumberOfPrizes(prizeTier)
   }
 }

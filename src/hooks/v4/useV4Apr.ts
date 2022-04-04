@@ -7,12 +7,12 @@ import { usePrizePoolNetworkTicketTwabTotalSupply } from './PrizePool/usePrizePo
 
 export const useV4Apr = () => {
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
-  const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
+  const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
   const enabled = isPrizeTierFetched && isTotalSupplyFetched
   return useQuery(
-    ['useV4Apr', prizeTier, totalSupplyData?.totalSupply.amountPretty],
-    () => getV4Apr(totalSupplyData.totalSupply, prizeTier.prize),
+    ['useV4Apr', prizeTier, totalSupply],
+    () => getV4Apr(totalSupply, prizeTier.prize),
     {
       ...NO_REFETCH,
       enabled

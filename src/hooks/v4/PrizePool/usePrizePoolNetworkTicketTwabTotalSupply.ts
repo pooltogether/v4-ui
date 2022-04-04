@@ -1,9 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { msToS } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useMemo } from 'react'
-import { useQueries, useQuery } from 'react-query'
+import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'
 import { PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY } from './usePrizePoolTicketTotalSupply'
 import { useSelectedPrizePoolTicketDecimals } from './useSelectedPrizePoolTicketDecimals'
@@ -17,42 +16,35 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const prizePools = usePrizePools()
   const { data: decimals } = useSelectedPrizePoolTicketDecimals()
 
-  return useQuery(
-    [PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePools.map((prizePool) => prizePool.id())],
-    () => getPrizePoolNetworkTicketTwabTotalSupply(prizePools, decimals)
+  const queryResults = useQueries(
+    prizePools.map((prizePool) => {
+      return {
+        queryKey: [PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id()],
+        queryFn: () => {
+          const timestamp = Math.round(msToS(Date.now()))
+          return prizePool?.getTicketTwabTotalSupplyAt(timestamp)
+        },
+        enabled: Boolean(decimals)
+      }
+    })
   )
-}
 
-const getPrizePoolNetworkTicketTwabTotalSupply = async (
-  prizePools: PrizePool[],
-  decimals: string
-) => {
-  const currentTimestamp = Math.round(msToS(Date.now()))
-  const promises = prizePools.map((prizePool) =>
-    getPrizePoolTicketTwabTotalSupply(prizePool, currentTimestamp, decimals)
-  )
-  const twabs = await Promise.all(promises)
+  return useMemo(() => {
+    const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
-  let networkTotalSupplyUnformatted = BigNumber.from(0)
-  twabs.forEach(({ twab }) => {
-    networkTotalSupplyUnformatted = networkTotalSupplyUnformatted.add(twab.amountUnformatted)
-  })
-  const totalSupply = getAmountFromBigNumber(networkTotalSupplyUnformatted, decimals)
-  return {
-    twabs,
-    totalSupply
-  }
-}
+    let networkTotalSupplyUnformatted = BigNumber.from(0)
+    queryResults.forEach((queryResult) => {
+      const { data: totalSupplyUnformatted, isFetched } = queryResult
+      if (isFetched) {
+        networkTotalSupplyUnformatted = networkTotalSupplyUnformatted.add(totalSupplyUnformatted)
+      }
+    })
 
-const getPrizePoolTicketTwabTotalSupply = async (
-  prizePool: PrizePool,
-  currentTimestamp: number,
-  decimals: string
-) => {
-  const twabUnformatted = await prizePool.getTicketTwabTotalSupplyAt(currentTimestamp)
-  return {
-    chainId: prizePool.chainId,
-    timestamp: currentTimestamp,
-    twab: getAmountFromBigNumber(twabUnformatted, decimals)
-  }
+    const totalSupply = getAmountFromBigNumber(networkTotalSupplyUnformatted, decimals)
+
+    return {
+      data: totalSupply,
+      isFetched
+    }
+  }, [queryResults, decimals])
 }
