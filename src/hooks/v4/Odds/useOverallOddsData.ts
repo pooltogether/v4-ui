@@ -1,8 +1,8 @@
 import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
 
-import { useUpcomingPrizeTier } from '../useUpcomingPrizeTier'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTwabTotalSupply'
-import { useSelectedPrizePoolTicketDecimals } from './PrizePool/useSelectedPrizePoolTicketDecimals'
+import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolNetworkTicketTwabTotalSupply'
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 
 export const useOverallOddsData = () => {
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =

@@ -16,7 +16,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { useUsersV4Balances } from '@hooks/v4/PrizePool/useUsersV4Balances'
+import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
@@ -35,12 +35,12 @@ import { getAddress } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
 import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
-import { useAllTwabDelegations } from '@hooks/v4/useAllTwabDelegations'
+import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data } = useUsersV4Balances(usersAddress)
+  const { data } = useAllUsersV4Balances(usersAddress)
 
   return (
     <div id='deposits'>
@@ -56,7 +56,7 @@ export const V4Deposits = () => {
 
 const DepositsList = () => {
   const usersAddress = useUsersAddress()
-  const { data, isFetched, refetch } = useUsersV4Balances(usersAddress)
+  const { data, isFetched, refetch } = useAllUsersV4Balances(usersAddress)
   if (!isFetched) {
     return <LoadingList />
   }
@@ -152,6 +152,7 @@ const DepositItem = (props: DepositItemsProps) => {
             id: 'withdraw',
             view: () => (
               <WithdrawView
+                usersAddress={usersAddress}
                 prizePool={prizePool}
                 balances={balances}
                 setWithdrawTxId={setTxId}
@@ -212,9 +213,9 @@ const DepositBalance = (props: DepositItemsProps) => {
  */
 const getDelegateAddress = (
   usersAddress: string,
-  delegateData: { [usersAddress: string]: string }
+  delegateData: { ticketDelegate: string; usersAddress: string }
 ): string => {
-  const delegateAddress = delegateData?.[usersAddress]
+  const delegateAddress = delegateData?.ticketDelegate
   if (
     !delegateAddress ||
     getAddress(usersAddress) === delegateAddress ||

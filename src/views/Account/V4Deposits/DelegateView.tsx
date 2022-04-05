@@ -40,7 +40,7 @@ export const DelegateView = (props: DelegateViewProps) => {
   const { prizePool } = props
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data: delegate, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)
+  const { data: delegateData, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)
   const [view, setView] = useState<DelegateViews>(DelegateViews.read)
 
   return (
@@ -67,7 +67,7 @@ export const DelegateView = (props: DelegateViewProps) => {
           chainId={prizePool.chainId}
           isFetched={isFetched}
           usersAddress={usersAddress}
-          delegate={delegate?.[usersAddress]}
+          delegate={delegateData?.ticketDelegate}
           setWriteView={() => setView(DelegateViews.write)}
         />
       )}

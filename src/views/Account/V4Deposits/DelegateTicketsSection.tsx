@@ -35,7 +35,7 @@ export const DelegateTicketsSection = (props: DelegateTicketsSectionProps) => {
     !balance ||
     balance.amountUnformatted.isZero() ||
     !isFetched ||
-    delegateData?.[usersAddress] !== ethers.constants.AddressZero
+    delegateData?.ticketDelegate !== ethers.constants.AddressZero
   ) {
     return null
   }

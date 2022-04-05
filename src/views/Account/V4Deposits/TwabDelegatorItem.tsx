@@ -13,7 +13,7 @@ import { BottomSheet } from '@components/BottomSheet'
 import { Amount, Token } from '@pooltogether/hooks'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import classNames from 'classnames'
-import { useAllTwabDelegations } from '@hooks/v4/useAllTwabDelegations'
+import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 
 export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
   const { delegator } = props
@@ -24,7 +24,7 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
 
   if (!isFetched || data.totalTokenWithUsdBalance.amountUnformatted.isZero()) return null
 
-  const { delegationsPerChain, totalTokenWithUsdBalance } = data
+  const { delegations, totalTokenWithUsdBalance } = data
 
   return (
     <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
@@ -38,12 +38,12 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
         </div>
 
         <PrizePoolDepositBalance
-          chainId={delegationsPerChain[0].chainId}
+          chainId={delegations[0].chainId}
           token={totalTokenWithUsdBalance}
         />
       </button>
       <DepositDelegationsSheet
-        delegationsPerChain={delegationsPerChain}
+        delegations={delegations}
         isOpen={isOpen}
         onDismiss={() => setIsOpen(false)}
       />
@@ -52,7 +52,7 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
 }
 
 const DepositDelegationsSheet: React.FC<{
-  delegationsPerChain: {
+  delegations: {
     chainId: number
     delegations: (DelegationId & Delegation)[]
     ticket: {
@@ -66,7 +66,7 @@ const DepositDelegationsSheet: React.FC<{
   isOpen: boolean
   onDismiss: () => void
 }> = (props) => {
-  const { isOpen, onDismiss, delegationsPerChain } = props
+  const { isOpen, onDismiss, delegations } = props
 
   return (
     <BottomSheet
@@ -80,7 +80,7 @@ const DepositDelegationsSheet: React.FC<{
         Delegate your chances to win without losing custody of your deposit.
       </p>
       <ul className='space-y-4'>
-        {delegationsPerChain.map((data) => (
+        {delegations.map((data) => (
           <DelegationsList key={`delegation-list-${data.chainId}`} {...data} />
         ))}
       </ul>
