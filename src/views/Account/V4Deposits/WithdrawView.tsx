@@ -38,9 +38,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   const user = useSelectedChainIdUser()
   const sendTx = useSendTransaction()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
-  const {
-    refetch: refetchTotalTwab
-  } = useUsersTotalTwab(usersAddress)
+  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -60,7 +58,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
           refetchBalances()
-          refetchTotalTwab()
+          refetchUsersTotalTwab()
         }
       }
     })

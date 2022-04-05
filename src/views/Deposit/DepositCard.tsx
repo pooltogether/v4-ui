@@ -55,7 +55,7 @@ export const DepositCard = (props: { className?: string }) => {
     isFetching: isTicketDelegateFetching,
     refetch: refetchTicketDelegate
   } = useUsersTicketDelegate(usersAddress, prizePool)
-  const { refetch: refetchTotalTwab } = useUsersTotalTwab(usersAddress)
+  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
 
   const isDataFetched =
     isPrizePoolTokensFetched &&
@@ -169,7 +169,7 @@ export const DepositCard = (props: { className?: string }) => {
       callbacks: {
         onSuccess,
         refetch: () => {
-          refetchTotalTwab()
+          refetchUsersTotalTwab()
           refetchUsersBalances()
         }
       }
