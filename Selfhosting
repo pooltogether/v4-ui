@@ -1,0 +1,6 @@
+cp .envrc.example .envrc
+
+
+
+
+direnv allow
