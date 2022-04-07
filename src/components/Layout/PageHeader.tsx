@@ -24,6 +24,7 @@ import { TopNavigation } from '@components/Layout/Navigation'
 import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { SUPPORTED_LANGUAGES } from '@constants/languages'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -76,6 +77,7 @@ const LanguagePicker = () => {
   return (
     <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
+        langs={SUPPORTED_LANGUAGES}
         className='dark:text-white'
         currentLang={currentLang}
         changeLang={(newLang) => {
