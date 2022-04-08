@@ -12,6 +12,7 @@ import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { WithdrawStepContent } from './WithdrawStepContent'
 import { DepositItemsProps } from '.'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 
 export enum WithdrawalSteps {
   input,
@@ -20,12 +21,13 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
+  usersAddress: string
   setWithdrawTxId: (txId: number) => void
   onDismiss: () => void
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, balances, setWithdrawTxId, onDismiss, refetchBalances } = props
+  const { prizePool, usersAddress, balances, setWithdrawTxId, onDismiss, refetchBalances } = props
   const { t } = useTranslation()
   const { token } = balances
 
@@ -36,6 +38,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   const user = useSelectedChainIdUser()
   const sendTx = useSendTransaction()
   const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -55,6 +58,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
           refetchBalances()
+          refetchUsersTotalTwab()
         }
       }
     })

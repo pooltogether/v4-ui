@@ -12,9 +12,9 @@ import {
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
-import { useAllTwabDelegations } from '../useAllTwabDelegations'
+import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 
-export const useUsersV4Balances = (usersAddress: string) => {
+export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
   const queriesResult = useAllPrizePoolTokens()
 
@@ -65,7 +65,7 @@ export const useUsersV4Balances = (usersAddress: string) => {
       isFetching,
       refetch,
       data: {
-        delegations: isDelegationsFetched ? delegationData.delegationsPerChain : null,
+        delegations: isDelegationsFetched ? delegationData.delegations : null,
         balances: data,
         totalValueUsd,
         totalValueUsdScaled

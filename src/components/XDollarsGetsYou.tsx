@@ -1,5 +1,5 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
-import { useEstimatedOddsForAmount } from '@hooks/v4/useEstimatedOddsForAmount'
+import { useEstimatedOddsForAmount } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import React from 'react'
 import { Trans } from 'react-i18next'

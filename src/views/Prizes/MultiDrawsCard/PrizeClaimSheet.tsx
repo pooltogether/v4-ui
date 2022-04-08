@@ -20,6 +20,8 @@ import { DrawData } from '../../../interfaces/v4'
 import { useUsersAddress } from '@hooks/useUsersAddress'
 import { BottomSheet, snapTo90 } from '@components/BottomSheet'
 import Reward, { RewardElement } from 'react-rewards'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
+import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -49,6 +51,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     ticket,
     isOpen,
     drawIdsToNotClaim,
+    prizePool,
     addDrawIdToClaim,
     removeDrawIdToClaim,
     closeModal,
@@ -66,6 +69,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
+  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
@@ -88,6 +93,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       },
       callbacks: {
         refetch: () => {
+          refetchUsersTotalTwab()
+          refetchUsersBalances()
           refetchClaimedAmounts()
         }
       }

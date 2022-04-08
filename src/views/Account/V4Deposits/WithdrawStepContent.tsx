@@ -26,7 +26,7 @@ import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { UpdatedOdds } from '@components/UpdatedOddsListItem'
-import { EstimateAction } from '@hooks/v4/useEstimatedOddsForAmount'
+import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { WithdrawalSteps } from './WithdrawView'
 

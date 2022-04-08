@@ -26,6 +26,7 @@ import { DepositConfirmationModal } from '@views/Deposit/DepositConfirmationModa
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from '@views/Deposit/DepositForm'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -54,6 +55,7 @@ export const DepositCard = (props: { className?: string }) => {
     isFetching: isTicketDelegateFetching,
     refetch: refetchTicketDelegate
   } = useUsersTicketDelegate(usersAddress, prizePool)
+  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
 
   const isDataFetched =
     isPrizePoolTokensFetched &&
@@ -62,7 +64,7 @@ export const DepositCard = (props: { className?: string }) => {
     usersBalancesData?.usersAddress === usersAddress &&
     (isTicketDelegateFetched || !isTicketDelegateFetching)
 
-  const ticketDelegate = delegateData?.[usersAddress]
+  const ticketDelegate = delegateData?.ticketDelegate
 
   const form = useForm({
     mode: 'onChange',
@@ -167,6 +169,7 @@ export const DepositCard = (props: { className?: string }) => {
       callbacks: {
         onSuccess,
         refetch: () => {
+          refetchUsersTotalTwab()
           refetchUsersBalances()
         }
       }
