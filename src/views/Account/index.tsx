@@ -11,6 +11,7 @@ import { V3Deposits } from './V3Deposits'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
 import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
+import { VotingPromptCard } from '@components/VotingPromptCard'
 
 export const AccountUI = (props) => {
   const { isWalletConnected } = useOnboard()
@@ -19,12 +20,13 @@ export const AccountUI = (props) => {
 
   if (!isWalletConnected) {
     return (
-      <PagePadding className='space-y-8'>
-        <Piggy className='w-20 sm:w-32 mb-2 sm:mb-4 mx-auto' />
-        <span className='mx-auto mb-6 text-xs sm:text-lg block text-center'>
+      <PagePadding className='flex flex-col space-y-8'>
+        <Piggy className='w-20 sm:w-32 mx-auto' />
+        <span className='mx-auto text-xs sm:text-lg block text-center'>
           <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
         </span>
         <ConnectWalletCard />
+        <VotingPromptCard />
         <OddsDisclaimer className='block mt-6' />
       </PagePadding>
     )

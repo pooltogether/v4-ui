@@ -4,6 +4,6 @@ declare module '*.png' {
 }
 
 declare module '*.svg' {
-  const value: any
+  const value: (props: SVGProps<SVGSVGElement>) => JSX.Element
   export = value
 }
