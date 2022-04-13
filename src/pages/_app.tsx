@@ -3,8 +3,9 @@ import * as Fathom from 'fathom-client'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { Provider } from 'jotai'
-import { ScreenSize, useScreenSize } from '@pooltogether/hooks'
 import {
+  ScreenSize,
+  useScreenSize,
   useInitCookieOptions,
   useInitReducedMotion,
   initProviderApiKeys
@@ -22,10 +23,16 @@ import type { AppProps } from 'next/app'
 import '../../i18n'
 import { CUSTOM_WALLETS_CONFIG } from '@constants/customWalletsConfig'
 import { AllContextProviders } from '@components/contextProviders/AllContextProviders'
-import { AlertBanners } from '@components/AlertBanners'
 import { CustomErrorBoundary } from '@components/CustomErrorBoundary'
 import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
 import { sentryLog } from '@utils/services/sentryLog'
+import { initSentry } from '@utils/services/initSentry'
+
+// Custom css
+import '@assets/styles/index.css'
+import '@pooltogether/react-components/dist/globals.css'
+import '@assets/styles/gradients.css'
+import '@assets/styles/tsunami.css'
 
 import '@reach/dialog/styles.css'
 import '@reach/menu-button/styles.css'
@@ -35,12 +42,6 @@ import 'react-toastify/dist/ReactToastify.css'
 // Bottom sheet
 import 'react-spring-bottom-sheet/dist/style.css'
 import '@assets/styles/bottomSheet.css'
-
-// Custom css
-import '@assets/styles/gradients.css'
-import '@assets/styles/index.css'
-import '@assets/styles/tsunami.css'
-import { initSentry } from '@utils/services/initSentry'
 
 const queryClient = new QueryClient()
 
