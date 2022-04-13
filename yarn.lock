@@ -3084,10 +3084,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.4.0.tgz#310b9667a1123cfcce718aa6d8eba7c434a53c75"
   integrity sha512-dNgDpDsCMxUxaz8u6OfpjSBtMOdcp8QkLC3cwJ6E++4ux0qY2ON+ZqJEHIC3q4ZVJ4Xf6FikMJF0a8SVNtl8Zw==
 
-"@pooltogether/react-components@^1.10.0":
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.10.0.tgz#f4b57f38456bbf00440cdf5395dc601f2a452a18"
-  integrity sha512-9vmIEJAoMIoPfkSnbQ7D+392WJ4csjaEspP6tjA4UyipSuHVG4y1JgSNPY/k9SLzjtmICMuymcCxoAY5DBcp1A==
+"@pooltogether/react-components@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.11.0.tgz#db6287d7168b5e78961f7b6bb12f200a7bee970b"
+  integrity sha512-e3zCTU/gO8uOlxlsjSWxMm0LdFOC6krZXDCIeHhdMUJzHI2CC980S1cvgYU2SB52yXXObC8KZre8od7Xb3B00w==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -3116,10 +3116,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.9.tgz#af6ded2c0128face483731205eb7f87e3d4879bc"
   integrity sha512-rQMRX0oBvFoZISBty+VAmD62fb6gzXzL3f8Z6bnqDQ5EuR8+cM/6a7acW72yb8nl5o1hBlVo6bw4VYHIelLoIg==
 
-"@pooltogether/v4-client-js@^0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.12.0.tgz#6f76b6c61cb8c7532594970d3efb61f38d755843"
-  integrity sha512-56XsJr5aw5aCLE6gi7R7AZjJeKRNPMCc7cCsoEZvdAwkXMlmxp1DnkhPVLwo2hzlLGaX4v3sB95x8yafwvrY4Q==
+"@pooltogether/v4-client-js@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.13.0.tgz#8de810b6102b05224dcec0597e53c9f37198b29d"
+  integrity sha512-YRXsGDeLOl0lgkFlY+04wnmjjkyjRVrJbNigcTXU0S4AReFyDeF0NtrK5M+O8nsuD2v2He5VRh1XPbP6wFYWlA==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"

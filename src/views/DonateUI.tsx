@@ -221,16 +221,12 @@ export const DelegateForm = (props: DelegateFormProps) => {
 
   const {
     handleSubmit,
-    register,
-    setValue,
-    trigger,
     formState: { errors, isValid }
   } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
   const { t } = useTranslation()
-  const usersAddress = useUsersAddress()
   const sendTx = useSendTransaction()
   const user = useUser(prizePool)
   const isUserOnRightNetwork = useIsWalletOnNetwork(prizePool.chainId)
@@ -247,11 +243,6 @@ export const DelegateForm = (props: DelegateFormProps) => {
       }
     })
     setTxId(txId)
-  }
-
-  const valitdationRules = {
-    isValidAddress: (x: string) =>
-      ethers.utils.isAddress(x) ? true : 'Please enter a valid address'
   }
 
   const errorMessage = errors?.[DELEGATE_ADDRESS_KEY]?.message
