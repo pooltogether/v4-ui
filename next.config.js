@@ -53,8 +53,8 @@ const nextConfig = {
           type: 'asset/resource'
         },
         {
-          test: /\.svg/,
-          type: 'asset/resource'
+          test: /\.svg$/,
+          use: ['@svgr/webpack'],
         }
     ]
 

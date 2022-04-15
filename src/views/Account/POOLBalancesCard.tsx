@@ -14,6 +14,7 @@ import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useUsersV3POOLTokenBalances } from '@hooks/v3/useUsersV3POOLTokenBalances'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { UniswapWidgetCard } from '@views/UniswapWidgetCard'
+import { VotingPromptCard } from '@components/VotingPromptCard'
 
 export const POOLBalancesCard = () => {
   const { t } = useTranslation()
@@ -31,8 +32,8 @@ export const POOLBalancesCard = () => {
   // }
 
   return (
-    <div>
-      <div className='mb-2 flex items-center'>
+    <div className='space-y-2'>
+      <div className='flex items-center'>
         <CardTitle
           title={t('poolToken', 'POOL Token')}
           secondary={`$${data?.totalValueUsd.amountPretty}`}
@@ -54,6 +55,7 @@ export const POOLBalancesCard = () => {
         </button> */}
       </div>
       <POOLBalancesList data={data} isFetched={isFetched} />
+      <VotingPromptCard />
     </div>
   )
 }

@@ -224,7 +224,7 @@ export const DepositCard = (props: { className?: string }) => {
           amountToDeposit={amountToDeposit}
         />
 
-        <div className='w-full flex justify-around px-2 py-4'>
+        <div className='w-full flex justify-around xs:px-2 py-4'>
           <BridgeTokensModalTrigger prizePool={prizePool} />
           <HelpLink />
           <SwapTokensModalTrigger
@@ -263,16 +263,11 @@ const HelpLink = () => {
       href='https://docs.pooltogether.com/how-to/how-to-deposit'
       target='_blank'
       rel='noreferrer noopener'
-      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3'
+      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3 flex flex-col items-center xs:flex-row xs:space-x-2 space-y-1 xs:space-y-0 justify-between xs:justify-center xs:space-x-2'
       style={{ minWidth: BUTTON_MIN_WIDTH }}
     >
-      <FeatherIcon
-        icon={'help-circle'}
-        className='relative w-4 h-4 mr-2 inline-block'
-        style={{ top: -2 }}
-      />
-
-      {t('help', 'Help')}
+      <FeatherIcon icon={'help-circle'} className='relative w-4 h-4 inline-block' />
+      <span>{t('help', 'Help')}</span>
     </a>
   )
 }
@@ -290,22 +285,15 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
   return (
     <>
       <button
-        className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity'
+        className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-between items-center xs:flex-row xs:space-y-0 xs:space-x-2'
         onClick={() => setShowModal(true)}
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
-        <FeatherIcon
-          icon={'arrow-left'}
-          className='relative w-3 h-3  inline-block'
-          style={{ top: -2 }}
-        />
-        <FeatherIcon
-          icon={'arrow-right'}
-          className='relative w-3 h-3 mr-1 inline-block'
-          style={{ top: -2, left: -5 }}
-        />
-
-        {t('bridgeTokens', 'Bridge tokens')}
+        <div className='flex -space-x-1'>
+          <FeatherIcon icon={'arrow-left'} className='relative w-3 h-3' />
+          <FeatherIcon icon={'arrow-right'} className='relative w-3 h-3' />
+        </div>
+        <span>{t('bridgeTokens', 'Bridge tokens')}</span>
       </button>
       <BridgeTokensModal
         label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}

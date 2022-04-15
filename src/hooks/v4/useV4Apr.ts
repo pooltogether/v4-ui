@@ -1,6 +1,6 @@
 import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
 import { Amount } from '@pooltogether/hooks'
-import { NO_REFETCH } from '@pooltogether/hooks/dist/constants'
+import { NO_REFETCH } from '@constants/query'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTwabTotalSupply'

@@ -36,6 +36,9 @@ import { ethers } from 'ethers'
 import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useUser } from '@hooks/v4/User/useUser'
+import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -93,8 +96,11 @@ const DepositItem = (props: DepositItemsProps) => {
   const [txId, setTxId] = useState(0)
   const tx = useTransaction(txId)
   const usersAddress = useUsersAddress()
+  const { refetch: refetchDepositAllowance } = useUsersDepositAllowance(prizePool)
   const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
   const delegate = getDelegateAddress(usersAddress, delegateData)
+  const sendTx = useSendTransaction()
+  const user = useUser(prizePool)
 
   const chainId = prizePool.chainId
   const contractLinks: ContractLink[] = [
@@ -130,6 +136,16 @@ const DepositItem = (props: DepositItemsProps) => {
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
       <BalanceBottomSheet
+        sendRevokeAllowanceTransaction={() =>
+          sendTx({
+            name: t('revokePoolAllowance', { ticker: balances.token.symbol }),
+            method: 'approve',
+            callTransaction: () => user.revokeDeposits(),
+            callbacks: {
+              refetch: () => refetchDepositAllowance()
+            }
+          })
+        }
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
         open={isOpen}
         label={`Manage deposits for ${prizePool.id()}`}

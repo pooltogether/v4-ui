@@ -69,18 +69,14 @@ export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
     <>
       <button
         className={classNames(
-          'text-center text-inverse opacity-60 hover:opacity-100 transition-opacity',
+          'text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col xs:flex-row items-center space-y-1 xs:space-y-0 xs:space-x-2',
           className
         )}
         onClick={() => setShowModal(true)}
         style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
-        <FeatherIcon
-          icon={'refresh-cw'}
-          className='relative w-4 h-4 mr-1 inline-block'
-          style={{ left: -2, top: -2 }}
-        />{' '}
-        {buttonLabel || t('swapTokens', 'Swap tokens')}
+        <FeatherIcon icon={'refresh-cw'} className='relative w-4 h-4' />
+        <span>{buttonLabel || t('swapTokens', 'Swap tokens')}</span>
       </button>
       <SwapTokensModal
         label={t('decentralizedExchangeModal', 'Decentralized exchange - modal')}
