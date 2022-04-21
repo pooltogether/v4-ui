@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { InfoListItem } from './InfoList'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 
 export const UpdatedOdds = (props: { amount: Amount; action: EstimateAction }) => {
   const { amount, action } = props

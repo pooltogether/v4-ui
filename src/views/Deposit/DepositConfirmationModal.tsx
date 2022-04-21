@@ -1,26 +1,24 @@
 import React from 'react'
 import Link from 'next/link'
-import { Amount, Token, Transaction } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import {
-  Tooltip,
   ModalProps,
   SquareButton,
   SquareLink,
   SquareButtonSize,
-  SquareButtonTheme
+  SquareButtonTheme,
+  ModalTitle
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
+import { Transaction, TransactionStatus } from '@pooltogether/wallet-connection'
 
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
-import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { ModalTitle } from '@components/Modal/ModalTitle'
+import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { InfoListItem, ModalInfoList } from '@components/InfoList'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { ModalInfoList } from '@components/InfoList'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { UpdatedOdds } from '@components/UpdatedOddsListItem'
 import { BottomSheet } from '@components/BottomSheet'
@@ -71,22 +69,6 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
 
   const { t } = useTranslation()
 
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-
-  if (!isWalletOnProperNetwork) {
-    return (
-      <BottomSheet
-        label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        open={isOpen}
-        onDismiss={closeModal}
-        className='flex flex-col space-y-4'
-      >
-        <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
-        <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </BottomSheet>
-    )
-  }
-
   if (!isDataFetched) {
     return (
       <BottomSheet
@@ -99,9 +81,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalLoadingGate className='mt-8' />
       </BottomSheet>
     )
-  }
-
-  if (amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
     return (
       <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
@@ -119,39 +99,38 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         />
       </BottomSheet>
     )
-  }
-
-  if (depositTx && depositTx.sent) {
-    if (depositTx.error) {
-      return (
-        <BottomSheet
-          label={t('confirmDepositModal', 'Confirm deposit - modal')}
-          open={isOpen}
-          onDismiss={closeModal}
-          className='flex flex-col space-y-4'
+  } else if (depositTx?.status === TransactionStatus.error) {
+    return (
+      <BottomSheet
+        label={t('confirmDepositModal', 'Confirm deposit - modal')}
+        open={isOpen}
+        onDismiss={closeModal}
+        className='flex flex-col space-y-4'
+      >
+        <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
+        <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
+        <p className='mb-8 text-accent-1 text-center mx-8'>
+          {t(
+            'somethingWentWrongWhileProcessingYourTransaction',
+            'Something went wrong while processing your transaction.'
+          )}
+        </p>
+        <SquareButton
+          theme={SquareButtonTheme.tealOutline}
+          className='w-full'
+          onClick={() => {
+            resetState()
+            closeModal()
+          }}
         >
-          <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
-          <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
-          <p className='mb-8 text-accent-1 text-center mx-8'>
-            {t(
-              'somethingWentWrongWhileProcessingYourTransaction',
-              'Something went wrong while processing your transaction.'
-            )}
-          </p>
-          <SquareButton
-            theme={SquareButtonTheme.tealOutline}
-            className='w-full'
-            onClick={() => {
-              resetState()
-              closeModal()
-            }}
-          >
-            {t('tryAgain', 'Try again')}
-          </SquareButton>
-        </BottomSheet>
-      )
-    }
-
+          {t('tryAgain', 'Try again')}
+        </SquareButton>
+      </BottomSheet>
+    )
+  } else if (
+    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    depositTx?.status === TransactionStatus.success
+  ) {
     return (
       <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
@@ -216,15 +195,15 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           </>
         )}
 
-        <TxButtonNetworkGated
+        <TxButton
           className='mt-8 w-full'
           chainId={chainId}
-          toolTipId={`deposit-tx-${chainId}`}
           onClick={sendDepositTx}
-          disabled={depositTx?.inWallet && !depositTx.cancelled && !depositTx.completed}
+          state={depositTx?.state}
+          status={depositTx?.status}
         >
           {t('confirmDeposit', 'Confirm deposit')}
-        </TxButtonNetworkGated>
+        </TxButton>
       </div>
     </BottomSheet>
   )

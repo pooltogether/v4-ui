@@ -1,19 +1,14 @@
 import React from 'react'
 import classnames from 'classnames'
-import {
-  LoadingDots,
-  SquareButton,
-  SquareButtonTheme,
-  Tooltip,
-  ErrorsBox
-} from '@pooltogether/react-components'
-import { Amount, TokenWithBalance, Transaction } from '@pooltogether/hooks'
+import { SquareButton, SquareButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
+import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import { User, PrizePool } from '@pooltogether/v4-client-js'
+import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 
 import { TextInputGroup } from '@components/Input/TextInputGroup'
 import { RectangularInput } from '@components/Input/TextInputs'
@@ -21,7 +16,7 @@ import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
 import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { TxButton } from '@components/Input/TxButton'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from '@utils/getAmountFromString'
@@ -35,13 +30,12 @@ const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 interface WithdrawStepContentProps {
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
-  user: User
   prizePool: PrizePool
   usersBalances: UsersPrizePoolBalances
   withdrawTx: Transaction
   amountToWithdraw: Amount
-  sendWithdrawTx: (e: any) => Promise<void>
-  setWithdrawTxId: (txId: number) => void
+  sendWithdrawTx: () => Promise<void>
+  setWithdrawTxId: (txId: string) => void
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
   refetchBalances: () => void
@@ -50,7 +44,6 @@ interface WithdrawStepContentProps {
 export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   const {
     form,
-    user,
     prizePool,
     usersBalances,
     currentStep,
@@ -64,12 +57,11 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
   } = props
 
   const { ticket, token } = usersBalances
-  const chainId = user.chainId
+  const chainId = prizePool.chainId
 
   if (currentStep === WithdrawalSteps.review) {
     return (
       <WithdrawReviewStep
-        user={user}
         prizePool={prizePool}
         chainId={chainId}
         amountToWithdraw={amountToWithdraw}
@@ -150,7 +142,6 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 }
 
 interface WithdrawReviewStepProps {
-  user: User
   prizePool: PrizePool
   chainId: number
   amountToWithdraw: Amount
@@ -159,7 +150,7 @@ interface WithdrawReviewStepProps {
   tx: Transaction
   sendWithdrawTx: (e: any) => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
-  setTxId: (txId: number) => void
+  setTxId: (txId: string) => void
   refetchBalances: () => void
 }
 
@@ -173,8 +164,6 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
   const { prizePool, amountToWithdraw, token, ticket, tx, sendWithdrawTx } = props
 
   const { t } = useTranslation()
-
-  const isTxInWallet = tx?.inWallet && !tx?.error && !tx.cancelled
 
   return (
     <>
@@ -196,16 +185,16 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         />
       </div>
 
-      <TxButtonNetworkGated
+      <TxButton
         chainId={prizePool.chainId}
-        toolTipId='withdrawal-tx'
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
-        disabled={isTxInWallet}
+        state={tx?.state}
+        status={tx?.status}
       >
         <span>{t('confirmWithdrawal')}</span>
-      </TxButtonNetworkGated>
+      </TxButton>
     </>
   )
 }

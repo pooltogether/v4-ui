@@ -1,7 +1,7 @@
 import { User, PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { NO_REFETCH } from '@constants/query'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export const useUsersDepositAllowance = (prizePool: PrizePool) => {

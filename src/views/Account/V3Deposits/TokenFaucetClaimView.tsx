@@ -1,13 +1,6 @@
-import {
-  TokenWithBalance,
-  TokenWithUsdBalance,
-  Transaction,
-  useTransaction
-} from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import {
   ModalTitle,
-  SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner,
   TokenIcon
@@ -15,18 +8,23 @@ import {
 import { displayPercentage } from '@pooltogether/utilities'
 import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { useUsersAddress, Transaction } from '@pooltogether/wallet-connection'
 
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { VAPRTooltip } from '@components/VAPRTooltip'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import {
+  useIsWalletOnChainId,
+  useTransaction,
+  useWalletSigner
+} from '@pooltogether/wallet-connection'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUsersAddress } from '@hooks/useUsersAddress'
 import { buildTokenFaucetClaimTx } from '@utils/transactions/buildTokenFaucetClaimTx'
 import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
 import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { useTokenFaucetData } from '@hooks/v3/useTokenFaucetData'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { TxButton } from '@components/Input/TxButton'
+import { useSigner } from 'wagmi'
 
 interface TokenFaucetClaimViewProps {
   chainId: number
@@ -34,7 +32,7 @@ interface TokenFaucetClaimViewProps {
   prizePool: V3PrizePool
   underlyingToken: TokenWithUsdBalance
   onDismiss: () => void
-  setExternalClaimTxId: (txId: number) => void
+  setExternalClaimTxId: (txId: string) => void
   refetch: () => void
 }
 
@@ -49,7 +47,7 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
     refetch
   } = props
 
-  const [claimTxId, setInternalClaimTxId] = useState(0)
+  const [claimTxId, setInternalClaimTxId] = useState('')
   const claimTx = useTransaction(claimTxId)
 
   const usersAddress = useUsersAddress()
@@ -68,13 +66,13 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
     underlyingToken
   )
 
-  const setClaimTxId = (txId: number) => {
+  const setClaimTxId = (txId: string) => {
     setInternalClaimTxId(txId)
     setExternalClaimTxId(txId)
   }
 
   const { t } = useTranslation()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   if (!isTokenFaucetDataFetched) {
     return (
@@ -149,7 +147,7 @@ export interface ClaimMainViewProps {
   tokenFaucetAddress: string
   tokenFaucetRewards: TokenWithBalance
   vapr: number
-  setClaimTxId: (txId: number) => void
+  setClaimTxId: (txId: string) => void
   refetch: () => void
 }
 
@@ -157,20 +155,22 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const { chainId, vapr, tokenFaucetAddress, tokenFaucetRewards, setClaimTxId, refetch } = props
 
   const { t } = useTranslation()
-  const { provider } = useOnboard()
-  const sendTx = useSendTransaction()
+  const [, getSigner] = useSigner({
+    skip: true
+  })
+  const sendTransaction = useSendTransaction()
   const usersAddress = useUsersAddress()
 
   const sendClaimTx = async () => {
-    const callTransaction = buildTokenFaucetClaimTx(provider, tokenFaucetAddress, usersAddress)
+    const signer = await getSigner()
+    const callTransaction = buildTokenFaucetClaimTx(signer, tokenFaucetAddress, usersAddress)
 
     const name = t(`claimAmountTicker`, 'Claim {{amount}} {{ticker}}', {
       amount: tokenFaucetRewards.amountPretty,
       ticker: tokenFaucetRewards.symbol
     })
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name,
-      method: 'claim',
       callTransaction,
       callbacks: {
         refetch
@@ -218,8 +218,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         />
       </div>
 
-      <TxButtonNetworkGated
-        toolTipId='token-faucet-claim-tooltip'
+      <TxButton
         chainId={chainId}
         disabled={!tokenFaucetRewards.amountUnformatted.gt(0)}
         onClick={sendClaimTx}
@@ -227,7 +226,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         theme={SquareButtonTheme.rainbow}
       >
         {t('claim', 'Claim')}
-      </TxButtonNetworkGated>
+      </TxButton>
     </>
   )
 }

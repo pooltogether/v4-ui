@@ -1,11 +1,4 @@
-import {
-  Amount,
-  TokenWithBalance,
-  Transaction,
-  useTokenAllowance,
-  useTransaction
-} from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { Amount, TokenWithBalance, useTokenAllowance } from '@pooltogether/hooks'
 import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { BigNumber } from 'ethers'
@@ -15,7 +8,15 @@ import { MaxUint256 } from '@ethersproject/constants'
 
 import { GenericDepositAmountInput } from '@components/Input/GenericDepositAmountInput'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import {
+  Transaction,
+  TransactionState,
+  TransactionStatus,
+  useIsWalletConnected,
+  useTransaction,
+  useUsersAddress,
+  useWalletSigner
+} from '@pooltogether/wallet-connection'
 import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
 import { getAmountFromString } from '@utils/getAmountFromString'
@@ -23,13 +24,14 @@ import { AccountPageButton } from '@views/Deposit/DepositConfirmationModal'
 import { DepositBottomButton, DepositInfoBox } from '@views/Deposit/DepositForm'
 import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
+import { useSigner } from 'wagmi'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -78,17 +80,17 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
   })
   const { watch } = form
 
-  const [depositTxId, setInternalDepositTxId] = useState(0)
+  const [depositTxId, setInternalDepositTxId] = useState('')
   const depositTx = useTransaction(depositTxId)
-  const [approveTxId, setInternalApproveTxId] = useState(0)
+  const [approveTxId, setInternalApproveTxId] = useState('')
   const approveTx = useTransaction(approveTxId)
 
-  const setDepositTxId = (txId: number) => {
+  const setDepositTxId = (txId: string) => {
     setExternalDepositTxId(txId)
     setInternalDepositTxId(txId)
   }
 
-  const setApproveTxId = (txId: number) => {
+  const setApproveTxId = (txId: string) => {
     setExternalApproveTxId(txId)
     setInternalApproveTxId(txId)
   }
@@ -156,7 +158,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
   const { t } = useTranslation()
 
-  const { isWalletConnected } = useOnboard()
+  const isWalletConnected = useIsWalletConnected()
 
   const {
     handleSubmit,
@@ -191,12 +193,11 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
         <DepositBottomButton
           className='mt-4 w-full'
-          disabled={(!isValid && isDirty) || depositTx?.inFlight}
+          disabled={(!isValid && isDirty) || depositTx?.state === TransactionState.pending}
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
-          token={token}
           amountToDeposit={amountToDeposit}
-          isUsersBalancesFetched
+          chainId={chainId}
         />
       </form>
     </>
@@ -213,8 +214,8 @@ export interface DepositReviewViewProps {
   approveTx: Transaction
   depositTx: Transaction
   onDismiss: () => void
-  setApproveTxId: (txId: number) => void
-  setDepositTxId: (txId: number) => void
+  setApproveTxId: (txId: string) => void
+  setDepositTxId: (txId: string) => void
   refetch: () => void
 }
 
@@ -235,23 +236,20 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   } = props
 
   const { t } = useTranslation()
-  const { provider } = useOnboard()
+  const [, getSigner] = useSigner({
+    skip: true
+  })
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
 
   const sendApproveTx = async () => {
-    const callTransaction = buildApproveTx(
-      provider,
-      MaxUint256,
-      prizePool.addresses.prizePool,
-      token
-    )
+    const signer = await getSigner()
+    const callTransaction = buildApproveTx(signer, MaxUint256, prizePool.addresses.prizePool, token)
 
     const name = t(`allowTickerPool`, { ticker: token.symbol })
     const txId = await sendTx({
       name,
-      method: 'approve',
       callTransaction,
       callbacks: {
         refetch
@@ -262,9 +260,10 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
   const sendDepositTx = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const signer = await getSigner()
 
     const callTransaction = buildDepositTx(
-      provider,
+      signer,
       amountToDeposit.amountUnformatted,
       ticket,
       prizePool.addresses.prizePool,
@@ -273,7 +272,6 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
     const txId = await sendTx({
       name,
-      method: 'depositTo',
       callTransaction,
       callbacks: {
         refetch
@@ -315,29 +313,23 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     )
   }
 
-  if (depositTx && depositTx.sent) {
-    if (depositTx.error) {
-      return (
-        <>
-          <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
-          <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
-          <p className='mb-8 text-accent-1 text-center mx-8'>
-            {t(
-              'somethingWentWrongWhileProcessingYourTransaction',
-              'Something went wrong while processing your transaction.'
-            )}
-          </p>
-          <SquareButton
-            theme={SquareButtonTheme.tealOutline}
-            className='w-full'
-            onClick={onDismiss}
-          >
-            {t('tryAgain', 'Try again')}
-          </SquareButton>
-        </>
-      )
-    }
-
+  if (depositTx?.status === TransactionStatus.error) {
+    return (
+      <>
+        <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
+        <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
+        <p className='mb-8 text-accent-1 text-center mx-8'>
+          {t(
+            'somethingWentWrongWhileProcessingYourTransaction',
+            'Something went wrong while processing your transaction.'
+          )}
+        </p>
+        <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
+          {t('tryAgain', 'Try again')}
+        </SquareButton>
+      </>
+    )
+  } else if (depositTx?.status === TransactionStatus.success) {
     return (
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
@@ -360,15 +352,14 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
           amountTo={amountToDeposit}
         />
 
-        <TxButtonNetworkGated
+        <TxButton
           className='mt-8 w-full'
           chainId={chainId}
-          toolTipId={`deposit-tx-${chainId}`}
           onClick={sendDepositTx}
-          disabled={depositTx?.inWallet && !depositTx.cancelled && !depositTx.completed}
+          disabled={depositTx?.state === TransactionState.pending}
         >
           {t('confirmDeposit', 'Confirm deposit')}
-        </TxButtonNetworkGated>
+        </TxButton>
       </div>
     </>
   )

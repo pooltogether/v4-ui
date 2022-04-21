@@ -1,10 +1,9 @@
 import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
-import { Modal, ModalProps } from '@pooltogether/react-components'
+import { Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
-import { ModalTitle } from '@components/Modal/ModalTitle'
 import { CHAIN_ID } from '@constants/misc'
 import { getBridgeUrls } from '@constants/config'
 

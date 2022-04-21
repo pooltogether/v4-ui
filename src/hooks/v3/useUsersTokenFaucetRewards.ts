@@ -1,4 +1,4 @@
-import { Token, TokenWithBalance, TokenWithUsdBalance, useReadProvider } from '@pooltogether/hooks'
+import { Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { useQuery } from 'react-query'
 import { batch, contract } from '@pooltogether/etherplex'
@@ -9,6 +9,7 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useTokenFaucetData } from './useTokenFaucetData'
 import { V3PrizePool } from './useV3PrizePools'
 import { NO_REFETCH } from '@constants/query'
+import { useReadProvider } from '@hooks/useReadProvider'
 
 export const useUsersTokenFaucetRewards = (
   chainId: number,

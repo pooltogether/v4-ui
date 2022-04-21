@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BigNumber } from 'ethers'
 
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'

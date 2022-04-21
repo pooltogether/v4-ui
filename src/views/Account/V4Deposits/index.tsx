@@ -11,20 +11,19 @@ import {
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { useTransaction } from '@pooltogether/hooks'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
-import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from '@components/Text/CardTitle'
 import { BalanceDelegatedToItem } from './BalanceDelegatedToItem'
 import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
@@ -93,14 +92,11 @@ const DepositItem = (props: DepositItemsProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedChainId } = useSelectedChainId()
   const { t } = useTranslation()
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const usersAddress = useUsersAddress()
-  const { refetch: refetchDepositAllowance } = useUsersDepositAllowance(prizePool)
   const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
   const delegate = getDelegateAddress(usersAddress, delegateData)
-  const sendTx = useSendTransaction()
-  const user = useUser(prizePool)
 
   const chainId = prizePool.chainId
   const contractLinks: ContractLink[] = [
@@ -121,7 +117,7 @@ const DepositItem = (props: DepositItemsProps) => {
     }
   ]
   const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const onDismiss = () => setIsOpen(false)
 
   return (
@@ -136,16 +132,6 @@ const DepositItem = (props: DepositItemsProps) => {
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
       <BalanceBottomSheet
-        sendRevokeAllowanceTransaction={() =>
-          sendTx({
-            name: t('revokePoolAllowance', { ticker: balances.token.symbol }),
-            method: 'approve',
-            callTransaction: () => user.revokeDeposits(),
-            callbacks: {
-              refetch: () => refetchDepositAllowance()
-            }
-          })
-        }
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
         open={isOpen}
         label={`Manage deposits for ${prizePool.id()}`}

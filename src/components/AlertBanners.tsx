@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { constants } from 'ethers'
 
 import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 
 export const AlertBanners = () => {

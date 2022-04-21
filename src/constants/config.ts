@@ -3,11 +3,19 @@ import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
+import { Chain } from 'wagmi'
+import { getChain } from '@pooltogether/wallet-connection'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
+
+export const RPC_API_KEYS = {
+  alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
+  infura: process.env.NEXT_PUBLIC_INFURA_ID
+}
 
 // NOTE: Should be empty. Add a chain id to hide it in app.
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
@@ -57,6 +65,11 @@ export const SUPPORTED_CHAIN_NAMES = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(
     getNetworkNameAliasByChainId
   )
+})
+
+export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(getChain),
+  [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
 // TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...

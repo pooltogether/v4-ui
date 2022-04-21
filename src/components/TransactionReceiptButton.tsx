@@ -1,4 +1,3 @@
-import { Transaction } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
@@ -6,8 +5,8 @@ import {
   SquareButtonSize
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
 import React from 'react'
+import { Transaction } from '@pooltogether/wallet-connection'
 
 interface TransactionReceiptButtonProps {
   className?: string
@@ -19,7 +18,7 @@ export const TransactionReceiptButton = (props: TransactionReceiptButtonProps) =
   const { chainId, tx, className } = props
   const { t } = useTranslation()
 
-  const url = formatBlockExplorerTxUrl(tx?.hash, chainId)
+  const url = formatBlockExplorerTxUrl(tx?.response?.hash, chainId)
 
   return (
     <SquareLink

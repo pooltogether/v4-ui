@@ -1,27 +1,20 @@
-import { CHAIN_ID } from '@constants/misc'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import tokenList from '@constants/swapTokenList'
+import { CHAIN_ID } from '@constants/misc'
 import { POOL_ADDRESSES } from '@constants/v3'
 import { useTheme } from '@hooks/useTheme'
 import { useUniswapSupportsNetwork } from '@hooks/useUniswapSupportsNetwork'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { darkTheme, lightTheme, SwapWidget, Theme } from '@uniswap/widgets'
-import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { getRpcUrl } from '@pooltogether/utilities'
+import { useRpcUrl, useWalletChainId, useWalletProvider } from '@pooltogether/wallet-connection'
+import { RPC_API_KEYS } from '@constants/config'
 
 export function UniswapWidgetCard() {
   const { t } = useTranslation()
-  const { wallet, network } = useOnboard()
-
-  const rpcUrl = useMemo(
-    () =>
-      getRpcUrl(network, {
-        alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-        etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
-        infura: process.env.NEXT_PUBLIC_INFURA_ID
-      }),
-    [network]
-  )
+  const provider = useWalletProvider()
+  const walletChainId = useWalletChainId()
+  const rpcUrl = useRpcUrl(walletChainId, RPC_API_KEYS)
 
   const { theme: ptTheme } = useTheme()
   const theme: Theme = useMemo(
@@ -44,11 +37,11 @@ export function UniswapWidgetCard() {
   const supportsUniswap = useUniswapSupportsNetwork()
 
   const POOLAddress = useMemo(() => {
-    if (network === CHAIN_ID.polygon) {
+    if (walletChainId === CHAIN_ID.polygon) {
       return POOL_ADDRESSES[CHAIN_ID.polygon].polygon_bridge
     }
-    return POOL_ADDRESSES[network]?.pool ?? POOL_ADDRESSES[CHAIN_ID.mainnet].pool
-  }, [network])
+    return POOL_ADDRESSES[walletChainId]?.pool ?? POOL_ADDRESSES[CHAIN_ID.mainnet].pool
+  }, [walletChainId])
 
   if (!supportsUniswap) {
     return null
@@ -56,11 +49,17 @@ export function UniswapWidgetCard() {
   return (
     <div>
       <h5 className='mb-2'>{t('getPool')}</h5>
+      <p className='text-orange text-xs font-semibold mb-4'>
+        {t(
+          'poolStakingCurrentlyOnlySupportedOn',
+          'POOL staking and governance is currently only available on the Ethereum network.'
+        )}
+      </p>
       <div>
         <SwapWidget
           jsonRpcEndpoint={rpcUrl}
           theme={theme}
-          provider={wallet.provider}
+          provider={provider}
           width={'100%'}
           defaultInputTokenAddress='NATIVE'
           defaultOutputTokenAddress={POOLAddress}

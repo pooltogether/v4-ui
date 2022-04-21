@@ -1,15 +1,19 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-import { TokenBalance, Transaction, Token, Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
+import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { User, PrizePool } from '@pooltogether/v4-client-js'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
+import {
+  useIsWalletConnected,
+  Transaction,
+  TransactionState
+} from '@pooltogether/wallet-connection'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
-import { TxButtonInFlight } from '@components/Input/TxButtonInFlight'
 import {
   EstimatedApproveAndDepositGasItem,
   EstimatedDepositGasItem
@@ -17,19 +21,16 @@ import {
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { InfoListItem } from '@components/InfoList'
 import { DepositAmountInput } from '@components/Input/DepositAmountInput'
-import { useUsersAddress } from '@hooks/useUsersAddress'
-import { BigNumber } from '@ethersproject/bignumber'
 import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
+import { TxButton } from '@components/Input/TxButton'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 interface DepositFormProps {
   form: UseFormReturn<FieldValues, object>
-  user: User
   prizePool: PrizePool
   isPrizePoolTokensFetched: boolean
   isUsersBalancesFetched: boolean
-  isUsersDepositAllowanceFetched: boolean
   approveTx: Transaction
   depositTx: Transaction
   token: TokenWithBalance
@@ -39,10 +40,9 @@ interface DepositFormProps {
 }
 
 export const DepositForm = (props: DepositFormProps) => {
-  const { form, prizePool, depositTx, isUsersBalancesFetched, amountToDeposit, token, openModal } =
-    props
+  const { form, prizePool, depositTx, amountToDeposit, token, openModal } = props
 
-  const { isWalletConnected } = useOnboard()
+  const isWalletConnected = useIsWalletConnected()
   const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
 
   const {
@@ -85,11 +85,10 @@ export const DepositForm = (props: DepositFormProps) => {
 
         <DepositBottomButton
           className='mt-4 w-full'
-          disabled={(!isValid && isDirty) || depositTx?.inFlight}
+          disabled={(!isValid && isDirty) || depositTx?.state === TransactionState.pending}
           depositTx={depositTx}
           isWalletConnected={isWalletConnected}
-          isUsersBalancesFetched={isUsersBalancesFetched}
-          token={token}
+          chainId={prizePool.chainId}
           amountToDeposit={amountToDeposit}
         />
       </form>
@@ -101,8 +100,7 @@ interface DepositBottomButtonProps {
   className?: string
   disabled: boolean
   isWalletConnected: boolean
-  isUsersBalancesFetched: boolean
-  token: TokenWithBalance
+  chainId: number
   depositTx: Transaction
   amountToDeposit: Amount
 }
@@ -118,7 +116,7 @@ export const DepositBottomButton = (props: DepositBottomButtonProps) => {
 }
 
 const DepositButton = (props: DepositBottomButtonProps) => {
-  const { className, token, depositTx, disabled, isUsersBalancesFetched, amountToDeposit } = props
+  const { className, chainId, depositTx, disabled, amountToDeposit } = props
   const { t } = useTranslation()
 
   const { amountUnformatted } = amountToDeposit
@@ -131,14 +129,16 @@ const DepositButton = (props: DepositBottomButtonProps) => {
   }
 
   return (
-    <TxButtonInFlight
+    <TxButton
       disabled={disabled}
       className={className}
-      inFlight={depositTx?.inFlight}
-      label={label}
-      inFlightLabel={t('depositingAmountTicker', { ticker: token?.symbol })}
+      state={depositTx?.state}
+      status={depositTx?.status}
       type='submit'
-    />
+      chainId={chainId}
+    >
+      {label}
+    </TxButton>
   )
 }
 
@@ -174,7 +174,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     errorMessages &&
     errorMessages.length > 0 &&
     errorMessages[0].message !== '' &&
-    !depositTx?.inFlight
+    depositTx?.state !== TransactionState.pending
   ) {
     const messages = errorMessages.map((error) => (
       <span key={error.message} className='text-red font-semibold'>
@@ -194,7 +194,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     )
   }
 
-  if (depositTx?.inFlight) {
+  if (depositTx?.state === TransactionState.pending) {
     return (
       <InfoList bgClassName={bgClassName} className={className}>
         <TxReceiptItem

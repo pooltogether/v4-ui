@@ -8,7 +8,7 @@ import { Draw } from '@pooltogether/v4-client-js'
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
 import { BottomSheet } from '@components/BottomSheet'
 import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { getTimestampString } from '@utils/getTimestampString'
 

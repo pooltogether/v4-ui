@@ -10,10 +10,10 @@ import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { CHAIN_ID } from '@constants/misc'
 import { POOL_ADDRESSES } from '@constants/v3'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersV3POOLTokenBalances } from '@hooks/v3/useUsersV3POOLTokenBalances'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { UniswapWidgetCard } from '@views/UniswapWidgetCard'
+import { UniswapWidgetCard } from '@views/Account/UniswapWidgetCard'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 
 export const POOLBalancesCard = () => {
@@ -55,7 +55,7 @@ export const POOLBalancesCard = () => {
         </button> */}
       </div>
       <POOLBalancesList data={data} isFetched={isFetched} />
-      <VotingPromptCard />
+      <VotingPromptCard persist />
     </div>
   )
 }

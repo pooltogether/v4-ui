@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 
 interface DepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>
@@ -47,6 +47,7 @@ export const DepositAmountInput = (props: DepositAmountInputProps) => {
       t={t}
       validate={validate}
       i18nKey='amount'
+      autoComplete='off'
     />
   )
 }

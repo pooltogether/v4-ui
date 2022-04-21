@@ -8,14 +8,14 @@ import {
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { Amount, Token, TokenWithUsdBalance, useTransaction } from '@pooltogether/hooks'
+import { Amount, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress, useTransaction } from '@pooltogether/wallet-connection'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
@@ -114,8 +114,8 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
   const { t } = useTranslation()
 
   const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-  const [txId, setTxId] = useState(0)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
 
   const contractLinks: ContractLink[] = [
@@ -192,7 +192,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.tealOutline
           }
         ]}
-        tx={tx}
+        transactionHash={tx?.response?.hash}
         token={ticket}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
@@ -210,11 +210,11 @@ const PodDepositItem = (props: DepositItemsProps) => {
 
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
 
   const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   const contractLinks: ContractLink[] = [
     {
@@ -285,7 +285,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.tealOutline
           }
         ]}
-        tx={tx}
+        transactionHash={tx?.response?.hash}
         token={ticket}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}

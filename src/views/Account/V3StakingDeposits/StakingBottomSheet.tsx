@@ -1,10 +1,9 @@
-import { useTransaction } from '@pooltogether/hooks'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BalanceBottomSheet, ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
+import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
@@ -26,18 +25,18 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const prizePool = balances.prizePool
   const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
-  const [depositTxId, setDepositTxId] = useState(0)
+  const [depositTxId, setDepositTxId] = useState('')
   const depositTx = useTransaction(depositTxId)
 
-  const [approveTxId, setApproveTxId] = useState(0)
+  const [approveTxId, setApproveTxId] = useState('')
   const approveTx = useTransaction(approveTxId)
 
-  const [claimTxId, setClaimTxId] = useState(0)
+  const [claimTxId, setClaimTxId] = useState('')
   const claimTx = useTransaction(claimTxId)
 
-  const [withdrawTxId, setWithdrawTxId] = useState(0)
+  const [withdrawTxId, setWithdrawTxId] = useState('')
   const withdrawTx = useTransaction(withdrawTxId)
 
   const { token, ticket } = balances
@@ -48,7 +47,7 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   )
 
   // const revokeAllowanceCallTransaction = buildApproveTx(
-  //   provider,
+  //   signer,
   //   BigNumber.from(0),
   //   prizePool.addresses.prizePool,
   //   balances.token
@@ -145,7 +144,12 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       contractLinks={contractLinks}
       open={isOpen}
       onDismiss={onDismiss}
-      tx={withdrawTx || depositTx || claimTx || approveTx}
+      transactionHash={
+        withdrawTx?.response?.hash ||
+        depositTx?.response?.hash ||
+        claimTx?.response?.hash ||
+        approveTx?.response?.hash
+      }
       className='space-y-4'
       isWalletOnProperNetwork={isWalletOnProperNetwork}
       isWalletMetaMask={isWalletMetaMask}

@@ -1,18 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
-import { Amount, Transaction, useTransaction } from '@pooltogether/hooks'
+import { Amount } from '@pooltogether/hooks'
 import { useState } from 'react'
+import { ModalTitle } from '@pooltogether/react-components'
+import { useTransaction } from '@pooltogether/wallet-connection'
 
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
-import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { ModalTitle } from '@components/Modal/ModalTitle'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { WithdrawStepContent } from './WithdrawStepContent'
 import { DepositItemsProps } from '.'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 
 export enum WithdrawalSteps {
   input,
@@ -22,7 +21,7 @@ export enum WithdrawalSteps {
 
 interface WithdrawViewProps extends DepositItemsProps {
   usersAddress: string
-  setWithdrawTxId: (txId: number) => void
+  setWithdrawTxId: (txId: string) => void
   onDismiss: () => void
 }
 
@@ -31,31 +30,30 @@ export const WithdrawView = (props: WithdrawViewProps) => {
   const { t } = useTranslation()
   const { token } = balances
 
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-  const user = useSelectedChainIdUser()
-  const sendTx = useSendTransaction()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const getUser = useGetUser(prizePool)
+  const sendTransaction = useSendTransaction()
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
   })
 
-  const sendWithdrawTx = async (e) => {
-    e.preventDefault()
-
+  const sendWithdrawTx = async () => {
     const tokenSymbol = token.symbol
     const overrides: Overrides = { gasLimit: 750000 }
 
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,
-      method: 'withdrawInstantlyFrom',
-      callTransaction: () => user.withdraw(amountToWithdraw?.amountUnformatted, overrides),
+      callTransaction: async () => {
+        const user = await getUser()
+        return user.withdraw(amountToWithdraw?.amountUnformatted, overrides)
+      },
       callbacks: {
-        onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
+        onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
           refetchBalances()
           refetchUsersTotalTwab()
@@ -64,15 +62,6 @@ export const WithdrawView = (props: WithdrawViewProps) => {
     })
     setWithdrawTxId(txId)
     setTxId(txId)
-  }
-
-  if (!isWalletOnProperNetwork) {
-    return (
-      <>
-        <ModalTitle chainId={prizePool.chainId} title={t('wrongNetwork', 'Wrong network')} />
-        <ModalNetworkGate chainId={prizePool.chainId} className='mt-8' />
-      </>
-    )
   }
 
   if (currentStep === WithdrawalSteps.viewTxReceipt) {
@@ -103,7 +92,6 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         form={form}
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
-        user={user}
         prizePool={prizePool}
         usersBalances={balances}
         refetchBalances={refetchBalances}

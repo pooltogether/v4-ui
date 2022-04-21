@@ -1,5 +1,4 @@
 import React from 'react'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { PagePadding } from '@components/Layout/PagePadding'
 import { ConnectWalletCard } from '@components/ConnectWalletCard'
@@ -10,13 +9,11 @@ import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
-import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
 import { VotingPromptCard } from '@components/VotingPromptCard'
+import { useIsWalletConnected } from '@pooltogether/wallet-connection'
 
 export const AccountUI = (props) => {
-  const { isWalletConnected } = useOnboard()
-
-  const user = useSelectedChainIdUser()
+  const isWalletConnected = useIsWalletConnected()
 
   if (!isWalletConnected) {
     return (
@@ -34,7 +31,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding className='space-y-8'>
-      <AccountCard user={user} />
+      <AccountCard />
       <V4Deposits />
       <POOLBalancesCard />
       <V3StakingCards />

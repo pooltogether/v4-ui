@@ -1,4 +1,4 @@
-import { useReadProviders } from '@pooltogether/hooks'
+import { useReadProviders } from '@hooks/useReadProviders'
 import { getContractListChainIds, PrizePoolNetwork } from '@pooltogether/v4-client-js'
 
 import { useContractList } from '../useContractList'
