@@ -2970,10 +2970,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.2.0.tgz#5529e0b217498b2c6837d2b2f4b574dceae4a093"
-  integrity sha512-N+KqP+bVHpuMDoIGUx81o6LMg2rl6YqK+K1fJRljeqZMOEqQxBcP6Uby7OXCSjPnremekGDpD6pwljEy5pWkKQ==
+"@pooltogether/wallet-connection@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.2.1.tgz#dd2b93107aa511abd55d4d009684a9f0a796930e"
+  integrity sha512-xy6p1SArpHygxNwwR+yc8UsYHEfaTdtzEKuWLsgH7YmHJ43aBO+kgXRmhp/VOx99YZH7l+5HxZB9dOQpJp7UxA==
   dependencies:
     "@download/blockies" "^1.0.3"
 

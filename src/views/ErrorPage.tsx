@@ -15,8 +15,8 @@ export function ErrorPage() {
           minHeight: '100vh'
         }}
       >
-        <div className='content mx-auto'>
-          <div className='mb-4 text-inverse pt-32 px-2 xs:pt-32 space-y-4'>
+        <div className='content mx-auto px-8'>
+          <div className='mb-4 text-inverse pt-32 xs:pt-32 space-y-4'>
             <h1 className=''>👋</h1>
             <h4 className=''>{t('anErrorOccurredAndWeveBeenNotified')}</h4>
             <h6 className='text-accent-1'>{t('pleaseTryAgainSoon')}</h6>
