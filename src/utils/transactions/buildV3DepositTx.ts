@@ -1,5 +1,6 @@
 import { Token } from '@pooltogether/hooks'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber, Contract, constants } from 'ethers'
 
 import PrizePoolAbi from '@abis/V3_PrizePool'
@@ -14,13 +15,12 @@ import PrizePoolAbi from '@abis/V3_PrizePool'
  * @returns
  */
 export const buildDepositTx = (
-  provider: JsonRpcProvider,
+  signer: Signer,
   amountUnformatted: BigNumber,
   ticket: Token,
   prizePoolAddress: string,
   usersAddress: string
 ) => {
-  const signer = provider.getSigner()
   const params = [usersAddress, amountUnformatted, ticket.address, constants.AddressZero]
   const contract = new Contract(prizePoolAddress, PrizePoolAbi, signer)
   const contractCall: () => Promise<TransactionResponse> = contract['depositTo'].bind(

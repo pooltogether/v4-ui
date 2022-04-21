@@ -1,4 +1,4 @@
-import { Amount, useTransaction } from '@pooltogether/hooks'
+import { Amount } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -10,8 +10,12 @@ import PodAbi from '@abis/V3_Pod'
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
-import { useSendTransaction } from '@hooks/useSendTransaction'
+import {
+  useIsWalletOnChainId,
+  useSendTransaction,
+  useCallTransaction,
+  useTransaction
+} from '@pooltogether/wallet-connection'
 import { usePodExitFee } from '@hooks/v3/usePodExitFee'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
@@ -22,7 +26,7 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
-  setWithdrawTxId: (txId: number) => void
+  setWithdrawTxId: (txId: string) => void
   onDismiss: () => void
 }
 
@@ -32,13 +36,13 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
 
   const chainId = prizePool.chainId
 
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [amountToReceive, setAmountToReceive] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-  const sendTx = useSendTransaction()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const sendTransaction = useSendTransaction()
+  const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -56,22 +60,19 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
     token.decimals
   )
 
-  const sendWithdrawTx = async (e) => {
-    e.preventDefault()
+  const callTransaction = useCallTransaction('withdraw', prizePool.addresses.pod, PodAbi)
 
-    const params = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]
+  const sendWithdrawTx = async () => {
+    const args = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]
     const txName = `${t('withdraw')} ${numberWithCommas(amountToWithdraw.amountPretty)} ${
       token.symbol
     }`
 
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name: txName,
-      contractAbi: PodAbi,
-      contractAddress: prizePool.addresses.pod,
-      method: 'withdraw',
-      params,
+      callTransaction: () => callTransaction({ args }),
       callbacks: {
-        onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
+        onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
           refetchBalances()
         }

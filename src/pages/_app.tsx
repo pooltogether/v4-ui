@@ -1,31 +1,27 @@
 import React, { useContext, useEffect } from 'react'
+import { Provider as JotaiProvider } from 'jotai'
+import { Provider as WagmiProvider } from 'wagmi'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { WalletLinkConnector } from 'wagmi/connectors/walletLink'
+import { BaseProvider } from '@ethersproject/providers'
 import * as Fathom from 'fathom-client'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import { Provider } from 'jotai'
 import {
   ScreenSize,
   useScreenSize,
   useInitCookieOptions,
   useInitReducedMotion,
-  initProviderApiKeys
+  initProviderApiKeys as initProviderApiKeysForHooks
 } from '@pooltogether/hooks'
-import { useInitializeOnboard } from '@pooltogether/bnc-onboard-hooks'
-import {
-  ThemeContext,
-  TransactionStatusChecker,
-  TxRefetchListener
-} from '@pooltogether/react-components'
+import { ThemeContext, ThemeContextProvider } from '@pooltogether/react-components'
 import { Flip, ToastContainer, ToastContainerProps } from 'react-toastify'
 
 import type { AppProps } from 'next/app'
 
 import '../../i18n'
-import { CUSTOM_WALLETS_CONFIG } from '@constants/customWalletsConfig'
-import { AllContextProviders } from '@components/contextProviders/AllContextProviders'
 import { CustomErrorBoundary } from '@components/CustomErrorBoundary'
-import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
-import { sentryLog } from '@utils/services/sentryLog'
 import { initSentry } from '@utils/services/initSentry'
 
 // Custom css
@@ -38,20 +34,56 @@ import '@assets/styles/tsunami.css'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-spring-bottom-sheet/dist/style.css'
 import '@assets/styles/bottomSheet.css'
+import { getSupportedChains } from '@utils/getSupportedChains'
+import { CHAIN_ID } from '@constants/misc'
+import {
+  getReadProvider,
+  getRpcUrl,
+  getRpcUrls,
+  useUpdateStoredPendingTransactions,
+  initProviderApiKeys as initProviderApiKeysForWalletConnection
+} from '@pooltogether/wallet-connection'
+import { RPC_API_KEYS } from '@constants/config'
 
+// Initialize react-query Query Client
 const queryClient = new QueryClient()
-
-// Initialize read provider API keys
-initProviderApiKeys({
-  alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
-  infura: process.env.NEXT_PUBLIC_INFURA_ID
-})
-
+// Initialize read provider API keys to @pooltogether/hooks
+initProviderApiKeysForHooks(RPC_API_KEYS)
+// Initialize read provider API keys to @pooltogether/wallet-connection
+initProviderApiKeysForWalletConnection(RPC_API_KEYS)
 // Initialize Sentry error logging
 initSentry()
 
+// Initialize WAGMI wallet connectors
+const chains = getSupportedChains()
+const connectors = ({ chainId }) => {
+  return [
+    new InjectedConnector({ chains, options: {} }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        chainId: chainId || CHAIN_ID.mainnet,
+        rpc: getRpcUrls(
+          chains.map((chain) => chain.id),
+          RPC_API_KEYS
+        ),
+        bridge: 'https://pooltogether.bridge.walletconnect.org/',
+        qrcode: true
+      }
+    }),
+    new WalletLinkConnector({
+      chains,
+      options: {
+        appName: 'PoolTogether',
+        jsonRpcUrl: getRpcUrl(chainId || CHAIN_ID.mainnet, RPC_API_KEYS)
+      }
+    })
+  ]
+}
+
 function MyApp({ Component, pageProps, router }: AppProps) {
+  useInitPoolTogetherHooks()
+
   useEffect(() => {
     const fathomSiteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID
 
@@ -99,30 +131,34 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   }, [])
 
   return (
-    <Provider>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools />
-        <InitPoolTogetherHooks>
-          <ThemedToastContainer />
-
-          <AllContextProviders>
+    <WagmiProvider
+      autoConnect
+      connectorStorageKey='pooltogether-wallet'
+      connectors={connectors}
+      provider={({ chainId }) =>
+        (chainId
+          ? getReadProvider(chainId, RPC_API_KEYS)
+          : getReadProvider(CHAIN_ID.mainnet, RPC_API_KEYS)) as BaseProvider
+      }
+    >
+      <JotaiProvider>
+        <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools />
+          <ThemeContextProvider>
+            <ThemedToastContainer />
             <CustomErrorBoundary>
-              <TransactionStatusChecker />
-              <TxRefetchListener />
-
               <Component {...pageProps} />
             </CustomErrorBoundary>
-          </AllContextProviders>
-        </InitPoolTogetherHooks>
-      </QueryClientProvider>
-    </Provider>
+          </ThemeContextProvider>
+        </QueryClientProvider>
+      </JotaiProvider>
+    </WagmiProvider>
   )
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
-  // TODO: When we update to latest wallet connection lib (wagmi) use this:
-  // This doesn't quite fit here, it needs to be nested below Jotai though.
-  // useUpdateStoredPendingTransactions()
+  // This hook doesn't quite fit here, it needs to be nested below Jotai though.
+  useUpdateStoredPendingTransactions()
 
   const { theme } = useContext(ThemeContext)
   const screenSize = useScreenSize()
@@ -140,19 +176,12 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
   )
 }
 
-const InitPoolTogetherHooks = ({ children }) => {
-  useSelectedChainIdWatcher()
+/**
+ * Initializes PoolTogether tooling global state
+ */
+const useInitPoolTogetherHooks = () => {
   useInitReducedMotion(Boolean(process.env.NEXT_PUBLIC_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
-  useInitializeOnboard({
-    infuraId: process.env.NEXT_PUBLIC_INFURA_ID,
-    fortmaticKey: process.env.NEXT_PUBLIC_FORTMATIC_API_KEY,
-    portisKey: process.env.NEXT_PUBLIC_PORTIS_API_KEY,
-    defaultNetworkName: 'homestead',
-    customWalletsConfig: CUSTOM_WALLETS_CONFIG,
-    sentryLog
-  })
-  return children
 }
 
 export default MyApp

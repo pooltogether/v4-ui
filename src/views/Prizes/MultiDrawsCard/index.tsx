@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import axios from 'axios'
-import { Token, Transaction, useTransaction } from '@pooltogether/hooks'
+import { Token } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   Card,
@@ -10,11 +10,17 @@ import {
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizeDistributor, DrawResults, PrizePool, PrizeApi } from '@pooltogether/v4-client-js'
+import { PrizeDistributor, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import {
+  Transaction,
+  TransactionState,
+  TransactionStatus,
+  useTransaction,
+  useUsersAddress
+} from '@pooltogether/wallet-connection'
 import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from '../../../interfaces/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
@@ -22,13 +28,7 @@ import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
-import {
-  drawIdsToNotClaimAtom,
-  drawResultsAtom,
-  getStoredDrawResults,
-  StoredDrawResults,
-  updateDrawResults
-} from '@utils/drawResultsStorage'
+import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorage'
 import { useAtom } from 'jotai'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
@@ -114,8 +114,9 @@ export enum CheckedState {
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const { drawDatas, ticket, token } = props
   const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
-  const [winningDrawResults, setWinningDrawResults] =
-    useState<{ [drawId: number]: DrawResults }>(null)
+  const [winningDrawResults, setWinningDrawResults] = useState<{ [drawId: number]: DrawResults }>(
+    null
+  )
   const [drawIdsToNotClaim, setDrawIdsToNotClaim] = useAtom(drawIdsToNotClaimAtom)
   const didUserWinAPrize = Boolean(winningDrawResults)
     ? Object.keys(winningDrawResults).length > 0
@@ -124,7 +125,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const claimTx = useTransaction(txId)
 
   const addDrawIdToClaim = (drawId: number) => {
@@ -226,7 +227,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
   }, [winningDrawResults, drawDatas])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const claimTx = useTransaction(txId)
 
   const addDrawIdToClaim = (drawId: number) => {
@@ -309,15 +310,15 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   let btnJsx, url
   const drawDataList = drawDatas ? Object.values(drawDatas) : []
 
-  if (claimTx?.hash) {
-    url = formatBlockExplorerTxUrl(claimTx.hash, claimTx.ethersTx.chainId)
+  if (claimTx?.response?.hash) {
+    url = formatBlockExplorerTxUrl(claimTx.response.hash, claimTx.chainId)
   }
 
   const sendCheckForPrizesToWorkerKV = () => {
     axios.get(`https://check-for-prizes.pooltogether-api.workers.dev/check?address=${usersAddress}`)
   }
 
-  if (claimTx?.inFlight) {
+  if (claimTx?.state === TransactionState.pending) {
     btnJsx = (
       <SquareLink
         target='_blank'
@@ -330,7 +331,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         {t('claiming', 'Claiming')}
       </SquareLink>
     )
-  } else if (claimTx?.completed && !claimTx?.error && !claimTx?.cancelled) {
+  } else if (claimTx?.status === TransactionStatus.success) {
     btnJsx = (
       <SquareLink
         target='_blank'

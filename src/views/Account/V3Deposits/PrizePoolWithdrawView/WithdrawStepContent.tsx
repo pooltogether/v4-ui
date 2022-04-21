@@ -1,9 +1,10 @@
-import { Amount, Token, Transaction } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import {
   CheckboxInputGroup,
   ErrorsBox,
   SquareButton,
-  SquareButtonTheme
+  SquareButtonTheme,
+  ModalTitle
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
@@ -13,13 +14,13 @@ import { parseUnits } from '@ethersproject/units'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
+import { Transaction } from '@pooltogether/wallet-connection'
 
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
 import { TextInputGroup } from '@components/Input/TextInputGroup'
 import { RectangularInput } from '@components/Input/TextInputs'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
-import { ModalTitle } from '@components/Modal/ModalTitle'
+import { TxButton } from '@components/Input/TxButton'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { getAmountFromString } from '@utils/getAmountFromString'
@@ -42,8 +43,8 @@ interface WithdrawStepContentProps {
   exitFee: BigNumber
   isExitFeeFetched: boolean
   isExitFeeFetching: boolean
-  sendWithdrawTx: (e: any) => Promise<void>
-  setWithdrawTxId: (txId: number) => void
+  sendWithdrawTx: () => Promise<void>
+  setWithdrawTxId: (txId: string) => void
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
   refetchBalances: () => void
@@ -70,6 +71,8 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     refetchBalances,
     onDismiss
   } = props
+
+  console.log('WithdrawStepContent', { exitFee })
 
   const { t } = useTranslation()
 
@@ -103,7 +106,6 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
           amountToWithdraw={amountToWithdraw}
           token={token}
           ticket={ticket}
-          tx={withdrawTx}
           exitFee={exitFee}
           isExitFeeFetched={isExitFeeFetched}
           isExitFeeFetching={isExitFeeFetching}
@@ -196,13 +198,12 @@ interface WithdrawReviewStepProps {
   amountToWithdraw: Amount
   token: Token
   ticket: Token
-  tx: Transaction
   exitFee: BigNumber
   isExitFeeFetched: boolean
   isExitFeeFetching: boolean
-  sendWithdrawTx: (e: any) => Promise<void>
+  sendWithdrawTx: () => Promise<void>
   setCurrentStep: (step: WithdrawalSteps) => void
-  setTxId: (txId: number) => void
+  setTxId: (txId: string) => void
   refetchBalances: () => void
 }
 
@@ -218,20 +219,28 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
     amountToWithdraw,
     token,
     ticket,
-    tx,
     sendWithdrawTx,
     exitFee,
     isExitFeeFetched,
     isExitFeeFetching
   } = props
 
+  console.log('WithdrawReviewStep', { exitFee })
+
   const { t } = useTranslation()
 
   const [exitFeeApproved, setExitFeeApproved] = useState<boolean>(false)
 
-  const isTxInWallet = tx?.inWallet && !tx?.error && !tx.cancelled
-
   const isExitFeeAgreed = exitFee?.isZero() ? true : exitFeeApproved
+
+  console.log({
+    dsabled: !isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed,
+    exitFee,
+    isExitFeeFetched,
+    isExitFeeFetching,
+    isExitFeeAgreed,
+    sendWithdrawTx
+  })
 
   return (
     <div className='space-y-4'>
@@ -251,16 +260,18 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         setExitFeeApproved={setExitFeeApproved}
       />
 
-      <TxButtonNetworkGated
+      <TxButton
         chainId={prizePool.chainId}
-        toolTipId='withdrawal-tx'
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
-        onClick={sendWithdrawTx}
+        onClick={() => {
+          console.log({ exitFee })
+          sendWithdrawTx()
+        }}
         disabled={!isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed}
       >
         <span>{t('confirmWithdrawal')}</span>
-      </TxButtonNetworkGated>
+      </TxButton>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { msToS } from '@pooltogether/utilities'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'
 import { PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY } from './usePrizePoolTicketTotalSupply'
@@ -29,22 +28,20 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
     })
   )
 
-  return useMemo(() => {
-    const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
-    let networkTotalSupplyUnformatted = BigNumber.from(0)
-    queryResults.forEach((queryResult) => {
-      const { data: totalSupplyUnformatted, isFetched } = queryResult
-      if (isFetched) {
-        networkTotalSupplyUnformatted = networkTotalSupplyUnformatted.add(totalSupplyUnformatted)
-      }
-    })
-
-    const totalSupply = getAmountFromBigNumber(networkTotalSupplyUnformatted, decimals)
-
-    return {
-      data: totalSupply,
-      isFetched
+  let networkTotalSupplyUnformatted = BigNumber.from(0)
+  queryResults.forEach((queryResult) => {
+    const { data: totalSupplyUnformatted, isFetched } = queryResult
+    if (isFetched) {
+      networkTotalSupplyUnformatted = networkTotalSupplyUnformatted.add(totalSupplyUnformatted)
     }
-  }, [queryResults, decimals])
+  })
+
+  const totalSupply = getAmountFromBigNumber(networkTotalSupplyUnformatted, decimals)
+
+  return {
+    data: totalSupply,
+    isFetched
+  }
 }

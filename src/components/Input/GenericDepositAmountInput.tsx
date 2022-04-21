@@ -8,7 +8,7 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { WalletSvg } from '@components/Icons/SvgComponents'
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 
 interface GenericDepositAmountInputProps {
   chainId: number
@@ -21,6 +21,7 @@ interface GenericDepositAmountInputProps {
   bgClassName?: string
   widthClassName?: string
   depositTokenClassName?: string
+  autoComplete?: string
 }
 
 /**
@@ -55,7 +56,8 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
 GenericDepositAmountInput.defaultProps = {
   widthClassName: 'w-full',
   bgClassName: 'bg-tertiary',
-  depositTokenClassName: 'text-xl'
+  depositTokenClassName: 'text-xl',
+  autoComplete: 'off'
 }
 
 interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
@@ -133,7 +135,7 @@ const DepositToken = (props: DepositTokenProps) => {
 interface InputProps extends GenericDepositAmountInputProps {}
 
 const Input = (props: InputProps) => {
-  const { form, inputKey, ticketBalance, tokenBalance } = props
+  const { form, inputKey, ticketBalance, tokenBalance, autoComplete } = props
   const { t } = useTranslation()
 
   const { register } = form
@@ -147,6 +149,7 @@ const Input = (props: InputProps) => {
 
   return (
     <input
+      autoComplete={autoComplete}
       className={classNames(
         'bg-transparent w-full outline-none focus:outline-none active:outline-none text-right py-4 pr-8 pl-4 font-semibold'
       )}

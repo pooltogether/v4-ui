@@ -1,9 +1,4 @@
-import {
-  getCoingeckoTokenPrices,
-  Token,
-  TokenWithUsdBalance,
-  useReadProvider
-} from '@pooltogether/hooks'
+import { getCoingeckoTokenPrices, Token, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { useQuery } from 'react-query'
 import { batch, Context, contract } from '@pooltogether/etherplex'
@@ -16,6 +11,7 @@ import Erc20Abi from '@abis/ERC20'
 import { SECONDS_PER_DAY } from '@constants/misc'
 import { V3PrizePool } from './useV3PrizePools'
 import { NO_REFETCH } from '@constants/query'
+import { useReadProvider } from '@hooks/useReadProvider'
 
 export const useTokenFaucetData = (
   chainId: number,

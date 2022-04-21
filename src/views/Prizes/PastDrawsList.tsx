@@ -7,7 +7,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'

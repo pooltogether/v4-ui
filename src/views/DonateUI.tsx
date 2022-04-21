@@ -1,23 +1,9 @@
 import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import {
-  BlockExplorerLink,
-  LoadingScreen,
-  ThemedClipSpinner,
-  TokenIcon
-} from '@pooltogether/react-components'
-import {
-  Amount,
-  Token,
-  Transaction,
-  usePrizePoolTokens,
-  useReadProvider,
-  useTransaction
-} from '@pooltogether/hooks'
-import { useEffect, useState } from 'react'
+import { BlockExplorerLink, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
+import { useCallback, useEffect, useState } from 'react'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
-import { useUsersAddress } from '@hooks/useUsersAddress'
-import { CardTitle } from '@components/Text/CardTitle'
 import {
   Draw,
   PrizeAwardable,
@@ -27,13 +13,20 @@ import {
 } from '@pooltogether/v4-client-js'
 import { FieldValues, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useUser } from '@hooks/v4/User/useUser'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
+import { useGetUser, useUser } from '@hooks/v4/User/useGetUser'
+import {
+  Transaction,
+  TransactionState,
+  TransactionStatus,
+  useIsWalletOnChainId,
+  useTransaction,
+  useUsersAddress
+} from '@pooltogether/wallet-connection'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { Contract, ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { TxButton } from '@components/Input/TxButton'
 import { useQuery } from 'react-query'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
@@ -123,7 +116,7 @@ const InfoCard = (props) => {
 const DelegateCard = (props) => {
   const usersAddress = useUsersAddress()
   const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const { data: delegate, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)
 
@@ -212,7 +205,7 @@ const useSetPolygonOnMount = () => {
 interface DelegateFormProps {
   prizePool: PrizePool
   tx: Transaction
-  setTxId: (txId: number) => void
+  setTxId: (txId: string) => void
   refetchDelegate: () => void
 }
 
@@ -227,15 +220,16 @@ export const DelegateForm = (props: DelegateFormProps) => {
     reValidateMode: 'onChange'
   })
   const { t } = useTranslation()
-  const sendTx = useSendTransaction()
-  const user = useUser(prizePool)
-  const isUserOnRightNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const sendTransaction = useSendTransaction()
+  const getUser = useGetUser(prizePool)
 
   const sendDelegateTx = async (x: FieldValues) => {
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name: t('delegateDeposit', 'Delegate deposit'),
-      method: 'delegate',
-      callTransaction: () => user.delegateTickets(UNCHAIN_ADDRESS),
+      callTransaction: async () => {
+        const user = await getUser()
+        return user.delegateTickets(UNCHAIN_ADDRESS)
+      },
       callbacks: {
         refetch: () => {
           refetchDelegate()
@@ -247,7 +241,7 @@ export const DelegateForm = (props: DelegateFormProps) => {
 
   const errorMessage = errors?.[DELEGATE_ADDRESS_KEY]?.message
 
-  if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
+  if (tx?.state === TransactionState.pending || tx?.status === TransactionStatus.success) {
     return (
       <InfoList bgClassName='bg-body'>
         <TxReceiptItem depositTx={tx} chainId={prizePool.chainId} />
@@ -264,15 +258,15 @@ export const DelegateForm = (props: DelegateFormProps) => {
       <div className='h-8 text-pt-red text-center'>
         <span>{errorMessage}</span>
       </div>
-      <TxButtonNetworkGated
-        toolTipId='submit-new-delegate-tooltip'
+      <TxButton
         chainId={prizePool.chainId}
         className='w-full'
         type='submit'
-        disabled={!isValid || !isUserOnRightNetwork}
+        state={tx?.state}
+        status={tx?.status}
       >
         {t('updateDelegate', 'Update delegate')}
-      </TxButtonNetworkGated>
+      </TxButton>
     </form>
   )
 }

@@ -2,10 +2,9 @@ import { batch, Context, contract } from '@pooltogether/etherplex'
 import {
   Token,
   TokenWithUsdBalance,
-  useReadProviders,
   useCoingeckoTokenPricesAcrossChains,
-  TokenPrices,
-  Amount
+  Amount,
+  TokenPrice
 } from '@pooltogether/hooks'
 import { useQueries } from 'react-query'
 import { Provider } from '@ethersproject/abstract-provider'
@@ -15,9 +14,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import Erc20Abi from '@abis/ERC20'
 import { NO_REFETCH } from '@constants/query'
-import { useV3ChainIds } from './useV3ChainIds'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useReadProviders } from '@hooks/useReadProviders'
 
 export interface V3PrizePoolBalances {
   chainId: number
@@ -72,7 +71,9 @@ const getUsersV3BalancesByChainId = async (
   usersAddress: string,
   provider: Provider,
   prizePools: V3PrizePool[],
-  tokenPrices: TokenPrices
+  tokenPrices: {
+    [id: string]: TokenPrice
+  }
 ) => {
   let batchRequests: Context[] = []
 

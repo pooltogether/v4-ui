@@ -1,22 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
-import { Transaction, useTransaction, useIsWalletMetamask } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
-import { TokenIcon } from '@pooltogether/react-components'
-import { AddTokenToMetamaskButton } from '@pooltogether/react-components'
 import { ethers, Overrides } from 'ethers'
+import { TransactionState, useTransaction } from '@pooltogether/wallet-connection'
 
 import { BUTTON_MIN_WIDTH } from '@constants/misc'
 import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
 import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
-import { useSelectedChainIdUser } from '@hooks/v4/User/useSelectedChainIdUser'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
@@ -25,8 +20,9 @@ import { useSendTransaction } from '@hooks/useSendTransaction'
 import { DepositConfirmationModal } from '@views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from '@views/Deposit/DepositForm'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -35,7 +31,6 @@ export const DepositCard = (props: { className?: string }) => {
 
   const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
-  const user = useSelectedChainIdUser()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const {
@@ -56,6 +51,7 @@ export const DepositCard = (props: { className?: string }) => {
     refetch: refetchTicketDelegate
   } = useUsersTicketDelegate(usersAddress, prizePool)
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
+  const getUser = useGetUser(prizePool)
 
   const isDataFetched =
     isPrizePoolTokensFetched &&
@@ -75,22 +71,22 @@ export const DepositCard = (props: { className?: string }) => {
 
   const { t } = useTranslation()
 
-  const sendTx = useSendTransaction()
+  const sendTransaction = useSendTransaction()
 
-  const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: number }>({})
+  const [transactionIds, setTransactionIds] = useState<{ [txIdKey: string]: string }>({})
   const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
-  const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || 0
-  const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || 0
+  const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || ''
+  const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || ''
 
   const approveTx = useTransaction(approveTxId)
   const depositTx = useTransaction(depositTxId)
 
-  const setSpecificTxId = (txId: number, prizePool: PrizePool, action: string) =>
+  const setSpecificTxId = (txId: string, prizePool: PrizePool, action: string) =>
     setTransactionIds((prevState) => ({ ...prevState, [getKey(prizePool, action)]: txId }))
-  const setApproveTxId = (txId: number, prizePool: PrizePool) =>
+  const setApproveTxId = (txId: string, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'approve')
-  const setDepositTxId = (txId: number, prizePool: PrizePool) =>
+  const setDepositTxId = (txId: string, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'deposit')
 
   const token = usersBalances?.token
@@ -125,17 +121,19 @@ export const DepositCard = (props: { className?: string }) => {
     delete query.showConfirmModal
     router.replace({ pathname, query }, null, { scroll: false })
     setShowConfirmModal(false)
-    if (depositTx?.completed) {
-      setDepositTxId(0, prizePool)
+    if (depositTx?.state === TransactionState.complete) {
+      setDepositTxId('', prizePool)
     }
   }
 
   const sendApproveTx = async () => {
     const name = t(`allowTickerPool`, { ticker: token.symbol })
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name,
-      method: 'approve',
-      callTransaction: async () => user.approveDeposits(),
+      callTransaction: async () => {
+        const user = await getUser()
+        return user.approveDeposits()
+      },
       callbacks: {
         refetch: () => refetchUsersDepositAllowance()
       }
@@ -143,7 +141,7 @@ export const DepositCard = (props: { className?: string }) => {
     setApproveTxId(txId, prizePool)
   }
 
-  const onSuccess = (tx: Transaction) => {
+  const onSuccess = () => {
     resetQueryParam()
     refetchTicketDelegate()
   }
@@ -155,16 +153,20 @@ export const DepositCard = (props: { className?: string }) => {
     let callTransaction
     if (ticketDelegate === ethers.constants.AddressZero) {
       contractMethod = 'depositToAndDelegate'
-      callTransaction = async () =>
-        user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
+      callTransaction = async () => {
+        const user = await getUser()
+        return user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
+      }
     } else {
       contractMethod = 'depositTo'
-      callTransaction = async () => user.deposit(amountToDeposit.amountUnformatted, overrides)
+      callTransaction = async () => {
+        const user = await getUser()
+        return user.deposit(amountToDeposit.amountUnformatted, overrides)
+      }
     }
 
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name,
-      method: contractMethod,
       callTransaction,
       callbacks: {
         onSuccess,
@@ -178,24 +180,26 @@ export const DepositCard = (props: { className?: string }) => {
   }
 
   const resetQueryParam = () => {
-    const { query, pathname } = router
-    delete query[DEPOSIT_QUANTITY_KEY]
-    router.replace({ pathname, query }, null, { scroll: false })
+    const url = new URL(window.location.href)
+    url.searchParams.delete(DEPOSIT_QUANTITY_KEY)
+    router.replace({ pathname: url.pathname, query: url.searchParams.toString() }, null, {
+      scroll: false
+    })
   }
 
   const resetState = () => {
     resetQueryParam()
     reset()
-    setApproveTxId(0, prizePool)
-    setDepositTxId(0, prizePool)
+    setApproveTxId('', prizePool)
+    setDepositTxId('', prizePool)
   }
 
   /**
    * Open modal and clear tx if it has completed
    */
   const openModal = () => {
-    if (depositTx?.completed) {
-      setDepositTxId(0, prizePool)
+    if (depositTx?.state === TransactionState.complete) {
+      setDepositTxId('', prizePool)
     }
     setShowConfirmModal(true)
   }
@@ -211,7 +215,6 @@ export const DepositCard = (props: { className?: string }) => {
         </div>
         <DepositForm
           form={form}
-          user={user}
           prizePool={prizePool}
           token={token}
           ticket={ticket}
@@ -219,7 +222,6 @@ export const DepositCard = (props: { className?: string }) => {
           approveTx={approveTx}
           depositTx={depositTx}
           isUsersBalancesFetched={isUsersBalancesFetched}
-          isUsersDepositAllowanceFetched={isUsersDepositAllowanceFetched}
           openModal={openModal}
           amountToDeposit={amountToDeposit}
         />
@@ -304,36 +306,6 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
     </>
   )
 }
-
-const DepositAddTokenButton = (props) => {
-  const { ticket, chainId } = props
-  const { t } = useTranslation()
-
-  const { wallet } = useOnboard()
-  const isMetaMask = useIsWalletMetamask(wallet)
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
-
-  if (!isMetaMask) {
-    return null
-  }
-
-  return (
-    <AddTokenToMetamaskButton
-      t={t}
-      isWalletOnProperNetwork={isWalletOnProperNetwork}
-      token={ticket}
-      chainId={chainId}
-      className='underline trans text-green hover:opacity-90 cursor-pointer flex items-center text-center font-semibold mx-auto'
-    >
-      <TokenIcon
-        sizeClassName={'w-5 xs:w-6 h-5 xs:h-6'}
-        className='mr-2'
-        chainId={chainId}
-        address={ticket.address}
-      />{' '}
-      {t('addTicketTokenToMetamask', {
-        token: ticket.symbol
-      })}{' '}
-    </AddTokenToMetamaskButton>
-  )
+function useGetWalletSigner() {
+  throw new Error('Function not implemented.')
 }

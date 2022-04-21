@@ -1,10 +1,5 @@
-import { Transaction } from '@pooltogether/hooks'
-import {
-  formatBlockExplorerTxUrl,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize
-} from '@pooltogether/react-components'
+import { Transaction } from '@pooltogether/wallet-connection'
+import { SquareButton, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import classNames from 'classnames'
 import React from 'react'

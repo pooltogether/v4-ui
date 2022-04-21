@@ -1,9 +1,9 @@
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { NETWORK } from '@pooltogether/utilities'
+import { useWalletChainId } from '@pooltogether/wallet-connection'
 import { useMemo } from 'react'
 
 export function useUniswapSupportsNetwork() {
-  const { network: walletChainId } = useOnboard()
+  const walletChainId = useWalletChainId()
   return useMemo(
     () =>
       [
