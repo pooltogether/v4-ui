@@ -59,16 +59,11 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     amountToWithdraw?.amountUnformatted
   )
 
-  useEffect(() => {
-    console.log({ exitFee, isExitFeeFetched, isExitFeeFetching })
-  }, [exitFee, isExitFeeFetched, isExitFeeFetching])
-
   const callTransaction = useCallTransaction('withdrawInstantlyFrom', poolAddress, PrizePoolAbi)
 
   const sendWithdrawTx = async () => {
     const args = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]
 
-    console.log('sendWithdrawTx', { amountToWithdraw, exitFee })
     const withdrawalAmountPretty = numberWithCommas(
       amountToWithdraw.amountUnformatted.sub(exitFee),
       { decimals: token.decimals }
@@ -87,8 +82,6 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     setWithdrawTxId(txId)
     setTxId(txId)
   }
-
-  console.log('PrizePoolWithdrawView', { exitFee })
 
   const { t } = useTranslation()
 

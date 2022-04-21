@@ -72,8 +72,6 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     onDismiss
   } = props
 
-  console.log('WithdrawStepContent', { exitFee })
-
   const { t } = useTranslation()
 
   const chainId = prizePool.chainId
@@ -225,22 +223,11 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
     isExitFeeFetching
   } = props
 
-  console.log('WithdrawReviewStep', { exitFee })
-
   const { t } = useTranslation()
 
   const [exitFeeApproved, setExitFeeApproved] = useState<boolean>(false)
 
   const isExitFeeAgreed = exitFee?.isZero() ? true : exitFeeApproved
-
-  console.log({
-    dsabled: !isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed,
-    exitFee,
-    isExitFeeFetched,
-    isExitFeeFetching,
-    isExitFeeAgreed,
-    sendWithdrawTx
-  })
 
   return (
     <div className='space-y-4'>
@@ -265,7 +252,6 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
         onClick={() => {
-          console.log({ exitFee })
           sendWithdrawTx()
         }}
         disabled={!isExitFeeFetched || isExitFeeFetching || !isExitFeeAgreed}
