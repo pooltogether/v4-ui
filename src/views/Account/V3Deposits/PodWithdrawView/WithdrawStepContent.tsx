@@ -87,13 +87,7 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
         />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={prizePool.chainId}
-          tx={withdrawTx}
-          closeModal={onDismiss}
-          hideCloseButton
-        />
+        <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={withdrawTx} />
       </>
     )
   }

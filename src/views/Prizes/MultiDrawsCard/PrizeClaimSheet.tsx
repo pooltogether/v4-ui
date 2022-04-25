@@ -1,6 +1,11 @@
 import React, { useCallback, useRef } from 'react'
 import { Token } from '@pooltogether/hooks'
-import { SquareButton, SquareButtonTheme, ModalTitle } from '@pooltogether/react-components'
+import {
+  SquareButton,
+  SquareButtonTheme,
+  ModalTitle,
+  BottomSheet
+} from '@pooltogether/react-components'
 import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
@@ -8,8 +13,7 @@ import {
   useUsersAddress,
   TransactionStatus,
   Transaction,
-  useIsWalletOnChainId,
-  TransactionState
+  useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
 import Reward, { RewardElement } from 'react-rewards'
 
@@ -23,10 +27,10 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { DrawData } from '../../../interfaces/v4'
-import { BottomSheet, snapTo90 } from '@components/BottomSheet'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { TxButton } from '@components/Input/TxButton'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -143,30 +147,24 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           </SquareButton>
         </BottomSheet>
       )
-    }
-
-    return (
-      <BottomSheet
-        snapPoints={snapTo90}
-        label='Claim prizes modal'
-        open={isOpen}
-        onDismiss={() => {
-          setTxId('')
-          closeModal()
-        }}
-      >
-        <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={chainId}
-          tx={claimTx}
-          closeModal={() => {
+    } else if (
+      claimTx.status === TransactionStatus.pendingBlockchainConfirmation ||
+      claimTx.status === TransactionStatus.success
+    ) {
+      return (
+        <BottomSheet
+          label='Claim prizes modal'
+          open={isOpen}
+          onDismiss={() => {
             setTxId('')
             closeModal()
           }}
-        />
-      </BottomSheet>
-    )
+        >
+          <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
+          <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
+        </BottomSheet>
+      )
+    }
   }
 
   const winningDrawResultsList = Object.values(winningDrawResults)
@@ -178,23 +176,6 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   }, ethers.BigNumber.from(0))
 
   const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
-
-  if (!isWalletOnProperNetwork) {
-    return (
-      <BottomSheet
-        snapPoints={snapTo90}
-        label='Wrong network modal'
-        open={isOpen}
-        onDismiss={() => {
-          setTxId('')
-          closeModal()
-        }}
-      >
-        <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
-        <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </BottomSheet>
-    )
-  }
 
   const drawIdsToClaim = winningDrawResultsList.filter(
     (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
@@ -253,17 +234,21 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           </Reward>
         </div>
 
-        <SquareButton
+        <TxButton
+          chainId={prizeDistributor.chainId}
           className='mt-8 w-full'
           onClick={() => {
             rewardRef.current.rewardMe()
             sendClaimTx()
           }}
-          theme={SquareButtonTheme.rainbow}
-          disabled={claimTx?.state === TransactionState.pending || drawIdsToClaim.length === 0}
+          theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
+          state={claimTx?.state}
+          status={claimTx?.status}
+          disabled={drawIdsToClaim.length === 0}
+          type='button'
         >
           {t('confirmClaim', 'Confirm claim')}
-        </SquareButton>
+        </TxButton>
       </div>
     </BottomSheet>
   )

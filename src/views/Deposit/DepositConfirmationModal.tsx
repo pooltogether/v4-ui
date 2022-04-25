@@ -7,7 +7,8 @@ import {
   SquareLink,
   SquareButtonSize,
   SquareButtonTheme,
-  ModalTitle
+  ModalTitle,
+  BottomSheet
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { Trans, useTranslation } from 'react-i18next'
@@ -21,7 +22,6 @@ import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { ModalInfoList } from '@components/InfoList'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { UpdatedOdds } from '@components/UpdatedOddsListItem'
-import { BottomSheet } from '@components/BottomSheet'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'

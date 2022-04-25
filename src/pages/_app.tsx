@@ -86,21 +86,17 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 
   useEffect(() => {
     const fathomSiteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID
-
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_PUBLIC_FATHOM_SITE_ID, {
         url: 'https://goose.pooltogether.com/script.js',
         includedDomains: ['app.pooltogether.com', 'v4.pooltogether.com']
       })
-
       const onRouteChangeComplete = (url) => {
         if (window['fathom']) {
           window['fathom'].trackPageview()
         }
       }
-
       router.events.on('routeChangeComplete', onRouteChangeComplete)
-
       return () => {
         router.events.off('routeChangeComplete', onRouteChangeComplete)
       }

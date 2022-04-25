@@ -75,13 +75,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
         />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={prizePool.chainId}
-          tx={tx}
-          closeModal={onDismiss}
-          hideCloseButton
-        />
+        <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={tx} />
       </>
     )
   }

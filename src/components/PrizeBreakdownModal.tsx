@@ -1,15 +1,8 @@
 import { Token } from '@pooltogether/hooks'
-import {
-  Modal,
-  ModalProps,
-  SquareButton,
-  SquareButtonSize,
-  SquareButtonTheme
-} from '@pooltogether/react-components'
+import { ModalProps, BottomSheet } from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { BottomSheet } from './BottomSheet'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'
 

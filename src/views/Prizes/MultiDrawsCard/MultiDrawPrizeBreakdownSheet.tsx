@@ -1,10 +1,4 @@
-import {
-  Modal,
-  ModalProps,
-  SquareButton,
-  SquareButtonSize,
-  SquareButtonTheme
-} from '@pooltogether/react-components'
+import { ModalProps, BottomSheet } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
 import React, { useMemo, useState } from 'react'
 
@@ -13,7 +7,6 @@ import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { PrizeBreakdown } from '@components/PrizeBreakdown'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
-import { BottomSheet, snapTo90 } from '@components/BottomSheet'
 
 export const MultiDrawPrizeBreakdownSheet = (
   props: { drawDatas: { [drawId: number]: DrawData }; ticket: Token } & Omit<

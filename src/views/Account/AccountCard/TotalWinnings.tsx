@@ -1,14 +1,13 @@
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, TokenIcon, CountUp } from '@pooltogether/react-components'
+import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
-import { BottomSheet } from '@components/BottomSheet'
 import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { getTimestampString } from '@utils/getTimestampString'
 

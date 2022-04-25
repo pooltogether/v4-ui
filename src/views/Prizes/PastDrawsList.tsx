@@ -253,7 +253,11 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = drawResult && !drawResult.totalValue.isZero()
-  const useWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const userWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const noPrizes = usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult
+  const unclaimed = usersAddress && !userHasClaimed && userHasAmountToClaim
+
+  const messageHeightClassName = 'h-6'
 
   if (drawLockCountdown?.secondsLeft) {
     const { weeks, days, hours, minutes } = drawLockCountdown
@@ -277,30 +281,20 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
         </span>
       </div>
     )
-  } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult) {
-    return (
-      <span className={classNames('text-inverse', className)}>
-        {t('noPrizesWon', 'No prizes won')}
-      </span>
-    )
-  } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
-    return (
-      <div className={classNames(className, 'animate-pulse')}>
-        <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
-      </div>
-    )
+  } else if (noPrizes || unclaimed) {
+    return <div className={classNames('text-inverse', messageHeightClassName, className)} />
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
     const { amountPretty } = claimedAmount
     return (
-      <div className={classNames(className)}>
+      <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
         <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
-  } else if (usersAddress && normalizedBalance && useWasNotEligible) {
+  } else if (usersAddress && normalizedBalance && userWasNotEligible) {
     return (
-      <div className={classNames(className)}>
+      <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1 opacity-50'>{t('notEligible', 'Not eligible')}</span>
       </div>
     )

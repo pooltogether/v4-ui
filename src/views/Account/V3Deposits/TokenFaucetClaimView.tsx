@@ -132,12 +132,7 @@ const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
   return (
     <>
       <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
-      <ModalTransactionSubmitted
-        className='mt-8'
-        chainId={chainId}
-        tx={claimTx}
-        closeModal={onDismiss}
-      />
+      <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
     </>
   )
 }
