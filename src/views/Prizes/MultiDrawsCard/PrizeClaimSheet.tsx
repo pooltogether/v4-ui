@@ -26,6 +26,7 @@ import { DrawData } from '../../../interfaces/v4'
 import { BottomSheet, snapTo90 } from '@components/BottomSheet'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -95,6 +96,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
         )
       },
       callbacks: {
+        onConfirmedByUser: () => logEvent(FathomEvent.prizeClaim),
         refetch: () => {
           refetchUsersTotalTwab()
           refetchUsersBalances()

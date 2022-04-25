@@ -32,6 +32,7 @@ import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { useSigner } from 'wagmi'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 

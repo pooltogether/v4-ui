@@ -12,6 +12,7 @@ import { WithdrawStepContent } from './WithdrawStepContent'
 import { DepositItemsProps } from '.'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 export enum WithdrawalSteps {
   input,
@@ -53,7 +54,10 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         return user.withdraw(amountToWithdraw?.amountUnformatted, overrides)
       },
       callbacks: {
-        onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
+        onConfirmedByUser: () => {
+          setCurrentStep(WithdrawalSteps.viewTxReceipt)
+          logEvent(FathomEvent.withdrawal)
+        },
         refetch: () => {
           refetchBalances()
           refetchUsersTotalTwab()

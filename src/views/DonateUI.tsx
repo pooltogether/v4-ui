@@ -2,7 +2,7 @@ import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { BlockExplorerLink, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import {
   Draw,
@@ -13,12 +13,11 @@ import {
 } from '@pooltogether/v4-client-js'
 import { FieldValues, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { useGetUser, useUser } from '@hooks/v4/User/useGetUser'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 import {
   Transaction,
   TransactionState,
   TransactionStatus,
-  useIsWalletOnChainId,
   useTransaction,
   useUsersAddress
 } from '@pooltogether/wallet-connection'

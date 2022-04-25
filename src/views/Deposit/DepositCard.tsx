@@ -23,6 +23,7 @@ import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelega
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -135,6 +136,7 @@ export const DepositCard = (props: { className?: string }) => {
         return user.approveDeposits()
       },
       callbacks: {
+        onConfirmedByUser: () => logEvent(FathomEvent.approveDeposit),
         refetch: () => refetchUsersDepositAllowance()
       }
     })
@@ -169,6 +171,7 @@ export const DepositCard = (props: { className?: string }) => {
       name,
       callTransaction,
       callbacks: {
+        onConfirmedByUser: () => logEvent(FathomEvent.deposit),
         onSuccess,
         refetch: () => {
           refetchUsersTotalTwab()
