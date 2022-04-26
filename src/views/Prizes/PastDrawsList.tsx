@@ -266,7 +266,9 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     const thereIsHours = thereIsDays || hours > 0
     const thereIsMinutes = thereIsHours || minutes > 0
     return (
-      <div className={classNames('text-inverse flex leading-tight', className)}>
+      <div
+        className={classNames('text-inverse flex leading-tight', messageHeightClassName, className)}
+      >
         <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
         <span>
           {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
@@ -299,7 +301,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       </div>
     )
   } else {
-    return null
+    return <div className={classNames(messageHeightClassName, className)} />
   }
 }
 
@@ -312,4 +314,4 @@ const PastDrawsListHeader = (props: { className?: string }) => {
   )
 }
 
-const LoadingRow = () => <div className='w-full rounded-lg animate-pulse bg-card h-36' />
+const LoadingRow = () => <div className='w-full rounded-lg animate-pulse bg-card h-24' />
