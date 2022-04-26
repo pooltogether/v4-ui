@@ -4,7 +4,8 @@ import {
   SquareButton,
   SquareButtonTheme,
   ModalTitle,
-  BottomSheet
+  BottomSheet,
+  snapTo90
 } from '@pooltogether/react-components'
 import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
