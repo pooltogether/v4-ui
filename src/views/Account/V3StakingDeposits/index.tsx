@@ -1,6 +1,6 @@
 import { BigNumber } from 'ethers'
 import { CardTitle } from '@components/Text/CardTitle'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'

@@ -6,10 +6,10 @@ import {
   BlockExplorerLink,
   NetworkIcon,
   SquareLink,
-  TokenIcon
+  TokenIcon,
+  BottomSheet
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import { BottomSheet } from '@components/BottomSheet'
 import { Amount, Token } from '@pooltogether/hooks'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import classNames from 'classnames'

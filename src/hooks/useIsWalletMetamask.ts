@@ -1,7 +1,7 @@
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 import { useIsWalletMetamask as _useIsWalletMetamask } from '@pooltogether/hooks'
+import { useConnect } from 'wagmi'
 
 export const useIsWalletMetamask = () => {
-  const { wallet } = useOnboard()
-  return _useIsWalletMetamask(wallet)
+  const [{ data }] = useConnect()
+  return !!(data?.connector?.name === 'MetaMask')
 }

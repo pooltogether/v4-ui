@@ -4,7 +4,7 @@ import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 
 import { StakingCard } from './StakingCard'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
 import { useTokenFaucetData } from '@hooks/v3/useTokenFaucetData'

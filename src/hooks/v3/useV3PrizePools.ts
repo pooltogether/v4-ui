@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query'
-import { Amount, Token, useReadProviders } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { Provider } from '@ethersproject/abstract-provider'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { getAddress } from '@ethersproject/address'
@@ -12,6 +12,7 @@ import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
 import { NO_REFETCH } from '@constants/query'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
+import { useReadProviders } from '@hooks/useReadProviders'
 
 export interface PodToken extends Token {
   pricePerShare: Amount

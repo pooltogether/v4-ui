@@ -1,11 +1,11 @@
-import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
-import { getReadProvider } from '@pooltogether/utilities'
+import { RPC_API_KEYS } from '@constants/config'
 import {
   Delegation,
   DelegationId,
   TwabDelegator,
   TWAB_DELEGATOR_ADDRESS
 } from '@pooltogether/v4-twab-delegator-js'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
@@ -56,7 +56,7 @@ const getAllTwabDelegations = async (chainIds: number[], delegator: string) => {
  * @returns
  */
 const getDelegations = async (chainId: number, delegator: string) => {
-  const provider = getReadProvider(chainId)
+  const provider = getReadProvider(chainId, RPC_API_KEYS)
   const twabDelegatorAddress = TWAB_DELEGATOR_ADDRESS[chainId]
   const twabDelegator = new TwabDelegator(chainId, provider, twabDelegatorAddress)
   const delegations = await fetchAllPagesOfDelegations(twabDelegator, delegator)

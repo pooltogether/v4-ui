@@ -1,27 +1,37 @@
 import React, { useCallback, useRef } from 'react'
-import { Token, Transaction } from '@pooltogether/hooks'
-import { Modal, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { Token } from '@pooltogether/hooks'
+import {
+  SquareButton,
+  SquareButtonTheme,
+  ModalTitle,
+  BottomSheet,
+  snapTo90
+} from '@pooltogether/react-components'
 import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
+import {
+  useUsersAddress,
+  TransactionStatus,
+  Transaction,
+  useIsWalletOnChainId
+} from '@pooltogether/wallet-connection'
+import Reward, { RewardElement } from 'react-rewards'
 
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { ModalTitle } from '@components/Modal/ModalTitle'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 import { PrizeList } from '@components/PrizeList'
 import { useSignerPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSignerPrizeDistributor'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { DrawData } from '../../../interfaces/v4'
-import { useUsersAddress } from '@hooks/useUsersAddress'
-import { BottomSheet, snapTo90 } from '@components/BottomSheet'
-import Reward, { RewardElement } from 'react-rewards'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { TxButton } from '@components/Input/TxButton'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -39,7 +49,7 @@ interface PrizeClaimSheetProps {
   removeDrawIdToClaim: (drawId: number) => void
   claimTx: Transaction
   closeModal: () => void
-  setTxId: (txId: number) => void
+  setTxId: (txId: string) => void
 }
 
 export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
@@ -59,13 +69,13 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     setTxId
   } = props
 
-  const sendTx = useSendTransaction()
+  const sendTransaction = useSendTransaction()
   const rewardRef = useRef<RewardElement>(null)
 
   const { chainId } = useSelectedChainId()
   const { t } = useTranslation()
 
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(chainId)
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
@@ -75,9 +85,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
     const name = `Claim prizes`
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name,
-      method: 'claim',
       callTransaction: async () => {
         const winningDrawResultsList = Object.values(winningDrawResults).filter((drawResults) => {
           return !drawIdsToNotClaim.has(drawResults.drawId)
@@ -92,6 +101,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
         )
       },
       callbacks: {
+        onConfirmedByUser: () => logEvent(FathomEvent.prizeClaim),
         refetch: () => {
           refetchUsersTotalTwab()
           refetchUsersBalances()
@@ -104,15 +114,15 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   if (!winningDrawResults) return null
 
-  if (claimTx && claimTx.sent) {
-    if (claimTx.error) {
+  if (claimTx) {
+    if (claimTx.status === TransactionStatus.error) {
       return (
         <BottomSheet
           snapPoints={snapTo90}
           label='Error depositing modal'
           open={isOpen}
           onDismiss={() => {
-            setTxId(0)
+            setTxId('')
             closeModal()
           }}
         >
@@ -130,7 +140,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             theme={SquareButtonTheme.tealOutline}
             className='w-full'
             onClick={() => {
-              setTxId(0)
+              setTxId('')
               closeModal()
             }}
           >
@@ -138,30 +148,24 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           </SquareButton>
         </BottomSheet>
       )
-    }
-
-    return (
-      <BottomSheet
-        snapPoints={snapTo90}
-        label='Claim prizes modal'
-        open={isOpen}
-        onDismiss={() => {
-          setTxId(0)
-          closeModal()
-        }}
-      >
-        <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
-        <ModalTransactionSubmitted
-          className='mt-8'
-          chainId={chainId}
-          tx={claimTx}
-          closeModal={() => {
-            setTxId(0)
+    } else if (
+      claimTx.status === TransactionStatus.pendingBlockchainConfirmation ||
+      claimTx.status === TransactionStatus.success
+    ) {
+      return (
+        <BottomSheet
+          label='Claim prizes modal'
+          open={isOpen}
+          onDismiss={() => {
+            setTxId('')
             closeModal()
           }}
-        />
-      </BottomSheet>
-    )
+        >
+          <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
+          <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
+        </BottomSheet>
+      )
+    }
   }
 
   const winningDrawResultsList = Object.values(winningDrawResults)
@@ -174,23 +178,6 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
   const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
 
-  if (!isWalletOnProperNetwork) {
-    return (
-      <BottomSheet
-        snapPoints={snapTo90}
-        label='Wrong network modal'
-        open={isOpen}
-        onDismiss={() => {
-          setTxId(0)
-          closeModal()
-        }}
-      >
-        <ModalTitle chainId={chainId} title={t('wrongNetwork', 'Wrong network')} />
-        <ModalNetworkGate chainId={chainId} className='mt-8' />
-      </BottomSheet>
-    )
-  }
-
   const drawIdsToClaim = winningDrawResultsList.filter(
     (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
   )
@@ -201,7 +188,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       label='Claim prizes modal'
       open={isOpen}
       onDismiss={() => {
-        setTxId(0)
+        setTxId('')
         closeModal()
       }}
     >
@@ -248,20 +235,21 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           </Reward>
         </div>
 
-        <SquareButton
+        <TxButton
+          chainId={prizeDistributor.chainId}
           className='mt-8 w-full'
           onClick={() => {
             rewardRef.current.rewardMe()
             sendClaimTx()
           }}
-          theme={SquareButtonTheme.rainbow}
-          disabled={
-            (claimTx?.inWallet && !claimTx.cancelled && !claimTx.completed) ||
-            drawIdsToClaim.length === 0
-          }
+          theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
+          state={claimTx?.state}
+          status={claimTx?.status}
+          disabled={drawIdsToClaim.length === 0}
+          type='button'
         >
           {t('confirmClaim', 'Confirm claim')}
-        </SquareButton>
+        </TxButton>
       </div>
     </BottomSheet>
   )

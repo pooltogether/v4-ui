@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { Amount, Transaction } from '@pooltogether/hooks'
+import { Amount } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   SquareLink,
@@ -13,6 +13,7 @@ import {
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 
 interface ModalApproveGateProps {
   className?: string
@@ -27,8 +28,8 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
 
   const { t } = useTranslation()
 
-  if (approveTx?.inFlight) {
-    const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx?.hash, chainId)
+  if (approveTx?.state === TransactionState.pending) {
+    const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx.response?.hash, chainId)
 
     return (
       <div className={classNames(className, 'flex flex-col')}>

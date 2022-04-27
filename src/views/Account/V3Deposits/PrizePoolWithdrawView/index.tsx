@@ -1,16 +1,20 @@
-import { Amount, Transaction, useTransaction, useV3ExitFee } from '@pooltogether/hooks'
+import { Amount, useV3ExitFee } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import {
+  useCallTransaction,
+  useIsWalletOnChainId,
+  useTransaction
+} from '@pooltogether/wallet-connection'
 
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
 import PrizePoolAbi from '@abis/V3_PrizePool'
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 export enum WithdrawalSteps {
@@ -20,7 +24,7 @@ export enum WithdrawalSteps {
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
-  setWithdrawTxId: (txId: number) => void
+  setWithdrawTxId: (txId: string) => void
   onDismiss: () => void
 }
 
@@ -29,12 +33,12 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
 
   const chainId = prizePool.chainId
 
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const [amountToWithdraw, setAmountToWithdraw] = useState<Amount>()
   const [currentStep, setCurrentStep] = useState<WithdrawalSteps>(WithdrawalSteps.input)
-  const sendTx = useSendTransaction()
-  const isWalletOnProperNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const sendTransaction = useSendTransaction()
+  const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
   const form = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange'
@@ -55,24 +59,21 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     amountToWithdraw?.amountUnformatted
   )
 
-  const sendWithdrawTx = async (e) => {
-    e.preventDefault()
+  const callTransaction = useCallTransaction('withdrawInstantlyFrom', poolAddress, PrizePoolAbi)
 
-    const params = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]
+  const sendWithdrawTx = async () => {
+    const args = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]
 
     const withdrawalAmountPretty = numberWithCommas(
       amountToWithdraw.amountUnformatted.sub(exitFee),
       { decimals: token.decimals }
     )
 
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name: `${t('withdraw')} ${withdrawalAmountPretty} ${token.symbol}`,
-      method: 'withdrawInstantlyFrom',
-      contractAddress: poolAddress,
-      contractAbi: PrizePoolAbi,
-      params,
+      callTransaction: () => callTransaction({ args }),
       callbacks: {
-        onSent: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
+        onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {
           refetchBalances()
         }
@@ -94,26 +95,24 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
   }
 
   return (
-    <>
-      <WithdrawStepContent
-        prizePool={prizePool}
-        ticket={ticket}
-        token={token}
-        form={form}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        usersBalance={ticket}
-        refetchBalances={refetchBalances}
-        amountToWithdraw={amountToWithdraw}
-        setAmountToWithdraw={setAmountToWithdraw}
-        withdrawTx={tx}
-        setWithdrawTxId={setWithdrawTxId}
-        sendWithdrawTx={sendWithdrawTx}
-        onDismiss={onDismiss}
-        exitFee={exitFee}
-        isExitFeeFetched={isExitFeeFetched}
-        isExitFeeFetching={isExitFeeFetching}
-      />
-    </>
+    <WithdrawStepContent
+      prizePool={prizePool}
+      ticket={ticket}
+      token={token}
+      form={form}
+      currentStep={currentStep}
+      setCurrentStep={setCurrentStep}
+      usersBalance={ticket}
+      refetchBalances={refetchBalances}
+      amountToWithdraw={amountToWithdraw}
+      setAmountToWithdraw={setAmountToWithdraw}
+      withdrawTx={tx}
+      setWithdrawTxId={setWithdrawTxId}
+      sendWithdrawTx={sendWithdrawTx}
+      onDismiss={onDismiss}
+      exitFee={exitFee}
+      isExitFeeFetched={isExitFeeFetched}
+      isExitFeeFetching={isExitFeeFetching}
+    />
   )
 }

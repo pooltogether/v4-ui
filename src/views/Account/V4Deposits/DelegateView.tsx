@@ -14,18 +14,22 @@ import { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { Transaction, useTransaction } from '@pooltogether/hooks'
+import {
+  useUsersAddress,
+  Transaction,
+  useTransaction,
+  TransactionStatus
+} from '@pooltogether/wallet-connection'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
-import { useUsersAddress } from '@hooks/useUsersAddress'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { DepositItemsProps } from '.'
-import { useUser } from '@hooks/v4/User/useUser'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { useIsWalletOnNetwork } from '@hooks/useIsWalletOnNetwork'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
+import { TxButton } from '@components/Input/TxButton'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 
 const DELEGATE_ADDRESS_KEY = 'delegate'
 
@@ -168,13 +172,13 @@ interface DelegateWriteStateProps {
 const DelegateWriteState = (props: DelegateWriteStateProps) => {
   const { setReadView } = props
   const { t } = useTranslation()
-  const [txId, setTxId] = useState(0)
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
 
   return (
     <div className='flex flex-col w-full space-y-4'>
       <DelegateForm {...props} setTxId={setTxId} tx={tx} />
-      {!tx?.sent && (
+      {!Boolean(tx) && (
         <SquareButton theme={SquareButtonTheme.tealOutline} onClick={setReadView}>
           {t('cancel')}
         </SquareButton>
@@ -186,7 +190,7 @@ const DelegateWriteState = (props: DelegateWriteStateProps) => {
 interface DelegateFormProps {
   prizePool: PrizePool
   tx: Transaction
-  setTxId: (txId: number) => void
+  setTxId: (txId: string) => void
   refetchDelegate: () => void
 }
 
@@ -206,16 +210,18 @@ export const DelegateForm = (props: DelegateFormProps) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const sendTx = useSendTransaction()
-  const user = useUser(prizePool)
-  const isUserOnRightNetwork = useIsWalletOnNetwork(prizePool.chainId)
+  const getUser = useGetUser(prizePool)
+  const isUserOnRightNetwork = useIsWalletOnChainId(prizePool.chainId)
 
   const sendDelegateTx = async (x: FieldValues) => {
     const delegate = x[DELEGATE_ADDRESS_KEY]
 
     const txId = await sendTx({
       name: t('delegateDeposit', 'Delegate deposit'),
-      method: 'delegate',
-      callTransaction: () => user.delegateTickets(delegate),
+      callTransaction: async () => {
+        const user = await getUser()
+        return user.delegateTickets(delegate)
+      },
       callbacks: {
         refetch: () => {
           refetchDelegate()
@@ -232,7 +238,10 @@ export const DelegateForm = (props: DelegateFormProps) => {
 
   const errorMessage = errors?.[DELEGATE_ADDRESS_KEY]?.message
 
-  if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
+  if (
+    tx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    tx?.status === TransactionStatus.success
+  ) {
     return (
       <InfoList bgClassName='bg-body'>
         <TxReceiptItem depositTx={tx} chainId={prizePool.chainId} />
@@ -252,19 +261,23 @@ export const DelegateForm = (props: DelegateFormProps) => {
       >
         {t('resetDelegate', 'Reset delegate')}
       </button>
-      <Input inputKey={DELEGATE_ADDRESS_KEY} register={register} validate={valitdationRules} />
+      <Input
+        inputKey={DELEGATE_ADDRESS_KEY}
+        register={register}
+        validate={valitdationRules}
+        autoComplete='off'
+      />
       <div className='h-8 text-pt-red text-center'>
         <span>{errorMessage}</span>
       </div>
-      <TxButtonNetworkGated
-        toolTipId='submit-new-delegate-tooltip'
+      <TxButton
         chainId={prizePool.chainId}
         className='w-full'
         type='submit'
         disabled={!isValid || !isUserOnRightNetwork}
       >
         {t('updateDelegate', 'Update delegate')}
-      </TxButtonNetworkGated>
+      </TxButton>
     </form>
   )
 }
@@ -272,13 +285,14 @@ export const DelegateForm = (props: DelegateFormProps) => {
 interface InputProps {
   inputKey: string
   register: UseFormRegister<FieldValues>
+  autoComplete?: string
   validate: {
     [key: string]: (value: string) => boolean | string
   }
 }
 
 const Input = (props: InputProps) => {
-  const { inputKey, register, validate } = props
+  const { inputKey, register, validate, autoComplete } = props
   return (
     <div
       className={classNames(
@@ -293,6 +307,7 @@ const Input = (props: InputProps) => {
             'bg-transparent w-full outline-none focus:outline-none active:outline-none py-4 pr-8 pl-4 font-semibold'
           )}
           placeholder='0xabcde...'
+          autoComplete={autoComplete}
           {...register(inputKey, { required: true, validate })}
         />
       </div>

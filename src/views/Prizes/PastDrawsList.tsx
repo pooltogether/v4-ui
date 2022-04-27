@@ -7,7 +7,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
@@ -253,7 +253,11 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = drawResult && !drawResult.totalValue.isZero()
-  const useWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const userWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const noPrizes = usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult
+  const unclaimed = usersAddress && !userHasClaimed && userHasAmountToClaim
+
+  const messageHeightClassName = 'h-6'
 
   if (drawLockCountdown?.secondsLeft) {
     const { weeks, days, hours, minutes } = drawLockCountdown
@@ -262,7 +266,9 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     const thereIsHours = thereIsDays || hours > 0
     const thereIsMinutes = thereIsHours || minutes > 0
     return (
-      <div className={classNames('text-inverse flex leading-tight', className)}>
+      <div
+        className={classNames('text-inverse flex leading-tight', messageHeightClassName, className)}
+      >
         <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
         <span>
           {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
@@ -277,35 +283,25 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
         </span>
       </div>
     )
-  } else if (usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult) {
-    return (
-      <span className={classNames('text-inverse', className)}>
-        {t('noPrizesWon', 'No prizes won')}
-      </span>
-    )
-  } else if (usersAddress && !userHasClaimed && userHasAmountToClaim) {
-    return (
-      <div className={classNames(className, 'animate-pulse')}>
-        <span className='text-accent-1'>{t('unclaimed', 'Unclaimed')}</span>
-      </div>
-    )
+  } else if (noPrizes || unclaimed) {
+    return <div className={classNames('text-inverse', messageHeightClassName, className)} />
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
     const { amountPretty } = claimedAmount
     return (
-      <div className={classNames(className)}>
+      <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
         <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
-  } else if (usersAddress && normalizedBalance && useWasNotEligible) {
+  } else if (usersAddress && normalizedBalance && userWasNotEligible) {
     return (
-      <div className={classNames(className)}>
+      <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1 opacity-50'>{t('notEligible', 'Not eligible')}</span>
       </div>
     )
   } else {
-    return null
+    return <div className={classNames(messageHeightClassName, className)} />
   }
 }
 
@@ -318,4 +314,4 @@ const PastDrawsListHeader = (props: { className?: string }) => {
   )
 }
 
-const LoadingRow = () => <div className='w-full rounded-lg animate-pulse bg-card h-36' />
+const LoadingRow = () => <div className='w-full rounded-lg animate-pulse bg-card h-24' />

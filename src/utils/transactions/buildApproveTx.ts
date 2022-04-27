@@ -1,5 +1,6 @@
 import { Token } from '@pooltogether/hooks'
-import { JsonRpcProvider, TransactionResponse } from '@ethersproject/providers'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber, Contract } from 'ethers'
 
 import Erc20Abi from '@abis/ERC20'
@@ -13,12 +14,11 @@ import Erc20Abi from '@abis/ERC20'
  * @returns
  */
 export const buildApproveTx = (
-  provider: JsonRpcProvider,
+  signer: Signer,
   amountUnformatted: BigNumber,
   prizePoolAddress: string,
   token: Token
 ) => {
-  const signer = provider.getSigner()
   const params = [prizePoolAddress, amountUnformatted]
   const contract = new Contract(token.address, Erc20Abi, signer)
   const contractCall: () => Promise<TransactionResponse> = contract['approve'].bind(null, ...params)

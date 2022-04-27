@@ -1,9 +1,8 @@
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
+import Link from 'next/link'
 import {
-  Account,
   LanguagePickerDropdown,
-  NetworkSelector,
   PageHeaderContainer,
   SettingsContainer,
   SettingsItem,
@@ -12,19 +11,15 @@ import {
   ThemeSettingsItem,
   SocialLinks,
   Modal,
-  NetworkIcon,
-  Banner,
-  BannerTheme
+  NetworkIcon
 } from '@pooltogether/react-components'
-import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
-import { useOnboard } from '@pooltogether/bnc-onboard-hooks'
 
 import { TopNavigation } from '@components/Layout/Navigation'
-import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
+import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -34,16 +29,11 @@ export enum ContentPaneState {
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer
-      Link={Link}
-      as='https://pooltogether.com'
-      href='https://pooltogether.com'
-      className='sticky top-0 bg-page-header'
-      style={{ zIndex: 3 }}
-    >
+    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
       <TopNavigation className='absolute mx-auto inset-x-0' />
-      <div className='flex flex-row justify-end items-center'>
-        <UsersAccount />
+      <div className='flex flex-row justify-end items-center space-x-4'>
+        <NetworkWarning />
+        <FullWalletConnectionButtonWrapper />
         <Settings />
       </div>
     </PageHeaderContainer>
@@ -86,52 +76,6 @@ const LanguagePicker = () => {
         }}
       />
     </SettingsItem>
-  )
-}
-
-const UsersAccount = () => {
-  const {
-    isWalletConnected,
-    provider,
-    connectWallet,
-    disconnectWallet,
-    walletName,
-    isOnboardReady,
-    address: usersAddress,
-    network: chainId,
-    wallet,
-    network
-  } = useOnboard()
-
-  const supportedNetworks = useSupportedChainIds()
-  const { t } = useTranslation()
-
-  if (!isOnboardReady) return null
-
-  return (
-    <>
-      <NetworkWarning />
-      <NetworkSelector
-        supportedNetworks={supportedNetworks}
-        className='mx-1 my-auto'
-        t={t}
-        network={network}
-        wallet={wallet}
-        chainId={chainId}
-        isWalletConnected={isWalletConnected}
-      />
-      <Account
-        t={t}
-        className='mx-1 my-auto'
-        connectWallet={connectWallet}
-        disconnectWallet={disconnectWallet}
-        isWalletConnected={isWalletConnected}
-        provider={provider}
-        chainId={chainId}
-        usersAddress={usersAddress}
-        walletName={walletName}
-      />
-    </>
   )
 }
 

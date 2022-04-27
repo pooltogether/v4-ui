@@ -3,28 +3,30 @@ import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
-import { User } from '@pooltogether/v4-client-js'
 import { Amount } from '@pooltogether/hooks'
+import classNames from 'classnames'
 
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
-
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 
 interface AccountCardProps {
   className?: string
-  user: User
 }
-export const AccountCard = (props: AccountCardProps) => {
-  const { user } = props
 
+export const AccountCard = (props: AccountCardProps) => {
   return (
-    <div className='flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2'>
+    <div
+      className={classNames(
+        'flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2',
+        props.className
+      )}
+    >
       <div className='flex justify-between p-4'>
-        <TotalBalance user={user} />
+        <TotalBalance />
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
@@ -36,7 +38,7 @@ export const AccountCard = (props: AccountCardProps) => {
   )
 }
 
-const TotalBalance = (props: { className?: string; user: User }) => {
+const TotalBalance = (props: { className?: string }) => {
   const { className } = props
   const { t } = useTranslation()
   const { data, isFetching, isFetched } = useUsersTotalBalances()

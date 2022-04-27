@@ -4,16 +4,16 @@ import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { SquareButtonSize } from '@pooltogether/react-components'
-import { TokenBalance, useTransaction } from '@pooltogether/hooks'
+import { TokenBalance } from '@pooltogether/hooks'
+import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { InfoList } from '@components/InfoList'
-import { TxButtonNetworkGated } from '@components/Input/TxButtonNetworkGated'
+import { TxButton } from '@components/Input/TxButton'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { useUser } from '@hooks/v4/User/useUser'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUsersAddress } from '@hooks/useUsersAddress'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool
@@ -65,21 +65,23 @@ interface ActivateTicketsButtonProps {
 
 const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
   const { className, refetchDelegate, prizePool } = props
-  const sendTx = useSendTransaction()
-  const [txId, setTxId] = useState(0)
+  const sendTransaction = useSendTransaction()
+  const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
 
   const { t } = useTranslation()
 
-  const user = useUser(prizePool)
+  const getUser = useGetUser(prizePool)
 
   const sendDelegateTx = async (e) => {
     e.preventDefault()
 
-    const txId = await sendTx({
+    const txId = await sendTransaction({
       name: `Activate deposits`,
-      method: 'withdrawInstantlyFrom',
-      callTransaction: () => user.selfDelegateTickets(),
+      callTransaction: async () => {
+        const user = await getUser()
+        return user.selfDelegateTickets()
+      },
       callbacks: {
         refetch: () => {
           refetchDelegate()
@@ -89,7 +91,10 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
     setTxId(txId)
   }
 
-  if (tx?.inFlight || (tx?.completed && !tx?.error && !tx?.cancelled)) {
+  if (
+    tx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    tx?.status === TransactionStatus.success
+  ) {
     return (
       <InfoList>
         <TxReceiptItem depositTx={tx} chainId={prizePool.chainId} />
@@ -98,14 +103,13 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
   }
 
   return (
-    <TxButtonNetworkGated
+    <TxButton
       chainId={prizePool.chainId}
-      toolTipId={`activate-deposits-${prizePool?.id()}`}
       className={classNames('', className)}
       size={SquareButtonSize.sm}
       onClick={sendDelegateTx}
     >
       {t('activateNetworkDeposit', { network: getNetworkNiceNameByChainId(prizePool.chainId) })}
-    </TxButtonNetworkGated>
+    </TxButton>
   )
 }

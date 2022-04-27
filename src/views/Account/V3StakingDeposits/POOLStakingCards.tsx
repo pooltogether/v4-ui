@@ -2,7 +2,7 @@ import { TokenIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
 import { StakingCard } from './StakingCard'
-import { useUsersAddress } from '@hooks/useUsersAddress'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
