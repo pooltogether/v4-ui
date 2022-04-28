@@ -9,7 +9,7 @@ import { VotingPromptCard } from '@components/VotingPromptCard'
 export const DepositUI = () => {
   return (
     <PagePadding className='flex flex-col space-y-6'>
-      <PoolPartySeason1CTA />
+      <PoolPartySeason1CTA marginClassName='mb-2' />
       <UpcomingPrizeCard className='mt-4' />
       <DepositCard />
       <VotingPromptCard />
