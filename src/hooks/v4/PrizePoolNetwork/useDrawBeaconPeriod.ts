@@ -3,16 +3,18 @@ import { sToMs } from '@pooltogether/utilities'
 import { NO_REFETCH } from '@constants/query'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
-import { usePrizePoolNetwork } from './usePrizePoolNetwork'
+import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
 
 /**
- * // TODO: Rather than polling could we just listen for an event then trigger a refetch?
+ * Often used as a key in other hooks to trigger refetching when the draw ticks over.
+ *
+ * TODO: Rather than polling could we just listen for an event then trigger a refetch?
  * @returns
  */
 export const useDrawBeaconPeriod = () => {
-  const prizePoolNetwork = usePrizePoolNetwork()
+  const prizePool = usePrizePoolBySelectedChainId()
   const [refetchIntervalMs, setRefetchIntervalMs] = useState(sToMs(60 * 2.5))
-  const enabled = Boolean(prizePoolNetwork)
+  const enabled = !!prizePool
 
   const onSuccess = (drawBeaconPeriod: {
     startedAtSeconds: BigNumber
@@ -32,9 +34,9 @@ export const useDrawBeaconPeriod = () => {
   }
 
   return useQuery(
-    ['useDrawBeaconPeriod', prizePoolNetwork?.id()],
+    ['useDrawBeaconPeriod', prizePool?.id()],
     async () => {
-      const drawBeaconPeriod = await prizePoolNetwork.getDrawBeaconPeriod()
+      const drawBeaconPeriod = await prizePool.getDrawBeaconPeriod()
       return drawBeaconPeriod
     },
     {

@@ -24,16 +24,18 @@ import {
 import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from '../../../interfaces/v4'
 import { PrizeVideoBackground } from './PrizeVideoBackground'
-import { LockedDrawsCard } from './LockedDrawsCard'
+import { NoDrawsCard } from './NoDrawsCard'
 import { LoadingCard } from './LoadingCard'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorage'
 import { useAtom } from 'jotai'
+import { useUpdateAtom } from 'jotai/utils'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -68,13 +70,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   const hasUserCheckedAllDraws = hasUserCheckedAllDrawsData.hasUserCheckedAllDraws
 
   if (Boolean(drawDatas) && Object.keys(drawDatas).length === 0) {
-    return (
-      <LockedDrawsCard
-        prizeDistributor={prizeDistributor}
-        token={prizePoolTokens.token}
-        ticket={prizePoolTokens.ticket}
-      />
-    )
+    return <NoDrawsCard />
   }
 
   if (hasUserCheckedAllDraws) {
@@ -214,7 +210,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
     if (!winningDrawResults) {
       return null
     }
-    // Use draw ids from drawDatas as source of truth for expired and locked draws
+    // Use draw ids from drawDatas as source of truth for expired draws
     const drawIds = Object.keys(drawDatas).map(Number)
     const winningDrawData: { [drawId: number]: DrawData } = {}
     drawIds.forEach((drawId) => {
@@ -251,7 +247,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
   }
 
   if (!winningDrawResults || Object.keys(winningDrawResults).length === 0) {
-    return <LockedDrawsCard prizeDistributor={prizeDistributor} token={token} ticket={ticket} />
+    return <NoDrawsCard />
   }
 
   return (
@@ -305,7 +301,8 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   } = props
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
-  const [storedDrawResults, setStoredDrawResults] = useAtom(drawResultsAtom)
+  const setStoredDrawResults = useUpdateAtom(drawResultsAtom)
+  const { data: ticket } = useSelectedPrizePoolTicket()
 
   let btnJsx, url
   const drawDataList = drawDatas ? Object.values(drawDatas) : []
@@ -379,6 +376,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
             prizeDistributor,
             drawDataList,
             usersAddress,
+            ticket.address,
             setWinningDrawResults,
             setCheckedState,
             setStoredDrawResults

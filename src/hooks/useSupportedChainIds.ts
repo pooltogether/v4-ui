@@ -1,7 +1,7 @@
 import { SUPPORTED_CHAIN_IDS } from '@constants/config'
-import { useAppEnvString } from '@hooks/useAppEnvString'
+import { useAppEnv } from '@hooks/useAppEnv'
 
 export const useSupportedChainIds = () => {
-  const appEnv = useAppEnvString()
+  const appEnv = useAppEnv()
   return SUPPORTED_CHAIN_IDS[appEnv]
 }

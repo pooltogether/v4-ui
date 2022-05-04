@@ -75,6 +75,7 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
 
   const token = prizePoolTokens?.token
   const decimals = token?.decimals
+  console.log({ token })
   const minimumDepositAmount = useMinimumDepositAmount(token)
   const usersBalances = usersBalancesData?.balances
   const tokenBalance = usersBalances?.token
@@ -83,14 +84,14 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
   return {
     isValid: (v: string) => {
       const isNotANumber = isNaN(Number(v))
-      if (isNotANumber) return false
-      if (!minimumDepositAmount) return false
+      if (isNotANumber) return 'NaN'
+      if (!minimumDepositAmount) return `Doesn't meet minimum deposit`
 
       const quantityUnformatted = safeParseUnits(v, decimals)
 
       if (!!usersAddress) {
-        if (!tokenBalance) return false
-        if (!ticketBalance) return false
+        if (!tokenBalance) return 'No token balance fetched'
+        if (!ticketBalance) return 'No ticket balance fetched'
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
           return t(
             'insufficientFundsGetTokensBelow',
@@ -104,8 +105,8 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
           )
       }
 
-      if (getMaxPrecision(v) > Number(decimals)) return false
-      if (quantityUnformatted && quantityUnformatted.isZero()) return false
+      if (getMaxPrecision(v) > Number(decimals)) return 'getMaxPrecision'
+      if (quantityUnformatted && quantityUnformatted.isZero()) return 'isZero'
       return true
     }
   }

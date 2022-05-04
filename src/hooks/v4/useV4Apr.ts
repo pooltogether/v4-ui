@@ -9,7 +9,7 @@ export const useV4Apr = () => {
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
   const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
-  const enabled = isPrizeTierFetched && isTotalSupplyFetched
+  const enabled = isPrizeTierFetched && isTotalSupplyFetched && !!prizeTier
   return useQuery(
     ['useV4Apr', prizeTier, totalSupply],
     () => getV4Apr(totalSupply, prizeTier.prize),

@@ -7,6 +7,7 @@ export const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
   drawDataList: DrawData[],
   usersAddress: string,
+  ticketAddress: string,
   setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
   setCheckedState: (state: CheckedState) => void,
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
@@ -19,7 +20,7 @@ export const getUsersDrawResults = async (
   const newDrawResults: { [drawId: string]: DrawResults } = {}
 
   const drawResultsPromises = drawDataList.map(async (drawData, index) => {
-    const { prizeDistribution, draw } = drawData
+    const { prizeTier, draw } = drawData
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
@@ -29,7 +30,7 @@ export const getUsersDrawResults = async (
         drawResults = await prizeDistributor.getUsersDrawResultsForDrawId(
           usersAddress,
           draw.drawId,
-          prizeDistribution.maxPicksPerUser
+          prizeTier.maxPicksPerUser
         )
         // Store draw result
       } catch (e) {
@@ -38,6 +39,7 @@ export const getUsersDrawResults = async (
           prizeDistributor.chainId,
           usersAddress,
           prizeDistributor.address,
+          ticketAddress,
           draw.drawId
         )
       }

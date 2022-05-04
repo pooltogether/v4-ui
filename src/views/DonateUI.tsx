@@ -7,7 +7,7 @@ import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelega
 import {
   Draw,
   PrizeAwardable,
-  PrizeDistribution,
+  PrizeTier,
   PrizeDistributor,
   PrizePool
 } from '@pooltogether/v4-client-js'
@@ -33,7 +33,7 @@ import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
 import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { useAllDrawDatas } from '@hooks/v4/PrizeDistributor/useAllDrawDatas'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import classNames from 'classnames'
 import { DrawData } from '@interfaces/v4'
@@ -434,7 +434,7 @@ const usePrizesWon = () => {
   const prizeDistributor = usePrizeDistributorByChainId(CHAIN_ID.polygon)
   const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const { data: partialDrawData, isFetched: isPartialDrawDataFetched } =
-    useAllPartialDrawDatas(prizeDistributor)
+    useAllDrawDatas(prizeDistributor)
   const enabled = isDrawIdsFetched && isPartialDrawDataFetched
   return useQuery(
     ['getPrizesWon'],
@@ -448,16 +448,13 @@ const usePrizesWon = () => {
 const getPrizesWon = async (
   drawIds: number[],
   partialDrawData: {
-    [drawId: number]: {
-      draw: Draw
-      prizeDistribution?: PrizeDistribution
-    }
+    [drawId: number]: DrawData
   },
   prizeDistributor: PrizeDistributor
 ) => {
   try {
     const maxPicksPerUserPerDraw = drawIds.map(
-      (drawId) => partialDrawData[drawId].prizeDistribution.maxPicksPerUser
+      (drawId) => partialDrawData[drawId].prizeTier.maxPicksPerUser
     )
 
     const drawResults = await prizeDistributor.getUsersDrawResultsForDrawIds(
@@ -530,8 +527,8 @@ interface PrizeRowProps {
 
 const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
-  const { prizeDistribution, draw } = drawData
-  const { tiers } = prizeDistribution
+  const { prizeTier, draw } = drawData
+  const { tiers } = prizeTier
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()

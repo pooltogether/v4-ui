@@ -85,8 +85,8 @@ interface PrizeRowProps {
 
 const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
-  const { prizeDistribution } = drawData
-  const { tiers } = prizeDistribution
+  const { prizeTier } = drawData
+  const { tiers } = prizeTier
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()

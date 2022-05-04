@@ -23,7 +23,7 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
 
   const ticket = prizePoolTokens?.ticket
-  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
+  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched && !!prizeTier
 
   return (
     <div className={classNames('flex flex-col text-center space-y-2 relative', className)}>

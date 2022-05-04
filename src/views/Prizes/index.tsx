@@ -10,10 +10,8 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
-import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
-import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
 import { PastDrawsList } from './PastDrawsList'
 
 export const PRIZE_UI_STATES = {
@@ -24,7 +22,6 @@ export const PRIZE_UI_STATES = {
 }
 
 export const PrizesUI = () => {
-  useLockedDrawIdsWatcher()
   const prizeDistributor = usePrizeDistributorBySelectedChainId()
   const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
@@ -52,11 +49,6 @@ export const PrizesUI = () => {
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
           className='mb-3'
-        />
-        <LockedDrawsCard
-          prizeDistributor={prizeDistributor}
-          token={prizePoolTokens?.token}
-          ticket={prizePoolTokens?.ticket}
         />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>

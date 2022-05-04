@@ -1,5 +1,6 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
-import { testnet, mainnet } from '@pooltogether/v4-pool-data'
+// import { testnet, mainnet } from '@pooltogether/v4-pool-data'
+import testnet from '@pooltogether/v5/contracts.json'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
@@ -11,6 +12,8 @@ import { getChain } from '@pooltogether/wallet-connection'
 // When adding a new Prize Pool (or network) to the app, update all of these constants.
 /////////////////////////////////////////////////////////////////////
 
+// TODO: Add back actual environments
+
 export const RPC_API_KEYS = {
   alchemy: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
   etherscan: process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY,
@@ -21,9 +24,9 @@ export const RPC_API_KEYS = {
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
 export const V4_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
-    (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
-  ),
+  // [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
+  //   (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  // ),
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId))).filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
   )
@@ -31,12 +34,12 @@ export const V4_CHAIN_IDS = Object.freeze({
 
 // TODO: Link this to the v3 constants
 export const V3_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: [
-    CHAIN_ID.mainnet,
-    CHAIN_ID.bsc,
-    CHAIN_ID.polygon,
-    CHAIN_ID.celo
-  ].filter((chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)),
+  // [APP_ENVIRONMENTS.mainnets]: [
+  //   CHAIN_ID.mainnet,
+  //   CHAIN_ID.bsc,
+  //   CHAIN_ID.polygon,
+  //   CHAIN_ID.celo
+  // ].filter((chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)),
   [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai].filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
   )
@@ -44,12 +47,12 @@ export const V3_CHAIN_IDS = Object.freeze({
 
 // TODO: Filter here
 export const SUPPORTED_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: Array.from(
-    new Set([
-      ...V3_CHAIN_IDS[APP_ENVIRONMENTS.mainnets],
-      ...V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets]
-    ])
-  ),
+  // [APP_ENVIRONMENTS.mainnets]: Array.from(
+  //   new Set([
+  //     ...V3_CHAIN_IDS[APP_ENVIRONMENTS.mainnets],
+  //     ...V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets]
+  //   ])
+  // ),
   [APP_ENVIRONMENTS.testnets]: Array.from(
     new Set([
       ...V3_CHAIN_IDS[APP_ENVIRONMENTS.testnets],
@@ -59,23 +62,24 @@ export const SUPPORTED_CHAIN_IDS = Object.freeze({
 })
 
 export const SUPPORTED_CHAIN_NAMES = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(
-    getNetworkNameAliasByChainId
-  ),
+  // [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(
+  //   getNetworkNameAliasByChainId
+  // ),
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(
     getNetworkNameAliasByChainId
   )
 })
 
 export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(getChain),
+  // [APP_ENVIRONMENTS.mainnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].map(getChain),
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
 // TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...
+// TODO: Switch this back to rinkeby. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
+  // [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
 })
 
 // Native currency symbols in app

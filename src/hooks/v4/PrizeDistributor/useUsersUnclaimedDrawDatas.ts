@@ -4,13 +4,11 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
 import { DrawData } from '../../../interfaces/v4'
-import { useDrawLocks } from './useDrawLocks'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
-import { useValidDrawDatas } from './useValidDrawDatas'
+import { useAllDrawDatas } from './useAllDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { NO_REFETCH } from '@constants/query'
-import { useLockedDrawIds } from './useLockedDrawIds'
 import { msToS } from '@pooltogether/utilities'
 
 /**
@@ -23,12 +21,9 @@ import { msToS } from '@pooltogether/utilities'
  * - with stored draw results that have a prize of 0
  * - with stored draw results that have been claimed
  * - where user had 0 average balance during the draw period
- * - that are locked
  * - that are expired
  * Reruns
  * - When the draw beacon period is updated
- * - When draw locks are updated
- * - When draw locks finish
  * - When claimed amounts are updated
  * - When user normalized balances are updated
  * - When valid draw datas are updated
@@ -40,9 +35,7 @@ export const useUsersUnclaimedDrawDatas = (
   prizeDistributor: PrizeDistributor
 ) => {
   // Generic data
-  const lockedDrawIds = useLockedDrawIds()
-  const { isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
-  const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
+  const { data: drawDatas, isFetched: isDrawDatasFetched } = useAllDrawDatas(prizeDistributor)
   // User specific data
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
   const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
@@ -67,13 +60,11 @@ export const useUsersUnclaimedDrawDatas = (
 
   const enabled =
     Boolean(prizeDistributor) &&
-    isDrawUnlockTimesFetched &&
     isDrawDatasFetched &&
     isNormalizedBalancesFetched &&
     isClaimedAmountsFetched &&
     userAddressesMatch
 
-  const lockedDrawsKey = lockedDrawIds ? 'lockedDraws-' + lockedDrawIds.join(',') : ''
   const claimedAmountsKey = claimedAmounts
     ? 'claimedAmounts-' +
       Object.values(claimedAmounts)
@@ -93,7 +84,6 @@ export const useUsersUnclaimedDrawDatas = (
       'useUsersUnclaimedDrawDatas',
       prizeDistributor?.id(),
       usersAddress,
-      lockedDrawsKey,
       claimedAmountsKey,
       normalizedBalancesKey,
       drawDatasKey
@@ -101,7 +91,6 @@ export const useUsersUnclaimedDrawDatas = (
     async () =>
       getUnclaimedDrawDatas(
         usersAddress,
-        lockedDrawIds,
         drawDatas,
         normalizedBalances,
         claimedAmounts,
@@ -116,7 +105,6 @@ export const useUsersUnclaimedDrawDatas = (
 
 const getUnclaimedDrawDatas = async (
   usersAddress: string,
-  lockedDrawIds: number[],
   drawDatas: { [drawId: number]: DrawData },
   normalizedBalances: { [drawId: number]: BigNumber },
   claimedAmounts: { [drawId: number]: Amount },
@@ -133,21 +121,18 @@ const getUnclaimedDrawDatas = async (
     const drawData = drawDatas[drawId]
     const claimedAmount = claimedAmounts[drawId]
     const normalizedBalance = normalizedBalances[drawId]
-    const isLocked = lockedDrawIds.includes(drawId)
     const drawResult = drawResults?.[drawId]
 
-    const { draw, prizeDistribution } = drawData
+    const { draw, prizeTier } = drawData
     const drawTimestampSeconds = draw.timestamp.toNumber()
-    const drawExpirationTimestampSeconds = prizeDistribution.expiryDuration + drawTimestampSeconds
+    const drawExpirationTimestampSeconds = prizeTier.expiryDuration + drawTimestampSeconds
 
     // Filter draws with claimed amounts
     // Filter draws with no normalized balance during that period
-    // Filter draws that are locked
     // Filter draws that are expired
     if (
       !claimedAmount.amountUnformatted.isZero() ||
       normalizedBalance.isZero() ||
-      isLocked ||
       (Boolean(drawResult) && drawResult.totalValue.isZero()) ||
       drawExpirationTimestampSeconds <= currentTimestampSeconds
     ) {

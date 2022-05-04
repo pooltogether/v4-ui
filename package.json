@@ -28,6 +28,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "@pooltogether/v5": "git+https://github.com/pooltogether/pool-tokenomics-testnet.git",
     "@pooltogether/current-pool-data": "^3.7.2",
     "@pooltogether/etherplex": "^1.1.4",
     "@pooltogether/evm-chains-extended": "^0.6.4-beta.1",

@@ -1,18 +1,15 @@
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
+import { Card } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { Draw, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { useAllDrawDatas } from '@hooks/v4/PrizeDistributor/useAllDrawDatas'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
-import { useTimeUntil } from '@hooks/useTimeUntil'
-import { CountdownString } from '@components/CountdownString'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { AmountInPrizes } from '@components/AmountInPrizes'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
@@ -20,6 +17,7 @@ import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
 import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
+import { DrawData } from '@interfaces/v4'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -33,25 +31,19 @@ export const PastDrawsList = (props: {
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-  const { data: drawDatas, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useAllPartialDrawDatas(prizeDistributor)
+  const { data: drawDatas, isFetched: isDrawsAndPrizeTiersFetched } =
+    useAllDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { data: normalizedBalancesData } = useUsersNormalizedBalances(
     usersAddress,
     prizeDistributor
   )
-  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   const isDataForCurrentUser =
     usersAddress === normalizedBalancesData?.usersAddress &&
     usersAddress === claimedAmountsData?.usersAddress
 
-  if (
-    !isPrizePoolTokensFetched ||
-    !isDrawsAndPrizeDistributionsFetched ||
-    !isDrawLocksFetched ||
-    !isDataForCurrentUser
-  ) {
+  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeTiersFetched || !isDataForCurrentUser) {
     return (
       <>
         <PastDrawsListHeader className={classNames(className, 'mb-1')} />
@@ -93,7 +85,6 @@ export const PastDrawsList = (props: {
                 ticket={prizePoolTokens.ticket}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
                 normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
-                drawLock={drawLocks[drawId]}
               />
             )
           })}
@@ -106,27 +97,23 @@ export const PastDrawsList = (props: {
 interface PastPrizeListItemProps {
   token: Token
   ticket: Token
-  drawData: { draw: Draw; prizeDistribution?: PrizeDistribution }
+  drawData: DrawData
   prizeDistributor: PrizeDistributor
   claimedAmount: Amount
   normalizedBalance: BigNumber
-  drawLock?: DrawLock
 }
 
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
   const { ticket, drawData } = props
-  const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
-  const { draw, prizeDistribution } = drawData
-  const amount = prizeDistribution
-    ? roundPrizeAmount(prizeDistribution.prize, ticket.decimals)
-    : null
+  const { draw, prizeTier } = drawData
+  const amount = prizeTier ? roundPrizeAmount(prizeTier.prize, ticket.decimals) : null
 
   return (
     <li>
       <ViewPrizesSheetCustomTrigger
         ticket={ticket}
-        prizeTier={prizeDistribution}
+        prizeTier={prizeTier}
         Button={({ onClick }) => {
           return (
             <button
@@ -150,11 +137,6 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
                   </span>
 
                   <ExtraDetailsSection {...props} className='mt-2 text-left' />
-
-                  <PropagatingMessage
-                    pendingClassName={pendingClassName}
-                    prizeDistribution={prizeDistribution}
-                  />
                 </div>
 
                 <AmountInPrizes
@@ -197,55 +179,12 @@ DrawId.defaultProps = {
   className: 'uppercase font-bold text-inverse mr-2 opacity-50 text-xs leading-none'
 }
 
-const PropagatingMessage = (props: {
-  pendingClassName: string
-  prizeDistribution: PrizeDistribution
-}) => {
-  const { t } = useTranslation()
-
-  if (props.prizeDistribution) {
-    return null
-  }
-
-  return (
-    <div className={props.pendingClassName}>
-      <Tooltip
-        id={`tooltip-what-is-propagating`}
-        tip={t(
-          'propagatingMeans',
-          'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
-        )}
-        className='flex items-center'
-      >
-        <ThemedClipSpinner size={10} className='mr-2' />{' '}
-        <span className='uppercase flex items-center'>
-          {' '}
-          <span className='border-default border-dotted border-b-2'>
-            {' '}
-            {t('propagating', 'Propagating ...')}{' '}
-          </span>
-          <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
-        </span>
-      </Tooltip>
-    </div>
-  )
-}
-
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const {
-    claimedAmount,
-    prizeDistributor,
-    className,
-    ticket,
-    drawLock,
-    drawData,
-    normalizedBalance
-  } = props
+  const { claimedAmount, prizeDistributor, className, ticket, drawData, normalizedBalance } = props
   const { draw } = drawData
   const usersAddress = useUsersAddress()
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
   const { t } = useTranslation()
-  const drawLockCountdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
   const drawResults = storedDrawResults?.[usersAddress]
 
@@ -259,31 +198,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
 
   const messageHeightClassName = 'h-6'
 
-  if (drawLockCountdown?.secondsLeft) {
-    const { weeks, days, hours, minutes } = drawLockCountdown
-    const thereIsWeeks = weeks > 0
-    const thereIsDays = thereIsWeeks || days > 0
-    const thereIsHours = thereIsDays || hours > 0
-    const thereIsMinutes = thereIsHours || minutes > 0
-    return (
-      <div
-        className={classNames('text-inverse flex leading-tight', messageHeightClassName, className)}
-      >
-        <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-        <span>
-          {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
-          {t('unlocksIn', 'unlocks in')}
-          <CountdownString
-            className='ml-1'
-            {...drawLockCountdown}
-            hideHours={thereIsWeeks}
-            hideMinutes={thereIsDays}
-            hideSeconds={thereIsMinutes}
-          />
-        </span>
-      </div>
-    )
-  } else if (noPrizes || unclaimed) {
+  if (noPrizes || unclaimed) {
     return <div className={classNames('text-inverse', messageHeightClassName, className)} />
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
     const { amountPretty } = claimedAmount

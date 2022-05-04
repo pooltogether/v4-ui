@@ -24,6 +24,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
