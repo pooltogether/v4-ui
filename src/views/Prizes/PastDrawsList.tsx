@@ -14,10 +14,11 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { AmountInPrizes } from '@components/AmountInPrizes'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
-import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
+import { useUsersPickCounts } from '@hooks/v4/PrizeDistributor/useUsersPickCounts'
 import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
 import { DrawData } from '@interfaces/v4'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -34,13 +35,15 @@ export const PastDrawsList = (props: {
   const { data: drawDatas, isFetched: isDrawsAndPrizeTiersFetched } =
     useAllDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
-  const { data: normalizedBalancesData } = useUsersNormalizedBalances(
+  const { data: ticket } = useSelectedPrizePoolTicket()
+  const { data: pickCountsData } = useUsersPickCounts(
     usersAddress,
+    ticket?.address,
     prizeDistributor
   )
 
   const isDataForCurrentUser =
-    usersAddress === normalizedBalancesData?.usersAddress &&
+    usersAddress === pickCountsData?.usersAddress &&
     usersAddress === claimedAmountsData?.usersAddress
 
   if (!isPrizePoolTokensFetched || !isDrawsAndPrizeTiersFetched || !isDataForCurrentUser) {
@@ -84,7 +87,7 @@ export const PastDrawsList = (props: {
                 token={prizePoolTokens.token}
                 ticket={prizePoolTokens.ticket}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
-                normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
+                pickCount={pickCountsData?.pickCounts[drawId]}
               />
             )
           })}
@@ -100,7 +103,7 @@ interface PastPrizeListItemProps {
   drawData: DrawData
   prizeDistributor: PrizeDistributor
   claimedAmount: Amount
-  normalizedBalance: BigNumber
+  pickCount: BigNumber
 }
 
 // Components inside need to account for the case where there is no prizeDistribution
@@ -180,7 +183,7 @@ DrawId.defaultProps = {
 }
 
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, prizeDistributor, className, ticket, drawData, normalizedBalance } = props
+  const { claimedAmount, prizeDistributor, className, ticket, drawData, pickCount } = props
   const { draw } = drawData
   const usersAddress = useUsersAddress()
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
@@ -192,7 +195,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = drawResult && !drawResult.totalValue.isZero()
-  const userWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const userWasNotEligible = pickCount && pickCount.isZero()
   const noPrizes = usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult
   const unclaimed = usersAddress && !userHasClaimed && userHasAmountToClaim
 
@@ -209,7 +212,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
         <span className='ml-2 font-bold'>{ticket.symbol}</span>
       </div>
     )
-  } else if (usersAddress && normalizedBalance && userWasNotEligible) {
+  } else if (usersAddress && pickCount && userWasNotEligible) {
     return (
       <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1 opacity-50'>{t('notEligible', 'Not eligible')}</span>

@@ -60,14 +60,6 @@ export const DepositForm = (props: DepositFormProps) => {
     openModal()
   }
 
-  console.log({
-    isValid,
-    isDirty,
-    depositTx,
-    errors,
-    disabled: (!isValid && isDirty) || depositTx?.state === TransactionState.pending
-  })
-
   return (
     <>
       <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>

@@ -5,11 +5,12 @@ import { useQuery } from 'react-query'
 
 import { DrawData } from '../../../interfaces/v4'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
-import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
+import { useUsersPickCounts } from './useUsersPickCounts'
 import { useAllDrawDatas } from './useAllDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { NO_REFETCH } from '@constants/query'
 import { msToS } from '@pooltogether/utilities'
+import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTicket'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
@@ -36,32 +37,36 @@ export const useUsersUnclaimedDrawDatas = (
 ) => {
   // Generic data
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useAllDrawDatas(prizeDistributor)
+  const { data: ticket } = useSelectedPrizePoolTicket()
   // User specific data
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
-  const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
-    useUsersNormalizedBalances(usersAddress, prizeDistributor)
+  const { data: pickCountsData, isFetched: isPickCountsFetched } = useUsersPickCounts(
+    usersAddress,
+    ticket?.address,
+    prizeDistributor
+  )
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
     usersAddress,
     prizeDistributor
   )
 
   const drawResults = storedDrawResults?.[usersAddress]
-  const normalizedBalances = normalizedBalancesData?.normalizedBalances
-  const normalizedBalancesUsersAddress = normalizedBalancesData?.usersAddress
+  const pickCounts = pickCountsData?.pickCounts
+  const pickCountsUsersAddress = pickCountsData?.usersAddress
   const claimedAmounts = claimedAmountsData?.claimedAmounts
   const claimedAmountsUsersAddress = claimedAmountsData?.usersAddress
 
   // Check if there is data keyed by the same users address so we aren't mixing data
   const userAddressesMatch =
     Boolean(drawResults) &&
-    Boolean(normalizedBalances) &&
+    Boolean(pickCounts) &&
     claimedAmountsUsersAddress === usersAddress &&
-    normalizedBalancesUsersAddress === usersAddress
+    pickCountsUsersAddress === usersAddress
 
   const enabled =
     Boolean(prizeDistributor) &&
     isDrawDatasFetched &&
-    isNormalizedBalancesFetched &&
+    isPickCountsFetched &&
     isClaimedAmountsFetched &&
     userAddressesMatch
 
@@ -71,9 +76,9 @@ export const useUsersUnclaimedDrawDatas = (
         .map((value) => value.amount)
         .join(',')
     : ''
-  const normalizedBalancesKey = normalizedBalances
-    ? 'normalizedBalances-' +
-      Object.values(normalizedBalances)
+  const pickCountsKey = pickCounts
+    ? 'pickCounts-' +
+      Object.values(pickCounts)
         .map((value) => value.toString())
         .join(',')
     : ''
@@ -83,19 +88,14 @@ export const useUsersUnclaimedDrawDatas = (
     [
       'useUsersUnclaimedDrawDatas',
       prizeDistributor?.id(),
+      ticket?.address,
       usersAddress,
       claimedAmountsKey,
-      normalizedBalancesKey,
+      pickCountsKey,
       drawDatasKey
     ],
     async () =>
-      getUnclaimedDrawDatas(
-        usersAddress,
-        drawDatas,
-        normalizedBalances,
-        claimedAmounts,
-        drawResults
-      ),
+      getUnclaimedDrawDatas(usersAddress, drawDatas, pickCounts, claimedAmounts, drawResults),
     {
       ...NO_REFETCH,
       enabled
@@ -106,7 +106,7 @@ export const useUsersUnclaimedDrawDatas = (
 const getUnclaimedDrawDatas = async (
   usersAddress: string,
   drawDatas: { [drawId: number]: DrawData },
-  normalizedBalances: { [drawId: number]: BigNumber },
+  pickCounts: { [drawId: number]: BigNumber },
   claimedAmounts: { [drawId: number]: Amount },
   drawResults: {
     [drawId: number]: DrawResults
@@ -120,7 +120,7 @@ const getUnclaimedDrawDatas = async (
   drawIds.forEach((drawId) => {
     const drawData = drawDatas[drawId]
     const claimedAmount = claimedAmounts[drawId]
-    const normalizedBalance = normalizedBalances[drawId]
+    const pickCount = pickCounts[drawId]
     const drawResult = drawResults?.[drawId]
 
     const { draw, prizeTier } = drawData
@@ -132,7 +132,7 @@ const getUnclaimedDrawDatas = async (
     // Filter draws that are expired
     if (
       !claimedAmount.amountUnformatted.isZero() ||
-      normalizedBalance.isZero() ||
+      pickCount.isZero() ||
       (Boolean(drawResult) && drawResult.totalValue.isZero()) ||
       drawExpirationTimestampSeconds <= currentTimestampSeconds
     ) {

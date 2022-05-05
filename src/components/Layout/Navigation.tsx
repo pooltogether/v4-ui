@@ -11,8 +11,12 @@ interface NavLink {
 
 const NavLinks: NavLink[] = [
   {
-    i18nKey: 'deposit',
-    href: '/deposit'
+    i18nKey: 'save',
+    href: '/save'
+  },
+  {
+    i18nKey: 'stake',
+    href: '/stake'
   },
   {
     i18nKey: 'prizes',

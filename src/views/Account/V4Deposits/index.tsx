@@ -5,10 +5,11 @@ import {
   NetworkIcon,
   SquareButtonSize,
   SquareButtonTheme,
-  SquareLink
+  SquareLink,
+  TokenIcon
 } from '@pooltogether/react-components'
 
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import Link from 'next/link'
@@ -26,7 +27,7 @@ import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
@@ -35,9 +36,9 @@ import { ethers } from 'ethers'
 import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUser } from '@hooks/v4/User/useUser'
-import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
+import { usePrizePoolTokens } from '@pooltogether/hooks'
+import classNames from 'classnames'
+import { PrizePoolLabel } from '@components/PrizePoolLabel'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -48,7 +49,7 @@ export const V4Deposits = () => {
     <div id='deposits'>
       <CardTitle
         className='mb-2'
-        title={t('deposits')}
+        title={'Savings'}
         secondary={`$${data?.totalValueUsd.amountPretty}`}
       />
       <DepositsList />
@@ -122,12 +123,12 @@ const DepositItem = (props: DepositItemsProps) => {
 
   return (
     <>
-      <PrizePoolDepositListItem
+      <PrizePoolListItem
         onClick={() => {
           setSelectedChainId(chainId)
           setIsOpen(true)
         }}
-        left={<NetworkLabel chainId={chainId} />}
+        left={<PrizePoolLabel prizePool={prizePool} />}
         right={<DepositBalance {...props} />}
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
@@ -139,13 +140,13 @@ const DepositItem = (props: DepositItemsProps) => {
         chainId={chainId}
         delegate={delegate}
         internalLinks={
-          <Link href={{ pathname: '/deposit', query: router.query }}>
+          <Link href={{ pathname: '/save', query: router.query }}>
             <SquareLink
               size={SquareButtonSize.md}
               theme={SquareButtonTheme.teal}
               className='w-full'
             >
-              {t('deposit')}
+              {t('save')}
             </SquareLink>
           </Link>
         }
@@ -193,13 +194,6 @@ const DepositItem = (props: DepositItemsProps) => {
     </>
   )
 }
-
-const NetworkLabel = (props: { chainId: number }) => (
-  <div className='flex'>
-    <NetworkIcon chainId={props.chainId} className='mr-2 my-auto' />
-    <span className='font-bold xs:text-lg'>{getNetworkNiceNameByChainId(props.chainId)}</span>
-  </div>
-)
 
 const DepositBalance = (props: DepositItemsProps) => {
   const { balances, prizePool } = props

@@ -168,7 +168,7 @@ export const EstimatedWithdrawalGasItem = (props: EstimatedTxWithAmountProps) =>
   <SimpleEstimatedGasItem {...props} txName='withdraw' gasAmount={WITHDRAW_GAS_AMOUNT} />
 )
 export const EstimatedDepositGasItem = (props: EstimatedTxWithAmountProps) => (
-  <SimpleEstimatedGasItem {...props} txName='deposit' gasAmount={DEPOSIT_GAS_AMOUNT} />
+  <SimpleEstimatedGasItem {...props} txName='save' gasAmount={DEPOSIT_GAS_AMOUNT} />
 )
 export const EstimatedApproveGasItem = (props: EstimatedTxWithAmountProps) => (
   <SimpleEstimatedGasItem {...props} txName='approve' gasAmount={APPROVE_GAS_AMOUNT} />

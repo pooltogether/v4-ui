@@ -6,6 +6,7 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@constants/misc'
 import { Chain } from 'wagmi'
 import { getChain } from '@pooltogether/wallet-connection'
+import { ContractType } from '@pooltogether/v4-client-js'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -22,6 +23,21 @@ export const RPC_API_KEYS = {
 
 // NOTE: Should be empty. Add a chain id to hide it in app.
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
+
+console.log({ ContractType })
+
+export const V4_PRIZE_POOLS = Object.freeze({
+  // [APP_ENVIRONMENTS.mainnets]: [],
+  [APP_ENVIRONMENTS.testnets]: testnet.contracts
+    .filter(({ type }) => type === ContractType.PrizePool)
+    .map(({ address }) => address)
+})
+
+export const DEFAULT_PRIZE_POOLS = Object.freeze({
+  [CHAIN_ID.mumbai]: testnet.contracts.filter(
+    ({ chainId, type }) => type === ContractType.PrizePool && chainId === CHAIN_ID.mumbai
+  )[0].address
+})
 
 export const V4_CHAIN_IDS = Object.freeze({
   // [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
@@ -75,7 +91,6 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
-// TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...
 // TODO: Switch this back to rinkeby. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   // [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,

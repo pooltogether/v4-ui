@@ -6,22 +6,24 @@ import { NO_REFETCH } from '@constants/query'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**
- * Returns the users normalised balances for all valid drawIds
+ * Returns the users pick counts for all valid drawIds
+ * @param usersAddress
+ * @param ticketAddress
  * @param prizeDistributor
- * @param token
  * @returns
  */
-export const useUsersNormalizedBalances = (
+export const useUsersPickCounts = (
   usersAddress: string,
+  ticketAddress: string,
   prizeDistributor: PrizeDistributor
 ) => {
   const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
-  const enabled = Boolean(prizeDistributor) && Boolean(usersAddress) && isDrawIdsFetched
+  const enabled = !!prizeDistributor && !!usersAddress && !!ticketAddress && isDrawIdsFetched
   const drawIds = data?.drawIds
 
   return useQuery(
-    ['useUsersNormalizedBalances', prizeDistributor?.id(), usersAddress],
-    () => getUsersNormalizedBalances(usersAddress, prizeDistributor, drawIds),
+    ['useUsersPickCounts', prizeDistributor?.id(), ticketAddress, usersAddress],
+    () => getUsersPickCounts(usersAddress, ticketAddress, prizeDistributor, drawIds),
     {
       ...NO_REFETCH,
       enabled
@@ -29,30 +31,32 @@ export const useUsersNormalizedBalances = (
   )
 }
 
-const getUsersNormalizedBalances = async (
+const getUsersPickCounts = async (
   usersAddress: string,
+  ticketAddress: string,
   prizeDistributor: PrizeDistributor,
   drawIds: number[]
 ): Promise<{
   usersAddress: string
-  normalizedBalances: {
+  pickCounts: {
     [drawId: number]: BigNumber
   }
 }> => {
-  const normalizedBalances = await prizeDistributor.getUsersNormalizedBalancesForDrawIds(
+  const pickCounts = await prizeDistributor.getUsersPickCountForDrawIds(
     usersAddress,
+    ticketAddress,
     drawIds
   )
 
-  const normalizedBalancesKeyedByDrawId: {
+  const pickCountsKeyedByDrawId: {
     [drawId: number]: BigNumber
   } = {}
 
   drawIds.map((drawId, index) => {
-    normalizedBalancesKeyedByDrawId[drawId] = normalizedBalances[index]
+    pickCountsKeyedByDrawId[drawId] = pickCounts[index]
   })
   return {
     usersAddress,
-    normalizedBalances: normalizedBalancesKeyedByDrawId
+    pickCounts: pickCountsKeyedByDrawId
   }
 }

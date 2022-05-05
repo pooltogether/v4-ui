@@ -10,7 +10,7 @@ import { getAmountFromString } from '@utils/getAmountFromString'
  * @returns
  */
 export const useMinimumDepositAmount = (token: Token) => {
-  return getAmountFromString('5', token.decimals)
+  return getAmountFromString('5', token?.decimals)
 
   const { data: prizeTier, isFetched } = useUpcomingPrizeTier()
   if (!Boolean(token) || !isFetched || !prizeTier) return null

@@ -257,7 +257,7 @@ const DepositState = (props: DepositStateProps) => {
           <VAPRTooltip />
         </div>
       </div>
-      <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('deposit')} />
+      <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('save')} />
     </>
   )
 }

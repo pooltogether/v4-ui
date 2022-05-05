@@ -20,7 +20,7 @@ import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
@@ -44,10 +44,7 @@ export const V3Deposits = () => {
   return (
     <div>
       <div className='mb-2 flex items-center justify-between'>
-        <CardTitle
-          title={`V3 ${t('deposits')}`}
-          secondary={`$${data.totalValueUsd.amountPretty}`}
-        />
+        <CardTitle title={`V3 Savings`} secondary={`$${data.totalValueUsd.amountPretty}`} />
         <V3AppLink />
       </div>
       <DepositsList data={data} refetch={refetchBalances} />
@@ -149,7 +146,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
 
   return (
     <>
-      <PrizePoolDepositListItem
+      <PrizePoolListItem
         onClick={() => {
           setIsOpen(true)
         }}

@@ -3,7 +3,7 @@ import { sToMs } from '@pooltogether/utilities'
 import { NO_REFETCH } from '@constants/query'
 import { useState } from 'react'
 import { useQuery } from 'react-query'
-import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '../PrizePool/useSelectedPrizePool'
 
 /**
  * Often used as a key in other hooks to trigger refetching when the draw ticks over.
@@ -12,7 +12,7 @@ import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelect
  * @returns
  */
 export const useDrawBeaconPeriod = () => {
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   const [refetchIntervalMs, setRefetchIntervalMs] = useState(sToMs(60 * 2.5))
   const enabled = !!prizePool
 

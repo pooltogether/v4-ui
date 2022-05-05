@@ -21,15 +21,9 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
-export enum ContentPaneState {
-  deposit = 'deposit',
-  prizes = 'prizes',
-  account = 'account'
-}
-
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
+    <PageHeaderContainer Link={Link} as='/save' href='/save'>
       <TopNavigation className='absolute mx-auto inset-x-0' />
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />

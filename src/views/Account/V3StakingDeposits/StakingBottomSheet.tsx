@@ -93,9 +93,9 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   const views = [
     {
-      id: 'deposit',
+      id: 'save',
       view: () => depositView,
-      label: t('deposit'),
+      label: t('save'),
       theme: SquareButtonTheme.teal
     },
     {
