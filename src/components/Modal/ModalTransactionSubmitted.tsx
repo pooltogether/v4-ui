@@ -22,7 +22,3 @@ export const ModalTransactionSubmitted = (props: ModalTransactionSubmittedProps)
     </div>
   )
 }
-
-ModalTransactionSubmitted.defaultProps = {
-  hideCloseButton: false
-}

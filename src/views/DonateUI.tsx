@@ -7,7 +7,7 @@ import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelega
 import {
   Draw,
   PrizeAwardable,
-  PrizeDistribution,
+  PrizeTier,
   PrizeDistributor,
   PrizePool
 } from '@pooltogether/v4-client-js'
@@ -32,8 +32,8 @@ import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
-import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { useAvailableDrawIds } from '@hooks/v4/PrizeDistributor/useAvailableDrawIds'
+import { useAllDrawDatas } from '@hooks/v4/PrizeDistributor/useAllDrawDatas'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import classNames from 'classnames'
 import { DrawData } from '@interfaces/v4'
@@ -365,8 +365,8 @@ const OddsOfWinning = () => {
 }
 
 const PrizesWon = (props) => {
-  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
   const { data, isFetched } = usePrizesWon()
+  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
 
   if (!isFetched || !isTokensFetched) {
@@ -432,36 +432,37 @@ const TotalWon = (props: { amount?: Amount; isLoading?: boolean }) => {
 
 const usePrizesWon = () => {
   const prizeDistributor = usePrizeDistributorByChainId(CHAIN_ID.polygon)
-  const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
+  const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const { data: partialDrawData, isFetched: isPartialDrawDataFetched } =
-    useAllPartialDrawDatas(prizeDistributor)
-  const enabled = isDrawIdsFetched && isPartialDrawDataFetched
+    useAllDrawDatas(prizeDistributor)
+  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
+  const enabled = isDrawIdsFetched && isPartialDrawDataFetched && isTokensFetched
   return useQuery(
     ['getPrizesWon'],
     async () => {
-      return getPrizesWon(data.drawIds, partialDrawData, prizeDistributor)
+      return getPrizesWon(tokens.ticket.address, data.drawIds, partialDrawData, prizeDistributor)
     },
     { ...NO_REFETCH, enabled }
   )
 }
 
 const getPrizesWon = async (
+  ticketAddress: string,
   drawIds: number[],
   partialDrawData: {
-    [drawId: number]: {
-      draw: Draw
-      prizeDistribution?: PrizeDistribution
-    }
+    [drawId: number]: DrawData
   },
   prizeDistributor: PrizeDistributor
 ) => {
   try {
     const maxPicksPerUserPerDraw = drawIds.map(
-      (drawId) => partialDrawData[drawId].prizeDistribution.maxPicksPerUser
+      (drawId) => partialDrawData[drawId].prizeTier.maxPicksPerUser
     )
 
     const drawResults = await prizeDistributor.getUsersDrawResultsForDrawIds(
       UNCHAIN_ADDRESS,
+      ticketAddress,
       drawIds,
       maxPicksPerUserPerDraw
     )
@@ -490,7 +491,12 @@ const getPrizesWon = async (
       totalWon: amount
     }
   } catch (e) {
-    return getPrizesWon(drawIds.slice(0, drawIds.length - 1), partialDrawData, prizeDistributor)
+    return getPrizesWon(
+      ticketAddress,
+      drawIds.slice(0, drawIds.length - 1),
+      partialDrawData,
+      prizeDistributor
+    )
   }
 }
 
@@ -530,8 +536,8 @@ interface PrizeRowProps {
 
 const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
-  const { prizeDistribution, draw } = drawData
-  const { tiers } = prizeDistribution
+  const { prizeTier, draw } = drawData
+  const { tiers } = prizeTier
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()

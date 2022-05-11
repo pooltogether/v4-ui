@@ -7,39 +7,52 @@ export const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
   drawDataList: DrawData[],
   usersAddress: string,
+  ticketAddress: string,
   setWinningDrawResults: (drawResults: { [drawId: number]: DrawResults }) => void,
   setCheckedState: (state: CheckedState) => void,
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
 ) => {
   setCheckedState(CheckedState.checking)
   // Read stored draw results
-  const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor)
+  const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor, ticketAddress)
 
   const winningDrawResults: { [drawId: string]: DrawResults } = {}
   const newDrawResults: { [drawId: string]: DrawResults } = {}
 
   const drawResultsPromises = drawDataList.map(async (drawData, index) => {
-    const { prizeDistribution, draw } = drawData
+    const { prizeTier, draw } = drawData
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
       drawResults = storedDrawResult
     } else {
       try {
-        drawResults = await prizeDistributor.getUsersDrawResultsForDrawId(
-          usersAddress,
-          draw.drawId,
-          prizeDistribution.maxPicksPerUser
-        )
-        // Store draw result
-      } catch (e) {
-        console.log(e.message)
+        // TODO: Switch back to remote prize fetching
+        // drawResults = await prizeDistributor.getUsersDrawResultsForDrawId(
+        //   usersAddress,
+        //   ticketAddress,
+        //   draw.drawId,
+        //   prizeTier.maxPicksPerUser
+        // )
         drawResults = await PrizeApi.computeDrawResults(
           prizeDistributor.chainId,
           usersAddress,
+          ticketAddress,
           prizeDistributor.address,
           draw.drawId
         )
+        console.log('Local results', { drawResults })
+        // Store draw result
+      } catch (e) {
+        console.log('Falling back to local computation | ', e.message)
+        drawResults = await PrizeApi.computeDrawResults(
+          prizeDistributor.chainId,
+          usersAddress,
+          ticketAddress,
+          prizeDistributor.address,
+          draw.drawId
+        )
+        console.log({ drawResults })
       }
       newDrawResults[draw.drawId] = drawResults
     }
@@ -50,7 +63,13 @@ export const getUsersDrawResults = async (
 
   await Promise.all(drawResultsPromises)
 
-  updateDrawResults(usersAddress, prizeDistributor, newDrawResults, setStoredDrawResults)
+  updateDrawResults(
+    usersAddress,
+    prizeDistributor,
+    ticketAddress,
+    newDrawResults,
+    setStoredDrawResults
+  )
   setWinningDrawResults(winningDrawResults)
   setCheckedState(CheckedState.checked)
 }

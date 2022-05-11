@@ -12,7 +12,8 @@ export const useOverallOddsData = () => {
   const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
 
-  const isFetched = isTotalSupplyFetched && isTicketDecimalsFetched && isPrizeTierFetched
+  const isFetched =
+    isTotalSupplyFetched && isTicketDecimalsFetched && isPrizeTierFetched && !!prizeTier
 
   if (!isFetched) {
     return null

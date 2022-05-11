@@ -1,13 +1,18 @@
+import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
+import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Token } from '@pooltogether/hooks'
 import { ModalProps, BottomSheet } from '@pooltogether/react-components'
-import { PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizeDistributor, PrizeTier } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'
 
 export const PrizeBreakdownModal = (
-  props: { prizeTier: PrizeTier; ticket: Token } & Omit<ModalProps, 'label' | 'children'>
+  props: { prizeDistributor: PrizeDistributor; prizeTier: PrizeTier; prizeToken: Token } & Omit<
+    ModalProps,
+    'label' | 'children'
+  >
 ) => {
   const { t } = useTranslation()
   return (
@@ -42,7 +47,7 @@ export const PrizeBreakdownModal = (
       <PrizeBreakdown
         className='mx-auto w-full'
         prizeTier={props.prizeTier}
-        ticket={props.ticket}
+        prizeToken={props.prizeToken}
       />
     </BottomSheet>
   )

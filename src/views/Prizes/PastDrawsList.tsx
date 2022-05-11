@@ -1,57 +1,56 @@
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
+import { Card } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { useAllDrawDatas } from '@hooks/v4/PrizeDistributor/useAllDrawDatas'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
-import { useTimeUntil } from '@hooks/useTimeUntil'
-import { CountdownString } from '@components/CountdownString'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { AmountInPrizes } from '@components/AmountInPrizes'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
-import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
+import { useUsersPickCounts } from '@hooks/v4/PrizeDistributor/useUsersPickCounts'
 import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
+import { DrawData } from '@interfaces/v4'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 
+/**
+ * TODO: Uncliamed draws are only checking valid draws now (not expired), not ALL draws in the draw buffer. This means we are no longer fetching the data to show "inelgible" for past draws that have expired. Not a big deal on mainnet, testnets are kinda awkward though.
+ * @param props
+ * @returns
+ */
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
-  prizePool: PrizePool
   className?: string
 }) => {
-  const { prizePool, prizeDistributor, className } = props
+  const { prizeDistributor, className } = props
 
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
-  const { data: drawDatas, isFetched: isDrawsAndPrizeDistributionsFetched } =
-    useAllPartialDrawDatas(prizeDistributor)
+  const { data: prizeDistributorToken, isFetched: isPrizePoolTokensFetched } =
+    usePrizeDistributorToken(prizeDistributor)
+  const { data: drawDatas, isFetched: isDrawsAndPrizeTiersFetched } =
+    useAllDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
-  const { data: normalizedBalancesData } = useUsersNormalizedBalances(
+  const { data: ticket } = useSelectedPrizePoolTicket()
+  const { data: pickCountsData } = useUsersPickCounts(
     usersAddress,
+    ticket?.address,
     prizeDistributor
   )
-  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   const isDataForCurrentUser =
-    usersAddress === normalizedBalancesData?.usersAddress &&
+    usersAddress === pickCountsData?.usersAddress &&
     usersAddress === claimedAmountsData?.usersAddress
 
-  if (
-    !isPrizePoolTokensFetched ||
-    !isDrawsAndPrizeDistributionsFetched ||
-    !isDrawLocksFetched ||
-    !isDataForCurrentUser
-  ) {
+  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeTiersFetched || !isDataForCurrentUser) {
     return (
       <>
         <PastDrawsListHeader className={classNames(className, 'mb-1')} />
@@ -89,11 +88,10 @@ export const PastDrawsList = (props: {
                 key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
                 drawData={drawData}
                 prizeDistributor={prizeDistributor}
-                token={prizePoolTokens.token}
-                ticket={prizePoolTokens.ticket}
+                ticket={ticket}
+                prizeToken={prizeDistributorToken?.token}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
-                normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
-                drawLock={drawLocks[drawId]}
+                pickCount={pickCountsData?.pickCounts[drawId]}
               />
             )
           })}
@@ -104,29 +102,25 @@ export const PastDrawsList = (props: {
 }
 
 interface PastPrizeListItemProps {
-  token: Token
+  prizeToken: Token
   ticket: Token
-  drawData: { draw: Draw; prizeDistribution?: PrizeDistribution }
+  drawData: DrawData
   prizeDistributor: PrizeDistributor
   claimedAmount: Amount
-  normalizedBalance: BigNumber
-  drawLock?: DrawLock
+  pickCount: BigNumber
 }
 
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
-  const { ticket, drawData } = props
-  const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
-  const { draw, prizeDistribution } = drawData
-  const amount = prizeDistribution
-    ? roundPrizeAmount(prizeDistribution.prize, ticket.decimals)
-    : null
+  const { prizeToken, drawData } = props
+  const { draw, prizeTier } = drawData
+  const amount = prizeTier ? roundPrizeAmount(prizeTier.prize, prizeToken.decimals) : null
 
   return (
     <li>
       <ViewPrizesSheetCustomTrigger
-        ticket={ticket}
-        prizeTier={prizeDistribution}
+        prizeToken={prizeToken}
+        prizeTier={prizeTier}
         Button={({ onClick }) => {
           return (
             <button
@@ -150,11 +144,6 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
                   </span>
 
                   <ExtraDetailsSection {...props} className='mt-2 text-left' />
-
-                  <PropagatingMessage
-                    pendingClassName={pendingClassName}
-                    prizeDistribution={prizeDistribution}
-                  />
                 </div>
 
                 <AmountInPrizes
@@ -197,55 +186,14 @@ DrawId.defaultProps = {
   className: 'uppercase font-bold text-inverse mr-2 opacity-50 text-xs leading-none'
 }
 
-const PropagatingMessage = (props: {
-  pendingClassName: string
-  prizeDistribution: PrizeDistribution
-}) => {
-  const { t } = useTranslation()
-
-  if (props.prizeDistribution) {
-    return null
-  }
-
-  return (
-    <div className={props.pendingClassName}>
-      <Tooltip
-        id={`tooltip-what-is-propagating`}
-        tip={t(
-          'propagatingMeans',
-          'There is a 24 hour cooldown while the prize is being distributed to all networks. You can check if you won this prize 24 hours after the draw.'
-        )}
-        className='flex items-center'
-      >
-        <ThemedClipSpinner size={10} className='mr-2' />{' '}
-        <span className='uppercase flex items-center'>
-          {' '}
-          <span className='border-default border-dotted border-b-2'>
-            {' '}
-            {t('propagating', 'Propagating ...')}{' '}
-          </span>
-          <FeatherIcon icon='help-circle' className='relative w-4 h-4 text-inverse ml-2' />
-        </span>
-      </Tooltip>
-    </div>
-  )
-}
-
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const {
-    claimedAmount,
-    prizeDistributor,
-    className,
-    ticket,
-    drawLock,
-    drawData,
-    normalizedBalance
-  } = props
+  const { claimedAmount, prizeDistributor, className, prizeToken, drawData, pickCount, ticket } =
+    props
   const { draw } = drawData
   const usersAddress = useUsersAddress()
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
   const { t } = useTranslation()
-  const drawLockCountdown = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
 
   const drawResults = storedDrawResults?.[usersAddress]
 
@@ -253,37 +201,13 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const amountUnformatted = claimedAmount?.amountUnformatted
   const userHasClaimed = amountUnformatted && !amountUnformatted?.isZero()
   const userHasAmountToClaim = drawResult && !drawResult.totalValue.isZero()
-  const userWasNotEligible = normalizedBalance && normalizedBalance.isZero()
+  const userWasNotEligible = pickCount && pickCount.isZero()
   const noPrizes = usersAddress && !userHasClaimed && !userHasAmountToClaim && drawResult
   const unclaimed = usersAddress && !userHasClaimed && userHasAmountToClaim
 
   const messageHeightClassName = 'h-6'
 
-  if (drawLockCountdown?.secondsLeft) {
-    const { weeks, days, hours, minutes } = drawLockCountdown
-    const thereIsWeeks = weeks > 0
-    const thereIsDays = thereIsWeeks || days > 0
-    const thereIsHours = thereIsDays || hours > 0
-    const thereIsMinutes = thereIsHours || minutes > 0
-    return (
-      <div
-        className={classNames('text-inverse flex leading-tight', messageHeightClassName, className)}
-      >
-        <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-        <span>
-          {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
-          {t('unlocksIn', 'unlocks in')}
-          <CountdownString
-            className='ml-1'
-            {...drawLockCountdown}
-            hideHours={thereIsWeeks}
-            hideMinutes={thereIsDays}
-            hideSeconds={thereIsMinutes}
-          />
-        </span>
-      </div>
-    )
-  } else if (noPrizes || unclaimed) {
+  if (noPrizes || unclaimed) {
     return <div className={classNames('text-inverse', messageHeightClassName, className)} />
   } else if (usersAddress && claimedAmount && !claimedAmount.amountUnformatted.isZero()) {
     const { amountPretty } = claimedAmount
@@ -291,10 +215,10 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
-        <span className='ml-2 font-bold'>{ticket.symbol}</span>
+        <span className='ml-2 font-bold'>{prizeToken.symbol}</span>
       </div>
     )
-  } else if (usersAddress && normalizedBalance && userWasNotEligible) {
+  } else if (usersAddress && pickCount && userWasNotEligible) {
     return (
       <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1 opacity-50'>{t('notEligible', 'Not eligible')}</span>

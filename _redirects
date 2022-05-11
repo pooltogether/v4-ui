@@ -1,4 +1,5 @@
-/     /deposit    301!
+/deposit    /save       301!
+/           /save   301!
 
 ### v3 redirects
 /account/pools/:networkName/:symbol/manage-tickets https://v3.pooltogether.com/account/pools/:networkName/:symbol/manage-tickets  301!

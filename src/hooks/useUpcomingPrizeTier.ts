@@ -2,19 +2,23 @@ import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
 import { useDrawBeaconPeriod } from './v4/PrizePoolNetwork/useDrawBeaconPeriod'
-import { usePrizePoolNetwork } from './v4/PrizePoolNetwork/usePrizePoolNetwork'
+import { usePrizeDistributorBySelectedChainId } from './v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 
 export const useUpcomingPrizeTier = () => {
   const { data: drawBeaconPeriod, isFetched } = useDrawBeaconPeriod()
-  const prizePoolNetwork = usePrizePoolNetwork()
+  const prizeDistributor = usePrizeDistributorBySelectedChainId()
   return useQuery(
-    ['useUpcomingPrizeTier', drawBeaconPeriod?.drawId, prizePoolNetwork.id()],
+    ['useUpcomingPrizeTier', drawBeaconPeriod?.drawId, prizeDistributor?.id()],
     async () => {
-      const prizeTier = await prizePoolNetwork.getUpcomingPrizeTier()
-      return prizeTier
+      try {
+        const prizeTier = await prizeDistributor.getUpcomingPrizeTier()
+        return prizeTier
+      } catch (e) {
+        return null
+      }
     },
     {
-      enabled: isFetched,
+      enabled: isFetched && !!prizeDistributor,
       ...NO_REFETCH
     }
   )

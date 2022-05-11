@@ -16,6 +16,9 @@ export const drawIdsToNotClaimAtom = atomWithStorage<Set<number>>(
     },
     setItem: async (key: string, value: Set<number>) => {
       localStorage.setItem(key, Array.from(value).join(','))
+    },
+    removeItem: (key: string) => {
+      // TODO:
     }
   }
 )
@@ -42,13 +45,17 @@ export const drawResultsAtom = atomWithStorage<StoredDrawResults>(
     },
     setItem: async (key: string, value: StoredDrawResults) => {
       localStorage.setItem(key, JSON.stringify(value))
+    },
+    removeItem: (key: string) => {
+      // TODO:
     }
   }
 )
 
 export const getStoredDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributor,
+  ticketAddress: string
 ): { [drawId: number]: DrawResults } => {
   const storedDrawResults = readStoredDrawResults()
   return storedDrawResults[usersAddress]?.[prizeDistributor.id()] || {}
@@ -60,6 +67,7 @@ const readStoredDrawResults = (): StoredDrawResults =>
 export const updateDrawResults = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor,
+  ticketAddress: string,
   drawResults: { [drawId: number]: DrawResults },
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
 ) => {
@@ -69,12 +77,17 @@ export const updateDrawResults = (
     usersDrawResults = {}
     storedDrawResults[usersAddress] = usersDrawResults
   }
-  const usersDrawResultsForPrizeDistributor = usersDrawResults[prizeDistributor.id()]
+  let usersDrawResultsForPrizeDistributor = usersDrawResults[prizeDistributor.id()]
   if (!usersDrawResultsForPrizeDistributor) {
-    usersDrawResults[prizeDistributor.id()] = drawResults
+    usersDrawResultsForPrizeDistributor = {}
+  }
+
+  let usersDrawResultsForPrizePool = usersDrawResultsForPrizeDistributor[ticketAddress]
+  if (!usersDrawResultsForPrizePool) {
+    usersDrawResultsForPrizePool = drawResults
   } else {
-    usersDrawResults[prizeDistributor.id()] = {
-      ...usersDrawResultsForPrizeDistributor,
+    usersDrawResults[prizeDistributor.id()][ticketAddress] = {
+      ...usersDrawResultsForPrizePool,
       ...drawResults
     }
   }

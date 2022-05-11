@@ -1,12 +1,12 @@
 import { Draw } from '@pooltogether/v4-client-js'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
-import { useAllValidDrawIds } from './useAllValidDrawIds'
+import { useAllAvailableDrawIds } from './useAllAvailableDrawIds'
 import { usePrizeDistributors } from './usePrizeDistributors'
-import { getValidDraws, VALID_DRAWS_QUERY_KEY } from './useValidDraws'
+import { getAvailableDraws, AVAILABLE_DRAWS_QUERY_KEY } from './useAvailableDraws'
 
-export const useAllValidDraws = () => {
-  const drawIdsQueryResults = useAllValidDrawIds()
+export const useAllAvailableDraws = () => {
+  const drawIdsQueryResults = useAllAvailableDrawIds()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const prizeDistributors = usePrizeDistributors()
 
@@ -28,8 +28,8 @@ export const useAllValidDraws = () => {
       const drawIds = drawIdsQueryResult?.data.drawIds
 
       return {
-        queryKey: [VALID_DRAWS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.drawId],
-        queryFn: async () => getValidDraws(prizeDistributor, drawIds),
+        queryKey: [AVAILABLE_DRAWS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.drawId],
+        queryFn: async () => getAvailableDraws(prizeDistributor, drawIds),
         enabled: isDrawBeaconFetched && isDrawIdsFetched
       }
     })

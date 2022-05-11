@@ -168,7 +168,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
   return (
     <>
-      <ModalTitle chainId={chainId} title={`${t('deposit')}: ${token.symbol}`} className='mb-4' />
+      <ModalTitle chainId={chainId} title={`${t('save')}: ${token.symbol}`} className='mb-4' />
 
       <form onSubmit={handleSubmit(setReviewDepositView)} className='w-full'>
         <div className='w-full mx-auto'>
@@ -260,7 +260,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   }
 
   const sendDepositTx = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const name = `${t('save')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const signer = await getSigner()
 
     const callTransaction = buildDepositTx(

@@ -10,10 +10,10 @@ import { TransactionState, useTransaction } from '@pooltogether/wallet-connectio
 import { BUTTON_MIN_WIDTH } from '@constants/misc'
 import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
 import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
-import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
+import { SelectPrizePoolModal } from '@components/SelectPrizePoolModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from '@hooks/useSendTransaction'
@@ -24,13 +24,14 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
 
   const router = useRouter()
 
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -78,7 +79,7 @@ export const DepositCard = (props: { className?: string }) => {
   const getKey = (prizePool: PrizePool, action: string) => `${prizePool?.id()}-${action}`
 
   const approveTxId = transactionIds?.[getKey(prizePool, 'approve')] || ''
-  const depositTxId = transactionIds?.[getKey(prizePool, 'deposit')] || ''
+  const depositTxId = transactionIds?.[getKey(prizePool, 'save')] || ''
 
   const approveTx = useTransaction(approveTxId)
   const depositTx = useTransaction(depositTxId)
@@ -88,7 +89,7 @@ export const DepositCard = (props: { className?: string }) => {
   const setApproveTxId = (txId: string, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'approve')
   const setDepositTxId = (txId: string, prizePool: PrizePool) =>
-    setSpecificTxId(txId, prizePool, 'deposit')
+    setSpecificTxId(txId, prizePool, 'save')
 
   const token = usersBalances?.token
   const ticket = usersBalances?.ticket
@@ -149,7 +150,7 @@ export const DepositCard = (props: { className?: string }) => {
   }
 
   const sendDepositTx = async () => {
-    const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
+    const name = `${t('save')} ${amountToDeposit.amountPretty} ${token.symbol}`
     const overrides: Overrides = { gasLimit: 750000 }
     let contractMethod
     let callTransaction
@@ -212,9 +213,9 @@ export const DepositCard = (props: { className?: string }) => {
       <div className={className}>
         <div className='font-semibold uppercase flex items-center justify-center text-xs xs:text-sm mb-2 mt-4'>
           <span className='text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
-            {t('depositOn', 'Deposit on')}
+            Save with
           </span>
-          <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
+          <SelectPrizePoolModal className='network-dropdown ml-1 xs:ml-2' />
         </div>
         <DepositForm
           form={form}

@@ -1,44 +1,43 @@
+import { DrawData } from '@interfaces/v4'
+import { msToS } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { getTimestampString, getTimestampStringWithTime } from '@utils/getTimestampString'
+import { useMemo } from 'react'
+import { useAllDrawDatas } from './useAllDrawDatas'
 
-import { DrawData } from '../../../interfaces/v4'
-import { useQuery } from 'react-query'
-import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
-import { useValidDraws } from './useValidDraws'
-import { useValidPrizeDistributions } from './useValidPrizeDistributions'
-import { NO_REFETCH } from '@constants/query'
+export const useValidDrawDatas = (
+  prizeDistributor: PrizeDistributor
+): { [drawId: number]: DrawData } => {
+  const { data, isFetched } = useAllDrawDatas(prizeDistributor)
+  return useMemo(() => {
+    if (!isFetched) return null
+    const drawDatas = Object.values(data)
+    const validDrawDatas = drawDatas.filter((drawData) => isDrawNotExpired(drawData))
 
-/**
- * Returns the valid Draws and PrizeDistributions for the provided PrizeDistributor
- * @param prizeDistributor
- * @returns
- */
-export const useValidDrawDatas = (prizeDistributor: PrizeDistributor) => {
-  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const { data, isFetched: isDrawsFetched } = useValidDraws(prizeDistributor)
-  const { data: przeDistributions, isFetched: isPrizeDistributionsFetched } =
-    useValidPrizeDistributions(prizeDistributor)
-  const draws = data?.draws
-  const enabled =
-    Boolean(prizeDistributor) &&
-    isDrawBeaconFetched &&
-    isDrawsFetched &&
-    isPrizeDistributionsFetched
-  return useQuery(
-    ['useValidDrawDatas', prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
-    async () => {
-      const drawDatas: { [drawId: number]: DrawData } = {}
-      const drawIds = Object.keys(draws).map(Number)
-      drawIds.forEach((drawId) => {
-        drawDatas[drawId] = {
-          draw: draws[drawId],
-          prizeDistribution: przeDistributions[drawId]
-        }
-      })
+    console.log({
+      allDrawIds: drawDatas.map((drawData) => ({
+        id: drawData.draw.drawId,
+        draw: drawData.draw,
+        prizeTier: drawData.prizeTier,
+        start: getTimestampStringWithTime(drawData.draw.timestamp.toNumber()),
+        end: getTimestampStringWithTime(
+          drawData.draw.timestamp.toNumber() + drawData.prizeTier.expiryDuration
+        )
+      })),
+      validDrawIds: validDrawDatas.map((drawData) => drawData.draw.drawId)
+    })
+
+    return validDrawDatas.reduce((drawDatas, drawData) => {
+      drawDatas[drawData.draw.drawId] = drawData
       return drawDatas
-    },
-    {
-      ...NO_REFETCH,
-      enabled
-    }
-  )
+    }, {})
+  }, [isFetched, data ? Object.values(data)[Object.values(data).length - 1].draw.drawId : null])
+}
+
+const isDrawNotExpired = (drawData: DrawData) => {
+  const { draw, prizeTier } = drawData
+  const drawTimestampSeconds = draw.timestamp.toNumber()
+  const drawExpirationTimestampSeconds = prizeTier.expiryDuration + drawTimestampSeconds
+  const currentTimestampSeconds = msToS(Date.now())
+  return currentTimestampSeconds < drawExpirationTimestampSeconds
 }
