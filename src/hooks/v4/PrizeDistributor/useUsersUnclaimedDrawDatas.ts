@@ -11,9 +11,10 @@ import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { NO_REFETCH } from '@constants/query'
 import { msToS } from '@pooltogether/utilities'
 import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTicket'
+import { useValidDrawDatas } from './useValidDrawDatas'
 
 /**
- * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
+ * Fetches available draw ids, fetches draws & claimed amounts, then filters out claimed draws.
  * - Valid draw ids
  *  - Draws
  *  - Claimed amounts
@@ -27,7 +28,7 @@ import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTic
  * - When the draw beacon period is updated
  * - When claimed amounts are updated
  * - When user normalized balances are updated
- * - When valid draw datas are updated
+ * - When available draw datas are updated
  * @param prizeDistributor the Draw Prize to fetch unclaimed draws for
  * @returns
  */
@@ -36,10 +37,10 @@ export const useUsersUnclaimedDrawDatas = (
   prizeDistributor: PrizeDistributor
 ) => {
   // Generic data
-  const { data: drawDatas, isFetched: isDrawDatasFetched } = useAllDrawDatas(prizeDistributor)
+  const drawDatas = useValidDrawDatas(prizeDistributor)
   const { data: ticket } = useSelectedPrizePoolTicket()
   // User specific data
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
   const { data: pickCountsData, isFetched: isPickCountsFetched } = useUsersPickCounts(
     usersAddress,
     ticket?.address,
@@ -65,7 +66,7 @@ export const useUsersUnclaimedDrawDatas = (
 
   const enabled =
     Boolean(prizeDistributor) &&
-    isDrawDatasFetched &&
+    !!drawDatas &&
     isPickCountsFetched &&
     isClaimedAmountsFetched &&
     userAddressesMatch

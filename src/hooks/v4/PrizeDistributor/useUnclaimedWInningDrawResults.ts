@@ -3,10 +3,11 @@ import { useMemo } from 'react'
 
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
-import { useValidDrawIds } from './useValidDrawIds'
+import { useAvailableDrawIds } from './useAvailableDrawIds'
+import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTicket'
 
 /**
- * Returns a users unclaimed winning draw results for valid draw ids
+ * Returns a users unclaimed winning draw results for available draw ids
  * @param usersAddress
  * @param prizeDistributor
  * @returns
@@ -22,12 +23,13 @@ export const useUsersUnclaimedWinningDrawResults = (
   }
   isFetched: boolean
 } => {
-  const { data: drawIdData, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
+  const { data: drawIdData, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
     usersAddress,
     prizeDistributor
   )
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const { data: ticket, isFetched: isTicketFetched } = useSelectedPrizePoolTicket()
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
   const drawResults = storedDrawResults?.[usersAddress]
 
   return useMemo(() => {
@@ -36,6 +38,7 @@ export const useUsersUnclaimedWinningDrawResults = (
       !prizeDistributor ||
       !isClaimedAmountsFetched ||
       !isDrawIdsFetched ||
+      !isTicketFetched ||
       usersAddress !== claimedAmountsData?.usersAddress ||
       drawIdData.prizeDistributorId !== prizeDistributor.id()
     ) {

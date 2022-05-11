@@ -8,15 +8,14 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
   prizeTier: PrizeTier
-  ticket: Token
+  prizeToken: Token
   className?: string
-  isFetched?: boolean
 }
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { prizeTier, className, ticket, isFetched } = props
-  const { tiers } = prizeTier
+  const { prizeTier, className, prizeToken } = props
+  const tiers = prizeTier?.tiers
   const { t } = useTranslation()
 
   return (
@@ -26,7 +25,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
         <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
       </div>
       <div className='flex flex-col space-y-2'>
-        {!isFetched ? (
+        {!prizeTier || !prizeToken ? (
           Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
         ) : (
           <>
@@ -35,7 +34,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
                 key={`distribution_row_${i}`}
                 index={i}
                 prizeTier={prizeTier}
-                ticket={ticket}
+                prizeToken={prizeToken}
               />
             ))}
           </>
@@ -66,12 +65,12 @@ const PrizeTableHeader = (
 interface PrizeBreakdownTableRowProps {
   prizeTier: PrizeTier
   index: number
-  ticket: Token
+  prizeToken: Token
 }
 
 // Calculate prize w draw settings
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
-  const { index, prizeTier, ticket } = props
+  const { index, prizeTier, prizeToken } = props
 
   const prizeForDistributionUnformatted = calculate.calculatePrizeForTierPercentage(
     index,
@@ -91,12 +90,12 @@ const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
 
   const amountPretty = roundPrizeAmount(
     prizeForDistributionUnformatted,
-    ticket.decimals
+    prizeToken.decimals
   ).amountPretty
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>
-      <PrizeTableCell index={index}>${amountPretty}</PrizeTableCell>
+      <PrizeTableCell index={index}>{`${amountPretty} ${prizeToken.symbol}`}</PrizeTableCell>
       <PrizeTableCell index={index}>{numberOfWinners}</PrizeTableCell>
     </div>
   )

@@ -36,6 +36,7 @@ import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackgro
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -44,6 +45,8 @@ interface MultiDrawsCardProps {
 
 export interface MultiDrawsCardPropsWithDetails extends MultiDrawsCardProps {
   drawDatas: { [drawId: number]: DrawData }
+  prizeDistributor: PrizeDistributor
+  prizeToken: Token
   token: Token
   ticket: Token
 }
@@ -57,11 +60,15 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
     useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
   const { data: hasUserCheckedAllDrawsData, isFetched: isHasUserCheckedAllDrawsFetched } =
     useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
+  const { data: prizeDistributorTokenData, isFetched: isPrizeTokenFetched } =
+    usePrizeDistributorToken(prizeDistributor)
 
   if (
     !isPrizePoolTokensFetched ||
     !isUnclaimedDrawDataFetched ||
-    !isHasUserCheckedAllDrawsFetched
+    !isHasUserCheckedAllDrawsFetched ||
+    !isPrizeTokenFetched ||
+    prizeDistributorTokenData?.prizeDistributorId !== prizeDistributor.id()
   ) {
     return <LoadingCard />
   }
@@ -80,6 +87,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
         drawDatas={drawDatas}
         token={prizePoolTokens.token}
         ticket={prizePoolTokens.ticket}
+        prizeToken={prizeDistributorTokenData.token}
       />
     )
   }
@@ -89,9 +97,11 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
       <Card className='draw-card' paddingClassName=''>
         <MultiDrawsClaimSection
           {...props}
+          prizeDistributor={prizeDistributor}
           drawDatas={drawDatas}
           token={prizePoolTokens.token}
           ticket={prizePoolTokens.ticket}
+          prizeToken={prizeDistributorTokenData.token}
         />
       </Card>
     </div>
@@ -108,7 +118,7 @@ export enum CheckedState {
 }
 
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
-  const { drawDatas, ticket, token } = props
+  const { drawDatas, prizeToken, prizeDistributor, token } = props
   const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
   const [winningDrawResults, setWinningDrawResults] = useState<{ [drawId: number]: DrawResults }>(
     null
@@ -149,9 +159,10 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         className='absolute inset-0'
       />
       <MultipleDrawDetails
+        chainId={prizeDistributor.chainId}
         drawDatas={drawDatas}
         token={token}
-        ticket={ticket}
+        prizeToken={prizeToken}
         className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
       />
       <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
@@ -196,7 +207,7 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
 
 // NOTE: Shortcut. Just copy pasta for now.
 const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
-  const { drawDatas, prizeDistributor, ticket, token } = props
+  const { drawDatas, prizeDistributor, prizeToken, token } = props
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
@@ -254,9 +265,10 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
     <Card className='draw-card' paddingClassName=''>
       <StaticPrizeVideoBackground videoClip={VideoClip.prize} className='absolute inset-0' />
       <MultipleDrawDetails
+        chainId={prizeDistributor.chainId}
         drawDatas={winningDrawData}
         token={token}
-        ticket={ticket}
+        prizeToken={prizeToken}
         className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
       />
       <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>

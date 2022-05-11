@@ -6,11 +6,13 @@ import classNames from 'classnames'
 
 export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?: string }) => {
   const { prizePool, fontSizeClassName } = props
-  const { data: tokens } = usePrizePoolTokens(prizePool)
+  const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
 
   return (
     <div className={classNames('flex space-x-2 items-center', fontSizeClassName)}>
-      <TokenIcon address={tokens?.token.address} chainId={prizePool.chainId} />
+      {isPrizePoolTokensFetched && (
+        <TokenIcon address={tokens.token.address} chainId={prizePool.chainId} />
+      )}
       <span className='font-bold'>{tokens?.token.symbol}</span>
       <NetworkIcon chainId={prizePool.chainId} />
       <span className='font-bold'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>

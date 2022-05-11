@@ -4,13 +4,13 @@ import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { useValidDrawIds } from './useValidDrawIds'
+import { useAvailableDrawIds } from './useAvailableDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
 
 export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
 
 /**
- * Returns the amounts a user has claimed for all valid draw ids.
+ * Returns the amounts a user has claimed for all available draw ids.
  * @param prizeDistributor
  * @param token
  * @returns
@@ -19,7 +19,7 @@ export const useUsersClaimedAmounts = (
   usersAddress: string,
   prizeDistributor: PrizeDistributor
 ) => {
-  const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
+  const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const { data: prizeDistributorTokenData, isFetched: isPrizeDistributorTokenFetched } =
     usePrizeDistributorToken(prizeDistributor)
   const enabled =

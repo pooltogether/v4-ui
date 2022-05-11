@@ -20,7 +20,8 @@ import {
   ModalTitle,
   NetworkIcon,
   SquareButton,
-  SquareButtonSize
+  SquareButtonSize,
+  SquareButtonTheme
 } from '@pooltogether/react-components'
 import { GaugeController, PrizePool } from '@pooltogether/v4-client-js'
 import {
@@ -33,7 +34,7 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
-import { parseUnits } from 'ethers/lib/utils'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import React, { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useQueries, useQuery } from 'react-query'
@@ -72,24 +73,24 @@ const GaugeControllers: React.FC<{
     <>
       {queriesResults.map((queryResults, index) => {
         const { isFetched, data: gaugeController } = queryResults
-        if (!isFetched) return <div key={`gauge-controller-${index}`}>Loading...</div>
+        if (!isFetched) return <div key={`gauge-controller-loading-${index}`}>Loading...</div>
 
         return (
-          <>
+          <div key={`gauge-controller-${gaugeController?.id()}`}>
             <GaugeControllerCard
               openEditModal={openEditModal}
               openStakeModal={() => setIsGaugeStakeSheetOpen(true)}
               setGaugeController={setGaugeController}
               setTicket={setTicket}
-              key={`gauge-controller-${gaugeController?.id()}`}
               gaugeController={gaugeController}
             />
             <GaugeStakeSheet
+              key={`gauge-stake-sheet-${gaugeController?.id()}`}
               gaugeController={gaugeController}
               isOpen={isGaugeStakeSheetOpen}
               closeModal={() => setIsGaugeStakeSheetOpen(false)}
             />
-          </>
+          </div>
         )
       })}
     </>
@@ -224,7 +225,7 @@ const GaugeEditSheet: React.FC<GaugeEditSheetProps> = (props) => {
       className='space-y-4'
     >
       <ModalTitle chainId={gaugeController?.chainId} title={'Edit Gauge'} />
-
+      <p>Set the amount of POOL staked on this Gauge</p>
       <GaugeEditForm gaugeController={gaugeController} ticket={ticket} />
     </BottomSheet>
   )
@@ -244,6 +245,7 @@ const GaugeEditForm: React.FC<{
     register,
     setValue,
     trigger,
+    watch,
     formState: { errors, isValid }
   } = useForm({
     mode: 'onChange',
@@ -259,16 +261,20 @@ const GaugeEditForm: React.FC<{
     ticket?.address,
     gaugeController
   )
+  const { refetch: refetchGaugeControllerBalance } = useUsersGaugeControllerBalance(
+    usersAddress,
+    gaugeController
+  )
 
   const valitdationRules = {
     // isValidAddress: (x: string) =>
     //   isAddress(x) ? true : 'Please enter a valid address'
   }
 
+  const amount = watch(GAUGE_EDIT_KEY)
   const errorMessage = errors?.[GAUGE_EDIT_KEY]?.message
 
-  const sendGaugeEditTx = async (x: FieldValues) => {
-    const amount = x[GAUGE_EDIT_KEY]
+  const sendGaugeEditTx = async (amount: string) => {
     const amountUnformatted = parseUnits(amount, token?.decimals)
 
     let callTransaction
@@ -285,6 +291,7 @@ const GaugeEditForm: React.FC<{
       callTransaction,
       callbacks: {
         refetch: () => {
+          refetchGaugeControllerBalance()
           refetchGaugeBalance()
         }
       }
@@ -299,30 +306,40 @@ const GaugeEditForm: React.FC<{
     return (
       <>
         <ModalTransactionSubmitted chainId={gaugeController?.chainId} tx={transaction} />
+        <SquareButton
+          className='w-full'
+          theme={SquareButtonTheme.orangeOutline}
+          onClick={() => setTransactionId('')}
+        >
+          Clear
+        </SquareButton>
       </>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit(sendGaugeEditTx)} className='flex flex-col'>
-      <Input
-        inputKey={GAUGE_EDIT_KEY}
-        register={register}
-        validate={valitdationRules}
-        autoComplete='off'
-      />
-      <div className='h-8 text-pt-red text-center'>
-        <span>{errorMessage}</span>
-      </div>
+    <>
+      <form className='flex flex-col'>
+        <Input
+          inputKey={GAUGE_EDIT_KEY}
+          register={register}
+          validate={valitdationRules}
+          autoComplete='off'
+        />
+        <div className='h-8 text-pt-red text-center'>
+          <span>{errorMessage}</span>
+        </div>
+      </form>
       <TxButton
         chainId={gaugeController?.chainId}
         className='w-full'
         type='submit'
         disabled={!isValid || !ticket || !token}
+        onClick={() => sendGaugeEditTx(amount)}
       >
         Update Gauge
       </TxButton>
-    </form>
+    </>
   )
 }
 
@@ -337,6 +354,7 @@ const GaugeStakeSheet: React.FC<GaugeStakeSheetProps> = (props) => {
   return (
     <BottomSheet open={isOpen} onDismiss={closeModal} label='Gauge stake modal'>
       <ModalTitle chainId={gaugeController?.chainId} title={'Stake POOL'} />
+      <p>Set the amount of POOL you want to be staked</p>
       <GaugeStakeForm gaugeController={gaugeController} />
     </BottomSheet>
   )
@@ -345,31 +363,37 @@ const GaugeStakeSheet: React.FC<GaugeStakeSheetProps> = (props) => {
 const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) => {
   const { gaugeController: _gaugeController } = props
   const gaugeController = useSignerGaugeController(_gaugeController)
+  const usersAddress = useUsersAddress()
+  const { data: token } = useGaugeToken(gaugeController)
+  const { data: balanceUnformatted, refetch: refetchGaugeBalance } = useUsersGaugeControllerBalance(
+    usersAddress,
+    gaugeController
+  )
   const {
     handleSubmit,
     register,
     setValue,
     trigger,
+    watch,
     formState: { errors, isValid }
   } = useForm({
     mode: 'onChange',
-    reValidateMode: 'onChange'
+    reValidateMode: 'onChange',
+    defaultValues: {
+      [GAUGE_EDIT_KEY]:
+        !!token && !!balanceUnformatted ? formatUnits(balanceUnformatted, token.decimals) : ''
+    }
   })
   const sendTx = useSendTransaction()
-  const usersAddress = useUsersAddress()
   const [transactionId, setTransactionId] = useState('')
   const transaction = useTransaction(transactionId)
-  const { data: token } = useGaugeToken(gaugeController)
+
   const { refetch: refetchGaugeTokenBalance } = useUsersGaugeTokenBalance(
     usersAddress,
     gaugeController
   )
 
-  const { data: balanceUnformatted, refetch: refetchGaugeBalance } = useUsersGaugeControllerBalance(
-    usersAddress,
-    gaugeController
-  )
-
+  const amount = watch(GAUGE_EDIT_KEY)
   const valitdationRules = {
     // isValidAddress: (x: string) =>
     //   isAddress(x) ? true : 'Please enter a valid address'
@@ -377,8 +401,7 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
 
   const errorMessage = errors?.[GAUGE_EDIT_KEY]?.message
 
-  const sendGaugeEditTx = async (x: FieldValues) => {
-    const amount = x[GAUGE_EDIT_KEY]
+  const sendGaugeEditTx = async (amount: string) => {
     const amountUnformatted = parseUnits(amount, token?.decimals)
 
     let callTransaction
@@ -410,30 +433,40 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
     return (
       <>
         <ModalTransactionSubmitted chainId={gaugeController?.chainId} tx={transaction} />
+        <SquareButton
+          className='w-full'
+          theme={SquareButtonTheme.orangeOutline}
+          onClick={() => setTransactionId('')}
+        >
+          Clear
+        </SquareButton>
       </>
     )
   }
 
   return (
-    <form onSubmit={handleSubmit(sendGaugeEditTx)} className='flex flex-col'>
-      <Input
-        inputKey={GAUGE_EDIT_KEY}
-        register={register}
-        validate={valitdationRules}
-        autoComplete='off'
-      />
-      <div className='h-8 text-pt-red text-center'>
-        <span>{errorMessage}</span>
-      </div>
+    <>
+      <form className='flex flex-col'>
+        <Input
+          inputKey={GAUGE_EDIT_KEY}
+          register={register}
+          validate={valitdationRules}
+          autoComplete='off'
+        />
+        <div className='h-8 text-pt-red text-center'>
+          <span>{errorMessage}</span>
+        </div>
+      </form>
       <TxButton
         chainId={gaugeController?.chainId}
         className='w-full'
         type='submit'
         disabled={!isValid || !token}
+        onClick={() => sendGaugeEditTx(amount)}
       >
         Update Gauge
       </TxButton>
-    </form>
+    </>
   )
 }
 

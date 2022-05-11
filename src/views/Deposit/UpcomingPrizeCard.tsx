@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { ThemedClipSpinner, CountUp, TokenIcon } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 
@@ -14,31 +14,41 @@ import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
+import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
+import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributor'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
-  const prizePool = useSelectedPrizePool()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
   const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
+  const prizeDistributor = useSelectedPrizeDistributor()
+  const { data: prizeDistributorToken, isFetched: isPrizeTokenFetched } =
+    usePrizeDistributorToken(prizeDistributor)
 
-  const ticket = prizePoolTokens?.ticket
-  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched && !!prizeTier
+  const isFetched = isPrizeTierFetched && !!prizeTier && isPrizeTokenFetched
 
   return (
     <div className={classNames('flex flex-col text-center space-y-2 relative', className)}>
       <LightningBolts />
       <Dots />
 
-      <AmountOfPrizes isFetched={isFetched} prizeTier={prizeTier} ticket={ticket} />
-      <PrizeAmount isFetched={isFetched} prizeTier={prizeTier} ticket={ticket} />
+      <AmountOfPrizes
+        isFetched={isFetched}
+        prizeTier={prizeTier}
+        prizeToken={prizeDistributorToken?.token}
+      />
+      <PrizeAmount
+        chainId={prizeDistributor.chainId}
+        isFetched={isFetched}
+        prizeTier={prizeTier}
+        prizeToken={prizeDistributorToken?.token}
+      />
       <DrawCountdown />
     </div>
   )
 }
 
-const AmountOfPrizes = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTier }) => {
-  const { isFetched, ticket, prizeTier } = props
+const AmountOfPrizes = (props: { isFetched: boolean; prizeToken: Token; prizeTier: PrizeTier }) => {
+  const { isFetched, prizeToken, prizeTier } = props
 
   let amountOfPrizes = '--'
   if (isFetched) {
@@ -52,7 +62,7 @@ const AmountOfPrizes = (props: { isFetched: boolean; ticket: Token; prizeTier: P
         components={{
           button: (
             <ViewPrizesSheetCustomTrigger
-              ticket={ticket}
+              prizeToken={prizeToken}
               prizeTier={prizeTier}
               Button={(props) => (
                 <button
@@ -69,24 +79,41 @@ const AmountOfPrizes = (props: { isFetched: boolean; ticket: Token; prizeTier: P
   )
 }
 
-const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTier }) => {
-  const { isFetched, ticket, prizeTier } = props
+const PrizeAmount = (props: {
+  chainId: number
+  isFetched: boolean
+  prizeToken: Token
+  prizeTier: PrizeTier
+}) => {
+  const { chainId, isFetched, prizeToken, prizeTier } = props
 
   let amount = 0
   if (isFetched) {
-    amount = Number(roundPrizeAmount(prizeTier.prize, ticket.decimals).amount)
+    amount = Number(roundPrizeAmount(prizeTier.prize, prizeToken.decimals).amount)
   }
 
   return (
-    <h1
-      className={classNames(
-        'text-10xl xs:text-13xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
-        { 'opacity-50': !amount }
+    <div className='flex mx-auto space-x-2'>
+      {isFetched && (
+        <TokenIcon
+          address={prizeToken.address}
+          chainId={chainId}
+          className='my-auto'
+          sizeClassName='w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12'
+        />
       )}
-    >
-      $<CountUp countTo={amount} />
-      {!amount && <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />}
-    </h1>
+      <h1
+        className={classNames(
+          'text-10xl xs:text-13xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none leading-none relative space-x-2',
+          { 'opacity-50': !amount }
+        )}
+      >
+        <CountUp countTo={amount} />
+        {!amount && (
+          <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
+        )}
+      </h1>
+    </div>
   )
 }
 

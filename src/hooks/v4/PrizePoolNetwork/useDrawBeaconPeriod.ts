@@ -26,9 +26,11 @@ export const useDrawBeaconPeriod = () => {
     let refetchIntervalMs = sToMs(endsAtSeconds.toNumber()) - Date.now()
     // Refetch when the period is done
     if (refetchIntervalMs > 0) {
+      console.log('refetch in ' + refetchIntervalMs + 'ms | ' + Date.now())
       setRefetchIntervalMs(refetchIntervalMs)
     } else {
       // Otherwise, refetch every 2.5 minutes (1/2 the time for the defender cron job)
+      console.log('refetch in ' + 60 * 2.5 + 'ms | ' + Date.now())
       setRefetchIntervalMs(sToMs(60 * 2.5))
     }
   }
@@ -37,6 +39,7 @@ export const useDrawBeaconPeriod = () => {
     ['useDrawBeaconPeriod', prizePool?.id()],
     async () => {
       const drawBeaconPeriod = await prizePool.getDrawBeaconPeriod()
+      console.log({ id: drawBeaconPeriod.drawId, drawBeaconPeriod })
       return drawBeaconPeriod
     },
     {

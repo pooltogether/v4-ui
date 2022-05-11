@@ -24,8 +24,6 @@ export const RPC_API_KEYS = {
 // NOTE: Should be empty. Add a chain id to hide it in app.
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
-console.log({ ContractType })
-
 export const V4_PRIZE_POOLS = Object.freeze({
   // [APP_ENVIRONMENTS.mainnets]: [],
   [APP_ENVIRONMENTS.testnets]: testnet.contracts

@@ -3,14 +3,14 @@ import { DrawData } from '@interfaces/v4'
 import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
-import { useValidDraws } from './useValidDraws'
+import { useAvailableDraws } from './useAvailableDraws'
 
 /**
- *
+ * Fetches all draw data for all draws that are available in the DrawBuffer
  * @returns all draws and prize tiers if available in the buffers
  */
 export const useAllDrawDatas = (prizeDistributor: PrizeDistributor) => {
-  const { data, isFetched: isDrawsFetched } = useValidDraws(prizeDistributor)
+  const { data, isFetched: isDrawsFetched } = useAvailableDraws(prizeDistributor)
   const enabled = isDrawsFetched && Boolean(prizeDistributor)
   return useQuery(
     ['useAllDrawDatas', prizeDistributor?.id(), data?.draws ? Object.keys(data.draws) : []],

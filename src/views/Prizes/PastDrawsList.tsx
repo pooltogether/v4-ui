@@ -2,11 +2,10 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Card } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useAllDrawDatas } from '@hooks/v4/PrizeDistributor/useAllDrawDatas'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
@@ -19,19 +18,24 @@ import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
 import { DrawData } from '@interfaces/v4'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 
+/**
+ * TODO: Uncliamed draws are only checking valid draws now (not expired), not ALL draws in the draw buffer. This means we are no longer fetching the data to show "inelgible" for past draws that have expired. Not a big deal on mainnet, testnets are kinda awkward though.
+ * @param props
+ * @returns
+ */
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
-  prizePool: PrizePool
   className?: string
 }) => {
-  const { prizePool, prizeDistributor, className } = props
+  const { prizeDistributor, className } = props
 
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
+  const { data: prizeDistributorToken, isFetched: isPrizePoolTokensFetched } =
+    usePrizeDistributorToken(prizeDistributor)
   const { data: drawDatas, isFetched: isDrawsAndPrizeTiersFetched } =
     useAllDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
@@ -84,8 +88,8 @@ export const PastDrawsList = (props: {
                 key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
                 drawData={drawData}
                 prizeDistributor={prizeDistributor}
-                token={prizePoolTokens.token}
-                ticket={prizePoolTokens.ticket}
+                ticket={ticket}
+                prizeToken={prizeDistributorToken?.token}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
                 pickCount={pickCountsData?.pickCounts[drawId]}
               />
@@ -98,7 +102,7 @@ export const PastDrawsList = (props: {
 }
 
 interface PastPrizeListItemProps {
-  token: Token
+  prizeToken: Token
   ticket: Token
   drawData: DrawData
   prizeDistributor: PrizeDistributor
@@ -108,14 +112,14 @@ interface PastPrizeListItemProps {
 
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
-  const { ticket, drawData } = props
+  const { prizeToken, drawData } = props
   const { draw, prizeTier } = drawData
-  const amount = prizeTier ? roundPrizeAmount(prizeTier.prize, ticket.decimals) : null
+  const amount = prizeTier ? roundPrizeAmount(prizeTier.prize, prizeToken.decimals) : null
 
   return (
     <li>
       <ViewPrizesSheetCustomTrigger
-        ticket={ticket}
+        prizeToken={prizeToken}
         prizeTier={prizeTier}
         Button={({ onClick }) => {
           return (
@@ -183,10 +187,12 @@ DrawId.defaultProps = {
 }
 
 const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemProps) => {
-  const { claimedAmount, prizeDistributor, className, ticket, drawData, pickCount } = props
+  const { claimedAmount, prizeDistributor, className, prizeToken, drawData, pickCount, ticket } =
+    props
   const { draw } = drawData
   const usersAddress = useUsersAddress()
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
   const { t } = useTranslation()
 
   const drawResults = storedDrawResults?.[usersAddress]
@@ -209,7 +215,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       <div className={classNames(messageHeightClassName, className)}>
         <span className='text-accent-1'>{t('claimed', 'Claimed')}</span>
         <span className='ml-2 font-bold'>{amountPretty}</span>
-        <span className='ml-2 font-bold'>{ticket.symbol}</span>
+        <span className='ml-2 font-bold'>{prizeToken.symbol}</span>
       </div>
     )
   } else if (usersAddress && pickCount && userWasNotEligible) {

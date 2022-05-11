@@ -18,7 +18,6 @@ import {
 } from '@pooltogether/wallet-connection'
 import Reward, { RewardElement } from 'react-rewards'
 
-import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
@@ -36,11 +35,13 @@ import { TxButton } from '@components/Input/TxButton'
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
 
+// TODO: Show a gas estimate on this page. So users don't wait 2 months only to realize gas is insane.
 interface PrizeClaimSheetProps {
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
-  token: Token
   ticket: Token
+  token: Token
+  prizeToken: Token
   isOpen: boolean
   drawDatas: { [drawId: number]: DrawData }
   winningDrawResults: { [drawId: number]: DrawResults }
@@ -57,8 +58,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     winningDrawResults,
     drawDatas,
     prizeDistributor,
-    token,
     ticket,
+    token,
+    prizeToken,
     isOpen,
     drawIdsToNotClaim,
     prizePool,
@@ -96,6 +98,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             CLAIMING_BASE_GAS_LIMIT + CLAIMING_PER_DRAW_GAS_LIMIT * winningDrawResultsList.length
         }
         return signerPrizeDistributor.claimPrizesAcrossMultipleDrawsByDrawResults(
+          ticket.address,
           winningDrawResultsList,
           overrides
         )
@@ -176,7 +179,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     return total
   }, ethers.BigNumber.from(0))
 
-  const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
+  const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, prizeToken.decimals)
 
   const drawIdsToClaim = winningDrawResultsList.filter(
     (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
@@ -197,7 +200,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
 
         <div className='flex items-center mx-auto font-bold text-inverse mb-4 text-3xl'>
           <span className='mr-2'>{amountPretty}</span>
-          <TokenSymbolAndIcon chainId={chainId} token={ticket} />
+          <TokenSymbolAndIcon chainId={chainId} token={prizeToken} />
         </div>
 
         <ul className='space-y-4 overflow-y-auto' style={{ maxHeight: '100%' }}>
@@ -211,7 +214,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
                   removeDrawIdToClaim={removeDrawIdToClaim}
                   chainId={prizeDistributor.chainId}
                   drawResults={drawResults}
-                  ticket={ticket}
+                  prizeToken={prizeToken}
                   token={token}
                   drawData={drawData}
                 />

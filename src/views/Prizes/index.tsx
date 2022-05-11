@@ -15,6 +15,7 @@ import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { PastDrawsList } from './PastDrawsList'
 import { Card } from '@pooltogether/react-components'
 import { CardTitle } from '@components/Text/CardTitle'
+import { NoDrawsCard } from './MultiDrawsCard/NoDrawsCard'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -52,7 +53,9 @@ export const PrizesUI = () => {
           prizeDistributor={prizeDistributor}
           className='mb-3'
         />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
+        {/* TODO: Have an upcoming prize card since there is no longer a locked draw card to show here */}
+        <NoDrawsCard />
+        <PastDrawsList prizeDistributor={prizeDistributor} className='mt-8' />
       </PagePadding>
     )
   }
@@ -68,7 +71,7 @@ export const PrizesUI = () => {
         />
         <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
         <GaugePrizesCard />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
+        <PastDrawsList prizeDistributor={prizeDistributor} className='mt-8' />
       </PagePadding>
     </>
   )

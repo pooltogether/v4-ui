@@ -1,5 +1,4 @@
 import { Token } from '@pooltogether/hooks'
-import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,11 +6,11 @@ import { useTranslation } from 'react-i18next'
 import { PrizeBreakdownModal } from './PrizeBreakdownModal'
 
 interface ViewPrizesSheetTriggerProps {
-  ticket: Token
+  prizeToken: Token
   Button: React.FC<TriggerButtonProps>
+  prizeTier: PrizeTier
   children?: React.ReactNode
   label?: string
-  prizeTier?: PrizeTier
   className?: string
 }
 
@@ -33,24 +32,10 @@ export const ViewPrizesSheetCustomTrigger = (props: ViewPrizesSheetTriggerProps)
         {children || label || t('viewPrizeTiers', 'View prize tiers')}
       </Button>
 
-      <PrizeBreakdownModal
-        {...props}
-        prizeTier={prizeTier}
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-      />
+      <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
 }
-
-export const ViewPrizesSheetButton = (props: Omit<ViewPrizesSheetTriggerProps, 'Button'>) => (
-  <ViewPrizesSheetCustomTrigger
-    {...props}
-    Button={(props: TriggerButtonProps) => (
-      <SquareButton {...props} theme={SquareButtonTheme.tealOutline} size={SquareButtonSize.sm} />
-    )}
-  />
-)
 
 ViewPrizesSheetCustomTrigger.defaultProps = {
   className:
