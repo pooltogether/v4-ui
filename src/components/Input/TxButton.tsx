@@ -34,7 +34,7 @@ export const TxButton = (props: TxButtonProps) => {
   } = props
   const isWalletConnected = useIsWalletConnected()
   const connectWallet = useConnectWallet()
-  const [, switchNetwork] = useNetwork()
+  const { switchNetwork } = useNetwork()
 
   const { t } = useTranslation()
 

@@ -1,13 +1,9 @@
 import { Amount, useV3ExitFee } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import {
-  useCallTransaction,
-  useIsWalletOnChainId,
-  useTransaction
-} from '@pooltogether/wallet-connection'
+import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
@@ -16,6 +12,8 @@ import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { numberWithCommas } from '@pooltogether/utilities'
+import { useSigner } from 'wagmi'
+import { Contract } from 'ethers'
 
 export enum WithdrawalSteps {
   input,
@@ -59,7 +57,7 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     amountToWithdraw?.amountUnformatted
   )
 
-  const callTransaction = useCallTransaction('withdrawInstantlyFrom', poolAddress, PrizePoolAbi)
+  const { data: signer } = useSigner()
 
   const sendWithdrawTx = async () => {
     const args = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]
@@ -69,9 +67,12 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
       { decimals: token.decimals }
     )
 
-    const txId = await sendTransaction({
+    const txId = sendTransaction({
       name: `${t('withdraw')} ${withdrawalAmountPretty} ${token.symbol}`,
-      callTransaction: () => callTransaction({ args }),
+      callTransaction: () => {
+        const contract = new Contract(poolAddress, PrizePoolAbi, signer)
+        return contract.withdrawInstantlyFrom(...args)
+      },
       callbacks: {
         onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {

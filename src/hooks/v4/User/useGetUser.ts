@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
 import { User, PrizePool } from '@pooltogether/v4-client-js'
-import { useGetWalletSigner } from '@pooltogether/wallet-connection'
+import { useSigner } from 'wagmi'
 
 /**
  * Returns a User built with a Signer from the users wallet
@@ -8,9 +7,9 @@ import { useGetWalletSigner } from '@pooltogether/wallet-connection'
  * @returns
  */
 export const useGetUser = (prizePool: PrizePool) => {
-  const getSigner = useGetWalletSigner()
+  const { refetch } = useSigner()
   return async () => {
-    const signer = await getSigner()
+    const { data: signer } = await refetch()
     return new User(prizePool.prizePoolMetadata, signer, prizePool)
   }
 }

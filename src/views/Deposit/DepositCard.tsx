@@ -309,6 +309,3 @@ const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
     </>
   )
 }
-function useGetWalletSigner() {
-  throw new Error('Function not implemented.')
-}

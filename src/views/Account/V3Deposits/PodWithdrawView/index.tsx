@@ -13,11 +13,12 @@ import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import {
   useIsWalletOnChainId,
   useSendTransaction,
-  useCallTransaction,
   useTransaction
 } from '@pooltogether/wallet-connection'
 import { usePodExitFee } from '@hooks/v3/usePodExitFee'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { Contract } from 'ethers'
+import { useSigner } from 'wagmi'
 
 export enum WithdrawalSteps {
   input,
@@ -60,7 +61,7 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
     token.decimals
   )
 
-  const callTransaction = useCallTransaction('withdraw', prizePool.addresses.pod, PodAbi)
+  const { data: signer } = useSigner()
 
   const sendWithdrawTx = async () => {
     const args = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]
@@ -68,9 +69,12 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
       token.symbol
     }`
 
-    const txId = await sendTransaction({
+    const txId = sendTransaction({
       name: txName,
-      callTransaction: () => callTransaction({ args }),
+      callTransaction: () => {
+        const contract = new Contract(prizePool.addresses.pod, PodAbi, signer)
+        return contract.withdraw(...args)
+      },
       callbacks: {
         onConfirmedByUser: () => setCurrentStep(WithdrawalSteps.viewTxReceipt),
         refetch: () => {

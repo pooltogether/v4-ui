@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react'
 import { Provider as JotaiProvider } from 'jotai'
-import { Provider as WagmiProvider } from 'wagmi'
+import { createClient, Provider as WagmiProvider } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { WalletLinkConnector } from 'wagmi/connectors/walletLink'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { BaseProvider } from '@ethersproject/providers'
 import * as Fathom from 'fathom-client'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -71,7 +71,7 @@ const connectors = ({ chainId }) => {
         qrcode: true
       }
     }),
-    new WalletLinkConnector({
+    new CoinbaseWalletConnector({
       chains,
       options: {
         appName: 'PoolTogether',
@@ -80,6 +80,15 @@ const connectors = ({ chainId }) => {
     })
   ]
 }
+
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider: ({ chainId }) =>
+    (chainId
+      ? getReadProvider(chainId, RPC_API_KEYS)
+      : getReadProvider(CHAIN_ID.mainnet, RPC_API_KEYS)) as BaseProvider
+})
 
 function MyApp({ Component, pageProps, router }: AppProps) {
   useInitPoolTogetherHooks()
@@ -127,16 +136,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
   }, [])
 
   return (
-    <WagmiProvider
-      autoConnect
-      connectorStorageKey='pooltogether-wallet'
-      connectors={connectors}
-      provider={({ chainId }) =>
-        (chainId
-          ? getReadProvider(chainId, RPC_API_KEYS)
-          : getReadProvider(CHAIN_ID.mainnet, RPC_API_KEYS)) as BaseProvider
-      }
-    >
+    <WagmiProvider client={wagmiClient}>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />

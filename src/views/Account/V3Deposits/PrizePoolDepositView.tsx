@@ -14,8 +14,7 @@ import {
   TransactionStatus,
   useIsWalletConnected,
   useTransaction,
-  useUsersAddress,
-  useWalletSigner
+  useUsersAddress
 } from '@pooltogether/wallet-connection'
 import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
@@ -32,7 +31,6 @@ import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { useSigner } from 'wagmi'
-import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -237,15 +235,13 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   } = props
 
   const { t } = useTranslation()
-  const [, getSigner] = useSigner({
-    skip: true
-  })
+  const { refetch: getSigner } = useSigner()
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
   const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
 
   const sendApproveTx = async () => {
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
     const callTransaction = buildApproveTx(signer, MaxUint256, prizePool.addresses.prizePool, token)
 
     const name = t(`allowTickerPool`, { ticker: token.symbol })

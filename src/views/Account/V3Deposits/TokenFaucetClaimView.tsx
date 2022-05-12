@@ -13,11 +13,7 @@ import { useUsersAddress, Transaction } from '@pooltogether/wallet-connection'
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { VAPRTooltip } from '@components/VAPRTooltip'
-import {
-  useIsWalletOnChainId,
-  useTransaction,
-  useWalletSigner
-} from '@pooltogether/wallet-connection'
+import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { buildTokenFaucetClaimTx } from '@utils/transactions/buildTokenFaucetClaimTx'
 import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
@@ -150,14 +146,12 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const { chainId, vapr, tokenFaucetAddress, tokenFaucetRewards, setClaimTxId, refetch } = props
 
   const { t } = useTranslation()
-  const [, getSigner] = useSigner({
-    skip: true
-  })
+  const { refetch: getSigner } = useSigner()
   const sendTransaction = useSendTransaction()
   const usersAddress = useUsersAddress()
 
   const sendClaimTx = async () => {
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
     const callTransaction = buildTokenFaucetClaimTx(signer, tokenFaucetAddress, usersAddress)
 
     const name = t(`claimAmountTicker`, 'Claim {{amount}} {{ticker}}', {
