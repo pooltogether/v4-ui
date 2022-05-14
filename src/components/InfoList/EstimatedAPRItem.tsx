@@ -28,7 +28,7 @@ export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
         'Estimated average APR is a rough estimate based on the current TVL and daily prizes'
       )}
       loading={!isFetched}
-      labelLink='https://docs.pooltogether.com/faq/prizes-and-winning#what-is-the-prize-apr'
+      labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={`${apr}%`}
     />
   )
