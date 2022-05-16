@@ -3,7 +3,6 @@ import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 
-import { PoolPartySeason1CTA } from '@components/PoolPartySeason1CTA'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -47,7 +46,6 @@ export const PrizesUI = () => {
   if (!usersAddress) {
     return (
       <PagePadding className='flex flex-col'>
-        <PoolPartySeason1CTA />
         <CheckForPrizesOnNetwork
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
@@ -66,7 +64,6 @@ export const PrizesUI = () => {
   return (
     <>
       <PagePadding className='flex flex-col'>
-        <PoolPartySeason1CTA />
         <CheckForPrizesOnNetwork
           prizePool={prizePool}
           prizeDistributor={prizeDistributor}
