@@ -7,9 +7,9 @@ import { useSigner } from 'wagmi'
  * @returns
  */
 export const useGetUser = (prizePool: PrizePool) => {
-  const { refetch } = useSigner()
+  const { refetch: getSigner } = useSigner()
   return async () => {
-    const { data: signer } = await refetch()
+    const { data: signer } = await getSigner()
     return new User(prizePool.prizePoolMetadata, signer, prizePool)
   }
 }

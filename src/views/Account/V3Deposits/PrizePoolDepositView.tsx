@@ -3,7 +3,7 @@ import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react
 import { useState } from 'react'
 import { BigNumber } from 'ethers'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { MaxUint256 } from '@ethersproject/constants'
 
 import { GenericDepositAmountInput } from '@components/Input/GenericDepositAmountInput'
@@ -31,6 +31,7 @@ import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { useSigner } from 'wagmi'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -257,7 +258,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
   const sendDepositTx = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
 
     const callTransaction = buildDepositTx(
       signer,
@@ -348,7 +349,6 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
           amountFrom={amountToDeposit}
           amountTo={amountToDeposit}
         />
-
         <TxButton
           className='mt-8 w-full'
           chainId={chainId}
@@ -357,6 +357,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
         >
           {t('confirmDeposit', 'Confirm deposit')}
         </TxButton>
+        <TransactionTosDisclaimer />
       </div>
     </>
   )

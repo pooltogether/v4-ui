@@ -31,6 +31,7 @@ import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
 import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -204,6 +205,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         >
           {t('confirmDeposit', 'Confirm deposit')}
         </TxButton>
+        <TransactionTosDisclaimer />
       </div>
     </BottomSheet>
   )
