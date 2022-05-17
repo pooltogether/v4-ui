@@ -205,7 +205,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         >
           {t('confirmDeposit', 'Confirm deposit')}
         </TxButton>
-        <TransactionTosDisclaimer />
+        <TransactionTosDisclaimer buttonTexti18nKey='confirmDeposit' />
       </div>
     </BottomSheet>
   )
