@@ -306,7 +306,7 @@ const DeprecatedBanner = () => {
         <FeatherIcon icon='bell' className='w-4 h-4 mr-2' />
         <span>{t('v3PrizePoolsAreBeingDeprecated')}</span>
         <a
-          href='https://docs.pooltogether.com/faq/v3-to-v4-differences'
+          href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
           className='underline text-sm'
           target='_blank'
         >

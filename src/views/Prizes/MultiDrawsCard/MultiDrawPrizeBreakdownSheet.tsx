@@ -73,7 +73,7 @@ export const MultiDrawPrizeBreakdownSheet = (
             a: (
               <a
                 className='text-highlight-1 hover:opacity-70 transition-opacity'
-                href='https://docs.pooltogether.com/faq/prizes-and-winning'
+                href='https://docs.pooltogether.com/welcome/faq#prizes-and-winning'
                 target='_blank'
                 rel='noopener noreferrer'
               />

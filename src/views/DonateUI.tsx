@@ -165,7 +165,7 @@ const ExplainerCard = () => {
       <p className='mt-2 mb-4'>
         <a
           className='text-pt-teal hover:opacity-70'
-          href='https://docs.pooltogether.com/faq/general'
+          href='https://docs.pooltogether.com/welcome/faq'
           target='_blank'
           rel='noreferrer noopener'
         >
@@ -281,7 +281,7 @@ const AlreadyDonating = () => {
         To reset your delegation follow{' '}
         <a
           className='text-pt-teal hover:opacity-70'
-          href='https://docs.pooltogether.com/how-to/how-to-delegate'
+          href='https://docs.pooltogether.com/pooltogether/guides/deposit-delegator'
         >
           these instructions
         </a>

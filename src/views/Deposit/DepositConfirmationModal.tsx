@@ -162,7 +162,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             components={{
               a: (
                 <a
-                  href='https://docs.pooltogether.com/faq/prizes-and-winning'
+                  href='https://docs.pooltogether.com/welcome/faq#prizes-and-winning'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-highlight-1 hover:opacity-70 transition-opacity'
@@ -222,7 +222,7 @@ const CheckBackForPrizesBox = () => {
       </div>
 
       <a
-        href='https://docs.pooltogether.com/faq/prizes-and-winning'
+        href='https://docs.pooltogether.com/welcome/faq#prizes-and-winning'
         target='_blank'
         rel='noopener noreferrer'
         className='underline text-xs'
