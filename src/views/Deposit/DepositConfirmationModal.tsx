@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import { Amount, Token } from '@pooltogether/hooks'
+import { Amount, Token, useIsWalletOnNetwork } from '@pooltogether/hooks'
 import {
   ModalProps,
   SquareButton,
@@ -8,14 +8,15 @@ import {
   SquareButtonSize,
   SquareButtonTheme,
   ModalTitle,
-  BottomSheet
+  BottomSheet,
+  AddTokenToMetamaskButton
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
-import { Transaction, TransactionStatus } from '@pooltogether/wallet-connection'
+import { Transaction, TransactionStatus, useWalletChainId } from '@pooltogether/wallet-connection'
 
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
@@ -32,6 +33,9 @@ import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
 import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -143,6 +147,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         {prizePool && <CheckBackForPrizesBox />}
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
+        <AddTicketToWallet />
       </BottomSheet>
     )
   }
@@ -246,5 +251,32 @@ export const AccountPageButton = () => {
         {t('viewAccount', 'View account')}
       </SquareLink>
     </Link>
+  )
+}
+
+export const AddTicketToWallet = () => {
+  const { chainId: selectedChainId } = useSelectedChainId()
+  const { data: ticket } = useSelectedPrizePoolTicket()
+  const { t } = useTranslation()
+  const isMetaMask = useIsWalletMetamask()
+  const walletChainId = useWalletChainId()
+  const isWalletOnProperNetwork = selectedChainId === walletChainId
+
+  if (!isMetaMask || !isWalletOnProperNetwork) return null
+
+  return (
+    <AddTokenToMetamaskButton
+      t={t}
+      token={ticket}
+      isMetaMask={isMetaMask}
+      isWalletOnProperNetwork={isWalletOnProperNetwork}
+      className='w-full'
+    >
+      <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full'>
+        {t('addTicketTokenToMetamask', {
+          token: ticket.symbol
+        })}
+      </SquareButton>
+    </AddTokenToMetamaskButton>
   )
 }

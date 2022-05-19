@@ -35,9 +35,6 @@ import { ethers } from 'ethers'
 import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { useSendTransaction } from '@hooks/useSendTransaction'
-import { useUser } from '@hooks/v4/User/useUser'
-import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -181,7 +178,6 @@ const DepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.teal
           }
         ]}
-        tx={tx}
         token={balances.ticket}
         balance={balances.ticket}
         balanceUsd={balances.ticket}

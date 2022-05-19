@@ -2,7 +2,7 @@
 
 The user interface for interacting with V4 of the PoolTogether prize-savings protocol.
 
-# Setup
+## 💾 &nbsp; Installation
 
 Install dependencies:
 
