@@ -69,7 +69,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           <a
             target='_blank'
             className='underline'
-            href='https://docs.pooltogether.com/how-to/how-to-deposit'
+            href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
           >
             {t('howToDeposit', 'How to deposit')}
           </a>
