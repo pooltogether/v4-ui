@@ -1,0 +1,16 @@
+{
+  "short_name": "PoolTogether",
+  "name": "PoolTogether",
+  "description": "A new way to save money and have a chance to win every week.",
+  "icons": [
+    {
+      "src": "/pool-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "fullscreen",
+  "scope": "/",
+  "theme_color": "#000"
+}
