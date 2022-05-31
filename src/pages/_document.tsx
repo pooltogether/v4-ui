@@ -53,6 +53,8 @@ class MyDocument extends Document {
             />
             <meta property='twitter:url' content={url} />
             <meta property='twitter:creator' content={twitterHandle} />
+
+            <link rel='manifest' href='manifest.json' />
           </>
         </Head>
         <body className='bg-body text-inverse'>

@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component {
 
 export function CustomErrorBoundary(props) {
   const { children } = props
-  const { data } = useConnect()
+  const { activeConnector } = useConnect()
 
   if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
     return <ErrorBoundary>{children}</ErrorBoundary>
@@ -40,10 +40,10 @@ export function CustomErrorBoundary(props) {
             }
           }}
           beforeCapture={(scope) => {
-            if (data.activeConnector?.name) {
-              scope.setTag('web3', data.activeConnector.name)
+            if (activeConnector?.name) {
+              scope.setTag('web3', activeConnector.name)
               scope.setContext('wallet', {
-                name: data.activeConnector.name
+                name: activeConnector.name
               })
             }
           }}

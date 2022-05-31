@@ -2818,10 +2818,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/pooltogether-rng-contracts/-/pooltogether-rng-contracts-1.4.0.tgz#310b9667a1123cfcce718aa6d8eba7c434a53c75"
   integrity sha512-dNgDpDsCMxUxaz8u6OfpjSBtMOdcp8QkLC3cwJ6E++4ux0qY2ON+ZqJEHIC3q4ZVJ4Xf6FikMJF0a8SVNtl8Zw==
 
-"@pooltogether/react-components@^1.12.4":
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.12.4.tgz#2878cdd7352a340e454ed1297a2a6ff83302f271"
-  integrity sha512-S96rCPb5y34qkcqepvMe7M8uhFyWfoiF1TkMO8sZ6tgb5cB+1ZxV5PTnKE1mWo9HpT1ZrLpsxkN9tr3XsmTuiQ==
+"@pooltogether/react-components@^1.12.11":
+  version "1.12.12"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.12.12.tgz#dddcb4b3593b4d326ec88aad45d99b89907f1e88"
+  integrity sha512-nVotg/VzaoA1a8IUUXT/96Z7dElrL7S1o8G2t+iLnigHyNHegOBvCBYJin/mqAu72kWjQg4V+5E796VU25zDGA==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2990,10 +2990,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.3.0.tgz#a8b60c894b4b9a4739f2b4cda538e70eabf31e84"
-  integrity sha512-d2YvMdeATRhWwR/8In6epB344I4TIKEdMMaU+ivqThOoj6ItEFumzjSOu+JGTCqnNpsaZqEa7M9iTEKMXib2qQ==
+"@pooltogether/wallet-connection@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.3.1.tgz#0ea110609b6eb493f34fa6af5051100691df5861"
+  integrity sha512-bNskc7so4rFgBlmXnGVWbhRUJszsoWWaMzFLNMrxkhtFOr8UyStc9xlvY7rje090gK+d3hdrKr0q6VapOp75Pw==
   dependencies:
     "@download/blockies" "^1.0.3"
 
