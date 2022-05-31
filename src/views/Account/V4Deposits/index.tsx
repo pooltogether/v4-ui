@@ -238,7 +238,7 @@ const Divider: React.FC<{ usersAddress: string }> = (props) => {
   ) {
     return (
       <li>
-        <hr />
+        <hr className='m-3' />
       </li>
     )
   }
