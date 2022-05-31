@@ -19,7 +19,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
       href='https://vote.pooltogether.com/proposals'
       target='_blank'
     >
-      <div className='rounded-lg p-4 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
+      <div className='rounded-lg px-8 py-2 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
         <span
           className={classNames({
             'text-6xl xs:text-4xl': !noProposals,

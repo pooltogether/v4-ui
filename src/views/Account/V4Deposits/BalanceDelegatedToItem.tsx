@@ -23,10 +23,10 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
   return (
     <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
       <button
-        className='p-4 w-full flex justify-between items-center'
+        className='px-4 py-2 w-full flex justify-between items-center'
         onClick={() => setIsOpen(true)}
       >
-        <span className='flex items-center font-bold text-sm xs:text-lg space-x-2'>
+        <span className='flex items-center font-bold text-xs xs:text-lg space-x-2 text-left'>
           <span>{'🎁 '}</span>
           <span>{t('totalDelegatedToYou', 'Total delegated to you')}</span>
         </span>
@@ -60,7 +60,9 @@ const BalanceDelegatedToSheet: React.FC<{
       onDismiss={onDismiss}
       className='flex flex-col'
     >
-      <div className='mx-auto text-2xl font-bold text-inverse mb-2'>Delegations to you</div>
+      <div className='mx-auto text-2xl font-bold text-inverse mb-2'>
+        {t('delegationsToYou', 'Delegations to you')}
+      </div>
       <p className='opacity-70 text-xs text-center mb-6'>
         {t(
           'delegationDescription',

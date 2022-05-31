@@ -6,7 +6,7 @@ export const PrizePoolDepositList = (props: {
   bgClassName?: string
   children: React.ReactNode
 }) => (
-  <ul className={classNames('rounded-lg p-4 space-y-4', props.bgClassName, props.className)}>
+  <ul className={classNames('rounded-lg p-4 space-y-2', props.bgClassName, props.className)}>
     {props.children}
   </ul>
 )

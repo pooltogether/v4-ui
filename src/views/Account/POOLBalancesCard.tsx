@@ -103,7 +103,7 @@ const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithUsdBalan
   const { t } = useTranslation()
 
   return (
-    <li className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg p-4 w-full flex justify-between items-center'>
+    <li className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg px-4 py-2 w-full flex justify-between items-center'>
       <div className='flex'>
         <NetworkIcon chainId={chainId} className='mr-2 my-auto' />
         <span className='font-bold xs:text-lg'>{getNetworkNiceNameByChainId(chainId)}</span>
