@@ -7,6 +7,7 @@ import { XDollarsGetsYou } from '@components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
+import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
 import { VotingPromptCard } from '@components/VotingPromptCard'
@@ -33,6 +34,7 @@ export const AccountUI = (props) => {
     <PagePadding className='space-y-8'>
       <AccountCard />
       <V4Deposits />
+      <EarnRewardsCard />
       <POOLBalancesCard />
       <V3StakingCards />
       <V3Deposits />
