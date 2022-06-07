@@ -21,7 +21,7 @@ import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { TokenBalance } from '@components/TokenBalance'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
 export const V3Deposits = () => {
@@ -158,7 +158,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             isSponsorship={isSponsorship}
           />
         }
-        right={<DepositBalance chainId={chainId} ticket={ticket} />}
+        right={<TokenBalance chainId={chainId} token={ticket} />}
       />
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -251,7 +251,10 @@ const PodDepositItem = (props: DepositItemsProps) => {
           symbol={token.symbol}
           address={token.address}
         />
-        <DepositBalance chainId={chainId} ticket={ticket} />
+        <div className='flex items-center space-x-2'>
+          <TokenBalance chainId={chainId} token={ticket} />
+          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50' />
+        </div>
       </button>
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -338,13 +341,3 @@ const UnderlyingTokenLabel = (props: {
     </span>
   </div>
 )
-
-interface DepositBalanceProps {
-  chainId: number
-  ticket: TokenWithUsdBalance
-}
-
-const DepositBalance = (props: DepositBalanceProps) => {
-  const { chainId, ticket } = props
-  return <PrizePoolDepositBalance chainId={chainId} token={ticket} />
-}

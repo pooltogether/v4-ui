@@ -1,4 +1,4 @@
-import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { useAtom } from 'jotai'
 
 import { drawResultsAtom } from '@utils/drawResultsStorage'
@@ -6,7 +6,7 @@ import { Token } from '@pooltogether/hooks'
 
 export const useUsersStoredDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor,
+  prizeDistributor: PrizeDistributorV2,
   ticket: Token
 ): {
   [usersAddress: string]: {

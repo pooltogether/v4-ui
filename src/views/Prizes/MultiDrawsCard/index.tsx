@@ -10,7 +10,7 @@ import {
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { PrizeDistributor, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -34,18 +34,18 @@ import { useUpdateAtom } from 'jotai/utils'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
-import { getUsersDrawResults } from '@utils/getUsersDrawResults'
+import { getUserDrawResults } from '@utils/getUserDrawResults'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 
 interface MultiDrawsCardProps {
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
   prizePool: PrizePool
 }
 
 export interface MultiDrawsCardPropsWithDetails extends MultiDrawsCardProps {
   drawDatas: { [drawId: number]: DrawData }
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
   prizeToken: Token
   token: Token
   ticket: Token
@@ -384,7 +384,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
       <SquareButton
         size={size}
         onClick={() => {
-          getUsersDrawResults(
+          getUserDrawResults(
             prizeDistributor,
             drawDataList,
             usersAddress,

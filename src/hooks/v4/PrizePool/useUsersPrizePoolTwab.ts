@@ -23,7 +23,7 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
 
   return useQuery(
     [USERS_TWAB_QUERY_KEY, prizePool?.id(), usersAddress],
-    async () => getUsersPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
+    async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
     {
       refetchInterval,
       enabled
@@ -31,13 +31,13 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
   )
 }
 
-export const getUsersPrizePoolTwab = async (
+export const getUserPrizePoolTwab = async (
   prizePool: PrizePool,
   usersAddress: string,
   decimals: string
 ): Promise<{ chainId: number; twab: Amount; usersAddress: string }> => {
   const timestamp = Math.round(msToS(Date.now()))
-  const twabUnformatted = await prizePool.getUsersTicketTwabAt(usersAddress, timestamp)
+  const twabUnformatted = await prizePool.getUserTicketTwabAt(usersAddress, timestamp)
 
   const twab = getAmountFromBigNumber(twabUnformatted, decimals)
 

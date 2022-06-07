@@ -1,22 +1,18 @@
 import { TxButton } from '@components/Input/TxButton'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { TokenBalance } from '@components/TokenBalance'
 import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
-import { CHAIN_ID } from '@constants/misc'
 import { NO_REFETCH } from '@constants/query'
-import { isAddress } from '@ethersproject/address'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { useSignerGaugeController } from '@hooks/v4/PrizeDistributor/useSignerGaugeController'
 import { usePrizePoolsByChainId } from '@hooks/v4/PrizePool/usePrizePoolsByChainId'
-import { usePrizePoolTokensByChainId } from '@hooks/v4/PrizePool/usePrizePoolTokensByChainId'
-import { Token, TokenWithBalance, usePrizePoolTokens, useTokenBalance } from '@pooltogether/hooks'
+import { Token, TokenWithBalance, usePrizePoolTokens } from '@pooltogether/hooks'
 import {
   BlockExplorerLink,
   BottomSheet,
-  Card,
   ModalTitle,
   NetworkIcon,
   SquareButton,
@@ -24,14 +20,8 @@ import {
   SquareButtonTheme
 } from '@pooltogether/react-components'
 import { GaugeController, PrizePool } from '@pooltogether/v4-client-js'
-import {
-  TransactionState,
-  TransactionStatus,
-  useTransaction,
-  useUsersAddress
-} from '@pooltogether/wallet-connection'
+import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
@@ -43,11 +33,13 @@ export const StakeUI = () => {
   const [gaugeController, setGaugeController] = useState<GaugeController>(null)
   const [ticket, setTicket] = useState<Token>(null)
   const [isGaugeEditSheetOpen, setIsGaugeEditSheetOpen] = useState<boolean>(false)
+  const [isGaugeRewardClaimSheetOpen, setIsGaugeRewardClaimSheetOpen] = useState<boolean>(false)
 
   return (
     <PagePadding className='flex flex-col space-y-6'>
       <GaugeControllers
         openEditModal={() => setIsGaugeEditSheetOpen(true)}
+        openClaimModal={() => setIsGaugeRewardClaimSheetOpen(true)}
         setTicket={setTicket}
         setGaugeController={setGaugeController}
       />
@@ -57,6 +49,12 @@ export const StakeUI = () => {
         isOpen={isGaugeEditSheetOpen}
         closeModal={() => setIsGaugeEditSheetOpen(false)}
       />
+      <GaugeRewardsClaimSheet
+        gaugeController={gaugeController}
+        ticket={ticket}
+        isOpen={isGaugeRewardClaimSheetOpen}
+        closeModal={() => setIsGaugeRewardClaimSheetOpen(false)}
+      />
     </PagePadding>
   )
 }
@@ -65,10 +63,11 @@ const GaugeControllers: React.FC<{
   setGaugeController: (gaugeController: GaugeController) => void
   setTicket: (ticket: Token) => void
   openEditModal: () => void
+  openClaimModal: () => void
 }> = (props) => {
   const queriesResults = useAllGaugeControllers()
   const [isGaugeStakeSheetOpen, setIsGaugeStakeSheetOpen] = useState<boolean>(false)
-  const { setGaugeController, setTicket, openEditModal } = props
+  const { setGaugeController, setTicket, openEditModal, openClaimModal } = props
   return (
     <>
       {queriesResults.map((queryResults, index) => {
@@ -79,6 +78,7 @@ const GaugeControllers: React.FC<{
           <div key={`gauge-controller-${gaugeController?.id()}`}>
             <GaugeControllerCard
               openEditModal={openEditModal}
+              openClaimModal={openClaimModal}
               openStakeModal={() => setIsGaugeStakeSheetOpen(true)}
               setGaugeController={setGaugeController}
               setTicket={setTicket}
@@ -102,9 +102,17 @@ const GaugeControllerCard: React.FC<{
   setGaugeController: (gaugeController: GaugeController) => void
   setTicket: (ticket: Token) => void
   openEditModal: () => void
+  openClaimModal: () => void
   openStakeModal: () => void
 }> = (props) => {
-  const { gaugeController, setGaugeController, setTicket, openEditModal, openStakeModal } = props
+  const {
+    gaugeController,
+    setGaugeController,
+    setTicket,
+    openClaimModal,
+    openEditModal,
+    openStakeModal
+  } = props
   const prizePools = usePrizePoolsByChainId(gaugeController?.chainId)
   const usersAddress = useUsersAddress()
   const { data: gaugeStakedBalance } = useUsersGaugeControllerBalance(usersAddress, gaugeController)
@@ -169,6 +177,19 @@ const GaugeControllerCard: React.FC<{
             />
           ))}
         </ul>
+        <div className='font-bold'>Gauge Rewards</div>
+        <ul className='space-y-4'>
+          {prizePools.map((prizePool) => (
+            <GaugeRewardsRow
+              key={`gauge-rewards-row-${prizePool.id()}-${gaugeController?.id()}`}
+              gaugeController={gaugeController}
+              prizePool={prizePool}
+              setGaugeController={setGaugeController}
+              setTicket={setTicket}
+              openModal={openClaimModal}
+            />
+          ))}
+        </ul>
       </div>
     </div>
   )
@@ -196,9 +217,7 @@ const GaugeRow: React.FC<{
   return (
     <PrizePoolListItem
       left={<PrizePoolLabel prizePool={prizePool} />}
-      right={
-        <PrizePoolDepositBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />
-      }
+      right={<TokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
       onClick={() => {
         setTicket(tokens.ticket)
         setGaugeController(gaugeController)
@@ -208,14 +227,45 @@ const GaugeRow: React.FC<{
   )
 }
 
-interface GaugeEditSheetProps {
+const GaugeRewardsRow: React.FC<{
+  gaugeController: GaugeController
+  prizePool: PrizePool
+  setGaugeController: (gaugeController: GaugeController) => void
+  setTicket: (ticket: Token) => void
+  openModal: () => void
+}> = (props) => {
+  const { gaugeController, prizePool, setGaugeController, setTicket, openModal } = props
+  const usersAddress = useUsersAddress()
+  const { data: tokens } = usePrizePoolTokens(prizePool)
+  const { data: rewardToken } = useGaugeRewardToken(gaugeController, tokens?.ticket.address)
+  const { data: balanceUnformatted } = useUsersClaimableGaugeRewardBalance(
+    usersAddress,
+    gaugeController,
+    tokens?.ticket.address,
+    rewardToken?.address
+  )
+
+  const tokenWithBalance = makeTokenWithBalance(rewardToken, balanceUnformatted)
+
+  return (
+    <PrizePoolListItem
+      left={<PrizePoolLabel prizePool={prizePool} />}
+      right={<TokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
+      onClick={() => {
+        setTicket(tokens.ticket)
+        setGaugeController(gaugeController)
+        openModal()
+      }}
+    />
+  )
+}
+
+const GaugeEditSheet: React.FC<{
   gaugeController: GaugeController
   ticket: Token
   isOpen: boolean
   closeModal: () => void
-}
-
-const GaugeEditSheet: React.FC<GaugeEditSheetProps> = (props) => {
+}> = (props) => {
   const { gaugeController, ticket, isOpen, closeModal } = props
   return (
     <BottomSheet
@@ -227,6 +277,142 @@ const GaugeEditSheet: React.FC<GaugeEditSheetProps> = (props) => {
       <ModalTitle chainId={gaugeController?.chainId} title={'Edit Gauge'} />
       <p>Set the amount of POOL staked on this Gauge</p>
       <GaugeEditForm gaugeController={gaugeController} ticket={ticket} />
+    </BottomSheet>
+  )
+}
+
+const GaugeRewardsClaimSheet: React.FC<{
+  gaugeController: GaugeController
+  ticket: Token
+  isOpen: boolean
+  closeModal: () => void
+}> = (props) => {
+  const { gaugeController, ticket, isOpen, closeModal } = props
+
+  const sendTx = useSendTransaction()
+  const usersAddress = useUsersAddress()
+  const { data: rewardToken } = useGaugeRewardToken(gaugeController, ticket?.address)
+
+  // Claim Rewards
+  const [claimTransactionId, setClaimTransactionId] = useState('')
+  const claimTransaction = useTransaction(claimTransactionId)
+  const {
+    data: claimableBalanceUnformatted,
+    error: claimableError,
+    isFetched: isClaimableBalanceFetched,
+    refetch: refetchUsersClaimableGaugeRewardBalance
+  } = useUsersClaimableGaugeRewardBalance(
+    usersAddress,
+    gaugeController,
+    ticket?.address,
+    rewardToken?.address
+  )
+  const claimableTokenWithBalance = makeTokenWithBalance(rewardToken, claimableBalanceUnformatted)
+
+  // Redeem Rewards
+  const [redeemTransactionId, setRedeemTransactionId] = useState('')
+  const redeemTransaction = useTransaction(redeemTransactionId)
+  const {
+    data: redeemableBalanceUnformatted,
+    error: redeemableError,
+    isFetched: isRedeemableBalanceFetched,
+    refetch: refetchUsersRedeemableGaugeRewardBalance
+  } = useUsersRedeemableGaugeRewardBalance(usersAddress, gaugeController, ticket?.address)
+  const redeemableTokenWithBalance = makeTokenWithBalance(rewardToken, redeemableBalanceUnformatted)
+
+  const claimRewards = async () =>
+    setClaimTransactionId(
+      sendTx({
+        name: 'Claim Rewards',
+        callTransaction: () =>
+          gaugeController.claimCurrentUserRewards(ticket?.address, usersAddress),
+        callbacks: {
+          refetch: () => {
+            refetchUsersRedeemableGaugeRewardBalance()
+            refetchUsersClaimableGaugeRewardBalance()
+            // TODO: Probably also trigger a fetch for the users balance for the reward token
+          }
+        }
+      })
+    )
+
+  const redeemRewards = async () =>
+    setClaimTransactionId(
+      sendTx({
+        name: 'Redeem Rewards',
+        callTransaction: () =>
+          gaugeController.redeemUserRewards(rewardToken?.address, usersAddress),
+        callbacks: {
+          refetch: () => {
+            refetchUsersRedeemableGaugeRewardBalance()
+            // TODO: Probably also trigger a fetch for the users balance for the reward token
+          }
+        }
+      })
+    )
+
+  console.log({
+    isClaimableBalanceFetched,
+    isRedeemableBalanceFetched,
+    redeemableError,
+    claimableError
+  })
+
+  return (
+    <BottomSheet
+      open={isOpen}
+      onDismiss={closeModal}
+      label='Gauge edit modal'
+      className='space-y-4'
+    >
+      <ModalTitle chainId={gaugeController?.chainId} title={'Claim Rewards'} />
+      <div className='flex justify-between bg-actually-black bg-opacity-5 rounded p-2'>
+        <span>Claimable rewards:</span>
+        <TokenBalance
+          chainId={gaugeController?.chainId}
+          token={claimableTokenWithBalance}
+          error={!!claimableError}
+        />
+      </div>
+      <div className='text-xxs'>
+        Claiming rewards preps any token rewards from a gauge to be redeemed.
+      </div>
+      <TxButton
+        chainId={gaugeController?.chainId}
+        state={claimTransaction?.state}
+        status={claimTransaction?.status}
+        onClick={claimRewards}
+        disabled={
+          !isClaimableBalanceFetched || !!claimableError || claimableBalanceUnformatted.isZero()
+        }
+        className='w-full'
+      >
+        Claim
+      </TxButton>
+      <div className='flex justify-between bg-actually-black bg-opacity-5 rounded p-2'>
+        <span>Redeemable rewards:</span>
+        <TokenBalance
+          chainId={gaugeController?.chainId}
+          token={redeemableTokenWithBalance}
+          error={!!redeemableError}
+        />
+      </div>
+      <div className='text-xxs'>
+        Redeeming rewards transfers claimed rewards for a particular reward token across multiple
+        gauges.
+      </div>
+      <TxButton
+        chainId={gaugeController?.chainId}
+        state={redeemTransaction?.state}
+        status={redeemTransaction?.status}
+        onClick={redeemRewards}
+        disabled={
+          !isRedeemableBalanceFetched || !!redeemableError || redeemableBalanceUnformatted.isZero()
+        }
+        className='w-full'
+      >
+        Redeem
+      </TxButton>
     </BottomSheet>
   )
 }
@@ -252,9 +438,9 @@ const GaugeEditForm: React.FC<{
     reValidateMode: 'onChange'
   })
   const sendTx = useSendTransaction()
-  const usersAddress = useUsersAddress()
   const [transactionId, setTransactionId] = useState('')
   const transaction = useTransaction(transactionId)
+  const usersAddress = useUsersAddress()
   const { data: token } = useGaugeToken(gaugeController)
   const { data: balanceUnformatted, refetch: refetchGaugeBalance } = useUsersGaugeBalance(
     usersAddress,
@@ -280,14 +466,16 @@ const GaugeEditForm: React.FC<{
     let callTransaction
     if (amountUnformatted.gt(balanceUnformatted)) {
       const differenceUnformatted = amountUnformatted.sub(balanceUnformatted)
-      callTransaction = () => gaugeController.increaseGauge(ticket?.address, differenceUnformatted)
+      callTransaction = () =>
+        gaugeController.increaseGauge(ticket?.address, differenceUnformatted, { gasLimit: 5000000 })
     } else {
       const differenceUnformatted = balanceUnformatted.sub(amountUnformatted)
-      callTransaction = () => gaugeController.decreaseGauge(ticket?.address, differenceUnformatted)
+      callTransaction = () =>
+        gaugeController.decreaseGauge(ticket?.address, differenceUnformatted, { gasLimit: 5000000 })
     }
 
     const transactionId = await sendTx({
-      name: 'Edit Gauge',
+      name: 'Set Gauge',
       callTransaction,
       callbacks: {
         refetch: () => {
@@ -337,7 +525,7 @@ const GaugeEditForm: React.FC<{
         disabled={!isValid || !ticket || !token}
         onClick={() => sendGaugeEditTx(amount)}
       >
-        Update Gauge
+        Set Gauge
       </TxButton>
     </>
   )
@@ -352,7 +540,12 @@ interface GaugeStakeSheetProps {
 const GaugeStakeSheet: React.FC<GaugeStakeSheetProps> = (props) => {
   const { gaugeController, isOpen, closeModal } = props
   return (
-    <BottomSheet open={isOpen} onDismiss={closeModal} label='Gauge stake modal'>
+    <BottomSheet
+      open={isOpen}
+      onDismiss={closeModal}
+      label='Gauge stake modal'
+      className='space-y-4'
+    >
       <ModalTitle chainId={gaugeController?.chainId} title={'Stake POOL'} />
       <p>Set the amount of POOL you want to be staked</p>
       <GaugeStakeForm gaugeController={gaugeController} />
@@ -366,6 +559,10 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
   const usersAddress = useUsersAddress()
   const { data: token } = useGaugeToken(gaugeController)
   const { data: balanceUnformatted, refetch: refetchGaugeBalance } = useUsersGaugeControllerBalance(
+    usersAddress,
+    gaugeController
+  )
+  const { refetch: refetchApprovalAmount } = useUsersGaugeDepositAllowance(
     usersAddress,
     gaugeController
   )
@@ -426,6 +623,21 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
     setTransactionId(transactionId)
   }
 
+  const sendGaugeApprovalTx = async () => {
+    const transactionId = await sendTx({
+      name: 'Approve POOL for Gauge',
+      callTransaction: () => gaugeController.approveDepositing(),
+      callbacks: {
+        refetch: () => {
+          refetchApprovalAmount()
+          refetchGaugeBalance()
+          refetchGaugeTokenBalance()
+        }
+      }
+    })
+    setTransactionId(transactionId)
+  }
+
   if (
     transaction?.status === TransactionStatus.pendingBlockchainConfirmation ||
     transaction?.status === TransactionStatus.success
@@ -460,11 +672,19 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
       <TxButton
         chainId={gaugeController?.chainId}
         className='w-full'
-        type='submit'
+        type='button'
         disabled={!isValid || !token}
         onClick={() => sendGaugeEditTx(amount)}
       >
         Update Gauge
+      </TxButton>
+      <TxButton
+        chainId={gaugeController?.chainId}
+        className='w-full'
+        type='button'
+        onClick={() => sendGaugeApprovalTx()}
+      >
+        Approve Deposits
       </TxButton>
     </>
   )
@@ -538,7 +758,7 @@ const useAllUsersGaugeDepositAllowances = (usersAddress: string) => {
       ...NO_REFETCH,
       enabled: isFetched,
       queryKey: ['useAllUsersGaugeDepositAllowances', gaugeController?.id(), usersAddress],
-      queryFn: () => gaugeController.getUsersDepositAllowance(usersAddress)
+      queryFn: () => gaugeController.getUserDepositAllowance(usersAddress)
     }))
   )
 }
@@ -546,7 +766,7 @@ const useAllUsersGaugeDepositAllowances = (usersAddress: string) => {
 const useUsersGaugeDepositAllowance = (usersAddress: string, gaugeController: GaugeController) => {
   return useQuery(
     ['useAllUsersGaugeDepositAllowances', gaugeController?.id(), usersAddress],
-    () => gaugeController.getUsersDepositAllowance(usersAddress),
+    () => gaugeController.getUserDepositAllowance(usersAddress),
     { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress }
   )
 }
@@ -558,7 +778,7 @@ const useUsersGaugeBalance = (
 ) => {
   return useQuery(
     ['useUsersGaugeBalance', gaugeController?.id(), usersAddress, ticketAddress],
-    () => gaugeController.getGaugeBalance(usersAddress, ticketAddress),
+    () => gaugeController.getUserGaugeBalance(usersAddress, ticketAddress),
     { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress && !!ticketAddress }
   )
 }
@@ -566,7 +786,7 @@ const useUsersGaugeBalance = (
 const useUsersGaugeTokenBalance = (usersAddress: string, gaugeController: GaugeController) => {
   return useQuery(
     ['useUsersGaugeTokenBalance', gaugeController?.id(), usersAddress],
-    () => gaugeController.getUsersGaugeTokenBalance(usersAddress),
+    () => gaugeController.getUserGaugeTokenBalance(usersAddress),
     { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress }
   )
 }
@@ -586,6 +806,59 @@ const useGaugeToken = (gaugeController: GaugeController) => {
     {
       ...NO_REFETCH,
       enabled: !!gaugeController
+    }
+  )
+}
+
+const useGaugeRewardToken = (gaugeController: GaugeController, ticketAddress: string) => {
+  return useQuery(
+    ['useGaugeRewardToken', gaugeController?.id(), ticketAddress],
+    () => gaugeController.getGaugeRewardToken(ticketAddress),
+    {
+      ...NO_REFETCH,
+      enabled: !!gaugeController && !!ticketAddress
+    }
+  )
+}
+
+const useUsersClaimableGaugeRewardBalance = (
+  usersAddress: string,
+  gaugeController: GaugeController,
+  ticketAddress: string,
+  rewardTokenAddress: string
+) => {
+  return useQuery(
+    [
+      'useUsersClaimableGaugeRewardBalance',
+      gaugeController?.id(),
+      usersAddress,
+      ticketAddress,
+      rewardTokenAddress
+    ],
+    () =>
+      gaugeController.getUserClaimableGaugeRewardBalance(
+        usersAddress,
+        ticketAddress,
+        rewardTokenAddress
+      ),
+    {
+      ...NO_REFETCH,
+      enabled: !!gaugeController && !!ticketAddress && !!usersAddress && !!rewardTokenAddress
+    }
+  )
+}
+
+const useUsersRedeemableGaugeRewardBalance = (
+  usersAddress: string,
+  gaugeController: GaugeController,
+  ticketAddress: string
+) => {
+  return useQuery(
+    ['useUsersRedeemableGaugeRewardBalance', gaugeController?.id(), usersAddress, ticketAddress],
+    () => gaugeController.getUserRedeemableGaugeRewardBalance(usersAddress, ticketAddress),
+    {
+      ...NO_REFETCH,
+      enabled: !!gaugeController && !!ticketAddress && !!usersAddress
     }
   )
 }

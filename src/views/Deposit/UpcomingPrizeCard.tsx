@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, CountUp, TokenIcon } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
-import { PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizeConfig, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -11,7 +11,7 @@ import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPer
 import { useTimeUntil } from '@hooks/useTimeUntil'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
-import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { useUpcomingPrizeConfig } from '@hooks/useUpcomingPrizeConfig'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
@@ -19,12 +19,12 @@ import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelec
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
-  const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
+  const { data: prizeConfig, isFetched: isPrizeConfigFetched } = useUpcomingPrizeConfig()
   const prizeDistributor = useSelectedPrizeDistributor()
   const { data: prizeDistributorToken, isFetched: isPrizeTokenFetched } =
     usePrizeDistributorToken(prizeDistributor)
 
-  const isFetched = isPrizeTierFetched && !!prizeTier && isPrizeTokenFetched
+  const isFetched = isPrizeConfigFetched && !!prizeConfig && isPrizeTokenFetched
 
   return (
     <div className={classNames('flex flex-col text-center space-y-2 relative', className)}>
@@ -32,14 +32,15 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
       <Dots />
 
       <AmountOfPrizes
+        prizeDistributor={prizeDistributor}
         isFetched={isFetched}
-        prizeTier={prizeTier}
+        prizeConfig={prizeConfig}
         prizeToken={prizeDistributorToken?.token}
       />
       <PrizeAmount
         chainId={prizeDistributor.chainId}
         isFetched={isFetched}
-        prizeTier={prizeTier}
+        prizeConfig={prizeConfig}
         prizeToken={prizeDistributorToken?.token}
       />
       <DrawCountdown />
@@ -47,12 +48,17 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
   )
 }
 
-const AmountOfPrizes = (props: { isFetched: boolean; prizeToken: Token; prizeTier: PrizeTier }) => {
-  const { isFetched, prizeToken, prizeTier } = props
+const AmountOfPrizes = (props: {
+  isFetched: boolean
+  prizeToken: Token
+  prizeConfig: PrizeConfig
+  prizeDistributor: PrizeDistributorV2
+}) => {
+  const { prizeDistributor, isFetched, prizeToken, prizeConfig } = props
 
   let amountOfPrizes = '--'
   if (isFetched) {
-    amountOfPrizes = String(calculateTotalNumberOfPrizes(prizeTier))
+    amountOfPrizes = String(calculateTotalNumberOfPrizes(prizeConfig))
   }
 
   return (
@@ -62,8 +68,9 @@ const AmountOfPrizes = (props: { isFetched: boolean; prizeToken: Token; prizeTie
         components={{
           button: (
             <ViewPrizesSheetCustomTrigger
+              prizeDistributor={prizeDistributor}
               prizeToken={prizeToken}
-              prizeTier={prizeTier}
+              prizeConfig={prizeConfig}
               Button={(props) => (
                 <button
                   {...props}
@@ -83,13 +90,13 @@ const PrizeAmount = (props: {
   chainId: number
   isFetched: boolean
   prizeToken: Token
-  prizeTier: PrizeTier
+  prizeConfig: PrizeConfig
 }) => {
-  const { chainId, isFetched, prizeToken, prizeTier } = props
+  const { chainId, isFetched, prizeToken, prizeConfig } = props
 
   let amount = 0
   if (isFetched) {
-    amount = Number(roundPrizeAmount(prizeTier.prize, prizeToken.decimals).amount)
+    amount = Number(roundPrizeAmount(prizeConfig.prize, prizeToken.decimals).amount)
   }
 
   return (

@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -34,7 +34,7 @@ import { useValidDrawDatas } from './useValidDrawDatas'
  */
 export const useUsersUnclaimedDrawDatas = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ) => {
   // Generic data
   const drawDatas = useValidDrawDatas(prizeDistributor)
@@ -124,9 +124,9 @@ const getUnclaimedDrawDatas = async (
     const pickCount = pickCounts[drawId]
     const drawResult = drawResults?.[drawId]
 
-    const { draw, prizeTier } = drawData
+    const { draw, prizeConfig } = drawData
     const drawTimestampSeconds = draw.timestamp.toNumber()
-    const drawExpirationTimestampSeconds = prizeTier.expiryDuration + drawTimestampSeconds
+    const drawExpirationTimestampSeconds = prizeConfig.expiryDuration + drawTimestampSeconds
 
     // Filter draws with claimed amounts
     // Filter draws with no normalized balance during that period

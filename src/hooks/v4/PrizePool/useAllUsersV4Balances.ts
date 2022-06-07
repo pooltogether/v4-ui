@@ -8,7 +8,7 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
 import {
-  getUsersPrizePoolBalances,
+  getUserPrizePoolBalances,
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
@@ -30,7 +30,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
             return tokens.prizePoolId === prizePool.id()
           })
           const { data: tokens } = queryResult
-          return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
+          return getUserPrizePoolBalances(prizePool, usersAddress, tokens)
         },
         enabled: isAllPrizePoolTokensFetched && !!usersAddress
       }

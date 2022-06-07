@@ -7,7 +7,7 @@ import {
   BottomSheet,
   snapTo90
 } from '@pooltogether/react-components'
-import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeDistributorV2, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
 import {
@@ -37,7 +37,7 @@ const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
 
 // TODO: Show a gas estimate on this page. So users don't wait 2 months only to realize gas is insane.
 interface PrizeClaimSheetProps {
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
   prizePool: PrizePool
   ticket: Token
   token: Token

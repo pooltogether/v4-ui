@@ -11,7 +11,7 @@ import {
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { Amount, Token } from '@pooltogether/hooks'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { TokenBalance } from '@components/TokenBalance'
 import classNames from 'classnames'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 
@@ -37,10 +37,10 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
           <span>{t('totalDelegations', 'Total amount delegated')}</span>
         </div>
 
-        <PrizePoolDepositBalance
-          chainId={delegations[0].chainId}
-          token={totalTokenWithUsdBalance}
-        />
+        <div className='flex space-x-2 items-center'>
+          <TokenBalance chainId={delegations[0].chainId} token={totalTokenWithUsdBalance} />
+          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50' />
+        </div>
       </button>
       <DepositDelegationsSheet
         delegations={delegations}

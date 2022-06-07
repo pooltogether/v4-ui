@@ -46,7 +46,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
       ...NO_REFETCH,
       queryKey: ['useAllUsersV3Balances', usersAddress, chainId, tokenPrices],
       queryFn: async () =>
-        getUsersV3BalancesByChainId(
+        getUserV3BalancesByChainId(
           chainId,
           usersAddress,
           providers[chainId],
@@ -66,7 +66,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
  * @param prizePools
  * @returns
  */
-const getUsersV3BalancesByChainId = async (
+const getUserV3BalancesByChainId = async (
   chainId: number,
   usersAddress: string,
   provider: Provider,

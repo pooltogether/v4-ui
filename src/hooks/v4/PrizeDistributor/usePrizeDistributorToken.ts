@@ -1,11 +1,11 @@
 import { Token } from '@pooltogether/hooks'
-import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 
 export const PRIZE_DISTRIBUTOR_TOKEN_QUERY_KEY = 'usePrizeDistributorToken'
 
-export const usePrizeDistributorToken = (prizeDistributor: PrizeDistributor) => {
+export const usePrizeDistributorToken = (prizeDistributor: PrizeDistributorV2) => {
   return useQuery(
     [PRIZE_DISTRIBUTOR_TOKEN_QUERY_KEY, prizeDistributor?.id()],
     async () => getPrizeDistributorToken(prizeDistributor),
@@ -14,7 +14,7 @@ export const usePrizeDistributorToken = (prizeDistributor: PrizeDistributor) => 
 }
 
 export const getPrizeDistributorToken = async (
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ): Promise<{
   prizeDistributorId: string
   token: Token

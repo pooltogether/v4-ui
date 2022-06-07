@@ -7,8 +7,8 @@ import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelega
 import {
   Draw,
   PrizeAwardable,
-  PrizeTier,
-  PrizeDistributor,
+  PrizeConfig,
+  PrizeDistributorV2,
   PrizePool
 } from '@pooltogether/v4-client-js'
 import { FieldValues, useForm } from 'react-hook-form'
@@ -453,14 +453,14 @@ const getPrizesWon = async (
   partialDrawData: {
     [drawId: number]: DrawData
   },
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ) => {
   try {
     const maxPicksPerUserPerDraw = drawIds.map(
-      (drawId) => partialDrawData[drawId].prizeTier.maxPicksPerUser
+      (drawId) => partialDrawData[drawId].prizeConfig.maxPicksPerUser
     )
 
-    const drawResults = await prizeDistributor.getUsersDrawResultsForDrawIds(
+    const drawResults = await prizeDistributor.getUserDrawResultsForDrawIds(
       UNCHAIN_ADDRESS,
       ticketAddress,
       drawIds,
@@ -536,8 +536,8 @@ interface PrizeRowProps {
 
 const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
-  const { prizeTier, draw } = drawData
-  const { tiers } = prizeTier
+  const { prizeConfig, draw } = drawData
+  const { tiers } = prizeConfig
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()

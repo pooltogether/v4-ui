@@ -8,6 +8,7 @@ import {
   SquareLink,
   TokenIcon
 } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
 
 import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
@@ -28,7 +29,7 @@ import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { TokenBalance } from '@components/TokenBalance'
 import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { getAddress } from 'ethers/lib/utils'
@@ -129,7 +130,7 @@ const DepositItem = (props: DepositItemsProps) => {
           setIsOpen(true)
         }}
         left={<PrizePoolLabel prizePool={prizePool} />}
-        right={<DepositBalance {...props} />}
+        right={<TokenBalance chainId={prizePool.chainId} token={balances?.ticket} />}
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
       <BalanceBottomSheet
@@ -193,12 +194,6 @@ const DepositItem = (props: DepositItemsProps) => {
       />
     </>
   )
-}
-
-const DepositBalance = (props: DepositItemsProps) => {
-  const { balances, prizePool } = props
-  const { ticket } = balances
-  return <PrizePoolDepositBalance chainId={prizePool.chainId} token={ticket} />
 }
 
 /**

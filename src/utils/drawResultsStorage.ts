@@ -1,5 +1,5 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
-import { PrizeDistributor, DrawResults } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2, DrawResults } from '@pooltogether/v4-client-js'
 import { atomWithStorage } from 'jotai/utils'
 
 /**
@@ -54,7 +54,7 @@ export const drawResultsAtom = atomWithStorage<StoredDrawResults>(
 
 export const getStoredDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor,
+  prizeDistributor: PrizeDistributorV2,
   ticketAddress: string
 ): { [drawId: number]: DrawResults } => {
   const storedDrawResults = readStoredDrawResults()
@@ -66,7 +66,7 @@ const readStoredDrawResults = (): StoredDrawResults =>
 
 export const updateDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor,
+  prizeDistributor: PrizeDistributorV2,
   ticketAddress: string,
   drawResults: { [drawId: number]: DrawResults },
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void

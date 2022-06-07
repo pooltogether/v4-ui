@@ -1,10 +1,10 @@
 import { DrawData } from '@interfaces/v4'
-import { DrawResults, PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeApi, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { CheckedState } from '@views/Prizes/MultiDrawsCard'
 import { getStoredDrawResults, StoredDrawResults, updateDrawResults } from './drawResultsStorage'
 
-export const getUsersDrawResults = async (
-  prizeDistributor: PrizeDistributor,
+export const getUserDrawResults = async (
+  prizeDistributor: PrizeDistributorV2,
   drawDataList: DrawData[],
   usersAddress: string,
   ticketAddress: string,
@@ -20,7 +20,7 @@ export const getUsersDrawResults = async (
   const newDrawResults: { [drawId: string]: DrawResults } = {}
 
   const drawResultsPromises = drawDataList.map(async (drawData, index) => {
-    const { prizeTier, draw } = drawData
+    const { prizeConfig, draw } = drawData
     let drawResults: DrawResults
     const storedDrawResult = storedDrawResults[draw.drawId]
     if (storedDrawResult) {
@@ -28,11 +28,11 @@ export const getUsersDrawResults = async (
     } else {
       try {
         // TODO: Switch back to remote prize fetching
-        // drawResults = await prizeDistributor.getUsersDrawResultsForDrawId(
+        // drawResults = await prizeDistributor.getUserDrawResultsForDrawId(
         //   usersAddress,
         //   ticketAddress,
         //   draw.drawId,
-        //   prizeTier.maxPicksPerUser
+        //   prizeConfig.maxPicksPerUser
         // )
         drawResults = await PrizeApi.computeDrawResults(
           prizeDistributor.chainId,

@@ -25,9 +25,9 @@ export const MultiDrawPrizeBreakdownSheet = (
     const drawData = drawDatas[selectedDrawId]
     if (!drawData) {
       setSelectedDrawId(drawIds[0])
-      return drawDatas[drawIds[0]].prizeTier
+      return drawDatas[drawIds[0]].prizeConfig
     } else {
-      return drawData.prizeTier
+      return drawData.prizeConfig
     }
   }, [selectedDrawId, drawDatas])
 
@@ -86,7 +86,7 @@ export const MultiDrawPrizeBreakdownSheet = (
 
       <PrizeBreakdown
         className='w-full mx-auto'
-        prizeTier={prizeDistribution}
+        prizeConfig={prizeDistribution}
         prizeToken={prizeToken}
       />
     </BottomSheet>

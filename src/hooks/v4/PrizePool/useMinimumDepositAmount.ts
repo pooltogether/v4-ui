@@ -1,6 +1,6 @@
 import { Token } from '@pooltogether/hooks'
 
-import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { useUpcomingPrizeConfig } from '@hooks/useUpcomingPrizeConfig'
 import { getAmountFromString } from '@utils/getAmountFromString'
 
 /**
@@ -12,7 +12,7 @@ import { getAmountFromString } from '@utils/getAmountFromString'
 export const useMinimumDepositAmount = (token: Token) => {
   return getAmountFromString('5', token?.decimals)
 
-  const { data: prizeTier, isFetched } = useUpcomingPrizeTier()
-  if (!Boolean(token) || !isFetched || !prizeTier) return null
-  return getAmountFromString(Math.pow(2, prizeTier.bitRangeSize).toString(), token.decimals)
+  const { data: prizeConfig, isFetched } = useUpcomingPrizeConfig()
+  if (!Boolean(token) || !isFetched || !prizeConfig) return null
+  return getAmountFromString(Math.pow(2, prizeConfig.bitRangeSize).toString(), token.decimals)
 }

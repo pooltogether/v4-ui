@@ -1,4 +1,4 @@
-import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { useEffect, useMemo, useState } from 'react'
 
 import { getStoredDrawResults } from '@utils/drawResultsStorage'
@@ -15,7 +15,7 @@ import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTic
  */
 export const useHasUserCheckedAllDraws = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ) => {
   const { chainId } = useSelectedChainId()
   const [hasUserCheckedAllDraws, setHasUserCheckedAllDraws] = useState(null)

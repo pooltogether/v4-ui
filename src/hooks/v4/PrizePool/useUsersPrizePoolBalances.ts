@@ -21,7 +21,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
 
   return useQuery(
     [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
-    async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
+    async () => getUserPrizePoolBalances(prizePool, usersAddress, tokens),
     {
       refetchInterval,
       enabled
@@ -29,7 +29,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
   )
 }
 
-export const getUsersPrizePoolBalances = async (
+export const getUserPrizePoolBalances = async (
   prizePool: PrizePool,
   usersAddress: string,
   tokens: PrizePoolTokens
@@ -38,7 +38,7 @@ export const getUsersPrizePoolBalances = async (
   usersAddress: string
   balances: UsersPrizePoolBalances
 }> => {
-  const balances = await prizePool.getUsersPrizePoolBalances(usersAddress)
+  const balances = await prizePool.getUserPrizePoolBalances(usersAddress)
   const { ticket, token } = tokens
 
   return {

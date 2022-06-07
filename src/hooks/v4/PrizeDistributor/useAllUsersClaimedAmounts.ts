@@ -4,7 +4,7 @@ import { useQueries, UseQueryOptions } from 'react-query'
 import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
 import { useAllAvailableDrawIds } from './useAllAvailableDrawIds'
 import { usePrizeDistributors } from './usePrizeDistributors'
-import { getUsersClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
+import { getUserClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
 
 export const useAllUsersClaimedAmounts = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
@@ -38,12 +38,7 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
         )
         const drawIds = drawIdQueryResult.data.drawIds
         const prizeDistributorToken = prizeDistributorTokensQueryResult.data.token
-        return getUsersClaimedAmounts(
-          usersAddress,
-          prizeDistributor,
-          drawIds,
-          prizeDistributorToken
-        )
+        return getUserClaimedAmounts(usersAddress, prizeDistributor, drawIds, prizeDistributorToken)
       },
       enabled: isAllTokensFetched && Boolean(usersAddress) && isAllAvailableDrawIdsFetched
     }))

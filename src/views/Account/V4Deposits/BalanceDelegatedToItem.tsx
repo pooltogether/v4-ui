@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import FeatherIcon from 'feather-icons-react'
 
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
+import { TokenBalance } from '@components/TokenBalance'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { Amount } from '@pooltogether/hooks'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
@@ -31,7 +32,10 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
           <span>{t('totalDelegatedToYou', 'Total delegated to you')}</span>
         </span>
 
-        <PrizePoolDepositBalance chainId={chainId} token={data.totalTokenWithUsdBalance} />
+        <div className='flex justify-center space-x-2'>
+          <TokenBalance chainId={chainId} token={data.totalTokenWithUsdBalance} />
+          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50' />
+        </div>
       </button>
       <BalanceDelegatedToSheet
         delegatedAmountPerChain={data.delegatedAmountPerChain}

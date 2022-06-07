@@ -1,6 +1,6 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 // import { testnet, mainnet } from '@pooltogether/v4-pool-data'
-import testnet from '@pooltogether/v5/contracts.json'
+import testnet from './PROTOTYPE.json'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
@@ -32,8 +32,8 @@ export const V4_PRIZE_POOLS = Object.freeze({
 })
 
 export const DEFAULT_PRIZE_POOLS = Object.freeze({
-  [CHAIN_ID.mumbai]: testnet.contracts.filter(
-    ({ chainId, type }) => type === ContractType.PrizePool && chainId === CHAIN_ID.mumbai
+  [CHAIN_ID.rinkeby]: testnet.contracts.filter(
+    ({ chainId, type }) => type === ContractType.PrizePool && chainId === CHAIN_ID.rinkeby
   )[0].address
 })
 
@@ -89,10 +89,9 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
-// TODO: Switch this back to rinkeby. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   // [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.mumbai
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
 
 // Native currency symbols in app

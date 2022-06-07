@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Card } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { Draw, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -26,7 +26,7 @@ import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDis
  * @returns
  */
 export const PastDrawsList = (props: {
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
   className?: string
 }) => {
   const { prizeDistributor, className } = props
@@ -36,7 +36,7 @@ export const PastDrawsList = (props: {
   const usersAddress = useUsersAddress()
   const { data: prizeDistributorToken, isFetched: isPrizePoolTokensFetched } =
     usePrizeDistributorToken(prizeDistributor)
-  const { data: drawDatas, isFetched: isDrawsAndPrizeTiersFetched } =
+  const { data: drawDatas, isFetched: isDrawsAndPrizeConfigsFetched } =
     useAllDrawDatas(prizeDistributor)
   const { data: claimedAmountsData } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { data: ticket } = useSelectedPrizePoolTicket()
@@ -50,7 +50,7 @@ export const PastDrawsList = (props: {
     usersAddress === pickCountsData?.usersAddress &&
     usersAddress === claimedAmountsData?.usersAddress
 
-  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeTiersFetched || !isDataForCurrentUser) {
+  if (!isPrizePoolTokensFetched || !isDrawsAndPrizeConfigsFetched || !isDataForCurrentUser) {
     return (
       <>
         <PastDrawsListHeader className={classNames(className, 'mb-1')} />
@@ -105,22 +105,23 @@ interface PastPrizeListItemProps {
   prizeToken: Token
   ticket: Token
   drawData: DrawData
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
   claimedAmount: Amount
   pickCount: BigNumber
 }
 
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
-  const { prizeToken, drawData } = props
-  const { draw, prizeTier } = drawData
-  const amount = prizeTier ? roundPrizeAmount(prizeTier.prize, prizeToken.decimals) : null
+  const { prizeDistributor, prizeToken, drawData } = props
+  const { draw, prizeConfig } = drawData
+  const amount = prizeConfig ? roundPrizeAmount(prizeConfig.prize, prizeToken.decimals) : null
 
   return (
     <li>
       <ViewPrizesSheetCustomTrigger
+        prizeDistributor={prizeDistributor}
         prizeToken={prizeToken}
-        prizeTier={prizeTier}
+        prizeConfig={prizeConfig}
         Button={({ onClick }) => {
           return (
             <button

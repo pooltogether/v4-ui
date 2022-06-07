@@ -1,10 +1,8 @@
-import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
-import { msToS } from '@pooltogether/utilities'
-import { useAllDrawDatas } from './useAllDrawDatas'
 import { DrawData } from '@interfaces/v4'
 import { useValidDrawDatas } from './useValidDrawDatas'
 
@@ -18,7 +16,7 @@ import { useValidDrawDatas } from './useValidDrawDatas'
 export const useUsersPickCounts = (
   usersAddress: string,
   ticketAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ) => {
   const drawDatas = useValidDrawDatas(prizeDistributor)
   const enabled = !!prizeDistributor && !!usersAddress && !!ticketAddress && !!drawDatas
@@ -31,7 +29,7 @@ export const useUsersPickCounts = (
       usersAddress,
       drawDatas ? Object.values(drawDatas).map((drawData) => drawData.draw.drawId) : null
     ],
-    () => getUsersPickCounts(usersAddress, ticketAddress, prizeDistributor, drawDatas),
+    () => getUserPickCounts(usersAddress, ticketAddress, prizeDistributor, drawDatas),
     {
       ...NO_REFETCH,
       enabled
@@ -39,10 +37,10 @@ export const useUsersPickCounts = (
   )
 }
 
-const getUsersPickCounts = async (
+const getUserPickCounts = async (
   usersAddress: string,
   ticketAddress: string,
-  prizeDistributor: PrizeDistributor,
+  prizeDistributor: PrizeDistributorV2,
   drawDatas: { [drawId: number]: DrawData }
 ): Promise<{
   usersAddress: string
@@ -52,7 +50,7 @@ const getUsersPickCounts = async (
 }> => {
   const drawIds = Object.values(drawDatas).map((drawData) => drawData.draw.drawId)
 
-  const pickCounts = await prizeDistributor.getUsersPickCountForDrawIds(
+  const pickCounts = await prizeDistributor.getUserPickCountForDrawIds(
     usersAddress,
     ticketAddress,
     drawIds

@@ -1,21 +1,21 @@
 import React from 'react'
 import classnames from 'classnames'
 import { Token } from '@pooltogether/hooks'
-import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
+import { calculate, PrizeConfig } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
-  prizeTier: PrizeTier
+  prizeConfig: PrizeConfig
   prizeToken: Token
   className?: string
 }
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { prizeTier, className, prizeToken } = props
-  const tiers = prizeTier?.tiers
+  const { prizeConfig, className, prizeToken } = props
+  const tiers = prizeConfig?.tiers
   const { t } = useTranslation()
 
   return (
@@ -25,7 +25,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
         <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
       </div>
       <div className='flex flex-col space-y-2'>
-        {!prizeTier || !prizeToken ? (
+        {!prizeConfig || !prizeToken ? (
           Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
         ) : (
           <>
@@ -33,7 +33,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
               <PrizeBreakdownTableRow
                 key={`distribution_row_${i}`}
                 index={i}
-                prizeTier={prizeTier}
+                prizeConfig={prizeConfig}
                 prizeToken={prizeToken}
               />
             ))}
@@ -63,23 +63,23 @@ const PrizeTableHeader = (
 )
 
 interface PrizeBreakdownTableRowProps {
-  prizeTier: PrizeTier
+  prizeConfig: PrizeConfig
   index: number
   prizeToken: Token
 }
 
 // Calculate prize w draw settings
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
-  const { index, prizeTier, prizeToken } = props
+  const { index, prizeConfig, prizeToken } = props
 
   const prizeForDistributionUnformatted = calculate.calculatePrizeForTierPercentage(
     index,
-    prizeTier.tiers[index],
-    prizeTier.bitRangeSize,
-    prizeTier.prize
+    prizeConfig.tiers[index],
+    prizeConfig.bitRangeSize,
+    prizeConfig.prize
   )
   const numberOfWinners = calculate.calculateNumberOfPrizesForTierIndex(
-    prizeTier.bitRangeSize,
+    prizeConfig.bitRangeSize,
     index
   )
 

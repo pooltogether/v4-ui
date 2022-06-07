@@ -4,7 +4,7 @@ import { NO_REFETCH } from '@constants/query'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { getPrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { getUsersTicketDelegate, getUsersTicketDelegateQueryKey } from './useUsersTicketDelegate'
+import { getUserTicketDelegate, getUserTicketDelegateQueryKey } from './useUsersTicketDelegate'
 
 /**
  * Fetch users balances for all tokens in all prize pools
@@ -19,8 +19,8 @@ export const useAllUsersTicketDelegates = (usersAddress: string) => {
   return useQueries(
     prizePools.map((prizePool) => ({
       ...NO_REFETCH,
-      queryKey: getUsersTicketDelegateQueryKey(prizePool, usersAddress),
-      queryFn: async () => getUsersTicketDelegate(usersAddress, prizePool),
+      queryKey: getUserTicketDelegateQueryKey(prizePool, usersAddress),
+      queryFn: async () => getUserTicketDelegate(usersAddress, prizePool),
       enabled: isFetched && Boolean(usersAddress)
     }))
   )

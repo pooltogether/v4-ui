@@ -1,4 +1,4 @@
-import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { useUpcomingPrizeConfig } from '@hooks/useUpcomingPrizeConfig'
 import { Amount } from '@pooltogether/hooks'
 import { NO_REFETCH } from '@constants/query'
 import { BigNumber } from 'ethers'
@@ -6,13 +6,13 @@ import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './PrizePool/usePrizePoolNetworkTicketTwabTotalSupply'
 
 export const useV4Apr = () => {
-  const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
+  const { data: prizeConfig, isFetched: isPrizeConfigFetched } = useUpcomingPrizeConfig()
   const { data: totalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
-  const enabled = isPrizeTierFetched && isTotalSupplyFetched && !!prizeTier
+  const enabled = isPrizeConfigFetched && isTotalSupplyFetched && !!prizeConfig
   return useQuery(
-    ['useV4Apr', prizeTier, totalSupply],
-    () => getV4Apr(totalSupply, prizeTier.prize),
+    ['useV4Apr', prizeConfig, totalSupply],
+    () => getV4Apr(totalSupply, prizeConfig.prize),
     {
       ...NO_REFETCH,
       enabled

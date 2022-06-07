@@ -1,5 +1,5 @@
 import { Amount, Token } from '@pooltogether/hooks'
-import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
@@ -17,7 +17,7 @@ export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
  */
 export const useUsersClaimedAmounts = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ) => {
   const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const { data: prizeDistributorTokenData, isFetched: isPrizeDistributorTokenFetched } =
@@ -33,7 +33,7 @@ export const useUsersClaimedAmounts = (
 
   return useQuery(
     [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
-    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
+    () => getUserClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
     {
       ...NO_REFETCH,
       enabled
@@ -41,9 +41,9 @@ export const useUsersClaimedAmounts = (
   )
 }
 
-export const getUsersClaimedAmounts = async (
+export const getUserClaimedAmounts = async (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor,
+  prizeDistributor: PrizeDistributorV2,
   drawIds: number[],
   token: Token
 ): Promise<{
@@ -52,7 +52,7 @@ export const getUsersClaimedAmounts = async (
   prizeDistributorId: string
   claimedAmounts: { [drawId: number]: Amount }
 }> => {
-  const claimedAmounts = await prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
+  const claimedAmounts = await prizeDistributor.getUserClaimedAmounts(usersAddress, drawIds)
 
   const claimedAmountsKeyedByDrawId: {
     [drawId: number]: Amount

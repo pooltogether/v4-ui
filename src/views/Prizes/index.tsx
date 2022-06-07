@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { PrizeDistributorV2, PrizePool } from '@pooltogether/v4-client-js'
 
 import { PoolPartySeason1CTA } from '@components/PoolPartySeason1CTA'
 import { PagePadding } from '@components/Layout/PagePadding'
@@ -70,7 +70,6 @@ export const PrizesUI = () => {
           className='mb-3'
         />
         <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        <GaugePrizesCard />
         <PastDrawsList prizeDistributor={prizeDistributor} className='mt-8' />
       </PagePadding>
     </>
@@ -79,7 +78,7 @@ export const PrizesUI = () => {
 const CheckForPrizesOnNetwork = (props: {
   className?: string
   prizePool: PrizePool
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 }) => {
   const { className } = props
   const { t } = useTranslation()
@@ -97,9 +96,3 @@ const CheckForPrizesOnNetwork = (props: {
     </div>
   )
 }
-
-const GaugePrizesCard = () => (
-  <Card>
-    <h1>Gauge rewards</h1>
-  </Card>
-)

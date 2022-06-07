@@ -6,7 +6,7 @@ import { useQueries } from 'react-query'
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
-import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
+import { USERS_TWAB_QUERY_KEY, getUserPrizePoolTwab } from './useUsersPrizePoolTwab'
 
 /**
  * Fetches the users current TWAB across all chains and combines
@@ -26,7 +26,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
       return {
         refetchInterval: refetchInterval,
         queryKey: [USERS_TWAB_QUERY_KEY, prizePool.id(), usersAddress],
-        queryFn: async () => getUsersPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
+        queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
         enabled: Boolean(usersAddress) && isTicketDecimalsFetched
       }
     })

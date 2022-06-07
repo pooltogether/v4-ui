@@ -1,4 +1,4 @@
-import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
 
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
@@ -14,7 +14,7 @@ import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTic
  */
 export const useUsersUnclaimedWinningDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributorV2
 ): {
   data: {
     [usersAddress: string]: {

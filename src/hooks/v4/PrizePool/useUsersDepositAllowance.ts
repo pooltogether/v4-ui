@@ -10,7 +10,7 @@ export const useUsersDepositAllowance = (prizePool: PrizePool) => {
   return useQuery(
     ['useUsersDepositAllowance', prizePool?.id(), usersAddress],
     async () => {
-      const depositAllowance = await prizePool.getUsersDepositAllowance(usersAddress)
+      const depositAllowance = await prizePool.getUserDepositAllowance(usersAddress)
       return depositAllowance.allowanceUnformatted
     },
     { ...NO_REFETCH, enabled } as UseQueryOptions<BigNumber>
