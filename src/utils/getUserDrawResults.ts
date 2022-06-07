@@ -37,9 +37,9 @@ export const getUserDrawResults = async (
         drawResults = await PrizeApi.computeDrawResults(
           prizeDistributor.chainId,
           usersAddress,
-          ticketAddress,
           prizeDistributor.address,
-          draw.drawId
+          draw.drawId,
+          ticketAddress
         )
         console.log('Local results', { drawResults })
         // Store draw result
@@ -48,9 +48,9 @@ export const getUserDrawResults = async (
         drawResults = await PrizeApi.computeDrawResults(
           prizeDistributor.chainId,
           usersAddress,
-          ticketAddress,
           prizeDistributor.address,
-          draw.drawId
+          draw.drawId,
+          ticketAddress
         )
         console.log({ drawResults })
       }

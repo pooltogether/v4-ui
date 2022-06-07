@@ -27,7 +27,7 @@ import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { TxButton } from '@components/Input/TxButton'
 import { useQuery } from 'react-query'
-import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { usePrizePoolsByChainId } from '@hooks/v4/PrizePool/usePrizePoolsByChainId'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
@@ -114,7 +114,8 @@ const InfoCard = (props) => {
 
 const DelegateCard = (props) => {
   const usersAddress = useUsersAddress()
-  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  const prizePools = usePrizePoolsByChainId(CHAIN_ID.polygon)
+  const prizePool = prizePools?.[0]
   const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
   const { data: delegate, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)
@@ -321,7 +322,8 @@ const DonationAmount = () => {
 }
 
 const useBalance = () => {
-  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  const prizePools = usePrizePoolsByChainId(CHAIN_ID.polygon)
+  const prizePool = prizePools?.[0]
   return useQuery(
     ['donation'],
     async () => {
@@ -366,7 +368,8 @@ const OddsOfWinning = () => {
 
 const PrizesWon = (props) => {
   const { data, isFetched } = usePrizesWon()
-  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  const prizePools = usePrizePoolsByChainId(CHAIN_ID.polygon)
+  const prizePool = prizePools?.[0]
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
 
   if (!isFetched || !isTokensFetched) {
@@ -435,7 +438,8 @@ const usePrizesWon = () => {
   const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const { data: partialDrawData, isFetched: isPartialDrawDataFetched } =
     useAllDrawDatas(prizeDistributor)
-  const prizePool = usePrizePoolByChainId(CHAIN_ID.polygon)
+  const prizePools = usePrizePoolsByChainId(CHAIN_ID.polygon)
+  const prizePool = prizePools?.[0]
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const enabled = isDrawIdsFetched && isPartialDrawDataFetched && isTokensFetched
   return useQuery(
