@@ -2750,6 +2750,13 @@
   dependencies:
     evm-chains "^0.2.0"
 
+"@pooltogether/evm-chains-extended@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/evm-chains-extended/-/evm-chains-extended-0.7.0.tgz#c802ab29e7bc68bde4a9059e1c2565734105de72"
+  integrity sha512-sfq/u3bNUJFsDrroZuUMY6Mtdiaotpw4Lj9e0zscfdu6yksVfQu0lZmItSE4oYs1oRyUyanGBDKJ0D/2DAABxw==
+  dependencies:
+    evm-chains "^0.2.0"
+
 "@pooltogether/fixed-point@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0.tgz#2c9fb9fe1cca557ca2be7b9ed7414d5edd5a816f"
@@ -2760,10 +2767,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.9.0.tgz#fe7025ed583dba1af617fd31cc3a5680ec53f755"
-  integrity sha512-GUQVW32ud8oa0wKJfQmL8WzyzvH0PkHLMC4cNtdX0mz/rue9zi25g6bOF16c0DATsA9mgpZXGmDGrWm/iiCniQ==
+"@pooltogether/hooks@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.10.0.tgz#bd446ba4ce81b8d17ef4cd76a67eb1b163eefa40"
+  integrity sha512-UKQBZh8FSa1qRyRR/1yVYVvlIBxaT6L7N9xMQuIrbenXDTQexlnzZDHlFVEgCTUQxSaNHXSaoz8PWapXdp17Vw==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
@@ -2799,10 +2806,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@^1.13.0":
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.13.0.tgz#db8b43ff0f95f1029fca73ed203552754f4cc823"
-  integrity sha512-KWWZFVCEfAZLSmPPzQnX42Futv5ZH/qo4Bvu0uCwenpgOK84PSJ9PrDYZwHkQHFuMIpxNQXKh1qFGhDTNXBWiw==
+"@pooltogether/react-components@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.14.0.tgz#d8ddb64d775bebbe64f3e0c1ce236d7692bc6f6b"
+  integrity sha512-Ud5r4doeG7EflwA4rNG5dmTt/YL3WMrXNJyIjH5XgS4dp6flIJ/bSw0QzZTMqIWtudQWURf3YVXAD36kgTmRzQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2835,6 +2842,11 @@
   version "0.3.11"
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.11.tgz#b09eae15c9e3dc6d4ac30623afc51e761b05ae40"
   integrity sha512-gEcxl604z8K53HBU2N0MxRCbSg+WhDXKwrrmwEEyg8jE9yK4XeJtXozpEPtA/HJXdDw033xRiFM6qAe3icDw3Q==
+
+"@pooltogether/utilities@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.4.0.tgz#6fd342c16250fa2288b9280db28c41f4462ae8d6"
+  integrity sha512-Nwbu7Gx8PKtXgczcPyqCFdaxk4zcgtdwKdbgR8TAAVxa/FayHYz6j8mwi71gVMfabBUHOJweCyKUJ1vbwveD7g==
 
 "@pooltogether/v4-client-js@^0.13.0":
   version "0.13.0"
@@ -2973,10 +2985,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.4.0.tgz#999785e7cebbe45c3c72409bbc9d5448c7ae9475"
-  integrity sha512-9PmqFIAkZ7h8kf95dduUX40CFPmOxhLxC7hieCAULiC8Gz1UGJzdmO/XG0KhtIYtC7Vc9Ek1UCbEkT0fzFsdDA==
+"@pooltogether/wallet-connection@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.5.0.tgz#38f5afe9a71d72e30d120e4b348ffda0e07ad8ee"
+  integrity sha512-4LXxKJiLO5lJ3sXYLL5HvR0BG8GF9e8TtjOQM4lphTPCcQtdzHg1zQAmG+cytoRAKB2Y81nqIMTjQWgb8s5HDw==
   dependencies:
     "@download/blockies" "^1.0.3"
 
