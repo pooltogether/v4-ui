@@ -77,9 +77,7 @@ const PromotionCard = (props) => {
   const backgroundColor = useNetworkHexColor(chainId)
   const usersAddress = useUsersAddress()
   const { data: tokenBalance, isFetched } = useTokenBalance(chainId, usersAddress, promotion.token)
-  const { name, symbol } = tokenBalance || {}
-  console.log(tokenBalance)
-  console.log(CHAIN_ID)
+  const { symbol } = tokenBalance || {}
 
   return (
     <div className='rounded-xl text-white p-6' style={{ backgroundColor, minHeight: 100 }}>
@@ -99,7 +97,7 @@ const PromotionCard = (props) => {
         <div>
           <NetworkIcon
             chainId={chainId}
-            className='mr-2 border border-pt-purple-darker'
+            className='mr-2 border border-pt-purple-bright'
             sizeClassName='w-8 h-8'
           />
         </div>

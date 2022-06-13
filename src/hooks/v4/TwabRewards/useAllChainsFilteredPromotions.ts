@@ -60,13 +60,17 @@ const promotionsQuery = () => {
         id
         creator
         createdAt
+        endedAt
+        destroyedAt
         startTimestamp
         numberOfEpochs
         epochDuration
         tokensPerEpoch
         rewardsUnclaimed
         token
-        ticket
+        ticket {
+          id
+        }
       }
     }
   `
