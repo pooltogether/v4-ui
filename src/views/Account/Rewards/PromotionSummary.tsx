@@ -61,7 +61,9 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
           i18nKey='numTokensProvidedOverDaysToDepositorsOnNetwork'
           values={{
             totalTokens: numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true }),
-            days: days(numberOfEpochs, epochDuration),
+            days: numberWithCommas(days(numberOfEpochs, epochDuration), {
+              removeTrailingZeros: true
+            }),
             networkName
           }}
           components={{

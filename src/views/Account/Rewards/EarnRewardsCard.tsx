@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { BigNumber } from 'ethers'
-import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
@@ -10,6 +10,7 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
+import { usePromotion } from '@hooks/V4/TwabRewards/usePromotion'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -18,6 +19,14 @@ export const EarnRewardsCard = () => {
 
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
   const isError = queryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+  const isAny =
+    queryResults
+      .map((queryResult) => queryResult.data?.promotions)
+      .filter((promotions) => promotions?.length > 0).length > 0
+
+  if (!isAny) {
+    return null
+  }
 
   return (
     <div className='flex flex-col space-y-2'>
@@ -82,14 +91,16 @@ function capitalizeFirstLetter(string) {
 
 const PromotionCard = (props) => {
   const { promotion, chainId } = props
-
-  const backgroundColor = useNetworkHexColor(chainId)
-
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
+  const backgroundColor = useNetworkHexColor(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
-
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
+
+  const { data: promotionData } = usePromotion()
+
+  // Yes, you should be able to call the getCurrentEpochId
+  // and pass all the epochs before this one to the getRewardsAmount function.
 
   return (
     <div
@@ -98,21 +109,25 @@ const PromotionCard = (props) => {
     >
       <div className='flex items-center justify-between font-bold'>
         <div className='flex items-center mb-2'>
-          <Trans
-            i18nKey='earnTokenSymbol'
-            defaults='<TokenIcon /> Earn {{tokenSymbol}}'
-            values={{ tokenSymbol: tokenData?.symbol }}
-            components={{
-              TokenIcon: (
-                <TokenIcon
-                  sizeClassName='w-4 h-4'
-                  className='mr-1'
-                  chainId={chainId}
-                  address={promotion.token}
-                />
-              )
-            }}
-          />
+          {!tokenDataIsFetched ? (
+            <ThemedClipSpinner />
+          ) : (
+            <Trans
+              i18nKey='earnTokenSymbol'
+              defaults='<TokenIcon /> Earn {{tokenSymbol}}'
+              values={{ tokenSymbol: tokenData?.symbol }}
+              components={{
+                TokenIcon: (
+                  <TokenIcon
+                    sizeClassName='w-4 h-4'
+                    className='mr-1'
+                    chainId={chainId}
+                    address={promotion.token}
+                  />
+                )
+              }}
+            />
+          )}
         </div>
         <div className='relative' style={{ top: -4 }}>
           <NetworkIcon chainId={chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
