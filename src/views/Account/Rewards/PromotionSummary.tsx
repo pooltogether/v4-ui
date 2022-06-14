@@ -59,14 +59,15 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             formatUnits(tokensPerEpoch.mul(numberOfEpochs), tokenData?.decimals).toString()
           )}
         </span>{' '}
-        of <TokenSymbol chainId={chainId} tokenData={tokenData} /> token rewards will be provided
-        over the next 14 days to all depositors on {networkName}.
+        of <TokenSymbol chainId={chainId} tokenData={tokenData} /> token rewards will be provided to
+        all depositors on {networkName}.
       </div>
+      {/* over the next 14 days */}
       {/* <BlockExplorerLink className='flex items-center' chainId={chainId} address={token} noIcon>
           <TokenDisplay chainId={chainId} tokenData={tokenData} />
         </BlockExplorerLink> */}
 
-      <div className='opacity-70 text-xxs'>
+      <div className='opacity-70 text-xxs mt-2'>
         <span className='font-bold'>Starts:</span>{' '}
         <StartTimestampDisplay startTimestamp={startTimestamp} />
         <br />
