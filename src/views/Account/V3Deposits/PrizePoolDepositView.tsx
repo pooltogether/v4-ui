@@ -183,6 +183,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
           />
         </div>
 
+        {/* TODO: Why are we using the v4 deposit info box for a v3 deposit flow... Types don't match.
         <DepositInfoBox
           className='mt-3'
           bgClassName='bg-body'
@@ -190,7 +191,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
           depositTx={depositTx}
           errors={isDirty ? errors : null}
           amountToDeposit={amountToDeposit}
-        />
+        /> */}
 
         <DepositBottomButton
           className='mt-4 w-full'

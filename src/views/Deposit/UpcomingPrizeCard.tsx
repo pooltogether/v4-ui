@@ -5,26 +5,25 @@ import { ThemedClipSpinner, CountUp, TokenIcon } from '@pooltogether/react-compo
 import { Token } from '@pooltogether/hooks'
 import { PrizeConfig, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { useTimeUntil } from '@hooks/useTimeUntil'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
-import { useUpcomingPrizeConfig } from '@hooks/useUpcomingPrizeConfig'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributor'
+import { useSelectedDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useSelectedDrawBeaconPeriod'
+import { useSelectedUpcomingPrizeConfig } from '@hooks/v4/PrizeDistributor/useSelectedUpcomingPrizeConfig'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
-  const { data: prizeConfig, isFetched: isPrizeConfigFetched } = useUpcomingPrizeConfig()
+  const { data: prizeConfigData, isFetched: isPrizeConfigFetched } =
+    useSelectedUpcomingPrizeConfig()
   const prizeDistributor = useSelectedPrizeDistributor()
   const { data: prizeDistributorToken, isFetched: isPrizeTokenFetched } =
     usePrizeDistributorToken(prizeDistributor)
 
-  const isFetched = isPrizeConfigFetched && !!prizeConfig && isPrizeTokenFetched
+  const isFetched = isPrizeConfigFetched && !!prizeConfigData.prizeConfig && isPrizeTokenFetched
 
   return (
     <div className={classNames('flex flex-col text-center space-y-2 relative', className)}>
@@ -34,13 +33,13 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
       <AmountOfPrizes
         prizeDistributor={prizeDistributor}
         isFetched={isFetched}
-        prizeConfig={prizeConfig}
+        prizeConfig={prizeConfigData?.prizeConfig}
         prizeToken={prizeDistributorToken?.token}
       />
       <PrizeAmount
         chainId={prizeDistributor.chainId}
         isFetched={isFetched}
-        prizeConfig={prizeConfig}
+        prizeConfig={prizeConfigData?.prizeConfig}
         prizeToken={prizeDistributorToken?.token}
       />
       <DrawCountdown />
@@ -126,9 +125,11 @@ const PrizeAmount = (props: {
 
 const DrawCountdown = (props) => {
   const { t } = useTranslation()
-  const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
-  const { secondsLeft } = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
-  const drawId = drawBeaconPeriod?.drawId
+  const { data: drawBeaconPeriodData } = useSelectedDrawBeaconPeriod()
+  const { secondsLeft } = useTimeUntil(
+    drawBeaconPeriodData?.drawBeaconPeriod.endsAtSeconds.toNumber()
+  )
+  const drawId = drawBeaconPeriodData?.drawBeaconPeriod.drawId
 
   if (secondsLeft < 60) {
     return (

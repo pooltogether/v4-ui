@@ -1,7 +1,7 @@
 import { BigNumber, ethers } from 'ethers'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { EstimateAction, estimateOddsForAmount } from './useEstimatedOddsForAmount'
-import { useOverallOddsData } from './useOverallOddsData'
+import { usePrizePoolNetworkOddsData } from './usePrizePoolNetworkOddsData'
 import { useMemo } from 'react'
 
 /**
@@ -21,7 +21,7 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
   oneOverOdds: number
 } => {
   const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
-  const data = useOverallOddsData()
+  const data = usePrizePoolNetworkOddsData()
   return useMemo(() => {
     if (!isTwabsFetched || !data || !twabs) {
       return undefined

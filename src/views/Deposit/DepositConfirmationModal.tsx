@@ -21,7 +21,7 @@ import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { ModalInfoList } from '@components/InfoList'
 import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
-import { UpdatedOdds } from '@components/UpdatedOddsListItem'
+import { UpdatedOddsForAnyNetworkListItem } from '@components/UpdatedOddsForAnyNetworkListItem'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
@@ -186,8 +186,11 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             <ModalInfoList>
               {prizePool && (
                 <>
-                  <EstimatedAPRItem chainId={prizePool.chainId} />
-                  <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
+                  <EstimatedAPRItem prizePool={prizePool} />
+                  <UpdatedOddsForAnyNetworkListItem
+                    amount={amountToDeposit}
+                    action={EstimateAction.deposit}
+                  />
                 </>
               )}
               <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />

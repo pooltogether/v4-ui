@@ -25,6 +25,7 @@ import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
+import { usePrizePoolPercentageOfPicks } from '@hooks/v4/PrizePool/usePrizePoolPercentageOfPicks'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -32,6 +33,7 @@ export const DepositCard = (props: { className?: string }) => {
   const router = useRouter()
 
   const prizePool = useSelectedPrizePool()
+  usePrizePoolPercentageOfPicks(prizePool)
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)

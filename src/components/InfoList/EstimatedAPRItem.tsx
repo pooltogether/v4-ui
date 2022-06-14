@@ -1,10 +1,11 @@
 import { useTranslation } from 'react-i18next'
 
 import { InfoListItem } from '.'
-import { useV4Apr } from '@hooks/v4/useV4Apr'
+import { usePrizePoolApr } from '@hooks/v4/PrizePool/usePrizePoolApr'
+import { PrizePool } from '@pooltogether/v4-client-js'
 
 interface EstimatedAPRItemProps {
-  chainId: number
+  prizePool: PrizePool
   labelClassName?: string
   valueClassName?: string
 }
@@ -15,8 +16,8 @@ interface EstimatedAPRItemProps {
  * @returns
  */
 export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
-  const { labelClassName, valueClassName } = props
-  const { data: apr, isFetched } = useV4Apr()
+  const { prizePool, labelClassName, valueClassName } = props
+  const { data: apr, isFetched } = usePrizePoolApr(prizePool)
   const { t } = useTranslation()
   return (
     <InfoListItem

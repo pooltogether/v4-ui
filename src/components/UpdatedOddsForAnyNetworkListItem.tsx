@@ -1,6 +1,4 @@
 import { Amount } from '@pooltogether/hooks'
-import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -9,7 +7,10 @@ import { InfoListItem } from './InfoList'
 import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-export const UpdatedOdds = (props: { amount: Amount; action: EstimateAction }) => {
+export const UpdatedOddsForAnyNetworkListItem = (props: {
+  amount: Amount
+  action: EstimateAction
+}) => {
   const { amount, action } = props
   const { t } = useTranslation()
 

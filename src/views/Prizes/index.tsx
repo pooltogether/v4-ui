@@ -9,13 +9,11 @@ import { SelectPrizePoolModal } from '@components/SelectPrizePoolModal'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { PastDrawsList } from './PastDrawsList'
-import { Card } from '@pooltogether/react-components'
-import { CardTitle } from '@components/Text/CardTitle'
 import { NoDrawsCard } from './MultiDrawsCard/NoDrawsCard'
+import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributor'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -25,7 +23,7 @@ export const PRIZE_UI_STATES = {
 }
 
 export const PrizesUI = () => {
-  const prizeDistributor = usePrizeDistributorBySelectedChainId()
+  const prizeDistributor = useSelectedPrizeDistributor()
   const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =

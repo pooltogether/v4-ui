@@ -73,7 +73,7 @@ export const DepositForm = (props: DepositFormProps) => {
         </div>
 
         <DepositInfoBox
-          chainId={prizePool.chainId}
+          prizePool={prizePool}
           className='mt-3'
           depositTx={depositTx}
           depositAllowance={depositAllowance}
@@ -146,7 +146,7 @@ interface DepositInfoBoxProps {
   className?: string
   bgClassName?: string
   depositTx: Transaction
-  chainId: number
+  prizePool: PrizePool
   amountToDeposit: Amount
   depositAllowance?: BigNumber
   labelClassName?: string
@@ -156,7 +156,7 @@ interface DepositInfoBoxProps {
 
 export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   const {
-    chainId,
+    prizePool,
     bgClassName,
     className,
     depositAllowance,
@@ -199,7 +199,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
       <InfoList bgClassName={bgClassName} className={className}>
         <TxReceiptItem
           depositTx={depositTx}
-          chainId={chainId}
+          chainId={prizePool.chainId}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
         />
@@ -210,20 +210,20 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   return (
     <InfoList bgClassName={bgClassName} className={className}>
       <EstimatedAPRItem
-        chainId={chainId}
+        prizePool={prizePool}
         labelClassName={labelClassName}
         valueClassName={valueClassName}
       />
       {depositAllowance?.gt(0) ? (
         <EstimatedDepositGasItem
-          chainId={chainId}
+          chainId={prizePool.chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
         />
       ) : (
         <EstimatedApproveAndDepositGasItem
-          chainId={chainId}
+          chainId={prizePool.chainId}
           amountUnformatted={amountToDeposit.amountUnformatted}
           labelClassName={labelClassName}
           valueClassName={valueClassName}

@@ -2,8 +2,8 @@ import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
-import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useAvailableDrawIds } from './useAvailableDrawIds'
+import { useSelectedDrawBeaconPeriod } from '../PrizePoolNetwork/useSelectedDrawBeaconPeriod'
 
 export const AVAILABLE_DRAWS_QUERY_KEY = 'useAvailableDraws'
 
@@ -13,7 +13,8 @@ export const AVAILABLE_DRAWS_QUERY_KEY = 'useAvailableDraws'
  * @returns the valid Draws in the DrawBuffer for the provided PrizeDistributorV2
  */
 export const useAvailableDraws = (prizeDistributor: PrizeDistributorV2) => {
-  const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
+  const { data: drawBeaconPeriodData, isFetched: isDrawBeaconFetched } =
+    useSelectedDrawBeaconPeriod()
   const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
   const drawIds = data?.drawIds
   const enabled =
@@ -23,7 +24,7 @@ export const useAvailableDraws = (prizeDistributor: PrizeDistributorV2) => {
     [
       AVAILABLE_DRAWS_QUERY_KEY,
       prizeDistributor?.id(),
-      drawBeaconPeriod?.startedAtSeconds.toString()
+      drawBeaconPeriodData?.drawBeaconPeriod.startedAtSeconds.toString()
     ],
     async () => getAvailableDraws(prizeDistributor, drawIds),
     { ...NO_REFETCH, enabled }

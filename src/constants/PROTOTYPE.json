@@ -5,7 +5,7 @@
   "contracts": [
     {
       "chainId": 4,
-      "address": "0x6deF68cD3954a4A13fF74c578c2Fd74a761A87fD",
+      "address": "0x422193556F47b17589325C50AF478C724Be976E2",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "DrawBeacon",
       "abi": [
@@ -371,7 +371,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x4B52629dD026680d024631aE48103F7EB456e99D",
+      "address": "0x0a59680ef3aDD76aC79679aFca0AbB7560DCE03F",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "DrawBuffer",
       "abi": [
@@ -641,7 +641,7 @@
     },
     {
       "chainId": 4,
-      "address": "0xB399D0Eac6E06B51944d07b2600f6b2534efCf4c",
+      "address": "0x60cC8331d7000B9d8E6E980BC559a1A32B82c902",
       "version": { "major": "3", "minor": 0, "patch": 0 },
       "type": "DrawCalculator",
       "abi": [
@@ -856,7 +856,7 @@
     },
     {
       "chainId": 4,
-      "address": "0xD40C3806BA42b4D5D1082321a6b30f9481b45412",
+      "address": "0xEE876AA37580F1c08cB42d38716D3f49040D88F8",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "GaugeController",
       "abi": [
@@ -1240,7 +1240,7 @@
     },
     {
       "chainId": 4,
-      "address": "0xfc0E5d492cd1f3C18401c3FCEe8F7B25CAf025c7",
+      "address": "0xC0D5b4B1104f587Dd48A5c3aFe25a90a7eE63d66",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "GaugeReward",
       "abi": [
@@ -1564,7 +1564,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x36F7E8D5BF31dADC1D8A656513E76660C66e8890",
+      "address": "0x78FFEA94b530d357f07bd2bE7Be99FEa2aF5de62",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "MockYieldSource",
       "abi": [
@@ -1572,7 +1572,7 @@
           "inputs": [
             { "internalType": "string", "name": "_name", "type": "string" },
             { "internalType": "string", "name": "_symbol", "type": "string" },
-            { "internalType": "uint8", "name": "_decimals", "type": "uint8" }
+            { "internalType": "uint8", "name": "decimals_", "type": "uint8" }
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
@@ -1663,6 +1663,13 @@
           "name": "increaseAllowance",
           "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "lastYieldTimestamp",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -1772,7 +1779,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x91d683D815dED2210c31e851091A07ce56993072",
+      "address": "0x2a6e3cc5D4DABb12F2cE3F9788B6f5af9735D8E8",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "MockYieldSource",
       "abi": [
@@ -1780,7 +1787,7 @@
           "inputs": [
             { "internalType": "string", "name": "_name", "type": "string" },
             { "internalType": "string", "name": "_symbol", "type": "string" },
-            { "internalType": "uint8", "name": "_decimals", "type": "uint8" }
+            { "internalType": "uint8", "name": "decimals_", "type": "uint8" }
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
@@ -1871,6 +1878,13 @@
           "name": "increaseAllowance",
           "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "lastYieldTimestamp",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -1980,7 +1994,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x80D4387FB7F8f5060ab9146583Cd66b4D9742dee",
+      "address": "0x282a1D16C3BEF6265D37cCB4b8cC5e4f73973d1D",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "MockYieldSource",
       "abi": [
@@ -1988,7 +2002,7 @@
           "inputs": [
             { "internalType": "string", "name": "_name", "type": "string" },
             { "internalType": "string", "name": "_symbol", "type": "string" },
-            { "internalType": "uint8", "name": "_decimals", "type": "uint8" }
+            { "internalType": "uint8", "name": "decimals_", "type": "uint8" }
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
@@ -2079,6 +2093,13 @@
           "name": "increaseAllowance",
           "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "lastYieldTimestamp",
+          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -2188,14 +2209,16 @@
     },
     {
       "chainId": 4,
-      "address": "0x79B00FD40Ca5923B982afBa53573F9D349d43418",
+      "address": "0xcd186Dc42eE0EFc756D5b3c1bab77669b3f25781",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "Pool",
       "abi": [
         {
           "inputs": [
             { "internalType": "string", "name": "_name", "type": "string" },
-            { "internalType": "string", "name": "_symbol", "type": "string" }
+            { "internalType": "string", "name": "_symbol", "type": "string" },
+            { "internalType": "uint8", "name": "decimals_", "type": "uint8" },
+            { "internalType": "address", "name": "_owner", "type": "address" }
           ],
           "stateMutability": "nonpayable",
           "type": "constructor"
@@ -2213,28 +2236,41 @@
         {
           "anonymous": false,
           "inputs": [
+            { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
             {
               "indexed": true,
-              "internalType": "address",
-              "name": "pendingOwner",
-              "type": "address"
+              "internalType": "bytes32",
+              "name": "previousAdminRole",
+              "type": "bytes32"
+            },
+            {
+              "indexed": true,
+              "internalType": "bytes32",
+              "name": "newAdminRole",
+              "type": "bytes32"
             }
           ],
-          "name": "OwnershipOffered",
+          "name": "RoleAdminChanged",
           "type": "event"
         },
         {
           "anonymous": false,
           "inputs": [
-            {
-              "indexed": true,
-              "internalType": "address",
-              "name": "previousOwner",
-              "type": "address"
-            },
-            { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+            { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
+            { "indexed": true, "internalType": "address", "name": "sender", "type": "address" }
           ],
-          "name": "OwnershipTransferred",
+          "name": "RoleGranted",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            { "indexed": true, "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
+            { "indexed": true, "internalType": "address", "name": "sender", "type": "address" }
+          ],
+          "name": "RoleRevoked",
           "type": "event"
         },
         {
@@ -2246,6 +2282,20 @@
           ],
           "name": "Transfer",
           "type": "event"
+        },
+        {
+          "inputs": [],
+          "name": "DEFAULT_ADMIN_ROLE",
+          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "MINTER_ROLE",
+          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+          "stateMutability": "view",
+          "type": "function"
         },
         {
           "inputs": [
@@ -2286,13 +2336,6 @@
         },
         {
           "inputs": [],
-          "name": "claimOwnership",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "inputs": [],
           "name": "decimals",
           "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
           "stateMutability": "view",
@@ -2306,6 +2349,33 @@
           "name": "decreaseAllowance",
           "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "bytes32", "name": "role", "type": "bytes32" }],
+          "name": "getRoleAdmin",
+          "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "name": "grantRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "name": "hasRole",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -2347,24 +2417,30 @@
           "type": "function"
         },
         {
-          "inputs": [],
-          "name": "owner",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "pendingOwner",
-          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "inputs": [],
-          "name": "renounceOwnership",
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "name": "renounceRole",
           "outputs": [],
           "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "name": "revokeRole",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }],
+          "name": "supportsInterface",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -2401,13 +2477,6 @@
           "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
           "stateMutability": "nonpayable",
           "type": "function"
-        },
-        {
-          "inputs": [{ "internalType": "address", "name": "_newOwner", "type": "address" }],
-          "name": "transferOwnership",
-          "outputs": [],
-          "stateMutability": "nonpayable",
-          "type": "function"
         }
       ],
       "tags": [],
@@ -2415,7 +2484,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x786e959A49d0484D85912A4e8fD3A0b6eaBdaAe0",
+      "address": "0x2f684e7C5185a39e21ea88A841911329197ABa10",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "PrizeConfigHistory",
       "abi": [
@@ -2735,7 +2804,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x8580e9822287AadF74d5b90734E45133147efc64",
+      "address": "0x509a479885019fdcD1Bb39cd982D1Ab11857ce1d",
       "version": { "major": "2", "minor": 0, "patch": 0 },
       "type": "PrizeDistributor",
       "abi": [
@@ -2994,7 +3063,7 @@
     },
     {
       "chainId": 4,
-      "address": "0xe675F250EC5d004E7153967a6e536DbcA9EBbb36",
+      "address": "0x5adE49A86ce632B34F8bd890afA50ebc09560311",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "PrizePool",
       "abi": [
@@ -3473,7 +3542,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x0679e1b3f8271496Eea2F79Bdc15dCD5a4E3ad9D",
+      "address": "0x4312EB619A17f39607BB3933Fc265c88767D528B",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "PrizePool",
       "abi": [
@@ -3952,7 +4021,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x0B9c862f435537CA0E1c444300bb2c16f1955d14",
+      "address": "0xD384DBD1E76d65E5B08e5732Dc82684922Bf5eBc",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "PrizePool",
       "abi": [
@@ -4431,16 +4500,105 @@
     },
     {
       "chainId": 4,
-      "address": "0x0C8a87436dd0f97F28bF46F330802DfD36aAB155",
+      "address": "0x6075e8090B165817762C1b53bB9BF6c80a8708c3",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "PrizePoolLiquidator",
       "abi": [
+        {
+          "inputs": [{ "internalType": "address", "name": "_owner", "type": "address" }],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "contract IPrizePoolLiquidatorListener",
+              "name": "listener",
+              "type": "address"
+            }
+          ],
+          "name": "ListenerSet",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousManager",
+              "type": "address"
+            },
+            { "indexed": true, "internalType": "address", "name": "newManager", "type": "address" }
+          ],
+          "name": "ManagerTransferred",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "pendingOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipOffered",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "contract IPrizePool",
+              "name": "prizePool",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "contract IERC20",
+              "name": "want",
+              "type": "address"
+            },
+            { "indexed": false, "internalType": "address", "name": "target", "type": "address" },
+            { "indexed": true, "internalType": "address", "name": "account", "type": "address" },
+            { "indexed": false, "internalType": "uint256", "name": "amountIn", "type": "uint256" },
+            { "indexed": false, "internalType": "uint256", "name": "amountOut", "type": "uint256" }
+          ],
+          "name": "Swapped",
+          "type": "event"
+        },
         {
           "inputs": [
             { "internalType": "contract IPrizePool", "name": "_prizePool", "type": "address" }
           ],
           "name": "availableBalanceOf",
           "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "claimOwnership",
+          "outputs": [],
           "stateMutability": "nonpayable",
           "type": "function"
         },
@@ -4468,9 +4626,21 @@
           "inputs": [
             { "internalType": "contract IPrizePool", "name": "_prizePool", "type": "address" }
           ],
-          "name": "currentExchangeRate",
-          "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-          "stateMutability": "nonpayable",
+          "name": "getLiquidationConfig",
+          "outputs": [
+            {
+              "components": [
+                { "internalType": "address", "name": "target", "type": "address" },
+                { "internalType": "contract IERC20", "name": "want", "type": "address" },
+                { "internalType": "uint32", "name": "swapMultiplier", "type": "uint32" },
+                { "internalType": "uint32", "name": "liquidityFraction", "type": "uint32" }
+              ],
+              "internalType": "struct PrizePoolLiquidator.LiquidatorConfig",
+              "name": "state",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "view",
           "type": "function"
         },
         {
@@ -4494,7 +4664,7 @@
         },
         {
           "inputs": [],
-          "name": "listener",
+          "name": "getListener",
           "outputs": [
             {
               "internalType": "contract IPrizePoolLiquidatorListener",
@@ -4503,6 +4673,73 @@
             }
           ],
           "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "manager",
+          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            { "internalType": "contract IPrizePool", "name": "_prizePool", "type": "address" }
+          ],
+          "name": "nextLiquidationState",
+          "outputs": [
+            {
+              "components": [
+                { "internalType": "uint256", "name": "reserveA", "type": "uint256" },
+                { "internalType": "uint256", "name": "reserveB", "type": "uint256" }
+              ],
+              "internalType": "struct PrizePoolLiquidator.LiquidatorState",
+              "name": "state",
+              "type": "tuple"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "owner",
+          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "pendingOwner",
+          "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+          "stateMutability": "view",
+          "type": "function"
+        },
+        {
+          "inputs": [],
+          "name": "renounceOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "contract IPrizePoolLiquidatorListener",
+              "name": "_listener",
+              "type": "address"
+            }
+          ],
+          "name": "setListener",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "address", "name": "_newManager", "type": "address" }],
+          "name": "setManager",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+          "stateMutability": "nonpayable",
           "type": "function"
         },
         {
@@ -4541,6 +4778,13 @@
           "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
           "stateMutability": "nonpayable",
           "type": "function"
+        },
+        {
+          "inputs": [{ "internalType": "address", "name": "_newOwner", "type": "address" }],
+          "name": "transferOwnership",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
         }
       ],
       "tags": [],
@@ -4548,7 +4792,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x3dF0c52e8da9A933D6f27513C85D335e71d40622",
+      "address": "0x95448A041D34241177b375a65efB34C61Ad9e2B3",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "Ticket",
       "abi": [
@@ -4934,7 +5178,7 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transfer",
@@ -4944,8 +5188,8 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "sender", "type": "address" },
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "from", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transferFrom",
@@ -4959,7 +5203,7 @@
     },
     {
       "chainId": 4,
-      "address": "0xf86eBb65cfbB316DC4Da4230DF0eb94Dd113c525",
+      "address": "0x485cB32f8e7159feebf98e19D0f9b2Dc7348Ac77",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "Ticket",
       "abi": [
@@ -5345,7 +5589,7 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transfer",
@@ -5355,8 +5599,8 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "sender", "type": "address" },
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "from", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transferFrom",
@@ -5370,7 +5614,7 @@
     },
     {
       "chainId": 4,
-      "address": "0x3f304D47BbeFfEe5Ed5aA7A1fb529e165cCca081",
+      "address": "0x22D7D499D13eE75210A0F3215A2D8942B5B233b4",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "Ticket",
       "abi": [
@@ -5756,7 +6000,7 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transfer",
@@ -5766,8 +6010,8 @@
         },
         {
           "inputs": [
-            { "internalType": "address", "name": "sender", "type": "address" },
-            { "internalType": "address", "name": "recipient", "type": "address" },
+            { "internalType": "address", "name": "from", "type": "address" },
+            { "internalType": "address", "name": "to", "type": "address" },
             { "internalType": "uint256", "name": "amount", "type": "uint256" }
           ],
           "name": "transferFrom",
@@ -5781,7 +6025,24 @@
     },
     {
       "chainId": 4,
-      "address": "0x6BC0301c159306FF06E4039660F169aed458C13D",
+      "address": "0xd5D322390aD95C644c99d6A5Badd7c2EB5AfC712",
+      "version": { "major": 1, "minor": 0, "patch": 0 },
+      "type": "TokenFaucet",
+      "abi": [
+        {
+          "inputs": [{ "internalType": "contract IERC20", "name": "_token", "type": "address" }],
+          "name": "drip",
+          "outputs": [],
+          "stateMutability": "nonpayable",
+          "type": "function"
+        }
+      ],
+      "tags": [],
+      "extensions": {}
+    },
+    {
+      "chainId": 4,
+      "address": "0x1e9CAA2721971C9934D7633a4E335328046e7124",
       "version": { "major": 1, "minor": 0, "patch": 0 },
       "type": "TokenVault",
       "abi": [

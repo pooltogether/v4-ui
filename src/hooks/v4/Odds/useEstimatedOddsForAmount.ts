@@ -2,8 +2,9 @@ import { Amount } from '@pooltogether/hooks'
 import { calculateOdds } from '@pooltogether/utilities'
 import { BigNumber, ethers } from 'ethers'
 import { useMemo } from 'react'
+import { useSelectedPrizePool } from '../PrizePool/useSelectedPrizePool'
 
-import { useOverallOddsData } from './useOverallOddsData'
+import { usePrizePoolOddsData } from './usePrizePoolOddsData'
 
 export enum EstimateAction {
   none = 'NONE',
@@ -16,9 +17,8 @@ export const useEstimatedOddsForAmount = (
   action: EstimateAction = EstimateAction.none,
   changeAmountUnformatted: BigNumber = ethers.constants.Zero
 ) => {
-  // TODO: Fix so this cna be used for multiple networks
-  // const data = useOddsData(prizePool)
-  const data = useOverallOddsData()
+  const prizePool = useSelectedPrizePool()
+  const data = usePrizePoolOddsData(prizePool)
 
   return useMemo(() => {
     if (!Boolean(data) || amount === undefined || amount === null) {
@@ -42,6 +42,17 @@ export const useEstimatedOddsForAmount = (
   }, [data, amount])
 }
 
+/**
+ * NOTE: Odds per prize pool change if there are different numbers of prizes in different prize pools
+ *
+ * @param amount
+ * @param totalSupply
+ * @param numberOfPrizes
+ * @param decimals
+ * @param action
+ * @param changeAmountUnformatted
+ * @returns
+ */
 export const estimateOddsForAmount = (
   amount: Amount,
   totalSupply: Amount,
@@ -63,6 +74,12 @@ export const estimateOddsForAmount = (
     totalSupplyUnformatted = totalSupply.amountUnformatted
   }
 
+  console.log('estimateOddsForAmount', {
+    amountUnformatted,
+    totalSupplyUnformatted,
+    decimals,
+    numberOfPrizes
+  })
   const odds = calculateOdds(amountUnformatted, totalSupplyUnformatted, decimals, numberOfPrizes)
   const oneOverOdds = 1 / odds
   return {
