@@ -1,5 +1,6 @@
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
+import { BigNumber } from 'ethers'
 import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { useNetworkHexColor, useTokenBalance } from '@pooltogether/hooks'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
@@ -10,6 +11,7 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@constants/misc'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
+import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -43,6 +45,10 @@ export const EarnRewardsCard = () => {
       {queryResults.map((queryResult) => {
         const { data } = queryResult || {}
         const { chainId } = data || {}
+        console.log(data)
+        if (!data?.promotions || data.promotions.length === 0) {
+          return null
+        }
         return <ChainPromotions key={`chain-promotions-${chainId}`} queryResult={queryResult} />
       })}
 
@@ -57,10 +63,6 @@ const ChainPromotions = (props) => {
   const { data } = queryResult
   const { chainId, promotions } = data || {}
 
-  if (!promotions) {
-    return null
-  }
-
   return promotions.map((promotion) => (
     <PromotionCard
       key={`pcard-${chainId}-${promotion.id}`}
@@ -74,37 +76,56 @@ const PromotionCard = (props) => {
   const { promotion, chainId } = props
   console.log(promotion)
 
+  const { t } = useTranslation()
+
   const backgroundColor = useNetworkHexColor(chainId)
   const usersAddress = useUsersAddress()
   const { data: tokenBalance, isFetched } = useTokenBalance(chainId, usersAddress, promotion.token)
   const { symbol } = tokenBalance || {}
 
+  const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+
+  const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
+
   return (
-    <div className='rounded-xl text-white p-6' style={{ backgroundColor, minHeight: 100 }}>
-      {/* <div>promotionId: {promotion.id}</div> */}
+    <div className='rounded-xl text-white py-5 px-6' style={{ backgroundColor, minHeight: 100 }}>
       <div className='flex items-center justify-between font-bold'>
         <div className='flex items-center'>
-          Earn{' '}
-          <TokenIcon
-            sizeClassName='w-4 h-4'
-            className='ml-2 mr-1'
-            chainId={chainId}
-            address={promotion.token}
-          />{' '}
-          {symbol} on{' '}
-          <span className='ml-1 capitalize'>{getNetworkNameAliasByChainId(chainId)}</span>
+          <Trans
+            i18nKey='earnTokenOnChain'
+            values={{ networkName }}
+            components={{
+              TokenIcon: (
+                <TokenIcon
+                  sizeClassName='w-4 h-4'
+                  className='mx-1'
+                  chainId={chainId}
+                  address={promotion.token}
+                />
+              )
+            }}
+          />
         </div>
         <div>
-          <NetworkIcon
-            chainId={chainId}
-            className='mr-2 border border-pt-purple-bright'
-            sizeClassName='w-8 h-8'
-          />
+          <NetworkIcon chainId={chainId} className='border-2' sizeClassName='w-8 h-8' />
         </div>
       </div>
       <div className='w-3/4'>
-        $500,000 of AVAX token rewards will be provided over the next 14 days to all depositors on
-        Avalanche.
+        <PromotionSummary
+          isIndex
+          className='mt-2 xs:mt-0'
+          chainId={chainId}
+          startTimestamp={startTimestamp}
+          numberOfEpochs={numberOfEpochs}
+          tokensPerEpoch={BigNumber.from(tokensPerEpoch)}
+          epochDuration={epochDuration}
+          token={token}
+          networkName={networkName}
+        />
       </div>
     </div>
   )

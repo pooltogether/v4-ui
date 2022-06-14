@@ -7,8 +7,8 @@ import { NO_REFETCH } from '@constants/query'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
 import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
 
-const FILTERS = {
-  [CHAIN_ID.rinkeby]: [],
+const FILTERED_PROMOTION_IDS = {
+  [CHAIN_ID.rinkeby]: ['0x3', '0x4'],
   [CHAIN_ID.mumbai]: [],
   [CHAIN_ID.fuji]: [],
   [CHAIN_ID.avalanche]: [],
@@ -42,7 +42,7 @@ const getChainFilteredPromotionsKey = (chainId: number) => ['getChainFilteredPro
 
 export const getChainFilteredPromotions = async (chainId: number, client: GraphQLClient) => {
   const query = promotionsQuery()
-  const variables = { ids: FILTERS[chainId] }
+  const variables = { ids: FILTERED_PROMOTION_IDS[chainId] }
 
   const promotionsResponse = await client.request(query, variables).catch((e) => {
     console.error(e.message)
