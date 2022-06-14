@@ -19,7 +19,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
       href='https://vote.pooltogether.com/proposals'
       target='_blank'
     >
-      <div className='rounded-lg px-8 py-2 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
+      <div className='rounded-lg px-8 py-4 xs:py-2 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
         <span
           className={classNames({
             'text-6xl xs:text-4xl': !noProposals,
@@ -28,7 +28,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
         >
           🗳
         </span>
-        <div className='xs:ml-2 flex flex-col space-y-3 xs:space-y-0 xs:flex-row xs:justify-between xs:w-full'>
+        <div className='xs:ml-2 flex flex-col space-y-1 xs:space-y-0 xs:flex-row xs:justify-between xs:w-full'>
           <div className='text-pt-purple-dark dark:text-pt-purple-lighter flex flex-col justify-center space-y-1 leading-none'>
             <span className='font-bold'>{t('pooltogetherGovernance')}</span>
             {!noProposals && (

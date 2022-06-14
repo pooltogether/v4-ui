@@ -45,7 +45,6 @@ export const EarnRewardsCard = () => {
       {queryResults.map((queryResult) => {
         const { data } = queryResult || {}
         const { chainId } = data || {}
-        console.log(data)
         if (!data?.promotions || data.promotions.length === 0) {
           return null
         }
@@ -72,16 +71,18 @@ const ChainPromotions = (props) => {
   ))
 }
 
+const transformHexColor = (color) => {
+  // if rinkeby, return ethereum mainnet color
+  if (color === '#e09e0a') {
+    return '#4b78ff'
+  }
+}
+
 const PromotionCard = (props) => {
   const { promotion, chainId } = props
-  console.log(promotion)
-
-  const { t } = useTranslation()
 
   const backgroundColor = useNetworkHexColor(chainId)
   const usersAddress = useUsersAddress()
-  const { data: tokenBalance, isFetched } = useTokenBalance(chainId, usersAddress, promotion.token)
-  const { symbol } = tokenBalance || {}
 
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
@@ -92,7 +93,10 @@ const PromotionCard = (props) => {
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
 
   return (
-    <div className='rounded-xl text-white py-5 px-6' style={{ backgroundColor, minHeight: 100 }}>
+    <div
+      className='rounded-xl text-white py-5 px-6'
+      style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
+    >
       <div className='flex items-center justify-between font-bold'>
         <div className='flex items-center'>
           <Trans
@@ -111,12 +115,15 @@ const PromotionCard = (props) => {
           />
         </div>
         <div>
-          <NetworkIcon chainId={chainId} className='border-2' sizeClassName='w-8 h-8' />
+          <NetworkIcon
+            chainId={chainId}
+            className='border-2'
+            sizeClassName='w-6 h-6 xs:w-8 xs:h-8'
+          />
         </div>
       </div>
-      <div className='w-3/4'>
+      <div className='w-full xs:w-10/12'>
         <PromotionSummary
-          isIndex
           className='mt-2 xs:mt-0'
           chainId={chainId}
           startTimestamp={startTimestamp}

@@ -193,7 +193,7 @@ const DepositItem = (props: DepositItemsProps) => {
 const NetworkLabel = (props: { chainId: number }) => (
   <div className='flex'>
     <NetworkIcon chainId={props.chainId} className='mr-2 my-auto' />
-    <span className='font-bold xs:text-lg'>{getNetworkNiceNameByChainId(props.chainId)}</span>
+    <span className='font-bold'>{getNetworkNiceNameByChainId(props.chainId)}</span>
   </div>
 )
 

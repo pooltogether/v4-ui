@@ -334,7 +334,7 @@ const UnderlyingTokenLabel = (props: {
       />
       <TokenIcon chainId={props.chainId} address={props.address} />
     </div>
-    <span className='font-bold xs:text-lg'>
+    <span className='font-bold'>
       {props.isPod && `${props.symbol} Pod`}
       {props.isSponsorship && `${props.symbol} Sponsorship`}
       {!props.isPod && !props.isSponsorship && props.symbol}

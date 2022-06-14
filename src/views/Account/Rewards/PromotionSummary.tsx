@@ -1,13 +1,14 @@
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { useTranslation } from 'react-i18next'
-import { sToD, sToMs, numberWithCommas } from '@pooltogether/utilities'
-import { useTokenBalance } from '@pooltogether/hooks'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { BlockExplorerLink } from '@pooltogether/react-components'
+import { sToMs, numberWithCommas } from '@pooltogether/utilities'
+import { useToken } from '@pooltogether/hooks'
 import { format } from 'date-fns'
 import { TokenIcon } from '@pooltogether/react-components'
+import { Trans } from 'react-i18next'
 import classNames from 'classnames'
+
+import { SECONDS_PER_DAY } from '@constants/misc'
 // import { SummaryWell } from './SummaryWell'
 // import { TokenDisplay } from './TokenDisplay'
 
@@ -22,6 +23,11 @@ interface PromotionSummaryProps {
   className?: string
 }
 
+const days = (numberOfEpochs, epochDuration) => {
+  const duration = Number(numberOfEpochs) * Number(epochDuration)
+  return duration / SECONDS_PER_DAY
+}
+
 export const PromotionSummary = (props: PromotionSummaryProps) => {
   const {
     chainId,
@@ -33,13 +39,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
     networkName
   } = props
 
-  const usersAddress = useUsersAddress()
-
-  const { data: tokenData, isFetched: tokenDataIsFetched } = useTokenBalance(
-    chainId,
-    usersAddress,
-    token
-  )
+  const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
   if (
     !Boolean(numberOfEpochs) ||
@@ -51,18 +51,25 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
     return null
   }
 
+  const totalTokens = tokensPerEpoch.mul(numberOfEpochs)
+  const totalTokensFormatted = formatUnits(totalTokens, tokenData?.decimals)
+
   return (
     <>
-      <div className='dark:text-white'>
-        <span>
-          {numberWithCommas(
-            formatUnits(tokensPerEpoch.mul(numberOfEpochs), tokenData?.decimals).toString()
-          )}
-        </span>{' '}
-        of <TokenSymbol chainId={chainId} tokenData={tokenData} /> token rewards will be provided to
-        all depositors on {networkName}.
+      <div className='dark:text-white leading-snug'>
+        <Trans
+          i18nKey='numTokensProvidedOverDaysToDepositorsOnNetwork'
+          values={{
+            totalTokens: numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true }),
+            days: days(numberOfEpochs, epochDuration),
+            networkName
+          }}
+          components={{
+            token: <TokenSymbol chainId={chainId} tokenData={tokenData} />
+          }}
+        />
       </div>
-      {/* over the next 14 days */}
+
       {/* <BlockExplorerLink className='flex items-center' chainId={chainId} address={token} noIcon>
           <TokenDisplay chainId={chainId} tokenData={tokenData} />
         </BlockExplorerLink> */}

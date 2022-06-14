@@ -32,7 +32,7 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
         className='px-4 py-2 w-full flex justify-between items-center'
         onClick={() => setIsOpen(true)}
       >
-        <div className='flex space-x-2 font-bold xs:text-lg text-left'>
+        <div className='flex space-x-2 font-bold text-left'>
           <span>{'🤝'}</span>
           <span>{t('totalDelegations', 'Total amount delegated')}</span>
         </div>
