@@ -65,7 +65,18 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             networkName
           }}
           components={{
-            token: <TokenSymbol chainId={chainId} tokenData={tokenData} />
+            token: (
+              <>
+                <TokenIcon
+                  sizeClassName='w-4 h-4'
+                  className='relative mr-1'
+                  chainId={chainId}
+                  address={tokenData.address}
+                  style={{ top: -2 }}
+                />
+                <TokenSymbol chainId={chainId} tokenData={tokenData} />
+              </>
+            )
           }}
         />
       </div>

@@ -1,14 +1,12 @@
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { Trans, useTranslation } from 'react-i18next'
 import { BigNumber } from 'ethers'
 import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { useNetworkHexColor, useTokenBalance } from '@pooltogether/hooks'
+import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 // import { POOLStakingCards } from './POOLStakingCards'
 
-import { CHAIN_ID } from '@constants/misc'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
@@ -78,19 +76,20 @@ const transformHexColor = (color) => {
   }
 }
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 const PromotionCard = (props) => {
   const { promotion, chainId } = props
 
   const backgroundColor = useNetworkHexColor(chainId)
-  const usersAddress = useUsersAddress()
 
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-  }
-
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
+
+  const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
   return (
     <div
@@ -98,15 +97,16 @@ const PromotionCard = (props) => {
       style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
     >
       <div className='flex items-center justify-between font-bold'>
-        <div className='flex items-center'>
+        <div className='flex items-center mb-2'>
           <Trans
-            i18nKey='earnTokenOnChain'
-            values={{ networkName }}
+            i18nKey='earnTokenSymbol'
+            defaults='<TokenIcon /> Earn {{tokenSymbol}}'
+            values={{ tokenSymbol: tokenData?.symbol }}
             components={{
               TokenIcon: (
                 <TokenIcon
                   sizeClassName='w-4 h-4'
-                  className='mx-1'
+                  className='mr-1'
                   chainId={chainId}
                   address={promotion.token}
                 />
@@ -114,12 +114,8 @@ const PromotionCard = (props) => {
             }}
           />
         </div>
-        <div>
-          <NetworkIcon
-            chainId={chainId}
-            className='border-2'
-            sizeClassName='w-6 h-6 xs:w-8 xs:h-8'
-          />
+        <div className='relative' style={{ top: -4 }}>
+          <NetworkIcon chainId={chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
         </div>
       </div>
       <div className='w-full xs:w-10/12'>
