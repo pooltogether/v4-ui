@@ -1,15 +1,22 @@
+import { batch } from '@pooltogether/etherplex'
 import { useQuery } from 'react-query'
+import { getReadProvider } from '@pooltogether/wallet-connection'
+import { RPC_API_KEYS } from '@constants/config'
 
 import { NO_REFETCH } from '@constants/query'
+import {
+  getTwabRewardsEtherplexContract,
+  getTwabRewardsContractAddress
+} from '@utils/TwabRewards/getTwabRewardsContract'
 
 /**
- * Fetch a promotion's currentEpochId, etc
+ * Fetch a promotion's data (eg. currentEpochId, etc)
  * @returns
  */
 export const usePromotion = (chainId: number, promotionId: number) => {
   return useQuery(
     getChainPromotionKey(chainId, promotionId),
-    async () => getPromotion(promotionId),
+    async () => getPromotion(chainId, promotionId),
     {
       ...NO_REFETCH,
       enabled: Boolean(promotionId)
@@ -24,14 +31,18 @@ const getChainPromotionKey = (chainId: number, promotionId: number) => [
 ]
 
 export const getPromotion = async (chainId: number, promotionId: number) => {
-  const twabRewardsContract = contract(
-    twabRewardsContractAddress,
-    TwabRewardsAbi,
-    twabRewardsContractAddress
+  const provider = getReadProvider(chainId, RPC_API_KEYS)
+  const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
+  const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
+
+  const twabRewardsResults = await batch(
+    provider,
+    twabRewardsContract.getCurrentEpochId(promotionId)
   )
-  const twabRewardsResults = await batch(provider, twabRewardsContract.getCurrentEpochId())
 
-  const currentEpochId = twabRewardsResults[twabRewardsContractAddress].getCurrentEpochId[0]
+  const currentEpochId = Number(
+    twabRewardsResults[twabRewardsContractAddress].getCurrentEpochId[0].toString()
+  )
 
-  return {}
+  return { currentEpochId }
 }
