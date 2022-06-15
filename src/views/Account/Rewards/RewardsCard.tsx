@@ -1,7 +1,7 @@
+import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'ethers'
-import classNames from 'classnames'
 import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
@@ -9,10 +9,13 @@ import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/ut
 
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
-import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { usePromotion } from '@hooks/v4/TwabRewards/usePromotion'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { useUsersPromotionRewardsAmount } from '@hooks/V4/TwabRewards/useUsersPromotionRewardsAmount'
+import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
+import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+
+// PREDICTION / ESTIMATE:
+// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
 
 export const RewardsCard = () => {
   const { t } = useTranslation()
@@ -32,11 +35,7 @@ export const RewardsCard = () => {
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle
-        title={t('rewards')}
-        // secondary={`$${amount.amountPretty}`}
-        loading={!isFetched}
-      />
+      <CardTitle title={t('rewards')} loading={!isFetched} />
 
       {!isFetched && (
         <LoadingList
@@ -59,14 +58,14 @@ export const RewardsCard = () => {
         }
         return <ChainPromotions key={`chain-promotions-${chainId}`} queryResult={queryResult} />
       })}
-
-      {/* <POOLStakingCards /> */}
     </div>
   )
 }
 
 const ChainPromotions = (props) => {
   const { queryResult } = props
+
+  const { t } = useTranslation()
 
   const { data } = queryResult
   const { chainId, promotions } = data || {}
@@ -81,7 +80,7 @@ const ChainPromotions = (props) => {
     >
       <div className='flex items-center font-bold mb-4'>
         <NetworkIcon chainId={chainId} className='mr-2' sizeClassName='w-5 h-5' />
-        <Trans i18nKey='chainPoolParty' defaults='pool party' values={{ networkName }} />
+        {t('chainPoolParty', { networkName })}
       </div>
       <PromotionsList chainId={chainId} promotions={promotions} />
     </div>
@@ -104,32 +103,12 @@ const PromotionsList = (props) => {
   )
 }
 
-const transformHexColor = (color) => {
-  // if rinkeby, return ethereum mainnet color
-  if (color === '#e09e0a') {
-    return '#4b78ff'
-  }
-}
-
-const darkenHexColor = (color) => {
-  // if rinkeby, return ethereum mainnet color
-  if (color === '#e09e0a') {
-    return '#2b58bf'
-  }
-}
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
   const { id, startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
   const { t } = useTranslation()
 
-  const backgroundColor = useNetworkHexColor(chainId)
-  const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
   const { data: promotionData } = usePromotion(chainId, Number(id))
@@ -282,16 +261,8 @@ interface PromotionListItemProps {
 const PromotionListItem = (props: PromotionListItemProps) => {
   const { chainId, onClick, left, right } = props
 
-  const backgroundColor = useNetworkHexColor(chainId)
-
-  // return (
-  //   <div className='rounded-lg mb-2' style={{ backgroundColor: darkenHexColor(backgroundColor) }}>
-  //     asdf
-  //   </div>
-  // )
-
   return (
-    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
+    <li className='transition bg-white bg-opacity-10 hover:bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
       <button className='px-4 py-2 w-full flex justify-between items-center' onClick={onClick}>
         {left}
         {right}
