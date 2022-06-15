@@ -103,7 +103,7 @@ const StakingCardTitle = (props: StakingCardTitleProps) => {
     <div className='flex w-full justify-between'>
       <div className='flex flex-col xs:flex-row xs:items-center'>
         {tokenIcon}
-        <span className='xs:ml-2 font-semibold text-sm xs:text-xl'>
+        <span className='xs:ml-2 font-semibold text-sm'>
           {t('stake')} {tokenLabel}
         </span>
       </div>
@@ -209,7 +209,7 @@ const TokenAndVAPR = (props: {
   isTokenFaucetDataFetched: boolean
   isTokenFetched: boolean
 }) => (
-  <div className='flex space-x-2 font-bold text-lg items-center'>
+  <div className='flex space-x-2 font-bold text-sm items-center'>
     <TokenIconOrLoading
       chainId={props.chainId}
       token={props.token}
@@ -246,7 +246,7 @@ const DepositState = (props: DepositStateProps) => {
     <>
       <div className='space-y-2 flex flex-col'>
         <p className='text-sm'>{depositPrompt}</p>
-        <div className='flex space-x-2 font-bold text-lg items-center'>
+        <div className='flex space-x-2 font-bold text-sm items-center'>
           <TokenIconOrLoading
             chainId={chainId}
             token={tokenFaucetRewards}

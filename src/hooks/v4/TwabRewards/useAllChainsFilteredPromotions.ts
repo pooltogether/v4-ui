@@ -8,10 +8,10 @@ import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSuppor
 import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
 
 const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID.rinkeby]: ['0x1', '0x2', '0x3', '0x4', '0x5'],
+  [CHAIN_ID.rinkeby]: ['0x2', '0x4'],
   // [CHAIN_ID.rinkeby]: ['0x4', '0x5'],
-  [CHAIN_ID.mumbai]: [],
-  [CHAIN_ID.fuji]: [],
+  [CHAIN_ID.mumbai]: ['0x1', '0x2'],
+  [CHAIN_ID.fuji]: ['0x1', '0x2'],
   [CHAIN_ID.avalanche]: [],
   [CHAIN_ID.mainnet]: [],
   [CHAIN_ID.polygon]: ['0x1', '0x5']
