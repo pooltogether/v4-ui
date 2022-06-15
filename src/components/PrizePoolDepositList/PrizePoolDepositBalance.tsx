@@ -23,7 +23,7 @@ export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => 
     <div className='flex items-center'>
       <TokenIcon chainId={chainId} address={token.address} className='mr-2' />
       <span
-        className={classNames('leading-none font-bold text-sm xs:text-lg mr-3', {
+        className={classNames('leading-none font-bold mr-3', {
           'opacity-50': !token.hasBalance
         })}
       >

@@ -8,6 +8,7 @@ import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
 import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
+import { RewardsCard } from './Rewards/RewardsCard'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
 import { VotingPromptCard } from '@components/VotingPromptCard'
@@ -34,8 +35,9 @@ export const AccountUI = (props) => {
     <PagePadding className='space-y-8'>
       <AccountCard />
       <V4Deposits />
-      <EarnRewardsCard />
+      <RewardsCard />
       <POOLBalancesCard />
+      <EarnRewardsCard />
       <V3StakingCards />
       <V3Deposits />
       <OddsDisclaimer className='block mt-6' />

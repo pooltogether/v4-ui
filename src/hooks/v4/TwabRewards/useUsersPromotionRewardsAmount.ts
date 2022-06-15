@@ -42,20 +42,15 @@ export const getUsersPromotionRewardsAmount = async (
   currentEpochId: number,
   usersAddress: string
 ) => {
-  console.log('in cuz')
-  console.log(currentEpochId)
-
   const provider = getReadProvider(chainId, RPC_API_KEYS)
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
 
-  const arry = [...Array(currentEpochId + 1).keys()]
-  console.log(arry)
-  console.log(usersAddress, promotionId, arry)
+  const epochIds = [...Array(currentEpochId + 1).keys()]
 
   const twabRewardsResults = await batch(
     provider,
-    twabRewardsContract.getRewardsAmount(usersAddress, promotionId, arry)
+    twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
   )
 
   const rewardsAmount =

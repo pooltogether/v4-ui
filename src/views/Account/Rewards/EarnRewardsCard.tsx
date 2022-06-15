@@ -2,7 +2,6 @@ import { Trans, useTranslation } from 'react-i18next'
 import { BigNumber } from 'ethers'
 import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 // import { POOLStakingCards } from './POOLStakingCards'
@@ -10,9 +9,7 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
-import { usePromotion } from '@hooks/v4/TwabRewards/usePromotion'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { useUsersPromotionRewardsAmount } from '@hooks/V4/TwabRewards/useUsersPromotionRewardsAmount'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -93,32 +90,11 @@ function capitalizeFirstLetter(string) {
 
 const PromotionCard = (props) => {
   const { promotion, chainId } = props
-  const { id, startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
+  const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
   const backgroundColor = useNetworkHexColor(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
-
-  const { data: promotionData } = usePromotion(chainId, Number(id))
-  const usersAddress = useUsersAddress()
-
-  // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
-  // smaller of the two resulting numbers
-  const currentEpochId = Math.min(promotionData?.currentEpochId, numberOfEpochs - 1)
-  console.log({ currentEpochId })
-
-  const { data: usersPromotionData } = useUsersPromotionRewardsAmount(
-    chainId,
-    Number(id),
-    currentEpochId,
-    usersAddress
-  )
-  if (usersPromotionData) {
-    console.log(usersPromotionData)
-  }
-
-  // Yes, you should be able to call the getCurrentEpochId
-  // and pass all the epochs before this one to the getRewardsAmount function.
 
   return (
     <div
@@ -163,10 +139,6 @@ const PromotionCard = (props) => {
           networkName={networkName}
         />
       </div>
-      <br />
-      if currentEpochId is 0, cannot get any rewards amount... estimate?
-      <br />
-      currentEpochId: {currentEpochId}
     </div>
   )
 }
