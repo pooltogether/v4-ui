@@ -1,12 +1,25 @@
+import { useState } from 'react'
 import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'ethers'
-import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import {
+  ContractLink,
+  BalanceBottomSheet,
+  ThemedClipSpinner,
+  NetworkIcon,
+  TokenIcon,
+  SquareButtonTheme
+} from '@pooltogether/react-components'
+import {
+  useToken,
+  useNetworkHexColor,
+  useCoingeckoTokenPricesAcrossChains
+} from '@pooltogether/hooks'
+import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
+import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { usePromotion } from '@hooks/v4/TwabRewards/usePromotion'
@@ -109,6 +122,11 @@ const PromotionRow = (props) => {
 
   const { t } = useTranslation()
 
+  const [isOpen, setIsOpen] = useState(false)
+
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
   const { data: promotionData } = usePromotion(chainId, Number(id))
@@ -125,8 +143,46 @@ const PromotionRow = (props) => {
     usersAddress
   )
 
-  // Yes, you should be able to call the getCurrentEpochId
-  // and pass all the epochs before this one to the getRewardsAmount function.
+  const contractLinks: ContractLink[] = [
+    {
+      i18nKey: 'prizePool',
+      chainId,
+      address: '0xface'
+    }
+    // {
+    //   i18nKey: 'prizeStrategy',
+    //   chainId,
+    //   address: prizePool.addresses.prizeStrategy
+    // },
+    // {
+    //   i18nKey: 'depositToken',
+    //   chainId,
+    //   address: prizePool.addresses.token
+    // },
+    // {
+    //   i18nKey: 'ticketToken',
+    //   chainId,
+    //   address: prizePool.addresses.ticket
+    // },
+    // {
+    //   i18nKey: 'sponsorshipToken',
+    //   chainId,
+    //   address: prizePool.addresses.sponsorship
+    // }
+  ]
+  const onDismiss = () => setIsOpen(false)
+
+  const balances = {
+    ticket: {
+      address: '0xface',
+      symbol: 'PTSD',
+      name: 'PT SD',
+      decimals: '18',
+      amount: '321',
+      amountUnformatted: BigNumber.from(0),
+      amountPretty: '1234'
+    }
+  }
 
   return (
     <>
@@ -135,10 +191,9 @@ const PromotionRow = (props) => {
       ) : (
         <>
           <PromotionListItem
-            chainId={chainId}
             onClick={() => {
               // setSelectedChainId(chainId)
-              // setIsOpen(true)
+              setIsOpen(true)
             }}
             left={
               <div className='flex items-center'>
@@ -158,6 +213,67 @@ const PromotionRow = (props) => {
               </div>
             }
           />
+
+          <BalanceBottomSheet
+            title={'rewards'}
+            open={isOpen}
+            label={`mng rewards`}
+            onDismiss={onDismiss}
+            chainId={chainId}
+            // internalLinks={
+            //   <Link href={{ pathname: '/deposit', query: router.query }}>
+            //     <SquareLink
+            //       size={SquareButtonSize.md}
+            //       theme={SquareButtonTheme.teal}
+            //       className='w-full'
+            //     >
+            //       {t('deposit')}
+            //     </SquareLink>
+            //   </Link>
+            // }
+            views={[
+              {
+                id: 'withdraw',
+                view: () => (
+                  <div></div>
+                  // <WithdrawView
+                  //   usersAddress={usersAddress}
+                  //   prizePool={prizePool}
+                  //   balances={balances}
+                  //   setWithdrawTxId={setTxId}
+                  //   onDismiss={onDismiss}
+                  //   refetchBalances={refetchBalances}
+                  // />
+                ),
+                label: t('withdraw'),
+                theme: SquareButtonTheme.tealOutline
+              }
+            ]}
+            moreInfoViews={[
+              {
+                id: 'delegate',
+                view: () => (
+                  <div>hello</div>
+
+                  // <DelegateView
+                  //   prizePool={prizePool}
+                  //   balances={balances}
+                  //   refetchBalances={refetchBalances}
+                  // />
+                ),
+                icon: 'gift',
+                label: t('delegateDeposit', 'Delegate deposit'),
+                theme: SquareButtonTheme.teal
+              }
+            ]}
+            token={balances.ticket}
+            balance={balances.ticket}
+            balanceUsd={balances.ticket}
+            t={t}
+            contractLinks={contractLinks}
+            isWalletOnProperNetwork={isWalletOnProperNetwork}
+            isWalletMetaMask={isWalletMetaMask}
+          />
         </>
       )}
     </>
@@ -176,90 +292,30 @@ const RewardsBalance = (props) => {
     })
   }
 
+  const { data: tokenPrices } = useCoingeckoTokenPricesAcrossChains({ 1: [tokenData.address] })
+  console.log({ tokenPrices })
+
+  const claimableUsd = Number(formatUnits(claimable, decimals)) * tokenPrices?.[tokenData.address]
+
   return (
     <div
       className={classNames('leading-none font-bold mr-3', {
         'opacity-50': claimable.isZero()
       })}
     >
-      {numberWithCommas(formatUnits(claimable, decimals))}
+      ${numberWithCommas(claimableUsd)}
     </div>
   )
 }
 
-{
-  /* 
-<BalanceBottomSheet
-            title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
-            open={isOpen}
-            label={`Manage deposits for ${prizePool.id()}`}
-            onDismiss={onDismiss}
-            chainId={chainId}
-            delegate={delegate}
-            internalLinks={
-              <Link href={{ pathname: '/deposit', query: router.query }}>
-                <SquareLink
-                  size={SquareButtonSize.md}
-                  theme={SquareButtonTheme.teal}
-                  className='w-full'
-                >
-                  {t('deposit')}
-                </SquareLink>
-              </Link>
-            }
-            views={[
-              {
-                id: 'withdraw',
-                view: () => (
-                  <WithdrawView
-                    usersAddress={usersAddress}
-                    prizePool={prizePool}
-                    balances={balances}
-                    setWithdrawTxId={setTxId}
-                    onDismiss={onDismiss}
-                    refetchBalances={refetchBalances}
-                  />
-                ),
-                label: t('withdraw'),
-                theme: SquareButtonTheme.tealOutline
-              }
-            ]}
-            moreInfoViews={[
-              {
-                id: 'delegate',
-                view: () => (
-                  <DelegateView
-                    prizePool={prizePool}
-                    balances={balances}
-                    refetchBalances={refetchBalances}
-                  />
-                ),
-                icon: 'gift',
-                label: t('delegateDeposit', 'Delegate deposit'),
-                theme: SquareButtonTheme.teal
-              }
-            ]}
-            token={balances.ticket}
-            balance={balances.ticket}
-            balanceUsd={balances.ticket}
-            t={t}
-            contractLinks={contractLinks}
-            isWalletOnProperNetwork={isWalletOnProperNetwork}
-            isWalletMetaMask={isWalletMetaMask}
-          />
-        </>
-      )} */
-}
-
 interface PromotionListItemProps {
-  chainId: number
   left: React.ReactNode
   right: React.ReactNode
   onClick: () => void
 }
 
 const PromotionListItem = (props: PromotionListItemProps) => {
-  const { chainId, onClick, left, right } = props
+  const { onClick, left, right } = props
 
   return (
     <li className='transition bg-white bg-opacity-10 hover:bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
