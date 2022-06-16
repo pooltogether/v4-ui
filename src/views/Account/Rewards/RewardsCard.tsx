@@ -11,11 +11,7 @@ import {
   TokenIcon,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import {
-  useToken,
-  useNetworkHexColor,
-  useCoingeckoTokenPricesAcrossChains
-} from '@pooltogether/hooks'
+import { useToken, useNetworkHexColor, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
@@ -209,7 +205,11 @@ const PromotionRow = (props) => {
                   sizeClassName='w-5 h-5'
                   className='mr-2'
                 />
-                <RewardsBalance usersPromotionData={usersPromotionData} tokenData={tokenData} />
+                <RewardsBalance
+                  usersPromotionData={usersPromotionData}
+                  tokenData={tokenData}
+                  chainId={chainId}
+                />
               </div>
             }
           />
@@ -281,7 +281,7 @@ const PromotionRow = (props) => {
 }
 
 const RewardsBalance = (props) => {
-  const { usersPromotionData, tokenData } = props
+  const { usersPromotionData, tokenData, chainId } = props
   const { decimals } = tokenData
 
   let claimable = BigNumber.from(0)
@@ -292,10 +292,12 @@ const RewardsBalance = (props) => {
     })
   }
 
-  const { data: tokenPrices } = useCoingeckoTokenPricesAcrossChains({ 1: [tokenData.address] })
-  console.log({ tokenPrices })
+  const { data: tokenPrices } = useCoingeckoTokenPrices(chainId, [tokenData.address])
 
-  const claimableUsd = Number(formatUnits(claimable, decimals)) * tokenPrices?.[tokenData.address]
+  let claimableUsd
+  if (tokenPrices?.[tokenData.address]) {
+    claimableUsd = Number(formatUnits(claimable, decimals)) * tokenPrices[tokenData.address].usd
+  }
 
   return (
     <div
