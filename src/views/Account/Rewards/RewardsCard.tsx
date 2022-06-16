@@ -13,9 +13,14 @@ import {
 } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import {
+  displayPercentage,
+  numberWithCommas,
+  getNetworkNameAliasByChainId
+} from '@pooltogether/utilities'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
+import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { usePromotion } from '@hooks/v4/TwabRewards/usePromotion'
@@ -130,7 +135,7 @@ const PromotionRow = (props) => {
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers
-  const currentEpochId = Math.min(promotionData?.currentEpochId, numberOfEpochs - 1)
+  const currentEpochId = Math.min(promotionData?.currentEpochId, Number(numberOfEpochs - 1))
 
   const { data: usersPromotionData } = useUsersPromotionRewardsAmount(
     chainId,
@@ -204,6 +209,13 @@ const PromotionRow = (props) => {
                   address={token}
                   sizeClassName='w-5 h-5'
                   className='mr-2'
+                />
+                <EstimatedRewardsBalance
+                  promotion={promotion}
+                  promotionData={promotionData}
+                  usersPromotionData={usersPromotionData}
+                  tokenData={tokenData}
+                  chainId={chainId}
                 />
                 <RewardsBalance
                   usersPromotionData={usersPromotionData}
@@ -306,6 +318,59 @@ const RewardsBalance = (props) => {
       })}
     >
       ${numberWithCommas(claimableUsd)}
+    </div>
+  )
+}
+
+// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
+// my twab: 200 for epoch 1
+// twab total supply (currently for 1 chain): 1000 for epoch 1
+// 200/1000 (or 20%) is my vApr
+// 30 tokens given away for epoch 1
+// = I get 6 tokens for epoch 1
+// remaining epochs: 8
+// 6 * 8 = 48
+// I'll get 48 tokens over the entire time if nothing changes
+
+const EstimatedRewardsBalance = (props) => {
+  const { usersPromotionData, tokenData, chainId, promotionData, promotion } = props
+  const { decimals } = tokenData
+  const { tokensPerEpoch } = promotion
+
+  // console.log('*******(&&*^*&^*&^')
+  // console.log('*******(&&*^*&^*&^')
+  // console.log(promotion)
+  // console.log(promotionData)
+  const usersAddress = useUsersAddress()
+
+  const { data: usersChainRewardsTwabPercentage } = useUsersChainTwabPercentage(
+    chainId,
+    usersAddress
+  )
+
+  const percentage = usersChainRewardsTwabPercentage
+
+  const numberOfEpochs = Number(promotion?.numberOfEpochs) - 1
+
+  // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
+  // smaller of the two resulting numbers
+  const currentEpochId = Math.min(promotionData?.currentEpochId, numberOfEpochs)
+
+  const remainingEpochs = numberOfEpochs - currentEpochId
+  console.log('***')
+  console.log({ currentEpochId })
+  console.log({ remainingEpochs })
+  console.log(numberOfEpochs - currentEpochId)
+  const estimate = percentage * parseFloat(formatUnits(tokensPerEpoch, decimals)) * remainingEpochs
+
+  return (
+    <div
+      className={classNames('leading-none font-bold mr-3', {
+        'opacity-50': estimate <= 0
+      })}
+    >
+      {displayPercentage((percentage * 100).toString())}%, Est. $
+      {numberWithCommas(estimate.toString())}
     </div>
   )
 }
