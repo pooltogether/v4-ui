@@ -119,7 +119,7 @@ const PromotionsList = (props) => {
 
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
-  const { id, startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
+  const { id, adjustedCurrentEpochId, token } = promotion
 
   const { t } = useTranslation()
 
@@ -130,17 +130,12 @@ const PromotionRow = (props) => {
 
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
-  const { data: promotionData } = usePromotion(chainId, Number(id))
   const usersAddress = useUsersAddress()
-
-  // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
-  // smaller of the two resulting numbers
-  const currentEpochId = Math.min(promotionData?.currentEpochId, Number(numberOfEpochs - 1))
 
   const { data: usersPromotionData } = useUsersPromotionRewardsAmount(
     chainId,
     Number(id),
-    currentEpochId,
+    adjustedCurrentEpochId,
     usersAddress
   )
 
@@ -212,7 +207,6 @@ const PromotionRow = (props) => {
                 />
                 <EstimatedRewardsBalance
                   promotion={promotion}
-                  promotionData={promotionData}
                   usersPromotionData={usersPromotionData}
                   tokenData={tokenData}
                   chainId={chainId}
@@ -333,13 +327,12 @@ const RewardsBalance = (props) => {
 // I'll get 48 tokens over the entire time if nothing changes
 
 const EstimatedRewardsBalance = (props) => {
-  const { usersPromotionData, tokenData, chainId, promotionData, promotion } = props
+  const { usersPromotionData, tokenData, chainId, promotion } = props
   const { decimals } = tokenData
-  const { tokensPerEpoch } = promotion
+  const { tokensPerEpoch, remainingEpochs } = promotion
 
   // console.log('*******(&&*^*&^*&^')
-  // console.log('*******(&&*^*&^*&^')
-  // console.log(promotion)
+  // console.log({ promotion })
   // console.log(promotionData)
   const usersAddress = useUsersAddress()
 
@@ -350,17 +343,6 @@ const EstimatedRewardsBalance = (props) => {
 
   const percentage = usersChainRewardsTwabPercentage
 
-  const numberOfEpochs = Number(promotion?.numberOfEpochs) - 1
-
-  // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
-  // smaller of the two resulting numbers
-  const currentEpochId = Math.min(promotionData?.currentEpochId, numberOfEpochs)
-
-  const remainingEpochs = numberOfEpochs - currentEpochId
-  console.log('***')
-  console.log({ currentEpochId })
-  console.log({ remainingEpochs })
-  console.log(numberOfEpochs - currentEpochId)
   const estimate = percentage * parseFloat(formatUnits(tokensPerEpoch, decimals)) * remainingEpochs
 
   return (
