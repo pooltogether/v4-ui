@@ -21,7 +21,7 @@ import {
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { InfoListItem } from '@components/InfoList'
 import { DepositAmountInput } from '@components/Input/DepositAmountInput'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
+import { PrizePoolNetworkEstimatedAPRItem } from '@components/InfoList/PrizePoolNetworkPrizePoolNetworkEstimatedAPRItem'
 import { TxButton } from '@components/Input/TxButton'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
@@ -209,7 +209,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   return (
     <InfoList bgClassName={bgClassName} className={className}>
-      <EstimatedAPRItem
+      <PrizePoolNetworkEstimatedAPRItem
         chainId={chainId}
         labelClassName={labelClassName}
         valueClassName={valueClassName}

@@ -21,8 +21,8 @@ import { Transaction, TransactionStatus, useWalletChainId } from '@pooltogether/
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { ModalInfoList } from '@components/InfoList'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
-import { UpdatedOdds } from '@components/UpdatedOddsListItem'
+import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/UpdatedPrizePoolNetworkOddsListItem'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
@@ -31,7 +31,7 @@ import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
+import { PrizePoolNetworkEstimatedAPRItem } from '@components/InfoList/PrizePoolNetworkPrizePoolNetworkEstimatedAPRItem'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
@@ -192,8 +192,11 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             <ModalInfoList>
               {prizePool && (
                 <>
-                  <EstimatedAPRItem chainId={prizePool.chainId} />
-                  <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
+                  <PrizePoolNetworkEstimatedAPRItem chainId={prizePool.chainId} />
+                  <UpdatedPrizePoolNetworkOddsListItem
+                    amount={amountToDeposit}
+                    action={EstimateAction.deposit}
+                  />
                 </>
               )}
               <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />

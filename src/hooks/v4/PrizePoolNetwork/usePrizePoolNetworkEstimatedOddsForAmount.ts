@@ -2,8 +2,7 @@ import { Amount } from '@pooltogether/hooks'
 import { calculateOdds } from '@pooltogether/utilities'
 import { BigNumber, ethers } from 'ethers'
 import { useMemo } from 'react'
-
-import { useOverallOddsData } from './useOverallOddsData'
+import { usePrizePoolNetworkOddsData } from './usePrizePoolNetworkOddsData'
 
 export enum EstimateAction {
   none = 'NONE',
@@ -11,14 +10,14 @@ export enum EstimateAction {
   deposit = 'DEPOSIT'
 }
 
-export const useEstimatedOddsForAmount = (
+export const usePrizePoolNetworkEstimatedOddsForAmount = (
   amount: Amount,
   action: EstimateAction = EstimateAction.none,
   changeAmountUnformatted: BigNumber = ethers.constants.Zero
 ) => {
   // TODO: Fix so this cna be used for multiple networks
   // const data = useOddsData(prizePool)
-  const data = useOverallOddsData()
+  const data = usePrizePoolNetworkOddsData()
 
   return useMemo(() => {
     if (!Boolean(data) || amount === undefined || amount === null) {

@@ -1,17 +1,22 @@
 import { BigNumber, ethers } from 'ethers'
-import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { EstimateAction, estimateOddsForAmount } from './useEstimatedOddsForAmount'
-import { useOverallOddsData } from './useOverallOddsData'
 import { useMemo } from 'react'
+import {
+  EstimateAction,
+  estimateOddsForAmount
+} from '../PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
+import { usePrizePoolOddsData } from './usePrizePoolOddsData'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { useUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
 
 /**
- * Calculates hte users overall chances of winning a prize on any network
+ * Calculates the users overall chances of winning a prize on any network
  * @param action
  * @param amountUnformatted
  * @returns
  */
-export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
+export const useUsersPrizePoolOdds = (
   usersAddress: string,
+  prizePool: PrizePool,
   action: EstimateAction = EstimateAction.none,
   amountUnformatted: BigNumber = ethers.constants.Zero,
   daysOfPrizes: number = 1
@@ -20,15 +25,18 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
   odds: number
   oneOverOdds: number
 } => {
-  const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
-  const data = useOverallOddsData()
+  const { data: twabData, isFetched: isTwabsFetched } = useUsersPrizePoolTwab(
+    usersAddress,
+    prizePool
+  )
+  const data = usePrizePoolOddsData(prizePool)
   return useMemo(() => {
-    if (!isTwabsFetched || !data || !twabs) {
+    if (!isTwabsFetched || !data || !twabData) {
       return undefined
     }
     const { totalSupply, numberOfPrizes, decimals } = data
     const { odds, oneOverOdds } = estimateOddsForAmount(
-      twabs.twab,
+      twabData.twab,
       totalSupply,
       numberOfPrizes * daysOfPrizes,
       decimals,
@@ -44,7 +52,7 @@ export const useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork = (
     data?.decimals,
     data?.numberOfPrizes,
     data?.totalSupply.amount,
-    twabs?.twab.amount,
+    twabData?.twab.amount,
     action,
     amountUnformatted,
     daysOfPrizes

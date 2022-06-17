@@ -1,5 +1,5 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
-import { useEstimatedOddsForAmount } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
+import { usePrizePoolNetworkEstimatedOddsForAmount } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import React from 'react'
 import { Trans } from 'react-i18next'
@@ -12,7 +12,7 @@ interface XDollarsGetsYouProps
 export const XDollarsGetsYou = (props: XDollarsGetsYouProps) => {
   const { x, ...spanProps } = props
   const { data: decimals, isFetched } = useSelectedPrizePoolTicketDecimals()
-  const { data: odds } = useEstimatedOddsForAmount(
+  const { data: odds } = usePrizePoolNetworkEstimatedOddsForAmount(
     isFetched ? getAmountFromString(x, decimals) : undefined
   )
 
