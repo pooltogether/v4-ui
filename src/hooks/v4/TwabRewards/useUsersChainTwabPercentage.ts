@@ -32,6 +32,7 @@ const useChainIdPrizePoolTicketTotalSupply = (chainId) => {
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
+  // console.log({ prizePoolTotalSupply: prizePoolTotalSupply.toString() })
 
   return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals }
 }
@@ -54,7 +55,9 @@ export const getUsersChainTwabPercentage = async (
 ) => {
   const usersChainTwabAmountUnformatted = getTwabForChain(chainId, usersTwabs)
 
+  console.log('**********')
   const total = formatUnits(totalTwabSupply, Number(decimals))
+  console.log({ total })
   const users = formatUnits(usersChainTwabAmountUnformatted, Number(decimals))
 
   return parseFloat(users) / parseFloat(total)

@@ -16,15 +16,16 @@ import {
 export const useUsersPromotionRewardsAmount = (
   chainId: number,
   promotionId: number,
-  currentEpochId: number,
+  maxCompletedEpochId: number,
   usersAddress: string
 ) => {
   return useQuery(
-    getUsersChainPromotionKey(chainId, promotionId, currentEpochId, usersAddress),
-    async () => getUsersPromotionRewardsAmount(chainId, promotionId, currentEpochId, usersAddress),
+    getUsersChainPromotionKey(chainId, promotionId, maxCompletedEpochId, usersAddress),
+    async () =>
+      getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress),
     {
       ...NO_REFETCH,
-      enabled: Boolean(currentEpochId)
+      enabled: Boolean(maxCompletedEpochId)
     }
   )
 }
@@ -39,14 +40,14 @@ const getUsersChainPromotionKey = (
 export const getUsersPromotionRewardsAmount = async (
   chainId: number,
   promotionId: number,
-  currentEpochId: number,
+  maxCompletedEpochId: number,
   usersAddress: string
 ) => {
   const provider = getReadProvider(chainId, RPC_API_KEYS)
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
 
-  const epochIds = [...Array(currentEpochId + 1).keys()]
+  const epochIds = [...Array(maxCompletedEpochId).keys()]
 
   const twabRewardsResults = await batch(
     provider,

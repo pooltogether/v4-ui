@@ -23,7 +23,6 @@ import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
-import { usePromotion } from '@hooks/v4/TwabRewards/usePromotion'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
@@ -119,7 +118,7 @@ const PromotionsList = (props) => {
 
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
-  const { id, adjustedCurrentEpochId, token } = promotion
+  const { id, maxCompletedEpochId, token } = promotion
 
   const { t } = useTranslation()
 
@@ -135,7 +134,7 @@ const PromotionRow = (props) => {
   const { data: usersPromotionData } = useUsersPromotionRewardsAmount(
     chainId,
     Number(id),
-    adjustedCurrentEpochId,
+    maxCompletedEpochId,
     usersAddress
   )
 
@@ -205,13 +204,8 @@ const PromotionRow = (props) => {
                   sizeClassName='w-5 h-5'
                   className='mr-2'
                 />
-                <EstimatedRewardsBalance
-                  promotion={promotion}
-                  usersPromotionData={usersPromotionData}
-                  tokenData={tokenData}
-                  chainId={chainId}
-                />
                 <RewardsBalance
+                  promotion={promotion}
                   usersPromotionData={usersPromotionData}
                   tokenData={tokenData}
                   chainId={chainId}
@@ -286,9 +280,20 @@ const PromotionRow = (props) => {
   )
 }
 
+// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
+// my twab: 200 for epoch 1
+// twab total supply (currently for 1 chain): 1000 for epoch 1
+// 200/1000 (or 20%) is my vApr
+// 30 tokens given away for epoch 1
+// = I get 6 tokens for epoch 1
+// remaining epochs: 8
+// 6 * 8 = 48
+// I'll get 48 tokens over the entire time if nothing changes
+
 const RewardsBalance = (props) => {
-  const { usersPromotionData, tokenData, chainId } = props
+  const { usersPromotionData, tokenData, chainId, promotion } = props
   const { decimals } = tokenData
+  const { tokensPerEpoch, remainingEpochs } = promotion
 
   let claimable = BigNumber.from(0)
   if (usersPromotionData) {
@@ -305,35 +310,6 @@ const RewardsBalance = (props) => {
     claimableUsd = Number(formatUnits(claimable, decimals)) * tokenPrices[tokenData.address].usd
   }
 
-  return (
-    <div
-      className={classNames('leading-none font-bold mr-3', {
-        'opacity-50': claimable.isZero()
-      })}
-    >
-      ${numberWithCommas(claimableUsd)}
-    </div>
-  )
-}
-
-// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
-// my twab: 200 for epoch 1
-// twab total supply (currently for 1 chain): 1000 for epoch 1
-// 200/1000 (or 20%) is my vApr
-// 30 tokens given away for epoch 1
-// = I get 6 tokens for epoch 1
-// remaining epochs: 8
-// 6 * 8 = 48
-// I'll get 48 tokens over the entire time if nothing changes
-
-const EstimatedRewardsBalance = (props) => {
-  const { usersPromotionData, tokenData, chainId, promotion } = props
-  const { decimals } = tokenData
-  const { tokensPerEpoch, remainingEpochs } = promotion
-
-  // console.log('*******(&&*^*&^*&^')
-  // console.log({ promotion })
-  // console.log(promotionData)
   const usersAddress = useUsersAddress()
 
   const { data: usersChainRewardsTwabPercentage } = useUsersChainTwabPercentage(
@@ -344,15 +320,20 @@ const EstimatedRewardsBalance = (props) => {
   const percentage = usersChainRewardsTwabPercentage
 
   const estimate = percentage * parseFloat(formatUnits(tokensPerEpoch, decimals)) * remainingEpochs
+  const estimateUsd = 4124
+
+  const estimateAndClaimableUsd = estimate + claimableUsd
+
+  // $1.53
+  // $181.92
 
   return (
     <div
       className={classNames('leading-none font-bold mr-3', {
-        'opacity-50': estimate <= 0
+        'opacity-50': estimateAndClaimableUsd <= 0
       })}
     >
-      {displayPercentage((percentage * 100).toString())}%, Est. $
-      {numberWithCommas(estimate.toString())}
+      ${numberWithCommas(estimateAndClaimableUsd)}
     </div>
   )
 }

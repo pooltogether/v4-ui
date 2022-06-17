@@ -16,7 +16,7 @@ import {
 
 const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID.rinkeby]: ['0x2', '0x4'],
-  // [CHAIN_ID.rinkeby]: ['0x4', '0x5'],
+  // [CHAIN_ID.rinkeby]: ['0x1', '0x2', '0x3', '0x4', '0x5'],
   [CHAIN_ID.mumbai]: ['0x1', '0x2'],
   [CHAIN_ID.fuji]: ['0x1', '0x2'],
   [CHAIN_ID.avalanche]: [],
@@ -72,22 +72,28 @@ export const getGraphFilteredPromotions = async (chainId: number, client: GraphQ
 }
 
 const formatPromotionData = (promotion, promotionRpcData) => {
-  // Massage ze datas
-  const adjustedNumberOfEpochs = Number(promotion.numberOfEpochs) - 1
-  const isComplete = Number(promotionRpcData.currentEpochId) >= Number(promotion.numberOfEpochs)
+  const numberOfEpochs = Number(promotion.numberOfEpochs)
+  const epochDuration = Number(promotion.epochDuration)
+
+  const isComplete = Number(promotionRpcData.currentEpochId) >= numberOfEpochs
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers
-  const adjustedCurrentEpochId = Math.min(promotionRpcData.currentEpochId, adjustedNumberOfEpochs)
+  const maxCompletedEpochId =
+    promotionRpcData.currentEpochId === 0
+      ? null
+      : Math.min(promotionRpcData.currentEpochId, numberOfEpochs)
 
-  const remainingEpochs = Number(promotion?.numberOfEpochs) - adjustedCurrentEpochId
+  const remainingEpochs = Number(promotion?.numberOfEpochs) - maxCompletedEpochId
 
   return {
     ...promotionRpcData,
     ...promotion,
+    maxCompletedEpochId,
     remainingEpochs,
     isComplete,
-    adjustedCurrentEpochId
+    numberOfEpochs,
+    epochDuration
   }
 }
 
