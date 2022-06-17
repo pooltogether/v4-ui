@@ -13,6 +13,7 @@ import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID.rinkeby]: ['0x2', '0x4'],
@@ -74,6 +75,12 @@ export const getGraphFilteredPromotions = async (chainId: number, client: GraphQ
 const formatPromotionData = (promotion, promotionRpcData) => {
   const numberOfEpochs = Number(promotion.numberOfEpochs)
   const epochDuration = Number(promotion.epochDuration)
+  const createdAt = Number(promotion.createdAt)
+  const destroyedAt = Number(promotion.destroyedAt)
+  const endedAt = Number(promotion.endedAt)
+  const startTimestamp = Number(promotion.startTimestamp)
+
+  const tokensPerEpoch = getAmountFromBigNumber(promotion.tokensPerEpoch, '2')
 
   const isComplete = Number(promotionRpcData.currentEpochId) >= numberOfEpochs
 
@@ -93,7 +100,11 @@ const formatPromotionData = (promotion, promotionRpcData) => {
     remainingEpochs,
     isComplete,
     numberOfEpochs,
-    epochDuration
+    epochDuration,
+    createdAt,
+    destroyedAt,
+    endedAt,
+    startTimestamp
   }
 }
 

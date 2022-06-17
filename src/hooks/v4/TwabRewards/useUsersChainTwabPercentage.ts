@@ -32,8 +32,8 @@ const useChainIdPrizePoolTicketTotalSupply = (chainId) => {
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
-  console.log('prizePoolTotalSupply:')
-  console.log(Number(prizePoolTotalSupply.toString()) - 25517000013)
+  // console.log('prizePoolTotalSupply:')
+  // console.log(Number(prizePoolTotalSupply.toString()) - 25517000013)
 
   return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals }
 }

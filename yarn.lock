@@ -2786,10 +2786,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/hardhat-deploy-markdown-export/-/hardhat-deploy-markdown-export-0.1.1.tgz#95c8fb6b63d4b721146917e11f53d24fc06f11cf"
   integrity sha512-qawd7dakhNIzk4CHbAI5lbEM25PuZXHfeIwLBQP5qxAVkDJnR7H7vAxksGdlHYYi4XddmC0W+QPlIFSAi8jTaA==
 
-"@pooltogether/hooks@^1.10.2":
-  version "1.10.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.10.2.tgz#abdb7ff863280e70d482cab1431a8b60f44770f0"
-  integrity sha512-XfwlA2U9LQcGnHo1xcKFBvYbdPpSJvI63OO9S271jhUeQxtMgeQnlDlDbvepj8mfvLNRUeXMfWxrrIjEI+bfCQ==
+"@pooltogether/hooks@^1.10.3":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.10.3.tgz#7171952f2895138809f186317b31c62cbc1d3975"
+  integrity sha512-PQYHdJoW54szXqsY1xD5leuIVYZgLiIsZ50EAziKTWJ2HOEUMRxH8LXTJkaGPdU+XxshEb0z9gI5YZif2JMmAg==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
