@@ -21,8 +21,11 @@ import {
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { InfoListItem } from '@components/InfoList'
 import { DepositAmountInput } from '@components/Input/DepositAmountInput'
-import { PrizePoolNetworkEstimatedAPRItem } from '@components/InfoList/PrizePoolNetworkPrizePoolNetworkEstimatedAPRItem'
+
 import { TxButton } from '@components/Input/TxButton'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { PrizePoolAPRItem } from '@components/InfoList/PrizePoolAPRItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -168,6 +171,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   } = props
 
   const { t } = useTranslation()
+  const prizePool = usePrizePoolBySelectedChainId()
 
   const errorMessages = errors ? Object.values(errors) : null
   if (
@@ -209,8 +213,9 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   return (
     <InfoList bgClassName={bgClassName} className={className}>
-      <PrizePoolNetworkEstimatedAPRItem
-        chainId={chainId}
+      <PrizePoolNetworkAPRItem labelClassName={labelClassName} valueClassName={valueClassName} />
+      <PrizePoolAPRItem
+        prizePool={prizePool}
         labelClassName={labelClassName}
         valueClassName={valueClassName}
       />

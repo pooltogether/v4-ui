@@ -20,9 +20,7 @@ import { Transaction, TransactionStatus, useWalletChainId } from '@pooltogether/
 
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/UpdatedPrizePoolNetworkOddsListItem'
+import { InfoListHeader, ModalInfoList } from '@components/InfoList'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
@@ -31,11 +29,14 @@ import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
-import { PrizePoolNetworkEstimatedAPRItem } from '@components/InfoList/PrizePoolNetworkPrizePoolNetworkEstimatedAPRItem'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -192,9 +193,19 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             <ModalInfoList>
               {prizePool && (
                 <>
-                  <PrizePoolNetworkEstimatedAPRItem chainId={prizePool.chainId} />
+                  <InfoListHeader
+                    className='mt-2'
+                    textColorClassName='text-pt-purple-light'
+                    label={'Estimated stats'}
+                  />
+                  <PrizePoolNetworkAPRItem />
                   <UpdatedPrizePoolNetworkOddsListItem
                     amount={amountToDeposit}
+                    action={EstimateAction.deposit}
+                  />
+                  <UpdatedPrizePoolOddsListItem
+                    amount={amountToDeposit}
+                    prizePool={prizePool}
                     action={EstimateAction.deposit}
                   />
                 </>

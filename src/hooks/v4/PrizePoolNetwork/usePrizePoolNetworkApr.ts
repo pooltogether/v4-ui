@@ -4,6 +4,8 @@ import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkT
 import { calculateApr } from '@utils/calculateApr'
 import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
 import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { usePrizePoolTokens } from '@pooltogether/hooks'
 
 /**
  * NOTE: Assumes all networks award the same token.
@@ -13,17 +15,20 @@ import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
 export const usePrizePoolNetworkApr = () => {
   const prizePool = usePrizePoolBySelectedChainId()
   const { data: prizeTierData, isFetched: isPrizeConfigFetched } = useUpcomingPrizeTier(prizePool)
+  const { data: tokenData, isFetched: isTokenDataFetched } = usePrizePoolTokens(prizePool)
   const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
-  const enabled = isPrizeConfigFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier
+  const enabled =
+    isPrizeConfigFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isTokenDataFetched
   return useQuery(
     ['usePrizePoolNetworkApr', prizeTierData?.prizeTier.prize.toString(), totalSupplyData],
-    () =>
-      calculateApr(
-        totalSupplyData.totalSupply,
-        totalSupplyData.decimals,
-        prizeTierData?.prizeTier.prize
-      ),
+    () => {
+      const scaledTvl = parseUnits(
+        formatUnits(totalSupplyData.totalSupply.amountUnformatted, totalSupplyData.decimals),
+        tokenData.ticket.decimals
+      )
+      return calculateApr(scaledTvl, prizeTierData?.prizeTier.prize)
+    },
     {
       ...NO_REFETCH,
       enabled

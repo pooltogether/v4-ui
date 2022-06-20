@@ -32,7 +32,7 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
 
   return (
     <InfoListItem
-      label={'Updated Prize Pool winning odds'}
+      label={'Prize Pool winning odds'}
       labelToolTip={'Your estimated odds of winning at least one prize in this prize pool'}
       loading={!isFetched}
       value={value}

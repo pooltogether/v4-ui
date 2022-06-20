@@ -1,6 +1,7 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { divideBigNumbers } from '@utils/divideBigNumbers'
 import { parseEther } from 'ethers/lib/utils'
+import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 
@@ -10,20 +11,23 @@ export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
   const { data: prizePoolNetworkTvl, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
 
-  if (!isPrizePoolTvlFetched || !isPrizePoolNetworkTvlFetched) {
-    return {
-      data: null,
-      isFetched: false
-    }
-  }
+  const isFetched = isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched
 
-  return {
-    data: getPrizePoolPercentageOfPicks(
-      prizePoolTvl.amount.amount,
-      prizePoolNetworkTvl.totalSupply.amount
-    ),
-    isFetched: true
-  }
+  return useQuery(
+    [
+      'usePrizePoolPercentageOfPicks',
+      prizePool?.id(),
+      prizePoolTvl?.amount.amount,
+      prizePoolNetworkTvl?.totalSupply.amount
+    ],
+    () => {
+      return getPrizePoolPercentageOfPicks(
+        prizePoolTvl.amount.amount,
+        prizePoolNetworkTvl.totalSupply.amount
+      )
+    },
+    { enabled: isFetched }
+  )
 }
 
 export const getPrizePoolPercentageOfPicks = (

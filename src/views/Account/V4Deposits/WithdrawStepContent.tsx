@@ -20,10 +20,11 @@ import { TxButton } from '@components/Input/TxButton'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/UpdatedPrizePoolNetworkOddsListItem'
-import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { WithdrawalSteps } from './WithdrawView'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -335,6 +336,10 @@ const UpdatedStats = (props: {
   return (
     <ModalInfoList className={className}>
       <UpdatedPrizePoolNetworkOddsListItem
+        amount={amountToWithdraw}
+        action={EstimateAction.withdraw}
+      />
+      <UpdatedPrizePoolOddsListItem
         amount={amountToWithdraw}
         prizePool={prizePool}
         action={EstimateAction.withdraw}

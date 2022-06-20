@@ -14,7 +14,6 @@ import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
-import { usePrizePoolApr } from '@hooks/v4/usePrizePoolNetworkApr'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
@@ -22,8 +21,6 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
-
-  usePrizePoolApr(prizePool)
 
   const ticket = prizePoolTokens?.ticket
   const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched

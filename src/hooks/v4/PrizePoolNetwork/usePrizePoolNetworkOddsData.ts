@@ -1,4 +1,6 @@
+import { NO_REFETCH } from '@constants/query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
+import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTotalNumberOfPrizes } from '../PrizePoolNetwork/usePrizePoolNetworkTotalNumberOfPrizes'
 
 /**
@@ -12,12 +14,15 @@ export const usePrizePoolNetworkOddsData = () => {
     usePrizePoolNetworkTotalNumberOfPrizes()
 
   const isFetched = isTotalSupplyFetched && isTotalNumberOfPrizesFetched
-  if (!isFetched) {
-    return null
-  }
-
-  return {
-    ...totalSupplyData,
-    numberOfPrizes
-  }
+  return useQuery(
+    ['usePrizePoolNetworkOddsData', totalSupplyData?.totalSupply.amount],
+    () => ({
+      ...totalSupplyData,
+      numberOfPrizes
+    }),
+    {
+      ...NO_REFETCH,
+      enabled: isFetched
+    }
+  )
 }

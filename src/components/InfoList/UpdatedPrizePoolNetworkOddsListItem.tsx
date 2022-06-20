@@ -15,9 +15,11 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const oddsData = useUsersPrizePoolNetworkOdds(usersAddress, action, amount?.amountUnformatted)
-
-  const isFetched = !!oddsData
+  const { data: oddsData, isFetched } = useUsersPrizePoolNetworkOdds(
+    usersAddress,
+    action,
+    amount?.amountUnformatted
+  )
 
   let value
   if (isFetched) {
@@ -30,7 +32,7 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
 
   return (
     <InfoListItem
-      label={'Updated Prize Pool Network winning odds'}
+      label={'Prize Pool Network winning odds'}
       labelToolTip={'Your estimated odds of winning at least one prize across the whole network'}
       loading={!isFetched}
       value={value}

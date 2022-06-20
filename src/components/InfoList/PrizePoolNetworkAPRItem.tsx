@@ -1,30 +1,25 @@
 import { useTranslation } from 'react-i18next'
-
 import { InfoListItem } from '.'
-import { usePrizePoolApr } from '@hooks/v4/usePrizePoolNetworkApr'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-
-interface PrizePoolNetworkEstimatedAPRItemProps {
-  chainId: number
-  labelClassName?: string
-  valueClassName?: string
-}
+import { usePrizePoolNetworkApr } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkApr'
 
 /**
  *
  * @param props
  * @returns
  */
-export const PrizePoolNetworkEstimatedAPRItem = (props: PrizePoolNetworkEstimatedAPRItemProps) => {
+export const PrizePoolNetworkAPRItem: React.FC<{
+  labelClassName?: string
+  valueClassName?: string
+}> = (props) => {
   const { labelClassName, valueClassName } = props
-  const prizePool = usePrizePoolBySelectedChainId()
-  const { data: apr, isFetched } = usePrizePoolApr(prizePool)
+  const { data: apr, isFetched } = usePrizePoolNetworkApr()
   const { t } = useTranslation()
   return (
     <InfoListItem
       labelClassName={labelClassName}
       valueClassName={valueClassName}
-      label={'Estimated Prize Pool Network APR'}
+      label={'Prize Pool Network APR'}
       labelToolTip={
         'Estimated Prize Pool Network APR is a rough estimate based on the current TVL of the entire Prize Pool Network and daily prizes for all prize pools'
       }

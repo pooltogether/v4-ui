@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/Odds/useUsersPrizePoolNetworkOdds'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
@@ -41,17 +41,17 @@ export const AccountCard = (props: AccountCardProps) => {
 const TotalBalance = (props: { className?: string }) => {
   const { className } = props
   const { t } = useTranslation()
-  const { data, isFetching, isFetched } = useUsersTotalBalances()
+  const { data: balancesData } = useUsersTotalBalances()
   return (
     <a href='#deposits' className={className}>
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
-          isFetched={isFetched}
-          totalBalanceUsd={data.totalBalanceUsd}
-          totalV4Balance={data.totalV4Balance}
+          isFetched={balancesData.isFullyFetched}
+          totalBalanceUsd={balancesData.data.totalBalanceUsd}
+          totalV4Balance={balancesData.data.totalV4Balance}
         />
-        {isFetching ? (
+        {balancesData.isStillFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
@@ -91,7 +91,7 @@ const WeeklyOdds = () => <OddsBox i18nKey='weeklyOdds' daysOfPrizes={7} />
 const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
   const { i18nKey, daysOfPrizes } = props
   const usersAddress = useUsersAddress()
-  const data = useUsersPrizePoolNetworkOdds(
+  const { data, isFetched } = useUsersPrizePoolNetworkOdds(
     usersAddress,
     EstimateAction.none,
     ethers.constants.Zero,
@@ -99,7 +99,7 @@ const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
   )
   const { t } = useTranslation()
 
-  if (!Boolean(data)) {
+  if (!isFetched) {
     return (
       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <ThemedClipSpinner sizeClassName='w-5 h-5' className='mx-auto' />

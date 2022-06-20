@@ -1,6 +1,8 @@
+import { NO_REFETCH } from '@constants/query'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { parseEther } from 'ethers/lib/utils'
+import { useQuery } from 'react-query'
 import { useAllPrizePoolTicketTwabTotalSupplies } from '../PrizePool/useAllPrizePoolTicketTwabTotalSupplies'
 
 /**
@@ -10,23 +12,32 @@ import { useAllPrizePoolTicketTwabTotalSupplies } from '../PrizePool/useAllPrize
  */
 export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const queryResults = useAllPrizePoolTicketTwabTotalSupplies()
-
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
-  let networkTotalSupplyNormalized = BigNumber.from(0)
-  queryResults.forEach((queryResult) => {
-    const { data: totalSupplyData, isFetched } = queryResult
-    if (isFetched) {
-      const totalSupplyNormalized = parseEther(totalSupplyData.amount.amount)
-      networkTotalSupplyNormalized = networkTotalSupplyNormalized.add(totalSupplyNormalized)
-    }
-  })
+  return useQuery(
+    [
+      'usePrizePoolNetworkTicketTwabTotalSupply',
+      queryResults.map((q) => q.data?.prizePoolId).join('-'),
+      queryResults.map((q) => q.data?.amount.amount).join('-')
+    ],
+    () => {
+      let networkTotalSupplyNormalized = BigNumber.from(0)
+      queryResults.forEach((queryResult) => {
+        const { data: totalSupplyData, isFetched } = queryResult
+        if (isFetched) {
+          const totalSupplyNormalized = parseEther(totalSupplyData.amount.amount)
+          networkTotalSupplyNormalized = networkTotalSupplyNormalized.add(totalSupplyNormalized)
+        }
+      })
 
-  return {
-    data: {
-      totalSupply: getAmountFromBigNumber(networkTotalSupplyNormalized, '18'),
-      decimals: '18'
+      return {
+        totalSupply: getAmountFromBigNumber(networkTotalSupplyNormalized, '18'),
+        decimals: '18'
+      }
     },
-    isFetched
-  }
+    {
+      ...NO_REFETCH,
+      enabled: isFetched
+    }
+  )
 }
