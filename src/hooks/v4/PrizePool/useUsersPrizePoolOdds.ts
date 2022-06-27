@@ -1,12 +1,12 @@
 import { BigNumber, ethers } from 'ethers'
-import { useMemo } from 'react'
-import {
-  EstimateAction,
-  estimateOddsForAmount
-} from '../PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
 import { usePrizePoolOddsData } from './usePrizePoolOddsData'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
+import { useQuery } from 'react-query'
+import { Amount } from '@pooltogether/hooks'
+import { EstimateAction } from '@constants/odds'
+import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
+import { NO_REFETCH } from '@constants/query'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -18,43 +18,92 @@ export const useUsersPrizePoolOdds = (
   usersAddress: string,
   prizePool: PrizePool,
   action: EstimateAction = EstimateAction.none,
-  amountUnformatted: BigNumber = ethers.constants.Zero,
-  daysOfPrizes: number = 1
-): {
-  usersAddress: string
-  odds: number
-  oneOverOdds: number
-} => {
-  const { data: twabData, isFetched: isTwabsFetched } = useUsersPrizePoolTwab(
+  actionAmountUnformatted: BigNumber = ethers.constants.Zero
+) => {
+  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwab(
     usersAddress,
     prizePool
   )
-  const data = usePrizePoolOddsData(prizePool)
-  return useMemo(() => {
-    if (!isTwabsFetched || !data || !twabData) {
-      return undefined
-    }
-    const { totalSupply, numberOfPrizes, decimals } = data
-    const { odds, oneOverOdds } = estimateOddsForAmount(
-      twabData.twab,
-      totalSupply,
-      numberOfPrizes * daysOfPrizes,
-      decimals,
-      action,
-      amountUnformatted
-    )
-    return {
+  const { data: oddsData, isFetched: isOddsDataFetched } = usePrizePoolOddsData(prizePool)
+
+  const enabled =
+    !!usersAddress &&
+    !!isOddsDataFetched &&
+    !!isTwabDataFetched &&
+    usersAddress === twabData?.usersAddress
+
+  return useQuery(
+    getUsersPrizePoolOddsKey(
       usersAddress,
-      odds,
-      oneOverOdds
-    }
-  }, [
-    data?.decimals,
-    data?.numberOfPrizes,
-    data?.totalSupply.amount,
-    twabData?.twab.amount,
+      prizePool,
+      twabData?.twab,
+      oddsData?.totalSupply,
+      oddsData?.numberOfPrizes,
+      action,
+      actionAmountUnformatted
+    ),
+    () =>
+      getUsersPrizePoolOdds(
+        usersAddress,
+        prizePool,
+        oddsData,
+        twabData,
+        action,
+        actionAmountUnformatted
+      ),
+    { enabled, ...NO_REFETCH }
+  )
+}
+
+export const getUsersPrizePoolOddsKey = (
+  usersAddress: string,
+  prizePool: PrizePool,
+  twab: Amount,
+  totalSupply: Amount,
+  numberOfPrizes: number,
+  action: EstimateAction = EstimateAction.none,
+  actionAmountUnformatted: BigNumber = ethers.constants.Zero
+) => [
+  'useUsersPrizePoolOdds',
+  usersAddress,
+  prizePool?.id(),
+  action,
+  actionAmountUnformatted?.toString(),
+  twab?.amount,
+  totalSupply?.amount,
+  numberOfPrizes
+]
+
+export const getUsersPrizePoolOdds = (
+  usersAddress: string,
+  prizePool: PrizePool,
+  oddsData: {
+    decimals: string
+    totalSupply: Amount
+    numberOfPrizes: number
+  },
+  twabData: {
+    chainId: number
+    twab: Amount
+    usersAddress: string
+  },
+  action: EstimateAction = EstimateAction.none,
+  actionAmountUnformatted: BigNumber = ethers.constants.Zero
+) => {
+  const { totalSupply, numberOfPrizes, decimals } = oddsData
+  const { twab } = twabData
+  const { odds, oneOverOdds } = estimateOddsForAmount(
+    twab,
+    totalSupply,
+    numberOfPrizes,
+    decimals,
     action,
-    amountUnformatted,
-    daysOfPrizes
-  ])
+    actionAmountUnformatted
+  )
+  return {
+    prizePoolId: prizePool?.id(),
+    usersAddress,
+    odds,
+    oneOverOdds
+  }
 }

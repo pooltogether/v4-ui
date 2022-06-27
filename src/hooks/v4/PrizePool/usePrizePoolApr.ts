@@ -1,11 +1,10 @@
 import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
-import { calculateApr } from '@utils/calculateApr'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
-import { percentageOfBigNumber } from '@utils/percentageOfBigNumber'
+import { calculateApr, calculatePercentageOfBigNumber } from '@pooltogether/utilities'
 
 /**
  * @returns
@@ -23,7 +22,10 @@ export const usePrizePoolApr = (prizePool: PrizePool) => {
   return useQuery(
     ['usePrizePoolApr', prizeTierData?.prizeTier, ticketTwabTotalSupply?.amount],
     () => {
-      const scaledDailyPrize = percentageOfBigNumber(prizeTierData.prizeTier.prize, percentage)
+      const scaledDailyPrize = calculatePercentageOfBigNumber(
+        prizeTierData.prizeTier.prize,
+        percentage.percentage
+      )
       return calculateApr(ticketTwabTotalSupply.amount.amountUnformatted, scaledDailyPrize)
     },
     {

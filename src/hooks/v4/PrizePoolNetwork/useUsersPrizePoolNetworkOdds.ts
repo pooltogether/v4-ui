@@ -1,9 +1,10 @@
-import { BigNumber, ethers } from 'ethers'
-import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { EstimateAction, estimateOddsForAmount } from './usePrizePoolNetworkEstimatedOddsForAmount'
-import { usePrizePoolNetworkOddsData } from './usePrizePoolNetworkOddsData'
+import { BigNumber } from 'ethers'
+import { EstimateAction } from '../../../constants/odds'
 import { useQuery } from 'react-query'
 import { NO_REFETCH } from '@constants/query'
+import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
+import { unionProbabilities } from '@utils/unionProbabilities'
+import { usePrizePoolNetwork } from './usePrizePoolNetwork'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -13,44 +14,39 @@ import { NO_REFETCH } from '@constants/query'
  */
 export const useUsersPrizePoolNetworkOdds = (
   usersAddress: string,
-  action: EstimateAction = EstimateAction.none,
-  amountUnformatted: BigNumber = ethers.constants.Zero,
-  daysOfPrizes: number = 1
+  actions: {
+    [prizePoolId: string]: {
+      action: EstimateAction
+      actionAmountUnformatted: BigNumber
+    }
+  } = {}
 ) => {
-  const { data: twabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
-  const { data: oddsData, isFetched: isOddsDataFetched } = usePrizePoolNetworkOddsData()
-
-  const isFetched = isTwabsFetched && isOddsDataFetched
+  const prizePoolNetwork = usePrizePoolNetwork()
+  const queryResults = useAllUsersPrizePoolOdds(usersAddress, actions)
+  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
   return useQuery(
     [
       'useUsersPrizePoolNetworkOdds',
+      prizePoolNetwork?.id(),
       usersAddress,
-      action,
-      amountUnformatted?.toString(),
-      twabs?.twab.amount,
-      daysOfPrizes
+      queryResults.map((queryResult) => queryResult.data?.odds).join('-'),
+      Object.keys(actions)?.join('-'),
+      Object.values(actions)
+        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted.toString())
+        .join('-')
     ],
     () => {
-      console.log('useUsersPrizePoolNetworkOdds', { oddsData, twabs, daysOfPrizes })
-      const { totalSupply, numberOfPrizes, decimals } = oddsData
-      const { odds, oneOverOdds } = estimateOddsForAmount(
-        twabs.twab,
-        totalSupply,
-        numberOfPrizes * daysOfPrizes,
-        decimals,
-        action,
-        amountUnformatted
-      )
+      const odds = unionProbabilities(...queryResults.map((queryResult) => queryResult.data.odds))
+      const oneOverOdds = 1 / odds
+
       return {
+        prizePoolNetworkId: prizePoolNetwork.id(),
         usersAddress,
         odds,
         oneOverOdds
       }
     },
-    {
-      ...NO_REFETCH,
-      enabled: isFetched
-    }
+    { ...NO_REFETCH, enabled: isFetched && !!usersAddress }
   )
 }

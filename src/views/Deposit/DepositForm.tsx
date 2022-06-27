@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { User, PrizePool } from '@pooltogether/v4-client-js'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import {
   useIsWalletConnected,
@@ -10,7 +10,6 @@ import {
   TransactionState
 } from '@pooltogether/wallet-connection'
 import { BigNumber } from '@ethersproject/bignumber'
-
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
@@ -21,11 +20,9 @@ import {
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { InfoListItem } from '@components/InfoList'
 import { DepositAmountInput } from '@components/Input/DepositAmountInput'
-
 import { TxButton } from '@components/Input/TxButton'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { PrizePoolAPRItem } from '@components/InfoList/PrizePoolAPRItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -80,7 +77,6 @@ export const DepositForm = (props: DepositFormProps) => {
           className='mt-3'
           depositTx={depositTx}
           depositAllowance={depositAllowance}
-          amountToDeposit={amountToDeposit}
           errors={isDirty ? errors : null}
           labelClassName='text-accent-1'
           valueClassName='text-inverse'
@@ -122,7 +118,7 @@ const DepositButton = (props: DepositBottomButtonProps) => {
   const { className, chainId, depositTx, disabled, amountToDeposit } = props
   const { t } = useTranslation()
 
-  const { amountUnformatted } = amountToDeposit
+  const amountUnformatted = amountToDeposit?.amountUnformatted
 
   let label
   if (amountUnformatted?.isZero()) {
@@ -150,7 +146,6 @@ interface DepositInfoBoxProps {
   bgClassName?: string
   depositTx: Transaction
   chainId: number
-  amountToDeposit: Amount
   depositAllowance?: BigNumber
   labelClassName?: string
   valueClassName?: string
@@ -163,7 +158,6 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
     bgClassName,
     className,
     depositAllowance,
-    amountToDeposit,
     valueClassName,
     labelClassName,
     depositTx,
@@ -171,8 +165,6 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   } = props
 
   const { t } = useTranslation()
-  const prizePool = usePrizePoolBySelectedChainId()
-
   const errorMessages = errors ? Object.values(errors) : null
   if (
     errorMessages &&
@@ -214,22 +206,15 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   return (
     <InfoList bgClassName={bgClassName} className={className}>
       <PrizePoolNetworkAPRItem labelClassName={labelClassName} valueClassName={valueClassName} />
-      <PrizePoolAPRItem
-        prizePool={prizePool}
-        labelClassName={labelClassName}
-        valueClassName={valueClassName}
-      />
       {depositAllowance?.gt(0) ? (
         <EstimatedDepositGasItem
           chainId={chainId}
-          amountUnformatted={amountToDeposit.amountUnformatted}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
         />
       ) : (
         <EstimatedApproveAndDepositGasItem
           chainId={chainId}
-          amountUnformatted={amountToDeposit.amountUnformatted}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
         />

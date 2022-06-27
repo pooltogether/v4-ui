@@ -29,3 +29,8 @@ export const PrizePoolNetworkAPRItem: React.FC<{
     />
   )
 }
+
+PrizePoolNetworkAPRItem.defaultProps = {
+  labelClassName: '',
+  valueClassName: ''
+}

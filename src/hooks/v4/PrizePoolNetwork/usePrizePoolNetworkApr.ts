@@ -1,11 +1,11 @@
 import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
-import { calculateApr } from '@utils/calculateApr'
 import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
 import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { calculateApr } from '@pooltogether/utilities'
 
 /**
  * NOTE: Assumes all networks award the same token.

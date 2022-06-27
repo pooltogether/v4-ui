@@ -2,7 +2,7 @@ import { Amount } from '@pooltogether/hooks'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
+import { EstimateAction } from '@constants/odds'
 import { InfoListItem } from '.'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
@@ -17,7 +17,12 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const oddsData = useUsersPrizePoolOdds(usersAddress, prizePool, action, amount?.amountUnformatted)
+  const { data: oddsData } = useUsersPrizePoolOdds(
+    usersAddress,
+    prizePool,
+    action,
+    amount?.amountUnformatted
+  )
 
   const isFetched = !!oddsData
 

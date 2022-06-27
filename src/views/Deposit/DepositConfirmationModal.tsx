@@ -36,7 +36,7 @@ import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { EstimateAction } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkEstimatedOddsForAmount'
+import { EstimateAction } from '@constants/odds'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -71,9 +71,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     closeModal
   } = props
 
-  const { amountUnformatted } = amountToDeposit
-
   const { t } = useTranslation()
+  const amountUnformatted = amountToDeposit?.amountUnformatted
 
   if (!isDataFetched) {
     return (
@@ -87,7 +86,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalLoadingGate className='mt-8' />
       </BottomSheet>
     )
-  } else if (amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (!!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
     return (
       <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
@@ -202,6 +201,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
                   <UpdatedPrizePoolNetworkOddsListItem
                     amount={amountToDeposit}
                     action={EstimateAction.deposit}
+                    prizePool={prizePool}
                   />
                   <UpdatedPrizePoolOddsListItem
                     amount={amountToDeposit}
@@ -210,7 +210,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
                   />
                 </>
               )}
-              <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
+              <EstimatedDepositGasItems chainId={chainId} />
             </ModalInfoList>
           </>
         )}
