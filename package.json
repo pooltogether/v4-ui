@@ -11,7 +11,7 @@
     "dist": "yarn build",
     "export": "next export",
     "distrelease": "export NEXT_PUBLIC_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
-    "sentryrelease": "./scripts/sentry-release.sh",
+    "sentryrelease": "./src/scripts/sentry-release.sh",
     "start": "next start",
     "test": "jest",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
