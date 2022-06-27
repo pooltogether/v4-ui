@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { Provider as JotaiProvider } from 'jotai'
 import { createClient, Provider as WagmiProvider } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { BaseProvider } from '@ethersproject/providers'
@@ -58,7 +59,7 @@ initSentry()
 const chains = getSupportedChains()
 const connectors = ({ chainId }) => {
   return [
-    new InjectedConnector({ chains, options: {} }),
+    new MetaMaskConnector({ chains, options: {} }),
     new WalletConnectConnector({
       chains,
       options: {
@@ -77,7 +78,8 @@ const connectors = ({ chainId }) => {
         appName: 'PoolTogether',
         jsonRpcUrl: getRpcUrl(chainId || CHAIN_ID.mainnet, RPC_API_KEYS)
       }
-    })
+    }),
+    new InjectedConnector({ chains, options: {} })
   ]
 }
 

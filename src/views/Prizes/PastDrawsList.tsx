@@ -50,7 +50,7 @@ export const PastDrawsList = (props: {
     !isPrizePoolTokensFetched ||
     !isDrawsAndPrizeDistributionsFetched ||
     !isDrawLocksFetched ||
-    !isDataForCurrentUser
+    (usersAddress && !isDataForCurrentUser)
   ) {
     return (
       <>
