@@ -29,8 +29,8 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
 
   let networkTotalSupplyUnformatted = BigNumber.from(0)
   queryResults.forEach((queryResult) => {
-    const { data: totalSupplyUnformatted, isFetched } = queryResult
-    if (isFetched) {
+    const { data: totalSupplyUnformatted, isFetched, error } = queryResult
+    if (isFetched && totalSupplyUnformatted) {
       networkTotalSupplyUnformatted = networkTotalSupplyUnformatted.add(totalSupplyUnformatted)
     }
   })

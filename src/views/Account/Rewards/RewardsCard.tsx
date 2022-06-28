@@ -26,6 +26,7 @@ import { CardTitle } from '@components/Text/CardTitle'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import { loopXTimes } from '@utils/loopXTimes'
 
 // PREDICTION / ESTIMATE:
 // (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
@@ -163,7 +164,7 @@ const PromotionRow = (props) => {
   return (
     <>
       {!tokenDataIsFetched ? (
-        <ThemedClipSpinner />
+        <RewardsCardLoadingList listItems={1} />
       ) : (
         <>
           <PromotionListItem
@@ -293,17 +294,15 @@ const RewardsBalance = (props) => {
 
   const usersAddress = useUsersAddress()
 
-  const {
-    data: usersChainRewardsTwabPercentage,
-    isFetched,
-    error
-  } = useUsersChainTwabPercentage(chainId, usersAddress)
-  console.log('******************')
-  console.log({ isFetched })
+  const { data: usersChainRewardsTwabPercentage, isFetched } = useUsersChainTwabPercentage(
+    chainId,
+    usersAddress
+  )
 
   const percentage = usersChainRewardsTwabPercentage
 
   const estimate = percentage * parseFloat(formatUnits(tokensPerEpoch, decimals)) * remainingEpochs
+  // TODO: Proper USD conversions
   const estimateUsd = 4124
 
   const estimateAndClaimableUsd = estimate + claimableUsd
@@ -352,3 +351,22 @@ const PromotionList = (props: {
 )
 
 PromotionList.defaultProps = {}
+
+export const RewardsCardLoadingList = (props: {
+  listItems: number
+  bgClassName?: string
+  className?: string
+}) => (
+  <ul>
+    {loopXTimes(props.listItems, (i) => (
+      <li
+        key={`loading-list-${i}`}
+        className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10'
+      />
+    ))}
+  </ul>
+)
+
+RewardsCardLoadingList.defaultProps = {
+  listItems: 1
+}
