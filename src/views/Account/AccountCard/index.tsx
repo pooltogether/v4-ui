@@ -6,11 +6,9 @@ import { ethers } from 'ethers'
 import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 
 interface AccountCardProps {
@@ -89,6 +87,8 @@ const DailyOdds = () => <OddsBox i18nKey='dailyOdds' daysOfPrizes={1} />
 const WeeklyOdds = () => <OddsBox i18nKey='weeklyOdds' daysOfPrizes={7} />
 
 const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
+  return null
+
   const { i18nKey, daysOfPrizes } = props
   const usersAddress = useUsersAddress()
   const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(

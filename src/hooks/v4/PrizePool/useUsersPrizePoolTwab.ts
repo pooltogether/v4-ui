@@ -6,8 +6,6 @@ import { useQuery } from 'react-query'
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
-export const USERS_TWAB_QUERY_KEY = 'useUsersPrizePoolTwab'
-
 /**
  * Fetches a users current TWAB
  * @param usersAddress
@@ -22,7 +20,7 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
   const enabled = Boolean(usersAddress) && isTicketDecimalsFetched
 
   return useQuery(
-    [USERS_TWAB_QUERY_KEY, prizePool?.id(), usersAddress],
+    getUsersPrizePoolTwabKey(usersAddress, prizePool),
     async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
     {
       refetchInterval,
@@ -30,6 +28,12 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
     }
   )
 }
+
+export const getUsersPrizePoolTwabKey = (usersAddress: string, prizePool: PrizePool) => [
+  'useUsersPrizePoolTwab',
+  usersAddress,
+  prizePool?.id()
+]
 
 export const getUserPrizePoolTwab = async (
   prizePool: PrizePool,

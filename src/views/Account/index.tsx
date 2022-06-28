@@ -3,7 +3,6 @@ import React from 'react'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { ConnectWalletCard } from '@components/ConnectWalletCard'
 import { AccountCard } from '@views/Account/AccountCard'
-import { XDollarsGetsYou } from '@components/XDollarsGetsYou'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
@@ -19,9 +18,6 @@ export const AccountUI = (props) => {
     return (
       <PagePadding className='flex flex-col space-y-8'>
         <Piggy className='w-20 sm:w-32 mx-auto' />
-        <span className='mx-auto text-xs sm:text-lg block text-center'>
-          <XDollarsGetsYou x='100' />!<span className='opacity-40'>*</span>
-        </span>
         <ConnectWalletCard />
         <VotingPromptCard />
         <OddsDisclaimer className='block mt-6' />

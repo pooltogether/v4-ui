@@ -20,8 +20,6 @@ import { TxButton } from '@components/Input/TxButton'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { UpdatedOddsForAnyNetworkListItem } from '@components/UpdatedOddsForAnyNetworkListItem'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { WithdrawalSteps } from './WithdrawView'
 
@@ -334,11 +332,7 @@ const UpdatedStats = (props: {
 
   return (
     <ModalInfoList className={className}>
-      <UpdatedOddsForAnyNetworkListItem
-        amount={amountToWithdraw}
-        prizePool={prizePool}
-        action={EstimateAction.withdraw}
-      />
+      {/* // TODO: Add back odds from main branch */}
       <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
       <EstimatedWithdrawalGasItem

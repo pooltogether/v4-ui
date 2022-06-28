@@ -1,38 +1,58 @@
+import { Amount } from '@pooltogether/hooks'
+import { divideBigNumbers } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { parseEther } from 'ethers/lib/utils'
+import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 
 export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
-  const { data: prizePoolTvl, isFetched: isPrizePoolTvlFetched } =
+  const { data: prizePoolTvlData, isFetched: isPrizePoolTvlFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
   const { data: prizePoolNetworkTvl, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
 
-  if (!isPrizePoolTvlFetched || !isPrizePoolNetworkTvlFetched) {
-    return {
-      data: null,
-      isFetched: false
-    }
-  }
+  const isFetched = isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched
 
-  return {
-    data: getPrizePoolPercentageOfPicks(
-      prizePoolTvl.amount.amount,
-      prizePoolNetworkTvl.totalSupply.amount
+  return useQuery(
+    getPrizePoolPercentageOfPicksKey(
+      prizePool,
+      prizePoolTvlData?.amount,
+      prizePoolNetworkTvl?.totalSupply
     ),
-    isFetched: true
-  }
+    () => {
+      return getPrizePoolPercentageOfPicks(
+        prizePool,
+        prizePoolTvlData?.amount.amount,
+        prizePoolNetworkTvl?.totalSupply.amount
+      )
+    },
+    { enabled: isFetched }
+  )
 }
 
+export const getPrizePoolPercentageOfPicksKey = (
+  prizePool: PrizePool,
+  prizePoolTvl: Amount,
+  prizePoolNetworkTvl: Amount
+) => [
+  'usePrizePoolPercentageOfPicks',
+  prizePool?.id(),
+  prizePoolTvl?.amount,
+  prizePoolNetworkTvl?.amount
+]
+
 export const getPrizePoolPercentageOfPicks = (
+  prizePool: PrizePool,
   prizePoolTvl: string,
   prizePoolNetworkTvl: string
 ) => {
   const prizePoolTvlNormalized = parseEther(prizePoolTvl)
   const prizePoolNetworkTvlNormalized = parseEther(prizePoolNetworkTvl)
-  if (prizePoolTvlNormalized.isZero()) {
-    return 0
+  return {
+    prizePoolId: prizePool.id(),
+    percentage: prizePoolTvlNormalized.isZero()
+      ? 0
+      : divideBigNumbers(prizePoolTvlNormalized, prizePoolNetworkTvlNormalized)
   }
-  return prizePoolTvlNormalized.mul(10000).div(prizePoolNetworkTvlNormalized).toNumber() / 10000
 }

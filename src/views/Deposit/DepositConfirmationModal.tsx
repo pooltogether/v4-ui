@@ -20,8 +20,6 @@ import { Transaction, TransactionStatus } from '@pooltogether/wallet-connection'
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { ModalInfoList } from '@components/InfoList'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
-import { UpdatedOddsForAnyNetworkListItem } from '@components/UpdatedOddsForAnyNetworkListItem'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
@@ -187,10 +185,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
               {prizePool && (
                 <>
                   <EstimatedAPRItem prizePool={prizePool} />
-                  <UpdatedOddsForAnyNetworkListItem
-                    amount={amountToDeposit}
-                    action={EstimateAction.deposit}
-                  />
+                  {/* // TODO: Add back odds from main branch */}
                 </>
               )}
               <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
