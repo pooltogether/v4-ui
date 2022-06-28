@@ -1,10 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { msToS } from '@pooltogether/utilities'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'
-import { PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY } from './usePrizePoolTicketTotalSupply'
 import { useSelectedPrizePoolTicketDecimals } from './useSelectedPrizePoolTicketDecimals'
+
+const MULTI_PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY =
+  'MULTI_PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY'
 
 /**
  * Fetches the total supply of tickets that have been delegated at this current time.
@@ -17,7 +18,7 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       return {
-        queryKey: ['MULTI_PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY', prizePool?.id()],
+        queryKey: [MULTI_PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id()],
         queryFn: () => prizePool?.getTicketTotalSupply(),
         enabled: Boolean(decimals)
       }
