@@ -52,9 +52,11 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
     const data = queryResults.map((queryResult) => queryResult.data).filter(Boolean)
     const totalTicketValueUsdScaled = getTotalValueUsdScaled(data)
     const totalDelegationValueUsdScaled = isDelegationsFetched
-      ? delegationData.totalTokenWithUsdBalance.balanceUsdScaled
+      ? delegationData?.totalTokenWithUsdBalance.balanceUsdScaled
       : BigNumber.from(0)
-    const totalValueUsdScaled = totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
+    const totalValueUsdScaled = totalDelegationValueUsdScaled
+      ? totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
+      : BigNumber.from(0)
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
     const refetch = () => {
       queryResults.map((queryResult) => queryResult.refetch())
@@ -65,7 +67,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       isFetching,
       refetch,
       data: {
-        delegations: isDelegationsFetched ? delegationData.delegations : null,
+        delegations: isDelegationsFetched ? delegationData?.delegations : null,
         balances: data,
         totalValueUsd,
         totalValueUsdScaled

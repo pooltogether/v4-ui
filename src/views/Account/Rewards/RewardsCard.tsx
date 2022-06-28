@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { formatUnits } from '@ethersproject/units'
@@ -191,7 +192,8 @@ const PromotionRow = (props) => {
                   usersPromotionData={usersPromotionData}
                   tokenData={tokenData}
                   chainId={chainId}
-                />
+                />{' '}
+                <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
               </div>
             }
           />
@@ -215,7 +217,7 @@ const PromotionRow = (props) => {
             // }
             views={[
               {
-                id: 'withdraw',
+                id: 'claim',
                 view: () => (
                   <div></div>
                   // <WithdrawView
@@ -227,8 +229,8 @@ const PromotionRow = (props) => {
                   //   refetchBalances={refetchBalances}
                   // />
                 ),
-                label: t('withdraw'),
-                theme: SquareButtonTheme.tealOutline
+                label: t('claim'),
+                theme: SquareButtonTheme.rainbow
               }
             ]}
             moreInfoViews={[
@@ -312,11 +314,15 @@ const RewardsBalance = (props) => {
 
   return (
     <div
-      className={classNames('leading-none font-bold mr-3', {
+      className={classNames('flex items-center leading-none font-bold mr-3', {
         'opacity-50': estimateAndClaimableUsd <= 0
       })}
     >
-      {isFetched ? <>${numberWithCommas(estimateAndClaimableUsd)}</> : <ThemedClipSpinner />}
+      {isFetched ? (
+        <>${numberWithCommas(estimateAndClaimableUsd)}</>
+      ) : (
+        <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
+      )}
     </div>
   )
 }

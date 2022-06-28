@@ -233,8 +233,9 @@ const Divider: React.FC<{ usersAddress: string }> = (props) => {
     useAllTwabDelegations(usersAddress)
 
   if (
-    (isDelegationsFetched && !delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero()) ||
-    (isAmountDelegatedToFetched && !delegatedToData.delegatedAmount.amountUnformatted.isZero())
+    (isDelegationsFetched &&
+      !delegationData?.totalTokenWithUsdBalance.amountUnformatted.isZero()) ||
+    (isAmountDelegatedToFetched && !delegatedToData?.delegatedAmount.amountUnformatted.isZero())
   ) {
     return (
       <li>
