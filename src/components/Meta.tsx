@@ -1,7 +1,7 @@
 import Head from 'next/head'
 
 export const Meta = (props: { title?: string }) => {
-  const fullTitle = props.title ? `${props.title} - PoolTogether - v4` : 'PoolTogether - v4'
+  const fullTitle = props.title ? `${props.title} - PoolTogether` : 'PoolTogether'
 
   let url = `https://v4.pooltogether.com`
   if (typeof window !== 'undefined') {
