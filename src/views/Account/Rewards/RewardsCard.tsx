@@ -138,32 +138,13 @@ const PromotionRow = (props) => {
     usersAddress
   )
 
+  // TODO: Contract links necessary?
   const contractLinks: ContractLink[] = [
     {
       i18nKey: 'prizePool',
       chainId,
       address: '0xface'
     }
-    // {
-    //   i18nKey: 'prizeStrategy',
-    //   chainId,
-    //   address: prizePool.addresses.prizeStrategy
-    // },
-    // {
-    //   i18nKey: 'depositToken',
-    //   chainId,
-    //   address: prizePool.addresses.token
-    // },
-    // {
-    //   i18nKey: 'ticketToken',
-    //   chainId,
-    //   address: prizePool.addresses.ticket
-    // },
-    // {
-    //   i18nKey: 'sponsorshipToken',
-    //   chainId,
-    //   address: prizePool.addresses.sponsorship
-    // }
   ]
   const onDismiss = () => setIsOpen(false)
 
@@ -312,10 +293,13 @@ const RewardsBalance = (props) => {
 
   const usersAddress = useUsersAddress()
 
-  const { data: usersChainRewardsTwabPercentage } = useUsersChainTwabPercentage(
-    chainId,
-    usersAddress
-  )
+  const {
+    data: usersChainRewardsTwabPercentage,
+    isFetched,
+    error
+  } = useUsersChainTwabPercentage(chainId, usersAddress)
+  console.log('******************')
+  console.log({ isFetched })
 
   const percentage = usersChainRewardsTwabPercentage
 
@@ -333,7 +317,7 @@ const RewardsBalance = (props) => {
         'opacity-50': estimateAndClaimableUsd <= 0
       })}
     >
-      ${numberWithCommas(estimateAndClaimableUsd)}
+      {isFetched ? <>${numberWithCommas(estimateAndClaimableUsd)}</> : <ThemedClipSpinner />}
     </div>
   )
 }

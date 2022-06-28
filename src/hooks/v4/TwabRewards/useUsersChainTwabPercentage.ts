@@ -21,7 +21,7 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
     getUsersChainTwabPercentageKey(chainId, usersAddress),
     () => getUsersChainTwabPercentage(chainId, totalTwabSupply, usersTwabs, decimals),
     {
-      enabled: isTwabsFetched
+      enabled: isTwabsFetched && Boolean(totalTwabSupply) && Boolean(decimals)
     }
   )
 }
@@ -32,8 +32,6 @@ const useChainIdPrizePoolTicketTotalSupply = (chainId) => {
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
-  // console.log('prizePoolTotalSupply:')
-  // console.log(Number(prizePoolTotalSupply.toString()) - 25517000013)
 
   return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals }
 }
@@ -55,11 +53,9 @@ export const getUsersChainTwabPercentage = async (
   decimals: string
 ) => {
   const usersChainTwabAmountUnformatted = getTwabForChain(chainId, usersTwabs)
-  const users = formatUnits(usersChainTwabAmountUnformatted, Number(decimals))
 
-  console.log('**********')
+  const users = formatUnits(usersChainTwabAmountUnformatted, Number(decimals))
   const total = formatUnits(totalTwabSupply, Number(decimals))
-  console.log({ total })
 
   return parseFloat(users) / parseFloat(total)
 }

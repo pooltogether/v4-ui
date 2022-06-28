@@ -67,7 +67,6 @@ export const getGraphFilteredPromotions = async (chainId: number, client: GraphQ
 
     promotions[i] = formatPromotionData(promotion, promotionRpcData)
   }
-  console.log(promotions)
 
   return { chainId, promotions }
 }

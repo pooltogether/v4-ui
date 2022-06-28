@@ -173,7 +173,7 @@ const ManageState = (props: ManageStateProps) => {
 const ListItem = (props: { title: string; content: React.ReactNode }) => {
   return (
     <li className='flex w-full justify-between items-center'>
-      <span className='font-bold text-sm xs:text-lg'>{props.title}</span>
+      <span className='font-bold text-sm'>{props.title}</span>
       {props.content}
     </li>
   )
@@ -185,7 +185,7 @@ const TokenAndAmount = (props: {
   amount: Amount
   isFetched?: boolean
 }) => (
-  <div className='flex space-x-2 font-bold text-sm xs:text-lg items-center'>
+  <div className='flex space-x-2 font-bold text-sm items-center'>
     <TokenIconOrLoading chainId={props.chainId} token={props.token} isFetched={props.isFetched} />
     {props.isFetched ? (
       <>
@@ -266,7 +266,7 @@ const OpenModalButton = (props: { className?: string; onClick: () => void; label
   <button
     className={classNames(
       props.className,
-      'flex items-center transition uppercase font-semibold text-lg opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
+      'flex items-center transition uppercase font-semibold text-sm opacity-90 hover:opacity-100 rounded-lg bg-pt-purple-darker bg-opacity-20 hover:bg-opacity-10 pl-4'
     )}
     onClick={props.onClick}
   >

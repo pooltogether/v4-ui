@@ -9,7 +9,6 @@ import { useSelectedPrizePoolTicketDecimals } from './useSelectedPrizePoolTicket
 /**
  * Fetches the total supply of tickets that have been delegated at this current time.
  * NOTE: Assumes all tickets have the same decimals
- * @returns
  */
 export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const prizePools = usePrizePools()
@@ -18,11 +17,8 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       return {
-        queryKey: [PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id()],
-        queryFn: () => {
-          const timestamp = Math.round(msToS(Date.now()))
-          return prizePool?.getTicketTwabTotalSupplyAt(timestamp)
-        },
+        queryKey: ['MULTI_PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY', prizePool?.id()],
+        queryFn: () => prizePool?.getTicketTotalSupply(),
         enabled: Boolean(decimals)
       }
     })

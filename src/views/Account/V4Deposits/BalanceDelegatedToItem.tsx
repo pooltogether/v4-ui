@@ -26,7 +26,7 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
         className='px-4 py-2 w-full flex justify-between items-center'
         onClick={() => setIsOpen(true)}
       >
-        <span className='flex items-center font-bold text-xs xs:text-lg space-x-2 text-left'>
+        <span className='flex items-center font-bold text-xs space-x-2 text-left'>
           <span>{'🎁 '}</span>
           <span>{t('totalDelegatedToYou', 'Total delegated to you')}</span>
         </span>
