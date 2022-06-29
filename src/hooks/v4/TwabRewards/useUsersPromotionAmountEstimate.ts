@@ -1,14 +1,10 @@
 import { useQuery } from 'react-query'
 import { formatUnits } from '@ethersproject/units'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenWithAllBalances, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 
 import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
-
-interface TokenData {
-  address: string
-  decimals: number
-}
+import { getAmountFromString } from '@utils/getAmountFromString'
 
 interface Promotion {
   id: number
@@ -22,9 +18,9 @@ interface Promotion {
 export const useUsersPromotionAmountEstimate = (
   chainId: number,
   promotion: Promotion,
-  tokenData: TokenData
+  token: TokenWithAllBalances
 ) => {
-  const { address } = tokenData
+  const { address } = token || {}
   const { id: promotionId } = promotion
   const usersAddress = useUsersAddress()
 
@@ -40,9 +36,9 @@ export const useUsersPromotionAmountEstimate = (
   return useQuery(
     getUsersPromotionAmountEstimateKey(chainId, promotionId, usersAddress),
     async () =>
-      getUsersPromotionAmountEstimate(tokenPrices, tokenData, promotion, usersChainTwabPercentage),
+      getUsersPromotionAmountEstimate(tokenPrices, token, promotion, usersChainTwabPercentage),
     {
-      enabled: Boolean(tokenData) && isFetched
+      enabled: Boolean(token) && isFetched
     }
   )
 }
@@ -55,11 +51,11 @@ const getUsersPromotionAmountEstimateKey = (
 
 export const getUsersPromotionAmountEstimate = async (
   tokenPrices: any,
-  tokenData: TokenData,
+  token: TokenWithAllBalances,
   promotion: Promotion,
   usersChainTwabPercentage: number
 ) => {
-  const { decimals } = tokenData
+  const { address, decimals } = token
 
   const { tokensPerEpoch, remainingEpochs } = promotion
 
@@ -67,8 +63,12 @@ export const getUsersPromotionAmountEstimate = async (
 
   const estimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted) * remainingEpochs
 
-  // TODO: Proper USD conversions
-  const estimateUsd = 4124089789
+  const amount = getAmountFromString(estimate.toString(), decimals)
 
-  return { estimate, estimateUsd }
+  let usd
+  if (tokenPrices?.[address]) {
+    usd = amount.amount * tokenPrices[address].usd
+  }
+
+  return { amount, usd }
 }

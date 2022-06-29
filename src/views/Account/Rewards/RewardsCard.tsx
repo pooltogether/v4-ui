@@ -2,23 +2,21 @@ import { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { formatUnits } from '@ethersproject/units'
 import { BigNumber } from 'ethers'
 import {
+  BottomSheetTitle,
   ContractLink,
-  BalanceBottomSheet,
+  BottomSheet,
+  snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
   TokenIcon,
-  SquareButtonTheme
+  CountUp,
+  Tooltip
 } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import {
-  displayPercentage,
-  numberWithCommas,
-  getNetworkNameAliasByChainId
-} from '@pooltogether/utilities'
+import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
@@ -121,7 +119,7 @@ const PromotionsList = (props) => {
 
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
-  const { id, maxCompletedEpochId, token } = promotion
+  const { id, maxCompletedEpochId, token: tokenAddress } = promotion
 
   const { t } = useTranslation()
 
@@ -130,7 +128,7 @@ const PromotionRow = (props) => {
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
-  const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
+  const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
 
   const usersAddress = useUsersAddress()
 
@@ -141,7 +139,18 @@ const PromotionRow = (props) => {
     usersAddress
   )
 
-  // TODO: Contract links necessary?
+  const { id: promotionId } = promotion
+
+  const { data: usersPromotionAmountClaimable, isFetched: claimableIsFetched } =
+    useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
+  const { amount: claimableAmount, usd: claimableUsd } = usersPromotionAmountClaimable || {}
+  const { data: usersPromotionAmountEstimate, isFetched: estimateIsFetched } =
+    useUsersPromotionAmountEstimate(chainId, promotion, token)
+  const { amount: estimateAmount, usd: estimateUsd } = usersPromotionAmountEstimate || {}
+
+  const totalFormatted = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
+
+  // TODO: Contract links
   const contractLinks: ContractLink[] = [
     {
       i18nKey: 'prizePool',
@@ -151,21 +160,9 @@ const PromotionRow = (props) => {
   ]
   const onDismiss = () => setIsOpen(false)
 
-  const balances = {
-    ticket: {
-      address: '0xface',
-      symbol: 'PTSD',
-      name: 'PT SD',
-      decimals: '18',
-      amount: '321',
-      amountUnformatted: BigNumber.from(0),
-      amountPretty: '1234'
-    }
-  }
-
   return (
     <>
-      {!tokenDataIsFetched ? (
+      {!tokenIsFetched ? (
         <RewardsCardLoadingList listItems={1} />
       ) : (
         <>
@@ -176,7 +173,7 @@ const PromotionRow = (props) => {
             }}
             left={
               <div className='flex items-center'>
-                <img className='w-5 mr-2' src='beach-with-umbrella.png' /> {tokenData.symbol}{' '}
+                <img className='w-5 mr-2' src='beach-with-umbrella.png' /> {token.symbol}{' '}
                 {t('rewards')}
               </div>
             }
@@ -184,22 +181,71 @@ const PromotionRow = (props) => {
               <div className='flex items-center'>
                 <TokenIcon
                   chainId={chainId}
-                  address={token}
+                  address={token?.address}
                   sizeClassName='w-5 h-5'
                   className='mr-2'
                 />
                 <RewardsBalance
-                  promotion={promotion}
-                  usersPromotionData={usersPromotionData}
-                  tokenData={tokenData}
-                  chainId={chainId}
+                  estimateUsd={estimateUsd}
+                  claimableUsd={claimableUsd}
+                  isFetched={claimableIsFetched && estimateIsFetched}
                 />{' '}
                 <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
               </div>
             }
           />
 
-          <BalanceBottomSheet
+          <BottomSheet
+            className='flex flex-col'
+            open={isOpen}
+            onDismiss={onDismiss}
+            label='Claim modal'
+            snapPoints={snapTo90}
+          >
+            <BottomSheetTitle chainId={chainId} title={t('claim', 'Claim')} />
+
+            <AmountPanels
+              promotion={promotion}
+              usersPromotio
+              nData={usersPromotionData}
+              token={token}
+              chainId={chainId}
+            />
+
+            <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+              <span
+                className={classNames('text-3xl mx-auto font-bold leading-none', {
+                  'opacity-50': estimateUsd + claimableUsd !== 0
+                })}
+              >
+                $<CountUp countTo={estimateUsd + claimableUsd} />
+              </span>
+              <span className='mx-auto flex mt-1'>
+                <Tooltip
+                  id={`balance-bottom-sheet-key-${Math.random()}`}
+                  tip={
+                    <>
+                      ${numberWithCommas(totalFormatted)} {token.symbol}
+                    </>
+                  }
+                >
+                  <TokenIcon
+                    chainId={chainId}
+                    address={token?.address}
+                    sizeClassName='w-4 h-4 my-auto'
+                  />
+                  <span className='font-bold opacity-50 mx-1'>
+                    {numberWithCommas(totalFormatted)}
+                  </span>
+                  <span className='opacity-50'>{token.symbol}</span>
+                </Tooltip>
+              </span>
+            </div>
+
+            <hr className='opacity-10 border-pt-purple dark:border-white w-80' />
+          </BottomSheet>
+
+          {/* <BalanceBottomSheet
             title={'rewards'}
             open={isOpen}
             label={`mng rewards`}
@@ -258,7 +304,7 @@ const PromotionRow = (props) => {
             contractLinks={contractLinks}
             isWalletOnProperNetwork={isWalletOnProperNetwork}
             isWalletMetaMask={isWalletMetaMask}
-          />
+          />*/}
         </>
       )}
     </>
@@ -274,24 +320,10 @@ const PromotionRow = (props) => {
 // remaining epochs: 8
 // 6 * 8 = 48
 // I'll get 48 tokens over the entire time if nothing changes
-
 const RewardsBalance = (props) => {
-  const { usersPromotionData, tokenData, chainId, promotion } = props
-  const { id: promotionId } = promotion
-
-  const { data: usersPromotionAmountClaimable, isFetched: claimableIsFetched } =
-    useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, tokenData)
-  const { claimableUsd } = usersPromotionAmountClaimable || {}
-  console.log({ claimableUsd })
-  const { data: usersPromotionAmountEstimate, isFetched: estimateIsFetched } =
-    useUsersPromotionAmountEstimate(chainId, promotion, tokenData)
-  const { estimateUsd } = usersPromotionAmountEstimate || {}
+  const { isFetched, estimateUsd, claimableUsd } = props
 
   const estimateAndClaimableUsd = estimateUsd + claimableUsd
-  const isFetched = claimableIsFetched && estimateIsFetched
-
-  // $1.53
-  // $181.92
 
   return (
     <div
@@ -306,6 +338,10 @@ const RewardsBalance = (props) => {
       )}
     </div>
   )
+}
+
+const AmountPanels = (props) => {
+  return null
 }
 
 interface PromotionListItemProps {

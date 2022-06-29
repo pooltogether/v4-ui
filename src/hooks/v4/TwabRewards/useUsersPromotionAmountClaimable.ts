@@ -2,12 +2,9 @@ import { useQuery } from 'react-query'
 import { BigNumber } from 'ethers'
 import { formatUnits } from '@ethersproject/units'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenWithAllBalances, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 
-interface TokenData {
-  address: string
-  decimals: number
-}
+import { getAmountFromString } from '@utils/getAmountFromString'
 
 interface UsersPromotionData {
   rewardsAmount: string
@@ -20,18 +17,18 @@ export const useUsersPromotionAmountClaimable = (
   chainId: number,
   promotionId: number,
   usersPromotionData: UsersPromotionData,
-  tokenData: TokenData
+  token: TokenWithAllBalances
 ) => {
-  const { address } = tokenData
+  const { address } = token || {}
   const usersAddress = useUsersAddress()
 
   const { data: tokenPrices, isFetched } = useCoingeckoTokenPrices(chainId, [address])
 
   return useQuery(
     getUsersPromotionAmountClaimableKey(chainId, promotionId, usersAddress),
-    async () => getUsersPromotionAmountClaimable(tokenPrices, usersPromotionData, tokenData),
+    async () => getUsersPromotionAmountClaimable(tokenPrices, usersPromotionData, token),
     {
-      enabled: Boolean(usersPromotionData) && Boolean(tokenData) && isFetched
+      enabled: Boolean(usersPromotionData) && Boolean(address) && isFetched
     }
   )
 }
@@ -45,9 +42,9 @@ const getUsersPromotionAmountClaimableKey = (
 export const getUsersPromotionAmountClaimable = async (
   tokenPrices: object,
   usersPromotionData: UsersPromotionData,
-  tokenData: TokenData
+  token: TokenWithAllBalances
 ) => {
-  const { decimals, address } = tokenData
+  const { decimals, address } = token
 
   let claimableUnformatted = BigNumber.from(0)
 
@@ -56,10 +53,13 @@ export const getUsersPromotionAmountClaimable = async (
     claimableUnformatted = claimableUnformatted.add(amountUnformatted)
   })
 
-  let claimableUsd
+  const claimableFormatted = formatUnits(claimableUnformatted, decimals)
+  const amount = getAmountFromString(claimableFormatted, decimals)
+
+  let usd
   if (tokenPrices?.[address]) {
-    claimableUsd = Number(formatUnits(claimableUnformatted, decimals)) * tokenPrices[address].usd
+    usd = Number(claimableFormatted) * tokenPrices[address].usd
   }
 
-  return { claimableUnformatted, claimableUsd }
+  return { amount, usd }
 }
