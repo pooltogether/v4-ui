@@ -32,7 +32,7 @@ export const useUsersV3POOLTokenBalances = (usersAddress: string) => {
 
     queriesResult.forEach((queryResult) => {
       const { data: balancesForChainId } = queryResult
-      balancesForChainId.balances.forEach((balance) => {
+      balancesForChainId?.balances.forEach((balance) => {
         const chainId = balance.chainId
         const POOLPoolAddresses = POOL_PRIZE_POOL_ADDRESSES[chainId] || []
 

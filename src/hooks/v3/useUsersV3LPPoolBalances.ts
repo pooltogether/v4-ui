@@ -33,7 +33,7 @@ export const useUsersV3LPPoolBalances = (usersAddress: string) => {
 
     queriesResult.forEach((queryResult) => {
       const { data: balancesForChainId } = queryResult
-      balancesForChainId.balances.forEach((balance) => {
+      balancesForChainId?.balances.forEach((balance) => {
         const chainId = balance.chainId
         const LPPoolAddresses = LP_PRIZE_POOL_METADATA[chainId]?.map((p) => p.prizePool) || []
 

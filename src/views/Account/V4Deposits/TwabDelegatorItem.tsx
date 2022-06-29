@@ -22,9 +22,13 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
-  if (!isFetched || data.totalTokenWithUsdBalance.amountUnformatted.isZero()) return null
+  if (!isFetched || data?.totalTokenWithUsdBalance.amountUnformatted.isZero()) return null
 
-  const { delegations, totalTokenWithUsdBalance } = data
+  const { delegations, totalTokenWithUsdBalance } = data || {}
+
+  if (!delegations) {
+    return null
+  }
 
   return (
     <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>

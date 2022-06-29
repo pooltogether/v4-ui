@@ -34,7 +34,7 @@ export const useUsersV3POOLPoolBalances = (usersAddress: string) => {
 
     queriesResult.forEach((queryResult) => {
       const { data: balancesForChainId } = queryResult
-      balancesForChainId.balances.forEach((balance) => {
+      balancesForChainId?.balances.forEach((balance) => {
         const chainId = balance.chainId
 
         // NOTE: Hide Polygon POOL staking.

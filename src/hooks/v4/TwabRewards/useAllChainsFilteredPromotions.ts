@@ -16,7 +16,7 @@ import {
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID.rinkeby]: ['0x2', '0x4'],
+  [CHAIN_ID.rinkeby]: ['0x2', '0x4', '0x6'],
   // [CHAIN_ID.rinkeby]: ['0x1', '0x2', '0x3', '0x4', '0x5'],
   [CHAIN_ID.mumbai]: ['0x1', '0x2'],
   [CHAIN_ID.fuji]: ['0x1', '0x2'],

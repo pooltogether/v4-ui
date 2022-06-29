@@ -9,12 +9,17 @@ export const useUsersTotalClaimedAmount = (usersAddress: string) => {
   const isClaimedAmountsFetched = claimedAmountsQueryResults.every(
     (queryResult) => queryResult.isFetched
   )
-  if (!isClaimedAmountsFetched || !isDecimalsFetched) {
+
+  const isError =
+    claimedAmountsQueryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+
+  if (!isClaimedAmountsFetched || !isDecimalsFetched || isError) {
     return {
       data: null,
       isFetched: false
     }
   }
+
   const totalClaimedAmountUnformatted = claimedAmountsQueryResults.reduce((acc, curr) => {
     const prizePoolClaimedAmounts = Object.values(curr.data.claimedAmounts)
     const totalClaimedForPrizePool = prizePoolClaimedAmounts.reduce((acc, curr) => {

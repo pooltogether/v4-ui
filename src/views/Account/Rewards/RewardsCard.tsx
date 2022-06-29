@@ -12,7 +12,7 @@ import {
   TokenIcon,
   SquareButtonTheme
 } from '@pooltogether/react-components'
-import { useToken, useNetworkHexColor, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import {
   displayPercentage,
@@ -21,11 +21,12 @@ import {
 } from '@pooltogether/utilities'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
+import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
+import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 import { loopXTimes } from '@utils/loopXTimes'
 
@@ -276,38 +277,18 @@ const PromotionRow = (props) => {
 
 const RewardsBalance = (props) => {
   const { usersPromotionData, tokenData, chainId, promotion } = props
-  const { decimals } = tokenData
-  const { tokensPerEpoch, remainingEpochs } = promotion
+  const { id: promotionId } = promotion
 
-  let claimable = BigNumber.from(0)
-  if (usersPromotionData) {
-    usersPromotionData.rewardsAmount.split(',').forEach((numString) => {
-      const amountUnformatted = BigNumber.from(numString)
-      claimable = claimable.add(amountUnformatted)
-    })
-  }
+  const { data: usersPromotionAmountClaimable, isFetched: claimableIsFetched } =
+    useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, tokenData)
+  const { claimableUsd } = usersPromotionAmountClaimable || {}
+  console.log({ claimableUsd })
+  const { data: usersPromotionAmountEstimate, isFetched: estimateIsFetched } =
+    useUsersPromotionAmountEstimate(chainId, promotion, tokenData)
+  const { estimateUsd } = usersPromotionAmountEstimate || {}
 
-  const { data: tokenPrices } = useCoingeckoTokenPrices(chainId, [tokenData.address])
-
-  let claimableUsd
-  if (tokenPrices?.[tokenData.address]) {
-    claimableUsd = Number(formatUnits(claimable, decimals)) * tokenPrices[tokenData.address].usd
-  }
-
-  const usersAddress = useUsersAddress()
-
-  const { data: usersChainRewardsTwabPercentage, isFetched } = useUsersChainTwabPercentage(
-    chainId,
-    usersAddress
-  )
-
-  const percentage = usersChainRewardsTwabPercentage
-
-  const estimate = percentage * parseFloat(formatUnits(tokensPerEpoch, decimals)) * remainingEpochs
-  // TODO: Proper USD conversions
-  const estimateUsd = 4124
-
-  const estimateAndClaimableUsd = estimate + claimableUsd
+  const estimateAndClaimableUsd = estimateUsd + claimableUsd
+  const isFetched = claimableIsFetched && estimateIsFetched
 
   // $1.53
   // $181.92
