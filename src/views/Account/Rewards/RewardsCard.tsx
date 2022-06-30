@@ -469,7 +469,9 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       // state={claimTx?.state}
       // status={claimTx?.status}
     >
-      {t('claim', 'Claim')} {numberWithCommas(claimableAmount.amount)} {token.symbol}
+      <span className='font-averta-bold'>
+        {t('claim', 'Claim')} {numberWithCommas(claimableAmount.amount)} {token.symbol}
+      </span>
     </TxButton>
   )
 }
