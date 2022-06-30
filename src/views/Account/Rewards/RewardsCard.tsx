@@ -2,7 +2,7 @@ import { useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { BigNumber } from 'ethers'
+import { TransactionResponse } from '@ethersproject/providers'
 import {
   BottomSheetTitle,
   ContractLink,
@@ -12,12 +12,21 @@ import {
   NetworkIcon,
   TokenIcon,
   CountUp,
-  Tooltip
+  SquareButtonTheme
 } from '@pooltogether/react-components'
-import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
-import { useUsersAddress, useIsWalletOnChainId } from '@pooltogether/wallet-connection'
+import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
+import {
+  useSendTransaction,
+  useUsersAddress,
+  useIsWalletOnChainId,
+  TransactionState,
+  useTransaction
+} from '@pooltogether/wallet-connection'
 import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { useSigner } from 'wagmi'
 
+import { TxButton } from '@components/Input/TxButton'
+import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -125,6 +134,11 @@ const PromotionRow = (props) => {
 
   const [isOpen, setIsOpen] = useState(false)
 
+  const [txId, setTxId] = useState<string>()
+  const transaction = useTransaction(txId)
+  const [signaturePending, setSignaturePending] = useState(false)
+  const transactionPending = transaction?.state === TransactionState.pending || signaturePending
+
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
@@ -132,23 +146,32 @@ const PromotionRow = (props) => {
 
   const usersAddress = useUsersAddress()
 
-  const { data: usersPromotionData } = useUsersPromotionRewardsAmount(
-    chainId,
-    Number(id),
-    maxCompletedEpochId,
-    usersAddress
-  )
+  const { data: usersPromotionData, refetch: refetchUsersRewardsAmount } =
+    useUsersPromotionRewardsAmount(chainId, Number(id), maxCompletedEpochId, usersAddress)
 
   const { id: promotionId } = promotion
 
-  const { data: usersPromotionAmountClaimable, isFetched: claimableIsFetched } =
-    useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
-  const { amount: claimableAmount, usd: claimableUsd } = usersPromotionAmountClaimable || {}
-  const { data: usersPromotionAmountEstimate, isFetched: estimateIsFetched } =
-    useUsersPromotionAmountEstimate(chainId, promotion, token)
-  const { amount: estimateAmount, usd: estimateUsd } = usersPromotionAmountEstimate || {}
+  const {
+    data: claimable,
+    isFetched: claimableIsFetched,
+    refetch: refetchClaimable
+  } = useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
+  const { amount: claimableAmount, usd: claimableUsd } = claimable || {}
 
-  const totalFormatted = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
+  const {
+    data: estimate,
+    isFetched: estimateIsFetched,
+    refetch: refetchEstimate
+  } = useUsersPromotionAmountEstimate(chainId, promotion, token)
+  const { amount: estimateAmount, usd: estimateUsd } = estimate || {}
+
+  const total = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
+
+  const refetch = () => {
+    refetchUsersRewardsAmount()
+    refetchEstimate()
+    refetchClaimable()
+  }
 
   // TODO: Contract links
   const contractLinks: ContractLink[] = [
@@ -202,112 +225,80 @@ const PromotionRow = (props) => {
             label='Claim modal'
             snapPoints={snapTo90}
           >
-            <BottomSheetTitle chainId={chainId} title={t('claim', 'Claim')} />
-
-            <AmountPanels
-              promotion={promotion}
-              usersPromotio
-              nData={usersPromotionData}
-              token={token}
-              chainId={chainId}
-            />
+            <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
 
             <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
               <span
                 className={classNames('text-3xl mx-auto font-bold leading-none', {
-                  'opacity-50': estimateUsd + claimableUsd !== 0
+                  'opacity-50': total !== 0
                 })}
               >
                 $<CountUp countTo={estimateUsd + claimableUsd} />
               </span>
-              <span className='mx-auto flex mt-1'>
-                <Tooltip
-                  id={`balance-bottom-sheet-key-${Math.random()}`}
-                  tip={
-                    <>
-                      ${numberWithCommas(totalFormatted)} {token.symbol}
-                    </>
-                  }
-                >
-                  <TokenIcon
-                    chainId={chainId}
-                    address={token?.address}
-                    sizeClassName='w-4 h-4 my-auto'
-                  />
-                  <span className='font-bold opacity-50 mx-1'>
-                    {numberWithCommas(totalFormatted)}
-                  </span>
-                  <span className='opacity-50'>{token.symbol}</span>
-                </Tooltip>
+              <span className='mx-auto flex items-center mt-1'>
+                <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
+                <span className='font-bold opacity-50 mx-1'>{numberWithCommas(total)}</span>
+                <span className='opacity-50'>{token.symbol}</span>
               </span>
             </div>
 
-            <hr className='opacity-10 border-pt-purple dark:border-white w-80' />
+            <div className='flex items-center space-x-4'>
+              <AmountPanel
+                label={t('estimated', 'Estimated')}
+                chainId={chainId}
+                token={token}
+                amount={estimateAmount}
+                usd={estimateUsd}
+              />
+
+              <AmountPanel
+                label={t('claimable', 'claimable')}
+                chainId={chainId}
+                token={token}
+                amount={claimableAmount}
+                usd={claimableUsd}
+              />
+            </div>
+
+            <SubmitTransactionButton
+              setReceiptView={() => {}}
+              dismissModal={onDismiss}
+              setIsOpen={setIsOpen}
+              claimableAmount={claimableAmount}
+              token={token}
+              claimableUsd={claimableUsd}
+              chainId={chainId}
+              promotion={promotion}
+              transactionPending={transactionPending}
+              setTxId={setTxId}
+              refetch={refetch}
+            />
           </BottomSheet>
-
-          {/* <BalanceBottomSheet
-            title={'rewards'}
-            open={isOpen}
-            label={`mng rewards`}
-            onDismiss={onDismiss}
-            chainId={chainId}
-            // internalLinks={
-            //   <Link href={{ pathname: '/deposit', query: router.query }}>
-            //     <SquareLink
-            //       size={SquareButtonSize.md}
-            //       theme={SquareButtonTheme.teal}
-            //       className='w-full'
-            //     >
-            //       {t('deposit')}
-            //     </SquareLink>
-            //   </Link>
-            // }
-            views={[
-              {
-                id: 'claim',
-                view: () => (
-                  <div></div>
-                  // <WithdrawView
-                  //   usersAddress={usersAddress}
-                  //   prizePool={prizePool}
-                  //   balances={balances}
-                  //   setWithdrawTxId={setTxId}
-                  //   onDismiss={onDismiss}
-                  //   refetchBalances={refetchBalances}
-                  // />
-                ),
-                label: t('claim'),
-                theme: SquareButtonTheme.rainbow
-              }
-            ]}
-            moreInfoViews={[
-              {
-                id: 'delegate',
-                view: () => (
-                  <div>hello</div>
-
-                  // <DelegateView
-                  //   prizePool={prizePool}
-                  //   balances={balances}
-                  //   refetchBalances={refetchBalances}
-                  // />
-                ),
-                icon: 'gift',
-                label: t('delegateDeposit', 'Delegate deposit'),
-                theme: SquareButtonTheme.teal
-              }
-            ]}
-            token={balances.ticket}
-            balance={balances.ticket}
-            balanceUsd={balances.ticket}
-            t={t}
-            contractLinks={contractLinks}
-            isWalletOnProperNetwork={isWalletOnProperNetwork}
-            isWalletMetaMask={isWalletMetaMask}
-          />*/}
         </>
       )}
     </>
+  )
+}
+
+const AmountPanel = (props) => {
+  const { chainId, label, amount, usd, token } = props
+
+  return (
+    <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+      {/* <span
+        className={classNames('text-xl mx-auto font-bold leading-none', {
+          'opacity-50': amount.amount !== 0
+        })}
+      >
+        $<CountUp countTo={amount.amount} />
+      </span> */}
+      <span className='mx-auto flex items-center mt-1'>
+        <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
+        <span className='font-bold opacity-50 mx-1'>{numberWithCommas(amount.amount)}</span>
+        <span className='opacity-50'>{token.symbol}</span>
+      </span>
+      <div className='text-center mt-1 opacity-60'>{label}</div>
+    </div>
   )
 }
 
@@ -338,10 +329,6 @@ const RewardsBalance = (props) => {
       )}
     </div>
   )
-}
-
-const AmountPanels = (props) => {
-  return null
 }
 
 interface PromotionListItemProps {
@@ -392,4 +379,97 @@ export const RewardsCardLoadingList = (props: {
 
 RewardsCardLoadingList.defaultProps = {
   listItems: 1
+}
+
+interface SubmitTransactionButtonProps {
+  chainId: number
+  promotion: Promotion
+  transactionPending: boolean
+  token: Token
+  claimableAmount: Amount
+  claimableUsd: number
+  dismissModal: () => void
+  setReceiptView: () => void
+  setIsOpen: (isOpen: boolean) => void
+  setTxId: (id: string) => void
+  refetch: () => void
+}
+
+/**
+ * @param props
+ * @returns
+ */
+const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) => {
+  const {
+    chainId,
+    promotion,
+    token,
+    transactionPending,
+    claimableAmount,
+    setReceiptView,
+    dismissModal,
+    setIsOpen,
+    setTxId,
+    refetch
+  } = props
+
+  const { id: promotionId, maxCompletedEpochId } = promotion
+
+  const epochIds = [...Array(maxCompletedEpochId).keys()]
+  console.log(epochIds)
+
+  const usersAddress = useUsersAddress()
+
+  const { data: signer } = useSigner()
+  const { t } = useTranslation()
+
+  const sendTransaction = useSendTransaction()
+
+  const sendClaimTx = async () => {
+    const twabRewardsContract = getTwabRewardsContract(chainId, signer)
+
+    console.log('Claiming for epochs:', epochIds)
+
+    let callTransaction: () => Promise<TransactionResponse>
+
+    try {
+      callTransaction = async () =>
+        twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds)
+    } catch (e) {
+      console.error(e)
+      return
+    }
+
+    const transactionId = sendTransaction({
+      name: `${t('claim')} ${numberWithCommas(claimableAmount.amount)} ${token.symbol}`,
+      callTransaction,
+      callbacks: {
+        onConfirmedByUser: () => {
+          setReceiptView()
+        },
+        onSuccess: async () => {
+          setIsOpen(false)
+          dismissModal()
+          refetch()
+        }
+      }
+    })
+    setTxId(transactionId)
+  }
+
+  const disabled = !signer || transactionPending || Number(claimableAmount.amount) === 0
+
+  return (
+    <TxButton
+      chainId={chainId}
+      disabled={disabled}
+      onClick={sendClaimTx}
+      className='mt-6 flex w-full items-center justify-center'
+      theme={SquareButtonTheme.rainbow}
+      // state={claimTx?.state}
+      // status={claimTx?.status}
+    >
+      {t('claim', 'Claim')} {numberWithCommas(claimableAmount.amount)} {token.symbol}
+    </TxButton>
+  )
 }

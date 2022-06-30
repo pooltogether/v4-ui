@@ -15,11 +15,51 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
   const { prizePoolTotalSupply: totalTwabSupply, decimals } =
     useChainIdPrizePoolTicketTotalSupply(chainId)
 
+  // OPTIMIZE: This is causing my components to re-render constantly:
   const { data: usersTwabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
+
+  // const isTwabsFetched = true
+  // const twab = {
+  //   amount: '0.0',
+  //   amountPretty: '0.00',
+  //   amountUnformatted: {
+  //     _hex: '0x00',
+  //     _isBigNumber: true
+  //   }
+  // }
+  // const usersTwabs = {
+  //   twab: {
+  //     amount: '14061.0',
+  //     amountPretty: '14,061',
+  //     amountUnformatted: { _hex: '0x034619d540', _isBigNumber: true }
+  //   },
+  //   twabDataPerChain: [
+  //     {
+  //       chainId: 4,
+  //       usersAddress: '0x5E6CC2397EcB33e6041C15360E17c777555A5E63',
+  //       twab: {
+  //         amount: '1234.0',
+  //         amountPretty: '1,234.00',
+  //         amountUnformatted: {
+  //           _hex: '0x1256174',
+  //           _isBigNumber: true
+  //         }
+  //       }
+  //     },
+  //     {
+  //       chainId: 80001,
+  //       usersAddress: '0x5E6CC2397EcB33e6041C15360E17c777555A5E63',
+  //       twab
+  //     },
+  //     { chainId: 43113, usersAddress: '0x5E6CC2397EcB33e6041C15360E17c777555A5E63', twab },
+  //     { chainId: 69, usersAddress: '0x5E6CC2397EcB33e6041C15360E17c777555A5E63', twab }
+  //   ],
+  //   usersAddress: '0x5E6CC2397EcB33e6041C15360E17c777555A5E63'
+  // }
 
   return useQuery(
     getUsersChainTwabPercentageKey(chainId, usersAddress),
-    () => getUsersChainTwabPercentage(chainId, totalTwabSupply, usersTwabs, decimals),
+    () => getUsersChainTwabPercentage(chainId, totalTwabSupply, usersTwabs, Number(decimals)),
     {
       enabled: isTwabsFetched && Boolean(totalTwabSupply) && Boolean(decimals)
     }
@@ -50,12 +90,12 @@ export const getUsersChainTwabPercentage = async (
   chainId: number,
   totalTwabSupply: BigNumber,
   usersTwabs: any,
-  decimals: string
+  decimals: number
 ) => {
   const usersChainTwabAmountUnformatted = getTwabForChain(chainId, usersTwabs)
 
-  const users = formatUnits(usersChainTwabAmountUnformatted, Number(decimals))
-  const total = formatUnits(totalTwabSupply, Number(decimals))
+  const users = formatUnits(usersChainTwabAmountUnformatted, decimals)
+  const total = formatUnits(totalTwabSupply, decimals)
 
   return parseFloat(users) / parseFloat(total)
 }

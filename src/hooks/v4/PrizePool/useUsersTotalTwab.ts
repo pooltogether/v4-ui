@@ -24,7 +24,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
     prizePools.map((prizePool) => {
       const refetchInterval = getRefetchInterval(prizePool.chainId)
       return {
-        refetchInterval: refetchInterval,
+        refetchInterval,
         queryKey: [USERS_TWAB_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => getUsersPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
         enabled: Boolean(usersAddress) && isTicketDecimalsFetched

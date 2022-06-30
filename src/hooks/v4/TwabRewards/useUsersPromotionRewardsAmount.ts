@@ -3,7 +3,6 @@ import { useQuery } from 'react-query'
 import { getReadProvider } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
 
-import { NO_REFETCH } from '@constants/query'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
@@ -24,7 +23,6 @@ export const useUsersPromotionRewardsAmount = (
     async () =>
       getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress),
     {
-      ...NO_REFETCH,
       enabled: Boolean(maxCompletedEpochId)
     }
   )
