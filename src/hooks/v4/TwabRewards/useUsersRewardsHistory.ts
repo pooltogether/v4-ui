@@ -45,7 +45,7 @@ export const getUsersRewardsHistory = async (
   })
 
   const { account } = rewardsHistoryResponse || {}
-  const { claimedPromotions } = account
+  const { claimedPromotions } = account || {}
 
   for (let i = 0; i < claimedPromotions.length; i++) {
     const claimedPromotion = claimedPromotions[i]

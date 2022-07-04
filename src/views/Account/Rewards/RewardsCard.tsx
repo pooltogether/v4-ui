@@ -346,8 +346,7 @@ const ClaimModalForm = (props) => {
 
   const { t } = useTranslation()
 
-  console.log(usersPromotionData)
-  console.log(usersClaimedPromotionHistory)
+  const totalReady = !isNaN(total)
 
   return (
     <>
@@ -355,7 +354,13 @@ const ClaimModalForm = (props) => {
       {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
       <div className='flex items-center text-lg mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
-        <span className='ml-1 opacity-50'>(${numberWithCommas(totalUsd)})</span>
+        <span className='ml-1 opacity-50'>
+          {totalReady ? (
+            <>(${numberWithCommas(totalUsd)})</>
+          ) : (
+            <ThemedClipSpinner sizeClassName='w-4 h-4' />
+          )}
+        </span>
       </div>
 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
@@ -368,7 +373,9 @@ const ClaimModalForm = (props) => {
         </span>
         <span className='mx-auto flex items-center mt-1'>
           <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
-          <span className='font-bold opacity-50 mx-1'>{numberWithCommas(total)}</span>
+          <span className='font-bold opacity-50 mx-1'>
+            {totalReady ? numberWithCommas(total) : <ThemedClipSpinner sizeClassName='w-4 h-4' />}{' '}
+          </span>
           <span className='opacity-50'>{token.symbol}</span>
         </span>
       </div>
@@ -538,7 +545,14 @@ const AmountPanel = (props) => {
     <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
       <span className='mx-auto flex items-center mt-1'>
         <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
-        <span className='font-bold opacity-50 mx-1'>{numberWithCommas(amount.amount)}</span>
+
+        <span className='font-bold opacity-50 mx-1'>
+          {amount ? (
+            numberWithCommas(amount?.amount)
+          ) : (
+            <ThemedClipSpinner sizeClassName='w-4 h-4' />
+          )}
+        </span>
         <span className='opacity-50'>{token.symbol}</span>
       </span>
       <div className='text-center mt-1 opacity-60'>{label}</div>
@@ -684,7 +698,8 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     setTxId(transactionId)
   }
 
-  const disabled = !signer || transactionPending || Number(claimableAmount.amount) === 0
+  const disabled =
+    !signer || transactionPending || !claimableAmount || Number(claimableAmount?.amount) === 0
 
   return (
     <TxButton
@@ -695,7 +710,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       theme={SquareButtonTheme.rainbow}
     >
       <span className='font-averta-bold'>
-        {t('claim', 'Claim')} {numberWithCommas(claimableAmount.amount)} {token.symbol}
+        {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}
       </span>
     </TxButton>
   )
