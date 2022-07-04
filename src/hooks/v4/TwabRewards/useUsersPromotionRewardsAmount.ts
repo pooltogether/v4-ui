@@ -21,10 +21,7 @@ export const useUsersPromotionRewardsAmount = (
   return useQuery(
     getUsersChainPromotionKey(chainId, promotionId, maxCompletedEpochId, usersAddress),
     async () =>
-      getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress),
-    {
-      enabled: Boolean(maxCompletedEpochId)
-    }
+      getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress)
   )
 }
 
@@ -47,13 +44,17 @@ export const getUsersPromotionRewardsAmount = async (
 
   const epochIds = [...Array(maxCompletedEpochId).keys()]
 
-  const twabRewardsResults = await batch(
-    provider,
-    twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
-  )
+  try {
+    const twabRewardsResults = await batch(
+      provider,
+      twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
+    )
 
-  const rewardsAmount =
-    twabRewardsResults[twabRewardsContractAddress].getRewardsAmount[0].toString()
+    const rewardsAmount =
+      twabRewardsResults[twabRewardsContractAddress].getRewardsAmount[0].toString()
 
-  return { rewardsAmount }
+    return { rewardsAmount }
+  } catch (e) {
+    return { rewardsAmount: '0' }
+  }
 }

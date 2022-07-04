@@ -16,13 +16,13 @@ import {
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID.rinkeby]: ['0x2', '0x4', '0x6'],
-  // [CHAIN_ID.rinkeby]: ['0x1', '0x2', '0x3', '0x4', '0x5'],
-  [CHAIN_ID.mumbai]: ['0x1', '0x2'],
-  [CHAIN_ID.fuji]: ['0x1', '0x2'],
+  // [CHAIN_ID.rinkeby]: [2, 4, 6, 7, 8, 9, 10],
+  [CHAIN_ID.rinkeby]: [8, 9, 10],
+  [CHAIN_ID.mumbai]: [1, 2],
+  [CHAIN_ID.fuji]: [1, 2],
   [CHAIN_ID.avalanche]: [],
   [CHAIN_ID.mainnet]: [],
-  [CHAIN_ID.polygon]: ['0x1', '0x5']
+  [CHAIN_ID.polygon]: [1, 5]
 }
 
 /**
@@ -51,7 +51,7 @@ const getGraphFilteredPromotionsKey = (chainId: number) => ['getGraphFilteredPro
 
 export const getGraphFilteredPromotions = async (chainId: number, client: GraphQLClient) => {
   const query = promotionsQuery()
-  const variables = { ids: FILTERED_PROMOTION_IDS[chainId] }
+  const variables = { ids: FILTERED_PROMOTION_IDS[chainId].map((id) => `0x${id.toString(16)}`) }
 
   const promotionsResponse = await client.request(query, variables).catch((e) => {
     console.error(e.message)

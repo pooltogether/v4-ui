@@ -167,6 +167,7 @@ const PromotionRow = (props) => {
     useUsersPromotionRewardsAmount(chainId, Number(id), maxCompletedEpochId, usersAddress)
 
   const { id: promotionId } = promotion
+  // console.log('**************')
 
   const {
     data: claimable,
@@ -174,6 +175,7 @@ const PromotionRow = (props) => {
     refetch: refetchClaimable
   } = useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
   const { amount: claimableAmount, usd: claimableUsd } = claimable || {}
+  // console.log({ claimableUsd })
 
   const {
     data: estimate,

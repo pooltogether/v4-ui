@@ -25,7 +25,7 @@ export const useUsersPromotionAmountClaimable = (
   const { data: tokenPrices, isFetched } = useCoingeckoTokenPrices(chainId, [address])
 
   return useQuery(
-    getUsersPromotionAmountClaimableKey(chainId, promotionId, usersAddress),
+    getUsersPromotionAmountClaimableKey(chainId, promotionId, usersAddress, address),
     async () => getUsersPromotionAmountClaimable(tokenPrices, usersPromotionData, token),
     {
       enabled: Boolean(usersPromotionData) && Boolean(address) && isFetched
@@ -36,8 +36,9 @@ export const useUsersPromotionAmountClaimable = (
 const getUsersPromotionAmountClaimableKey = (
   chainId: number,
   promotionId: number,
-  usersAddress: string
-) => ['getUsersPromotionAmountClaimable', chainId, promotionId, usersAddress]
+  usersAddress: string,
+  tokenAddress: string
+) => ['getUsersPromotionAmountClaimable', chainId, promotionId, usersAddress, tokenAddress]
 
 export const getUsersPromotionAmountClaimable = async (
   tokenPrices: object,
