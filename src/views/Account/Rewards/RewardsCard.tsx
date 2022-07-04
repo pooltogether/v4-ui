@@ -38,12 +38,14 @@ import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
+import tokenList from '@constants/swapTokenList'
 
 enum ClaimModalState {
   'FORM',
@@ -54,12 +56,13 @@ enum ClaimModalState {
 export const RewardsCard = () => {
   const { t } = useTranslation()
 
-  const queryResults = useAllChainsFilteredPromotions()
+  const promotionsQueryResults = useAllChainsFilteredPromotions()
 
-  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  const isError = queryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+  const isFetched = promotionsQueryResults.every((queryResult) => queryResult.isFetched)
+  const isError =
+    promotionsQueryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
   const isAny =
-    queryResults
+    promotionsQueryResults
       .map((queryResult) => queryResult.data?.promotions)
       .filter((promotions) => promotions?.length > 0).length > 0
 
@@ -84,7 +87,7 @@ export const RewardsCard = () => {
         </div>
       )}
 
-      {queryResults.map((queryResult) => {
+      {promotionsQueryResults.map((queryResult) => {
         const { data } = queryResult || {}
         const { chainId } = data || {}
         if (!data?.promotions || data.promotions.length === 0) {
@@ -124,15 +127,27 @@ const ChainPromotions = (props) => {
 const PromotionsList = (props) => {
   const { chainId, promotions } = props
 
+  const { data: usersRewardsHistory, isFetched, isError } = useUsersRewardsHistory(chainId)
+  if (isError) {
+    console.warn(isError)
+  }
+
   return (
     <PromotionList>
-      {promotions.map((promotion) => (
-        <PromotionRow
-          key={`pcard-${chainId}-${promotion.id}`}
-          promotion={promotion}
-          chainId={chainId}
-        />
-      ))}
+      {promotions.map((promotion) => {
+        const usersClaimedPromotionHistory = usersRewardsHistory?.claimedPromotions?.find(
+          (claimedPromotion) => claimedPromotion.promotionId === promotion.id
+        )
+
+        return (
+          <PromotionRow
+            key={`pcard-${chainId}-${promotion.id}`}
+            promotion={promotion}
+            chainId={chainId}
+            usersClaimedPromotionHistory={usersClaimedPromotionHistory}
+          />
+        )
+      })}
     </PromotionList>
   )
 }
@@ -153,8 +168,6 @@ const PromotionsList = (props) => {
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
-
-  const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)
 
@@ -224,8 +237,7 @@ const PromotionRow = (props) => {
           />
 
           <ClaimModal
-            chainId={chainId}
-            promotion={promotion}
+            {...props}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             claimableAmount={claimableAmount}
@@ -236,6 +248,7 @@ const PromotionRow = (props) => {
             total={total}
             totalUsd={totalUsd}
             refetch={refetch}
+            usersPromotionData={usersPromotionData}
           />
         </>
       )}
@@ -325,15 +338,25 @@ const ClaimModalForm = (props) => {
     token,
     total,
     totalUsd,
+    usersClaimedPromotionHistory,
+    usersPromotionData,
     setReceiptView,
     setTxId
   } = props
 
   const { t } = useTranslation()
 
+  console.log(usersPromotionData)
+  console.log(usersClaimedPromotionHistory)
+
   return (
     <>
-      <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
+      <RewardsEndInBanner {...props} />
+      {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
+      <div className='flex items-center text-lg mb-2'>
+        <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
+        <span className='ml-1 opacity-50'>(${numberWithCommas(totalUsd)})</span>
+      </div>
 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
         <span
@@ -380,6 +403,54 @@ const ClaimModalForm = (props) => {
         refetch={refetch}
       />
     </>
+  )
+}
+
+const RewardsEndInBanner = (props) => {
+  const { chainId, token } = props
+  const { t } = useTranslation()
+
+  const days = 14
+  const tokenSymbol = token.symbol
+
+  const backgroundColor = useNetworkHexColor(chainId)
+
+  return (
+    <div
+      className='w-full flex rounded-lg my-4 font-bold'
+      style={{ backgroundColor: transformHexColor(backgroundColor) }}
+    >
+      <div
+        className={classNames(
+          'flex flex-col xs:flex-row items-center justify-center w-full text-center rounded-lg p-3',
+          {
+            'bg-white bg-opacity-10': days > 0
+          }
+        )}
+      >
+        <TokenIcon
+          chainId={chainId}
+          address={token?.address}
+          sizeClassName='w-6 h-6 xs:w-4 xs:h-4'
+          className='mr-1'
+        />
+
+        {days < 0
+          ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
+          : days < 1
+          ? t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ends soon!', { tokenSymbol })
+          : t('tokenRewardsEndInNDays', '{{tokenSymbol}} rewards end in {{n}} days', {
+              tokenSymbol,
+              n: days
+            })}
+
+        <Link href={{ pathname: '/deposit' }}>
+          <a className='uppercase ml-2 text-pt-teal text-xs font-averta-bold'>
+            {t('depositMore', 'Deposit more')}
+          </a>
+        </Link>
+      </div>
+    </div>
   )
 }
 
