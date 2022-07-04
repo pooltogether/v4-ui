@@ -40,6 +40,11 @@ import { loopXTimes } from '@utils/loopXTimes'
 // PREDICTION / ESTIMATE:
 // (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
 
+enum ClaimModalState {
+  'FORM',
+  'RECEIPT'
+}
+
 export const RewardsCard = () => {
   const { t } = useTranslation()
 
@@ -133,14 +138,7 @@ const PromotionRow = (props) => {
   const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)
-
-  const [txId, setTxId] = useState<string>()
-  const transaction = useTransaction(txId)
-  const [signaturePending, setSignaturePending] = useState(false)
-  const transactionPending = transaction?.state === TransactionState.pending || signaturePending
-
-  const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+  const onDismiss = () => setIsOpen(false)
 
   const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
 
@@ -166,22 +164,13 @@ const PromotionRow = (props) => {
   const { amount: estimateAmount, usd: estimateUsd } = estimate || {}
 
   const total = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
+  const totalUsd = estimateUsd + claimableUsd
 
   const refetch = () => {
     refetchUsersRewardsAmount()
     refetchEstimate()
     refetchClaimable()
   }
-
-  // TODO: Contract links
-  const contractLinks: ContractLink[] = [
-    {
-      i18nKey: 'prizePool',
-      chainId,
-      address: '0xface'
-    }
-  ]
-  const onDismiss = () => setIsOpen(false)
 
   return (
     <>
@@ -191,7 +180,6 @@ const PromotionRow = (props) => {
         <>
           <PromotionListItem
             onClick={() => {
-              // setSelectedChainId(chainId)
               setIsOpen(true)
             }}
             left={
@@ -218,64 +206,157 @@ const PromotionRow = (props) => {
             }
           />
 
-          <BottomSheet
-            className='flex flex-col'
-            open={isOpen}
+          <ClaimModal
+            chainId={chainId}
+            promotion={promotion}
+            isOpen={isOpen}
             onDismiss={onDismiss}
-            label='Claim modal'
-            snapPoints={snapTo90}
-          >
-            <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
-
-            <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
-              <span
-                className={classNames('text-3xl mx-auto font-bold leading-none', {
-                  'opacity-50': total !== 0
-                })}
-              >
-                $<CountUp countTo={estimateUsd + claimableUsd} />
-              </span>
-              <span className='mx-auto flex items-center mt-1'>
-                <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
-                <span className='font-bold opacity-50 mx-1'>{numberWithCommas(total)}</span>
-                <span className='opacity-50'>{token.symbol}</span>
-              </span>
-            </div>
-
-            <div className='flex items-center space-x-4'>
-              <AmountPanel
-                label={t('estimated', 'Estimated')}
-                chainId={chainId}
-                token={token}
-                amount={estimateAmount}
-                usd={estimateUsd}
-              />
-
-              <AmountPanel
-                label={t('claimable', 'claimable')}
-                chainId={chainId}
-                token={token}
-                amount={claimableAmount}
-                usd={claimableUsd}
-              />
-            </div>
-
-            <SubmitTransactionButton
-              setReceiptView={() => {}}
-              dismissModal={onDismiss}
-              setIsOpen={setIsOpen}
-              claimableAmount={claimableAmount}
-              token={token}
-              claimableUsd={claimableUsd}
-              chainId={chainId}
-              promotion={promotion}
-              transactionPending={transactionPending}
-              setTxId={setTxId}
-              refetch={refetch}
-            />
-          </BottomSheet>
+            claimableAmount={claimableAmount}
+            claimableUsd={claimableUsd}
+            estimateAmount={estimateAmount}
+            estimateUsd={estimateUsd}
+            token={token}
+            total={total}
+            totalUsd={totalUsd}
+            refetch={refetch}
+          />
         </>
       )}
+    </>
+  )
+}
+
+const ClaimModal = (props) => {
+  const { promotion, chainId, isOpen, onDismiss, token, total } = props
+
+  const { t } = useTranslation()
+
+  const [modalState, setModalState] = useState(ClaimModalState.FORM)
+
+  const [txId, setTxId] = useState<string>()
+  const transaction = useTransaction(txId)
+  const [signaturePending, setSignaturePending] = useState(false)
+  const transactionPending = transaction?.state === TransactionState.pending || signaturePending
+
+  const isWalletMetaMask = useIsWalletMetamask()
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+
+  const setFormView = () => {
+    setModalState(ClaimModalState.FORM)
+  }
+
+  const setReceiptView = () => {
+    setModalState(ClaimModalState.RECEIPT)
+  }
+
+  // // TODO: Contract links
+  // const contractLinks: ContractLink[] = [
+  //   {
+  //     i18nKey: 'prizePool',
+  //     chainId,
+  //     address: '0xface'
+  //   }
+  // ]
+
+  let content
+  if (modalState === ClaimModalState.FORM) {
+    content = <ClaimModalForm {...props} setReceiptView={setReceiptView} setTxId={setTxId} />
+  } else if (modalState === ClaimModalState.RECEIPT) {
+    content = <ClaimModalReceipt {...props} setFormView={setFormView} />
+  }
+
+  return (
+    <BottomSheet
+      className='flex flex-col'
+      open={isOpen}
+      onDismiss={onDismiss}
+      label='Claim modal'
+      snapPoints={snapTo90}
+    >
+      {content}
+    </BottomSheet>
+  )
+}
+
+const ClaimModalForm = (props) => {
+  const {
+    chainId,
+    refetch,
+    claimableAmount,
+    claimableUsd,
+    estimateAmount,
+    estimateUsd,
+    promotion,
+    transactionPending,
+    token,
+    total,
+    totalUsd,
+    setReceiptView,
+    setTxId
+  } = props
+
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
+
+      <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+        <span
+          className={classNames('text-3xl mx-auto font-bold leading-none', {
+            'opacity-50': total !== 0
+          })}
+        >
+          $<CountUp countTo={totalUsd} />
+        </span>
+        <span className='mx-auto flex items-center mt-1'>
+          <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
+          <span className='font-bold opacity-50 mx-1'>{numberWithCommas(total)}</span>
+          <span className='opacity-50'>{token.symbol}</span>
+        </span>
+      </div>
+
+      <div className='flex items-center space-x-4'>
+        <AmountPanel
+          label={t('estimated', 'Estimated')}
+          chainId={chainId}
+          token={token}
+          amount={estimateAmount}
+          usd={estimateUsd}
+        />
+
+        <AmountPanel
+          label={t('claimable', 'claimable')}
+          chainId={chainId}
+          token={token}
+          amount={claimableAmount}
+          usd={claimableUsd}
+        />
+      </div>
+
+      <SubmitTransactionButton
+        setReceiptView={setReceiptView}
+        claimableAmount={claimableAmount}
+        token={token}
+        claimableUsd={claimableUsd}
+        chainId={chainId}
+        promotion={promotion}
+        transactionPending={transactionPending}
+        setTxId={setTxId}
+        refetch={refetch}
+      />
+    </>
+  )
+}
+
+const ClaimModalReceipt = (props) => {
+  const { chainId } = props
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
+      receipt
     </>
   )
 }
@@ -388,9 +469,7 @@ interface SubmitTransactionButtonProps {
   token: Token
   claimableAmount: Amount
   claimableUsd: number
-  dismissModal: () => void
   setReceiptView: () => void
-  setIsOpen: (isOpen: boolean) => void
   setTxId: (id: string) => void
   refetch: () => void
 }
@@ -407,16 +486,11 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     transactionPending,
     claimableAmount,
     setReceiptView,
-    dismissModal,
-    setIsOpen,
     setTxId,
     refetch
   } = props
 
   const { id: promotionId, maxCompletedEpochId } = promotion
-
-  const epochIds = [...Array(maxCompletedEpochId).keys()]
-  console.log(epochIds)
 
   const usersAddress = useUsersAddress()
 
@@ -426,6 +500,9 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendTransaction = useSendTransaction()
 
   const sendClaimTx = async () => {
+    const epochIds = [...Array(maxCompletedEpochId).keys()]
+    console.log(epochIds)
+
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
 
     console.log('Claiming for epochs:', epochIds)
@@ -448,8 +525,6 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
           setReceiptView()
         },
         onSuccess: async () => {
-          setIsOpen(false)
-          dismissModal()
           refetch()
         }
       }
