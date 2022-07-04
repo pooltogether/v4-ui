@@ -21,7 +21,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/save',
+        destination: '/deposit',
         permanent: false,
       }
     ]

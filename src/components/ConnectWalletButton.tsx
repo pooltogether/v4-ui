@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { SquareButton } from '@pooltogether/react-components'
+import { Button } from '@pooltogether/react-components'
 import { useConnectWallet } from '@pooltogether/wallet-connection'
 
 interface ConnectWalletButtonProps {
@@ -12,9 +12,9 @@ export const ConnectWalletButton = (props: ConnectWalletButtonProps) => {
   const connectWallet = useConnectWallet()
   const { t } = useTranslation()
   return (
-    <SquareButton className={className} onClick={() => connectWallet()} type='button'>
+    <Button className={className} onClick={() => connectWallet()} type='button'>
       {t('connectWallet')}
-    </SquareButton>
+    </Button>
   )
 }
 

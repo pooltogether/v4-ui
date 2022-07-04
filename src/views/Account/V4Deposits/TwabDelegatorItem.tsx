@@ -5,7 +5,7 @@ import { getNetworkNiceNameByChainId, prettyNumber } from '@pooltogether/utiliti
 import {
   BlockExplorerLink,
   NetworkIcon,
-  SquareLink,
+  ButtonLink,
   TokenIcon,
   BottomSheet
 } from '@pooltogether/react-components'
@@ -84,13 +84,13 @@ const DepositDelegationsSheet: React.FC<{
           <DelegationsList key={`delegation-list-${data.chainId}`} {...data} />
         ))}
       </ul>
-      <SquareLink
+      <ButtonLink
         href={`https://tools.pooltogether.com/delegate`}
         className='items-center space-x-2 mt-6'
       >
         <span>Manage delegations</span>
         <FeatherIcon icon='external-link' className='w-5 h-5' />
-      </SquareLink>
+      </ButtonLink>
     </BottomSheet>
   )
 }

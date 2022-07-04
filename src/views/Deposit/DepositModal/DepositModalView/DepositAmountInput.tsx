@@ -67,7 +67,7 @@ interface DepositInputHeaderProps {
  * @param prizePool
  * @returns
  */
-const useDepositValidationRules = (prizePool: PrizePool) => {
+export const useDepositValidationRules = (prizePool: PrizePool) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)

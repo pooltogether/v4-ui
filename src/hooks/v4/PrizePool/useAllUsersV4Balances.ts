@@ -8,11 +8,12 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
 import {
-  getUserPrizePoolBalances,
+  getUsersPrizePoolBalances,
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
+import { NO_REFETCH } from '@constants/query'
 
 export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
@@ -23,6 +24,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       return {
+        ...NO_REFETCH,
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => {
           const queryResult = queriesResult?.find((queryResult) => {
@@ -30,7 +32,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
             return tokens.prizePoolId === prizePool.id()
           })
           const { data: tokens } = queryResult
-          return getUserPrizePoolBalances(prizePool, usersAddress, tokens)
+          return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
         },
         enabled: isAllPrizePoolTokensFetched && !!usersAddress
       }
@@ -51,10 +53,11 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       queryResults.some((queryResult) => queryResult.isFetching) || isDelegationsFetching
     const data = queryResults.map((queryResult) => queryResult.data).filter(Boolean)
     const totalTicketValueUsdScaled = getTotalValueUsdScaled(data)
-    const totalDelegationValueUsdScaled = isDelegationsFetched
-      ? delegationData.totalTokenWithUsdBalance.balanceUsdScaled
-      : BigNumber.from(0)
-    const totalValueUsdScaled = totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
+    // TODO: Delegations are messing up.
+    // const totalDelegationValueUsdScaled = isDelegationsFetched
+    //   ? delegationData.totalTokenWithUsdBalance.balanceUsdScaled
+    //   : BigNumber.from(0)
+    const totalValueUsdScaled = totalTicketValueUsdScaled //.add(totalDelegationValueUsdScaled)
     const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
     const refetch = () => {
       queryResults.map((queryResult) => queryResult.refetch())
@@ -65,7 +68,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       isFetching,
       refetch,
       data: {
-        delegations: isDelegationsFetched ? delegationData.delegations : null,
+        delegations: null, //isDelegationsFetched ? delegationData.delegations : null,
         balances: data,
         totalValueUsd,
         totalValueUsdScaled

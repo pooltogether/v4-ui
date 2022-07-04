@@ -33,7 +33,7 @@ export const InfoList = (props: InfoListProps) => {
 }
 
 InfoList.defaultProps = {
-  bgClassName: 'bg-tertiary'
+  bgClassName: 'bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10'
 }
 
 export interface InfoListItemProps {

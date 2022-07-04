@@ -30,12 +30,9 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
       <LightningBolts />
       <Dots />
 
-      <AmountOfPrizes
-        prizeDistributor={prizeDistributor}
-        isFetched={isFetched}
-        prizeConfig={prizeConfigData?.prizeConfig}
-        prizeToken={prizeDistributorToken?.token}
-      />
+      <div className='uppercase font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1'>
+        Every. Single. Day.
+      </div>
       <PrizeAmount
         chainId={prizeDistributor.chainId}
         isFetched={isFetched}

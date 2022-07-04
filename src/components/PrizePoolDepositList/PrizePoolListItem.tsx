@@ -1,17 +1,20 @@
+import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 
 interface PrizePoolListItemProps {
   left: React.ReactNode
   right: React.ReactNode
   bottom?: React.ReactNode
+  bgClassName?: string
+  radiusClassName?: string
   onClick: () => void
 }
 
 export const PrizePoolListItem = (props: PrizePoolListItemProps) => {
-  const { onClick, left, right, bottom } = props
+  const { onClick, bgClassName, radiusClassName, left, right, bottom } = props
   return (
-    <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
-      <button className='p-4 w-full flex justify-between items-center' onClick={onClick}>
+    <li className={classNames('transition', bgClassName, radiusClassName)}>
+      <button className='py-2 px-4 w-full flex justify-between items-center' onClick={onClick}>
         {left}
         <div className='flex space-x-2 items-center'>
           {right}
@@ -21,4 +24,10 @@ export const PrizePoolListItem = (props: PrizePoolListItemProps) => {
       {bottom}
     </li>
   )
+}
+
+PrizePoolListItem.defaultProps = {
+  bgClassName:
+    'bg-white bg-opacity-0 hover:bg-opacity-10 dark:bg-actually-black dark:bg-opacity-0 dark:hover:bg-opacity-10',
+  radiusClassName: 'rounded'
 }

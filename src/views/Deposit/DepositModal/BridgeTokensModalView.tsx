@@ -1,33 +1,21 @@
-import React from 'react'
+import { getBridgeUrls } from '@constants/config'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
-import { Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
+import { ModalTitle, ViewProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
-import { CHAIN_ID } from '@constants/misc'
-import { getBridgeUrls } from '@constants/config'
-
-interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
-  chainId: number
-}
-
-export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
+export const BridgeTokensModalView: React.FC<{ chainId: number } & ViewProps> = (props) => {
   const { chainId } = props
 
   const { t } = useTranslation()
-
   const links = getBridgeUrls(chainId)
-
   const networkName = getNetworkNiceNameByChainId(chainId)
 
+  // Explore button to go there
+  // Submit for valid hook-form moves to confirm view with a TxButton
   return (
-    <Modal
-      isOpen={Boolean(props.isOpen)}
-      paddingClassName='px-2 xs:px-8 py-10'
-      maxWidthClassName='sm:max-w-md'
-      label={t('getTokensModal', 'Get tokens - modal window')}
-      closeModal={props.closeModal}
-    >
+    <div>
       <div className='flex flex-col'>
         <ModalTitle
           chainId={chainId}
@@ -52,7 +40,7 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
           ))}
         </ul>
       </div>
-    </Modal>
+    </div>
   )
 }
 
@@ -73,6 +61,6 @@ const BridgeLink = (props: { url: string; title: string }) => {
   )
 }
 
-BridgeTokensModal.defaultProps = {
+BridgeTokensModalView.defaultProps = {
   chainId: CHAIN_ID.mainnet
 }

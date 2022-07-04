@@ -15,9 +15,9 @@ import {
   BottomSheet,
   ModalTitle,
   NetworkIcon,
-  SquareButton,
-  SquareButtonSize,
-  SquareButtonTheme
+  Button,
+  ButtonSize,
+  ButtonTheme
 } from '@pooltogether/react-components'
 import { GaugeController, PrizePool } from '@pooltogether/v4-client-js'
 import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
@@ -28,6 +28,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import React, { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useQueries, useQuery } from 'react-query'
+import { ListItemTokenBalance } from '@components/PrizePoolDepositList/ListItemTokenBalance'
 
 export const StakeUI = () => {
   const [gaugeController, setGaugeController] = useState<GaugeController>(null)
@@ -142,10 +143,7 @@ const GaugeControllerCard: React.FC<{
           </div>
         </div>
         <div>
-          <SquareButton
-            onClick={openStakeModal}
-            size={SquareButtonSize.sm}
-          >{`Stake ${token?.symbol}`}</SquareButton>
+          <Button onClick={openStakeModal} size={ButtonSize.sm}>{`Stake ${token?.symbol}`}</Button>
         </div>
       </div>
 
@@ -217,7 +215,7 @@ const GaugeRow: React.FC<{
   return (
     <PrizePoolListItem
       left={<PrizePoolLabel prizePool={prizePool} />}
-      right={<TokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
+      right={<ListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
       onClick={() => {
         setTicket(tokens.ticket)
         setGaugeController(gaugeController)
@@ -250,7 +248,7 @@ const GaugeRewardsRow: React.FC<{
   return (
     <PrizePoolListItem
       left={<PrizePoolLabel prizePool={prizePool} />}
-      right={<TokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
+      right={<ListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
       onClick={() => {
         setTicket(tokens.ticket)
         setGaugeController(gaugeController)
@@ -494,13 +492,13 @@ const GaugeEditForm: React.FC<{
     return (
       <>
         <ModalTransactionSubmitted chainId={gaugeController?.chainId} tx={transaction} />
-        <SquareButton
+        <Button
           className='w-full'
-          theme={SquareButtonTheme.orangeOutline}
+          theme={ButtonTheme.orangeOutline}
           onClick={() => setTransactionId('')}
         >
           Clear
-        </SquareButton>
+        </Button>
       </>
     )
   }
@@ -645,13 +643,13 @@ const GaugeStakeForm: React.FC<{ gaugeController: GaugeController }> = (props) =
     return (
       <>
         <ModalTransactionSubmitted chainId={gaugeController?.chainId} tx={transaction} />
-        <SquareButton
+        <Button
           className='w-full'
-          theme={SquareButtonTheme.orangeOutline}
+          theme={ButtonTheme.orangeOutline}
           onClick={() => setTransactionId('')}
         >
           Clear
-        </SquareButton>
+        </Button>
       </>
     )
   }

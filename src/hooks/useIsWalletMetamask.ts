@@ -2,6 +2,6 @@ import { useIsWalletMetamask as _useIsWalletMetamask } from '@pooltogether/hooks
 import { useConnect } from 'wagmi'
 
 export const useIsWalletMetamask = () => {
-  const [{ data }] = useConnect()
-  return !!(data?.connector?.name === 'MetaMask')
+  const { activeConnector } = useConnect()
+  return !!(activeConnector?.name === 'MetaMask')
 }

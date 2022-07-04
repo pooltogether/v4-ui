@@ -1,7 +1,7 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import {
   ModalTitle,
-  SquareButtonTheme,
+  ButtonTheme,
   ThemedClipSpinner,
   TokenIcon
 } from '@pooltogether/react-components'
@@ -150,14 +150,12 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const { chainId, vapr, tokenFaucetAddress, tokenFaucetRewards, setClaimTxId, refetch } = props
 
   const { t } = useTranslation()
-  const [, getSigner] = useSigner({
-    skip: true
-  })
+  const { refetch: getSigner } = useSigner()
   const sendTransaction = useSendTransaction()
   const usersAddress = useUsersAddress()
 
   const sendClaimTx = async () => {
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
     const callTransaction = buildTokenFaucetClaimTx(signer, tokenFaucetAddress, usersAddress)
 
     const name = t(`claimAmountTicker`, 'Claim {{amount}} {{ticker}}', {
@@ -218,7 +216,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         disabled={!tokenFaucetRewards.amountUnformatted.gt(0)}
         onClick={sendClaimTx}
         className='mt-6 flex w-full items-center justify-center'
-        theme={SquareButtonTheme.rainbow}
+        theme={ButtonTheme.rainbow}
       >
         {t('claim', 'Claim')}
       </TxButton>

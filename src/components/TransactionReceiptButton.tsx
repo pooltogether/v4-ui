@@ -1,8 +1,8 @@
 import {
   formatBlockExplorerTxUrl,
-  SquareLink,
-  SquareButtonTheme,
-  SquareButtonSize
+  ButtonLink,
+  ButtonTheme,
+  ButtonSize
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
@@ -21,15 +21,15 @@ export const TransactionReceiptButton = (props: TransactionReceiptButtonProps) =
   const url = formatBlockExplorerTxUrl(tx?.response?.hash, chainId)
 
   return (
-    <SquareLink
+    <ButtonLink
       target='_blank'
       href={url}
-      theme={SquareButtonTheme.tealOutline}
-      size={SquareButtonSize.md}
+      theme={ButtonTheme.tealOutline}
+      size={ButtonSize.md}
       className={className}
     >
       {t('viewReceipt', 'View receipt')}
-    </SquareLink>
+    </ButtonLink>
   )
 }
 

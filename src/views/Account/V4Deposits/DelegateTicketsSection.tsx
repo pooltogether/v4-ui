@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { SquareButtonSize } from '@pooltogether/react-components'
+import { ButtonSize } from '@pooltogether/react-components'
 import { TokenBalance } from '@pooltogether/hooks'
 import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
@@ -106,7 +106,7 @@ const ActivateTicketsButton = (props: ActivateTicketsButtonProps) => {
     <TxButton
       chainId={prizePool.chainId}
       className={classNames('', className)}
-      size={SquareButtonSize.sm}
+      size={ButtonSize.sm}
       onClick={sendDelegateTx}
     >
       {t('activateNetworkDeposit', { network: getNetworkNiceNameByChainId(prizePool.chainId) })}

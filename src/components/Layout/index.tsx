@@ -5,7 +5,7 @@ import { LoadingLogo } from '@pooltogether/react-components'
 
 import { PageHeader } from '@components/Layout/PageHeader'
 import { useInitialLoad } from '@hooks/useInitialLoad'
-import { BottomNavigation } from './Navigation'
+import { Navigation } from './Navigation'
 import { AlertBanners } from '@components/AlertBanners'
 
 interface LayoutProps {
@@ -27,8 +27,8 @@ const Layout = (props: LayoutProps) => {
         <>
           <AlertBanners />
           <PageHeader />
+          <Navigation />
           {children}
-          <BottomNavigation />
         </>
       ) : (
         <div className='flex flex-col h-screen absolute top-0 w-screen'>

@@ -3,10 +3,10 @@ import Link from 'next/link'
 import { Amount, Token } from '@pooltogether/hooks'
 import {
   ModalProps,
-  SquareButton,
-  SquareLink,
-  SquareButtonSize,
-  SquareButtonTheme,
+  Button,
+  ButtonLink,
+  ButtonSize,
+  ButtonTheme,
   ModalTitle,
   BottomSheet
 } from '@pooltogether/react-components'
@@ -113,8 +113,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             'Something went wrong while processing your transaction.'
           )}
         </p>
-        <SquareButton
-          theme={SquareButtonTheme.tealOutline}
+        <Button
+          theme={ButtonTheme.tealOutline}
           className='w-full'
           onClick={() => {
             resetState()
@@ -122,7 +122,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           }}
         >
           {t('tryAgain', 'Try again')}
-        </SquareButton>
+        </Button>
       </BottomSheet>
     )
   } else if (
@@ -234,13 +234,13 @@ export const AccountPageButton = () => {
   const router = useRouter()
   return (
     <Link href={{ pathname: '/account', query: router.query }}>
-      <SquareLink
-        size={SquareButtonSize.md}
-        theme={SquareButtonTheme.tealOutline}
+      <ButtonLink
+        size={ButtonSize.md}
+        theme={ButtonTheme.tealOutline}
         className='w-full text-center'
       >
         {t('viewAccount', 'View account')}
-      </SquareLink>
+      </ButtonLink>
     </Link>
   )
 }

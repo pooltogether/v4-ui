@@ -1,10 +1,4 @@
-import {
-  BalanceBottomSheet,
-  ContractLink,
-  NetworkIcon,
-  SquareButtonTheme,
-  TokenIcon
-} from '@pooltogether/react-components'
+import { NetworkIcon, ButtonTheme, TokenIcon } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
@@ -22,6 +16,8 @@ import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
 import { TokenBalance } from '@components/TokenBalance'
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { ListItemTokenBalance } from '@components/PrizePoolDepositList/ListItemTokenBalance'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
 export const V3Deposits = () => {
@@ -158,7 +154,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             isSponsorship={isSponsorship}
           />
         }
-        right={<TokenBalance chainId={chainId} token={ticket} />}
+        right={<ListItemTokenBalance chainId={chainId} token={ticket} />}
       />
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
@@ -186,14 +182,13 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         transactionHash={tx?.response?.hash}
         token={ticket}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
-        t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
@@ -282,14 +277,13 @@ const PodDepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         transactionHash={tx?.response?.hash}
         token={ticket}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
-        t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}

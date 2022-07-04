@@ -10,54 +10,66 @@ import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
 import { useUsersTotalClaimedAmount } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmount'
 import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
 import { getTimestampString } from '@utils/getTimestampString'
+import classNames from 'classnames'
 
-export const TotalWinnings = () => {
-  const [isOpen, setIsOpen] = useState(false)
+export const TotalWinningsAmount: React.FC<{ className?: string }> = (props) => {
+  const { className } = props
   const usersAddress = useUsersAddress()
   const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmount(usersAddress)
+
+  return (
+    <span className={className}>
+      {!isFetched ? (
+        <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
+      ) : (
+        <>
+          $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
+        </>
+      )}
+    </span>
+  )
+}
+
+export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
+  const { className } = props
+  const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
+        className={classNames(
+          className,
+          'p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg font-bold text-inverse'
+        )}
       >
-        <span>
-          <span className='mr-1'>{'🎉 '}</span>
-          {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
-        </span>
-        <div className='flex'>
-          <span className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
-            {!isFetched ? (
-              <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
-            ) : (
-              <>
-                $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
-              </>
-            )}
+        <div className='flex justify-between w-full'>
+          <span>
+            <span className='mr-1'>{'🎉 '}</span>
+            {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
           </span>
-          <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
+          <div className='flex'>
+            <TotalWinningsAmount className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3' />
+            <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
+          </div>
         </div>
       </button>
-      <TotalWinningsSheet
-        totalClaimedAmount={totalClaimedAmount}
-        open={isOpen}
-        onDismiss={() => setIsOpen(false)}
-      />
+      <TotalWinningsSheet open={isOpen} onDismiss={() => setIsOpen(false)} />
     </>
   )
 }
 
 interface TotalWinningsSheetProps {
-  totalClaimedAmount: Amount
   open: boolean
   onDismiss: () => void
 }
 
-const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
-  const { open, onDismiss, totalClaimedAmount } = props
+export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
+  const { open, onDismiss } = props
   const { t } = useTranslation()
+  const usersAddress = useUsersAddress()
+  const { data: totalClaimedAmount } = useUsersTotalClaimedAmount(usersAddress)
 
   return (
     <BottomSheet open={open} onDismiss={onDismiss} className='flex flex-col space-y-8'>

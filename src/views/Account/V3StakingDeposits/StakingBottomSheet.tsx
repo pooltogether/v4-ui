@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BalanceBottomSheet, ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
+import { ButtonTheme } from '@pooltogether/react-components'
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
@@ -9,6 +9,7 @@ import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
 import { TokenFaucetClaimView } from '../V3Deposits/TokenFaucetClaimView'
 import { V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
 
 interface StakingBalanceBottomSheetProps {
   chainId: number
@@ -96,20 +97,20 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       id: 'save',
       view: () => depositView,
       label: t('save'),
-      theme: SquareButtonTheme.teal
+      theme: ButtonTheme.teal
     },
     {
       id: 'claim',
       view: () => claimView,
       label: t('rewards'),
-      theme: SquareButtonTheme.rainbow
+      theme: ButtonTheme.rainbow
     },
     {
       id: 'withdraw',
       view: () => withdrawView,
       disabled: ticket.amountUnformatted.isZero(),
       label: t('withdraw'),
-      theme: SquareButtonTheme.tealOutline
+      theme: ButtonTheme.tealOutline
     }
   ]
 
@@ -138,7 +139,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   return (
     <BalanceBottomSheet
-      t={t}
       views={views}
       title={`${t('manage')}: ${prizePool.tokens.token.symbol}`}
       contractLinks={contractLinks}

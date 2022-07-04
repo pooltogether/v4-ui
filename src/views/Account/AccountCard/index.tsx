@@ -7,7 +7,7 @@ import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { TotalWinnings } from './TotalWinnings'
+import { TotalWinningsCard } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 
@@ -17,12 +17,7 @@ interface AccountCardProps {
 
 export const AccountCard = (props: AccountCardProps) => {
   return (
-    <div
-      className={classNames(
-        'flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2',
-        props.className
-      )}
-    >
+    <div className={classNames('flex flex-col p-4 space-y-2', props.className)}>
       <div className='flex justify-between p-4'>
         <TotalBalance />
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
@@ -31,7 +26,7 @@ export const AccountCard = (props: AccountCardProps) => {
         <DailyOdds />
         <WeeklyOdds />
       </div>
-      <TotalWinnings />
+      <TotalWinningsCard className='block sm:hidden' />
     </div>
   )
 }
@@ -44,11 +39,7 @@ const TotalBalance = (props: { className?: string }) => {
     <a href='#deposits' className={className}>
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
-        <TotalBalanceAmount
-          isFetched={isFetched}
-          totalBalanceUsd={data.totalBalanceUsd}
-          totalV4Balance={data.totalV4Balance}
-        />
+        <TotalBalanceAmount />
         {isFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
@@ -59,28 +50,28 @@ const TotalBalance = (props: { className?: string }) => {
   )
 }
 
-const TotalBalanceAmount = (props: {
-  totalBalanceUsd: Amount
-  totalV4Balance: number
-  isFetched: boolean
-}) => {
-  const { totalBalanceUsd, totalV4Balance, isFetched } = props
+export const TotalBalanceAmount = () => {
+  const { data, isFetching, isFetched } = useUsersTotalBalances()
+
+  if (isFetching) {
+    return <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
+  }
+
   // If not fetched
   // If no token price or balance
-  // If token price
   if (
     !isFetched ||
-    !totalBalanceUsd.amountUnformatted.isZero() ||
-    (totalBalanceUsd.amountUnformatted.isZero() && !totalV4Balance)
+    !data?.totalBalanceUsd.amountUnformatted.isZero() ||
+    (data?.totalBalanceUsd.amountUnformatted.isZero() && !data?.totalV4Balance)
   ) {
     return (
       <>
-        $<CountUp countTo={Number(totalBalanceUsd.amount)} />
+        $<CountUp countTo={Number(data?.totalBalanceUsd.amount)} />
       </>
     )
   }
 
-  return <CountUp countTo={Number(totalV4Balance)} />
+  return <CountUp countTo={Number(data?.totalV4Balance)} />
 }
 
 const DailyOdds = () => <OddsBox i18nKey='dailyOdds' daysOfPrizes={1} />

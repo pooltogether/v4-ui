@@ -1,3 +1,4 @@
+import { ViewProps } from '@pooltogether/react-components'
 import React, { useEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -8,8 +9,6 @@ import { ethers, Overrides } from 'ethers'
 import { TransactionState, useTransaction } from '@pooltogether/wallet-connection'
 
 import { BUTTON_MIN_WIDTH } from '@constants/misc'
-import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
-import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
 import { SelectPrizePoolModal } from '@components/SelectPrizePoolModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -18,7 +17,10 @@ import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAll
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { DepositConfirmationModal } from '@views/Deposit/DepositConfirmationModal'
-import { DepositForm, DEPOSIT_QUANTITY_KEY } from '@views/Deposit/DepositForm'
+import {
+  DepositForm,
+  DEPOSIT_FORM_KEY
+} from '@views/Deposit/DepositModal/DepositModalView/DepositForm'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
@@ -26,9 +28,11 @@ import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 import { usePrizePoolPercentageOfPicks } from '@hooks/v4/PrizePool/usePrizePoolPercentageOfPicks'
+import { DepositViewIds } from '..'
+import classNames from 'classnames'
 
-export const DepositCard = (props: { className?: string }) => {
-  const { className } = props
+export const DepositModalView: React.FC<{ className?: string } & ViewProps> = (props) => {
+  const { className, setSelectedViewId } = props
 
   const router = useRouter()
 
@@ -66,11 +70,6 @@ export const DepositCard = (props: { className?: string }) => {
 
   const ticketDelegate = delegateData?.ticketDelegate
 
-  const form = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange'
-  })
-
   const [showConfirmModal, setShowConfirmModal] = useState<boolean>(false)
 
   const { t } = useTranslation()
@@ -98,7 +97,7 @@ export const DepositCard = (props: { className?: string }) => {
 
   const { setValue, watch, reset } = form
 
-  const quantity = watch(DEPOSIT_QUANTITY_KEY)
+  const quantity = watch(DEPOSIT_FORM_KEY.amountToDeposit)
   const amountToDeposit = useMemo(
     () => getAmountFromString(quantity, token?.decimals),
     [quantity, token?.decimals]
@@ -107,10 +106,10 @@ export const DepositCard = (props: { className?: string }) => {
   // Set quantity from the query parameter on mount
   useEffect(() => {
     try {
-      const quantity = router.query[DEPOSIT_QUANTITY_KEY]
+      const quantity = router.query[DEPOSIT_FORM_KEY.amountToDeposit]
       const quantityNum = Number(quantity)
       if (quantity && !isNaN(quantityNum)) {
-        setValue(DEPOSIT_QUANTITY_KEY, quantity, { shouldValidate: true })
+        setValue(DEPOSIT_FORM_KEY.amountToDeposit, quantity, { shouldValidate: true })
       }
     } catch (e) {
       console.warn('Invalid query parameter for quantity')
@@ -187,7 +186,7 @@ export const DepositCard = (props: { className?: string }) => {
 
   const resetQueryParam = () => {
     const url = new URL(window.location.href)
-    url.searchParams.delete(DEPOSIT_QUANTITY_KEY)
+    url.searchParams.delete(DEPOSIT_FORM_KEY.amountToDeposit)
     router.replace({ pathname: url.pathname, query: url.searchParams.toString() }, null, {
       scroll: false
     })
@@ -212,36 +211,39 @@ export const DepositCard = (props: { className?: string }) => {
 
   return (
     <>
-      <div className={className}>
-        <div className='font-semibold uppercase flex items-center justify-center text-xs xs:text-sm mb-2 mt-4'>
-          <span className='text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
-            Save with
-          </span>
-          <SelectPrizePoolModal className='network-dropdown ml-1 xs:ml-2' />
-        </div>
-        <DepositForm
-          form={form}
-          prizePool={prizePool}
-          token={token}
-          ticket={ticket}
-          isPrizePoolTokensFetched={isPrizePoolTokensFetched}
-          approveTx={approveTx}
-          depositTx={depositTx}
-          isUsersBalancesFetched={isUsersBalancesFetched}
-          openModal={openModal}
-          amountToDeposit={amountToDeposit}
-        />
-
-        <div className='w-full flex justify-around xs:px-2 py-4'>
-          <BridgeTokensModalTrigger prizePool={prizePool} />
-          <HelpLink />
-          <SwapTokensModalTrigger
-            chainId={prizePool.chainId}
-            outputCurrencyAddress={prizePoolTokens?.token.address}
+      <div className={classNames('h-full flex flex-col justify-between', className)}>
+        <div>
+          <div className='font-semibold uppercase flex items-center justify-center text-xs xs:text-sm mb-2 mt-4'>
+            <span className='text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
+              Save with
+            </span>
+            <SelectPrizePoolModal className='network-dropdown ml-1 xs:ml-2' />
+          </div>
+          <DepositForm
+            form={form}
+            prizePool={prizePool}
+            token={token}
+            ticket={ticket}
+            isPrizePoolTokensFetched={isPrizePoolTokensFetched}
+            approveTx={approveTx}
+            depositTx={depositTx}
+            isUsersBalancesFetched={isUsersBalancesFetched}
+            openModal={openModal}
+            amountToDeposit={amountToDeposit}
+            connectWallet={() => setSelectedViewId(DepositViewIds.walletConnection)}
+            handleSubmit={() => setSelectedViewId(DepositViewIds.reviewTransaction)}
           />
         </div>
-      </div>
 
+        <button onClick={() => setSelectedViewId(DepositViewIds.explore)}>Explore!</button>
+
+        <div className='w-full flex justify-around xs:px-2 py-4'>
+          <BridgeTokensModalTrigger setSelectedViewId={setSelectedViewId} />
+          <HelpLink />
+          <SwapTokensModalTrigger setSelectedViewId={setSelectedViewId} />
+        </div>
+      </div>
+      {/* 
       <DepositConfirmationModal
         chainId={prizePool.chainId}
         isOpen={showConfirmModal}
@@ -258,7 +260,7 @@ export const DepositCard = (props: { className?: string }) => {
         sendDepositTx={sendDepositTx}
         prizePool={prizePool}
         resetState={resetState}
-      />
+      /> */}
     </>
   )
 }
@@ -280,38 +282,55 @@ const HelpLink = () => {
   )
 }
 
-interface ExternalLinkProps {
-  prizePool: PrizePool
-}
-
-const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
-  const { prizePool } = props
-  const [showModal, setShowModal] = useState(false)
-
+const BridgeTokensModalTrigger = (props: {
+  setSelectedViewId: (selectedViewId: string | number) => void
+}) => {
+  const { setSelectedViewId } = props
   const { t } = useTranslation()
-
   return (
-    <>
-      <button
-        className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-between items-center xs:flex-row xs:space-y-0 xs:space-x-2'
-        onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
-      >
+    <ChangeViewTrigger
+      label={t('bridgeTokens', 'Bridge tokens')}
+      icon={() => (
         <div className='flex -space-x-1'>
           <FeatherIcon icon={'arrow-left'} className='relative w-3 h-3' />
           <FeatherIcon icon={'arrow-right'} className='relative w-3 h-3' />
         </div>
-        <span>{t('bridgeTokens', 'Bridge tokens')}</span>
-      </button>
-      <BridgeTokensModal
-        label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
-        chainId={prizePool.chainId}
-        isOpen={showModal}
-        closeModal={() => setShowModal(false)}
-      />
-    </>
+      )}
+      changeView={() => setSelectedViewId(DepositViewIds.bridgeTokens)}
+    />
   )
 }
-function useGetWalletSigner() {
-  throw new Error('Function not implemented.')
+
+const SwapTokensModalTrigger = (props: {
+  setSelectedViewId: (selectedViewId: string | number) => void
+}) => {
+  const { setSelectedViewId } = props
+  const { t } = useTranslation()
+  return (
+    <ChangeViewTrigger
+      label={t('swapTokens', 'Swap tokens')}
+      icon={() => <FeatherIcon icon={'refresh-cw'} className='relative w-4 h-4' />}
+      changeView={() => setSelectedViewId(DepositViewIds.swapTokens)}
+    />
+  )
 }
+
+const ChangeViewTrigger = (props: {
+  icon: React.ReactNode
+  label: string
+  changeView: () => void
+}) => {
+  const { icon, label, changeView } = props
+  return (
+    <button
+      className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-between items-center xs:flex-row xs:space-y-0 xs:space-x-2'
+      onClick={() => changeView()}
+      style={{ minWidth: BUTTON_MIN_WIDTH }}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  )
+}
+
+const QuickSelectPrizePool = () => {}

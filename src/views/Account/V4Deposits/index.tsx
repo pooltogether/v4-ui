@@ -1,11 +1,9 @@
 import { useState } from 'react'
 import {
-  BalanceBottomSheet,
-  ContractLink,
   NetworkIcon,
-  SquareButtonSize,
-  SquareButtonTheme,
-  SquareLink,
+  ButtonSize,
+  ButtonTheme,
+  ButtonLink,
   TokenIcon
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
@@ -40,6 +38,9 @@ import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegat
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import classNames from 'classnames'
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { ListItemTokenBalance } from '@components/PrizePoolDepositList/ListItemTokenBalance'
+import { AccentTextButton } from '../AccentTextButton'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -54,6 +55,7 @@ export const V4Deposits = () => {
         secondary={`$${data?.totalValueUsd.amountPretty}`}
       />
       <DepositsList />
+      <ExplorePrizePools />
     </div>
   )
 }
@@ -130,7 +132,7 @@ const DepositItem = (props: DepositItemsProps) => {
           setIsOpen(true)
         }}
         left={<PrizePoolLabel prizePool={prizePool} />}
-        right={<TokenBalance chainId={prizePool.chainId} token={balances?.ticket} />}
+        right={<ListItemTokenBalance chainId={prizePool.chainId} token={balances?.ticket} />}
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
       <BalanceBottomSheet
@@ -140,15 +142,12 @@ const DepositItem = (props: DepositItemsProps) => {
         onDismiss={onDismiss}
         chainId={chainId}
         delegate={delegate}
+        transactionHash={tx?.receipt?.transactionHash}
         internalLinks={
-          <Link href={{ pathname: '/save', query: router.query }}>
-            <SquareLink
-              size={SquareButtonSize.md}
-              theme={SquareButtonTheme.teal}
-              className='w-full'
-            >
-              {t('save')}
-            </SquareLink>
+          <Link href={{ pathname: '/deposit', query: router.query }}>
+            <ButtonLink size={ButtonSize.md} theme={ButtonTheme.teal} className='w-full'>
+              {t('deposit')}
+            </ButtonLink>
           </Link>
         }
         views={[
@@ -165,7 +164,7 @@ const DepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         moreInfoViews={[
@@ -180,14 +179,12 @@ const DepositItem = (props: DepositItemsProps) => {
             ),
             icon: 'gift',
             label: t('delegateDeposit', 'Delegate deposit'),
-            theme: SquareButtonTheme.teal
+            theme: ButtonTheme.teal
           }
         ]}
-        tx={tx}
         token={balances.ticket}
         balance={balances.ticket}
         balanceUsd={balances.ticket}
-        t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
@@ -237,4 +234,16 @@ const Divider: React.FC<{ usersAddress: string }> = (props) => {
   }
 
   return null
+}
+
+const ExplorePrizePools = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <>
+      <AccentTextButton className='ml-4' onClick={() => setIsOpen(true)}>
+        Explore Prize Pools
+      </AccentTextButton>
+    </>
+  )
 }

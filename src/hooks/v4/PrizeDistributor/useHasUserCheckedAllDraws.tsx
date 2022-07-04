@@ -1,5 +1,5 @@
 import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { getStoredDrawResults } from '@utils/drawResultsStorage'
 import { useUnclaimedDrawIds } from './useUnclaimedDrawIds'

@@ -4,10 +4,10 @@ import { Token } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   Card,
-  SquareLink,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize,
+  ButtonLink,
+  Button,
+  ButtonTheme,
+  ButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 import { PrizeDistributorV2, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
@@ -199,7 +199,7 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
   didUserWinAPrize: boolean
   claimTx: Transaction
   className?: string
-  size?: SquareButtonSize
+  size?: ButtonSize
   setWinningDrawResults: (drawResultsList: { [drawId: number]: DrawResults }) => void
   setCheckedState: (state: CheckedState) => void
   openModal: () => void
@@ -272,15 +272,15 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
         className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
       />
       <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
-        <SquareButton
-          theme={SquareButtonTheme.rainbow}
-          size={SquareButtonSize.md}
+        <Button
+          theme={ButtonTheme.rainbow}
+          size={ButtonSize.md}
           onClick={() => setIsModalOpen(true)}
           className='mx-auto xs:mx-0 w-full sm:w-auto'
           style={{ minWidth: 230 }}
         >
           {t('viewPrizes', 'View prizes')}
-        </SquareButton>
+        </Button>
       </div>
       <PrizeClaimSheet
         {...props}
@@ -329,28 +329,28 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
 
   if (claimTx?.state === TransactionState.pending) {
     btnJsx = (
-      <SquareLink
+      <ButtonLink
         target='_blank'
         href={url}
-        theme={SquareButtonTheme.teal}
+        theme={ButtonTheme.teal}
         size={size}
         className={className}
       >
         <ThemedClipSpinner className='mr-2' size={12} />
         {t('claiming', 'Claiming')}
-      </SquareLink>
+      </ButtonLink>
     )
   } else if (claimTx?.status === TransactionStatus.success) {
     btnJsx = (
-      <SquareLink
+      <ButtonLink
         target='_blank'
         href={url}
-        theme={SquareButtonTheme.tealOutline}
+        theme={ButtonTheme.tealOutline}
         size={size}
         className={className}
       >
         {t('viewReceipt', 'View receipt')}
-      </SquareLink>
+      </ButtonLink>
     )
   } else if (
     checkedState === CheckedState.checked &&
@@ -358,15 +358,15 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     hasCheckedAnimationFinished
   ) {
     btnJsx = (
-      <SquareButton
-        theme={SquareButtonTheme.rainbow}
+      <Button
+        theme={ButtonTheme.rainbow}
         size={size}
         onClick={() => openModal()}
         className={className}
         style={{ minWidth: 230 }}
       >
         {t('viewPrizes', 'View prizes')}
-      </SquareButton>
+      </Button>
     )
   } else if (
     checkedState === CheckedState.checked &&
@@ -374,14 +374,14 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     hasCheckedAnimationFinished
   ) {
     btnJsx = (
-      <SquareButton size={size} disabled className={className}>
+      <Button size={size} disabled className={className}>
         {t('noPrizesToClaim', 'No prizes to claim')}
-      </SquareButton>
+      </Button>
     )
   } else {
     const isChecking = checkedState !== CheckedState.unchecked
     btnJsx = (
-      <SquareButton
+      <Button
         size={size}
         onClick={() => {
           getUserDrawResults(
@@ -407,7 +407,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         ) : (
           t('checkForPrizes', 'Check for prizes')
         )}
-      </SquareButton>
+      </Button>
     )
   }
 
@@ -415,5 +415,5 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
 }
 
 MultiDrawsClaimButton.defaultProps = {
-  size: SquareButtonSize.md
+  size: ButtonSize.md
 }

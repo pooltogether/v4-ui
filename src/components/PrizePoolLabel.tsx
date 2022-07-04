@@ -11,12 +11,20 @@ export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?
   return (
     <div className={classNames('flex space-x-2 items-center', fontSizeClassName)}>
       {isPrizePoolTokensFetched && (
-        <TokenIcon address={tokens.token.address} chainId={prizePool.chainId} />
+        <TokenIcon
+          address={tokens.token.address}
+          chainId={prizePool.chainId}
+          sizeClassName='w-8 h-8'
+        />
       )}
-      <span className='font-bold'>{tokens?.token.symbol}</span>
-      <NetworkIcon chainId={prizePool.chainId} />
-      <span className='font-bold'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
-      <span className=''>{shorten({ hash: prizePool.address, short: true })}</span>
+      <div className='flex flex-col'>
+        <div className='font-bold'>{tokens?.token.symbol}</div>
+        <div className='text-xxxs flex space-x-1 items-center'>
+          <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-3 h-3' />
+          <span className='font-bold'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
+          <span className=''>{shorten({ hash: prizePool.address, short: true })}</span>
+        </div>
+      </div>
     </div>
   )
 }

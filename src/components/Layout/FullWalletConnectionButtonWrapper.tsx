@@ -11,33 +11,29 @@ import { getSupportedChains } from '@utils/getSupportedChains'
 export const FullWalletConnectionButtonWrapper = (props) => {
   const chains = getSupportedChains()
 
-  return (
-    <FullWalletConnectionButton
-      {...props}
-      chains={chains}
-      TosDisclaimer={
-        <Trans
-          i18nKey='connectWalletTermsAndDisclaimerBlurb'
-          components={{
-            termsLink: (
-              <a
-                className='text-pt-teal transition hover:opacity-70 underline'
-                href='https://pooltogether.com/terms/'
-                target='_blank'
-                rel='noreferrer'
-              />
-            ),
-            disclaimerLink: (
-              <a
-                className='text-pt-teal transition hover:opacity-70 underline'
-                href='https://pooltogether.com/protocol-disclaimer/'
-                target='_blank'
-                rel='noreferrer'
-              />
-            )
-          }}
-        />
-      }
-    />
-  )
+  return <FullWalletConnectionButton {...props} chains={chains} TosDisclaimer={<TosDisclaimer />} />
 }
+
+export const TosDisclaimer = () => (
+  <Trans
+    i18nKey='connectWalletTermsAndDisclaimerBlurb'
+    components={{
+      termsLink: (
+        <a
+          className='text-pt-teal transition hover:opacity-70 underline'
+          href='https://pooltogether.com/terms/'
+          target='_blank'
+          rel='noreferrer'
+        />
+      ),
+      disclaimerLink: (
+        <a
+          className='text-pt-teal transition hover:opacity-70 underline'
+          href='https://pooltogether.com/protocol-disclaimer/'
+          target='_blank'
+          rel='noreferrer'
+        />
+      )
+    }}
+  />
+)

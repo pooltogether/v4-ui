@@ -1,18 +1,18 @@
 import React from 'react'
 
-import { PoolPartySeason1CTA } from '@components/PoolPartySeason1CTA'
-import { DepositCard } from '@views/Deposit/DepositCard'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { UpcomingPrizeCard } from './UpcomingPrizeCard'
-import { VotingPromptCard } from '@components/VotingPromptCard'
+import { Carousel } from '@pooltogether/react-components'
+import { DepositTrigger } from './DepositTrigger'
 
-export const DepositUI = () => {
-  return (
-    <PagePadding className='flex flex-col space-y-6'>
-      <PoolPartySeason1CTA marginClassName='mb-2' />
+export const DepositUI = () => (
+  <PagePadding className='flex flex-col space-y-6'>
+    <Carousel>
       <UpcomingPrizeCard className='mt-4' />
-      <DepositCard />
-      <VotingPromptCard />
-    </PagePadding>
-  )
-}
+      <p className='w-full bg-pt-red'>Yo. TestingTestingTesting</p>
+    </Carousel>
+    <DepositTrigger />
+    {/* <DepositCard />
+    <VotingPromptCard /> */}
+  </PagePadding>
+)

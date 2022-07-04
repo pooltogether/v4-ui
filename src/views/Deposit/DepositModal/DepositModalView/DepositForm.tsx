@@ -2,8 +2,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { User, PrizePool } from '@pooltogether/v4-client-js'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { FieldValues, useForm, UseFormReturn } from 'react-hook-form'
 import {
   useIsWalletConnected,
   Transaction,
@@ -18,16 +18,21 @@ import {
   EstimatedApproveAndDepositGasItem,
   EstimatedDepositGasItem
 } from '@components/InfoList/EstimatedGasItem'
-import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { InfoListItem } from '@components/InfoList'
-import { DepositAmountInput } from '@components/Input/DepositAmountInput'
+import { DepositAmountInput } from '@views/Deposit/DepositModal/DepositModalView/DepositAmountInput'
 import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 import { TxButton } from '@components/Input/TxButton'
+import { Button } from '@pooltogether/react-components'
 
-export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
+export enum DEPOSIT_FORM_KEY {
+  'amountToDeposit' = 'amountToDeposit'
+}
+
+export interface DepositFormValues {
+  [DEPOSIT_FORM_KEY.amountToDeposit]: string
+}
 
 interface DepositFormProps {
-  form: UseFormReturn<FieldValues, object>
   prizePool: PrizePool
   isPrizePoolTokensFetched: boolean
   isUsersBalancesFetched: boolean
@@ -37,10 +42,24 @@ interface DepositFormProps {
   ticket: TokenWithBalance
   amountToDeposit: Amount
   openModal: () => void
+  connectWallet: () => void
+  handleSubmit: () => void
 }
 
+/**
+ * @param props
+ * @returns
+ */
 export const DepositForm = (props: DepositFormProps) => {
-  const { form, prizePool, depositTx, amountToDeposit, token, openModal } = props
+  const {
+    prizePool,
+    depositTx,
+    amountToDeposit,
+    token,
+    openModal,
+    connectWallet,
+    handleSubmit: _handleSubmit
+  } = props
 
   const isWalletConnected = useIsWalletConnected()
   const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
@@ -48,28 +67,25 @@ export const DepositForm = (props: DepositFormProps) => {
   const {
     handleSubmit,
     formState: { errors, isValid, isDirty }
-  } = form
+  } = useForm<DepositFormValues>({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
 
   const router = useRouter()
 
-  const setReviewDeposit = (values) => {
-    const { query, pathname } = router
-    const quantity = values[DEPOSIT_QUANTITY_KEY]
-    query[DEPOSIT_QUANTITY_KEY] = quantity
-    router.replace({ pathname, query }, null, { scroll: false })
-    openModal()
+  // TODO: Pass the data for the deposit to the next view here.
+  // If the data is there on modal load then jump straight there.
+
+  const handler = (values) => {
+    _handleSubmit(values)
   }
 
   return (
     <>
-      <form onSubmit={handleSubmit(setReviewDeposit)} className='w-full'>
+      <form onSubmit={handleSubmit(handler)} className='w-full'>
         <div className='w-full mx-auto'>
-          <DepositAmountInput
-            prizePool={prizePool}
-            className=''
-            form={form}
-            inputKey={DEPOSIT_QUANTITY_KEY}
-          />
+          <DepositAmountInput prizePool={prizePool} className='' />
         </div>
 
         <DepositInfoBox
@@ -84,6 +100,7 @@ export const DepositForm = (props: DepositFormProps) => {
         />
 
         <DepositBottomButton
+          connectWallet={connectWallet}
           className='mt-4 w-full'
           disabled={(!isValid && isDirty) || depositTx?.state === TransactionState.pending}
           depositTx={depositTx}
@@ -100,16 +117,22 @@ interface DepositBottomButtonProps {
   className?: string
   disabled: boolean
   isWalletConnected: boolean
+  connectWallet: () => void
   chainId: number
   depositTx: Transaction
   amountToDeposit: Amount
 }
 
 export const DepositBottomButton = (props: DepositBottomButtonProps) => {
-  const { isWalletConnected } = props
+  const { isWalletConnected, connectWallet } = props
+  const { t } = useTranslation()
 
   if (!isWalletConnected) {
-    return <ConnectWalletButton {...props} />
+    return (
+      <Button {...props} onClick={connectWallet} type='button'>
+        {t('connectWallet')}
+      </Button>
+    )
   }
 
   return <DepositButton {...props} />

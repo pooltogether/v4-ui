@@ -1,5 +1,5 @@
 import { Token } from '@pooltogether/hooks'
-import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
+import { Button, ButtonSize, ButtonTheme } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { DrawData } from '../../../interfaces/v4'

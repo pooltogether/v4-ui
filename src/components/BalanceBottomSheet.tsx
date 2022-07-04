@@ -9,17 +9,18 @@ import {
 } from '@pooltogether/utilities'
 import { toast } from 'react-toastify'
 import {
-  addTokenToMetamask,
   BottomSheet,
   CountUp,
   ModalTitle,
-  SquareButton,
-  SquareButtonTheme,
-  SquareLink,
+  Button,
+  ButtonTheme,
+  ButtonLink,
   TokenIcon,
-  Tooltip
+  Tooltip,
+  BlockExplorerLink
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
+import { addTokenToMetamask } from '@utils/addTokenToMetamask'
 
 enum DefaultViews {
   main = 'main',
@@ -38,7 +39,7 @@ export interface View {
   view: (props: Partial<MainViewProps & MoreInfoViewProps>) => JSX.Element
   icon?: string
   disabled?: boolean
-  theme?: SquareButtonTheme
+  theme?: ButtonTheme
 }
 
 export interface BalanceBottomSheetProps extends MainViewProps, MoreInfoViewProps {
@@ -168,14 +169,14 @@ const MainView = (props: MainViewProps & { setView: (view: string) => void }) =>
         {internalLinks}
 
         {externalLinks?.map((externalLink) => (
-          <SquareLink
+          <ButtonLink
             key={externalLink.id}
             href={externalLink.href}
             chevron
             className='flex justify-center'
           >
             {externalLink.label}
-          </SquareLink>
+          </ButtonLink>
         ))}
 
         {views?.map((view) => (
@@ -200,15 +201,15 @@ interface ViewButtonProps extends View {
 const ViewButton = (props: ViewButtonProps) => {
   const { disabled, id, label, icon, theme, setView } = props
   return (
-    <SquareButton disabled={disabled} theme={theme} onClick={() => setView(id)}>
+    <Button disabled={disabled} theme={theme} onClick={() => setView(id)}>
       {icon && <FeatherIcon icon={icon} className='mr-1 my-auto h-5 w-5' />}
       <span>{label}</span>
-    </SquareButton>
+    </Button>
   )
 }
 
 ViewButton.defaultProps = {
-  theme: SquareButtonTheme.tealOutline
+  theme: ButtonTheme.tealOutline
 }
 
 const getView = (selectedView: string, views: View[], moreInfoViews: View[]) => {
@@ -317,7 +318,7 @@ const MoreInfoView = (
         ))}
 
         {isWalletMetaMask && (
-          <SquareButton
+          <Button
             onClick={handleAddTokenToMetaMask}
             className='flex w-full items-center justify-center'
           >
@@ -325,7 +326,7 @@ const MoreInfoView = (
             {t?.('addTicketTokenToMetamask', {
               token: token.symbol
             }) || `Add ${token.symbol} to MetaMask`}
-          </SquareButton>
+          </Button>
         )}
 
         {sendRevokeAllowanceTransaction && (

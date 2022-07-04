@@ -1,5 +1,5 @@
 import { Amount, TokenWithBalance, useTokenAllowance } from '@pooltogether/hooks'
-import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { ModalTitle, Button, ButtonTheme } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { BigNumber } from 'ethers'
 import { useForm, UseFormReturn } from 'react-hook-form'
@@ -12,16 +12,20 @@ import {
   Transaction,
   TransactionState,
   TransactionStatus,
+  useConnectWallet,
   useIsWalletConnected,
   useTransaction,
-  useUsersAddress,
-  useWalletSigner
+  useUsersAddress
 } from '@pooltogether/wallet-connection'
 import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { AccountPageButton } from '@views/Deposit/DepositConfirmationModal'
-import { DepositBottomButton, DepositInfoBox } from '@views/Deposit/DepositForm'
+import {
+  DepositBottomButton,
+  DepositInfoBox,
+  DEPOSIT_FORM_KEY
+} from '@views/Deposit/DepositModal/DepositModalView/DepositForm'
 import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
@@ -33,8 +37,6 @@ import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { useSigner } from 'wagmi'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
-
-export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
 export interface DepositViewProps {
   chainId: number
@@ -100,7 +102,7 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
     setDepositView(DepositViews.review)
   }
 
-  const quantity = watch(DEPOSIT_QUANTITY_KEY)
+  const quantity = watch(DEPOSIT_FORM_KEY.amountToDeposit)
   const amountToDeposit = getAmountFromString(quantity, token.decimals)
 
   switch (depositView) {
@@ -158,7 +160,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
   const { chainId, ticket, token, amountToDeposit, form, depositTx, setReviewDepositView } = props
 
   const { t } = useTranslation()
-
+  const connectWallet = useConnectWallet()
   const isWalletConnected = useIsWalletConnected()
 
   const {
@@ -178,7 +180,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
             form={form}
             tokenBalance={token}
             ticketBalance={ticket}
-            inputKey={DEPOSIT_QUANTITY_KEY}
+            inputKey={DEPOSIT_FORM_KEY.amountToDeposit}
             isTokenBalanceFetched
           />
         </div>
@@ -200,6 +202,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
           isWalletConnected={isWalletConnected}
           amountToDeposit={amountToDeposit}
           chainId={chainId}
+          connectWallet={connectWallet}
         />
       </form>
     </>
@@ -238,15 +241,13 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   } = props
 
   const { t } = useTranslation()
-  const [, getSigner] = useSigner({
-    skip: true
-  })
+  const { refetch: getSigner } = useSigner()
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
   const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
 
   const sendApproveTx = async () => {
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
     const callTransaction = buildApproveTx(signer, MaxUint256, prizePool.addresses.prizePool, token)
 
     const name = t(`allowTickerPool`, { ticker: token.symbol })
@@ -262,7 +263,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
 
   const sendDepositTx = async () => {
     const name = `${t('save')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const signer = await getSigner()
+    const { data: signer } = await getSigner()
 
     const callTransaction = buildDepositTx(
       signer,
@@ -326,9 +327,9 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
             'Something went wrong while processing your transaction.'
           )}
         </p>
-        <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
+        <Button theme={ButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
           {t('tryAgain', 'Try again')}
-        </SquareButton>
+        </Button>
       </>
     )
   } else if (depositTx?.status === TransactionStatus.success) {

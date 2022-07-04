@@ -15,7 +15,6 @@ import {
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
-import { TopNavigation } from '@components/Layout/Navigation'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
@@ -23,8 +22,7 @@ import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonW
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer Link={Link} as='/save' href='/save'>
-      <TopNavigation className='absolute mx-auto inset-x-0' />
+    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />

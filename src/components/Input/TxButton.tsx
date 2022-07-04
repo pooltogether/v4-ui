@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SquareButton, SquareButtonProps } from '@pooltogether/react-components'
+import { Button, ButtonProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
   TransactionState,
@@ -11,9 +11,10 @@ import {
 } from '@pooltogether/wallet-connection'
 import { useNetwork } from 'wagmi'
 
-export interface TxButtonProps extends SquareButtonProps {
+export interface TxButtonProps extends ButtonProps {
   state?: TransactionState
   status?: TransactionStatus
+  connectWallet?: () => void
   chainId: number
 }
 
@@ -28,13 +29,15 @@ export const TxButton = (props: TxButtonProps) => {
     state,
     status,
     children,
+    connectWallet: _connectWallet,
     onClick: _onClick,
     disabled: _disabled,
-    ...squareButtonProps
+    type: _type,
+    ...buttonProps
   } = props
   const isWalletConnected = useIsWalletConnected()
   const connectWallet = useConnectWallet()
-  const [, switchNetwork] = useNetwork()
+  const { switchNetwork } = useNetwork()
 
   const { t } = useTranslation()
 
@@ -42,25 +45,37 @@ export const TxButton = (props: TxButtonProps) => {
   const networkName = getNetworkNiceNameByChainId(chainId)
   const disabled = _disabled || state === TransactionState.pending
 
-  const [content, onClick] = useMemo(() => {
+  const [content, onClick, type] = useMemo(() => {
     if (!isWalletConnected) {
-      return [t('connectWallet'), connectWallet]
+      if (!!_connectWallet) {
+        return [t('connectWallet'), _connectWallet, 'button']
+      }
+      return [t('connectWallet'), connectWallet, 'button']
     } else if (status === TransactionStatus.pendingUserConfirmation) {
-      return [t('confirmInWallet'), () => null]
+      return [t('confirmInWallet'), () => null, 'button']
     } else if (status === TransactionStatus.pendingBlockchainConfirmation) {
-      return [t('transactionPending', 'Transaction pending'), () => null]
+      return [t('transactionPending', 'Transaction pending'), () => null, 'button']
     } else if (!isWalletOnProperNetwork) {
-      return [t('connectToNetwork', { networkName }), () => switchNetwork(chainId)]
+      return [t('connectToNetwork', { networkName }), () => switchNetwork(chainId), 'button']
     } else {
-      return [children, _onClick]
+      return [children, _onClick, _type]
     }
   }, [chainId, state, status, isWalletOnProperNetwork, _onClick])
 
   return (
     <>
-      <SquareButton {...squareButtonProps} onClick={(e) => onClick?.(e)} disabled={disabled}>
+      <Button
+        {...buttonProps}
+        onClick={(e) => onClick?.(e)}
+        disabled={disabled}
+        type={type as 'button' | 'submit' | 'reset'}
+      >
         {content}
-      </SquareButton>
+      </Button>
     </>
   )
+}
+
+TxButton.defaultProps = {
+  type: 'button'
 }

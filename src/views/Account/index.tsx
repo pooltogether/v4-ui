@@ -1,41 +1,63 @@
 import React from 'react'
 
 import { PagePadding } from '@components/Layout/PagePadding'
-import { ConnectWalletCard } from '@components/ConnectWalletCard'
 import { AccountCard } from '@views/Account/AccountCard'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { V4Deposits } from './V4Deposits'
 import { V3Deposits } from './V3Deposits'
-import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
-import { VotingPromptCard } from '@components/VotingPromptCard'
-import { useIsWalletConnected } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import { PastPrizesSidebarCard } from './PastPrizesSidebarCard'
+import { GovernanceSidebarCard } from './GovernanceSidebarCard'
+import { DoMoreWithPool } from './DoMoreWithPool'
 
 export const AccountUI = (props) => {
-  const isWalletConnected = useIsWalletConnected()
-
-  if (!isWalletConnected) {
-    return (
-      <PagePadding className='flex flex-col space-y-8'>
-        <Piggy className='w-20 sm:w-32 mx-auto' />
-        <ConnectWalletCard />
-        <VotingPromptCard />
-        <OddsDisclaimer className='block mt-6' />
-      </PagePadding>
-    )
-  }
-
   return (
-    <PagePadding className='space-y-8'>
-      <AccountCard />
-      <V4Deposits />
-      <POOLBalancesCard />
-      <V3StakingCards />
-      <V3Deposits />
-      <OddsDisclaimer className='block mt-6' />
+    <PagePadding
+      className=''
+      widthClassName='max-w-screen-lg'
+      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20'
+    >
+      <div className='flex flex-row'>
+        <MainContent>
+          <HeaderContent>
+            <AccountCard />
+          </HeaderContent>
+          <CardContent>
+            <V4Deposits />
+            <V3StakingCards />
+            <V3Deposits />
+            <SidebarCardContent>
+              <DoMoreWithPool />
+            </SidebarCardContent>
+          </CardContent>
+          <OddsDisclaimer className='block mt-6' />
+        </MainContent>
+
+        <SidebarContent>
+          <PastPrizesSidebarCard />
+          <GovernanceSidebarCard />
+          <DoMoreWithPool />
+        </SidebarContent>
+      </div>
     </PagePadding>
   )
 }
+
+const HeaderContent = (props) => <div {...props} className='w-full px-2 xs:px-4 sm:px-8 lg:px-12' />
+const MainContent = (props) => <div {...props} className='w-full' />
+const SidebarContent: React.FC<{ isInverse?: boolean; className?: string }> = (props) => (
+  <div {...props} className={'w-full pl-4 pr-2 hidden sm:flex max-w-xs flex-col space-y-4'} />
+)
+const SidebarCardContent: React.FC<{ isInverse?: boolean; className?: string }> = (props) => (
+  <div {...props} className={'w-full px-2 sm:hidden block'} />
+)
+const CardContent = (props) => (
+  <div
+    {...props}
+    className='w-full bg-pt-purple-lighter dark:bg-pt-purple-darkest px-4 sm:px-6 lg:px-12 py-6 xs:py-8 sm:py-10 lg:py-12 rounded-xl space-y-8'
+  />
+)
 
 const Piggy = (props) => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
-import { SquareButton, SquareButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
+import { Button, ButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
@@ -132,9 +132,9 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <WithdrawWarning className='mt-2' />
 
-      <SquareButton disabled={!isValid && isDirty} type='submit' className='w-full mt-8'>
+      <Button disabled={!isValid && isDirty} type='submit' className='w-full mt-8'>
         {t('reviewWithdrawal')}
-      </SquareButton>
+      </Button>
     </form>
   )
 }
@@ -186,7 +186,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
       <TxButton
         chainId={prizePool.chainId}
         className='w-full'
-        theme={SquareButtonTheme.orangeOutline}
+        theme={ButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
         state={tx?.state}
         status={tx?.status}

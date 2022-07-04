@@ -1,11 +1,11 @@
 import { GaugeController } from '@pooltogether/v4-client-js'
 import {
   useUsersAddress,
-  useWalletSigner,
   useIsWalletConnected,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
 import { useMemo } from 'react'
+import { useSigner } from 'wagmi'
 
 /**
  * Returns a GaugeController built with a Signer from the users wallet
@@ -15,7 +15,7 @@ import { useMemo } from 'react'
 export const useSignerGaugeController = (gaugeController: GaugeController) => {
   const isWalletConnected = useIsWalletConnected()
   const usersAddress = useUsersAddress()
-  const signer = useWalletSigner()
+  const { data: signer } = useSigner()
   const walletChainId = useWalletChainId()
 
   return useMemo(() => {

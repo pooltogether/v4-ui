@@ -5,17 +5,19 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 interface PagePaddingProps {
   children?: React.ReactNode
   className?: string
+  paddingClassName?: string
+  widthClassName?: string
+  marginClassName?: string
 }
 
 export const PagePadding = (props: PagePaddingProps) => {
-  const { className, children } = props
+  const { className, children, paddingClassName, widthClassName, marginClassName } = props
 
   const shouldReduceMotion = useReducedMotion()
 
   return (
     <AnimatePresence>
       <motion.div
-        children={children}
         id='modal-animation-wrapper'
         transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
         initial={{
@@ -27,8 +29,16 @@ export const PagePadding = (props: PagePaddingProps) => {
         animate={{
           opacity: 1
         }}
-        className={classNames('max-w-xl mx-auto px-2 pb-20', className)}
-      />
+        className={classNames(paddingClassName, widthClassName, marginClassName, className)}
+      >
+        {children}
+      </motion.div>
     </AnimatePresence>
   )
+}
+
+PagePadding.defaultProps = {
+  paddingClassName: 'px-2 pb-20',
+  widthClassName: 'max-w-xl',
+  marginClassName: 'mx-auto'
 }
