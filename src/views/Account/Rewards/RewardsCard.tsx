@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
 import {
@@ -12,7 +14,10 @@ import {
   NetworkIcon,
   TokenIcon,
   CountUp,
-  SquareButtonTheme
+  SquareButtonTheme,
+  SquareButton,
+  SquareLink,
+  SquareButtonSize
 } from '@pooltogether/react-components'
 import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import {
@@ -20,29 +25,30 @@ import {
   useUsersAddress,
   useIsWalletOnChainId,
   TransactionState,
-  useTransaction
+  useTransaction,
+  Transaction
 } from '@pooltogether/wallet-connection'
 import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
 import { TxButton } from '@components/Input/TxButton'
-import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
+import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
-
-// PREDICTION / ESTIMATE:
-// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
 
 enum ClaimModalState {
   'FORM',
-  'RECEIPT'
+  'RECEIPT',
+  'COMPLETED'
 }
 
 export const RewardsCard = () => {
@@ -131,6 +137,19 @@ const PromotionsList = (props) => {
   )
 }
 
+// PREDICTION / ESTIMATE:
+// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
+//
+// my twab: 200 for epoch 1
+// twab total supply (currently for 1 chain): 1000 for epoch 1
+//
+// 200/1000 (or 20%) is my vApr
+// 30 tokens given away for epoch 1
+// = I get 6 tokens for epoch 1
+//
+// remaining epochs: 8
+// 6 * 8 = 48
+// I'll get 48 tokens over the entire time (if nothing changes)
 const PromotionRow = (props) => {
   const { promotion, chainId } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
@@ -183,9 +202,8 @@ const PromotionRow = (props) => {
               setIsOpen(true)
             }}
             left={
-              <div className='flex items-center'>
+              <div className='flex items-center font-bold'>
                 <img className='w-5 mr-2' src='beach-with-umbrella.png' /> {token.symbol}{' '}
-                {t('rewards')}
               </div>
             }
             right={
@@ -235,8 +253,7 @@ const ClaimModal = (props) => {
 
   const [txId, setTxId] = useState<string>()
   const transaction = useTransaction(txId)
-  const [signaturePending, setSignaturePending] = useState(false)
-  const transactionPending = transaction?.state === TransactionState.pending || signaturePending
+  const transactionPending = transaction?.state === TransactionState.pending
 
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
@@ -260,9 +277,23 @@ const ClaimModal = (props) => {
 
   let content
   if (modalState === ClaimModalState.FORM) {
-    content = <ClaimModalForm {...props} setReceiptView={setReceiptView} setTxId={setTxId} />
+    content = (
+      <ClaimModalForm
+        {...props}
+        transactionPending={transactionPending}
+        setReceiptView={setReceiptView}
+        setTxId={setTxId}
+      />
+    )
   } else if (modalState === ClaimModalState.RECEIPT) {
-    content = <ClaimModalReceipt {...props} setFormView={setFormView} />
+    content = (
+      <ClaimModalReceipt
+        {...props}
+        transactionPending={transactionPending}
+        tx={transaction}
+        setFormView={setFormView}
+      />
+    )
   }
 
   return (
@@ -349,30 +380,88 @@ const ClaimModalForm = (props) => {
   )
 }
 
-const ClaimModalReceipt = (props) => {
-  const { chainId } = props
+interface ClaimModalReceiptProps {
+  chainId: number
+  token: Token
+  claimableUsd: number
+  tx: Transaction
+  transactionPending: boolean
+}
+
+const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
+  const { chainId, token, claimableUsd, tx, transactionPending } = props
   const { t } = useTranslation()
+
+  const [cachedClaimableUsd] = useState(claimableUsd)
+
+  const label = transactionPending ? t('claiming', 'Claiming') : t('claimed', 'Claimed!')
+
+  const icon = transactionPending ? (
+    <ThemedClipSpinner sizeClassName='w-4 h-4 xs:w-6 xs:h-6' className='mr-2 opacity-50' />
+  ) : (
+    <span className='mr-2'>👍</span>
+  )
 
   return (
     <>
-      <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} />
-      receipt
+      <div className='flex flex-grow flex-col justify-between'>
+        <div>
+          <BottomSheetTitle
+            title={
+              <>
+                <div className='flex flex-col items-center justify-center max-w-xs mx-auto leading-tight'>
+                  <PrizeWLaurels className='flex justify-center mx-auto my-4 w-16 xs:w-32' />
+                  {t('rewardsClaimSubmitted', 'Rewards claim submitted, confirming transaction.')}
+                </div>
+              </>
+            }
+          />
+
+          <div className='flex items-center justify-center w-full bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl p-6 my-4 xs:my-8 xs:text-xl font-bold'>
+            <span className='mx-auto flex items-center mt-1'>
+              {icon}
+              <span className='opacity-70 font-bold ml-1 mr-2'>{label}</span>
+              <TokenIcon
+                chainId={chainId}
+                address={token?.address}
+                sizeClassName='w-4 h-4 xs:w-6 xs:h-6'
+              />{' '}
+              <span className='mx-1'>{numberWithCommas(cachedClaimableUsd)}</span>
+              <span>{token.symbol}</span>
+            </span>
+          </div>
+        </div>
+
+        <div className='space-y-4'>
+          <AccountPageButton {...props} />
+          <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
+        </div>
+      </div>
     </>
   )
 }
 
+export const AccountPageButton = (props) => {
+  const { onDismiss } = props
+  const { t } = useTranslation()
+
+  return (
+    <SquareLink
+      size={SquareButtonSize.md}
+      theme={SquareButtonTheme.teal}
+      className='w-full text-center'
+      onClick={onDismiss}
+    >
+      {t('viewAccount', 'View account')}
+    </SquareLink>
+  )
+}
+
 const AmountPanel = (props) => {
-  const { chainId, label, amount, usd, token } = props
+  const { chainId, label, amount, token } = props
 
   return (
     <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
-      {/* <span
-        className={classNames('text-xl mx-auto font-bold leading-none', {
-          'opacity-50': amount.amount !== 0
-        })}
-      >
-        $<CountUp countTo={amount.amount} />
-      </span> */}
       <span className='mx-auto flex items-center mt-1'>
         <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
         <span className='font-bold opacity-50 mx-1'>{numberWithCommas(amount.amount)}</span>
@@ -383,15 +472,6 @@ const AmountPanel = (props) => {
   )
 }
 
-// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
-// my twab: 200 for epoch 1
-// twab total supply (currently for 1 chain): 1000 for epoch 1
-// 200/1000 (or 20%) is my vApr
-// 30 tokens given away for epoch 1
-// = I get 6 tokens for epoch 1
-// remaining epochs: 8
-// 6 * 8 = 48
-// I'll get 48 tokens over the entire time if nothing changes
 const RewardsBalance = (props) => {
   const { isFetched, estimateUsd, claimableUsd } = props
 
@@ -541,8 +621,6 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       onClick={sendClaimTx}
       className='mt-6 flex w-full items-center justify-center'
       theme={SquareButtonTheme.rainbow}
-      // state={claimTx?.state}
-      // status={claimTx?.status}
     >
       <span className='font-averta-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount.amount)} {token.symbol}
