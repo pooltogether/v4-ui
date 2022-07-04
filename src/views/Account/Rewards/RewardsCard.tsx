@@ -157,7 +157,6 @@ const PromotionRow = (props) => {
   const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)
-  const onDismiss = () => setIsOpen(false)
 
   const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
 
@@ -167,7 +166,6 @@ const PromotionRow = (props) => {
     useUsersPromotionRewardsAmount(chainId, Number(id), maxCompletedEpochId, usersAddress)
 
   const { id: promotionId } = promotion
-  // console.log('**************')
 
   const {
     data: claimable,
@@ -175,7 +173,6 @@ const PromotionRow = (props) => {
     refetch: refetchClaimable
   } = useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
   const { amount: claimableAmount, usd: claimableUsd } = claimable || {}
-  // console.log({ claimableUsd })
 
   const {
     data: estimate,
@@ -230,7 +227,7 @@ const PromotionRow = (props) => {
             chainId={chainId}
             promotion={promotion}
             isOpen={isOpen}
-            onDismiss={onDismiss}
+            setIsOpen={setIsOpen}
             claimableAmount={claimableAmount}
             claimableUsd={claimableUsd}
             estimateAmount={estimateAmount}
@@ -247,9 +244,7 @@ const PromotionRow = (props) => {
 }
 
 const ClaimModal = (props) => {
-  const { promotion, chainId, isOpen, onDismiss, token, total } = props
-
-  const { t } = useTranslation()
+  const { chainId, isOpen, setIsOpen } = props
 
   const [modalState, setModalState] = useState(ClaimModalState.FORM)
 
@@ -257,6 +252,7 @@ const ClaimModal = (props) => {
   const transaction = useTransaction(txId)
   const transactionPending = transaction?.state === TransactionState.pending
 
+  // TODO: Use <TxButton> to get the network switching, etc
   const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
@@ -266,6 +262,11 @@ const ClaimModal = (props) => {
 
   const setReceiptView = () => {
     setModalState(ClaimModalState.RECEIPT)
+  }
+
+  const onDismiss = () => {
+    setFormView()
+    setIsOpen(false)
   }
 
   // // TODO: Contract links
@@ -583,10 +584,8 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 
   const sendClaimTx = async () => {
     const epochIds = [...Array(maxCompletedEpochId).keys()]
-    console.log(epochIds)
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
-
     console.log('Claiming for epochs:', epochIds)
 
     let callTransaction: () => Promise<TransactionResponse>

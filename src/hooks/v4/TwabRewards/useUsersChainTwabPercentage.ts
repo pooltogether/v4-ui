@@ -15,7 +15,7 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
   const { prizePoolTotalSupply: totalTwabSupply, decimals } =
     useChainIdPrizePoolTicketTotalSupply(chainId)
 
-  // OPTIMIZE: This is causing my components to re-render constantly:
+  // OPTIMIZE: This is causing the components I'm working on to re-render constantly:
   const { data: usersTwabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
 
   // const isTwabsFetched = true
