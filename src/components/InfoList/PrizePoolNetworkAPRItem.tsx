@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { InfoListItem } from '.'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolNetworkApr } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkApr'
+import { getMinPrecision, numberWithCommas } from '@pooltogether/utilities'
 
 /**
  *
@@ -25,7 +25,7 @@ export const PrizePoolNetworkAPRItem: React.FC<{
       }
       loading={!isFetched}
       labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
-      value={`${apr}%`}
+      value={`${numberWithCommas(apr)}%`}
     />
   )
 }
