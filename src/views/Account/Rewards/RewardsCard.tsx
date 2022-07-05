@@ -364,18 +364,6 @@ const ClaimModalForm = (props) => {
     }
   ]
 
-  // const claimRows = buildClaimRows(promotion, usersClaimedPromotionHistory)
-
-  // const claimRows = [
-  //   {
-  //     amount: { amountPretty: '44.22' },
-  //     date: 'Jun 29th, 2022'
-  //   },
-  //   {
-  //     amount: { amountPretty: '7260.19' },
-  //     date: 'Jun 22nd, 2022'
-  //   }
-  // ]
   const claimedToDateFormatted = usersClaimedPromotionHistory?.rewards
     ? formatUnits(usersClaimedPromotionHistory.rewards, decimals)
     : '0.00'
@@ -421,7 +409,15 @@ const ClaimModalForm = (props) => {
           {estimateRows.map((row) => {
             const { amount, date } = row
 
-            return <RewardRow {...props} estimate amount={amount} date={date} />
+            return (
+              <RewardRow
+                {...props}
+                key={`promotion-${promotion.id}-${date}`}
+                estimate
+                amount={amount}
+                date={date}
+              />
+            )
           })}
           {/* {claimRows.map((row) => {
             const { amount, date } = row
@@ -829,7 +825,3 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     </TxButton>
   )
 }
-
-// const buildClaimRows = (promotion, claimedPromotionHistory) =>{
-
-// }
