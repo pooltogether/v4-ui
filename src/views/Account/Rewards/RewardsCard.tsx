@@ -351,7 +351,7 @@ const ClaimModalForm = (props) => {
     <>
       <RewardsEndInBanner {...props} />
       {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
-      <div className='flex items-center text-lg my-2'>
+      <div className='flex items-center text-lg mt-4 mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
         <span className='ml-1 opacity-50'>
           {totalReady ? (
@@ -361,6 +361,36 @@ const ClaimModalForm = (props) => {
           )}
         </span>
       </div>
+
+      <div className='flex items-center space-x-4'>
+        <UnitPanel
+          label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
+          chainId={chainId}
+          icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
+          unit={token.symbol}
+          token={token}
+          amount={claimableAmount}
+        />
+
+        <UnitPanel
+          label={t('nextReward', 'Next Reward')}
+          chainId={chainId}
+          icon={<span className='mr-1'>🗓️</span>}
+          unit={t('{{days}} Days', { days })}
+        />
+      </div>
+
+      <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-20 rounded-lg mb-4'>
+        <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
+          {t('amount', 'Amount')}
+          <div>{t('awarded', 'Awarded')}</div>
+        </div>
+
+        <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-2 my-1')}>
+          <RewardRow {...props} amount={{ amountPretty: '100.20' }} date={'Dec 7th, 2020'} />
+        </ul>
+      </div>
+
       {/* 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
         <span
@@ -379,24 +409,6 @@ const ClaimModalForm = (props) => {
         </span>
       </div> */}
 
-      <div className='flex items-center space-x-4'>
-        <UnitPanel
-          label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
-          chainId={chainId}
-          icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
-          unit={token.symbol}
-          token={token}
-          amount={estimateAmount}
-        />
-
-        <UnitPanel
-          label={t('nextReward', 'Next Reward')}
-          chainId={chainId}
-          icon={<span className='mr-1'>🗓️</span>}
-          unit={t('{{days}} Days', { days })}
-        />
-      </div>
-
       <SubmitTransactionButton
         setReceiptView={setReceiptView}
         claimableAmount={claimableAmount}
@@ -409,6 +421,33 @@ const ClaimModalForm = (props) => {
         refetch={refetch}
       />
     </>
+  )
+}
+
+const RewardRow = (props) => {
+  const { chainId, token, amount, date } = props
+
+  return (
+    <li className={classNames('flex flex-row text-center rounded-lg text-xs')}>
+      <div
+        className={classNames(
+          'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-actually-black hover:bg-opacity-10 mx-2'
+        )}
+      >
+        <span className='flex items-center font-averta-bold'>
+          <TokenIcon
+            chainId={chainId}
+            address={token?.address}
+            sizeClassName='w-4 h-4'
+            className='mr-1'
+          />
+          {amount.amountPretty} <span className='opacity-50 ml-1'>{token.symbol}</span>
+        </span>
+        <div>
+          <span className='font-bold opacity-50'>{date}</span>
+        </div>
+      </div>
+    </li>
   )
 }
 
