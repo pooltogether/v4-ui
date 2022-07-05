@@ -347,18 +347,45 @@ const ClaimModalForm = (props) => {
 
   const totalReady = !isNaN(total)
 
+  const estimateRows = [
+    {
+      amount: { amountPretty: '100.20' },
+      date: 'Jul 14th, 2022'
+    },
+    {
+      amount: { amountPretty: '100.20' },
+      date: 'Jul 8th, 2022'
+    }
+  ]
+
+  const claimRows = [
+    {
+      amount: { amountPretty: '44.22' },
+      date: 'Jun 29th, 2022'
+    },
+    {
+      amount: { amountPretty: '7260.19' },
+      date: 'Jun 22nd, 2022'
+    }
+  ]
+
   return (
     <>
       <RewardsEndInBanner {...props} />
       {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
-      <div className='flex items-center text-lg mt-4 mb-2'>
+      <div className='flex items-center text-lg xs:mt-4 mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
         <span className='ml-1 opacity-50'>
-          {totalReady ? (
-            <>(${numberWithCommas(totalUsd)})</>
+          {claimableUsd ? (
+            <>(${numberWithCommas(claimableUsd)})</>
           ) : (
             <ThemedClipSpinner sizeClassName='w-4 h-4' />
           )}
+          {/* {totalReady ? (
+            <>(${numberWithCommas(totalUsd)})</>
+          ) : (
+            <ThemedClipSpinner sizeClassName='w-4 h-4' />
+          )} */}
         </span>
       </div>
 
@@ -380,14 +407,23 @@ const ClaimModalForm = (props) => {
         />
       </div>
 
-      <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-20 rounded-lg mb-4'>
+      <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
         <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
           {t('amount', 'Amount')}
           <div>{t('awarded', 'Awarded')}</div>
         </div>
 
-        <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-2 my-1')}>
-          <RewardRow {...props} amount={{ amountPretty: '100.20' }} date={'Dec 7th, 2020'} />
+        <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
+          {estimateRows.map((row) => {
+            const { amount, date } = row
+
+            return <RewardRow {...props} estimate amount={amount} date={date} />
+          })}
+          {claimRows.map((row) => {
+            const { amount, date } = row
+
+            return <RewardRow {...props} amount={amount} date={date} />
+          })}
         </ul>
       </div>
 
@@ -425,23 +461,37 @@ const ClaimModalForm = (props) => {
 }
 
 const RewardRow = (props) => {
-  const { chainId, token, amount, date } = props
+  const { chainId, token, amount, date, estimate } = props
+
+  const { t } = useTranslation()
 
   return (
     <li className={classNames('flex flex-row text-center rounded-lg text-xs')}>
       <div
         className={classNames(
-          'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-actually-black hover:bg-opacity-10 mx-2'
+          'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-pt-purple-darkest hover:bg-opacity-10 mx-2'
         )}
       >
         <span className='flex items-center font-averta-bold'>
-          <TokenIcon
-            chainId={chainId}
-            address={token?.address}
-            sizeClassName='w-4 h-4'
-            className='mr-1'
-          />
-          {amount.amountPretty} <span className='opacity-50 ml-1'>{token.symbol}</span>
+          {estimate ? (
+            <div>
+              ⏳ {numberWithCommas(amount.amountPretty)}{' '}
+              <span className=' uppercase opacity-50'>
+                {token.symbol} ({t('estimateAbbreviation', 'est')})
+              </span>
+            </div>
+          ) : (
+            <>
+              <TokenIcon
+                chainId={chainId}
+                address={token?.address}
+                sizeClassName='w-4 h-4'
+                className='mr-1'
+              />
+              {numberWithCommas(amount.amountPretty)}{' '}
+              <span className='opacity-50 ml-1'>{token.symbol}</span>
+            </>
+          )}
         </span>
         <div>
           <span className='font-bold opacity-50'>{date}</span>
@@ -476,7 +526,7 @@ const RewardsEndInBanner = (props) => {
         <TokenIcon
           chainId={chainId}
           address={token?.address}
-          sizeClassName='w-6 h-6 xs:w-4 xs:h-4'
+          sizeClassName='w-5 h-5 xs:w-4 xs:h-4'
           className='mr-1'
         />
 
@@ -490,7 +540,7 @@ const RewardsEndInBanner = (props) => {
             })}
 
         <Link href={{ pathname: '/deposit' }}>
-          <a className='uppercase ml-2 text-pt-teal text-xs font-averta-bold'>
+          <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
             {t('depositMore', 'Deposit more')}
           </a>
         </Link>
