@@ -92,6 +92,9 @@ const formatPromotionData = (promotion, promotionRpcData) => {
 
   const remainingEpochs = Number(promotion?.numberOfEpochs) - maxCompletedEpochId
 
+  const duration = Number(numberOfEpochs) * Number(epochDuration)
+  const endTimestamp = Number(startTimestamp) + duration
+
   return {
     ...promotionRpcData,
     ...promotion,
@@ -103,7 +106,8 @@ const formatPromotionData = (promotion, promotionRpcData) => {
     createdAt,
     destroyedAt,
     endedAt,
-    startTimestamp
+    startTimestamp,
+    endTimestamp
   }
 }
 

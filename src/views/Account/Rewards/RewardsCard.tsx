@@ -29,7 +29,7 @@ import {
   useTransaction,
   Transaction
 } from '@pooltogether/wallet-connection'
-import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { numberWithCommas, getNetworkNameAliasByChainId, msToS } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
 import { TxButton } from '@components/Input/TxButton'
@@ -353,16 +353,7 @@ const ClaimModalForm = (props) => {
 
   const { t } = useTranslation()
 
-  const estimateRows = [
-    {
-      amount: { amountPretty: '100.20' },
-      date: 'Jul 14th, 2022'
-    },
-    {
-      amount: { amountPretty: '100.20' },
-      date: 'Jul 8th, 2022'
-    }
-  ]
+  const estimateRows = buildEstimateRows(promotion, estimateAmount, usersClaimedPromotionHistory)
 
   const claimedToDateFormatted = usersClaimedPromotionHistory?.rewards
     ? formatUnits(usersClaimedPromotionHistory.rewards, decimals)
@@ -824,4 +815,58 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       </span>
     </TxButton>
   )
+}
+
+// [
+//   {
+//     amount: { amountPretty: '100.20' },
+//     date: 'Jul 14th, 2022'
+//   },
+//   {
+//     amount: { amountPretty: '100.20' },
+//     date: 'Jul 8th, 2022'
+//   }
+// ]
+const buildEstimateRows = (promotion, estimateAmount, usersClaimedPromotionHistory) => {
+  const { remainingEpochs, endTimestamp, epochDuration } = promotion
+
+  if (remainingEpochs <= 0) {
+    return []
+  }
+
+  const estimatePerEpoch = Number(estimateAmount.amount) / remainingEpochs
+
+  // console.log(promotion)
+  const secondsRemaining = endTimestamp - msToS(Date.now())
+  // console.log(secondsRemaining)
+  // console.log(usersClaimedPromotionHistory)
+
+  const remainingEpochsArray = [...Array(remainingEpochs).keys()]
+  // console.log({ remainingEpochsArray })
+  // console.log(epochDuration)
+  // const currentEpochEndTimestamp =
+
+  const estimateRows = remainingEpochsArray.map((epochDelta) => {
+    const epochDeltaSeconds = (epochDelta + 1) * epochDuration
+    const now = msToS(Date.now())
+    const epochTimestamp = now + epochDeltaSeconds
+    return { epochTimestamp }
+  })
+  // console.log(estimateRows)
+
+  // epochDuration = 4
+
+  // currentEpoch seconds remaining
+  // 2
+
+  // currentEpoch + 1 epoch
+  // 6
+
+  // currentEpoch + 2 epochs
+  // 10
+
+  // currentEpoch + 3 epochs
+  // 14
+
+  return []
 }
