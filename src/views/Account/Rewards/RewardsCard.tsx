@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
+import { formatUnits } from '@ethersproject/units'
 import {
   BottomSheetTitle,
   ContractLink,
@@ -126,9 +127,13 @@ const ChainPromotions = (props) => {
 const PromotionsList = (props) => {
   const { chainId, promotions } = props
 
-  const { data: usersRewardsHistory, isFetched, isError } = useUsersRewardsHistory(chainId)
-  if (isError) {
-    console.warn(isError)
+  const {
+    data: usersRewardsHistory,
+    isError: usersRewardsHistoryError,
+    refetch: refetchUsersRewardsHistory
+  } = useUsersRewardsHistory(chainId)
+  if (usersRewardsHistoryError) {
+    console.warn(usersRewardsHistoryError)
   }
 
   return (
@@ -144,6 +149,7 @@ const PromotionsList = (props) => {
             promotion={promotion}
             chainId={chainId}
             usersClaimedPromotionHistory={usersClaimedPromotionHistory}
+            refetchUsersRewardsHistory={refetchUsersRewardsHistory}
           />
         )
       })}
@@ -165,7 +171,7 @@ const PromotionsList = (props) => {
 // 6 * 8 = 48
 // I'll get 48 tokens over the entire time (if nothing changes)
 const PromotionRow = (props) => {
-  const { promotion, chainId } = props
+  const { promotion, chainId, refetchUsersRewardsHistory } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
 
   const [isOpen, setIsOpen] = useState(false)
@@ -197,6 +203,7 @@ const PromotionRow = (props) => {
   const totalUsd = estimateUsd + claimableUsd
 
   const refetch = () => {
+    refetchUsersRewardsHistory()
     refetchUsersRewardsAmount()
     refetchEstimate()
     refetchClaimable()
@@ -339,13 +346,12 @@ const ClaimModalForm = (props) => {
     setTxId
   } = props
 
-  const tokenSymbol = token.symbol
+  const { decimals, symbol } = token
+  const tokenSymbol = symbol
 
   const days = 188
 
   const { t } = useTranslation()
-
-  const totalReady = !isNaN(total)
 
   const estimateRows = [
     {
@@ -358,37 +364,36 @@ const ClaimModalForm = (props) => {
     }
   ]
 
-  const claimRows = [
-    {
-      amount: { amountPretty: '44.22' },
-      date: 'Jun 29th, 2022'
-    },
-    {
-      amount: { amountPretty: '7260.19' },
-      date: 'Jun 22nd, 2022'
-    }
-  ]
+  // const claimRows = buildClaimRows(promotion, usersClaimedPromotionHistory)
+
+  // const claimRows = [
+  //   {
+  //     amount: { amountPretty: '44.22' },
+  //     date: 'Jun 29th, 2022'
+  //   },
+  //   {
+  //     amount: { amountPretty: '7260.19' },
+  //     date: 'Jun 22nd, 2022'
+  //   }
+  // ]
+  const claimedToDateFormatted = usersClaimedPromotionHistory?.rewards
+    ? formatUnits(usersClaimedPromotionHistory.rewards, decimals)
+    : '0.00'
 
   return (
     <>
       <RewardsEndInBanner {...props} />
-      {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
+
       <div className='flex items-center text-lg xs:mt-4 mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
         <span className='ml-1 opacity-50'>
-          {claimableUsd ? (
+          {claimableUsd || claimableUsd === 0 ? (
             <>(${numberWithCommas(claimableUsd)})</>
           ) : (
             <ThemedClipSpinner sizeClassName='w-4 h-4' />
           )}
-          {/* {totalReady ? (
-            <>(${numberWithCommas(totalUsd)})</>
-          ) : (
-            <ThemedClipSpinner sizeClassName='w-4 h-4' />
-          )} */}
         </span>
       </div>
-
       <div className='flex items-center space-x-4'>
         <UnitPanel
           label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
@@ -406,7 +411,6 @@ const ClaimModalForm = (props) => {
           unit={t('{{days}} Days', { days })}
         />
       </div>
-
       <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
         <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
           {t('amount', 'Amount')}
@@ -419,12 +423,27 @@ const ClaimModalForm = (props) => {
 
             return <RewardRow {...props} estimate amount={amount} date={date} />
           })}
-          {claimRows.map((row) => {
+          {/* {claimRows.map((row) => {
             const { amount, date } = row
 
             return <RewardRow {...props} amount={amount} date={date} />
-          })}
+          })} */}
         </ul>
+      </div>
+
+      <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4 py-2 px-4 font-averta-bold'>
+        <span className='opacity-50 uppercase text-xxs '>
+          {t('claimedToDate', 'Claimed to date')}:{' '}
+        </span>
+        <span className='flex items-center'>
+          <TokenIcon
+            chainId={chainId}
+            address={token?.address}
+            sizeClassName='w-4 h-4'
+            className='mx-1'
+          />{' '}
+          {numberWithCommas(claimedToDateFormatted)} {symbol}
+        </span>
       </div>
 
       {/* 
@@ -444,7 +463,6 @@ const ClaimModalForm = (props) => {
           <span className='opacity-50'>{token.symbol}</span>
         </span>
       </div> */}
-
       <SubmitTransactionButton
         setReceiptView={setReceiptView}
         claimableAmount={claimableAmount}
@@ -794,13 +812,16 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const disabled =
     !signer || transactionPending || !claimableAmount || Number(claimableAmount?.amount) === 0
 
+  const theme =
+    isWalletOnProperNetwork && !disabled ? SquareButtonTheme.rainbow : SquareButtonTheme.teal
+
   return (
     <TxButton
       chainId={chainId}
       disabled={disabled}
       onClick={sendClaimTx}
       className='mt-6 flex w-full items-center justify-center'
-      theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
+      theme={theme}
     >
       <span className='font-averta-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}
@@ -808,3 +829,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     </TxButton>
   )
 }
+
+// const buildClaimRows = (promotion, claimedPromotionHistory) =>{
+
+// }
