@@ -32,7 +32,6 @@ import { numberWithCommas, getNetworkNameAliasByChainId } from '@pooltogether/ut
 import { useSigner } from 'wagmi'
 
 import { TxButton } from '@components/Input/TxButton'
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -112,7 +111,7 @@ const ChainPromotions = (props) => {
 
   return (
     <div
-      className='rounded-xl text-white py-5 px-6'
+      className='rounded-xl text-white p-4'
       style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
     >
       <div className='flex items-center font-bold mb-4'>
@@ -257,17 +256,13 @@ const PromotionRow = (props) => {
 }
 
 const ClaimModal = (props) => {
-  const { chainId, isOpen, setIsOpen } = props
+  const { isOpen, setIsOpen } = props
 
   const [modalState, setModalState] = useState(ClaimModalState.FORM)
 
   const [txId, setTxId] = useState<string>()
   const transaction = useTransaction(txId)
   const transactionPending = transaction?.state === TransactionState.pending
-
-  // TODO: Use <TxButton> to get the network switching, etc
-  const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   const setFormView = () => {
     setModalState(ClaimModalState.FORM)
@@ -344,6 +339,10 @@ const ClaimModalForm = (props) => {
     setTxId
   } = props
 
+  const tokenSymbol = token.symbol
+
+  const days = 188
+
   const { t } = useTranslation()
 
   const totalReady = !isNaN(total)
@@ -352,7 +351,7 @@ const ClaimModalForm = (props) => {
     <>
       <RewardsEndInBanner {...props} />
       {/* <BottomSheetTitle chainId={chainId} title={t('rewards', 'Rewards')} /> */}
-      <div className='flex items-center text-lg mb-2'>
+      <div className='flex items-center text-lg my-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
         <span className='ml-1 opacity-50'>
           {totalReady ? (
@@ -362,7 +361,7 @@ const ClaimModalForm = (props) => {
           )}
         </span>
       </div>
-
+      {/* 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
         <span
           className={classNames('text-3xl mx-auto font-bold leading-none', {
@@ -378,23 +377,23 @@ const ClaimModalForm = (props) => {
           </span>
           <span className='opacity-50'>{token.symbol}</span>
         </span>
-      </div>
+      </div> */}
 
       <div className='flex items-center space-x-4'>
-        <AmountPanel
-          label={t('estimated', 'Estimated')}
+        <UnitPanel
+          label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
           chainId={chainId}
+          icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
+          unit={token.symbol}
           token={token}
           amount={estimateAmount}
-          usd={estimateUsd}
         />
 
-        <AmountPanel
-          label={t('claimable', 'claimable')}
+        <UnitPanel
+          label={t('nextReward', 'Next Reward')}
           chainId={chainId}
-          token={token}
-          amount={claimableAmount}
-          usd={claimableUsd}
+          icon={<span className='mr-1'>🗓️</span>}
+          unit={t('{{days}} Days', { days })}
         />
       </div>
 
@@ -429,7 +428,7 @@ const RewardsEndInBanner = (props) => {
     >
       <div
         className={classNames(
-          'flex flex-col xs:flex-row items-center justify-center w-full text-center rounded-lg p-3',
+          'flex flex-col xs:flex-row items-center justify-center w-full text-center text-white rounded-lg p-3',
           {
             'bg-white bg-opacity-10': days > 0
           }
@@ -538,24 +537,27 @@ export const AccountPageButton = (props) => {
   )
 }
 
-const AmountPanel = (props) => {
-  const { chainId, label, amount, token } = props
+const UnitPanel = (props) => {
+  const { chainId, label, amount, token, icon, unit } = props
 
   return (
-    <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
+    <div className='flex flex-col bg-white dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
       <span className='mx-auto flex items-center mt-1'>
-        <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
+        {icon}
 
-        <span className='font-bold opacity-50 mx-1'>
-          {amount ? (
-            numberWithCommas(amount?.amount)
-          ) : (
-            <ThemedClipSpinner sizeClassName='w-4 h-4' />
-          )}
-        </span>
-        <span className='opacity-50'>{token.symbol}</span>
+        {amount && (
+          <span className='mx-1'>
+            {amount ? (
+              numberWithCommas(amount?.amount)
+            ) : (
+              <ThemedClipSpinner sizeClassName='w-4 h-4' />
+            )}
+          </span>
+        )}
+
+        {unit}
       </span>
-      <div className='text-center mt-1 opacity-60'>{label}</div>
+      <div className='uppercase text-xxxs text-center mt-1 opacity-30'>{label}</div>
     </div>
   )
 }
@@ -662,6 +664,8 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 
   const usersAddress = useUsersAddress()
 
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+
   const { data: signer } = useSigner()
   const { t } = useTranslation()
 
@@ -707,7 +711,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       disabled={disabled}
       onClick={sendClaimTx}
       className='mt-6 flex w-full items-center justify-center'
-      theme={SquareButtonTheme.rainbow}
+      theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
     >
       <span className='font-averta-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}

@@ -98,7 +98,7 @@ const PromotionCard = (props) => {
 
   return (
     <div
-      className='rounded-xl text-white py-5 px-6'
+      className='rounded-xl text-white p-4'
       style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
     >
       <div className='flex items-center justify-between font-bold'>
