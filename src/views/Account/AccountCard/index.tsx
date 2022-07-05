@@ -1,17 +1,16 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
 import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
+import { unionProbabilities } from '@utils/unionProbabilities'
 
 interface AccountCardProps {
   className?: string
@@ -41,17 +40,17 @@ export const AccountCard = (props: AccountCardProps) => {
 const TotalBalance = (props: { className?: string }) => {
   const { className } = props
   const { t } = useTranslation()
-  const { data, isFetching, isFetched } = useUsersTotalBalances()
+  const { data: balancesData } = useUsersTotalBalances()
   return (
     <a href='#deposits' className={className}>
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
-          isFetched={isFetched}
-          totalBalanceUsd={data.totalBalanceUsd}
-          totalV4Balance={data.totalV4Balance}
+          isFetched={balancesData.isFullyFetched}
+          totalBalanceUsd={balancesData.data.totalBalanceUsd}
+          totalV4Balance={balancesData.data.totalV4Balance}
         />
-        {isFetching ? (
+        {balancesData.isStillFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
@@ -91,15 +90,17 @@ const WeeklyOdds = () => <OddsBox i18nKey='weeklyOdds' daysOfPrizes={7} />
 const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
   const { i18nKey, daysOfPrizes } = props
   const usersAddress = useUsersAddress()
-  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
-    usersAddress,
-    EstimateAction.none,
-    ethers.constants.Zero,
-    daysOfPrizes
-  )
+  const { data, isFetched, isFetching, isError } = useUsersPrizePoolNetworkOdds(usersAddress)
   const { t } = useTranslation()
 
-  if (!Boolean(data)) {
+  const oneOverOddstring = useMemo(() => {
+    if (!isFetched) return null
+    const totalOdds = unionProbabilities(...Array(daysOfPrizes).fill(data.odds))
+    const oneOverOdds = 1 / totalOdds
+    return Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds.toFixed(2)
+  }, [isFetched, isFetching])
+
+  if (!isFetched || data?.odds === undefined) {
     return (
       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <ThemedClipSpinner sizeClassName='w-5 h-5' className='mx-auto' />
@@ -107,9 +108,9 @@ const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
     )
   }
 
-  const { odds, oneOverOdds } = data
+  if (!data || isError) return <p>Error</p>
 
-  if (odds === 0) {
+  if (data.odds === 0) {
     return (
       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <span className='font-bold flex text-lg mx-auto'>
@@ -119,8 +120,6 @@ const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
       </div>
     )
   }
-
-  const oneOverOddstring = Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds.toFixed(2)
 
   return (
     <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>

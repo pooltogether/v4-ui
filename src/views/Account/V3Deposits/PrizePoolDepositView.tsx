@@ -6,7 +6,7 @@ import { useForm, UseFormReturn } from 'react-hook-form'
 import { Trans, useTranslation } from 'react-i18next'
 import { MaxUint256 } from '@ethersproject/constants'
 
-import { GenericDepositAmountInput } from '@components/Input/GenericDepositAmountInput'
+import { V3DepositAmountInput } from '@components/Input/V3DepositAmountInput'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import {
   Transaction,
@@ -171,7 +171,7 @@ const DepositFormView = (props: DepositFormViewProps) => {
 
       <form onSubmit={handleSubmit(setReviewDepositView)} className='w-full'>
         <div className='w-full mx-auto'>
-          <GenericDepositAmountInput
+          <V3DepositAmountInput
             bgClassName='bg-body'
             chainId={chainId}
             form={form}

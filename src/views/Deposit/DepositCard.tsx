@@ -96,15 +96,14 @@ export const DepositCard = (props: { className?: string }) => {
   const { setValue, watch, reset } = form
 
   const quantity = watch(DEPOSIT_QUANTITY_KEY)
-  const amountToDeposit = useMemo(
-    () => getAmountFromString(quantity, token?.decimals),
-    [quantity, token?.decimals]
-  )
+  const amountToDeposit = useMemo(() => {
+    return !!token?.decimals ? getAmountFromString(quantity, token?.decimals) : undefined
+  }, [quantity, token?.decimals])
 
   // Set quantity from the query parameter on mount
   useEffect(() => {
     try {
-      const quantity = router.query[DEPOSIT_QUANTITY_KEY]
+      const quantity = router.query[DEPOSIT_QUANTITY_KEY] as string
       const quantityNum = Number(quantity)
       if (quantity && !isNaN(quantityNum)) {
         setValue(DEPOSIT_QUANTITY_KEY, quantity, { shouldValidate: true })
