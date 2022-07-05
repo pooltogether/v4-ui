@@ -7,6 +7,7 @@ import { PageHeader } from '@components/Layout/PageHeader'
 import { useInitialLoad } from '@hooks/useInitialLoad'
 import { BottomNavigation } from './Navigation'
 import { AlertBanners } from '@components/AlertBanners'
+import { RewardsBanners } from '@components/RewardsBanners'
 
 interface LayoutProps {
   className?: string
@@ -26,6 +27,7 @@ const Layout = (props: LayoutProps) => {
       {isReady ? (
         <>
           <AlertBanners />
+          <RewardsBanners />
           <PageHeader />
           {children}
           <BottomNavigation />
