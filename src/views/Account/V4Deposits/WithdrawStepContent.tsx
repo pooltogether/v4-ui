@@ -7,8 +7,8 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { parseUnits } from '@ethersproject/units'
 import { useTranslation } from 'react-i18next'
 import { ethers } from 'ethers'
-import { User, PrizePool } from '@pooltogether/v4-client-js'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Transaction } from '@pooltogether/wallet-connection'
 
 import { TextInputGroup } from '@components/Input/TextInputGroup'
 import { RectangularInput } from '@components/Input/TextInputs'
@@ -17,13 +17,14 @@ import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInp
 import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { TxButton } from '@components/Input/TxButton'
-import { InfoListItem, ModalInfoList } from '@components/InfoList'
+import { InfoListHeader, InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { UpdatedOdds } from '@components/UpdatedOddsListItem'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { WithdrawalSteps } from './WithdrawView'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { EstimateAction } from '@constants/odds'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -334,17 +335,20 @@ const UpdatedStats = (props: {
 
   return (
     <ModalInfoList className={className}>
-      <UpdatedOdds
-        amount={amountToWithdraw}
+      <InfoListHeader label='Updated stats' textColorClassName='text-pt-purple-light' />
+      <UpdatedPrizePoolNetworkOddsListItem
         prizePool={prizePool}
+        amount={amountToWithdraw}
+        action={EstimateAction.withdraw}
+      />
+      <UpdatedPrizePoolOddsListItem
+        prizePool={prizePool}
+        amount={amountToWithdraw}
         action={EstimateAction.withdraw}
       />
       <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
-      <EstimatedWithdrawalGasItem
-        chainId={prizePool.chainId}
-        amountUnformatted={amountToWithdraw?.amountUnformatted}
-      />
+      <EstimatedWithdrawalGasItem chainId={prizePool.chainId} />
     </ModalInfoList>
   )
 }

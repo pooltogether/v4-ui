@@ -10,7 +10,7 @@ import { WalletSvg } from '@components/Icons/SvgComponents'
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-interface GenericDepositAmountInputProps {
+interface V3DepositAmountInputProps {
   chainId: number
   form: UseFormReturn<FieldValues, object>
   isTokenBalanceFetched: Boolean
@@ -26,10 +26,11 @@ interface GenericDepositAmountInputProps {
 
 /**
  * For use in conjunction with react-hook-form
+ * V3 specific deposit input
  * @param props
  * @returns
  */
-export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps) => {
+export const V3DepositAmountInput = (props: V3DepositAmountInputProps) => {
   const { className, bgClassName, widthClassName } = props
 
   return (
@@ -53,14 +54,14 @@ export const GenericDepositAmountInput = (props: GenericDepositAmountInputProps)
   )
 }
 
-GenericDepositAmountInput.defaultProps = {
+V3DepositAmountInput.defaultProps = {
   widthClassName: 'w-full',
   bgClassName: 'bg-tertiary',
   depositTokenClassName: 'text-xl',
   autoComplete: 'off'
 }
 
-interface GenericDepositInputHeaderProps extends GenericDepositAmountInputProps {}
+interface GenericDepositInputHeaderProps extends V3DepositAmountInputProps {}
 
 const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
   const { form, tokenBalance, inputKey, isTokenBalanceFetched } = props
@@ -103,7 +104,7 @@ const GenericDepositInputHeader = (props: GenericDepositInputHeaderProps) => {
   )
 }
 
-interface DepositTokenProps extends GenericDepositAmountInputProps {}
+interface DepositTokenProps extends V3DepositAmountInputProps {}
 
 const DepositToken = (props: DepositTokenProps) => {
   const { chainId, tokenBalance, depositTokenClassName } = props
@@ -132,7 +133,7 @@ const DepositToken = (props: DepositTokenProps) => {
   )
 }
 
-interface InputProps extends GenericDepositAmountInputProps {}
+interface InputProps extends V3DepositAmountInputProps {}
 
 const Input = (props: InputProps) => {
   const { form, inputKey, ticketBalance, tokenBalance, autoComplete } = props
@@ -169,13 +170,11 @@ const useDepositValidationRules = (tokenBalance, ticketBalance) => {
   const usersAddress = useUsersAddress()
 
   const decimals = tokenBalance?.decimals
-  const minimumDepositAmount = useMinimumDepositAmount(tokenBalance)
 
   return {
     isValid: (v: string) => {
       const isNotANumber = isNaN(Number(v))
       if (isNotANumber) return false
-      if (!minimumDepositAmount) return false
 
       const quantityUnformatted = safeParseUnits(v, decimals)
 

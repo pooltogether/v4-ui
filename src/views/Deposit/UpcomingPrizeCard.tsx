@@ -11,7 +11,7 @@ import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPer
 import { useTimeUntil } from '@hooks/useTimeUntil'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
-import { useUpcomingPrizeTier } from '@hooks/useUpcomingPrizeTier'
+import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
 
@@ -20,7 +20,7 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
   const prizePool = usePrizePoolBySelectedChainId()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-  const { data: prizeTier, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier()
+  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
 
   const ticket = prizePoolTokens?.ticket
   const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
@@ -30,8 +30,8 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
       <LightningBolts />
       <Dots />
 
-      <AmountOfPrizes isFetched={isFetched} prizeTier={prizeTier} ticket={ticket} />
-      <PrizeAmount isFetched={isFetched} prizeTier={prizeTier} ticket={ticket} />
+      <AmountOfPrizes isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
+      <PrizeAmount isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
       <DrawCountdown />
     </div>
   )

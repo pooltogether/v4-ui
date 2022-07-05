@@ -75,7 +75,7 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
 
   const token = prizePoolTokens?.token
   const decimals = token?.decimals
-  const minimumDepositAmount = useMinimumDepositAmount(token)
+  const minimumDepositAmount = useMinimumDepositAmount(prizePool, token)
   const usersBalances = usersBalancesData?.balances
   const tokenBalance = usersBalances?.token
   const ticketBalance = usersBalances?.ticket

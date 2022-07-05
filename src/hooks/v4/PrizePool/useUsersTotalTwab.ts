@@ -6,7 +6,7 @@ import { useQueries } from 'react-query'
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
-import { USERS_TWAB_QUERY_KEY, getUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
+import { useAllUsersPrizePoolTwabs } from './useAllUsersPrizePoolTwabs'
 
 /**
  * Fetches the users current TWAB across all chains and combines
@@ -18,19 +18,10 @@ export const useUsersTotalTwab = (usersAddress: string) => {
   // NOTE: Assumes all prize pool tickets have the same decimals
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
     useSelectedPrizePoolTicketDecimals()
-  const prizePools = usePrizePools()
-
-  const queryResults = useQueries(
-    prizePools.map((prizePool) => {
-      const refetchInterval = getRefetchInterval(prizePool.chainId)
-      return {
-        refetchInterval: refetchInterval,
-        queryKey: [USERS_TWAB_QUERY_KEY, prizePool.id(), usersAddress],
-        queryFn: async () => getUsersPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
-        enabled: Boolean(usersAddress) && isTicketDecimalsFetched
-      }
-    })
-  )
+  const queryResults = useAllUsersPrizePoolTwabs(usersAddress)
+  const queryKey = queryResults
+    .map((qr) => qr.data?.prizePoolId + qr.data?.usersAddress + qr.data?.twab.amount)
+    .join('-')
 
   return useMemo(() => {
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
@@ -56,7 +47,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
       isFetched,
       refetch
     }
-  }, [queryResults])
+  }, [queryKey])
 }
 
 const getTotalTwab = (twabs: Amount[], decimals: string) => {
