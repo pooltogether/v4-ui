@@ -313,6 +313,7 @@ const ClaimModal = (props) => {
     content = (
       <ClaimModalReceipt
         {...props}
+        onDismiss={onDismiss}
         transactionPending={transactionPending}
         tx={transaction}
         setFormView={setFormView}
