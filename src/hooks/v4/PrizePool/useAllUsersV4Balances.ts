@@ -13,6 +13,7 @@ import {
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
+import { NO_REFETCH } from '@constants/query'
 
 export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
@@ -23,6 +24,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       return {
+        ...NO_REFETCH,
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => {
           const queryResult = queriesResult?.find((queryResult) => {

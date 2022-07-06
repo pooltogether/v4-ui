@@ -20,9 +20,7 @@ import { Transaction, TransactionStatus, useWalletChainId } from '@pooltogether/
 
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
-import { UpdatedOdds } from '@components/UpdatedOddsListItem'
+import { InfoListHeader, ModalInfoList } from '@components/InfoList'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
@@ -31,11 +29,14 @@ import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { EstimateAction } from '@constants/odds'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -70,9 +71,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     closeModal
   } = props
 
-  const { amountUnformatted } = amountToDeposit
-
   const { t } = useTranslation()
+  const amountUnformatted = amountToDeposit?.amountUnformatted
 
   if (!isDataFetched) {
     return (
@@ -86,7 +86,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalLoadingGate className='mt-8' />
       </BottomSheet>
     )
-  } else if (amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (!!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
     return (
       <BottomSheet
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
@@ -192,11 +192,25 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             <ModalInfoList>
               {prizePool && (
                 <>
-                  <EstimatedAPRItem chainId={prizePool.chainId} />
-                  <UpdatedOdds amount={amountToDeposit} action={EstimateAction.deposit} />
+                  <InfoListHeader
+                    className='mt-2'
+                    textColorClassName='text-pt-purple-light'
+                    label={'Estimated stats'}
+                  />
+                  <PrizePoolNetworkAPRItem />
+                  <UpdatedPrizePoolNetworkOddsListItem
+                    amount={amountToDeposit}
+                    action={EstimateAction.deposit}
+                    prizePool={prizePool}
+                  />
+                  <UpdatedPrizePoolOddsListItem
+                    amount={amountToDeposit}
+                    prizePool={prizePool}
+                    action={EstimateAction.deposit}
+                  />
                 </>
               )}
-              <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
+              <EstimatedDepositGasItems chainId={chainId} />
             </ModalInfoList>
           </>
         )}

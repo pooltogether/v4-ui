@@ -1,10 +1,11 @@
-import { Token, TokenWithUsdBalance, useRefetchInterval } from '@pooltogether/hooks'
+import { Token, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { PrizePoolTokens, usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { NO_REFETCH } from '@constants/query'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenWithUsdBalance
@@ -14,7 +15,6 @@ export interface UsersPrizePoolBalances {
 export const USERS_PRIZE_POOL_BALANCES_QUERY_KEY = 'useUsersPrizePoolBalances'
 
 export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: PrizePool) => {
-  const refetchInterval = useRefetchInterval(prizePool?.chainId)
   const { data: tokens, isFetched } = usePrizePoolTokens(prizePool)
 
   const enabled = Boolean(prizePool) && Boolean(usersAddress) && isFetched
@@ -23,7 +23,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
     [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
     async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
     {
-      refetchInterval,
+      ...NO_REFETCH,
       enabled
     }
   )

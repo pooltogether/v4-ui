@@ -29,8 +29,8 @@ import { TxButton } from '@components/Input/TxButton'
 import { useQuery } from 'react-query'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
-import { useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork } from '@hooks/v4/Odds/useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork'
-import { EstimateAction } from '@hooks/v4/Odds/useEstimatedOddsForAmount'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { EstimateAction } from '@constants/odds'
 import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
 import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
@@ -337,14 +337,14 @@ const useBalance = () => {
 }
 
 const OddsOfWinning = () => {
-  const data = useUsersUpcomingOddsOfWinningAPrizeOnAnyNetwork(
+  const { data, isFetched } = useUsersPrizePoolNetworkOdds(
     UNCHAIN_ADDRESS,
     EstimateAction.none,
     ethers.constants.Zero,
     1
   )
 
-  const oneOverOddstring = Boolean(data)
+  const oneOverOddstring = isFetched
     ? Number(data.oneOverOdds.toFixed(2)) < 1.01
       ? 1
       : data.oneOverOdds.toFixed(2)

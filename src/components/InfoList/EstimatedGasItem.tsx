@@ -82,7 +82,6 @@ interface EstimatedTxWithAmountProps {
   label?: string
   loading?: string
   chainId: number
-  amountUnformatted?: BigNumber
   labelClassName?: string
   valueClassName?: string
 }
@@ -180,7 +179,6 @@ export const EstimatedClaimPrizesGasItem = (props: EstimatedTxWithAmountProps) =
 interface EstimatedDepositGasItems {
   loading?: string
   chainId: number
-  amountUnformatted?: BigNumber
   labelClassName?: string
   valueClassName?: string
   showApprove?: boolean
