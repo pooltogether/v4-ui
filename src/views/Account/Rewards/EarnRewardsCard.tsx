@@ -10,6 +10,7 @@ import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -77,22 +78,12 @@ const ChainPromotions = (props) => {
   ))
 }
 
-const transformHexColor = (color) => {
-  // if rinkeby, return ethereum mainnet color
-  if (color === '#e09e0a') {
-    return '#4b78ff'
-  }
-}
-
-function capitalizeFirstLetter(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
-
 const PromotionCard = (props) => {
   const { promotion, chainId } = props
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
   const backgroundColor = useNetworkHexColor(chainId)
+  console.log(backgroundColor)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 

@@ -541,10 +541,16 @@ const RewardsEndInBanner = (props) => {
   // TODO: what the ever loving f...
   // this component keeps thinking days is way less than it actually is
 
+  const hasEnded = days <= 0
+
   return (
     <div
-      className='w-full flex rounded-lg my-4 font-bold'
-      style={{ backgroundColor: transformHexColor(backgroundColor) }}
+      className='w-full flex rounded-lg my-4 font-bold shadow-sm'
+      style={{
+        backgroundImage: hasEnded
+          ? `linear-gradient(300deg, #CC3A48 0%, #AC0A48 100%)`
+          : `linear-gradient(300deg, #7617fA 0%, #CE66FF 100%)`
+      }}
     >
       <div
         className={classNames(

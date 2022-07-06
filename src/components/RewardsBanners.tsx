@@ -15,12 +15,17 @@ export const RewardsBanners = () => {
   const page = location.pathname
 
   return (
-    <div className='px-8 w-full text-center py-3 z-50 bg-pt-red bg-opacity-80'>
-      <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
+    <div className='px-8 w-full text-center py-3 z-50 bg-pt-red'>
+      <div className='text-xxs xs:text-sm flex flex-col xs:flex-row mx-auto items-center justify-center'>
         <div className='mb-1 xs:mb-0 xs:mr-3'>
-          <span className='font-bold'>
-            <TokenIcon chainId={CHAIN_ID.optimism} address={OPTIMISM_OP_ADDRESS} /> Optimism rewards
-            now available!
+          <span className='flex items-center font-bold'>
+            <TokenIcon
+              chainId={CHAIN_ID.optimism}
+              address={OPTIMISM_OP_ADDRESS}
+              className='border xs:border-2 border-white mr-1 xs:mr-2'
+              sizeClassName='w-4 h-4 xs:w-6 xs:h-6'
+            />{' '}
+            {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}!
           </span>{' '}
         </div>
 
@@ -35,7 +40,7 @@ export const RewardsBanners = () => {
         >
           <Link href={`https://app.optimism.io/bridge`}>
             <a
-              className='flex items-center h-8 uppercase text-white text-opacity-70 hover:text-opacity-100'
+              className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
               target='_blank'
             >
               {t('bridge')}{' '}

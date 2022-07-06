@@ -3,6 +3,8 @@ export const transformHexColor = (color) => {
   if (color === '#e09e0a') {
     return '#4b78ff'
   }
+
+  return color
 }
 
 export const darkenHexColor = (color) => {
@@ -10,6 +12,8 @@ export const darkenHexColor = (color) => {
   if (color === '#e09e0a') {
     return '#2b58bf'
   }
+
+  return color
 }
 
 export const capitalizeFirstLetter = (string) => {
