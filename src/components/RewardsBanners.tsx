@@ -36,7 +36,10 @@ export const RewardsBanners = () => {
           <Link
             href={`https://app.hop.exchange/#/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism`}
           >
-            <a className='flex items-center h-8 uppercase' target='_blank'>
+            <a
+              className='flex items-center h-8 uppercase text-white text-opacity-70 hover:text-opacity-100'
+              target='_blank'
+            >
               {t('bridge')}{' '}
               <FeatherIcon
                 icon='external-link'
@@ -47,7 +50,7 @@ export const RewardsBanners = () => {
           </Link>
           {page !== '/account' && (
             <Link href='/account'>
-              <a className='flex items-center h-8 uppercase'>
+              <a className='flex items-center h-8 uppercase text-white text-opacity-70 hover:text-opacity-100'>
                 {t('account')}{' '}
                 <FeatherIcon
                   icon='chevron-right'

@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
 import { formatUnits } from '@ethersproject/units'
+import { format } from 'date-fns'
 import {
   BottomSheetTitle,
   ContractLink,
@@ -29,7 +30,12 @@ import {
   useTransaction,
   Transaction
 } from '@pooltogether/wallet-connection'
-import { numberWithCommas, getNetworkNameAliasByChainId, msToS } from '@pooltogether/utilities'
+import {
+  numberWithCommas,
+  getNetworkNameAliasByChainId,
+  sToMs,
+  msToS
+} from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
 import { TxButton } from '@components/Input/TxButton'
@@ -45,7 +51,7 @@ import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersP
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
-import tokenList from '@constants/swapTokenList'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 enum ClaimModalState {
   'FORM',
@@ -353,11 +359,9 @@ const ClaimModalForm = (props) => {
 
   const { t } = useTranslation()
 
-  const estimateRows = buildEstimateRows(promotion, estimateAmount, usersClaimedPromotionHistory)
+  const estimateRows = buildEstimateRows(promotion, estimateAmount)
 
-  const claimedToDateFormatted = usersClaimedPromotionHistory?.rewards
-    ? formatUnits(usersClaimedPromotionHistory.rewards, decimals)
-    : '0.00'
+  const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
   return (
     <>
@@ -397,24 +401,20 @@ const ClaimModalForm = (props) => {
         </div>
 
         <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-          {estimateRows.map((row) => {
-            const { amount, date } = row
+          {estimateRows.reverse().map((row) => {
+            const { amount, epochStartTimestamp } = row
+            const date = format(new Date(sToMs(epochStartTimestamp)), 'MMMM do yyyy')
 
             return (
               <RewardRow
                 {...props}
-                key={`promotion-${promotion.id}-${date}`}
+                key={`promotion-${promotion.id}-${epochStartTimestamp}`}
                 estimate
                 amount={amount}
                 date={date}
               />
             )
           })}
-          {/* {claimRows.map((row) => {
-            const { amount, date } = row
-
-            return <RewardRow {...props} amount={amount} date={date} />
-          })} */}
         </ul>
       </div>
 
@@ -423,13 +423,19 @@ const ClaimModalForm = (props) => {
           {t('claimedToDate', 'Claimed to date')}:{' '}
         </span>
         <span className='flex items-center'>
-          <TokenIcon
-            chainId={chainId}
-            address={token?.address}
-            sizeClassName='w-4 h-4'
-            className='mx-1'
-          />{' '}
-          {numberWithCommas(claimedToDateFormatted)} {symbol}
+          {amount.amountPretty ? (
+            <>
+              <TokenIcon
+                chainId={chainId}
+                address={token?.address}
+                sizeClassName='w-4 h-4'
+                className='mx-1'
+              />{' '}
+              {numberWithCommas(amount.amountPretty)} {symbol}
+            </>
+          ) : (
+            <span className='opacity-50 ml-1'>--</span>
+          )}
         </span>
       </div>
 
@@ -480,7 +486,7 @@ const RewardRow = (props) => {
         <span className='flex items-center font-averta-bold'>
           {estimate ? (
             <div>
-              ⏳ {numberWithCommas(amount.amountPretty)}{' '}
+              ⏳ {numberWithCommas(amount)}{' '}
               <span className=' uppercase opacity-50'>
                 {token.symbol} ({t('estimateAbbreviation', 'est')})
               </span>
@@ -493,8 +499,7 @@ const RewardRow = (props) => {
                 sizeClassName='w-4 h-4'
                 className='mr-1'
               />
-              {numberWithCommas(amount.amountPretty)}{' '}
-              <span className='opacity-50 ml-1'>{token.symbol}</span>
+              {numberWithCommas(amount)} <span className='opacity-50 ml-1'>{token.symbol}</span>
             </>
           )}
         </span>
@@ -769,7 +774,6 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     const epochIds = [...Array(maxCompletedEpochId).keys()]
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
-    console.log('Claiming for epochs:', epochIds)
 
     let callTransaction: () => Promise<TransactionResponse>
 
@@ -827,46 +831,25 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 //     date: 'Jul 8th, 2022'
 //   }
 // ]
-const buildEstimateRows = (promotion, estimateAmount, usersClaimedPromotionHistory) => {
-  const { remainingEpochs, endTimestamp, epochDuration } = promotion
+const buildEstimateRows = (promotion, estimateAmount) => {
+  const { numberOfEpochs, maxCompletedEpochId, remainingEpochs, startTimestamp, epochDuration } =
+    promotion
 
   if (remainingEpochs <= 0) {
     return []
   }
 
-  const estimatePerEpoch = Number(estimateAmount.amount) / remainingEpochs
+  const estimatePerEpoch = Number(estimateAmount?.amount) / remainingEpochs
 
-  // console.log(promotion)
-  const secondsRemaining = endTimestamp - msToS(Date.now())
-  // console.log(secondsRemaining)
-  // console.log(usersClaimedPromotionHistory)
+  const epochsArray = [...Array(numberOfEpochs).keys()]
 
-  const remainingEpochsArray = [...Array(remainingEpochs).keys()]
-  // console.log({ remainingEpochsArray })
-  // console.log(epochDuration)
-  // const currentEpochEndTimestamp =
-
-  const estimateRows = remainingEpochsArray.map((epochDelta) => {
-    const epochDeltaSeconds = (epochDelta + 1) * epochDuration
-    const now = msToS(Date.now())
-    const epochTimestamp = now + epochDeltaSeconds
-    return { epochTimestamp }
+  const epochs = epochsArray.map((epoch) => {
+    const epochStartTimestamp = startTimestamp + epoch * epochDuration
+    const epochEndTimestamp = epochStartTimestamp + epochDuration
+    return { epochStartTimestamp, epochEndTimestamp, amount: estimatePerEpoch }
   })
-  // console.log(estimateRows)
 
-  // epochDuration = 4
+  const remainingEpochsArray = epochs.slice(maxCompletedEpochId, numberOfEpochs)
 
-  // currentEpoch seconds remaining
-  // 2
-
-  // currentEpoch + 1 epoch
-  // 6
-
-  // currentEpoch + 2 epochs
-  // 10
-
-  // currentEpoch + 3 epochs
-  // 14
-
-  return []
+  return remainingEpochsArray
 }
