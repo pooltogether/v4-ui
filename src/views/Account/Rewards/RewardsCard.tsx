@@ -9,9 +9,9 @@ import { formatUnits } from '@ethersproject/units'
 import { format } from 'date-fns'
 import {
   Tooltip,
+  BottomSheet,
   BottomSheetTitle,
   ContractLink,
-  BottomSheet,
   snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
@@ -35,6 +35,8 @@ import {
   numberWithCommas,
   getNetworkNameAliasByChainId,
   sToMs,
+  sToD,
+  msToD,
   msToS
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
@@ -330,6 +332,7 @@ const ClaimModal = (props) => {
       label='Claim modal'
       snapPoints={snapTo90}
     >
+      {/* {console.log(content.props.promotion)} */}
       {content}
     </BottomSheet>
   )
@@ -354,12 +357,12 @@ const ClaimModalForm = (props) => {
     setTxId
   } = props
 
+  const { t } = useTranslation()
+
   const { decimals, symbol } = token
   const tokenSymbol = symbol
 
-  const days = 188
-
-  const { t } = useTranslation()
+  const { value, unit } = useNextRewardIn(promotion)
 
   const estimateRows = buildEstimateRows(promotion, estimateAmount)
 
@@ -384,16 +387,18 @@ const ClaimModalForm = (props) => {
           label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
           chainId={chainId}
           icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
-          unit={token.symbol}
           token={token}
           amount={claimableAmount}
+          unit={token.symbol}
         />
 
         <UnitPanel
           label={t('nextReward', 'Next Reward')}
           chainId={chainId}
           icon={<span className='mr-1'>🗓️</span>}
-          unit={t('{{days}} Days', { days })}
+          value={value}
+          unit={t(unit)}
+          // unit={t('numDays', '{{days}} Days', { days })}
         />
       </div>
       <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
@@ -492,7 +497,7 @@ const RewardRow = (props) => {
           {isEstimate ? (
             <div>
               ⏳ {numberWithCommas(amount)}{' '}
-              <span className=' uppercase opacity-50'>
+              <span className='uppercase opacity-50'>
                 {token.symbol} ({t('estimateAbbreviation', 'est')})
               </span>
             </div>
@@ -519,13 +524,22 @@ const RewardRow = (props) => {
 }
 
 const RewardsEndInBanner = (props) => {
-  const { chainId, token } = props
+  const { chainId, token, promotion } = props
   const { t } = useTranslation()
 
-  const days = 14
   const tokenSymbol = token.symbol
 
   const backgroundColor = useNetworkHexColor(chainId)
+
+  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  const lastEpochEndTime = remainingEpochsArray?.reverse()?.[0]?.epochEndTimestamp
+  // console.log(msToS(Date.now()))
+  // console.log(lastEpochEndTime)
+  // console.log(lastEpochEndTime - msToS(Date.now()))
+  const [days, sentence] = useRewardsEndInSentence(t, lastEpochEndTime, tokenSymbol)
+  // console.log([days, sentence])
+  // TODO: what the ever loving f...
+  // this component keeps thinking days is way less than it actually is
 
   return (
     <div
@@ -546,16 +560,8 @@ const RewardsEndInBanner = (props) => {
           sizeClassName='w-5 h-5 xs:w-4 xs:h-4'
           className='mr-1'
         />
-
-        {days < 0
-          ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
-          : days < 1
-          ? t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ends soon!', { tokenSymbol })
-          : t('tokenRewardsEndInNDays', '{{tokenSymbol}} rewards end in {{n}} days', {
-              tokenSymbol,
-              n: days
-            })}
-
+        {sentence}
+        {/* {days} {sentence} */}
         <Link href={{ pathname: '/deposit' }}>
           <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
             {t('depositMore', 'Deposit more')}
@@ -564,6 +570,43 @@ const RewardsEndInBanner = (props) => {
       </div>
     </div>
   )
+}
+
+const useRewardsEndInSentence = (t, lastEpochEndTime, tokenSymbol) => {
+  const now = msToS(Date.now())
+
+  // console.log(promotion.id)
+
+  const d = sToD(lastEpochEndTime) - sToD(now)
+
+  let rewardsEndInSentence =
+    d < 0
+      ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
+      : t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ending soon!', { tokenSymbol })
+  if (d > 1) {
+    rewardsEndInSentence = t(
+      'tokenRewardsEndInNDays',
+      '{{tokenSymbol}} rewards end in {{days}} days',
+      {
+        tokenSymbol,
+        days: Math.round(d)
+      }
+    )
+  }
+  // console.log([days, rewardsEndInSentence])
+
+  return [d, rewardsEndInSentence]
+}
+
+const useNextRewardIn = (promotion) => {
+  const now = msToS(Date.now())
+
+  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
+
+  const value = sToD(nextEpochEndTime - now)
+
+  return { value, unit: 'days' }
 }
 
 interface ClaimModalReceiptProps {
@@ -644,24 +687,19 @@ export const AccountPageButton = (props) => {
 }
 
 const UnitPanel = (props) => {
-  const { chainId, label, amount, token, icon, unit } = props
+  const { label, amount, icon, unit, value } = props
 
   return (
     <div className='flex flex-col bg-white dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 
-        {amount && (
-          <span className='mx-1'>
-            {amount ? (
-              numberWithCommas(amount?.amount)
-            ) : (
-              <ThemedClipSpinner sizeClassName='w-4 h-4' />
-            )}
-          </span>
-        )}
-
-        {unit}
+        <span className='mx-1'>
+          {value && numberWithCommas(value)}
+          {amount && numberWithCommas(amount?.amount)}
+        </span>
+        {/* <ThemedClipSpinner sizeClassName='w-4 h-4' /> */}
+        <span className='uppercase'>{unit}</span>
       </span>
       <div className='uppercase text-xxxs text-center mt-1 opacity-30'>{label}</div>
     </div>
