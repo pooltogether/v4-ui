@@ -536,10 +536,7 @@ const RewardsEndInBanner = (props) => {
 
   const remainingEpochsArray = promotion.epochs.remainingEpochsArray
   const lastEpochEndTime = remainingEpochsArray?.reverse()?.[0]?.epochEndTimestamp
-  // console.log(msToS(Date.now()))
-  // console.log(lastEpochEndTime)
-  // console.log(lastEpochEndTime - msToS(Date.now()))
-  const [days, sentence] = useRewardsEndInSentence(t, lastEpochEndTime, tokenSymbol)
+  const [days, sentence] = useRewardsEndInSentence(lastEpochEndTime, tokenSymbol)
   // console.log([days, sentence])
   // TODO: what the ever loving f...
   // this component keeps thinking days is way less than it actually is
@@ -578,30 +575,29 @@ const RewardsEndInBanner = (props) => {
   )
 }
 
-const useRewardsEndInSentence = (t, lastEpochEndTime, tokenSymbol) => {
+const useRewardsEndInSentence = (lastEpochEndTime, tokenSymbol) => {
+  const { t } = useTranslation()
+
   const now = msToS(Date.now())
-
-  // console.log(promotion.id)
-
-  const d = sToD(lastEpochEndTime) - sToD(now)
+  const _days = sToD(lastEpochEndTime) - sToD(now)
 
   let rewardsEndInSentence =
-    d < 0
+    _days < 0
       ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
       : t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ending soon!', { tokenSymbol })
-  if (d > 1) {
+  if (_days > 1) {
     rewardsEndInSentence = t(
       'tokenRewardsEndInNDays',
       '{{tokenSymbol}} rewards end in {{days}} days',
       {
         tokenSymbol,
-        days: Math.round(d)
+        days: Math.round(_days)
       }
     )
   }
   // console.log([days, rewardsEndInSentence])
 
-  return [d, rewardsEndInSentence]
+  return [_days, rewardsEndInSentence]
 }
 
 const useNextRewardIn = (promotion) => {
