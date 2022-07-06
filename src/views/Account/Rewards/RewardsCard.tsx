@@ -401,29 +401,32 @@ const ClaimModalForm = (props) => {
           // unit={t('numDays', '{{days}} Days', { days })}
         />
       </div>
-      <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
-        <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
-          {t('amount', 'Amount')}
-          <div>{t('awarded', 'Awarded')}</div>
+
+      {estimateRows?.length > 1 ? (
+        <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
+          <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
+            {t('amount', 'Amount')}
+            <div>{t('awarded', 'Awarded')}</div>
+          </div>
+
+          <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
+            {estimateRows.reverse().map((row) => {
+              const { estimateAmount: amount, epochEndTimestamp } = row
+
+              return (
+                <RewardRow
+                  {...props}
+                  isEstimate
+                  key={`promotion-${promotion.id}-${epochEndTimestamp}`}
+                  promotionId={promotion.id}
+                  amount={amount}
+                  awardedAt={epochEndTimestamp}
+                />
+              )
+            })}
+          </ul>
         </div>
-
-        <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-          {estimateRows.reverse().map((row) => {
-            const { estimateAmount: amount, epochEndTimestamp } = row
-
-            return (
-              <RewardRow
-                {...props}
-                isEstimate
-                key={`promotion-${promotion.id}-${epochEndTimestamp}`}
-                promotionId={promotion.id}
-                amount={amount}
-                awardedAt={epochEndTimestamp}
-              />
-            )
-          })}
-        </ul>
-      </div>
+      ) : null}
 
       <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4 py-2 px-4 font-averta-bold'>
         <span className='opacity-50 uppercase text-xxs '>
@@ -562,11 +565,14 @@ const RewardsEndInBanner = (props) => {
         />
         {sentence}
         {/* {days} {sentence} */}
-        <Link href={{ pathname: '/deposit' }}>
-          <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
-            {t('depositMore', 'Deposit more')}
-          </a>
-        </Link>
+
+        {days > 1 && (
+          <Link href={{ pathname: '/deposit' }}>
+            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
+              {t('depositMore', 'Deposit more')}
+            </a>
+          </Link>
+        )}
       </div>
     </div>
   )
@@ -869,13 +875,14 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 // Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
 // and returns just that array
 const buildEstimateRows = (promotion, estimateAmount) => {
-  if (promotion.epochs.remainingEpochsArray.length <= 0) {
+  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
     return []
   }
 
   const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
 
-  return promotion.epochs.remainingEpochsArray.map((epoch) => {
+  return remainingEpochsArray.map((epoch) => {
     return { ...epoch, estimateAmount: estimatePerEpoch }
   })
 }
