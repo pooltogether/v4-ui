@@ -2902,6 +2902,17 @@
     "@pooltogether/owner-manager-contracts" "1.1.0"
     "@pooltogether/yield-source-interface" "1.3.0"
 
+"@pooltogether/aave-v3-yield-source@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/aave-v3-yield-source/-/aave-v3-yield-source-1.1.1.tgz#4df4ec6e5736a34e0af82bde77242b8196cd3b5c"
+  integrity sha512-lYNrsNp0uc2ZiE7e6ufzTaQ8YZ3RTi25xJp8liqEtyVRbNYlLxQDbvH1Lf0g8nwnTflzjLMEo0CtcdUY1UXsPg==
+  dependencies:
+    "@aave/core-v3" "1.13.1"
+    "@aave/periphery-v3" "1.10.0"
+    "@openzeppelin/contracts" "4.5.0"
+    "@pooltogether/owner-manager-contracts" "1.1.0"
+    "@pooltogether/yield-source-interface" "1.3.0"
+
 "@pooltogether/aave-yield-source@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/aave-yield-source/-/aave-yield-source-1.2.0.tgz#2a9b3c481c37c6a02bf84e48e09d9a255f0be10f"
@@ -3097,21 +3108,22 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-periphery/-/v4-periphery-1.2.5.tgz#12125fc8f1b6a8efaa9bfb4855a7a0c63b16ee35"
   integrity sha512-Q9E+o3cNh+w7HJLTp/lGJ0/DmfBQyCEyIwnD+uw6AZfaP9dykDFOkbTsHw6QYjS5+uUbklMjtSb5KSwPAuA9dA==
 
-"@pooltogether/v4-pool-data@1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-1.8.0.tgz#607cd36c337305bb3eb7a8fac358dad86e7f1062"
-  integrity sha512-L0NgiAmshjh3Q1EcxGLxrJs8PK4DazV7ml1Isvv1cCYPvZZfyMAS96D9bObdKSnYJfeHdNiYlGjUp7C+G3+Iyw==
+"@pooltogether/v4-pool-data@1.8.1-beta.2":
+  version "1.8.1-beta.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-1.8.1-beta.2.tgz#b5914531511fac19030ef2658257f5326e441922"
+  integrity sha512-+jInPjDiE5TdwLlG1iqOJ5SuJkN7ByPmEvxl5NTxHjkUBSOT3ZADo2vIQgEOdudsRlsHAgAR6+jmoF3j0vvKKA==
   dependencies:
     "@pooltogether/v4-mainnet" "1.6.0"
-    "@pooltogether/v4-testnet" "1.5.4"
+    "@pooltogether/v4-testnet" "1.5.5-beta.1"
 
-"@pooltogether/v4-testnet@1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-testnet/-/v4-testnet-1.5.4.tgz#ce82bc523ac8b64c1b436aa4c8f757322df501f0"
-  integrity sha512-ftNhctCd1d+r3df0AcyoYmWvwGTiKGI4W+8CGHkkAo0XJQVYtVVukU/nEzHKBjHfQIvC0nOuj5RHRIlOwzOgmA==
+"@pooltogether/v4-testnet@1.5.5-beta.1":
+  version "1.5.5-beta.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-testnet/-/v4-testnet-1.5.5-beta.1.tgz#7e0673a839dba8627a2b9a6196e5b4528998b666"
+  integrity sha512-pl60nWdxFH1/kn0h0df0BB8O7unbzubSCwS44tJUdVXUD8wVqfK+HEYNwnPw4cYiR0Q+6n7pr5tw7/0Gk297Iw==
   dependencies:
     "@chainlink/contracts" "0.4.0"
     "@openzeppelin/contracts" "4.4.2"
+    "@pooltogether/aave-v3-yield-source" "1.1.1"
     "@pooltogether/draw-calculator-js" "1.0.3-beta.4"
     "@pooltogether/owner-manager-contracts" "1.1.0"
     "@pooltogether/pooltogether-rng-contracts" "1.5.1"
