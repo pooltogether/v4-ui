@@ -53,6 +53,6 @@ export const getPrizePoolPercentageOfPicks = (
     prizePoolId: prizePool.id(),
     percentage: prizePoolTvlNormalized.isZero()
       ? 0
-      : divideBigNumbers(prizePoolTvlNormalized, prizePoolNetworkTvlNormalized)
+      : divideBigNumbers(prizePoolTvlNormalized, prizePoolNetworkTvlNormalized, 8)
   }
 }
