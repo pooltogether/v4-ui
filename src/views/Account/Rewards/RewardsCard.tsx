@@ -369,7 +369,7 @@ const ClaimModalForm = (props) => {
 
   return (
     <>
-      <RewardsEndInBanner chainId={chainId} token={token} promotion={promotion} />
+      <RewardsEndInBanner {...props} />
 
       {/* <div className='flex items-center text-lg xs:mt-4 mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
