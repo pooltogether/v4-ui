@@ -45,6 +45,7 @@ import {
   initProviderApiKeys as initProviderApiKeysForWalletConnection
 } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
+import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient()
@@ -155,8 +156,9 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
-  // This hook doesn't quite fit here, it needs to be nested below Jotai though.
+  // These hooks doesn't quite fit here, it needs to be nested below Jotai though.
   useUpdateStoredPendingTransactions()
+  useSelectedChainIdWatcher()
 
   const { theme } = useContext(ThemeContext)
   const screenSize = useScreenSize()
