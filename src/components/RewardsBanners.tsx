@@ -33,9 +33,7 @@ export const RewardsBanners = () => {
             }
           )}
         >
-          <Link
-            href={`https://app.hop.exchange/#/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism`}
-          >
+          <Link href={`https://app.optimism.io/bridge`}>
             <a
               className='flex items-center h-8 uppercase text-white text-opacity-70 hover:text-opacity-100'
               target='_blank'
