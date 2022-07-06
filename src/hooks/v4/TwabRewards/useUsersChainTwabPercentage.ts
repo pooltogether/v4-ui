@@ -4,7 +4,7 @@ import { formatUnits } from '@ethersproject/units'
 
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { usePrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTotalSupply'
+import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 /**
@@ -14,6 +14,10 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 export const useUsersChainTwabPercentage = (chainId: number, usersAddress: string) => {
   const { prizePoolTotalSupply: totalTwabSupply, decimals } =
     useChainIdPrizePoolTicketTotalSupply(chainId)
+
+  // const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
+  //   usePrizePoolNetworkTicketTwabTotalSupply()
+  // console.log({ prizePoolNetworkTvlData })
 
   // OPTIMIZE: This is causing the components I'm working on to re-render constantly:
   const { data: usersTwabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
@@ -71,8 +75,12 @@ const useChainIdPrizePoolTicketTotalSupply = (chainId) => {
 
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
+  // const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
+  //   usePrizePoolNetworkTicketTwabTotalSupply()
+  // console.log(prizePoolNetworkTvlData)
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
 
+  // return { prizePoolTotalSupply: BigNumber.from(213), decimals: tokens?.ticket.decimals }
   return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals }
 }
 
