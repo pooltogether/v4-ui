@@ -72,43 +72,63 @@ export const getGraphFilteredPromotions = async (chainId: number, client: GraphQ
 }
 
 const formatPromotionData = (promotion, promotionRpcData) => {
-  const numberOfEpochs = Number(promotion.numberOfEpochs)
-  const epochDuration = Number(promotion.epochDuration)
-  const createdAt = Number(promotion.createdAt)
-  const destroyedAt = Number(promotion.destroyedAt)
-  const endedAt = Number(promotion.endedAt)
-  const startTimestamp = Number(promotion.startTimestamp)
+  promotion = {
+    ...promotion,
+    numberOfEpochs: Number(promotion.numberOfEpochs),
+    epochDuration: Number(promotion.epochDuration),
+    createdAt: Number(promotion.createdAt),
+    destroyedAt: Number(promotion.destroyedAt),
+    endedAt: Number(promotion.endedAt),
+    startTimestamp: Number(promotion.startTimestamp)
+  }
 
-  const tokensPerEpoch = getAmountFromBigNumber(promotion.tokensPerEpoch, '2')
-
-  const isComplete = Number(promotionRpcData.currentEpochId) >= numberOfEpochs
+  const isComplete = Number(promotionRpcData.currentEpochId) >= promotion.numberOfEpochs
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers
   const maxCompletedEpochId =
     promotionRpcData.currentEpochId === 0
       ? null
-      : Math.min(promotionRpcData.currentEpochId, numberOfEpochs)
+      : Math.min(promotionRpcData.currentEpochId, promotion.numberOfEpochs)
 
   const remainingEpochs = Number(promotion?.numberOfEpochs) - maxCompletedEpochId
 
-  const duration = Number(numberOfEpochs) * Number(epochDuration)
-  const endTimestamp = Number(startTimestamp) + duration
+  const duration = promotion.numberOfEpochs * promotion.epochDuration
+  const endTimestamp = promotion.startTimestamp + duration
+
+  const epochs = buildEpochs(promotion, maxCompletedEpochId, remainingEpochs)
 
   return {
     ...promotionRpcData,
     ...promotion,
+    epochs: {
+      ...epochs
+    },
     maxCompletedEpochId,
     remainingEpochs,
     isComplete,
-    numberOfEpochs,
-    epochDuration,
-    createdAt,
-    destroyedAt,
-    endedAt,
-    startTimestamp,
     endTimestamp
   }
+}
+
+const buildEpochs = (promotion, maxCompletedEpochId, remainingEpochs) => {
+  const { numberOfEpochs, startTimestamp, epochDuration } = promotion
+
+  if (remainingEpochs <= 0) {
+    return []
+  }
+
+  const epochsArray = [...Array(numberOfEpochs).keys()]
+
+  const epochs = epochsArray.map((epoch) => {
+    const epochStartTimestamp = Number(startTimestamp) + epoch * Number(epochDuration)
+    const epochEndTimestamp = epochStartTimestamp + Number(epochDuration)
+    return { epochStartTimestamp, epochEndTimestamp }
+  })
+
+  const remainingEpochsArray = epochs.slice(maxCompletedEpochId || 0, Number(numberOfEpochs))
+
+  return { epochs, remainingEpochsArray }
 }
 
 export const getPromotion = async (chainId: number, promotionId: number) => {

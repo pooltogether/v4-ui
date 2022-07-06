@@ -8,6 +8,7 @@ import { TransactionResponse } from '@ethersproject/providers'
 import { formatUnits } from '@ethersproject/units'
 import { format } from 'date-fns'
 import {
+  Tooltip,
   BottomSheetTitle,
   ContractLink,
   BottomSheet,
@@ -403,16 +404,16 @@ const ClaimModalForm = (props) => {
 
         <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
           {estimateRows.reverse().map((row) => {
-            const { amount, epochStartTimestamp } = row
-            const date = format(new Date(sToMs(epochStartTimestamp)), 'MMMM do yyyy')
+            const { estimateAmount: amount, epochEndTimestamp } = row
 
             return (
               <RewardRow
                 {...props}
-                key={`promotion-${promotion.id}-${epochStartTimestamp}`}
-                estimate
+                isEstimate
+                key={`promotion-${promotion.id}-${epochEndTimestamp}`}
+                promotionId={promotion.id}
                 amount={amount}
-                date={date}
+                awardedAt={epochEndTimestamp}
               />
             )
           })}
@@ -473,9 +474,12 @@ const ClaimModalForm = (props) => {
 }
 
 const RewardRow = (props) => {
-  const { chainId, token, amount, date, estimate } = props
+  const { isEstimate, chainId, token, amount, date, awardedAt, promotionId } = props
 
   const { t } = useTranslation()
+
+  const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy')
+  const awardedAtLong = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy @ h:mm:ss a')
 
   return (
     <li className={classNames('flex flex-row text-center rounded-lg text-xs')}>
@@ -485,7 +489,7 @@ const RewardRow = (props) => {
         )}
       >
         <span className='flex items-center font-averta-bold'>
-          {estimate ? (
+          {isEstimate ? (
             <div>
               ⏳ {numberWithCommas(amount)}{' '}
               <span className=' uppercase opacity-50'>
@@ -505,7 +509,9 @@ const RewardRow = (props) => {
           )}
         </span>
         <div>
-          <span className='font-bold opacity-50'>{date}</span>
+          <Tooltip id={`tooltip-promotion-${promotionId}-epoch-${awardedAt}`} tip={awardedAtLong}>
+            <span className='font-bold opacity-50'>{awardedAtShort}</span>
+          </Tooltip>
         </div>
       </div>
     </li>
@@ -822,35 +828,16 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   )
 }
 
-// [
-//   {
-//     amount: { amountPretty: '100.20' },
-//     date: 'Jul 14th, 2022'
-//   },
-//   {
-//     amount: { amountPretty: '100.20' },
-//     date: 'Jul 8th, 2022'
-//   }
-// ]
+// Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
+// and returns just that array
 const buildEstimateRows = (promotion, estimateAmount) => {
-  const { numberOfEpochs, maxCompletedEpochId, remainingEpochs, startTimestamp, epochDuration } =
-    promotion
-
-  if (remainingEpochs <= 0) {
+  if (promotion.epochs.remainingEpochsArray.length <= 0) {
     return []
   }
 
-  const estimatePerEpoch = Number(estimateAmount?.amount) / remainingEpochs
+  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
 
-  const epochsArray = [...Array(numberOfEpochs).keys()]
-
-  const epochs = epochsArray.map((epoch) => {
-    const epochStartTimestamp = startTimestamp + epoch * epochDuration
-    const epochEndTimestamp = epochStartTimestamp + epochDuration
-    return { epochStartTimestamp, epochEndTimestamp, amount: estimatePerEpoch }
+  return promotion.epochs.remainingEpochsArray.map((epoch) => {
+    return { ...epoch, estimateAmount: estimatePerEpoch }
   })
-
-  const remainingEpochsArray = epochs.slice(maxCompletedEpochId, numberOfEpochs)
-
-  return remainingEpochsArray
 }
