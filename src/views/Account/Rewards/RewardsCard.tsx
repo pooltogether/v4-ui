@@ -332,7 +332,6 @@ const ClaimModal = (props) => {
       label='Claim modal'
       snapPoints={snapTo90}
     >
-      {/* {console.log(content.props.promotion)} */}
       {content}
     </BottomSheet>
   )
@@ -370,9 +369,9 @@ const ClaimModalForm = (props) => {
 
   return (
     <>
-      <RewardsEndInBanner {...props} />
+      <RewardsEndInBanner chainId={chainId} token={token} promotion={promotion} />
 
-      <div className='flex items-center text-lg xs:mt-4 mb-2'>
+      {/* <div className='flex items-center text-lg xs:mt-4 mb-2'>
         <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
         <span className='ml-1 opacity-50'>
           {claimableUsd || claimableUsd === 0 ? (
@@ -447,7 +446,7 @@ const ClaimModalForm = (props) => {
             <span className='opacity-50 ml-1'>--</span>
           )}
         </span>
-      </div>
+      </div> */}
 
       {/* 
       <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
@@ -466,7 +465,7 @@ const ClaimModalForm = (props) => {
           <span className='opacity-50'>{token.symbol}</span>
         </span>
       </div> */}
-      <SubmitTransactionButton
+      {/* <SubmitTransactionButton
         setReceiptView={setReceiptView}
         claimableAmount={claimableAmount}
         token={token}
@@ -476,9 +475,20 @@ const ClaimModalForm = (props) => {
         transactionPending={transactionPending}
         setTxId={setTxId}
         refetch={refetch}
-      />
+      /> */}
     </>
   )
+}
+
+const useNextRewardIn = (promotion) => {
+  const now = msToS(Date.now())
+
+  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
+
+  const value = sToD(nextEpochEndTime - now)
+
+  return { value, unit: 'days' }
 }
 
 const RewardRow = (props) => {
@@ -536,13 +546,14 @@ const RewardsEndInBanner = (props) => {
 
   const remainingEpochsArray = promotion.epochs.remainingEpochsArray
   const lastEpochEndTime = remainingEpochsArray?.reverse()?.[0]?.epochEndTimestamp
-  // console.log(msToS(Date.now()))
-  // console.log(lastEpochEndTime)
-  // console.log(lastEpochEndTime - msToS(Date.now()))
-  const [days, sentence] = useRewardsEndInSentence(t, lastEpochEndTime, tokenSymbol)
-  // console.log([days, sentence])
+  const [days, sentence] = useRewardsEndInSentence(lastEpochEndTime, tokenSymbol)
+
+  console.log([days, sentence])
+
   // TODO: what the ever loving f...
-  // this component keeps thinking days is way less than it actually is
+  // this component is returning days way less than it actually is
+
+  return <>{days}</>
 
   return (
     <div
@@ -563,9 +574,10 @@ const RewardsEndInBanner = (props) => {
           sizeClassName='w-5 h-5 xs:w-4 xs:h-4'
           className='mr-1'
         />
+        {/* {sentence} */}
+        {days}
+        <br />
         {sentence}
-        {/* {days} {sentence} */}
-
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
             <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
@@ -578,41 +590,27 @@ const RewardsEndInBanner = (props) => {
   )
 }
 
-const useRewardsEndInSentence = (t, lastEpochEndTime, tokenSymbol) => {
+const useRewardsEndInSentence = (lastEpochEndTime, tokenSymbol) => {
+  const { t } = useTranslation()
   const now = msToS(Date.now())
-
-  // console.log(promotion.id)
-
-  const d = sToD(lastEpochEndTime) - sToD(now)
+  const _days = sToD(lastEpochEndTime - now)
 
   let rewardsEndInSentence =
-    d < 0
+    _days < 0
       ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
       : t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ending soon!', { tokenSymbol })
-  if (d > 1) {
+  if (_days > 1) {
     rewardsEndInSentence = t(
       'tokenRewardsEndInNDays',
       '{{tokenSymbol}} rewards end in {{days}} days',
       {
         tokenSymbol,
-        days: Math.round(d)
+        days: Math.round(_days)
       }
     )
   }
-  // console.log([days, rewardsEndInSentence])
 
-  return [d, rewardsEndInSentence]
-}
-
-const useNextRewardIn = (promotion) => {
-  const now = msToS(Date.now())
-
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-  const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
-
-  const value = sToD(nextEpochEndTime - now)
-
-  return { value, unit: 'days' }
+  return [_days, rewardsEndInSentence]
 }
 
 interface ClaimModalReceiptProps {
