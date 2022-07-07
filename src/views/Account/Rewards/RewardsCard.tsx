@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
@@ -364,7 +364,7 @@ const ClaimModalForm = (props) => {
 
   const { value, unit } = useNextRewardIn(promotion)
 
-  const estimateRows = buildEstimateRows(promotion, estimateAmount)
+  const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -410,7 +410,7 @@ const ClaimModalForm = (props) => {
           </div>
 
           <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-            {estimateRows.reverse().map((row) => {
+            {estimateRowsReversed.map((row) => {
               const { estimateAmount: amount, epochEndTimestamp } = row
 
               return (
@@ -428,7 +428,7 @@ const ClaimModalForm = (props) => {
         </div>
       ) : null}
 
-      <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4 py-2 px-4 font-averta-bold'>
+      <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
         <span className='opacity-50 uppercase text-xxs '>
           {t('claimedToDate', 'Claimed to date')}:{' '}
         </span>
@@ -486,11 +486,11 @@ const RewardRow = (props) => {
 
   const { t } = useTranslation()
 
-  const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy')
+  const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMM do yyyy')
   const awardedAtLong = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy @ h:mm:ss a')
 
   return (
-    <li className={classNames('flex flex-row text-center rounded-lg text-xs')}>
+    <li className={classNames('flex flex-row text-center rounded-lg text-xxs xs:text-xs')}>
       <div
         className={classNames(
           'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-pt-purple-darkest hover:bg-opacity-10 mx-2'
@@ -530,17 +530,7 @@ const RewardsEndInBanner = (props) => {
   const { chainId, token, promotion } = props
   const { t } = useTranslation()
 
-  const tokenSymbol = token.symbol
-
-  const backgroundColor = useNetworkHexColor(chainId)
-
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-  const lastEpochEndTime = remainingEpochsArray?.reverse()?.[0]?.epochEndTimestamp
-  const [days, sentence] = useRewardsEndInSentence(lastEpochEndTime, tokenSymbol)
-  // console.log([days, sentence])
-  // TODO: what the ever loving f...
-  // this component keeps thinking days is way less than it actually is
-
+  const [days, sentence] = useRewardsEndInSentence(promotion, token)
   const hasEnded = days <= 0
 
   return (
@@ -567,7 +557,6 @@ const RewardsEndInBanner = (props) => {
           className='mr-1'
         />
         {sentence}
-        {/* {days} {sentence} */}
 
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
@@ -581,8 +570,14 @@ const RewardsEndInBanner = (props) => {
   )
 }
 
-const useRewardsEndInSentence = (lastEpochEndTime, tokenSymbol) => {
+const useRewardsEndInSentence = (promotion, token) => {
   const { t } = useTranslation()
+
+  const tokenSymbol = token.symbol
+
+  const { remainingEpochsArray } = useRemainingEpochsArrays(promotion)
+  const lastEpochEndTime =
+    remainingEpochsArray?.[remainingEpochsArray.length - 1]?.epochEndTimestamp
 
   const now = msToS(Date.now())
   const _days = sToD(lastEpochEndTime) - sToD(now)
@@ -601,7 +596,6 @@ const useRewardsEndInSentence = (lastEpochEndTime, tokenSymbol) => {
       }
     )
   }
-  // console.log([days, rewardsEndInSentence])
 
   return [_days, rewardsEndInSentence]
 }
@@ -864,7 +858,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       chainId={chainId}
       disabled={disabled}
       onClick={sendClaimTx}
-      className='mt-6 flex w-full items-center justify-center'
+      className='mt-2 flex w-full items-center justify-center'
       theme={theme}
     >
       <span className='font-averta-bold'>
@@ -876,7 +870,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 
 // Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
 // and returns just that array
-const buildEstimateRows = (promotion, estimateAmount) => {
+const useEstimateRows = (promotion, estimateAmount) => {
   const remainingEpochsArray = promotion.epochs.remainingEpochsArray
   if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
     return []
@@ -884,7 +878,28 @@ const buildEstimateRows = (promotion, estimateAmount) => {
 
   const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
 
-  return remainingEpochsArray.map((epoch) => {
-    return { ...epoch, estimateAmount: estimatePerEpoch }
-  })
+  return useMemo(() => {
+    const estimateRows = remainingEpochsArray.map((epoch) => ({
+      ...epoch,
+      estimateAmount: estimatePerEpoch
+    }))
+
+    const estimateRowsReversed = [...estimateRows.reverse()]
+
+    return { estimateRows, estimateRowsReversed }
+  }, [estimatePerEpoch, remainingEpochsArray])
+}
+
+// Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
+// and returns just that array
+const useRemainingEpochsArrays = (promotion) => {
+  return useMemo(() => {
+    const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+    if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
+      return { remainingEpochsArray: [], remainingEpochsArrayReversed: [] }
+    }
+
+    const remainingEpochsArrayReversed = [...remainingEpochsArray.reverse()]
+    return { remainingEpochsArray, remainingEpochsArrayReversed }
+  }, [promotion])
 }
