@@ -4,9 +4,9 @@ import { GraphQLClient } from 'graphql-request'
 import { useQueries } from 'react-query'
 import { getReadProvider } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
+import { sToMs } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
-import { NO_REFETCH } from '@constants/query'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
 import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
 import {
@@ -15,9 +15,7 @@ import {
 } from '@utils/TwabRewards/getTwabRewardsContract'
 
 const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID.rinkeby]: [10, 11],
-  // [CHAIN_ID.rinkeby]: [11],
-  [CHAIN_ID.rinkeby]: [8, 9, 10, 11, 12, 13],
+  [CHAIN_ID.rinkeby]: [13],
   [CHAIN_ID.mumbai]: [1, 2],
   [CHAIN_ID.fuji]: [1, 2],
   [CHAIN_ID.avalanche]: [],
@@ -38,7 +36,7 @@ export const useAllChainsFilteredPromotions = () => {
       const client = useTwabRewardsSubgraphClient(chainId)
 
       return {
-        ...NO_REFETCH,
+        refetchInterval: sToMs(60),
         queryKey: getGraphFilteredPromotionsKey(chainId),
         queryFn: async () => getGraphFilteredPromotions(chainId, client),
         enabled: Boolean(chainId)

@@ -23,7 +23,6 @@ export const EarnRewardsCard = () => {
 
   let count = 0
   chainPromotions?.forEach((promotions) => {
-    console.log(promotions)
     promotions?.forEach((promotion) => {
       const daysRemaining = usePromotionDaysRemaining(promotion)
 

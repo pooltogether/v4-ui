@@ -443,6 +443,7 @@ const ClaimModalForm = (props) => {
       </div>
 
       <SubmitTransactionButton
+        {...props}
         setReceiptView={setReceiptView}
         claimableAmount={claimableAmount}
         token={token}
@@ -745,6 +746,7 @@ interface SubmitTransactionButtonProps {
   token: Token
   claimableAmount: Amount
   claimableUsd: number
+  usersClaimedPromotionHistory: []
   setReceiptView: () => void
   setTxId: (id: string) => void
   refetch: () => void
@@ -763,11 +765,11 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     claimableAmount,
     setReceiptView,
     setTxId,
-    refetch
+    refetch,
+    usersClaimedPromotionHistory
   } = props
 
   const { id: promotionId, maxCompletedEpochId } = promotion
-
   const usersAddress = useUsersAddress()
 
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
@@ -778,7 +780,10 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendTransaction = useSendTransaction()
 
   const sendClaimTx = async () => {
-    const epochIds = [...Array(maxCompletedEpochId).keys()]
+    const epochIds = [...Array(maxCompletedEpochId).keys()].filter(
+      (completedEpochId) =>
+        !usersClaimedPromotionHistory.epochs.includes(completedEpochId.toString())
+    )
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
 
