@@ -37,15 +37,13 @@ export const useEstimateRows = (promotion, estimateAmount) => {
 // Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
 // and returns just that array
 export const useRemainingEpochsArrays = (promotion) => {
-  return useMemo(() => {
-    const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-    if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
-      return { remainingEpochsArray: [], remainingEpochsArrayReversed: [] }
-    }
+  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
+    return { remainingEpochsArray: [], remainingEpochsArrayReversed: [] }
+  }
 
-    const remainingEpochsArrayReversed = [...remainingEpochsArray.reverse()]
-    return { remainingEpochsArray, remainingEpochsArrayReversed }
-  }, [promotion])
+  const remainingEpochsArrayReversed = [...remainingEpochsArray.reverse()]
+  return { remainingEpochsArray, remainingEpochsArrayReversed }
 }
 
 export const useLastEpochEndTime = (remainingEpochsArray) => {

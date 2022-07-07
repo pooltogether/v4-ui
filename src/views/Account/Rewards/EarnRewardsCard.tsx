@@ -9,6 +9,7 @@ import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 
 export const EarnRewardsCard = () => {
@@ -21,10 +22,20 @@ export const EarnRewardsCard = () => {
   const chainPromotions = queryResults.map((queryResult) => queryResult.data?.promotions)
 
   let count = 0
-  chainPromotions?.forEach((promotions) => (count += promotions?.length))
+  chainPromotions?.forEach((promotions) => {
+    console.log(promotions)
+    promotions?.forEach((promotion) => {
+      const daysRemaining = usePromotionDaysRemaining(promotion)
+
+      if (daysRemaining > 0) {
+        count += promotions?.length
+      }
+    })
+  })
+
   const moreThanOnePromotion = count > 1
 
-  if (count <= 0) {
+  if (count < 1) {
     return null
   }
 
@@ -101,6 +112,12 @@ const PromotionCard = (props) => {
   const backgroundColor = useNetworkHexColor(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
+
+  const daysRemaining = usePromotionDaysRemaining(promotion)
+
+  if (daysRemaining < 0) {
+    return null
+  }
 
   return (
     <div
