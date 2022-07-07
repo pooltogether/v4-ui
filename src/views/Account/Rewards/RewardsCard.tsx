@@ -332,7 +332,6 @@ const ClaimModal = (props) => {
       label='Claim modal'
       snapPoints={snapTo90}
     >
-      {/* {console.log(content.props.promotion)} */}
       {content}
     </BottomSheet>
   )
@@ -365,6 +364,7 @@ const ClaimModalForm = (props) => {
   const { value, unit } = useNextRewardIn(promotion)
 
   const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
+  console.log('hi')
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 

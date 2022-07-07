@@ -97,7 +97,6 @@ const ChainPromotions = (props) => {
 const PromotionCard = (props) => {
   const { promotion, chainId, moreThanOnePromotion } = props
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
-  console.log(moreThanOnePromotion)
 
   const backgroundColor = useNetworkHexColor(10)
   // const backgroundColor = useNetworkHexColor(chainId)
