@@ -15,8 +15,7 @@ export const useValidDraws = (prizeDistributor: PrizeDistributor) => {
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
   const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const drawIds = data?.drawIds
-  const enabled =
-    isDrawBeaconFetched && isDrawIdsFetched && Boolean(prizeDistributor) && drawIds.length > 0
+  const enabled = isDrawBeaconFetched && isDrawIdsFetched && Boolean(prizeDistributor)
 
   return useQuery(
     [VALID_DRAWS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.startedAtSeconds.toString()],
@@ -26,9 +25,16 @@ export const useValidDraws = (prizeDistributor: PrizeDistributor) => {
 }
 
 export const getValidDraws = async (prizeDistributor: PrizeDistributor, drawIds: number[]) => {
-  const draws = await prizeDistributor.getDraws(drawIds)
-  return {
-    prizeDistributorId: prizeDistributor.id(),
-    draws
+  if (drawIds.length > 0) {
+    const draws = await prizeDistributor.getDraws(drawIds)
+    return {
+      prizeDistributorId: prizeDistributor.id(),
+      draws
+    }
+  } else {
+    return {
+      prizeDistributorId: prizeDistributor.id(),
+      draws: {}
+    }
   }
 }
