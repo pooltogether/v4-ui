@@ -1,11 +1,10 @@
 import gql from 'graphql-tag'
+import { getRefetchInterval } from '@pooltogether/hooks'
 import { GraphQLClient } from 'graphql-request'
 import { useQuery } from 'react-query'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-import { NO_REFETCH } from '@constants/query'
 import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 /**
  * Fetch an account's
@@ -18,8 +17,7 @@ export const useUsersRewardsHistory = (chainId: number) => {
     getUsersRewardsHistoryKey(chainId, usersAddress),
     async () => getUsersRewardsHistory(chainId, client, usersAddress),
     {
-      ...NO_REFETCH,
-
+      refetchInterval: getRefetchInterval(chainId),
       enabled: Boolean(chainId) && Boolean(usersAddress)
     }
   )

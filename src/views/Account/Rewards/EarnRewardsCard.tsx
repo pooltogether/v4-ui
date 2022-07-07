@@ -98,8 +98,7 @@ const PromotionCard = (props) => {
   const { promotion, chainId, moreThanOnePromotion } = props
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
-  const backgroundColor = useNetworkHexColor(10)
-  // const backgroundColor = useNetworkHexColor(chainId)
+  const backgroundColor = useNetworkHexColor(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 

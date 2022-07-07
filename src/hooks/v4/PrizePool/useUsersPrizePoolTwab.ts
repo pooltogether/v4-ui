@@ -1,11 +1,10 @@
-import { Amount, useRefetchInterval } from '@pooltogether/hooks'
+import { sToMs } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { msToS } from '@pooltogether/utilities'
 import { useQuery } from 'react-query'
 
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { NO_REFETCH } from '@constants/query'
 
 /**
  * Fetches a users current TWAB
@@ -23,7 +22,7 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
     getUsersPrizePoolTwabKey(usersAddress, prizePool),
     async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
     {
-      ...NO_REFETCH,
+      refetchInterval: sToMs(60),
       enabled
     }
   )

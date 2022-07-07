@@ -13,12 +13,11 @@ import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID.rinkeby]: [10, 11],
   // [CHAIN_ID.rinkeby]: [11],
-  // [CHAIN_ID.rinkeby]: [8, 9, 10, 11, 12, 13],
+  [CHAIN_ID.rinkeby]: [8, 9, 10, 11, 12, 13],
   [CHAIN_ID.mumbai]: [1, 2],
   [CHAIN_ID.fuji]: [1, 2],
   [CHAIN_ID.avalanche]: [],

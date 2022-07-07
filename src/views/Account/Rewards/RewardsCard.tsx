@@ -1,24 +1,20 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
-import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
-import { formatUnits } from '@ethersproject/units'
 import { format } from 'date-fns'
 import {
   Tooltip,
   BottomSheet,
   BottomSheetTitle,
-  ContractLink,
+  // ContractLink,
   snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
   TokenIcon,
-  CountUp,
   SquareButtonTheme,
-  SquareButton,
   SquareLink,
   SquareButtonSize
 } from '@pooltogether/react-components'
@@ -31,14 +27,7 @@ import {
   useTransaction,
   Transaction
 } from '@pooltogether/wallet-connection'
-import {
-  numberWithCommas,
-  getNetworkNameAliasByChainId,
-  sToMs,
-  sToD,
-  msToD,
-  msToS
-} from '@pooltogether/utilities'
+import { numberWithCommas, getNetworkNameAliasByChainId, sToMs } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
 import { TxButton } from '@components/Input/TxButton'
@@ -52,6 +41,11 @@ import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPr
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import {
+  useNextRewardIn,
+  useEstimateRows,
+  usePromotionDaysRemaining
+} from '@hooks/v4/TwabRewards/promotionHooks'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
@@ -364,7 +358,6 @@ const ClaimModalForm = (props) => {
   const { value, unit } = useNextRewardIn(promotion)
 
   const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
-  console.log('hi')
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -449,23 +442,6 @@ const ClaimModalForm = (props) => {
         </span>
       </div>
 
-      {/* 
-      <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full py-6 flex flex-col mb-4'>
-        <span
-          className={classNames('text-3xl mx-auto font-bold leading-none', {
-            'opacity-50': total !== 0
-          })}
-        >
-          $<CountUp countTo={totalUsd} />
-        </span>
-        <span className='mx-auto flex items-center mt-1'>
-          <TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />
-          <span className='font-bold opacity-50 mx-1'>
-            {totalReady ? numberWithCommas(total) : <ThemedClipSpinner sizeClassName='w-4 h-4' />}{' '}
-          </span>
-          <span className='opacity-50'>{token.symbol}</span>
-        </span>
-      </div> */}
       <SubmitTransactionButton
         setReceiptView={setReceiptView}
         claimableAmount={claimableAmount}
@@ -574,41 +550,25 @@ const useRewardsEndInSentence = (promotion, token) => {
   const { t } = useTranslation()
 
   const tokenSymbol = token.symbol
-
-  const { remainingEpochsArray } = useRemainingEpochsArrays(promotion)
-  const lastEpochEndTime =
-    remainingEpochsArray?.[remainingEpochsArray.length - 1]?.epochEndTimestamp
-
-  const now = msToS(Date.now())
-  const _days = sToD(lastEpochEndTime) - sToD(now)
+  const daysRemaining = usePromotionDaysRemaining(promotion)
 
   let rewardsEndInSentence =
-    _days < 0
+    daysRemaining < 0
       ? t('tokenRewardsHaveEnded', '{{tokenSymbol}} have ended', { tokenSymbol })
       : t('tokenRewardsEndSoon', '{{tokenSymbol}} rewards ending soon!', { tokenSymbol })
-  if (_days > 1) {
+
+  if (daysRemaining > 1) {
     rewardsEndInSentence = t(
       'tokenRewardsEndInNDays',
       '{{tokenSymbol}} rewards end in {{days}} days',
       {
         tokenSymbol,
-        days: Math.round(_days)
+        days: Math.round(daysRemaining)
       }
     )
   }
 
-  return [_days, rewardsEndInSentence]
-}
-
-const useNextRewardIn = (promotion) => {
-  const now = msToS(Date.now())
-
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-  const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
-
-  const value = sToD(nextEpochEndTime - now)
-
-  return { value, unit: 'days' }
+  return [daysRemaining, rewardsEndInSentence]
 }
 
 interface ClaimModalReceiptProps {
@@ -866,40 +826,4 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       </span>
     </TxButton>
   )
-}
-
-// Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
-// and returns just that array
-const useEstimateRows = (promotion, estimateAmount) => {
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-  if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
-    return []
-  }
-
-  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
-
-  return useMemo(() => {
-    const estimateRows = remainingEpochsArray.map((epoch) => ({
-      ...epoch,
-      estimateAmount: estimatePerEpoch
-    }))
-
-    const estimateRowsReversed = [...estimateRows.reverse()]
-
-    return { estimateRows, estimateRowsReversed }
-  }, [estimatePerEpoch, remainingEpochsArray])
-}
-
-// Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
-// and returns just that array
-const useRemainingEpochsArrays = (promotion) => {
-  return useMemo(() => {
-    const remainingEpochsArray = promotion.epochs.remainingEpochsArray
-    if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
-      return { remainingEpochsArray: [], remainingEpochsArrayReversed: [] }
-    }
-
-    const remainingEpochsArrayReversed = [...remainingEpochsArray.reverse()]
-    return { remainingEpochsArray, remainingEpochsArrayReversed }
-  }, [promotion])
 }

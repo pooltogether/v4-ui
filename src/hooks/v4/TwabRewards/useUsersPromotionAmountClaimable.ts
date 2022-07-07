@@ -3,6 +3,7 @@ import { BigNumber } from 'ethers'
 import { formatUnits } from '@ethersproject/units'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TokenWithAllBalances, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { getRefetchInterval } from '@pooltogether/hooks'
 
 import { getAmountFromString } from '@utils/getAmountFromString'
 
@@ -28,7 +29,8 @@ export const useUsersPromotionAmountClaimable = (
     getUsersPromotionAmountClaimableKey(chainId, promotionId, usersAddress, address),
     async () => getUsersPromotionAmountClaimable(tokenPrices, usersPromotionData, token),
     {
-      enabled: Boolean(usersPromotionData) && Boolean(address) && isFetched
+      enabled: Boolean(usersPromotionData) && Boolean(address) && isFetched,
+      refetchInterval: getRefetchInterval(chainId)
     }
   )
 }

@@ -1,3 +1,4 @@
+import { getRefetchInterval } from '@pooltogether/hooks'
 import { batch } from '@pooltogether/etherplex'
 import { useQuery } from 'react-query'
 import { getReadProvider } from '@pooltogether/wallet-connection'
@@ -21,7 +22,8 @@ export const useUsersPromotionRewardsAmount = (
   return useQuery(
     getUsersChainPromotionKey(chainId, promotionId, maxCompletedEpochId, usersAddress),
     async () =>
-      getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress)
+      getUsersPromotionRewardsAmount(chainId, promotionId, maxCompletedEpochId, usersAddress),
+    { refetchInterval: getRefetchInterval(chainId) }
   )
 }
 
