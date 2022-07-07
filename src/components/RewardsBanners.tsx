@@ -53,7 +53,7 @@ export const RewardsBanners = () => {
           </Link>
           {page !== '/account' && (
             <Link href='/account'>
-              <a className='flex items-center h-8 uppercase text-white text-opacity-70 hover:text-opacity-100'>
+              <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
                 {t('account')}{' '}
                 <FeatherIcon
                   icon='chevron-right'

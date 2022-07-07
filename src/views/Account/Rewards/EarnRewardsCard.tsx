@@ -1,10 +1,9 @@
+import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { BigNumber } from 'ethers'
 import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
-
-// import { POOLStakingCards } from './POOLStakingCards'
 
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -19,22 +18,19 @@ export const EarnRewardsCard = () => {
 
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
   const isError = queryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
-  const isAny =
-    queryResults
-      .map((queryResult) => queryResult.data?.promotions)
-      .filter((promotions) => promotions?.length > 0).length > 0
+  const chainPromotions = queryResults.map((queryResult) => queryResult.data?.promotions)
 
-  if (!isAny) {
+  let count = 0
+  chainPromotions?.forEach((promotions) => (count += promotions?.length))
+  const moreThanOnePromotion = count > 1
+
+  if (count <= 0) {
     return null
   }
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle
-        title={t('earnRewards')}
-        // secondary={`$${amount.amountPretty}`}
-        loading={!isFetched}
-      />
+      <CardTitle title={t('earnRewards')} loading={!isFetched} />
 
       {!isFetched && (
         <LoadingList
@@ -49,16 +45,35 @@ export const EarnRewardsCard = () => {
         </div>
       )}
 
-      {queryResults.map((queryResult) => {
-        const { data } = queryResult || {}
-        const { chainId } = data || {}
-        if (!data?.promotions || data.promotions.length === 0) {
-          return null
-        }
-        return <ChainPromotions key={`chain-promotions-${chainId}`} queryResult={queryResult} />
-      })}
+      <div
+        className={classNames({
+          'linear-fade--right': moreThanOnePromotion
+        })}
+      >
+        <div
+          className={classNames({
+            'flex space-x-4 overflow-x-auto': moreThanOnePromotion,
+            'space-y-4': !moreThanOnePromotion
+          })}
+        >
+          {queryResults.map((queryResult) => {
+            const { data } = queryResult || {}
+            const { chainId } = data || {}
 
-      {/* <POOLStakingCards /> */}
+            if (!data?.promotions || data.promotions.length === 0) {
+              return null
+            }
+
+            return (
+              <ChainPromotions
+                key={`chain-promotions-${chainId}`}
+                queryResult={queryResult}
+                moreThanOnePromotion={moreThanOnePromotion}
+              />
+            )
+          })}
+        </div>
+      </div>
     </div>
   )
 }
@@ -71,6 +86,7 @@ const ChainPromotions = (props) => {
 
   return promotions.map((promotion) => (
     <PromotionCard
+      {...props}
       key={`pcard-${chainId}-${promotion.id}`}
       promotion={promotion}
       chainId={chainId}
@@ -79,17 +95,21 @@ const ChainPromotions = (props) => {
 }
 
 const PromotionCard = (props) => {
-  const { promotion, chainId } = props
+  const { promotion, chainId, moreThanOnePromotion } = props
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
+  console.log(moreThanOnePromotion)
 
-  const backgroundColor = useNetworkHexColor(chainId)
-  console.log(backgroundColor)
+  const backgroundColor = useNetworkHexColor(10)
+  // const backgroundColor = useNetworkHexColor(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
   return (
     <div
-      className='rounded-xl text-white p-4'
+      className={classNames('flex-none rounded-xl text-white p-4 text-xxs xs:text-sm', {
+        'xs:w-96 w-64': moreThanOnePromotion,
+        'xs:w-full': !moreThanOnePromotion
+      })}
       style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
     >
       <div className='flex items-center justify-between font-bold'>
@@ -118,18 +138,17 @@ const PromotionCard = (props) => {
           <NetworkIcon chainId={chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
         </div>
       </div>
-      <div className='w-full xs:w-10/12'>
-        <PromotionSummary
-          className='mt-2 xs:mt-0'
-          chainId={chainId}
-          startTimestamp={startTimestamp}
-          numberOfEpochs={numberOfEpochs}
-          tokensPerEpoch={BigNumber.from(tokensPerEpoch)}
-          epochDuration={epochDuration}
-          token={token}
-          networkName={networkName}
-        />
-      </div>
+
+      <PromotionSummary
+        className='mt-2 xs:mt-0'
+        chainId={chainId}
+        startTimestamp={startTimestamp}
+        numberOfEpochs={numberOfEpochs}
+        tokensPerEpoch={BigNumber.from(tokensPerEpoch)}
+        epochDuration={epochDuration}
+        token={token}
+        networkName={networkName}
+      />
     </div>
   )
 }

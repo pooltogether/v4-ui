@@ -70,3 +70,17 @@
     background-position: 0% 50%;
   }
 }
+
+/* .linear-fade--right {
+  position: relative;
+}
+
+.linear-fade--right:hover:before {
+  background: linear-gradient(to right, #290d5660 0%, rgba(247, 247, 247, 0) 4%),
+    linear-gradient(to left, #290d5660 0%, rgba(247, 247, 247, 0) 4%);
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+} */
