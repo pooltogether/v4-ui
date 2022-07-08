@@ -16,10 +16,10 @@ import {
 
 export const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID['optimism-kovan']]: [],
-  [CHAIN_ID.mumbai]: [1, 2],
-  [CHAIN_ID.rinkeby]: [],
-  [CHAIN_ID.fuji]: [1, 2],
-  [CHAIN_ID.optimism]: [1, 2],
+  [CHAIN_ID.mumbai]: [],
+  [CHAIN_ID.rinkeby]: [10, 12],
+  [CHAIN_ID.fuji]: [],
+  [CHAIN_ID.optimism]: [],
   [CHAIN_ID.polygon]: [],
   [CHAIN_ID.mainnet]: [],
   [CHAIN_ID.avalanche]: []
