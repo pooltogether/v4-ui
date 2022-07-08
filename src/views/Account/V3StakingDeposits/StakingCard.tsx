@@ -152,19 +152,20 @@ const ManageState = (props: ManageStateProps) => {
             />
           }
         />
-        {/* NOTE: Hidden since there are no rewards
-        <ListItem
-          title={t('earning')}
-          content={
-            <TokenAndVAPR
-              chainId={chainId}
-              token={tokenFaucetRewards}
-              vapr={vapr}
-              isTokenFaucetDataFetched={isTokenFaucetDataFetched}
-              isTokenFetched={isTokenFaucetRewardsFetched}
-            />
-          }
-        /> */}
+        {!!vapr && (
+          <ListItem
+            title={t('earning')}
+            content={
+              <TokenAndVAPR
+                chainId={chainId}
+                token={tokenFaucetRewards}
+                vapr={vapr}
+                isTokenFaucetDataFetched={isTokenFaucetDataFetched}
+                isTokenFetched={isTokenFaucetRewardsFetched}
+              />
+            }
+          />
+        )}
       </ul>
       <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('manage')} />
     </>
@@ -248,18 +249,18 @@ const DepositState = (props: DepositStateProps) => {
       <div className='space-y-2 flex flex-col'>
         <p className='text-sm'>{depositPrompt}</p>
 
-        {/* 
-        NOTE: Hidden since there's no rewards at the moment
-        <div className='flex space-x-2 font-bold text-lg items-center'>
-          <TokenIconOrLoading
-            chainId={chainId}
-            token={tokenFaucetRewards}
-            isFetched={isTokenFaucetRewardsFetched}
-          />
-          <span>{t('earn')}</span>
-          <VAPROrLoading vapr={vapr} isFetched={isTokenFaucetDataFetched} />
-          <VAPRTooltip />
-        </div> */}
+        {!!vapr && (
+          <div className='flex space-x-2 font-bold text-lg items-center'>
+            <TokenIconOrLoading
+              chainId={chainId}
+              token={tokenFaucetRewards}
+              isFetched={isTokenFaucetRewardsFetched}
+            />
+            <span>{t('earn')}</span>
+            <VAPROrLoading vapr={vapr} isFetched={isTokenFaucetDataFetched} />
+            <VAPRTooltip />
+          </div>
+        )}
       </div>
       <OpenModalButton className='ml-auto' onClick={openBottomSheet} label={t('deposit')} />
     </>
