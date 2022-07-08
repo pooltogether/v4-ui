@@ -80,11 +80,13 @@ export const DEFAULT_CHAIN_IDS = Object.freeze({
 
 // Native currency symbols in app
 export const CHAIN_NATIVE_CURRENCY = Object.freeze({
-  [CHAIN_ID.mainnet]: 'Ξ',
-  [CHAIN_ID.rinkeby]: 'Ξ',
+  [CHAIN_ID.optimism]: 'Ξ',
   [CHAIN_ID.matic]: 'MATIC',
-  [CHAIN_ID.mumbai]: 'MATIC',
+  [CHAIN_ID.mainnet]: 'Ξ',
   [CHAIN_ID.avalanche]: 'AVAX',
+  [CHAIN_ID['optimism-kovan']]: 'Ξ',
+  [CHAIN_ID.mumbai]: 'MATIC',
+  [CHAIN_ID.rinkeby]: 'Ξ',
   [CHAIN_ID.fuji]: 'AVAX'
 })
 
@@ -115,7 +117,11 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
-  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }]
+  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
+  [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
+  [CHAIN_ID['optimism-kovan']]: [
+    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
+  ]
 })
 
 /**
