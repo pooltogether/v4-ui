@@ -19,7 +19,7 @@ export const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID.mumbai]: [1, 2],
   [CHAIN_ID.rinkeby]: [],
   [CHAIN_ID.fuji]: [1, 2],
-  [CHAIN_ID.optimism]: [],
+  [CHAIN_ID.optimism]: [1, 2],
   [CHAIN_ID.polygon]: [],
   [CHAIN_ID.mainnet]: [],
   [CHAIN_ID.avalanche]: []
