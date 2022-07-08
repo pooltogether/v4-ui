@@ -14,13 +14,15 @@ import {
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
 
-const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID.rinkeby]: [13],
+export const FILTERED_PROMOTION_IDS = {
+  [CHAIN_ID['optimism-kovan']]: [],
   [CHAIN_ID.mumbai]: [1, 2],
+  [CHAIN_ID.rinkeby]: [],
   [CHAIN_ID.fuji]: [1, 2],
-  [CHAIN_ID.avalanche]: [],
+  [CHAIN_ID.optimism]: [],
+  [CHAIN_ID.polygon]: [],
   [CHAIN_ID.mainnet]: [],
-  [CHAIN_ID.polygon]: [1, 5]
+  [CHAIN_ID.avalanche]: []
 }
 
 /**

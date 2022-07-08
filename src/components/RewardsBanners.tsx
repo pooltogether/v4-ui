@@ -6,6 +6,8 @@ import { TokenIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
 import { CHAIN_ID } from '@constants/misc'
+import { useAppEnvString } from '@hooks/useAppEnvString'
+import { FILTERED_PROMOTION_IDS } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 
@@ -13,6 +15,16 @@ export const RewardsBanners = () => {
   const { t } = useTranslation()
 
   const page = location.pathname
+
+  // Only show Optimism Rewards banner if we're on testnets with optimism-kovan having a promotion
+  // or on mainnets with optimism having a promotion
+  const appEnv = useAppEnvString()
+  if (appEnv === 'testnets' && FILTERED_PROMOTION_IDS[CHAIN_ID['optimism-kovan']].length < 1) {
+    return null
+  }
+  if (appEnv === 'mainnets' && FILTERED_PROMOTION_IDS[CHAIN_ID.optimism].length < 1) {
+    return null
+  }
 
   return (
     <div className='px-8 w-full text-center py-3 z-50 bg-pt-red'>
