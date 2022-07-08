@@ -33,7 +33,7 @@
     "@pooltogether/evm-chains-extended": "^0.7.0",
     "@pooltogether/hooks": "^1.10.0",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "^1.14.3",
+    "@pooltogether/react-components": "^1.14.6",
     "@pooltogether/utilities": "^0.5.0",
     "@pooltogether/v4-client-js": "^0.14.1",
     "@pooltogether/v4-pool-data": "1.8.1",
