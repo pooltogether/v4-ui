@@ -15,12 +15,12 @@ const TWAB_REWARDS_SUBGRAPH_URIS = {
   [CHAIN_ID.fuji]: 'https://api.thegraph.com/subgraphs/name/pooltogether/fuji-twab-rewards'
 }
 
-export const useTwabRewardsSubgraphUri = (chainId) => {
+export const getTwabRewardsSubgraphUri = (chainId) => {
   return TWAB_REWARDS_SUBGRAPH_URIS[chainId]
 }
 
-export const useTwabRewardsSubgraphClient = (chainId) => {
-  const uri = useTwabRewardsSubgraphUri(chainId)
+export const getTwabRewardsSubgraphClient = (chainId) => {
+  const uri = getTwabRewardsSubgraphUri(chainId)
 
   return new GraphQLClient(uri, {
     fetch: theGraphCustomFetch

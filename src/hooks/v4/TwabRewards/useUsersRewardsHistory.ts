@@ -4,14 +4,14 @@ import { GraphQLClient } from 'graphql-request'
 import { useQuery } from 'react-query'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
+import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
 
 /**
  * Fetch an account's
  */
 export const useUsersRewardsHistory = (chainId: number) => {
   const usersAddress = useUsersAddress()
-  const client = useTwabRewardsSubgraphClient(chainId)
+  const client = getTwabRewardsSubgraphClient(chainId)
 
   return useQuery(
     getUsersRewardsHistoryKey(chainId, usersAddress),

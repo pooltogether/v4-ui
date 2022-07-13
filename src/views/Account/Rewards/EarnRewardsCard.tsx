@@ -27,7 +27,7 @@ export const EarnRewardsCard = () => {
       const daysRemaining = usePromotionDaysRemaining(promotion)
 
       if (daysRemaining > 0) {
-        count += promotions?.length
+        count += 1
       }
     })
   })

@@ -8,7 +8,7 @@ import { sToMs } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
-import { useTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/useTwabRewardsSubgraphClient'
+import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
@@ -35,7 +35,7 @@ export const useAllChainsFilteredPromotions = () => {
 
   return useQueries(
     chainIds.map((chainId) => {
-      const client = useTwabRewardsSubgraphClient(chainId)
+      const client = getTwabRewardsSubgraphClient(chainId)
 
       return {
         refetchInterval: sToMs(60),
