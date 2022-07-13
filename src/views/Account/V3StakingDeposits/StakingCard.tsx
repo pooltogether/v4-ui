@@ -235,12 +235,12 @@ interface DepositStateProps {
 }
 const DepositState = (props: DepositStateProps) => {
   const {
-    // vapr,
+    vapr,
     depositPrompt,
-    // tokenFaucetRewards,
-    // isTokenFaucetRewardsFetched,
-    // isTokenFaucetDataFetched,
-    // chainId,
+    tokenFaucetRewards,
+    isTokenFaucetRewardsFetched,
+    isTokenFaucetDataFetched,
+    chainId,
     openBottomSheet
   } = props
   const { t } = useTranslation()
