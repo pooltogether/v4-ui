@@ -44,6 +44,9 @@ const getRpcFilteredPromotions = async (chainId: number, provider: Provider) => 
   return { chainId, promotions }
 }
 
+// This could be `getPromotions` as a good optimization if we have a lot of promotion data to fetch
+// For now let's keep it lightweight and do fetching syncronously until there is a lot of promotions
+// and it is a bottleneck
 export const getPromotion = async (chainId: number, provider: Provider, promotionId: number) => {
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
