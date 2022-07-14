@@ -22,7 +22,7 @@ interface PromotionSummaryProps {
   className?: string
 }
 
-const days = (numberOfEpochs, epochDuration) => {
+const getPromotionDurationInDays = (numberOfEpochs, epochDuration) => {
   const duration = Number(numberOfEpochs) * Number(epochDuration)
   return duration / SECONDS_PER_DAY
 }
@@ -62,7 +62,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             i18nKey='numTokensProvidedOverDaysToDepositorsOnNetwork'
             values={{
               totalTokens: numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true }),
-              days: numberWithCommas(days(numberOfEpochs, epochDuration), {
+              days: numberWithCommas(getPromotionDurationInDays(numberOfEpochs, epochDuration), {
                 removeTrailingZeros: true
               }),
               networkName
@@ -77,7 +77,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
                     address={tokenData.address}
                     style={{ top: -2 }}
                   />
-                  <TokenSymbol chainId={chainId} tokenData={tokenData} />
+                  <span>{tokenData?.symbol}</span>
                 </>
               )
             }}
@@ -113,36 +113,4 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
       </div>
     </>
   )
-}
-
-export const TokenDisplay = (props) => {
-  const { chainId, tokenData, className } = props
-
-  if (!tokenData) {
-    return null
-  }
-
-  return (
-    <div className={classNames(className, 'inline-flex items-center dark:text-white text-xxs')}>
-      {tokenData?.address && (
-        <TokenIcon
-          sizeClassName='w-4 h-4'
-          className='mr-1'
-          chainId={chainId}
-          address={tokenData?.address}
-        />
-      )}
-      <span className='mr-1'>{tokenData?.name}</span>
-    </div>
-  )
-}
-
-export const TokenSymbol = (props) => {
-  const { tokenData } = props
-
-  if (!tokenData) {
-    return null
-  }
-
-  return <span>{tokenData?.symbol}</span>
 }

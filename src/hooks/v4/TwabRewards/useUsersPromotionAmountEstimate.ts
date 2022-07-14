@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query'
 import { formatUnits } from '@ethersproject/units'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { TokenWithAllBalances, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
 
 import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 import { getAmountFromString } from '@utils/getAmountFromString'
@@ -50,7 +50,9 @@ const getUsersPromotionAmountEstimateKey = (
 ) => ['getUsersPromotionAmountEstimate', chainId, promotionId, usersAddress]
 
 export const getUsersPromotionAmountEstimate = async (
-  tokenPrices: any,
+  tokenPrices: {
+    [address: string]: TokenPrice
+  },
   token: TokenWithAllBalances,
   promotion: Promotion,
   usersChainTwabPercentage: number

@@ -18,7 +18,7 @@ export const EarnRewardsCard = () => {
   const queryResults = useAllChainsFilteredPromotions()
 
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  const isError = queryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+  const isError = queryResults.some((queryResult) => queryResult.isError)
   const chainPromotions = queryResults.map((queryResult) => queryResult.data?.promotions)
 
   let count = 0
@@ -33,8 +33,7 @@ export const EarnRewardsCard = () => {
   })
 
   const moreThanOnePromotion = count > 1
-
-  if (count < 1) {
+  if (!moreThanOnePromotion) {
     return null
   }
 
