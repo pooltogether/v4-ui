@@ -15,10 +15,6 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
   const { prizePoolTotalSupply: totalTwabSupply, decimals } =
     useChainIdPrizePoolTicketTotalSupply(chainId)
 
-  // const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
-  //   usePrizePoolNetworkTicketTwabTotalSupply()
-  // console.log({ prizePoolNetworkTvlData })
-
   const { data: usersTwabs, isFetched: isTwabsFetched } = useUsersTotalTwab(usersAddress)
 
   return useQuery(
@@ -35,12 +31,8 @@ const useChainIdPrizePoolTicketTotalSupply = (chainId) => {
 
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
-  // const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
-  //   usePrizePoolNetworkTicketTwabTotalSupply()
-  // console.log(prizePoolNetworkTvlData)
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
 
-  // return { prizePoolTotalSupply: BigNumber.from(213), decimals: tokens?.ticket.decimals }
   return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals }
 }
 

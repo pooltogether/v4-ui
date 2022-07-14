@@ -2,13 +2,13 @@ import { useQuery } from 'react-query'
 import { BigNumber } from 'ethers'
 import { formatUnits } from '@ethersproject/units'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { TokenWithAllBalances, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
 import { getRefetchInterval } from '@pooltogether/hooks'
 
 import { getAmountFromString } from '@utils/getAmountFromString'
 
 interface UsersPromotionData {
-  rewardsAmount: string
+  rewardsAmount: Array<string>
 }
 
 /**
@@ -43,7 +43,9 @@ const getUsersPromotionAmountClaimableKey = (
 ) => ['getUsersPromotionAmountClaimable', chainId, promotionId, usersAddress, tokenAddress]
 
 export const getUsersPromotionAmountClaimable = async (
-  tokenPrices: object,
+  tokenPrices: {
+    [address: string]: TokenPrice
+  },
   usersPromotionData: UsersPromotionData,
   token: TokenWithAllBalances
 ) => {
@@ -51,7 +53,7 @@ export const getUsersPromotionAmountClaimable = async (
 
   let claimableUnformatted = BigNumber.from(0)
 
-  usersPromotionData.rewardsAmount.split(',').forEach((numString) => {
+  usersPromotionData.rewardsAmount.forEach((numString) => {
     const amountUnformatted = BigNumber.from(numString)
     claimableUnformatted = claimableUnformatted.add(amountUnformatted)
   })
