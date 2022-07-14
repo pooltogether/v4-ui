@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 import { CHAIN_ID } from '@constants/misc'
 import { useAppEnvString } from '@hooks/useAppEnvString'
-import { FILTERED_PROMOTION_IDS } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 

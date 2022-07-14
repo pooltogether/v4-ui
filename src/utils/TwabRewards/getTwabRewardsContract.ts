@@ -5,7 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer'
 import { getReadProvider } from '@pooltogether/utilities'
 
 import TwabRewardsAbi from '@abis/TwabRewards'
-import { TWAB_REWARDS_ADDRESS } from '@constants/TwabRewards/config'
+import { TWAB_REWARDS_ADDRESS } from '@constants/promotions'
 
 export const getTwabRewardsContract = (
   chainId: number,

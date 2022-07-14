@@ -6,7 +6,7 @@ import { getReadProvider } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
 import { sToMs } from '@pooltogether/utilities'
 
-import { CHAIN_ID } from '@constants/misc'
+import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import { Promotion } from '@interfaces/promotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
 import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
@@ -14,17 +14,6 @@ import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
-
-export const FILTERED_PROMOTION_IDS = {
-  [CHAIN_ID['optimism-kovan']]: [],
-  [CHAIN_ID.mumbai]: [],
-  [CHAIN_ID.rinkeby]: [10, 12],
-  [CHAIN_ID.fuji]: [],
-  [CHAIN_ID.optimism]: [],
-  [CHAIN_ID.polygon]: [],
-  [CHAIN_ID.mainnet]: [],
-  [CHAIN_ID.avalanche]: []
-}
 
 /**
  * Fetch all chain's promotions that have been 'allow listed'

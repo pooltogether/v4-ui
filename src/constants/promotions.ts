@@ -1,6 +1,17 @@
 import { CHAIN_ID } from '@constants/misc'
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 
+export const FILTERED_PROMOTION_IDS = {
+  [CHAIN_ID['optimism-kovan']]: [],
+  [CHAIN_ID.mumbai]: [],
+  [CHAIN_ID.rinkeby]: [10, 12],
+  [CHAIN_ID.fuji]: [],
+  [CHAIN_ID.optimism]: [],
+  [CHAIN_ID.polygon]: [],
+  [CHAIN_ID.mainnet]: [],
+  [CHAIN_ID.avalanche]: []
+}
+
 export const TWAB_REWARDS_DEFAULT_CHAIN_ID = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
