@@ -1,67 +1,70 @@
-import gql from 'graphql-tag'
 import { batch } from '@pooltogether/etherplex'
-import { GraphQLClient } from 'graphql-request'
 import { useQueries } from 'react-query'
-import { getReadProvider } from '@pooltogether/wallet-connection'
-import { RPC_API_KEYS } from '@constants/config'
 import { sToMs } from '@pooltogether/utilities'
 
-import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import { Promotion } from '@interfaces/promotions'
+import { useGraphFilteredPromotions } from '@hooks/v4/TwabRewards/useGraphFilteredPromotions'
+import { useRpcFilteredPromotions } from '@hooks/v4/TwabRewards/useRpcFilteredPromotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
-import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
 
 /**
- * Fetch all chain's promotions that have been 'allow listed'
+ * Fetch all chain's promotions that have been allow-listed
  * @param usersAddress
  * @returns
  */
 export const useAllChainsFilteredPromotions = () => {
   const chainIds = useSupportedTwabRewardsChainIds()
 
+  const graphQueryResults = useGraphFilteredPromotions(chainIds)
+  const rpcQueryResults = useRpcFilteredPromotions(chainIds)
+
+  const graphIsFetched = graphQueryResults.every((queryResult) => queryResult.isFetched)
+  const graphIsError = graphQueryResults.some((queryResult) => queryResult.isError)
+
+  const rpcIsFetched = rpcQueryResults.every((queryResult) => queryResult.isFetched)
+  const rpcIsError = rpcQueryResults.some((queryResult) => queryResult.isError)
+
+  const isFetched = graphIsFetched && rpcIsFetched
+  const isError = graphIsError && rpcIsError
+
   return useQueries(
     chainIds.map((chainId) => {
-      const client = getTwabRewardsSubgraphClient(chainId)
-
       return {
         refetchInterval: sToMs(60),
-        queryKey: getGraphFilteredPromotionsKey(chainId),
-        queryFn: async () => getGraphFilteredPromotions(chainId, client),
-        enabled: Boolean(chainId)
+        queryKey: getAllFilteredPromotionsKey(chainId),
+        queryFn: async () => getAllFilteredPromotions(chainId, graphQueryResults, rpcQueryResults),
+        enabled: isFetched && !isError
       }
     })
   )
 }
 
-const getGraphFilteredPromotionsKey = (chainId: number) => ['getGraphFilteredPromotions', chainId]
+const getAllFilteredPromotionsKey = (chainId: number) => ['getAllFilteredPromotions', chainId]
 
-export const getGraphFilteredPromotions = async (chainId: number, client: GraphQLClient) => {
-  const query = promotionsQuery()
-  const variables = { ids: FILTERED_PROMOTION_IDS[chainId].map((id) => `0x${id.toString(16)}`) }
+const getAllFilteredPromotions = async (chainId, graphQueryResults, rpcQueryResults) => {
+  let promotions: Array<Promotion> = []
 
-  const promotionsResponse = await client.request(query, variables).catch((e) => {
-    console.error(e.message)
-    throw e
-  })
-  const { promotions } = promotionsResponse || {}
+  const graphPromotions = graphQueryResults.find((result) => result.data.chainId === chainId).data
+    .promotions
+  const rpcPromotions = rpcQueryResults.find((result) => result.data.chainId === chainId).data
+    .promotions
 
-  for (let i = 0; i < promotions.length; i++) {
-    const promotion = promotions[i]
+  for (let i = 0; i < graphPromotions.length; i++) {
+    const graphPromotion = graphPromotions[i]
+    const rpcPromotion = rpcPromotions[i]
 
-    // Pull data from chain
-    const promotionRpcData = await getPromotion(chainId, Number(promotions[i].id))
-
-    promotions[i] = formatPromotionData(promotion, promotionRpcData)
+    const promotion = combinePromotionData(graphPromotion, rpcPromotion)
+    promotions.push(promotion)
   }
 
   return { chainId, promotions }
 }
 
-const formatPromotionData = (promotion, promotionRpcData): Promotion => {
+const combinePromotionData = (promotion, promotionRpcData): Promotion => {
   promotion = {
     ...promotion,
     numberOfEpochs: Number(promotion.numberOfEpochs),
@@ -119,7 +122,6 @@ const getEpochCollection = (promotion, maxCompletedEpochId, remainingEpochs) => 
 }
 
 export const getPromotion = async (chainId: number, promotionId: number) => {
-  const provider = getReadProvider(chainId, RPC_API_KEYS)
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
 
@@ -133,27 +135,4 @@ export const getPromotion = async (chainId: number, promotionId: number) => {
   )
 
   return { currentEpochId }
-}
-
-const promotionsQuery = () => {
-  return gql`
-    query promotionsQuery($ids: [String!]!) {
-      promotions(where: { id_in: $ids }) {
-        id
-        creator
-        createdAt
-        endedAt
-        destroyedAt
-        startTimestamp
-        numberOfEpochs
-        epochDuration
-        tokensPerEpoch
-        rewardsUnclaimed
-        token
-        ticket {
-          id
-        }
-      }
-    }
-  `
 }

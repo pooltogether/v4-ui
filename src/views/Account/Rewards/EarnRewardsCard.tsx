@@ -32,8 +32,10 @@ export const EarnRewardsCard = () => {
     })
   })
 
+  const zero = count < 1
   const moreThanOnePromotion = count > 1
-  if (!moreThanOnePromotion) {
+
+  if (zero) {
     return null
   }
 
