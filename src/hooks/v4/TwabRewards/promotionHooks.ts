@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
 import { sToD, msToS } from '@pooltogether/utilities'
+import { Amount } from '@pooltogether/hooks'
 
-export const useNextRewardIn = (promotion) => {
+import { Promotion, Epoch } from '@interfaces/promotions'
+
+export const useNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
 
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+  const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
 
   const value = sToD(nextEpochEndTime - now)
@@ -12,10 +15,18 @@ export const useNextRewardIn = (promotion) => {
   return { value, unit: 'days' }
 }
 
+interface EstimateRow {
+  epoch: Epoch
+  estimateAmount: number
+}
+
 // Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
-// and returns just that array
-export const useEstimateRows = (promotion, estimateAmount) => {
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+// and returns that array
+export const useEstimateRows = (
+  promotion: Promotion,
+  estimateAmount: Amount
+): Array<EstimateRow> => {
+  const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
     return []
   }
@@ -23,35 +34,30 @@ export const useEstimateRows = (promotion, estimateAmount) => {
   const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
 
   return useMemo(() => {
-    const estimateRows = remainingEpochsArray.map((epoch) => ({
-      ...epoch,
+    const estimateRows: Array<EstimateRow> = remainingEpochsArray.map((epoch) => ({
+      epoch,
       estimateAmount: estimatePerEpoch
     }))
 
-    const estimateRowsReversed = [...estimateRows.reverse()]
-
-    return { estimateRows, estimateRowsReversed }
+    return estimateRows
   }, [estimatePerEpoch, remainingEpochsArray])
 }
 
-// Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
-// and returns just that array
-export const useRemainingEpochsArrays = (promotion) => {
-  const remainingEpochsArray = promotion.epochs.remainingEpochsArray
+export const useRemainingEpochsArrays = (promotion: Promotion) => {
+  const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
-    return { remainingEpochsArray: [], remainingEpochsArrayReversed: [] }
+    return []
   }
 
-  const remainingEpochsArrayReversed = [...remainingEpochsArray.reverse()]
-  return { remainingEpochsArray, remainingEpochsArrayReversed }
+  return remainingEpochsArray
 }
 
-export const useLastEpochEndTime = (remainingEpochsArray) => {
+export const useLastEpochEndTime = (remainingEpochsArray: Array<Epoch>) => {
   return remainingEpochsArray?.[remainingEpochsArray.length - 1]?.epochEndTimestamp
 }
 
-export const usePromotionDaysRemaining = (promotion) => {
-  const { remainingEpochsArray } = useRemainingEpochsArrays(promotion)
+export const usePromotionDaysRemaining = (promotion: Promotion) => {
+  const remainingEpochsArray = useRemainingEpochsArrays(promotion)
   const lastEpochEndTime = useLastEpochEndTime(remainingEpochsArray)
 
   const now = msToS(Date.now())

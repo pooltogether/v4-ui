@@ -10,8 +10,7 @@ export const useUsersTotalClaimedAmount = (usersAddress: string) => {
     (queryResult) => queryResult.isFetched
   )
 
-  const isError =
-    claimedAmountsQueryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+  const isError = claimedAmountsQueryResults.some((result) => result.isError)
 
   if (!isClaimedAmountsFetched || !isDecimalsFetched || isError) {
     return {

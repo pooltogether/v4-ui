@@ -7,6 +7,7 @@ import { RPC_API_KEYS } from '@constants/config'
 import { sToMs } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
+import { Promotion } from '@interfaces/promotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
 import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
 import {
@@ -71,7 +72,7 @@ export const getGraphFilteredPromotions = async (chainId: number, client: GraphQ
   return { chainId, promotions }
 }
 
-const formatPromotionData = (promotion, promotionRpcData) => {
+const formatPromotionData = (promotion, promotionRpcData): Promotion => {
   promotion = {
     ...promotion,
     numberOfEpochs: Number(promotion.numberOfEpochs),
@@ -96,14 +97,12 @@ const formatPromotionData = (promotion, promotionRpcData) => {
   const duration = promotion.numberOfEpochs * promotion.epochDuration
   const endTimestamp = promotion.startTimestamp + duration
 
-  const epochs = buildEpochs(promotion, maxCompletedEpochId, remainingEpochs)
+  const epochCollection = getEpochCollection(promotion, maxCompletedEpochId, remainingEpochs)
 
   return {
     ...promotionRpcData,
     ...promotion,
-    epochs: {
-      ...epochs
-    },
+    epochCollection,
     maxCompletedEpochId,
     remainingEpochs,
     isComplete,
@@ -111,7 +110,7 @@ const formatPromotionData = (promotion, promotionRpcData) => {
   }
 }
 
-const buildEpochs = (promotion, maxCompletedEpochId, remainingEpochs) => {
+const getEpochCollection = (promotion, maxCompletedEpochId, remainingEpochs) => {
   const { numberOfEpochs, startTimestamp, epochDuration } = promotion
 
   if (remainingEpochs <= 0) {

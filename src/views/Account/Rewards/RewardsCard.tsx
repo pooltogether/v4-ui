@@ -30,6 +30,7 @@ import {
 import { numberWithCommas, getNetworkNameAliasByChainId, sToMs } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
+import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
 import { TxButton } from '@components/Input/TxButton'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
@@ -62,8 +63,7 @@ export const RewardsCard = () => {
   const promotionsQueryResults = useAllChainsFilteredPromotions()
 
   const isFetched = promotionsQueryResults.every((queryResult) => queryResult.isFetched)
-  const isError =
-    promotionsQueryResults.map((queryResult) => queryResult.isError).filter(Boolean)?.length > 0
+  const isError = promotionsQueryResults.some((result) => result.isError)
   const isAny =
     promotionsQueryResults
       .map((queryResult) => queryResult.data?.promotions)
@@ -338,14 +338,10 @@ const ClaimModalForm = (props) => {
     claimableAmount,
     claimableUsd,
     estimateAmount,
-    estimateUsd,
     promotion,
     transactionPending,
     token,
-    total,
-    totalUsd,
     usersClaimedPromotionHistory,
-    usersPromotionData,
     setReceiptView,
     setTxId
   } = props
@@ -357,7 +353,7 @@ const ClaimModalForm = (props) => {
 
   const { value, unit } = useNextRewardIn(promotion)
 
-  const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
+  const estimateRows = useEstimateRows(promotion, estimateAmount)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -391,7 +387,6 @@ const ClaimModalForm = (props) => {
           icon={<span className='mr-1'>🗓️</span>}
           value={value}
           unit={t(unit)}
-          // unit={t('numDays', '{{days}} Days', { days })}
         />
       </div>
 
@@ -403,8 +398,9 @@ const ClaimModalForm = (props) => {
           </div>
 
           <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-            {estimateRowsReversed.map((row) => {
-              const { estimateAmount: amount, epochEndTimestamp } = row
+            {[...estimateRows.reverse()].map((row) => {
+              const { estimateAmount: amount, epoch } = row
+              const { epochEndTimestamp } = epoch
 
               return (
                 <RewardRow
@@ -661,7 +657,6 @@ const UnitPanel = (props) => {
           {value && numberWithCommas(value)}
           {amount && numberWithCommas(amount?.amount)}
         </span>
-        {/* <ThemedClipSpinner sizeClassName='w-4 h-4' /> */}
         <span className='uppercase'>{unit}</span>
       </span>
       <div className='uppercase text-xxxs text-center mt-1 opacity-30'>{label}</div>
@@ -746,7 +741,7 @@ interface SubmitTransactionButtonProps {
   token: Token
   claimableAmount: Amount
   claimableUsd: number
-  usersClaimedPromotionHistory: []
+  usersClaimedPromotionHistory: ClaimedPromotion
   setReceiptView: () => void
   setTxId: (id: string) => void
   refetch: () => void
@@ -754,7 +749,6 @@ interface SubmitTransactionButtonProps {
 
 /**
  * @param props
- * @returns
  */
 const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) => {
   const {
