@@ -20,15 +20,20 @@ interface EstimateRow {
   estimateAmount: number
 }
 
+interface EstimateRowCollection {
+  estimateRows: Array<EstimateRow>
+  estimateRowsReversed: Array<EstimateRow>
+}
+
 // Tacks on the user's estimated amount per remaining epoch to the list of remaining epochs
 // and returns that array
 export const useEstimateRows = (
   promotion: Promotion,
   estimateAmount: Amount
-): Array<EstimateRow> => {
+): EstimateRowCollection => {
   const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
-    return []
+    return { estimateRows: [], estimateRowsReversed: [] }
   }
 
   const estimate = estimateAmount?.amount ? Number(estimateAmount?.amount) : 0
@@ -40,7 +45,9 @@ export const useEstimateRows = (
       estimateAmount: estimatePerEpoch
     }))
 
-    return estimateRows
+    const estimateRowsReversed = [...estimateRows.reverse()]
+
+    return { estimateRows, estimateRowsReversed }
   }, [estimatePerEpoch, remainingEpochsArray])
 }
 

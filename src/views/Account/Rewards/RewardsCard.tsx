@@ -353,8 +353,7 @@ const ClaimModalForm = (props) => {
 
   const { value, unit } = useNextRewardIn(promotion)
 
-  const estimateRows = useEstimateRows(promotion, estimateAmount)
-  const estimateRowsReversed = [...estimateRows.reverse()]
+  const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -418,12 +417,10 @@ const ClaimModalForm = (props) => {
         </div>
       ) : null}
 
-      <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
-        <span className='opacity-50 uppercase text-xxs '>
-          {t('claimedToDate', 'Claimed to date')}:{' '}
-        </span>
-        <span className='flex items-center'>
-          {amount.amountPretty ? (
+      {amount.amountPretty && (
+        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
+          <span className='opacity-40 uppercase text-xxs '>{t('claimed', 'Claimed')}: </span>
+          <span className='flex items-center'>
             <>
               <TokenIcon
                 chainId={chainId}
@@ -433,11 +430,9 @@ const ClaimModalForm = (props) => {
               />{' '}
               {numberWithCommas(amount.amountPretty)} {symbol}
             </>
-          ) : (
-            <span className='opacity-50 ml-1'>--</span>
-          )}
-        </span>
-      </div>
+          </span>
+        </div>
+      )}
 
       <SubmitTransactionButton
         {...props}
@@ -777,7 +772,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendClaimTx = async () => {
     const epochIds = [...Array(maxCompletedEpochId).keys()].filter(
       (completedEpochId) =>
-        !usersClaimedPromotionHistory.epochs.includes(completedEpochId.toString())
+        !usersClaimedPromotionHistory?.epochs.includes(completedEpochId.toString())
     )
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
