@@ -19,10 +19,13 @@ export const RewardsBanners = () => {
   // Only show Optimism Rewards banner if we're on testnets with optimism-kovan having a promotion
   // or on mainnets with optimism having a promotion
   const appEnv = useAppEnvString()
-  if (appEnv === 'testnets' && FILTERED_PROMOTION_IDS[CHAIN_ID['optimism-kovan']].length < 1) {
+  const optimismKovanPromotions = FILTERED_PROMOTION_IDS[CHAIN_ID['optimism-kovan']]
+  if (appEnv === 'testnets' && optimismKovanPromotions.length < 1) {
     return null
   }
-  if (appEnv === 'mainnets' && FILTERED_PROMOTION_IDS[CHAIN_ID.optimism].length < 1) {
+
+  const optimismPromotions = FILTERED_PROMOTION_IDS[CHAIN_ID.optimism]
+  if (appEnv === 'mainnets' && optimismPromotions.length < 1) {
     return null
   }
 

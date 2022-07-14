@@ -83,7 +83,7 @@ const formatPromotionData = (promotion, promotionRpcData): Promotion => {
     startTimestamp: Number(promotion.startTimestamp)
   }
 
-  const isComplete = Number(promotionRpcData.currentEpochId) >= promotion.numberOfEpochs
+  const isComplete = promotionRpcData.currentEpochId >= promotion.numberOfEpochs
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers
@@ -92,7 +92,7 @@ const formatPromotionData = (promotion, promotionRpcData): Promotion => {
       ? null
       : Math.min(promotionRpcData.currentEpochId, promotion.numberOfEpochs)
 
-  const remainingEpochs = Number(promotion?.numberOfEpochs) - maxCompletedEpochId
+  const remainingEpochs = promotion.numberOfEpochs - maxCompletedEpochId
 
   const duration = promotion.numberOfEpochs * promotion.epochDuration
   const endTimestamp = promotion.startTimestamp + duration
@@ -117,15 +117,14 @@ const getEpochCollection = (promotion, maxCompletedEpochId, remainingEpochs) => 
     return []
   }
 
-  const epochsArray = [...Array(numberOfEpochs).keys()]
+  let epochs = []
+  for (let epochNum = 0; epochNum < numberOfEpochs; epochNum++) {
+    const epochStartTimestamp = startTimestamp + epochNum * epochDuration
+    const epochEndTimestamp = epochStartTimestamp + epochDuration
+    epochs.push({ epochStartTimestamp, epochEndTimestamp })
+  }
 
-  const epochs = epochsArray.map((epoch) => {
-    const epochStartTimestamp = Number(startTimestamp) + epoch * Number(epochDuration)
-    const epochEndTimestamp = epochStartTimestamp + Number(epochDuration)
-    return { epochStartTimestamp, epochEndTimestamp }
-  })
-
-  const remainingEpochsArray = epochs.slice(maxCompletedEpochId || 0, Number(numberOfEpochs))
+  const remainingEpochsArray = epochs.slice(maxCompletedEpochId || 0, numberOfEpochs)
 
   return { epochs, remainingEpochsArray }
 }

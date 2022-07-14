@@ -31,7 +31,8 @@ export const useEstimateRows = (
     return []
   }
 
-  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.remainingEpochs
+  const estimate = estimateAmount?.amount ? Number(estimateAmount?.amount) : 0
+  const estimatePerEpoch = estimate / promotion.remainingEpochs
 
   return useMemo(() => {
     const estimateRows: Array<EstimateRow> = remainingEpochsArray.map((epoch) => ({
