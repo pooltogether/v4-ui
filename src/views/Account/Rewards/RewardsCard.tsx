@@ -354,6 +354,7 @@ const ClaimModalForm = (props) => {
   const { value, unit } = useNextRewardIn(promotion)
 
   const estimateRows = useEstimateRows(promotion, estimateAmount)
+  const estimateRowsReversed = [...estimateRows.reverse()]
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -398,7 +399,7 @@ const ClaimModalForm = (props) => {
           </div>
 
           <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-            {[...estimateRows.reverse()].map((row) => {
+            {estimateRowsReversed.map((row) => {
               const { estimateAmount: amount, epoch } = row
               const { epochEndTimestamp } = epoch
 
