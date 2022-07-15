@@ -28,15 +28,7 @@ const getPromotionDurationInDays = (numberOfEpochs, epochDuration) => {
 }
 
 export const PromotionSummary = (props: PromotionSummaryProps) => {
-  const {
-    chainId,
-    startTimestamp,
-    numberOfEpochs,
-    epochDuration,
-    tokensPerEpoch,
-    token,
-    networkName
-  } = props
+  const { chainId, numberOfEpochs, epochDuration, tokensPerEpoch, token, networkName } = props
 
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
   const { t } = useTranslation()
@@ -57,19 +49,28 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
   return (
     <>
       <div className='w-full xs:w-10/12'>
-        <div className='dark:text-white leading-snug'>
+        <div className='dark:text-white leading-snug text-xxs xs:text-xs'>
           <Trans
             i18nKey='numTokensProvidedOverDaysToDepositorsOnNetwork'
             values={{
-              totalTokens: numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true }),
-              days: numberWithCommas(getPromotionDurationInDays(numberOfEpochs, epochDuration), {
-                removeTrailingZeros: true
-              }),
               networkName
             }}
             components={{
+              days: (
+                <span className='font-bold'>
+                  <span>
+                    {numberWithCommas(getPromotionDurationInDays(numberOfEpochs, epochDuration), {
+                      removeTrailingZeros: true
+                    })}
+                  </span>
+                  <span className='ml-1'>{t('days')}</span>
+                </span>
+              ),
               token: (
-                <>
+                <span className='font-bold'>
+                  <span className='mr-1'>
+                    {numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true })}
+                  </span>
                   <TokenIcon
                     sizeClassName='w-4 h-4'
                     className='relative mr-1'
@@ -78,7 +79,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
                     style={{ top: -2 }}
                   />
                   <span>{tokenData?.symbol}</span>
-                </>
+                </span>
               )
             }}
           />

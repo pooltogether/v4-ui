@@ -45,11 +45,8 @@ import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPr
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
-import {
-  useNextRewardIn,
-  usePromotionDaysRemaining,
-  usePromotionVAPR
-} from '@hooks/v4/TwabRewards/promotionHooks'
+import { useNextRewardIn, usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
+import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
@@ -180,6 +177,8 @@ const PromotionRow = (props) => {
   const { promotion, chainId, refetchUsersRewardsHistory } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
 
+  const { t } = useTranslation()
+
   const [isOpen, setIsOpen] = useState(false)
 
   const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
@@ -205,6 +204,8 @@ const PromotionRow = (props) => {
   } = useUsersPromotionAmountEstimate(chainId, promotion, token)
   const { amount: estimateAmount, usd: estimateUsd } = estimate || {}
 
+  const vapr = usePromotionVAPR(promotion)
+
   const total = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
   const totalUsd = estimateUsd + claimableUsd
 
@@ -227,18 +228,40 @@ const PromotionRow = (props) => {
             }}
             left={
               <div className='flex items-center font-bold'>
-                <img className='w-5 mr-2' src='beach-with-umbrella.png' /> {token.symbol}{' '}
+                <img className='w-5 mr-2 hidden xs:block' src='beach-with-umbrella.png' />{' '}
+                {token.symbol}{' '}
               </div>
+            }
+            center={
+              vapr && vapr !== 0 ? (
+                <>
+                  <div className='flex items-center'>
+                    <span className='hidden xs:inline-block mr-1 font-bold'>
+                      {t('earningPercentage', 'Earning {{percentage}}%', {
+                        percentage: displayPercentage(String(vapr))
+                      })}
+                    </span>
+
+                    <span className='xs:hidden mr-1 font-bold'>
+                      {displayPercentage(String(vapr))}%
+                    </span>
+                  </div>
+                </>
+              ) : null
             }
             right={
               <div className='flex items-center'>
                 <TokenIcon
                   chainId={chainId}
                   address={token?.address}
-                  sizeClassName='w-5 h-5'
-                  className='mr-2'
+                  sizeClassName='w-4 h-4 xs:w-5 xs:h-5'
+                  className='mr-1 xs:mr-2'
                 />
-                <ClaimableBalance claimableUsd={claimableUsd} isFetched={claimableIsFetched} />{' '}
+                <ClaimableBalance
+                  claimableAmount={claimableAmount}
+                  claimableUsd={claimableUsd}
+                  isFetched={claimableIsFetched}
+                />{' '}
                 <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
               </div>
             }
@@ -357,7 +380,7 @@ const ClaimModalForm = (props) => {
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
-  const vapr = usePromotionVAPR(promotion, decimals)
+  const vapr = usePromotionVAPR(promotion)
 
   return (
     <>
@@ -386,7 +409,7 @@ const ClaimModalForm = (props) => {
       </div>
 
       {amount.amountPretty && (
-        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
+        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-averta-bold'>
           <span className='opacity-40 uppercase text-xxs '>{t('claimed', 'Claimed')}: </span>
           <span className='flex items-center'>
             <>
@@ -638,16 +661,16 @@ const UnitPanel = (props) => {
 }
 
 const ClaimableBalance = (props) => {
-  const { isFetched, claimableUsd } = props
+  const { isFetched, claimableAmount, claimableUsd } = props
 
   return (
     <div
-      className={classNames('flex items-center leading-none font-bold mr-3', {
-        'opacity-50': claimableUsd <= 0
+      className={classNames('flex items-center leading-none font-bold mr-1', {
+        'opacity-50': claimableAmount?.amount <= 0
       })}
     >
       {isFetched ? (
-        <>${numberWithCommas(claimableUsd)}</>
+        <>{numberWithCommas(claimableAmount.amountPretty)}</>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
       )}
@@ -658,16 +681,18 @@ const ClaimableBalance = (props) => {
 interface PromotionListItemProps {
   left: React.ReactNode
   right: React.ReactNode
+  center?: React.ReactNode
   onClick: () => void
 }
 
 const PromotionListItem = (props: PromotionListItemProps) => {
-  const { onClick, left, right } = props
+  const { onClick, left, center, right } = props
 
   return (
     <li className='transition bg-white bg-opacity-10 hover:bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
       <button className='px-4 py-2 w-full flex justify-between items-center' onClick={onClick}>
         {left}
+        {center}
         {right}
       </button>
     </li>

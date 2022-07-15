@@ -6,6 +6,7 @@ import { useToken } from '@pooltogether/hooks'
 
 import { Promotion } from '@interfaces/promotions'
 import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
+import { usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
 
 // Calculate the variable annual percentage rate for a promotion
 export const usePromotionVAPR = (promotion: Promotion): number => {
@@ -29,7 +30,10 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
     const daysRemaining = usePromotionDaysRemaining(promotion)
     let vapr: number = 0
 
-    if (daysRemaining > 0 && tokenPricesIsFetched && tokenIsFetched && depositToken?.decimals) {
+    const isReady =
+      tokenPricesIsFetched && tokenIsFetched && totalTwabSupply && depositToken?.decimals
+
+    if (daysRemaining > 0 && isReady) {
       const promotionTokenUsd = tokenPrices[promotionTokenAddress].usd
       const depositTokenUsd = tokenPrices[depositToken.address].usd
 
