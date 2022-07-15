@@ -2,11 +2,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
-import { format } from 'date-fns'
 import {
-  Tooltip,
   BottomSheet,
   BottomSheetTitle,
   // ContractLink,
@@ -30,8 +28,7 @@ import {
 import {
   displayPercentage,
   numberWithCommas,
-  getNetworkNameAliasByChainId,
-  sToMs
+  getNetworkNameAliasByChainId
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
@@ -50,7 +47,6 @@ import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersP
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 import {
   useNextRewardIn,
-  useEstimateRows,
   usePromotionDaysRemaining,
   usePromotionVAPR
 } from '@hooks/v4/TwabRewards/promotionHooks'
@@ -361,7 +357,6 @@ const ClaimModalForm = (props) => {
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
-  console.log(promotion)
   const vapr = usePromotionVAPR(promotion, decimals)
 
   return (
@@ -380,14 +375,6 @@ const ClaimModalForm = (props) => {
       </div>
       <div className='flex items-center space-x-4'>
         <UnitPanel label={t('earning', 'Earning', { tokenSymbol })} chainId={chainId} vapr={vapr} />
-        {/* <UnitPanel
-          label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
-          chainId={chainId}
-          icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
-          token={token}
-          amount={claimableAmount}
-          unit={token.symbol}
-        /> */}
 
         <UnitPanel
           label={t('nextReward', 'Next Reward')}
@@ -397,33 +384,6 @@ const ClaimModalForm = (props) => {
           unit={t(unit)}
         />
       </div>
-
-      {/* {estimateRows?.length > 1 ? (
-        <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
-          <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
-            {t('amount', 'Amount')}
-            <div>{t('awarded', 'Awarded')}</div>
-          </div>
-
-          <ul className={classNames('text-inverse max-h-48 overflow-y-auto space-y-1 my-1')}>
-            {estimateRowsReversed.map((row) => {
-              const { estimateAmount: amount, epoch } = row
-              const { epochEndTimestamp } = epoch
-
-              return (
-                <RewardRow
-                  {...props}
-                  isEstimate
-                  key={`promotion-${promotion.id}-${epochEndTimestamp}`}
-                  promotionId={promotion.id}
-                  amount={amount}
-                  awardedAt={epochEndTimestamp}
-                />
-              )
-            })}
-          </ul>
-        </div>
-      ) : null} */}
 
       {amount.amountPretty && (
         <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
