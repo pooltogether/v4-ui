@@ -1,6 +1,7 @@
 import { batch } from '@pooltogether/etherplex'
 import { useQueries } from 'react-query'
 import { sToMs } from '@pooltogether/utilities'
+import { BigNumber } from 'ethers'
 
 import { Promotion } from '@interfaces/promotions'
 import { useGraphFilteredPromotions } from '@hooks/v4/TwabRewards/useGraphFilteredPromotions'
@@ -10,6 +11,7 @@ import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/TwabRewards/getTwabRewardsContract'
+import { V3StakingCards } from '@views/Account/V3StakingDeposits'
 
 /**
  * Fetch all chain's promotions that have been allow-listed
@@ -57,16 +59,17 @@ const getAllFilteredPromotions = async (chainId, graphQueryResults, rpcQueryResu
     const graphPromotion = graphPromotions[i]
     const rpcPromotion = rpcPromotions[i]
 
-    const promotion = combinePromotionData(graphPromotion, rpcPromotion)
+    const promotion = combinePromotionData(chainId, graphPromotion, rpcPromotion)
     promotions.push(promotion)
   }
 
   return { chainId, promotions }
 }
 
-const combinePromotionData = (promotion, promotionRpcData): Promotion => {
+const combinePromotionData = (chainId: number, promotion, promotionRpcData): Promotion => {
   promotion = {
     ...promotion,
+    chainId,
     numberOfEpochs: Number(promotion.numberOfEpochs),
     epochDuration: Number(promotion.epochDuration),
     createdAt: Number(promotion.createdAt),
@@ -76,6 +79,14 @@ const combinePromotionData = (promotion, promotionRpcData): Promotion => {
   }
 
   const isComplete = promotionRpcData.currentEpochId >= promotion.numberOfEpochs
+
+  promotion.totalTokensDistributed = BigNumber.from(promotion.tokensPerEpoch).mul(
+    promotion.numberOfEpochs
+  )
+  console.log(promotion.tokensPerEpoch.toString())
+  console.log(promotion.totalTokensDistributed.toString())
+
+  // measure vs drip
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers

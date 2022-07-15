@@ -69,7 +69,9 @@ export const getUsersPromotionAmountEstimate = async (
 
   let usd
   if (tokenPrices?.[address]) {
-    usd = amount.amount * tokenPrices[address].usd
+    usd = Number(amount.amount) * tokenPrices[address].usd
+    console.log(usd)
+    console.log(tokenPrices?.[address])
   }
 
   return { amount, usd }

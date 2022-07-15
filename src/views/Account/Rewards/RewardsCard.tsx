@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
 import { format } from 'date-fns'
 import {
@@ -27,7 +27,12 @@ import {
   useTransaction,
   Transaction
 } from '@pooltogether/wallet-connection'
-import { numberWithCommas, getNetworkNameAliasByChainId, sToMs } from '@pooltogether/utilities'
+import {
+  displayPercentage,
+  numberWithCommas,
+  getNetworkNameAliasByChainId,
+  sToMs
+} from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
 import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
@@ -36,6 +41,7 @@ import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { VAPRTooltip } from '@components/VAPRTooltip'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
@@ -45,7 +51,8 @@ import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/mis
 import {
   useNextRewardIn,
   useEstimateRows,
-  usePromotionDaysRemaining
+  usePromotionDaysRemaining,
+  usePromotionVAPR
 } from '@hooks/v4/TwabRewards/promotionHooks'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
@@ -235,11 +242,7 @@ const PromotionRow = (props) => {
                   sizeClassName='w-5 h-5'
                   className='mr-2'
                 />
-                <RewardsBalance
-                  estimateUsd={estimateUsd}
-                  claimableUsd={claimableUsd}
-                  isFetched={claimableIsFetched && estimateIsFetched}
-                />{' '}
+                <ClaimableBalance claimableUsd={claimableUsd} isFetched={claimableIsFetched} />{' '}
                 <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
               </div>
             }
@@ -338,6 +341,7 @@ const ClaimModalForm = (props) => {
     claimableAmount,
     claimableUsd,
     estimateAmount,
+    estimateUsd,
     promotion,
     transactionPending,
     token,
@@ -353,9 +357,12 @@ const ClaimModalForm = (props) => {
 
   const { value, unit } = useNextRewardIn(promotion)
 
-  const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
+  // const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
+
+  console.log(promotion)
+  const vapr = usePromotionVAPR(promotion)
 
   return (
     <>
@@ -372,14 +379,15 @@ const ClaimModalForm = (props) => {
         </span>
       </div>
       <div className='flex items-center space-x-4'>
-        <UnitPanel
+        <UnitPanel label={t('earning', 'Earning', { tokenSymbol })} chainId={chainId} vapr={vapr} />
+        {/* <UnitPanel
           label={t('unclaimedToken', 'Unclaimed {{tokenSymbol}}', { tokenSymbol })}
           chainId={chainId}
           icon={<TokenIcon chainId={chainId} address={token?.address} sizeClassName='w-4 h-4' />}
           token={token}
           amount={claimableAmount}
           unit={token.symbol}
-        />
+        /> */}
 
         <UnitPanel
           label={t('nextReward', 'Next Reward')}
@@ -390,7 +398,7 @@ const ClaimModalForm = (props) => {
         />
       </div>
 
-      {estimateRows?.length > 1 ? (
+      {/* {estimateRows?.length > 1 ? (
         <div className='bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg xs:mb-4'>
           <div className='flex flex-row w-full justify-between space-x-2 pt-2 px-4 sm:px-6 text-xxs font-averta-bold opacity-60'>
             {t('amount', 'Amount')}
@@ -415,7 +423,7 @@ const ClaimModalForm = (props) => {
             })}
           </ul>
         </div>
-      ) : null}
+      ) : null} */}
 
       {amount.amountPretty && (
         <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 xs:mb-4 py-2 px-4 font-averta-bold'>
@@ -450,50 +458,50 @@ const ClaimModalForm = (props) => {
   )
 }
 
-const RewardRow = (props) => {
-  const { isEstimate, chainId, token, amount, date, awardedAt, promotionId } = props
+// const RewardRow = (props) => {
+//   const { isEstimate, chainId, token, amount, date, awardedAt, promotionId } = props
 
-  const { t } = useTranslation()
+//   const { t } = useTranslation()
 
-  const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMM do yyyy')
-  const awardedAtLong = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy @ h:mm:ss a')
+//   const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMM do yyyy')
+//   const awardedAtLong = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy @ h:mm:ss a')
 
-  return (
-    <li className={classNames('flex flex-row text-center rounded-lg text-xxs xs:text-xs')}>
-      <div
-        className={classNames(
-          'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-pt-purple-darkest hover:bg-opacity-10 mx-2'
-        )}
-      >
-        <span className='flex items-center font-averta-bold'>
-          {isEstimate ? (
-            <div>
-              ⏳ {numberWithCommas(amount)}{' '}
-              <span className='uppercase opacity-50'>
-                {token.symbol} ({t('estimateAbbreviation', 'est')})
-              </span>
-            </div>
-          ) : (
-            <>
-              <TokenIcon
-                chainId={chainId}
-                address={token?.address}
-                sizeClassName='w-4 h-4'
-                className='mr-1'
-              />
-              {numberWithCommas(amount)} <span className='opacity-50 ml-1'>{token.symbol}</span>
-            </>
-          )}
-        </span>
-        <div>
-          <Tooltip id={`tooltip-promotion-${promotionId}-epoch-${awardedAt}`} tip={awardedAtLong}>
-            <span className='font-bold opacity-50'>{awardedAtShort}</span>
-          </Tooltip>
-        </div>
-      </div>
-    </li>
-  )
-}
+//   return (
+//     <li className={classNames('flex flex-row text-center rounded-lg text-xxs xs:text-xs')}>
+//       <div
+//         className={classNames(
+//           'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-pt-purple-darkest hover:bg-opacity-10 mx-2'
+//         )}
+//       >
+//         <span className='flex items-center font-averta-bold'>
+//           {isEstimate ? (
+//             <div>
+//               ⏳ {numberWithCommas(amount)}{' '}
+//               <span className='uppercase opacity-50'>
+//                 {token.symbol} ({t('estimateAbbreviation', 'est')})
+//               </span>
+//             </div>
+//           ) : (
+//             <>
+//               <TokenIcon
+//                 chainId={chainId}
+//                 address={token?.address}
+//                 sizeClassName='w-4 h-4'
+//                 className='mr-1'
+//               />
+//               {numberWithCommas(amount)} <span className='opacity-50 ml-1'>{token.symbol}</span>
+//             </>
+//           )}
+//         </span>
+//         <div>
+//           <Tooltip id={`tooltip-promotion-${promotionId}-epoch-${awardedAt}`} tip={awardedAtLong}>
+//             <span className='font-bold opacity-50'>{awardedAtShort}</span>
+//           </Tooltip>
+//         </div>
+//       </div>
+//     </li>
+//   )
+// }
 
 const RewardsEndInBanner = (props) => {
   const { chainId, token, promotion } = props
@@ -642,37 +650,44 @@ export const AccountPageButton = (props) => {
 }
 
 const UnitPanel = (props) => {
-  const { label, amount, icon, unit, value } = props
+  const { label, amount, icon, unit, value, vapr } = props
 
   return (
     <div className='flex flex-col bg-white dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 
-        <span className='mx-1'>
-          {value && numberWithCommas(value)}
-          {amount && numberWithCommas(amount?.amount)}
-        </span>
-        <span className='uppercase'>{unit}</span>
+        {(value || amount) && (
+          <span className='mx-1'>
+            {value && numberWithCommas(value)}
+            {amount && numberWithCommas(amount?.amount)}
+          </span>
+        )}
+
+        {unit && <span className='uppercase'>{unit}</span>}
+
+        {vapr && (
+          <>
+            <span className='mr-1'>{displayPercentage(String(vapr))}%</span> <VAPRTooltip />
+          </>
+        )}
       </span>
-      <div className='uppercase text-xxxs text-center mt-1 opacity-30'>{label}</div>
+      <div className='uppercase text-xxxs text-center mt-1 opacity-40'>{label}</div>
     </div>
   )
 }
 
-const RewardsBalance = (props) => {
-  const { isFetched, estimateUsd, claimableUsd } = props
-
-  const estimateAndClaimableUsd = estimateUsd + claimableUsd
+const ClaimableBalance = (props) => {
+  const { isFetched, claimableUsd } = props
 
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-3', {
-        'opacity-50': estimateAndClaimableUsd <= 0
+        'opacity-50': claimableUsd <= 0
       })}
     >
       {isFetched ? (
-        <>${numberWithCommas(estimateAndClaimableUsd)}</>
+        <>${numberWithCommas(claimableUsd)}</>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
       )}

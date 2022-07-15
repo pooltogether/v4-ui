@@ -25,6 +25,7 @@ export interface EpochCollection {
 
 export interface Promotion {
   id: string
+  chainId: number
   creator: string
   token: string
   tokensPerEpoch: BigNumber
