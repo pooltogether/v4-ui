@@ -29,6 +29,7 @@ export interface Promotion {
   creator: string
   token: string
   tokensPerEpoch: BigNumber
+  totalTokensDistributed: BigNumber
   remainingEpochs: number
   startTimestamp: number
   epochDuration: number

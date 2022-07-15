@@ -83,10 +83,6 @@ const combinePromotionData = (chainId: number, promotion, promotionRpcData): Pro
   promotion.totalTokensDistributed = BigNumber.from(promotion.tokensPerEpoch).mul(
     promotion.numberOfEpochs
   )
-  console.log(promotion.tokensPerEpoch.toString())
-  console.log(promotion.totalTokensDistributed.toString())
-
-  // measure vs drip
 
   // currentEpochId does not stop when it hits the max # of epochs for a promotion, so use the
   // smaller of the two resulting numbers

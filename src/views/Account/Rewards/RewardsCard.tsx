@@ -362,7 +362,7 @@ const ClaimModalForm = (props) => {
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
   console.log(promotion)
-  const vapr = usePromotionVAPR(promotion)
+  const vapr = usePromotionVAPR(promotion, decimals)
 
   return (
     <>

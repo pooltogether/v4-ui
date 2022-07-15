@@ -1,9 +1,12 @@
+import { formatUnits } from '@ethersproject/units'
 import { useMemo } from 'react'
 import { sToD, msToS } from '@pooltogether/utilities'
 import { Amount } from '@pooltogether/hooks'
 import { useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
+import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 
 export const useNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
@@ -74,64 +77,42 @@ export const usePromotionDaysRemaining = (promotion: Promotion) => {
 }
 
 // Calculate the variable annual percentage rate for a promotion
-export const usePromotionVAPR = (promotion: Promotion): number => {
-  console.log(promotion)
-  console.log(promotion)
+export const usePromotionVAPR = (promotion: Promotion, decimals: number): number => {
   console.log(promotion)
 
-  const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(
-    promotion.chainId,
-    [promotion.token]
-  )
-  console.log(tokenPrices)
+  // http://rinkeby.etherscan.com/address/0xc4E90a8Dc6CaAb329f08ED3C8abc6b197Cf0F40A
+  // const { data: tokenPrices, isFetched: tokenPricesIsFetched } = useCoingeckoTokenPrices(
+  //   promotion.chainId,
+  //   [promotion.token]
+  // )
+  const tokenPrices = {
+    '0xc4E90a8Dc6CaAb329f08ED3C8abc6b197Cf0F40A': { usd: 0.76 },
+    '0xc4e90a8dc6caab329f08ed3c8abc6b197cf0f40a': { usd: 0.76 }
+  }
 
+  const usersAddress = useUsersAddress()
+
+  const { data: usersChainTwabPercentage, isFetched: percentageIsFetched } =
+    useUsersChainTwabPercentage(promotion.chainId, usersAddress)
   return useMemo(() => {
     const daysRemaining = usePromotionDaysRemaining(promotion)
     let vapr: number = 0
     if (daysRemaining > 0) {
-      // const dailyAmountUnformatted = calculatePercentageOfBigNumber(
-      //   prizeTierData.prizeTier.prize,
-      //   percentage.percentage
-      // )
-      // vapr = calculateApr(totalAmountUnformatted, dailyAmountUnformatted)
-      // console.log(vapr)
-      // vapr = (0.0144 / 1) * 365 * 100
-      // vapr = (totalDripDailyValue / totalMeasureTokenValueUsd) * 365 * 100
+      const usd = tokenPrices[promotion.token].usd
+
+      const daysPerEpoch = sToD(promotion.epochDuration)
+      // rewards token! OP, POOl, etc. Use rewards token decimals and USD value!
+      const tokensPerDay = Number(formatUnits(promotion.tokensPerEpoch, decimals)) / daysPerEpoch
+      const valuePerDay = tokensPerDay * usd
+
+      // deposit token! typically USDC, use deposit token decimals and USD value!
+      const STABLECOIN_USD = 1.01
+      const TOTAL_CHAIN_DEPOSITS = '2000000000000000000000000'
+      const totalValue = Number(formatUnits(TOTAL_CHAIN_DEPOSITS, decimals)) * STABLECOIN_USD
+
+      vapr = (valuePerDay / totalValue) * 365 * 100
     }
 
     return vapr
   }, [promotion, tokenPrices])
 }
-
-// const { address, amountUnformatted } = tokenFaucet.dripToken
-
-//       let usd = tokenFaucet.dripToken.usd
-
-//       // asset is pPOOL, use POOL price
-//       if (address.toLowerCase() === CUSTOM_CONTRACT_ADDRESSES[NETWORK.mainnet].PPOOL) {
-//         usd = pool.tokens.pool.usd
-//       }
-
-//       if (usd && amountUnformatted !== ethers.constants.Zero) {
-//         const { dripRatePerSecond, measure } = tokenFaucet
-
-//         const totalDripPerDay = Number(dripRatePerSecond) * SECONDS_PER_DAY
-//         const totalDripDailyValue = totalDripPerDay * usd
-
-//         const totalTicketValueUsd = Number(pool.prizePool.totalTicketValueLockedUsd)
-//         const totalSponsorshipValueUsd = Number(pool.prizePool.totalSponsorshipValueLockedUsd)
-
-//         const faucetIncentivizesSponsorship =
-//           measure.toLowerCase() === pool.tokens.sponsorship.address.toLowerCase()
-
-//         const totalValueUsd = faucetIncentivizesSponsorship
-//           ? totalSponsorshipValueUsd
-//           : totalTicketValueUsd
-
-//         if (tokenFaucet.remainingDays <= 0) {
-//           tokenFaucet.apr = 0
-//         } else {
-//           tokenFaucet.apr = (totalDripDailyValue / totalValueUsd) * 365 * 100
-//         }
-//       }
-//     })
