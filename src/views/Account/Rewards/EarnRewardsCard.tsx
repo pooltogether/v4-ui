@@ -8,32 +8,18 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
-import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
 import { usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
 
-  const queryResults = useAllChainsFilteredPromotions()
+  const { data: activeChainRewards, isFetched, isError } = useChainActiveRewards()
 
-  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  const isError = queryResults.some((queryResult) => queryResult.isError)
-  const chainPromotions = queryResults.map((queryResult) => queryResult.data?.promotions)
-
-  let count = 0
-  chainPromotions?.forEach((promotions) => {
-    promotions?.forEach((promotion) => {
-      const daysRemaining = usePromotionDaysRemaining(promotion)
-
-      if (daysRemaining > 0) {
-        count += 1
-      }
-    })
-  })
-
-  const zero = count < 1
-  const moreThanOnePromotion = count > 1
+  const { queryResults, activeCount } = activeChainRewards
+  const zero = activeCount < 1
+  const moreThanOnePromotion = activeCount > 1
 
   if (zero) {
     return null
