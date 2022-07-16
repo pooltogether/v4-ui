@@ -83,13 +83,14 @@ const NetworkItem = (props: {
           onDismiss()
         }}
         className={classNames(
-          'bg-pt-purple-lighter dark:bg-pt-purple-darker rounded-lg p-4 flex items-center justify-between w-full transition-colors',
+          'bg-pt-purple-lighter dark:bg-pt-purple-darker rounded-lg px-4 p-2 flex items-center justify-between w-full transition-colors',
           'border hover:border-highlight-1',
           {
             'border-default': isSelected,
             'border-transparent': !isSelected
           }
         )}
+        style={{ minHeight: 54 }}
       >
         <div className='flex items-center'>
           <NetworkIcon chainId={chainId} className='mx-1' sizeClassName='w-5 h-5 mr-2' />
@@ -98,9 +99,9 @@ const NetworkItem = (props: {
           </span>
         </div>
         {hasActiveRewards && (
-          <div className='flex items-center uppercase text-xs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
+          <div className='flex items-center uppercase text-xxs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
             {' '}
-            <img className='w-5 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
+            <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
           </div>
         )}
       </button>
