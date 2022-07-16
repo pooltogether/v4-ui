@@ -66,8 +66,6 @@ const NetworkItem = (props: {
 }) => {
   const { chainId, isSelected, setSelectedChainId, onDismiss } = props
 
-  const { t } = useTranslation()
-
   const { data: activeChainRewards } = useChainActiveRewards()
 
   let hasActiveRewards
@@ -92,19 +90,36 @@ const NetworkItem = (props: {
         )}
         style={{ minHeight: 54 }}
       >
-        <div className='flex items-center'>
-          <NetworkIcon chainId={chainId} className='mx-1' sizeClassName='w-5 h-5 mr-2' />
-          <span className='capitalize leading-none tracking-wider font-bold text-lg'>
-            {getNetworkNiceNameByChainId(chainId)}
-          </span>
-        </div>
-        {hasActiveRewards && (
-          <div className='flex items-center uppercase text-xxs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
-            {' '}
-            <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
-          </div>
-        )}
+        <NetworkLabel chainId={chainId} />
+        <RewardsLabel hasActiveRewards={hasActiveRewards} />
       </button>
     </li>
+  )
+}
+
+const NetworkLabel = (props) => {
+  const { chainId } = props
+
+  return (
+    <div className='flex items-center'>
+      <NetworkIcon chainId={chainId} className='mx-1' sizeClassName='w-5 h-5 mr-2' />
+      <span className='capitalize leading-none tracking-wider font-bold text-lg'>
+        {getNetworkNiceNameByChainId(chainId)}
+      </span>
+    </div>
+  )
+}
+
+const RewardsLabel = (props) => {
+  const { t } = useTranslation()
+
+  if (!props.hasActiveRewards) {
+    return null
+  }
+
+  return (
+    <div className='flex items-center uppercase text-xxs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
+      <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
+    </div>
   )
 }
