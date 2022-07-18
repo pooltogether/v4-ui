@@ -205,6 +205,7 @@ const PromotionRow = (props) => {
   const { amount: estimateAmount, usd: estimateUsd } = estimate || {}
 
   const vapr = usePromotionVAPR(promotion)
+  const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
 
   const total = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
   const totalUsd = estimateUsd + claimableUsd
@@ -233,8 +234,14 @@ const PromotionRow = (props) => {
               </div>
             }
             center={
-              vapr && vapr !== 0 ? (
-                <>
+              <>
+                {vapr > 0 && !userIsEarning && (
+                  <span className='hidden xs:inline-block mr-1 font-bold'>
+                    <span className='mr-1'>{displayPercentage(String(vapr))}%</span> <VAPRTooltip />
+                  </span>
+                )}
+
+                {vapr > 0 && userIsEarning ? (
                   <div className='flex items-center'>
                     <span className='hidden xs:inline-block mr-1 font-bold'>
                       {t('earningPercentage', 'Earning {{percentage}}%', {
@@ -246,8 +253,8 @@ const PromotionRow = (props) => {
                       {displayPercentage(String(vapr))}%
                     </span>
                   </div>
-                </>
-              ) : null
+                ) : null}
+              </>
             }
             right={
               <div className='flex items-center'>
@@ -654,6 +661,7 @@ const UnitPanel = (props) => {
             <span className='mr-1'>{displayPercentage(String(vapr))}%</span> <VAPRTooltip />
           </>
         )}
+        {vapr === 0 && '%'}
       </span>
       <div className='uppercase text-xxxs text-center mt-1 opacity-40'>{label}</div>
     </div>
