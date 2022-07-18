@@ -35,6 +35,7 @@ import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { EstimateAction } from '@constants/odds'
 
@@ -198,6 +199,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
                     label={'Estimated stats'}
                   />
                   <PrizePoolNetworkAPRItem />
+                  <TwabRewardsAprItem />
                   <UpdatedPrizePoolNetworkOddsListItem
                     amount={amountToDeposit}
                     action={EstimateAction.deposit}

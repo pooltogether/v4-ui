@@ -22,6 +22,7 @@ import { InfoListItem } from '@components/InfoList'
 import { DepositAmountInput } from '@components/Input/DepositAmountInput'
 import { TxButton } from '@components/Input/TxButton'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
@@ -206,6 +207,7 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   return (
     <InfoList bgClassName={bgClassName} className={className}>
       <PrizePoolNetworkAPRItem labelClassName={labelClassName} valueClassName={valueClassName} />
+      <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
       {depositAllowance?.gt(0) ? (
         <EstimatedDepositGasItem
           chainId={chainId}

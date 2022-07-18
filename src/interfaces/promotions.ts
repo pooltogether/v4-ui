@@ -28,6 +28,7 @@ export interface Promotion {
   chainId: number
   creator: string
   token: string
+  isComplete: boolean
   tokensPerEpoch: BigNumber
   totalTokensDistributed: BigNumber
   remainingEpochs: number
