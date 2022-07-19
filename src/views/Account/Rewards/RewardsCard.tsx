@@ -37,6 +37,7 @@ import { TxButton } from '@components/Input/TxButton'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { VAPRTooltip } from '@components/VAPRTooltip'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
@@ -617,6 +618,12 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
         <div className='space-y-4'>
           <AccountPageButton {...props} />
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
+          <TwitterIntentButton
+            url='https://app.pooltogether.com'
+            text={`I just claimed $${numberWithCommas(
+              cachedClaimableUsd
+            )} in rewards from my @pooltogether deposit! Join me in saving and winning: `}
+          />
         </div>
       </div>
     </>
@@ -630,7 +637,7 @@ export const AccountPageButton = (props) => {
   return (
     <SquareLink
       size={SquareButtonSize.md}
-      theme={SquareButtonTheme.teal}
+      theme={SquareButtonTheme.tealOutline}
       className='w-full text-center'
       onClick={onDismiss}
     >
