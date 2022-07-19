@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react'
 import classNames from 'classnames'
 import { useToken, Token, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { numberWithCommas } from '@pooltogether/utilities'
 import {
   SquareButton,
   SquareButtonTheme,
@@ -128,6 +129,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   }, ethers.BigNumber.from(0))
 
   const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
+  const claimAmountTwitter = tokenUsd
+    ? Number(amountPretty.replace(',', '')) * tokenUsd
+    : amountPretty
 
   const drawIdsToClaim = winningDrawResultsList.filter(
     (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
@@ -180,16 +184,13 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             closeModal()
           }}
         >
-          {console.log(tokenUsd)}
-          {console.log(amountPretty)}
-          {console.log(Number(amountPretty))}
           <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
           <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
-            text={`I just claimed $${
-              tokenUsd ? Number(amountPretty) * tokenUsd : amountPretty
-            } in winnings from my @pooltogether deposit! Join me in saving and winning: `}
+            text={`I just claimed $${numberWithCommas(
+              claimAmountTwitter
+            )} in winnings from my @pooltogether deposit! Join me in saving and winning: `}
           />
         </BottomSheet>
       )
