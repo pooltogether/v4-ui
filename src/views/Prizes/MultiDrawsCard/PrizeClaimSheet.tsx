@@ -180,6 +180,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             closeModal()
           }}
         >
+          {console.log(tokenUsd)}
+          {console.log(amountPretty)}
+          {console.log(Number(amountPretty))}
           <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
           <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
           <TwitterIntentButton
