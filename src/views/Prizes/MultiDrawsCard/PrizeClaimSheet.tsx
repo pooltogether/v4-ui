@@ -128,10 +128,11 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     return total
   }, ethers.BigNumber.from(0))
 
-  const { amountPretty } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
-  const claimAmountTwitter = tokenUsd
-    ? Number(amountPretty.replace(',', '')) * tokenUsd
-    : amountPretty
+  const { amountPretty, amount } = roundPrizeAmount(totalPrizesWonUnformatted, ticket.decimals)
+  console.log(tokenUsd)
+  console.log(Number(amount))
+  console.log(amount)
+  const claimAmountTwitter = tokenUsd ? Number(amount) * tokenUsd : amount
 
   const drawIdsToClaim = winningDrawResultsList.filter(
     (drawResult) => !drawIdsToNotClaim.has(drawResult.drawId)
