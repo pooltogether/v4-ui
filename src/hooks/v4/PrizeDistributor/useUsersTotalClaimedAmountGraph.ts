@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers'
-import { parseUnits } from '@ethersproject/units'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmountsGraph } from './useAllUsersClaimedAmountsGraph'
@@ -36,6 +35,7 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
   )
 
   const totalClaimedAmount = getAmountFromBigNumber(totalClaimedAmountUnformatted, decimals)
+
   return {
     data: totalClaimedAmount,
     isFetched: true

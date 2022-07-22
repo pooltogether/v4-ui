@@ -16,13 +16,6 @@ const getAllUsersClaimedAmountsGraphQueryKey = (chainId: number, usersAddress: s
 
 export const useAllUsersClaimedAmountsGraph = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
-  const prizeDistributorTokensQueryResults = useAllPrizeDistributorTokens()
-  const drawIdQueryResults = useAllValidDrawIds()
-
-  const isAllTokensFetched = prizeDistributorTokensQueryResults.every(
-    (queryResult) => queryResult.isFetched
-  )
-  const isAllValidDrawIdsFetched = drawIdQueryResults.every((queryResult) => queryResult.isFetched)
 
   return useQueries<
     UseQueryOptions<{
@@ -36,17 +29,9 @@ export const useAllUsersClaimedAmountsGraph = (usersAddress: string) => {
         const { chainId } = prizeDistributor
         const client = getPrizesClaimedSubgraphClient(chainId)
 
-        // const drawIdQueryResult = drawIdQueryResults.find(
-        //   (queryResult) => queryResult.data.prizeDistributorId === prizeDistributor.id()
-        // )
-        // const prizeDistributorTokensQueryResult = prizeDistributorTokensQueryResults.find(
-        //   (queryResult) => queryResult.data.prizeDistributorId === prizeDistributor.id()
-        // )
-        // const drawIds = drawIdQueryResult.data.drawIds
-        // const prizeDistributorToken = prizeDistributorTokensQueryResult.data.token
         return getUsersClaimedAmountsGraph(chainId, usersAddress, client)
       },
-      enabled: isAllTokensFetched && Boolean(usersAddress) && isAllValidDrawIdsFetched
+      enabled: Boolean(usersAddress) // && isAllValidDrawIdsFetched
     }))
   )
 }

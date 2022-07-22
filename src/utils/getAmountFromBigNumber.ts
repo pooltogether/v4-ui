@@ -14,10 +14,15 @@ export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: s
       return EMPTY_AMOUNT
     }
     const amount = ethers.utils.formatUnits(amountUnformatted, decimals)
+
+    // Properly round
+    // https://stackoverflow.com/questions/11832914/how-to-round-to-at-most-2-decimal-places-if-necessary
+    const amountRounded = Math.round((parseFloat(amount) + Number.EPSILON) * 100) / 100
+
     return {
       amountUnformatted,
-      amount,
-      amountPretty: numberWithCommas(amount) as string
+      amount: amountRounded.toString(),
+      amountPretty: numberWithCommas(amountRounded) as string
     }
   } catch (e) {
     return EMPTY_AMOUNT

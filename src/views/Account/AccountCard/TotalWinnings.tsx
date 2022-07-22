@@ -1,6 +1,7 @@
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import classNames from 'classnames'
+import { numberWithCommas } from '@pooltogether/utilities'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
@@ -16,6 +17,7 @@ export const TotalWinnings = () => {
   const usersAddress = useUsersAddress()
   const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
   const { t } = useTranslation()
+  console.log({ totalClaimedAmount })
 
   return (
     <>
@@ -32,9 +34,7 @@ export const TotalWinnings = () => {
             {!isFetched ? (
               <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
             ) : (
-              <>
-                $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
-              </>
+              <>${numberWithCommas(totalClaimedAmount.amount)}</>
             )}
           </span>
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
