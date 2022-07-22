@@ -8,8 +8,9 @@ import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
-import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
+import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
 import { getTimestampString } from '@utils/getTimestampString'
 
 export const TotalWinnings = () => {
@@ -17,7 +18,6 @@ export const TotalWinnings = () => {
   const usersAddress = useUsersAddress()
   const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
   const { t } = useTranslation()
-  console.log({ totalClaimedAmount })
 
   return (
     <>
@@ -80,57 +80,75 @@ const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
 interface PrizesClaimedListProps {}
 
 const PrizesClaimedList = (props: PrizesClaimedListProps) => {
-  const usersAddress = useUsersAddress()
-  const { data, isFetched } = useAllUsersPositiveClaimedAmountsWithDraws(usersAddress)
   const { t } = useTranslation()
-  console.log({ useAllUsersPositiveClaimedAmountsWithDraws: data })
 
-  let listItems: React.ReactNode = [
+  const usersAddress = useUsersAddress()
+  const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
+  const queryResults = useAllUsersClaimedAmountsGraph(usersAddress, decimals.toString())
+  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+
+  let listItems = [
     <LoadingRow key={'loadingrow1'} />,
     <LoadingRow key={'loadingrow2'} />,
     <LoadingRow key={'loadingrow3'} />
   ]
   if (isFetched) {
-    if (data.length === 0) {
-      return <EmptyState />
-    } else {
-      listItems = data.map((data) => (
-        <ClaimedPrizeItem key={`${data.prizeDistributorId}-${data.drawId}`} {...data} />
-      ))
-    }
+    listItems = []
+    queryResults.forEach((queryResult) => {
+      const { data } = queryResult
+
+      const items = Object.keys(data.claimedAmounts).map((drawId) => {
+        const claimedAmount = data.claimedAmounts[drawId]
+        const token = { address: '0xface', name: 'wtfbbq', symbol: 'wtfbbq', decimals: '6' }
+
+        return (
+          <ClaimedPrizeItem
+            key={`${data.chainId}-${drawId}`}
+            token={token}
+            drawId={drawId}
+            chainId={data.chainId}
+            claimedAmount={claimedAmount}
+          />
+        )
+      })
+
+      listItems = [...listItems, ...items]
+    })
+  }
+
+  if (listItems.length === 0) {
+    return <EmptyState />
   }
 
   const ListSimple = () => (
     <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
       <div className='grid grid-cols-2 opacity-50 font-bold'>
         <div>{t('prizeAmountString', 'Prize amount')}</div>
-        <div className='text-right'>{t('draw')}</div>
+        <div className='text-right'>{t('draw')} #</div>
       </div>
       {listItems}
     </ul>
   )
 
-  const ListWithDate = () => (
-    <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
-      <div className='grid grid-cols-2 xs:grid-cols-4 opacity-50 font-bold'>
-        <div className='xs:col-span-2'>{t('prizeAmountString', 'Prize amount')}</div>
-        <div className='text-right'>{t('draw')}</div>
-        <div className='text-right'>{t('date', 'Date')}</div>
-      </div>
-      {listItems}
-    </ul>
-  )
+  // const ListWithDate = () => (
+  //   <ul className='space-y-3 bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-5 p-4 rounded-lg max-h-80 overflow-y-auto'>
+  //     <div className='grid grid-cols-2 xs:grid-cols-4 opacity-50 font-bold'>
+  //       <div className='xs:col-span-2'>{t('prizeAmountString', 'Prize amount')}</div>
+  //       <div className='text-right'>{t('draw')}</div>
+  //       <div className='text-right'>{t('date', 'Date')}</div>
+  //     </div>
+  //     {listItems}
+  //   </ul>
+  // )
 
   return <ListSimple />
 }
 
 const ClaimedPrizeItem = (props: {
   token: Token
-  prizeDistributorId: string
   chainId: number
-  drawId: number
+  drawId: string
   claimedAmount: Amount
-  draw: Draw
 }) => {
   const { token, chainId, drawId, claimedAmount } = props
 
@@ -141,7 +159,7 @@ const ClaimedPrizeItem = (props: {
         <span className='font-bold mr-1'>{claimedAmount.amountPretty}</span>
         <span className='text-xxxxs opacity-50'>{token.symbol}</span>
       </div>
-      <div className='text-right'>#{drawId}</div>
+      <div className='text-right'>{drawId}</div>
     </li>
   )
 }

@@ -5,7 +5,10 @@ import { useAllUsersClaimedAmountsGraph } from './useAllUsersClaimedAmountsGraph
 
 export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
   const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
-  const claimedAmountsQueryResults = useAllUsersClaimedAmountsGraph(usersAddress)
+  const claimedAmountsQueryResults = useAllUsersClaimedAmountsGraph(
+    usersAddress,
+    decimals.toString()
+  )
   const isClaimedAmountsFetched = claimedAmountsQueryResults.every(
     (queryResult) => queryResult.isFetched
   )
