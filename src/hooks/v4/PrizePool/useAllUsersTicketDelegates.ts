@@ -2,8 +2,6 @@ import { useQueries } from 'react-query'
 
 import { NO_REFETCH } from '@constants/query'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
-import { getPrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getUsersTicketDelegate, getUsersTicketDelegateQueryKey } from './useUsersTicketDelegate'
 
 /**

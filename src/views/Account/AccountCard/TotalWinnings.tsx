@@ -23,7 +23,7 @@ export const TotalWinnings = () => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg flex justify-between font-bold text-inverse'
+        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white dark:hover:bg-white dark:hover:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse transition'
       >
         <span>
           <span className='mr-1'>{'🎉 '}</span>
@@ -83,8 +83,7 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
-  const queryResults = useAllUsersClaimedAmountsGraph(usersAddress, decimals.toString())
+  const queryResults = useAllUsersClaimedAmountsGraph(usersAddress)
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
 
   let listItems = [
@@ -99,12 +98,12 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
 
       const items = Object.keys(data.claimedAmounts).map((drawId) => {
         const claimedAmount = data.claimedAmounts[drawId]
-        const token = { address: '0xface', name: 'wtfbbq', symbol: 'wtfbbq', decimals: '6' }
+        const ticket = data.ticket
 
         return (
           <ClaimedPrizeItem
             key={`${data.chainId}-${drawId}`}
-            token={token}
+            token={ticket}
             drawId={drawId}
             chainId={data.chainId}
             claimedAmount={claimedAmount}

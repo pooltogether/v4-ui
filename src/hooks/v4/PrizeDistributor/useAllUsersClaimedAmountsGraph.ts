@@ -1,11 +1,13 @@
 import gql from 'graphql-tag'
 import { BigNumber } from 'ethers'
 import { GraphQLClient } from 'graphql-request'
-import { Amount } from '@pooltogether/hooks'
+import { Token, Amount } from '@pooltogether/hooks'
 import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 
-import { usePrizeDistributors } from './usePrizeDistributors'
+import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
+import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { getPrizesClaimedSubgraphClient } from '@hooks/v4/TwabRewards/getPrizesClaimedSubgraphClient'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
@@ -15,13 +17,16 @@ const getAllUsersClaimedAmountsGraphQueryKey = (chainId: number, usersAddress: s
   usersAddress
 ]
 
-export const useAllUsersClaimedAmountsGraph = (usersAddress: string, decimals: string) => {
+export const useAllUsersClaimedAmountsGraph = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
+  const prizePools = usePrizePools()
+  const tokens = useAllPrizePoolTokens()
 
   return useQueries<
     UseQueryOptions<{
       chainId: number
       totalClaimed: string
+      ticket: Token
       claimedAmounts: { [drawId: number]: Amount }
     }>[]
   >(
@@ -32,7 +37,13 @@ export const useAllUsersClaimedAmountsGraph = (usersAddress: string, decimals: s
         const { chainId } = prizeDistributor
         const client = getPrizesClaimedSubgraphClient(chainId)
 
-        return getUsersClaimedAmountsGraph(chainId, usersAddress, decimals, client)
+        const prizePool = prizePools.find((prizePool) => prizePool.chainId === chainId)
+        const tokenData = tokens.find(
+          (tokenData) => tokenData.data.prizePoolId === prizePool.id()
+        ).data
+        const { ticket } = tokenData
+
+        return getUsersClaimedAmountsGraph(chainId, usersAddress, ticket, client)
       },
       enabled: Boolean(usersAddress)
     }))
@@ -42,11 +53,12 @@ export const useAllUsersClaimedAmountsGraph = (usersAddress: string, decimals: s
 export const getUsersClaimedAmountsGraph = async (
   chainId: number,
   usersAddress: string,
-  decimals: string,
+  ticket: Token,
   client: GraphQLClient
 ): Promise<{
   chainId: number
   totalClaimed: string
+  ticket: Token
   claimedAmounts: { [drawId: number]: Amount }
 }> => {
   const query = accountQuery()
@@ -67,13 +79,14 @@ export const getUsersClaimedAmountsGraph = async (
   draws?.map((draw) => {
     claimedAmountsKeyedByDrawId[draw.id.split('-')[1]] = roundPrizeAmount(
       BigNumber.from(draw.claimed),
-      decimals
+      ticket.decimals
     )
   })
 
   return {
     chainId,
     totalClaimed,
+    ticket,
     claimedAmounts: claimedAmountsKeyedByDrawId
   }
 }
