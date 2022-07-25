@@ -72,9 +72,8 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
-// TODO: Switch this back to polygon. Maybe we need to do a network test before setting the default...
 export const DEFAULT_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.polygon,
+  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.optimism,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
 })
 
