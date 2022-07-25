@@ -34,7 +34,7 @@ export const TotalWinnings = () => {
             {!isFetched ? (
               <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
             ) : (
-              <>${numberWithCommas(totalClaimedAmount.amount)}</>
+              <>${totalClaimedAmount.amountPretty}</>
             )}
           </span>
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
