@@ -3033,6 +3033,11 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.0.tgz#78180e761886f3c19349ce169b0843580c70f345"
   integrity sha512-1CvHRm3wrecbwYBBOcEbnyMC7z7jy2JZ6IMSzF0uN5MxSTLruZWUl/0tM+uxxc5zyg8op7S4rKLn6JeETLHDDQ==
 
+"@pooltogether/utilities@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.1.tgz#1f89e164de5f2672f644de60bf11e8d07911d1d9"
+  integrity sha512-m8jtY+8+RzoGHc1OXl3uNQ/ZC3JAg8abmqGriQACr7v7B36E8vcw7KbZCkH/4Fp8WJNRPMsQ+X7hfVDKG+bKNQ==
+
 "@pooltogether/v4-client-js@^0.14.1":
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.14.1.tgz#c10a7f32c4c1b53f79dbb8b82cb7ba4073d45529"
