@@ -8,12 +8,14 @@ import { LP_PRIZE_POOL_METADATA, POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3
 /**
  * Returns a users balances for V3 Prize Pools.
  * Filters zero balances.
- * Filters POOL Pools.
- * Filters LP Pools.
+ * filterAdditionalPools if true:
+ * - Filters POOL Pools.
+ * - Filters LP Pools.
  * @param usersAddress
+ * @param filterAdditionalPools
  * @returns
  */
-export const useUsersV3PrizePoolBalances = (usersAddress: string) => {
+export const useUsersV3PrizePoolBalances = (usersAddress: string, filterAdditionalPools = true) => {
   const queriesResult = useAllUsersV3Balances(usersAddress)
 
   return useMemo(() => {
@@ -51,9 +53,11 @@ export const useUsersV3PrizePoolBalances = (usersAddress: string) => {
         // Filter LP Pools.
         const hasBalance = balance.ticket.hasBalance
         const isLPPool =
+          filterAdditionalPools &&
           isRegularPrizePoolBalance &&
           LPPrizePoolAddresses.includes(balance.prizePool.addresses.prizePool)
         const isPOOLPool =
+          filterAdditionalPools &&
           isRegularPrizePoolBalance &&
           POOLPoolAddresses.includes(balance.prizePool.addresses.prizePool)
 
