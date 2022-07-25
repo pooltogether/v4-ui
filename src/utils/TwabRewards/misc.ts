@@ -4,13 +4,9 @@ export const transformHexColor = (color) => {
     return '#4b78ff'
   }
 
-  return color
-}
-
-export const darkenHexColor = (color) => {
-  // if rinkeby, return ethereum mainnet color
-  if (color === '#e09e0a') {
-    return '#2b58bf'
+  // if optimism, return a red close to the logo
+  if (color === '#e61b1b') {
+    return '#E8000B'
   }
 
   return color
