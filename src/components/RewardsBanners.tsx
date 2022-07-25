@@ -30,18 +30,15 @@ export const RewardsBanners = () => {
   }
 
   return (
-    <div
-      className='px-8 w-full text-center py-2 z-50 text-white'
-      style={{ backgroundColor: '#E8000B' }}
-    >
-      <div className='text-xxs xs:text-sm flex flex-col xs:flex-row mx-auto items-center justify-center'>
+    <div className='px-8 bg-actually-black w-full text-center py-2 z-50 text-white'>
+      <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
         <div className='mb-1 xs:mb-0 xs:mr-3'>
           <span className='flex items-center font-bold'>
             <TokenIcon
               chainId={CHAIN_ID.optimism}
               address={OPTIMISM_OP_ADDRESS}
-              className='border border-white border-opacity-50 mr-1 xs:mr-2'
-              sizeClassName='w-4 h-4 xs:w-5 xs:h-5'
+              className='mr-1 xs:mr-2'
+              sizeClassName='w-4 h-4'
             />{' '}
             {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}!
           </span>{' '}
