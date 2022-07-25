@@ -1,24 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { PagePadding } from '@components/Layout/PagePadding'
 import { useRouter } from 'next/router'
 import { AccountCard } from '@views/Account/AccountCard'
-import { isAddress } from 'ethers/lib/utils'
-import { InvalidAddressCard } from './InvalidAddressCard'
 import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 import { SimpleV4DepositList, SimpleV3DepositList } from './DepositLists'
 
 export const SimpleAccountUI = () => {
   const router = useRouter()
-  const usersAddress = router.query.usersAddress as string
-
-  if (!isAddress(usersAddress)) {
-    return (
-      <PagePadding className='space-y-8'>
-        <InvalidAddressCard />
-      </PagePadding>
-    )
-  }
+  const usersAddress = router.query.user as string
 
   return (
     <PagePadding className='space-y-8'>
