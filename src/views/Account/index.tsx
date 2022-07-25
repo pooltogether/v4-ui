@@ -11,10 +11,11 @@ import { RewardsCard } from './Rewards/RewardsCard'
 import { POOLBalancesCard } from './POOLBalancesCard'
 import { V3StakingCards } from './V3StakingDeposits'
 import { VotingPromptCard } from '@components/VotingPromptCard'
-import { useIsWalletConnected } from '@pooltogether/wallet-connection'
+import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
 
 export const AccountUI = (props) => {
   const isWalletConnected = useIsWalletConnected()
+  const usersAddress = useUsersAddress()
 
   if (!isWalletConnected) {
     return (
@@ -29,7 +30,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding className='space-y-8'>
-      <AccountCard />
+      <AccountCard usersAddress={usersAddress} />
       <V4Deposits />
       <RewardsCard />
       <POOLBalancesCard />

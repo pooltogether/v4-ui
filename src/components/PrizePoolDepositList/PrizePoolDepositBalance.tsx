@@ -6,10 +6,11 @@ import classNames from 'classnames'
 interface PrizePoolDepositBalanceProps {
   chainId: number
   token: TokenWithUsdBalance | TokenWithBalance
+  hideIcon?: boolean
 }
 
 export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => {
-  const { chainId, token } = props
+  const { chainId, token, hideIcon } = props
 
   let balanceToDisplay = token.amountPretty
   if (
@@ -29,7 +30,7 @@ export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => 
       >
         {balanceToDisplay}
       </span>
-      <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
+      {!hideIcon && <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />}
     </div>
   )
 }
