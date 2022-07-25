@@ -1,14 +1,11 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { InfoListItem } from '.'
-import { getMinPrecision, numberWithCommas } from '@pooltogether/utilities'
-// import { renderToStaticMarkup } from 'react-dom/server'
-// import * as ReactDOMServer from 'react-dom/server'
+import { numberWithCommas } from '@pooltogether/utilities'
 
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { usePrizePoolNetworkApr } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkApr'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { usePromotionVAPR, usePromotionsVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
+import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 
 /**
  *
@@ -32,7 +29,7 @@ export const TwabRewardsAprItem: React.FC<{
     (result) => result.data?.chainId === prizePool.chainId
   )?.data?.promotions
 
-  const atLeastOnePromotionActive = chainPromotions?.some((promotion) => promotion.isComplete)
+  const atLeastOnePromotionActive = chainPromotions?.some((promotion) => !promotion.isComplete)
 
   const value = <PromotionsVAPRSum promotions={chainPromotions} />
 
