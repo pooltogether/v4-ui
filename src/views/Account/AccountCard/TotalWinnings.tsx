@@ -1,21 +1,19 @@
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import classNames from 'classnames'
-import { numberWithCommas } from '@pooltogether/utilities'
-import { Trans, useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
+import { useTranslation } from 'react-i18next'
+import { ThemedClipSpinner, TokenIcon, BottomSheet } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
 import { getTimestampString } from '@utils/getTimestampString'
 
-export const TotalWinnings = () => {
+export const TotalWinnings: React.FC<{ usersAddress: string }> = (props) => {
+  const { usersAddress } = props
   const [isOpen, setIsOpen] = useState(false)
-  const usersAddress = useUsersAddress()
   const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
   const { t } = useTranslation()
 

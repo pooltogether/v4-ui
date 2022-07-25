@@ -1,6 +1,5 @@
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
 
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
@@ -10,8 +9,7 @@ import { useQuery } from 'react-query'
 import { NO_REFETCH } from '@constants/query'
 
 // NOTE: Assumes v4 balances are USD stable coins
-export const useUsersTotalBalances = () => {
-  const usersAddress = useUsersAddress()
+export const useUsersTotalBalances = (usersAddress: string) => {
   const {
     data: v4BalancesData,
     isFetched: isV4Fetched,

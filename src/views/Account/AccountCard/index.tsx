@@ -11,38 +11,48 @@ import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { unionProbabilities } from '@utils/unionProbabilities'
+import { shorten } from '@pooltogether/utilities'
 
-interface AccountCardProps {
+export const AccountCard: React.FC<{
+  usersAddress: string
   className?: string
-}
-
-export const AccountCard = (props: AccountCardProps) => {
+  showAddress?: boolean
+}> = (props) => {
+  const { showAddress, usersAddress, className } = props
   return (
     <div
       className={classNames(
         'flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2',
-        props.className
+        className
       )}
     >
       <div className='flex justify-between p-4'>
-        <TotalBalance />
+        <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
-        <DailyOdds />
-        <WeeklyOdds />
+        <DailyOdds usersAddress={usersAddress} />
+        <WeeklyOdds usersAddress={usersAddress} />
       </div>
-      <TotalWinnings />
+      <TotalWinnings usersAddress={usersAddress} />
     </div>
   )
 }
 
-const TotalBalance = (props: { className?: string }) => {
-  const { className } = props
+const TotalBalance: React.FC<{
+  usersAddress: string
+  showAddress?: boolean
+  className?: string
+}> = (props) => {
+  const { showAddress, usersAddress, className } = props
   const { t } = useTranslation()
-  const { data: balancesData } = useUsersTotalBalances()
+  const { data: balancesData } = useUsersTotalBalances(usersAddress)
   return (
     <a href='#deposits' className={className}>
+      {showAddress && (
+        <span className='font-semibold text-xs mr-1'>{shorten({ hash: usersAddress }) + `'s`}</span>
+      )}
+
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
@@ -84,12 +94,15 @@ const TotalBalanceAmount = (props: {
   return <CountUp countTo={Number(totalV4Balance)} />
 }
 
-const DailyOdds = () => <OddsBox i18nKey='dailyOdds' daysOfPrizes={1} />
-const WeeklyOdds = () => <OddsBox i18nKey='weeklyOdds' daysOfPrizes={7} />
+const DailyOdds: React.FC<{ usersAddress: string }> = (props) => (
+  <OddsBox usersAddress={props.usersAddress} i18nKey='dailyOdds' daysOfPrizes={1} />
+)
+const WeeklyOdds: React.FC<{ usersAddress: string }> = (props) => (
+  <OddsBox usersAddress={props.usersAddress} i18nKey='weeklyOdds' daysOfPrizes={7} />
+)
 
-const OddsBox = (props: { i18nKey: string; daysOfPrizes: number }) => {
-  const { i18nKey, daysOfPrizes } = props
-  const usersAddress = useUsersAddress()
+const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: number }) => {
+  const { usersAddress, i18nKey, daysOfPrizes } = props
   const { data, isFetched, isFetching, isError } = useUsersPrizePoolNetworkOdds(usersAddress)
   const { t } = useTranslation()
 
