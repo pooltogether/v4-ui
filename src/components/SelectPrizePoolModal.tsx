@@ -43,11 +43,31 @@ export const SelectPrizePoolModal = (props: SelectPrizePoolModalProps) => {
         <PrizePoolLabel prizePool={selectedPrizePool} />
         <FeatherIcon icon='chevron-down' />
       </button>
-      <BottomSheet
-        open={isOpen}
-        onDismiss={() => setIsOpen(false)}
-        maxWidthClassName='max-w-md'
-      ></BottomSheet>
+      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
+        <h6 className='text-center uppercase text-sm mb-3'>
+          {t('chooseAPrizePool', 'Choose a Prize Pool')}
+        </h6>
+        <p className='max-w-sm mx-auto text-xs mb-12 text-center'>
+          Different prize pools have different yield sources, different prizes and different ways to
+          win!
+        </p>
+
+        <ul className='space-y-2 mx-auto max-w-sm'>
+          {prizePools.map((prizePool) => (
+            <NetworkItem
+              key={prizePool.id()}
+              prizePool={prizePool}
+              isSelected={
+                prizePool.chainId === selectedChainId &&
+                prizePool.address === selectedPrizePoolAddress
+              }
+              onDismiss={() => setIsOpen(false)}
+              setSelectedChainId={setSelectedChainId}
+              setSelectedPrizePoolAddress={setSelectedPrizePoolAddress}
+            />
+          ))}
+        </ul>
+      </BottomSheet>
     </>
   )
 }

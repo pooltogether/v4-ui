@@ -3,6 +3,7 @@ import {
   TokenAmountFormValues,
   TokenAmountInputFormView
 } from '@components/ModalViews/TokenAmountInputFormView'
+import { useDepositValidationRules } from '@hooks/v4/PrizePool/useDepositValidationRules'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
@@ -10,7 +11,6 @@ import { ViewProps } from '@pooltogether/react-components'
 import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { DepositViewIds } from '..'
-import { useDepositValidationRules } from '../DepositModalView/DepositAmountInput'
 import { DepositInfoListItems } from './DepositInfoListItems'
 import { PrizeBreakdownCard } from './PrizeBreakdownCard'
 

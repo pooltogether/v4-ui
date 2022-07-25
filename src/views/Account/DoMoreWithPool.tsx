@@ -1,11 +1,11 @@
-import classNames from 'classnames'
+import { RoundButton } from '@components/Input/RoundButton'
 import FeatherIcon from 'feather-icons-react'
 
 export const DoMoreWithPool = () => {
   return (
     <div>
       <div className='text-lg font-bold text-center w-full mb-4'>Do more with your $POOL</div>
-      <div className='flex justify-evenly'>
+      <div className='flex justify-evenly sm:justify-between sm:px-8 max-w-sm mx-auto'>
         <RoundLink href={''} icon={'dollar-sign'} label={'Earn'} />
         <RoundButton onClick={() => console.log('yah')} icon={'plus'} label={'Vote'} />
         <RoundLink href={''} icon={'refresh-cw'} label={'Swap'} />
@@ -22,15 +22,6 @@ const RoundLink: React.FC<{ href: string; icon: string; label: string }> = (prop
     <a type='button' className={roundClassName} href={props.href} rel='noopener noreferrer'>
       <FeatherIcon className='mx-auto w-4 h-4 stroke-current stroke-2' icon={props.icon} />
     </a>
-    <div className='text-xxxs mx-auto'>{props.label}</div>
-  </div>
-)
-
-const RoundButton: React.FC<{ onClick: () => void; icon: string; label: string }> = (props) => (
-  <div className='flex flex-col'>
-    <button type='button' onClick={props.onClick} className={roundClassName}>
-      <FeatherIcon className='mx-auto w-4 h-4 stroke-current stroke-2' icon={props.icon} />
-    </button>
-    <div className='text-xxxs mx-auto'>{props.label}</div>
+    <div className='text-xxxs mx-auto mt-1 opacity-70'>{props.label}</div>
   </div>
 )

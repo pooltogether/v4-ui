@@ -21,7 +21,7 @@ export const SidebarCard: React.FC<{
   <TransparentDiv className='rounded-lg px-4 py-2 flex flex-col'>
     <div className='font-bold text-lg'>{props.title}</div>
     <div className='text-xxs opacity-70'>{props.description}</div>
-    <div className='font-bold text-2xl'>{props.main}</div>
+    <div className='font-bold text-xl'>{props.main}</div>
     {props.showTrigger && (
       <AccentTextButton onClick={props.onClick} disabled={props.disabled}>
         {props.trigger}

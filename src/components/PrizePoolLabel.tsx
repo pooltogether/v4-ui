@@ -19,10 +19,10 @@ export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?
       )}
       <div className='flex flex-col'>
         <div className='font-bold'>{tokens?.token.symbol}</div>
-        <div className='text-xxxs flex space-x-1 items-center'>
+        <div className='text-xxxs flex space-x-1 items-center font-normal'>
           <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-3 h-3' />
-          <span className='font-bold'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
-          <span className=''>{shorten({ hash: prizePool.address, short: true })}</span>
+          <span className='opacity-70'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
+          <span className='opacity-70'>{shorten({ hash: prizePool.address, short: true })}</span>
         </div>
       </div>
     </div>

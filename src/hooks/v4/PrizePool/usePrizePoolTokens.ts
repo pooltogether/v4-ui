@@ -4,6 +4,7 @@ import { NO_REFETCH } from '@constants/query'
 import { useQuery, UseQueryOptions } from 'react-query'
 
 export interface PrizePoolTokens {
+  chainId: number
   prizePoolId: string
   token: Token
   ticket: Token
@@ -43,6 +44,7 @@ export const getPrizePoolTokens = async (prizePool: PrizePool) => {
   }
 
   return {
+    chainId: prizePool.chainId,
     prizePoolId: prizePool.id(),
     ticket,
     token

@@ -22,7 +22,12 @@ import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonW
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
+    <PageHeaderContainer
+      Link={Link}
+      as='/deposit'
+      href='/deposit'
+      className='backdrop-filter backdrop-blur-xl'
+    >
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />

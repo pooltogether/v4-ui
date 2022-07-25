@@ -6,7 +6,7 @@ import { ethers } from 'ethers'
 import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinningsCard } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
@@ -37,7 +37,7 @@ const TotalBalance = (props: { className?: string }) => {
   const { data, isFetching, isFetched } = useUsersTotalBalances()
   return (
     <a href='#deposits' className={className}>
-      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='font-bold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount />
         {isFetching ? (

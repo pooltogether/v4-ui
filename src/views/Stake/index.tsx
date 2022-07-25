@@ -2,7 +2,7 @@ import { TxButton } from '@components/Input/TxButton'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TokenBalance } from '@components/TokenBalance'
-import { PrizePoolListItem } from '@components/PrizePoolDepositList/PrizePoolListItem'
+import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
 import { NO_REFETCH } from '@constants/query'
 import { useSendTransaction } from '@hooks/useSendTransaction'
@@ -28,7 +28,7 @@ import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import React, { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
 import { useQueries, useQuery } from 'react-query'
-import { ListItemTokenBalance } from '@components/PrizePoolDepositList/ListItemTokenBalance'
+import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 
 export const StakeUI = () => {
   const [gaugeController, setGaugeController] = useState<GaugeController>(null)
@@ -213,9 +213,11 @@ const GaugeRow: React.FC<{
   const tokenWithBalance = makeTokenWithBalance(token, balance)
 
   return (
-    <PrizePoolListItem
+    <AccountListItem
       left={<PrizePoolLabel prizePool={prizePool} />}
-      right={<ListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
+      right={
+        <AccountListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />
+      }
       onClick={() => {
         setTicket(tokens.ticket)
         setGaugeController(gaugeController)
@@ -246,9 +248,11 @@ const GaugeRewardsRow: React.FC<{
   const tokenWithBalance = makeTokenWithBalance(rewardToken, balanceUnformatted)
 
   return (
-    <PrizePoolListItem
+    <AccountListItem
       left={<PrizePoolLabel prizePool={prizePool} />}
-      right={<ListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />}
+      right={
+        <AccountListItemTokenBalance chainId={gaugeController?.chainId} token={tokenWithBalance} />
+      }
       onClick={() => {
         setTicket(tokens.ticket)
         setGaugeController(gaugeController)

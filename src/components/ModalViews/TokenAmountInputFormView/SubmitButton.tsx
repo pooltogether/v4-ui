@@ -6,7 +6,7 @@ import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 export interface SubmitButtonProps {
-  connectWallet: () => void
+  connectWallet?: () => void
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = (props) => {

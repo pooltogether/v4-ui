@@ -2,6 +2,7 @@ import { FullWalletConnectionButton } from '@pooltogether/wallet-connection'
 import { Trans } from 'react-i18next'
 
 import { getSupportedChains } from '@utils/getSupportedChains'
+import { ButtonRadius, ButtonTheme } from '@pooltogether/react-components'
 
 /**
  * NOTE: Only render one per app
@@ -11,7 +12,15 @@ import { getSupportedChains } from '@utils/getSupportedChains'
 export const FullWalletConnectionButtonWrapper = (props) => {
   const chains = getSupportedChains()
 
-  return <FullWalletConnectionButton {...props} chains={chains} TosDisclaimer={<TosDisclaimer />} />
+  return (
+    <FullWalletConnectionButton
+      {...props}
+      chains={chains}
+      theme={ButtonTheme.transparent}
+      radius={ButtonRadius.full}
+      TosDisclaimer={<TosDisclaimer />}
+    />
+  )
 }
 
 export const TosDisclaimer = () => (

@@ -1,18 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@pooltogether/react-components'
+import { Button, ButtonProps } from '@pooltogether/react-components'
 import { useConnectWallet } from '@pooltogether/wallet-connection'
 
-interface ConnectWalletButtonProps {
-  className?: string
-}
-
-export const ConnectWalletButton = (props: ConnectWalletButtonProps) => {
-  const { className } = props
+export const ConnectWalletButton: React.FC<Omit<ButtonProps, 'onClick' | 'type'>> = (props) => {
   const connectWallet = useConnectWallet()
   const { t } = useTranslation()
   return (
-    <Button className={className} onClick={() => connectWallet()} type='button'>
+    <Button {...props} onClick={() => connectWallet()} type='button'>
       {t('connectWallet')}
     </Button>
   )

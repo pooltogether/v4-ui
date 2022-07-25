@@ -1,0 +1,23 @@
+{
+  "folders": [
+	{
+		"path": "."
+	},
+	{
+		"path": "../v4-client-js"
+	},
+	{
+		"path": "../react-components"
+	},
+	{
+		"path": "../wallet-connection"
+	},
+	{
+		"path": "../pooltogether-hooks"
+	},
+	{
+		"path": "../v4-utils-js"
+	}
+],
+  "settings": {}
+}
