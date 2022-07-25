@@ -120,7 +120,11 @@ const ChainPromotions = (props) => {
       style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
     >
       <div className='flex items-center font-bold mb-4'>
-        <NetworkIcon chainId={chainId} className='mr-2' sizeClassName='w-5 h-5' />
+        <NetworkIcon
+          chainId={chainId}
+          className='mr-2 border border-opacity-30 border-white'
+          sizeClassName='w-5 h-5'
+        />
         {t('chainPoolParty', { networkName })}
       </div>
       <PromotionsList chainId={chainId} promotions={promotions} />
@@ -161,19 +165,6 @@ const PromotionsList = (props) => {
   )
 }
 
-// PREDICTION / ESTIMATE:
-// (user twab balance for epoch / twab total supply for epoch) * tokensPerEpoch
-//
-// my twab: 200 for epoch 1
-// twab total supply (currently for 1 chain): 1000 for epoch 1
-//
-// 200/1000 (or 20%) is my vApr
-// 30 tokens given away for epoch 1
-// = I get 6 tokens for epoch 1
-//
-// remaining epochs: 8
-// 6 * 8 = 48
-// I'll get 48 tokens over the entire time (if nothing changes)
 const PromotionRow = (props) => {
   const { promotion, chainId, refetchUsersRewardsHistory } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
@@ -704,7 +695,7 @@ const PromotionListItem = (props: PromotionListItemProps) => {
   const { onClick, left, center, right } = props
 
   return (
-    <li className='transition bg-white bg-opacity-10 hover:bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
+    <li className='transition bg-white bg-opacity-20 hover:bg-opacity-30 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
       <button className='px-4 py-2 w-full flex justify-between items-center' onClick={onClick}>
         {left}
         {center}

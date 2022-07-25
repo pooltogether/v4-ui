@@ -35,7 +35,7 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
 
     if (daysRemaining > 0 && isReady) {
       const promotionTokenUsd = tokenPrices[promotionTokenAddress].usd
-      const depositTokenUsd = tokenPrices[depositToken.address].usd
+      const depositTokenUsd = 1 // assume 1 ptaUSDC equals $1 here
 
       const valuePerDay = promotionTokenValuePerDay(
         promotion,
