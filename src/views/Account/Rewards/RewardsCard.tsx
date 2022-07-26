@@ -27,6 +27,7 @@ import {
   Transaction
 } from '@pooltogether/wallet-connection'
 import {
+  msToS,
   displayPercentage,
   numberWithCommas,
   getNetworkNameAliasByChainId,
@@ -258,9 +259,10 @@ const PromotionRow = (props) => {
                   sizeClassName='w-4 h-4 xs:w-5 xs:h-5'
                   className='mr-1 xs:mr-2'
                 />
-                <ClaimableBalance
+                <BalanceDisplay
+                  promotion={promotion}
+                  estimateAmount={estimateAmount}
                   claimableAmount={claimableAmount}
-                  claimableUsd={claimableUsd}
                   isFetched={claimableIsFetched}
                 />{' '}
                 <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
@@ -672,17 +674,32 @@ const UnitPanel = (props) => {
   )
 }
 
-const ClaimableBalance = (props) => {
-  const { isFetched, claimableAmount, claimableUsd } = props
+const BalanceDisplay = (props) => {
+  const { isFetched, estimateAmount, claimableAmount, promotion } = props
+
+  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
+
+  const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
+
+  let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
+
+  if (currentEpoch) {
+    const epochSecondsRemaining = currentEpoch?.epochEndTimestamp - msToS(Date.now())
+    const epochElapsedPercent = 1 - epochSecondsRemaining / promotion.epochDuration
+
+    const currentEpochEstimateAccrued = estimatePerEpoch * epochElapsedPercent
+
+    balance = balance + currentEpochEstimateAccrued
+  }
 
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-1', {
-        'opacity-50': claimableAmount?.amount <= 0
+        'opacity-50': balance <= 0
       })}
     >
       {isFetched ? (
-        <>{numberWithCommas(claimableAmount.amountPretty)}</>
+        <>{numberWithCommas(balance)}</>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
       )}

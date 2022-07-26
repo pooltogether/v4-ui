@@ -30,14 +30,14 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding className='space-y-8'>
-      <AccountCard usersAddress={usersAddress} />
-      <V4Deposits />
+      {/* <AccountCard usersAddress={usersAddress} />
+      <V4Deposits /> */}
       <RewardsCard />
-      <POOLBalancesCard />
+      {/* <POOLBalancesCard />
       <EarnRewardsCard />
       <V3StakingCards />
       <V3Deposits />
-      <OddsDisclaimer className='block mt-6' />
+      <OddsDisclaimer className='block mt-6' /> */}
     </PagePadding>
   )
 }
