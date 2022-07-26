@@ -625,7 +625,7 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
             url='https://app.pooltogether.com'
             text={`I just claimed $${numberWithCommas(
               cachedClaimableUsd
-            )} in rewards from my @pooltogether deposit! Join me in saving and winning: `}
+            )} in rewards from my @pooltogether_ deposit! Join me in saving and winning: `}
           />
         </div>
       </div>
