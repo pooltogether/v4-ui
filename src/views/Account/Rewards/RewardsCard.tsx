@@ -382,7 +382,7 @@ const ClaimModalForm = (props) => {
   const vapr = usePromotionVAPR(promotion)
 
   const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
-  const userNeedsToDeposit = !userIsEarning && claimableAmount.amountUnformatted.isZero()
+  const userNeedsToDeposit = !userIsEarning && claimableAmount?.amountUnformatted.isZero()
 
   return (
     <>
