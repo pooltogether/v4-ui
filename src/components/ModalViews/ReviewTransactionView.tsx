@@ -1,23 +1,10 @@
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { AnimatedBorderCard } from '@components/AnimatedCard'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { TxButton } from '@components/Input/TxButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
-import {
-  Button,
-  ButtonLink,
-  ButtonSize,
-  ButtonTheme,
-  ModalTitle,
-  ViewProps
-} from '@pooltogether/react-components'
-import { msToS } from '@pooltogether/utilities'
+import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
 import {
   Transaction,
   TransactionStatus,
@@ -25,20 +12,20 @@ import {
   useTransaction,
   useUsersAddress
 } from '@pooltogether/wallet-connection'
-import { addDays } from '@utils/date'
-import { getTimestampString } from '@utils/getTimestampString'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
-import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
 export interface ReviewTransactionViewProps extends ViewProps {
   transaction: Transaction
   sendTransaction: () => void
+  clearTransaction: () => void
+  connectWallet: () => void
   setApproveTransactionId?: (id: string) => void
+  isFetched?: boolean
+  successView?: React.ReactNode
+  reviewView?: React.ReactNode
   spenderAddress?: string
   tokenAddress?: string
   amount?: Amount
@@ -53,6 +40,11 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const {
     previous,
     sendTransaction,
+    clearTransaction,
+    connectWallet,
+    isFetched,
+    successView,
+    reviewView,
     transaction,
     amount,
     spenderAddress,
@@ -66,12 +58,15 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const {
     data: allowanceUnformatted,
     isFetched: isTokenAllowanceFetched,
+    refetch: refetchTokenAllowance,
     isIdle
   } = useTokenAllowance(chainId, usersAddress, spenderAddress, tokenAddress)
   const [approveTransactionId, setApproveTransactionId] = useState('')
   const approveTransaction = useTransaction(approveTransactionId)
-  const _sendApproveTx = useApproveErc20(tokenAddress, spenderAddress)
-  const { data: tokenData, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
+  const _sendApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
+    callbacks: { onSuccess: () => refetchTokenAllowance() }
+  })
+  const { isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const amountUnformatted = amount?.amountUnformatted
 
   const sendApproveTx = async () => {
@@ -82,35 +77,49 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
 
   const { t } = useTranslation()
 
-  if (!isTokensFetched || (!isIdle && !isTokenAllowanceFetched)) {
+  if (
+    !isTokensFetched ||
+    (!isIdle && !isTokenAllowanceFetched) ||
+    (isFetched !== undefined && !isFetched)
+  ) {
     return (
       <>
-        <ModalLoadingGate className='mt-8' />
+        <ModalLoadingGate />
       </>
     )
-  } else if (!isIdle && amountUnformatted && allowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (!isIdle && !!amountUnformatted && allowanceUnformatted?.lt(amountUnformatted)) {
     return (
       <>
         <ModalApproveGate
+          connectWallet={connectWallet}
           amountToDeposit={amount}
           chainId={chainId}
           approveTx={approveTransaction}
           sendApproveTx={sendApproveTx}
-          className='mt-8'
         />
       </>
     )
   } else if (transaction?.status === TransactionStatus.error) {
     return (
       <>
-        <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
+        <p className='mt-8 mb-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
         <p className='mb-8 text-accent-1 text-center mx-8'>
           {t(
             'somethingWentWrongWhileProcessingYourTransaction',
             'Something went wrong while processing your transaction.'
           )}
         </p>
-        <Button theme={ButtonTheme.tealOutline} className='w-full' onClick={previous}>
+        {transaction && (
+          <TransactionReceiptButton className='w-full mb-2' chainId={chainId} tx={transaction} />
+        )}
+        <Button
+          theme={ButtonTheme.tealOutline}
+          className='w-full'
+          onClick={() => {
+            previous()
+            clearTransaction()
+          }}
+        >
           {t('tryAgain', 'Try again')}
         </Button>
       </>
@@ -121,104 +130,27 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   ) {
     return (
       <>
-        {prizePool && <CheckBackForPrizesBox />}
-        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={transaction} />
-        <AccountPageButton />
+        {!!successView && <div className='mb-4'>{successView}</div>}
+        <TransactionReceiptButton className='w-full' chainId={chainId} tx={transaction} />
       </>
     )
   }
 
   return (
     <>
-      <div className='w-full mx-auto mt-8 space-y-8'>
-        <p className='text-center text-xs'>
-          <Trans
-            i18nKey='checkDailyForMoreInfoSeeHere'
-            components={{
-              a: (
-                <a
-                  href='https://docs.pooltogether.com/faq/prizes-and-winning'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-highlight-1 hover:opacity-70 transition-opacity'
-                />
-              )
-            }}
-          />
-        </p>
-        <AmountBeingSwapped
-          title={t('depositTicker', { ticker: tokenData.token.symbol })}
-          chainId={chainId}
-          from={tokenData.token}
-          to={tokenData.ticket}
-          amountFrom={amount}
-          amountTo={amount}
-        />
+      {!!reviewView && <div className='mb-4'>{reviewView}</div>}
 
-        {prizePool && (
-          <>
-            <DepositLowAmountWarning chainId={chainId} amountToDeposit={amount} />
-
-            <ModalInfoList>
-              {prizePool && (
-                <>
-                  <EstimatedAPRItem prizePool={prizePool} />
-                  {/* // TODO: Add back odds from main branch */}
-                </>
-              )}
-              <EstimatedDepositGasItems chainId={chainId} amountUnformatted={amountUnformatted} />
-            </ModalInfoList>
-          </>
-        )}
-
-        <TxButton
-          className='mt-8 w-full'
-          chainId={chainId}
-          onClick={sendTransaction}
-          state={transaction?.state}
-          status={transaction?.status}
-        >
-          {t('confirmDeposit', 'Confirm deposit')}
-        </TxButton>
-      </div>
+      <TxButton
+        className='w-full'
+        chainId={chainId}
+        onClick={sendTransaction}
+        state={transaction?.state}
+        status={transaction?.status}
+        radius={ButtonRadius.full}
+        connectWallet={connectWallet}
+      >
+        {t('confirmDeposit', 'Confirm deposit')}
+      </TxButton>
     </>
-  )
-}
-
-const CheckBackForPrizesBox = () => {
-  const { t } = useTranslation()
-  const eligibleDate = getTimestampString(msToS(addDays(new Date(), 2).getTime()))
-
-  return (
-    <AnimatedBorderCard className='flex flex-col text-center'>
-      <div className='mb-2'>
-        {t('disclaimerComeBackRegularlyToClaimWinnings', { date: eligibleDate })}
-      </div>
-
-      <a
-        href='https://docs.pooltogether.com/faq/prizes-and-winning'
-        target='_blank'
-        rel='noopener noreferrer'
-        className='underline text-xs'
-      >
-        {t('learnMore', 'Learn more')}
-      </a>
-    </AnimatedBorderCard>
-  )
-}
-
-export const AccountPageButton = () => {
-  const { t } = useTranslation()
-  const router = useRouter()
-  return (
-    <Link href={{ pathname: '/account', query: router.query }}>
-      <ButtonLink
-        size={ButtonSize.md}
-        theme={ButtonTheme.tealOutline}
-        className='w-full text-center'
-      >
-        {t('viewAccount', 'View account')}
-      </ButtonLink>
-    </Link>
   )
 }

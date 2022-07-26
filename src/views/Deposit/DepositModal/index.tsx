@@ -1,5 +1,5 @@
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { BridgeTokensView } from './BridgeTokensView'
 import { ExplorePrizePoolsView } from '../../../components/ModalViews/ExplorePrizePoolsView'
 import { SwapTokensView } from './SwapTokensView'
@@ -39,34 +39,39 @@ const views: ModalWithViewStateView[] = [
     id: DepositViewIds.explore,
     view: ExplorePrizePoolsView,
     title: 'Select a prize pool',
-    previousViewId: DepositViewIds.deposit
+    previousViewId: DepositViewIds.deposit,
+    onCloseViewId: DepositViewIds.deposit
   },
   {
     id: DepositViewIds.reviewTransaction,
     view: DepositReviewTransactionView,
     title: 'Deposit review',
-    previousViewId: DepositViewIds.deposit
+    previousViewId: DepositViewIds.deposit,
+    onCloseViewId: DepositViewIds.deposit
   },
   {
     id: DepositViewIds.bridgeTokens,
     view: BridgeTokensView,
     previousViewId: DepositViewIds.deposit,
     title: '',
-    bgClassName: 'bg-card'
+    bgClassName: 'bg-card',
+    onCloseViewId: DepositViewIds.deposit
   },
   {
     id: DepositViewIds.swapTokens,
     view: SwapTokensView,
     previousViewId: DepositViewIds.deposit,
     title: '',
-    bgClassName: 'bg-card'
+    bgClassName: 'bg-card',
+    onCloseViewId: DepositViewIds.deposit
   },
   {
     id: DepositViewIds.walletConnection,
     view: WalletConnectionView,
     previousViewId: DepositViewIds.deposit,
     title: 'Connect a wallet',
-    bgClassName: 'bg-new-modal'
+    bgClassName: 'bg-new-modal',
+    onCloseViewId: DepositViewIds.deposit
   }
 ]
 
@@ -138,7 +143,10 @@ export const DepositModal: React.FC<{
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-white to-gradient-purple dark:from-gradient-purple dark:to-gradient-pink'
       isOpen={isOpen}
-      closeModal={closeModal}
+      closeModal={() => {
+        setDepositTransactionId('')
+        closeModal()
+      }}
       viewIds={DepositViewIds}
       views={views}
       selectedViewId={selectedViewId}
@@ -154,6 +162,7 @@ export const DepositModal: React.FC<{
       // ReviewView
       depositAmount={depositAmount}
       sendTransaction={sendTransaction}
+      connectWallet={() => setSelectedViewId(DepositViewIds.walletConnection)}
     />
   )
 }

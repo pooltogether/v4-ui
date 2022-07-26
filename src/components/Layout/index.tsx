@@ -7,6 +7,7 @@ import { PageHeader } from '@components/Layout/PageHeader'
 import { useInitialLoad } from '@hooks/useInitialLoad'
 import { Navigation } from './Navigation'
 import { AlertBanners } from '@components/AlertBanners'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 
 interface LayoutProps {
   className?: string
@@ -19,6 +20,7 @@ const Layout = (props: LayoutProps) => {
   const isInitialized = useInitialLoad()
   const { i18n } = useTranslation()
 
+  const shouldReduceMotion = useReducedMotion()
   const isReady = isInitialized && i18n.isInitialized
 
   return (
@@ -31,9 +33,21 @@ const Layout = (props: LayoutProps) => {
           {children}
         </>
       ) : (
-        <div className='flex flex-col h-screen absolute top-0 w-screen'>
-          <LoadingLogo className='m-auto' />
-        </div>
+        <AnimatePresence>
+          <motion.div
+            key={`loading-animation`}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
+            initial={{
+              opacity: 0
+            }}
+            animate={{
+              opacity: 1
+            }}
+            className={'flex flex-col h-screen absolute top-0 w-screen'}
+          >
+            <LoadingLogo className='m-auto' />
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   )

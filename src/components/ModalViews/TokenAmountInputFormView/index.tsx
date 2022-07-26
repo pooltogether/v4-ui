@@ -21,6 +21,7 @@ export interface TokenAmountInputFormViewProps
   handleSubmit: (values: TokenAmountFormValues) => void
 }
 
+// TODO: Add amount to query params so an input amount persists after connecting a wallet
 export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> = (props) => {
   const {
     chainId,

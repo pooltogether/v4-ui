@@ -144,6 +144,7 @@ export const BalanceModal: React.FC<{
       views={views}
       selectedViewId={selectedViewId}
       setSelectedViewId={setSelectedViewId}
+      // View props
       // BridgeTokensModalView
       chainId={chainId}
       // WalletConnectionModalView
@@ -152,6 +153,7 @@ export const BalanceModal: React.FC<{
       token={tokenData?.token}
       transaction={depositTransaction}
       setDepositAmount={setDepositAmount}
+      clearTransaction={() => setDepositTransactionId('')}
       // ReviewView
       depositAmount={depositAmount}
       sendTransaction={sendTransaction}

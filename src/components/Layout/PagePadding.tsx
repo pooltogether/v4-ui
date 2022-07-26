@@ -1,6 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useRouter } from 'next/router'
 
 interface PagePaddingProps {
   children?: React.ReactNode
@@ -14,16 +15,14 @@ export const PagePadding = (props: PagePaddingProps) => {
   const { className, children, paddingClassName, widthClassName, marginClassName } = props
 
   const shouldReduceMotion = useReducedMotion()
+  const router = useRouter()
 
   return (
     <AnimatePresence>
       <motion.div
-        id='modal-animation-wrapper'
-        transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
+        key={`page-padding-animation-wrapper-${router.pathname}`}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.15, ease: 'easeIn' }}
         initial={{
-          opacity: 0
-        }}
-        exit={{
           opacity: 0
         }}
         animate={{

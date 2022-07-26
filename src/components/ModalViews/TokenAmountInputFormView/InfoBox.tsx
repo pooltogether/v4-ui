@@ -20,7 +20,7 @@ export const InfoBox: React.FC<InfoBoxProps> = (props) => {
   }
 
   return (
-    <Carousel>
+    <Carousel className='-mx-2 xs:-mx-8'>
       <InfoList>{infoListItems}</InfoList>
       {carouselChildren}
     </Carousel>

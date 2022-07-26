@@ -7,13 +7,15 @@ import {
   ButtonLink,
   Button,
   ButtonTheme,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  ButtonRadius
 } from '@pooltogether/react-components'
 
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
+import { TxButton } from '@components/Input/TxButton'
 
 interface ModalApproveGateProps {
   className?: string
@@ -21,6 +23,7 @@ interface ModalApproveGateProps {
   chainId: number
   approveTx: Transaction
   sendApproveTx: () => void
+  connectWallet?: () => void
 }
 
 /**
@@ -29,7 +32,7 @@ interface ModalApproveGateProps {
  * @returns
  */
 export const ModalApproveGate = (props: ModalApproveGateProps) => {
-  const { className, chainId, approveTx, sendApproveTx, amountToDeposit } = props
+  const { className, chainId, approveTx, sendApproveTx, connectWallet, amountToDeposit } = props
 
   const { t } = useTranslation()
 
@@ -87,9 +90,17 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
       <div className='mb-6'>
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
       </div>
-      <Button className='w-full' onClick={sendApproveTx}>
+      <TxButton
+        className='w-full'
+        radius={ButtonRadius.full}
+        chainId={chainId}
+        onClick={sendApproveTx}
+        state={approveTx?.state}
+        status={approveTx?.status}
+        connectWallet={connectWallet}
+      >
         {t('confirmApproval', 'Confirm approval')}
-      </Button>
+      </TxButton>
     </div>
   )
 }

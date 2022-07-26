@@ -20,7 +20,11 @@ export const TopPoolsHorizontalList: React.FC<{
     >
       <ul className={classNames('space-x-4 flex w-max')}>
         {prizePools.map((prizePool) => (
-          <PrizePoolCard prizePool={prizePool} selectPrizePool={selectPrizePool} />
+          <PrizePoolCard
+            key={`horizontal-pools-list-${prizePool.id()}`}
+            prizePool={prizePool}
+            selectPrizePool={selectPrizePool}
+          />
         ))}
       </ul>
     </div>

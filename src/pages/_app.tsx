@@ -17,7 +17,7 @@ import {
   initProviderApiKeys as initProviderApiKeysForHooks
 } from '@pooltogether/hooks'
 import { ThemeContext, ThemeContextProvider } from '@pooltogether/react-components'
-import { Flip, ToastContainer, ToastContainerProps } from 'react-toastify'
+import { Slide, ToastContainer, ToastContainerProps } from 'react-toastify'
 
 import type { AppProps } from 'next/app'
 
@@ -167,7 +167,7 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
       position={screenSize > ScreenSize.sm ? 'bottom-right' : 'top-center'}
       autoClose={7000}
       theme={theme}
-      transition={Flip}
+      transition={Slide}
       closeOnClick={false}
     />
   )

@@ -60,7 +60,7 @@ export const TxButton = (props: TxButtonProps) => {
     } else {
       return [children, _onClick, _type]
     }
-  }, [chainId, state, status, isWalletOnProperNetwork, _onClick])
+  }, [chainId, state, status, isWalletOnProperNetwork, isWalletConnected, _onClick])
 
   return (
     <>

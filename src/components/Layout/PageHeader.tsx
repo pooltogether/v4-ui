@@ -11,14 +11,18 @@ import {
   ThemeSettingsItem,
   SocialLinks,
   Modal,
-  NetworkIcon
+  NetworkIcon,
+  SettingsModal
 } from '@pooltogether/react-components'
+import { NetworkSelectionList } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
 
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
+import classNames from 'classnames'
+import { getSupportedChains } from '@utils/getSupportedChains'
 
 export const PageHeader = (props) => {
   return (
@@ -39,6 +43,25 @@ export const PageHeader = (props) => {
 
 const Settings = () => {
   const { t } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+  const chains = getSupportedChains()
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>
+        <FeatherIcon
+          icon='menu'
+          className={classNames('w-6 h-6 text-gradient-magenta hover:text-inverse transition')}
+        />
+      </button>
+      <SettingsModal
+        t={t}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        networkView={() => <NetworkSelectionList chains={chains} />}
+      />
+    </>
+  )
 
   return (
     <SettingsContainer t={t} className='ml-1 my-auto' sizeClassName='w-6 h-6 overflow-hidden'>
