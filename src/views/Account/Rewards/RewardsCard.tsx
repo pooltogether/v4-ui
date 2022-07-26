@@ -4,6 +4,7 @@ import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { TransactionResponse } from '@ethersproject/providers'
+import { Trans } from 'react-i18next'
 import {
   BottomSheet,
   BottomSheetTitle,
@@ -28,7 +29,8 @@ import {
 import {
   displayPercentage,
   numberWithCommas,
-  getNetworkNameAliasByChainId
+  getNetworkNameAliasByChainId,
+  getNetworkNiceNameByChainId
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
@@ -375,37 +377,74 @@ const ClaimModalForm = (props) => {
 
   const { value, unit } = useNextRewardIn(promotion)
 
-  // const { estimateRows, estimateRowsReversed } = useEstimateRows(promotion, estimateAmount)
-
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
+
+  const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
+  const userNeedsToDeposit = !userIsEarning && claimableAmount.amountUnformatted.isZero()
 
   return (
     <>
       <RewardsEndInBanner {...props} />
 
-      <div className='flex items-center text-lg xs:mt-4 mb-2'>
-        <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
-        <span className='ml-1 opacity-50'>
-          {claimableUsd || claimableUsd === 0 ? (
-            <>(${numberWithCommas(claimableUsd)})</>
-          ) : (
-            <ThemedClipSpinner sizeClassName='w-4 h-4' />
-          )}
-        </span>
-      </div>
-      <div className='flex items-center space-x-4'>
-        <UnitPanel label={t('earning', 'Earning', { tokenSymbol })} chainId={chainId} vapr={vapr} />
+      {userNeedsToDeposit ? (
+        <>
+          <div className='flex flex-col xs:mt-4 mb-2'>
+            <div className='font-bold text-lg'>
+              {t('depositToEarnRewards', 'Deposit to earn rewards')}
+            </div>
+            <div>
+              <Trans
+                i18nKey='depositNowOnChainToEarnXVapr'
+                defaults='Deposit now on {{networkName}} to earn <vapr />'
+                values={{
+                  networkName: getNetworkNiceNameByChainId(chainId)
+                }}
+                components={{
+                  vapr: <VAPRWithTooltip vapr={vapr} />
+                }}
+              />
+            </div>
 
-        <UnitPanel
-          label={t('nextReward', 'Next Reward')}
-          chainId={chainId}
-          icon={<span className='mr-1'>🗓️</span>}
-          value={value}
-          unit={t(unit)}
-        />
-      </div>
+            <SquareLink
+              href='/deposit'
+              theme={SquareButtonTheme.rainbow}
+              className='mt-4 mb-8 flex w-full items-center justify-center'
+            >
+              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
+            </SquareLink>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className='flex items-center text-lg xs:mt-4 mb-2'>
+            <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
+            <span className='ml-1 opacity-50'>
+              {claimableUsd || claimableUsd === 0 ? (
+                <>(${numberWithCommas(claimableUsd)})</>
+              ) : (
+                <ThemedClipSpinner sizeClassName='w-4 h-4' />
+              )}
+            </span>
+          </div>
+          <div className='flex items-center space-x-4'>
+            <UnitPanel
+              label={t('earning', 'Earning', { tokenSymbol })}
+              chainId={chainId}
+              vapr={vapr}
+            />
+
+            <UnitPanel
+              label={t('nextReward', 'Next Reward')}
+              chainId={chainId}
+              icon={<span className='mr-1'>🗓️</span>}
+              value={value}
+              unit={t(unit)}
+            />
+          </div>
+        </>
+      )}
 
       {amount.amountPretty && (
         <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-averta-bold'>
@@ -440,57 +479,24 @@ const ClaimModalForm = (props) => {
   )
 }
 
-// const RewardRow = (props) => {
-//   const { isEstimate, chainId, token, amount, date, awardedAt, promotionId } = props
+const VAPRWithTooltip = (props) => {
+  const { vapr } = props
 
-//   const { t } = useTranslation()
-
-//   const awardedAtShort = format(new Date(sToMs(awardedAt)), 'MMM do yyyy')
-//   const awardedAtLong = format(new Date(sToMs(awardedAt)), 'MMMM do yyyy @ h:mm:ss a')
-
-//   return (
-//     <li className={classNames('flex flex-row text-center rounded-lg text-xxs xs:text-xs')}>
-//       <div
-//         className={classNames(
-//           'flex rounded-lg flex-row w-full justify-between space-x-2 px-2 sm:px-4 py-1 hover:bg-pt-purple-darkest hover:bg-opacity-10 mx-2'
-//         )}
-//       >
-//         <span className='flex items-center font-averta-bold'>
-//           {isEstimate ? (
-//             <div>
-//               ⏳ {numberWithCommas(amount)}{' '}
-//               <span className='uppercase opacity-50'>
-//                 {token.symbol} ({t('estimateAbbreviation', 'est')})
-//               </span>
-//             </div>
-//           ) : (
-//             <>
-//               <TokenIcon
-//                 chainId={chainId}
-//                 address={token?.address}
-//                 sizeClassName='w-4 h-4'
-//                 className='mr-1'
-//               />
-//               {numberWithCommas(amount)} <span className='opacity-50 ml-1'>{token.symbol}</span>
-//             </>
-//           )}
-//         </span>
-//         <div>
-//           <Tooltip id={`tooltip-promotion-${promotionId}-epoch-${awardedAt}`} tip={awardedAtLong}>
-//             <span className='font-bold opacity-50'>{awardedAtShort}</span>
-//           </Tooltip>
-//         </div>
-//       </div>
-//     </li>
-//   )
-// }
+  return (
+    <span className='font-bold'>
+      {displayPercentage(String(vapr))}% <VAPRTooltip />
+    </span>
+  )
+}
 
 const RewardsEndInBanner = (props) => {
-  const { chainId, token, promotion } = props
+  const { chainId, token, estimateAmount, promotion } = props
   const { t } = useTranslation()
 
   const [days, sentence] = useRewardsEndInSentence(promotion, token)
   const hasEnded = days <= 0
+
+  const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
 
   return (
     <div
@@ -520,7 +526,7 @@ const RewardsEndInBanner = (props) => {
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
             <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
-              {t('depositMore', 'Deposit more')}
+              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
             </a>
           </Link>
         )}

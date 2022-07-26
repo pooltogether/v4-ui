@@ -68,9 +68,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
               ),
               token: (
                 <span className='font-bold'>
-                  <span className='mr-1'>
-                    {numberWithCommas(totalTokensFormatted, { removeTrailingZeros: true })}
-                  </span>
+                  <span className='mr-1'>{numberWithCommas(totalTokensFormatted)}</span>
                   <TokenIcon
                     sizeClassName='w-4 h-4'
                     className='relative mr-1'
