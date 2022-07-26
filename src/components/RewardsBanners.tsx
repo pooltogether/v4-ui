@@ -32,7 +32,7 @@ export const RewardsBanners = () => {
   return (
     <div className='px-8 bg-actually-black w-full text-center py-2 z-50 text-white'>
       <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
-        <div className='mb-1 xs:mb-0 xs:mr-3'>
+        <div className='my-1 xs:my-0 xs:mr-3'>
           <span className='flex items-center font-bold'>
             <TokenIcon
               chainId={CHAIN_ID.optimism}
@@ -55,7 +55,7 @@ export const RewardsBanners = () => {
         >
           <Link href={`https://app.optimism.io/bridge`}>
             <a
-              className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
+              className='flex items-center h-auto xs:h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
               target='_blank'
             >
               {t('bridge')}{' '}
@@ -68,7 +68,7 @@ export const RewardsBanners = () => {
           </Link>
           {page !== '/account' && (
             <Link href='/account'>
-              <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
+              <a className='flex items-center h-auto xs:h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
                 {t('account')}{' '}
                 <FeatherIcon
                   icon='chevron-right'
