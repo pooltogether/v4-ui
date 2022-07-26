@@ -2,6 +2,7 @@ import { DrawData } from '@interfaces/v4'
 import { DrawResults, PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { CheckedState } from '@views/Prizes/MultiDrawsCard'
 import { getStoredDrawResults, StoredDrawResults, updateDrawResults } from './drawResultsStorage'
+import { FathomEvent, logEvent } from './services/fathom'
 
 export const getUsersDrawResults = async (
   prizeDistributor: PrizeDistributor,
@@ -11,6 +12,7 @@ export const getUsersDrawResults = async (
   setCheckedState: (state: CheckedState) => void,
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
 ) => {
+  logEvent(FathomEvent.prizeCheck)
   setCheckedState(CheckedState.checking)
   // Read stored draw results
   const storedDrawResults = getStoredDrawResults(usersAddress, prizeDistributor)
