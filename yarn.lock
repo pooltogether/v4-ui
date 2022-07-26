@@ -3188,11 +3188,6 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/uniform-random-number/-/uniform-random-number-1.0.0-beta.1.tgz#72257401fe8536e95f9f812f1d249262659084a7"
   integrity sha512-V4iqLOpNFNhnUqfKRlvqUeRwvKaODdz+qn4Qi65C3iMOnDb0J31tBvyhwKbhP4wauNuUN64WfepqkkxET9U7EQ==
 
-"@pooltogether/utilities@^0.3.9":
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.3.11.tgz#b09eae15c9e3dc6d4ac30623afc51e761b05ae40"
-  integrity sha512-gEcxl604z8K53HBU2N0MxRCbSg+WhDXKwrrmwEEyg8jE9yK4XeJtXozpEPtA/HJXdDw033xRiFM6qAe3icDw3Q==
-
 "@pooltogether/utilities@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.0.tgz#78180e761886f3c19349ce169b0843580c70f345"
@@ -3299,14 +3294,14 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-timelocks/-/v4-timelocks-1.1.0.tgz#c34389917f210c4802ad8d37ba8c3356ce0d23a9"
   integrity sha512-8YaBUy9HaF9zuyPNtt4dt4KA6NFYawhxfqEuxZSHv/lMgU/cSltaZu4DomFRncEDzlGbRvZ4oSMVsO11FIGjgw==
 
-"@pooltogether/v4-twab-delegator-js@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-twab-delegator-js/-/v4-twab-delegator-js-0.1.0.tgz#460e6f3913c5c9be76d1ab560e90f2b377cb7d80"
-  integrity sha512-8+ZUh0m49X21R64MQGq7Y8Z7tWd6qHw3XAh7ZcrC73uHZW4FtXn4L6ybyMpReyQFb4GGDbsqPrz7FjjhTsnE6Q==
+"@pooltogether/v4-twab-delegator-js@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-twab-delegator-js/-/v4-twab-delegator-js-0.2.0.tgz#64a52c43d7014438198a0a6f7462ec7808dfb90a"
+  integrity sha512-wkO5q1q/6J0sUa2wo1bFAxxrfh0NY67gPekTv+bokPp+u0ySKnGIqk6xYbSpXHZIBj+v8ZuYddJ/JXR7MiMJAg==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/etherplex" "^1.1.4"
-    "@pooltogether/utilities" "^0.3.9"
+    "@pooltogether/utilities" "^0.5.0"
     eth-permit "^0.2.1"
     ethers "^5.4.6"
 
