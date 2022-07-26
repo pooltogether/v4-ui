@@ -49,7 +49,11 @@ import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPr
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
-import { useNextRewardIn, usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
+import {
+  useUsersCurrentEpochEstimateAccrued,
+  useNextRewardIn,
+  usePromotionDaysRemaining
+} from '@hooks/v4/TwabRewards/promotionHooks'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
@@ -677,20 +681,14 @@ const UnitPanel = (props) => {
 const BalanceDisplay = (props) => {
   const { isFetched, estimateAmount, claimableAmount, promotion } = props
 
-  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
-
-  const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
-
   let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
 
-  if (currentEpoch) {
-    const epochSecondsRemaining = currentEpoch?.epochEndTimestamp - msToS(Date.now())
-    const epochElapsedPercent = 1 - epochSecondsRemaining / promotion.epochDuration
-
-    const currentEpochEstimateAccrued = estimatePerEpoch * epochElapsedPercent
-
+  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(promotion, estimateAmount)
+  if (currentEpochEstimateAccrued) {
     balance = balance + currentEpochEstimateAccrued
   }
+
+  const isReady = !isNaN(balance)
 
   return (
     <div
@@ -698,7 +696,7 @@ const BalanceDisplay = (props) => {
         'opacity-50': balance <= 0
       })}
     >
-      {isFetched ? (
+      {isReady && isFetched ? (
         <>{numberWithCommas(balance)}</>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />

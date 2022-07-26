@@ -1,4 +1,5 @@
 import { sToD, msToS } from '@pooltogether/utilities'
+import { Amount } from '@pooltogether/hooks'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
 
@@ -32,4 +33,23 @@ export const usePromotionDaysRemaining = (promotion: Promotion) => {
 
   const now = msToS(Date.now())
   return sToD(lastEpochEndTime) - sToD(now)
+}
+
+export const useUsersCurrentEpochEstimateAccrued = (
+  promotion: Promotion,
+  estimateAmount: Amount
+) => {
+  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
+
+  const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
+
+  let currentEpochEstimateAccrued
+  if (currentEpoch) {
+    const epochSecondsRemaining = currentEpoch?.epochEndTimestamp - msToS(Date.now())
+    const epochElapsedPercent = 1 - epochSecondsRemaining / promotion.epochDuration
+
+    currentEpochEstimateAccrued = estimatePerEpoch * epochElapsedPercent
+  }
+
+  return currentEpochEstimateAccrued
 }
