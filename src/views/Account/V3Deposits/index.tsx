@@ -193,7 +193,8 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
           }
         ]}
         transactionHash={tx?.response?.hash}
-        token={ticket}
+        ticket={ticket}
+        token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         t={t}
@@ -286,7 +287,8 @@ const PodDepositItem = (props: DepositItemsProps) => {
           }
         ]}
         transactionHash={tx?.response?.hash}
-        token={ticket}
+        ticket={ticket}
+        token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         t={t}

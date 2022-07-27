@@ -46,13 +46,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     prizePool.addresses.prizePool
   )
 
-  // const revokeAllowanceCallTransaction = buildApproveTx(
-  //   signer,
-  //   BigNumber.from(0),
-  //   prizePool.addresses.prizePool,
-  //   balances.token
-  // )
-
   const onDismiss = () => setIsOpen(false)
 
   const depositView = (
@@ -154,7 +147,8 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       isWalletOnProperNetwork={isWalletOnProperNetwork}
       isWalletMetaMask={isWalletMetaMask}
       chainId={chainId}
-      token={ticket}
+      ticket={ticket}
+      token={token}
       balance={ticket}
       balanceUsd={ticket.balanceUsd}
     />

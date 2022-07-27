@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { getAddress } from 'ethers/lib/utils'
+import { BigNumber, ethers } from 'ethers'
+import { useSigner } from 'wagmi'
 import {
   BalanceBottomSheet,
   ContractLink,
@@ -15,6 +18,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 
+import { useSendTransaction } from '@hooks/useSendTransaction'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
@@ -30,11 +34,10 @@ import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/Prize
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
-import { getAddress } from 'ethers/lib/utils'
-import { ethers } from 'ethers'
 import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
+import { buildApproveTx } from '@utils/transactions/buildApproveTx'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -117,6 +120,27 @@ const DepositItem = (props: DepositItemsProps) => {
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const onDismiss = () => setIsOpen(false)
 
+  const { refetch: getSigner } = useSigner()
+  const sendTx = useSendTransaction()
+
+  const sendRevokeAllowanceTransaction = async () => {
+    const { data: signer } = await getSigner()
+    const callTransaction = buildApproveTx(
+      signer,
+      BigNumber.from(0),
+      prizePool.address,
+      balances.token
+    )
+    const name = t('revokePoolAllowance', { ticker: balances.token.symbol })
+
+    const txId = await sendTx({
+      name,
+      callTransaction
+    })
+
+    return txId
+  }
+
   return (
     <>
       <PrizePoolDepositListItem
@@ -163,6 +187,7 @@ const DepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.tealOutline
           }
         ]}
+        sendRevokeAllowanceTransaction={sendRevokeAllowanceTransaction}
         moreInfoViews={[
           {
             id: 'delegate',
@@ -178,7 +203,8 @@ const DepositItem = (props: DepositItemsProps) => {
             theme: SquareButtonTheme.teal
           }
         ]}
-        token={balances.ticket}
+        ticket={balances.ticket}
+        token={balances.token}
         balance={balances.ticket}
         balanceUsd={balances.ticket}
         t={t}
