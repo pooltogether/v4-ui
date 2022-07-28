@@ -1,6 +1,5 @@
 import { useSelectedPrizePools } from '@hooks/useSelectedPrizePools'
-import { usePrizePoolsByChainId } from '@hooks/v4/PrizePool/usePrizePoolsByChainId'
-import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'

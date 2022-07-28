@@ -6,7 +6,7 @@ import { Carousel } from '@pooltogether/react-components'
 import { DepositTrigger } from './DepositTrigger'
 
 export const DepositUI = () => (
-  <PagePadding paddingClassName=''>
+  <PagePadding paddingClassName='' className='h-full flex flex-col justify-center'>
     <Carousel className='mb-8 sm:mb-12'>
       <UpcomingPrizeCard className='mt-4' />
     </Carousel>

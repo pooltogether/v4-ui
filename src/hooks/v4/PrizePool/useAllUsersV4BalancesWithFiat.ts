@@ -5,36 +5,32 @@ import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
 import {
   getUsersPrizePoolBalances,
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
-} from './useUsersPrizePoolBalances'
+} from './useUsersPrizePoolBalancesWithFiat'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 import { NO_REFETCH } from '@constants/query'
+import { useAllUsersPrizePoolBalances } from './useAllUsersPrizePoolBalances'
 
-export const useAllUsersV4Balances = (usersAddress: string) => {
+export const useAllUsersV4BalancesWithFiat = (usersAddress: string) => {
   const prizePools = usePrizePools()
-  const queriesResult = useAllPrizePoolTokens()
-
-  const isAllPrizePoolTokensFetched = queriesResult.every((queryResult) => queryResult.isFetched)
+  const prizePoolBalancesQueryResults = useAllUsersPrizePoolBalances(usersAddress, prizePools)
 
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
+      const queryResult = prizePoolBalancesQueryResults?.find(({ isFetched, data }) => {
+        return isFetched && data.prizePoolId === prizePool.id()
+      })
       return {
         ...NO_REFETCH,
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => {
-          const queryResult = queriesResult?.find((queryResult) => {
-            const { data: tokens } = queryResult
-            return tokens.prizePoolId === prizePool.id()
-          })
-          const { data: tokens } = queryResult
-          return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
+          return getUsersPrizePoolBalances(prizePool, usersAddress, queryResult.data.balances)
         },
-        enabled: isAllPrizePoolTokensFetched && !!usersAddress
+        enabled: !!queryResult && queryResult.isFetched && !!usersAddress
       }
     })
   )

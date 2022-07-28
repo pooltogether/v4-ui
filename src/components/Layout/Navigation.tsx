@@ -43,7 +43,7 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
         className={classNames(
           className,
           'flex flex-row space-x-4 pointer-events-auto py-2 px-5',
-          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 shadow-lg rounded-xl p-1 backdrop-filter backdrop-blur',
+          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 shadow-lg rounded-xl p-1 backdrop-filter backdrop-blur-sm',
           'rounded-full'
         )}
       >

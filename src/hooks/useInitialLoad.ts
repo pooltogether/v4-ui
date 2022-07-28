@@ -1,4 +1,7 @@
+import { useEffect, useMemo } from 'react'
+import { useConnect } from 'wagmi'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
+import { usePrizePools } from './v4/PrizePool/usePrizePools'
 
 /**
  * Initial fetches required, regardless of the page loaded.
@@ -6,7 +9,12 @@ import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
  * core data required to render everything
  */
 export const useInitialLoad = () => {
-  const queryResults = useAllPrizePoolTokens()
+  const prizePools = usePrizePools()
+  const queryResults = useAllPrizePoolTokens(prizePools)
+  const { status } = useConnect()
+  useEffect(() => {
+    console.log(status)
+  }, [status])
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return isFetched
+  return isFetched && status !== 'reconnecting' && status !== 'connecting'
 }

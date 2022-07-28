@@ -4,12 +4,10 @@ import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSub
 import { TokenBalance } from '@components/TokenBalance'
 import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
-import { NO_REFETCH } from '@constants/query'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
-import { useSignerGaugeController } from '@hooks/v4/PrizeDistributor/useSignerGaugeController'
+import { useSignerGaugeController } from '@hooks/v4/Gauge/useSignerGaugeController'
 import { usePrizePoolsByChainId } from '@hooks/v4/PrizePool/usePrizePoolsByChainId'
-import { Token, TokenWithBalance, usePrizePoolTokens } from '@pooltogether/hooks'
+import { Token, TokenWithBalance } from '@pooltogether/hooks'
 import {
   BlockExplorerLink,
   BottomSheet,
@@ -27,8 +25,17 @@ import { BigNumber } from 'ethers'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import React, { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
-import { useQueries, useQuery } from 'react-query'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useAllGaugeControllers } from '@hooks/v4/Gauge/useGaugeControllers'
+import { useUsersGaugeControllerBalance } from '@hooks/v4/Gauge/useUsersGaugeControllerBalance'
+import { useUsersGaugeTokenBalance } from '@hooks/v4/Gauge/useUsersGaugeTokenBalance'
+import { useUsersGaugeDepositAllowance } from '@hooks/v4/Gauge/useUsersGaugeDepositAllowances'
+import { useGaugeToken } from '@hooks/v4/Gauge/useGaugeToken'
+import { useUsersGaugeBalance } from '@hooks/v4/Gauge/useUsersGaugeBalance'
+import { useGaugeRewardToken } from '@hooks/v4/Gauge/useGaugeRewardToken'
+import { useUsersClaimableGaugeRewardBalance } from '@hooks/v4/Gauge/useUsersClaimableGaugeRewardBalance'
+import { useUsersRedeemableGaugeRewardBalance } from '@hooks/v4/Gauge/useUsersRedeemableGaugeRewardBalance'
 
 export const StakeUI = () => {
   const [gaugeController, setGaugeController] = useState<GaugeController>(null)
@@ -37,7 +44,7 @@ export const StakeUI = () => {
   const [isGaugeRewardClaimSheetOpen, setIsGaugeRewardClaimSheetOpen] = useState<boolean>(false)
 
   return (
-    <PagePadding className='flex flex-col space-y-6'>
+    <div className='flex flex-col space-y-6'>
       <GaugeControllers
         openEditModal={() => setIsGaugeEditSheetOpen(true)}
         openClaimModal={() => setIsGaugeRewardClaimSheetOpen(true)}
@@ -56,7 +63,7 @@ export const StakeUI = () => {
         isOpen={isGaugeRewardClaimSheetOpen}
         closeModal={() => setIsGaugeRewardClaimSheetOpen(false)}
       />
-    </PagePadding>
+    </div>
   )
 }
 
@@ -126,7 +133,7 @@ const GaugeControllerCard: React.FC<{
   const balanceAmount = getAmountFromBigNumber(gaugeTokenBalance, token?.decimals)
 
   return (
-    <div className='rounded-lg p-4 space-y-4 bg-pt-purple-lightest dark:bg-pt-purple'>
+    <div className='space-y-4'>
       <div className='flex justify-between'>
         <div>
           <div className='space-x-2 flex items-center'>
@@ -539,7 +546,7 @@ interface GaugeStakeSheetProps {
   closeModal: () => void
 }
 
-const GaugeStakeSheet: React.FC<GaugeStakeSheetProps> = (props) => {
+export const GaugeStakeSheet: React.FC<GaugeStakeSheetProps> = (props) => {
   const { gaugeController, isOpen, closeModal } = props
   return (
     <BottomSheet
@@ -738,129 +745,4 @@ const makeTokenWithBalance = (
     ...token,
     hasBalance: !balanceUnformatted.isZero()
   }
-}
-
-/////////////////// HOOKS
-
-const useAllGaugeControllers = () => {
-  const prizeDistributors = usePrizeDistributors()
-  return useQueries(
-    prizeDistributors.map((prizeDistributor) => ({
-      ...NO_REFETCH,
-      queryKey: ['useAllGaugeControllers', prizeDistributor.id()],
-      queryFn: () => prizeDistributor.getGaugeController()
-    }))
-  )
-}
-
-const useAllUsersGaugeDepositAllowances = (usersAddress: string) => {
-  const queriesResults = useAllGaugeControllers()
-  return useQueries(
-    queriesResults.map(({ data: gaugeController, isFetched }) => ({
-      ...NO_REFETCH,
-      enabled: isFetched,
-      queryKey: ['useAllUsersGaugeDepositAllowances', gaugeController?.id(), usersAddress],
-      queryFn: () => gaugeController.getUserDepositAllowance(usersAddress)
-    }))
-  )
-}
-
-const useUsersGaugeDepositAllowance = (usersAddress: string, gaugeController: GaugeController) => {
-  return useQuery(
-    ['useAllUsersGaugeDepositAllowances', gaugeController?.id(), usersAddress],
-    () => gaugeController.getUserDepositAllowance(usersAddress),
-    { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress }
-  )
-}
-
-const useUsersGaugeBalance = (
-  usersAddress: string,
-  ticketAddress: string,
-  gaugeController: GaugeController
-) => {
-  return useQuery(
-    ['useUsersGaugeBalance', gaugeController?.id(), usersAddress, ticketAddress],
-    () => gaugeController.getUserGaugeBalance(usersAddress, ticketAddress),
-    { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress && !!ticketAddress }
-  )
-}
-
-const useUsersGaugeTokenBalance = (usersAddress: string, gaugeController: GaugeController) => {
-  return useQuery(
-    ['useUsersGaugeTokenBalance', gaugeController?.id(), usersAddress],
-    () => gaugeController.getUserGaugeTokenBalance(usersAddress),
-    { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress }
-  )
-}
-
-const useUsersGaugeControllerBalance = (usersAddress: string, gaugeController: GaugeController) => {
-  return useQuery(
-    ['useUsersGaugeControllerBalance', gaugeController?.id(), usersAddress],
-    () => gaugeController.getGaugeControllerBalance(usersAddress),
-    { ...NO_REFETCH, enabled: !!gaugeController && !!usersAddress }
-  )
-}
-
-const useGaugeToken = (gaugeController: GaugeController) => {
-  return useQuery(
-    ['useGaugeToken', gaugeController?.id()],
-    () => gaugeController.getGaugeTokenData(),
-    {
-      ...NO_REFETCH,
-      enabled: !!gaugeController
-    }
-  )
-}
-
-const useGaugeRewardToken = (gaugeController: GaugeController, ticketAddress: string) => {
-  return useQuery(
-    ['useGaugeRewardToken', gaugeController?.id(), ticketAddress],
-    () => gaugeController.getGaugeRewardToken(ticketAddress),
-    {
-      ...NO_REFETCH,
-      enabled: !!gaugeController && !!ticketAddress
-    }
-  )
-}
-
-const useUsersClaimableGaugeRewardBalance = (
-  usersAddress: string,
-  gaugeController: GaugeController,
-  ticketAddress: string,
-  rewardTokenAddress: string
-) => {
-  return useQuery(
-    [
-      'useUsersClaimableGaugeRewardBalance',
-      gaugeController?.id(),
-      usersAddress,
-      ticketAddress,
-      rewardTokenAddress
-    ],
-    () =>
-      gaugeController.getUserClaimableGaugeRewardBalance(
-        usersAddress,
-        ticketAddress,
-        rewardTokenAddress
-      ),
-    {
-      ...NO_REFETCH,
-      enabled: !!gaugeController && !!ticketAddress && !!usersAddress && !!rewardTokenAddress
-    }
-  )
-}
-
-const useUsersRedeemableGaugeRewardBalance = (
-  usersAddress: string,
-  gaugeController: GaugeController,
-  ticketAddress: string
-) => {
-  return useQuery(
-    ['useUsersRedeemableGaugeRewardBalance', gaugeController?.id(), usersAddress, ticketAddress],
-    () => gaugeController.getUserRedeemableGaugeRewardBalance(usersAddress, ticketAddress),
-    {
-      ...NO_REFETCH,
-      enabled: !!gaugeController && !!ticketAddress && !!usersAddress
-    }
-  )
 }

@@ -2,19 +2,19 @@ import { TransparentDiv } from '@components/TransparentDiv'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { CountUp, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { AccountList } from '@views/Account/AccountList'
-import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 
 export const BalanceHeader = () => {
   const { chainId } = useSelectedChainId()
   const { data: tokenData } = useSelectedPrizePoolTokens()
   const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
-  const { data: balanceData } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data: balanceData } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
+
+  console.log({ balanceData })
 
   return (
     <TransparentDiv className='flex flex-col mt-5 rounded-xl px-2 xs:px-8 pb-2 xs:pb-2'>

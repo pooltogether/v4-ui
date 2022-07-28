@@ -21,6 +21,7 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { DepositModal } from '@views/Deposit/DepositModal'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { StakeUI } from '@views/Stake'
 
 export const AccountUI = (props) => {
   return (
@@ -36,6 +37,8 @@ export const AccountUI = (props) => {
           </HeaderContent>
           <CardContent>
             <V4DepositList />
+            <StakeUI />
+            <hr />
             <DelegationList />
             <V3StakingList />
             <V3DepositList />

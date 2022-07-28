@@ -1,9 +1,10 @@
 import { NO_REFETCH } from '@constants/query'
-import { Token, usePrizePoolTokens, useRefetchInterval } from '@pooltogether/hooks'
+import { Token } from '@pooltogether/hooks'
 import { msToS } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
+import { usePrizePoolTokens } from './usePrizePoolTokens'
 
 export const PRIZE_POOL_TICKET_TWAB_TOTAL_SUPPLY_QUERY_KEY = 'usePrizePoolTicketTotalSupply'
 

@@ -1,16 +1,23 @@
 import { RoundButton } from '@components/Input/RoundButton'
 import FeatherIcon from 'feather-icons-react'
+import { useState } from 'react'
+import { ExplorePoolGaugesModal } from './ExplorePoolGaugesModal'
 
 export const DoMoreWithPool = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
-    <div>
-      <div className='text-lg font-bold text-center w-full mb-4'>Do more with your $POOL</div>
-      <div className='flex justify-evenly sm:justify-between sm:px-8 max-w-sm mx-auto'>
-        <RoundLink href={''} icon={'dollar-sign'} label={'Earn'} />
-        <RoundButton onClick={() => console.log('yah')} icon={'plus'} label={'Vote'} />
-        <RoundLink href={''} icon={'refresh-cw'} label={'Swap'} />
+    <>
+      <ExplorePoolGaugesModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
+      <div>
+        <div className='text-lg font-bold text-center w-full mb-4'>Do more with your $POOL</div>
+        <div className='flex justify-evenly sm:justify-between sm:px-8 max-w-sm mx-auto'>
+          <RoundButton onClick={() => setIsOpen(true)} icon={'dollar-sign'} label={'Earn'} />
+          <RoundLink href={'https://vote.pooltogether.com'} icon={'plus'} label={'Vote'} />
+          <RoundLink href={''} icon={'refresh-cw'} label={'Swap'} />
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

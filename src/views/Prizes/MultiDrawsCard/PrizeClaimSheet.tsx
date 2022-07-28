@@ -28,7 +28,7 @@ import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaim
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { DrawData } from '../../../interfaces/v4'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { TxButton } from '@components/Input/TxButton'
 
@@ -82,7 +82,10 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {

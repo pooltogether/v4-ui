@@ -3,7 +3,7 @@ import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWit
 import { useSelectedPrizePoolTicket } from './useSelectedPrizePoolTicket'
 import { useAllUsersTicketDelegates } from './useAllUsersTicketDelegates'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
-import { useAllUsersV4Balances } from './useAllUsersV4Balances'
+import { useAllUsersV4BalancesWithFiat } from './useAllUsersV4BalancesWithFiat'
 import { useQuery } from 'react-query'
 
 /**
@@ -17,7 +17,7 @@ export const useTotalAmountDelegatedTo = (usersAddress: string) => {
   const { data: ticket, isFetched: isTicketFetched } = useSelectedPrizePoolTicket()
   const { data: totalTwabData, isFetched: isTotalTwabFetched } = useUsersTotalTwab(usersAddress)
   const { data: usersBalances, isFetched: isUsersBalancesFetched } =
-    useAllUsersV4Balances(usersAddress)
+    useAllUsersV4BalancesWithFiat(usersAddress)
   const ticketDelegates = useAllUsersTicketDelegates(usersAddress)
   const isFetched =
     isTotalTwabFetched &&

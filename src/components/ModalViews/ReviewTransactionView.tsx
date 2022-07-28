@@ -149,7 +149,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
         radius={ButtonRadius.full}
         connectWallet={connectWallet}
       >
-        {t('confirmDeposit', 'Confirm deposit')}
+        {t('confirmTransaction', 'Confirm transaction')}
       </TxButton>
     </>
   )

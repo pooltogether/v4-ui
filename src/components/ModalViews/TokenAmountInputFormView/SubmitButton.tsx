@@ -25,7 +25,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
       connectWallet={connectWallet}
       radius={ButtonRadius.full}
     >
-      {children || t('reviewDeposit', 'Review transaction')}
+      {children || t('reviewTransaction', 'Review transaction')}
     </TxButton>
   )
 }

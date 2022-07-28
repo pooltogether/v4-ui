@@ -9,7 +9,7 @@ import {
 
 export const useAllPrizePoolTicketTwabTotalSupplies = () => {
   const prizePools = usePrizePools()
-  const allPrizePoolTokensQueryResults = useAllPrizePoolTokens()
+  const allPrizePoolTokensQueryResults = useAllPrizePoolTokens(prizePools)
   const isAllTokensFetched = allPrizePoolTokensQueryResults.every(({ isFetched }) => isFetched)
 
   return useQueries(

@@ -5,7 +5,7 @@ import { constants } from 'ethers'
 
 import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
+import { useAllUsersV4BalancesWithFiat } from '@hooks/v4/PrizePool/useAllUsersV4BalancesWithFiat'
 
 export const AlertBanners = () => {
   return <DelegateTicketsBanner />
@@ -16,7 +16,7 @@ const DelegateTicketsBanner = () => {
 
   const usersAddress = useUsersAddress()
   const queriesResult = useAllUsersTicketDelegates(usersAddress)
-  const { data, isFetched } = useAllUsersV4Balances(usersAddress)
+  const { data, isFetched } = useAllUsersV4BalancesWithFiat(usersAddress)
 
   const booleanResults = queriesResult.map(
     ({ isFetched: isTicketDelegateFetched, data: ticketDelegateData }) => {

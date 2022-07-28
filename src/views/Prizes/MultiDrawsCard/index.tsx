@@ -12,8 +12,6 @@ import {
 } from '@pooltogether/react-components'
 import { PrizeDistributorV2, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
-
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import {
   Transaction,
   TransactionState,
@@ -37,6 +35,7 @@ import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/
 import { getUserDrawResults } from '@utils/getUserDrawResults'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributorV2

@@ -21,7 +21,7 @@ export const PagePadding = (props: PagePaddingProps) => {
     <AnimatePresence>
       <motion.div
         key={`page-padding-animation-wrapper-${router.pathname}`}
-        transition={{ duration: shouldReduceMotion ? 0 : 0.15, ease: 'easeIn' }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
         initial={{
           opacity: 0
         }}

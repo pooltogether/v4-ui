@@ -4,7 +4,6 @@ import {
   EstimatedApproveAndDepositGasItem,
   EstimatedDepositGasItem
 } from '@components/InfoList/EstimatedGasItem'
-import { FORM_KEY } from '@components/ModalViews/TokenAmountInputFormView'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
@@ -13,13 +12,15 @@ import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-export const DepositInfoListItems: React.FC<{ transaction: Transaction }> = (props) => {
-  const { transaction } = props
+export const DepositInfoListItems: React.FC<{ formKey: string; transaction: Transaction }> = (
+  props
+) => {
+  const { formKey, transaction } = props
 
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
   const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
-  const amount = useFormTokenAmount(FORM_KEY.amount, tokens?.token)
+  const amount = useFormTokenAmount(formKey, tokens?.token)
 
   return (
     <>

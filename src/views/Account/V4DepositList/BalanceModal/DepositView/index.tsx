@@ -1,5 +1,4 @@
 import {
-  FORM_KEY,
   TokenAmountFormValues,
   TokenAmountInputFormView
 } from '@components/ModalViews/TokenAmountInputFormView'
@@ -14,6 +13,8 @@ import { ViewIds } from '..'
 import { DepositInfoListItems } from './DepositInfoListItems'
 import { PrizeBreakdownCard } from './PrizeBreakdownCard'
 
+const FORM_KEY = 'depositAmount'
+
 export const DepositView: React.FC<
   { setDepositAmount: (amount: Amount) => void; transaction?: Transaction } & ViewProps
 > = (props) => {
@@ -23,7 +24,7 @@ export const DepositView: React.FC<
     setSelectedViewId,
     depositAmount,
     setDepositAmount,
-    transaction,
+    depositTransaction,
     viewIds
   } = props
   const prizePool = useSelectedPrizePool()
@@ -31,14 +32,15 @@ export const DepositView: React.FC<
 
   return (
     <TokenAmountInputFormView
+      formKey={FORM_KEY}
       previous={previous}
       next={next}
       setSelectedViewId={setSelectedViewId}
       viewIds={viewIds}
-      infoListItems={<DepositInfoListItems transaction={transaction} />}
+      infoListItems={<DepositInfoListItems formKey={FORM_KEY} transaction={depositTransaction} />}
       useValidationRules={() => useDepositValidationRules(prizePool)}
       handleSubmit={(values: TokenAmountFormValues) => {
-        setDepositAmount(getAmountFromString(values[FORM_KEY.amount], tokens?.token.decimals))
+        setDepositAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))
         setSelectedViewId(ViewIds.depositReview)
       }}
       carouselChildren={[<PrizeBreakdownCard key='prize-breakdown-card' />]}

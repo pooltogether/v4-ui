@@ -3,7 +3,7 @@ import { BigNumber } from 'ethers'
 
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
+import { useAllUsersV4BalancesWithFiat } from './v4/PrizePool/useAllUsersV4BalancesWithFiat'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
@@ -15,7 +15,7 @@ export const useUsersTotalBalances = () => {
     data: v4BalancesData,
     isFetched: isV4Fetched,
     isFetching: isV4Fetching
-  } = useAllUsersV4Balances(usersAddress)
+  } = useAllUsersV4BalancesWithFiat(usersAddress)
   const {
     data: v3BalancesData,
     isFetched: isV3Fetched,

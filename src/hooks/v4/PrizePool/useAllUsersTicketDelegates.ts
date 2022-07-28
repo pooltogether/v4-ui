@@ -1,9 +1,6 @@
 import { useQueries } from 'react-query'
-
 import { NO_REFETCH } from '@constants/query'
-import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
-import { getPrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { useAllUsersV4BalancesWithFiat } from '@hooks/v4/PrizePool/useAllUsersV4BalancesWithFiat'
 import { getUserTicketDelegate, getUserTicketDelegateQueryKey } from './useUsersTicketDelegate'
 
 /**
@@ -12,7 +9,7 @@ import { getUserTicketDelegate, getUserTicketDelegateQueryKey } from './useUsers
  * @returns
  */
 export const useAllUsersTicketDelegates = (usersAddress: string) => {
-  const { data, isFetched } = useAllUsersV4Balances(usersAddress)
+  const { data, isFetched } = useAllUsersV4BalancesWithFiat(usersAddress)
 
   const prizePools = isFetched ? data.balances.map((balance) => balance.prizePool) : []
 

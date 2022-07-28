@@ -4,7 +4,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
 import { useMinimumDepositAmount } from './useMinimumDepositAmount'
 import { usePrizePoolTokens } from './usePrizePoolTokens'
-import { useUsersPrizePoolBalances } from './useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 
 /**
  * Returns validation rules for the deposit input
@@ -15,7 +15,7 @@ export const useDepositValidationRules = (prizePool: PrizePool) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data: usersBalancesData } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
 
   const token = prizePoolTokens?.token
   const decimals = token?.decimals

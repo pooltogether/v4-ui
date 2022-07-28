@@ -1,5 +1,4 @@
 import {
-  FORM_KEY,
   TokenAmountFormValues,
   TokenAmountInputFormView
 } from '@components/ModalViews/TokenAmountInputFormView'
@@ -10,9 +9,11 @@ import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
 import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { DepositViewIds } from '..'
+import { ViewIds } from '..'
 import { DepositInfoListItems } from './DepositInfoListItems'
 import { PrizeBreakdownCard } from './PrizeBreakdownCard'
+
+const FORM_KEY = 'depositAmount'
 
 export const DepositView: React.FC<
   { setDepositAmount: (amount: Amount) => void; transaction?: Transaction } & ViewProps
@@ -31,23 +32,24 @@ export const DepositView: React.FC<
 
   return (
     <TokenAmountInputFormView
+      formKey={FORM_KEY}
       previous={previous}
       next={next}
       setSelectedViewId={setSelectedViewId}
       viewIds={viewIds}
-      infoListItems={<DepositInfoListItems transaction={transaction} />}
-      connectWallet={() => setSelectedViewId(DepositViewIds.walletConnection)}
+      infoListItems={<DepositInfoListItems formKey={FORM_KEY} transaction={transaction} />}
+      connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
       useValidationRules={() => useDepositValidationRules(prizePool)}
       handleSubmit={(values: TokenAmountFormValues) => {
-        setDepositAmount(getAmountFromString(values[FORM_KEY.amount], tokens?.token.decimals))
-        setSelectedViewId(DepositViewIds.reviewTransaction)
+        setDepositAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))
+        setSelectedViewId(ViewIds.reviewTransaction)
       }}
       carouselChildren={[<PrizeBreakdownCard key='prize-breakdown-card' />]}
       chainId={prizePool.chainId}
       token={tokens?.token}
       defaultValue={depositAmount?.amount}
     >
-      <button onClick={() => setSelectedViewId(DepositViewIds.explore)}>Explore</button>
+      <button onClick={() => setSelectedViewId(ViewIds.explore)}>Explore</button>
     </TokenAmountInputFormView>
   )
 }

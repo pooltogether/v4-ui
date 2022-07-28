@@ -12,20 +12,15 @@ export const BrowsePrizePoolsList: React.FC<{
   const prizePools = usePrizePools()
 
   return (
-    <>
-      <div className='flex justify-between font-bold text-lg mb-2'>
-        <span>All prize pools</span>
-      </div>
-      <ul className={classNames('space-y-2 w-full', className)}>
-        {prizePools.map((prizePool) => (
-          <AccountListItem
-            key={prizePool.id()}
-            onClick={() => selectPrizePool?.(prizePool)}
-            left={<PrizePoolLabel prizePool={prizePool} />}
-            right={null}
-          />
-        ))}
-      </ul>
-    </>
+    <ul className={classNames('space-y-2 w-full', className)}>
+      {prizePools.map((prizePool) => (
+        <AccountListItem
+          key={prizePool.id()}
+          onClick={() => selectPrizePool?.(prizePool)}
+          left={<PrizePoolLabel prizePool={prizePool} />}
+          right={null}
+        />
+      ))}
+    </ul>
   )
 }

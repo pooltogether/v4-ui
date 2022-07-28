@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useRouter } from 'next/router'
-import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ethers, Overrides } from 'ethers'
 import { TransactionState, useTransaction } from '@pooltogether/wallet-connection'
@@ -11,12 +10,10 @@ import { TransactionState, useTransaction } from '@pooltogether/wallet-connectio
 import { BUTTON_MIN_WIDTH } from '@constants/misc'
 import { SelectPrizePoolModal } from '@components/SelectPrizePoolModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { DepositConfirmationModal } from '@views/Deposit/DepositConfirmationModal'
 import {
   DepositForm,
   DEPOSIT_FORM_KEY
@@ -26,10 +23,10 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
-import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicketDelegates'
 import { usePrizePoolPercentageOfPicks } from '@hooks/v4/PrizePool/usePrizePoolPercentageOfPicks'
-import { DepositViewIds } from '..'
+import { ViewIds } from '..'
 import classNames from 'classnames'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 export const DepositModalView: React.FC<{ className?: string } & ViewProps> = (props) => {
   const { className, setSelectedViewId } = props
@@ -45,7 +42,7 @@ export const DepositModalView: React.FC<{ className?: string } & ViewProps> = (p
     data: usersBalancesData,
     refetch: refetchUsersBalances,
     isFetched: isUsersBalancesFetched
-  } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
   const usersBalances = usersBalancesData?.balances
   const {
     data: depositAllowanceUnformatted,
@@ -230,12 +227,12 @@ export const DepositModalView: React.FC<{ className?: string } & ViewProps> = (p
             isUsersBalancesFetched={isUsersBalancesFetched}
             openModal={openModal}
             amountToDeposit={amountToDeposit}
-            connectWallet={() => setSelectedViewId(DepositViewIds.walletConnection)}
-            handleSubmit={() => setSelectedViewId(DepositViewIds.reviewTransaction)}
+            connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
+            handleSubmit={() => setSelectedViewId(ViewIds.reviewTransaction)}
           />
         </div>
 
-        <button onClick={() => setSelectedViewId(DepositViewIds.explore)}>Explore!</button>
+        <button onClick={() => setSelectedViewId(ViewIds.explore)}>Explore!</button>
 
         <div className='w-full flex justify-around xs:px-2 py-4'>
           <BridgeTokensModalTrigger setSelectedViewId={setSelectedViewId} />
@@ -296,7 +293,7 @@ const BridgeTokensModalTrigger = (props: {
           <FeatherIcon icon={'arrow-right'} className='relative w-3 h-3' />
         </div>
       )}
-      changeView={() => setSelectedViewId(DepositViewIds.bridgeTokens)}
+      changeView={() => setSelectedViewId(ViewIds.bridgeTokens)}
     />
   )
 }
@@ -310,7 +307,7 @@ const SwapTokensModalTrigger = (props: {
     <ChangeViewTrigger
       label={t('swapTokens', 'Swap tokens')}
       icon={() => <FeatherIcon icon={'refresh-cw'} className='relative w-4 h-4' />}
-      changeView={() => setSelectedViewId(DepositViewIds.swapTokens)}
+      changeView={() => setSelectedViewId(ViewIds.swapTokens)}
     />
   )
 }

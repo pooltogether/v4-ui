@@ -4,19 +4,18 @@ import { InfoBox, InfoBoxProps } from './InfoBox'
 import { SubmitButton, SubmitButtonProps } from './SubmitButton'
 import { TokenAmountInput, TokenAmountInputProps } from './TokenAmountInput'
 
-export enum FORM_KEY {
-  'amount' = 'amount'
-}
-
 export interface TokenAmountFormValues {
-  [FORM_KEY.amount]: string
+  [key: string]: string
 }
 
 export interface TokenAmountInputFormViewProps
   extends ViewProps,
-    InfoBoxProps,
     SubmitButtonProps,
     TokenAmountInputProps {
+  infoListItems?: React.ReactNode
+  carouselChildren?: React.ReactNode
+  formKey: string
+  submitButtonContent?: React.ReactNode
   defaultValue?: string
   handleSubmit: (values: TokenAmountFormValues) => void
 }
@@ -26,10 +25,12 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
   const {
     chainId,
     token,
+    formKey,
     useValidationRules,
     infoListItems,
     carouselChildren,
     connectWallet,
+    submitButtonContent,
     children,
     handleSubmit: _handleSubmit,
     defaultValue
@@ -37,7 +38,7 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
 
   const methods = useForm<TokenAmountFormValues>({
     mode: 'onChange',
-    defaultValues: { [FORM_KEY.amount]: defaultValue },
+    defaultValues: { [formKey]: defaultValue },
     shouldUnregister: true
   })
 
@@ -52,12 +53,15 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
             chainId={chainId}
             token={token}
             useValidationRules={useValidationRules}
+            formKey={formKey}
           />
           {children}
         </div>
         <div className='space-y-6'>
-          <InfoBox infoListItems={infoListItems} carouselChildren={carouselChildren} />
-          <SubmitButton connectWallet={connectWallet} />
+          {(!!infoListItems || !!carouselChildren) && (
+            <InfoBox infoListItems={infoListItems} carouselChildren={carouselChildren} />
+          )}
+          <SubmitButton connectWallet={connectWallet}>{submitButtonContent}</SubmitButton>
         </div>
       </form>
     </FormProvider>

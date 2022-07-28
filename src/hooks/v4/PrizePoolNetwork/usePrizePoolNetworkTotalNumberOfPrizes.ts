@@ -14,15 +14,11 @@ import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkT
 export const usePrizePoolNetworkTotalNumberOfPrizes = () => {
   const prizePools = usePrizePools()
   const prizeDistributors = usePrizeDistributors()
-  const allPrizePoolTokensQueryResults = useAllPrizePoolTokens()
   const allTicketTwabTvlQueryResults = useAllPrizePoolTicketTwabTotalSupplies()
   const { data: prizePoolNetworkTvl, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
   const allUpcomingPrizeConfigsQueryResults = useAllUpcomingPrizeConfigs()
 
-  const isPrizePoolTokensFetched = allPrizePoolTokensQueryResults.every(
-    (queryResult) => queryResult.isFetched
-  )
   const isTicketTwabTvlsFetched = allTicketTwabTvlQueryResults.every(
     (queryResult) => queryResult.isFetched
   )
@@ -31,7 +27,6 @@ export const usePrizePoolNetworkTotalNumberOfPrizes = () => {
   )
 
   if (
-    !isPrizePoolTokensFetched ||
     !isTicketTwabTvlsFetched ||
     !isPrizePoolNetworkTvlFetched ||
     !isAllUpcomingPrizeConfigsFetched
@@ -44,16 +39,14 @@ export const usePrizePoolNetworkTotalNumberOfPrizes = () => {
 
   let totalNumberOfPrizes = 0
   prizePools.forEach((prizePool) => {
-    const { data: tokenData } = allPrizePoolTokensQueryResults.find(
-      (queryResult) => queryResult.data.prizePoolId === prizePool.id()
-    )
     const { data: prizePoolTvl } = allTicketTwabTvlQueryResults.find(
       (queryResult) => queryResult.data.prizePoolId === prizePool.id()
     )
     const prizeDistributor = prizeDistributors.find(
       (prizeDistributor) => prizeDistributor.chainId === prizePool.chainId
     )
-    const percentage = getPrizePoolPercentageOfPicks(
+    const { percentage } = getPrizePoolPercentageOfPicks(
+      prizePool,
       prizePoolTvl.amount.amount,
       prizePoolNetworkTvl.totalSupply.amount
     )

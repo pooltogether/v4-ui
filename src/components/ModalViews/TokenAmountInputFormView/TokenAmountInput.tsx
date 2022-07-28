@@ -3,12 +3,12 @@ import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { FORM_KEY } from '.'
 import { Token, useTokenBalance } from '@pooltogether/hooks'
 
 export interface TokenAmountInputProps {
   chainId: number
   token: Token
+  formKey: string
   useValidationRules: () => { [key: string]: (value: string) => boolean | string }
   className?: string
   widthClassName?: string
@@ -20,7 +20,7 @@ export interface TokenAmountInputProps {
  * @returns
  */
 export const TokenAmountInput = (props: TokenAmountInputProps) => {
-  const { chainId, token, className, useValidationRules, widthClassName } = props
+  const { chainId, token, className, formKey, useValidationRules, widthClassName } = props
 
   const form = useFormContext()
   const { t } = useTranslation()
@@ -33,16 +33,14 @@ export const TokenAmountInput = (props: TokenAmountInputProps) => {
       className={className}
       widthClassName={widthClassName}
       form={form}
-      inputKey={FORM_KEY.amount}
+      inputKey={formKey}
       token={token}
       balance={balance}
       isWalletConnected={Boolean(usersAddress)}
       chainId={chainId}
       t={t}
       validate={validate}
-      i18nKey='amount'
       autoComplete='off'
-      usersAddress={usersAddress}
     />
   )
 }

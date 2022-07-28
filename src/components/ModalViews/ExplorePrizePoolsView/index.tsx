@@ -6,7 +6,7 @@ import { Tabs, ViewProps } from '@pooltogether/react-components'
 import classNames from 'classnames'
 
 export const ExplorePrizePoolsView: React.FC<{} & ViewProps> = (props) => {
-  const { previous } = props
+  const { next } = props
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
   // Explore button to go there
@@ -30,14 +30,17 @@ export const ExplorePrizePoolsView: React.FC<{} & ViewProps> = (props) => {
                 <TopPoolsHorizontalList
                   selectPrizePool={(prizePool) => {
                     setSelectedPrizePoolAddress(prizePool.address)
-                    previous()
+                    next()
                   }}
                   marginClassName='mb-12 -mx-2 xs:-mx-8 px-2 xs:px-8'
                 />
+                <div className='flex justify-between font-bold text-lg mb-2'>
+                  <span>All prize pools</span>
+                </div>
                 <BrowsePrizePoolsList
                   selectPrizePool={(prizePool) => {
                     setSelectedPrizePoolAddress(prizePool.address)
-                    previous()
+                    next()
                   }}
                 />
               </div>

@@ -1,4 +1,4 @@
-import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 
 export const useSelectedPrizePoolTokens = () => {

@@ -10,7 +10,7 @@ const EMPTY_AMOUNT: Amount = {
 
 export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: string): Amount => {
   try {
-    if (!amountUnformatted || amountUnformatted === undefined) {
+    if (!amountUnformatted || amountUnformatted === undefined || !decimals) {
       return EMPTY_AMOUNT
     }
     const amount = ethers.utils.formatUnits(amountUnformatted, decimals)

@@ -1,4 +1,5 @@
 import { RPC_API_KEYS } from '@constants/config'
+import { NO_REFETCH } from '@constants/query'
 import {
   Delegation,
   DelegationId,
@@ -25,6 +26,7 @@ export const useAllTwabDelegations = (delegator: string) => {
     ['useAllTwabDelegations', supportedChainIds, delegator],
     () => getAllTwabDelegations(supportedChainIds, delegator),
     {
+      ...NO_REFETCH,
       enabled: !!delegator
     }
   )

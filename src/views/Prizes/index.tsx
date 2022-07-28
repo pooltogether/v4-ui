@@ -2,11 +2,9 @@ import React from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { PrizeDistributorV2, PrizePool } from '@pooltogether/v4-client-js'
-
 import { PoolPartySeason1CTA } from '@components/PoolPartySeason1CTA'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { SelectPrizePoolModal } from '@components/SelectPrizePoolModal'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { MultiDrawsCard } from './MultiDrawsCard'
@@ -14,6 +12,7 @@ import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { PastDrawsList } from './PastDrawsList'
 import { NoDrawsCard } from './MultiDrawsCard/NoDrawsCard'
 import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributor'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -26,8 +25,7 @@ export const PrizesUI = () => {
   const prizeDistributor = useSelectedPrizeDistributor()
   const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
+  const { isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
 
   if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (

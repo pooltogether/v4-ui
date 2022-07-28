@@ -26,7 +26,7 @@ export const AccountCard = (props: AccountCardProps) => {
         <DailyOdds />
         <WeeklyOdds />
       </div>
-      <TotalWinningsCard className='block sm:hidden' />
+      {/* <TotalWinningsCard className='block sm:hidden' /> */}
     </div>
   )
 }
@@ -51,11 +51,7 @@ const TotalBalance = (props: { className?: string }) => {
 }
 
 export const TotalBalanceAmount = () => {
-  const { data, isFetching, isFetched } = useUsersTotalBalances()
-
-  if (isFetching) {
-    return <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
-  }
+  const { data, isFetched } = useUsersTotalBalances()
 
   // If not fetched
   // If no token price or balance

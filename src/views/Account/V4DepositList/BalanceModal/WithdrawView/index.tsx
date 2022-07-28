@@ -1,5 +1,4 @@
 import {
-  FORM_KEY,
   TokenAmountFormValues,
   TokenAmountInputFormView
 } from '@components/ModalViews/TokenAmountInputFormView'
@@ -12,16 +11,19 @@ import { getAmountFromString } from '@utils/getAmountFromString'
 import { ViewIds } from '..'
 import { WithdrawInfoListItems } from './WithdrawInfoListItems'
 import { PrizeBreakdownCard } from './PrizeBreakdownCard'
+import { useWithdrawValidationRules } from '@hooks/v4/PrizePool/useWithdrawValidationRules'
+
+const FORM_KEY = 'withdrawAmount'
 
 export const WithdrawView: React.FC<
-  { setDepositAmount: (amount: Amount) => void; transaction?: Transaction } & ViewProps
+  { setWithdrawAmount: (amount: Amount) => void; withdrawTransaction?: Transaction } & ViewProps
 > = (props) => {
   const {
     previous,
     next,
     setSelectedViewId,
-    depositAmount,
-    setDepositAmount,
+    withdrawAmount,
+    setWithdrawAmount,
     transaction,
     viewIds
   } = props
@@ -30,22 +32,21 @@ export const WithdrawView: React.FC<
 
   return (
     <TokenAmountInputFormView
+      formKey={FORM_KEY}
       previous={previous}
       next={next}
       setSelectedViewId={setSelectedViewId}
       viewIds={viewIds}
       infoListItems={<WithdrawInfoListItems transaction={transaction} />}
-      useValidationRules={() => {
-        return {}
-      }}
+      useValidationRules={() => useWithdrawValidationRules(prizePool)}
       handleSubmit={(values: TokenAmountFormValues) => {
-        setDepositAmount(getAmountFromString(values[FORM_KEY.amount], tokens?.token.decimals))
+        setWithdrawAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))
         setSelectedViewId(ViewIds.withdrawReview)
       }}
-      carouselChildren={[<PrizeBreakdownCard key='prize-breakdown-card' />]}
+      // carouselChildren={[]}
       chainId={prizePool.chainId}
-      token={tokens?.token}
-      defaultValue={depositAmount?.amount}
-    ></TokenAmountInputFormView>
+      token={tokens?.ticket}
+      defaultValue={withdrawAmount?.amount}
+    />
   )
 }

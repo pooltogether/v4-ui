@@ -1,53 +1,33 @@
 import { useState } from 'react'
-import {
-  NetworkIcon,
-  ButtonSize,
-  ButtonTheme,
-  ButtonLink,
-  TokenIcon
-} from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
-
-import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
-
-import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
+import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
+import { useAllUsersV4BalancesWithFiat } from '@hooks/v4/PrizePool/useAllUsersV4BalancesWithFiat'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from '@components/Text/CardTitle'
-import { BalanceDelegatedToItem } from './BalanceDelegatedToItem'
-import { WithdrawView } from './WithdrawView'
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { AccountList } from '@views/Account/AccountList'
 import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
-import { TokenBalance } from '@components/TokenBalance'
-import { DelegateView } from './DelegateView'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { getAddress } from 'ethers/lib/utils'
 import { ethers } from 'ethers'
-import { TwabDelegatorItem } from './TwabDelegatorItem'
-import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
-import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { usePrizePoolTokens } from '@pooltogether/hooks'
-import classNames from 'classnames'
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
-import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { ContractLink } from '@components/BalanceBottomSheet'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 import { AccentTextButton } from '../AccentTextButton'
 import { BalanceModal } from './BalanceModal'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { ExplorePrizePoolsModal } from './ExplorePrizePoolsModal'
 
 export const V4DepositList = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data } = useAllUsersV4Balances(usersAddress)
+  const { data } = useAllUsersV4BalancesWithFiat(usersAddress)
 
   return (
     <div id='deposits'>
@@ -56,20 +36,20 @@ export const V4DepositList = () => {
         title={'Savings'}
         secondary={`$${data?.totalValueUsd.amountPretty}`}
       />
-      <DepositsList openModal={() => setIsOpen(true)} />
+      <DepositsList />
       <ExplorePrizePools />
     </div>
   )
 }
 
-const DepositsList: React.FC<{ openModal: () => void }> = () => {
+const DepositsList: React.FC = () => {
   const usersAddress = useUsersAddress()
   const [isOpen, setIsOpen] = useState(false)
-  const { data, isFetched, refetch } = useAllUsersV4Balances(usersAddress)
+  const { data, isFetched, refetch } = useAllUsersV4BalancesWithFiat(usersAddress)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
   const { setSelectedChainId } = useSelectedChainId()
 
-  if (!isFetched) {
+  if (data.balances.length === 0) {
     return <LoadingList />
   }
 
@@ -176,6 +156,7 @@ const ExplorePrizePools = () => {
       <AccentTextButton className='ml-4 mt-8' onClick={() => setIsOpen(true)}>
         Explore Prize Pools
       </AccentTextButton>
+      <ExplorePrizePoolsModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
 }

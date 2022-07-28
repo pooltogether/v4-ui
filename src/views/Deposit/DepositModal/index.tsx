@@ -1,5 +1,5 @@
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { BridgeTokensView } from './BridgeTokensView'
 import { ExplorePrizePoolsView } from '../../../components/ModalViews/ExplorePrizePoolsView'
 import { SwapTokensView } from './SwapTokensView'
@@ -8,7 +8,7 @@ import { DepositView } from './DepositView'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
-import { DepositReviewTransactionView } from './DepositReviewTransactionView'
+import { DepositReviewView } from './DepositReviewView'
 import { ethers, Overrides } from 'ethers'
 import { useTranslation } from 'react-i18next'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -17,10 +17,10 @@ import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelega
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 
-export enum DepositViewIds {
+export enum ViewIds {
   deposit,
   explore,
   reviewTransaction,
@@ -32,46 +32,48 @@ export enum DepositViewIds {
 
 const views: ModalWithViewStateView[] = [
   {
-    id: DepositViewIds.deposit,
-    view: DepositView
+    id: ViewIds.deposit,
+    view: DepositView,
+    title: 'Deposit in a Prize Pool'
   },
   {
-    id: DepositViewIds.explore,
+    id: ViewIds.explore,
     view: ExplorePrizePoolsView,
     title: 'Select a prize pool',
-    previousViewId: DepositViewIds.deposit,
-    onCloseViewId: DepositViewIds.deposit
+    nextViewId: ViewIds.deposit,
+    onCloseViewId: ViewIds.deposit,
+    hideNextNavButton: true
   },
   {
-    id: DepositViewIds.reviewTransaction,
-    view: DepositReviewTransactionView,
+    id: ViewIds.reviewTransaction,
+    view: DepositReviewView,
     title: 'Deposit review',
-    previousViewId: DepositViewIds.deposit,
-    onCloseViewId: DepositViewIds.deposit
+    previousViewId: ViewIds.deposit,
+    onCloseViewId: ViewIds.deposit
   },
   {
-    id: DepositViewIds.bridgeTokens,
+    id: ViewIds.bridgeTokens,
     view: BridgeTokensView,
-    previousViewId: DepositViewIds.deposit,
+    previousViewId: ViewIds.deposit,
     title: '',
     bgClassName: 'bg-card',
-    onCloseViewId: DepositViewIds.deposit
+    onCloseViewId: ViewIds.deposit
   },
   {
-    id: DepositViewIds.swapTokens,
+    id: ViewIds.swapTokens,
     view: SwapTokensView,
-    previousViewId: DepositViewIds.deposit,
+    previousViewId: ViewIds.deposit,
     title: '',
     bgClassName: 'bg-card',
-    onCloseViewId: DepositViewIds.deposit
+    onCloseViewId: ViewIds.deposit
   },
   {
-    id: DepositViewIds.walletConnection,
+    id: ViewIds.walletConnection,
     view: WalletConnectionView,
-    previousViewId: DepositViewIds.deposit,
+    previousViewId: ViewIds.deposit,
     title: 'Connect a wallet',
     bgClassName: 'bg-new-modal',
-    onCloseViewId: DepositViewIds.deposit
+    onCloseViewId: ViewIds.deposit
   }
 ]
 
@@ -80,7 +82,7 @@ export const DepositModal: React.FC<{
   closeModal: () => void
 }> = (props) => {
   const { isOpen, closeModal } = props
-  const [selectedViewId, setSelectedViewId] = useState<string | number>(DepositViewIds.deposit)
+  const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.deposit)
   const [depositAmount, setDepositAmount] = useState<Amount>()
   const prizePool = useSelectedPrizePool()
   const { chainId } = useSelectedChainId()
@@ -95,7 +97,10 @@ export const DepositModal: React.FC<{
     prizePool
   )
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
   const _sendTransaction = useSendTransaction()
 
   /**
@@ -139,7 +144,6 @@ export const DepositModal: React.FC<{
 
   return (
     <ModalWithViewState
-      title='Deposit in a Prize Pool'
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-white to-gradient-purple dark:from-gradient-purple dark:to-gradient-pink'
       isOpen={isOpen}
@@ -147,14 +151,14 @@ export const DepositModal: React.FC<{
         setDepositTransactionId('')
         closeModal()
       }}
-      viewIds={DepositViewIds}
+      viewIds={ViewIds}
       views={views}
       selectedViewId={selectedViewId}
       setSelectedViewId={setSelectedViewId}
       // BridgeTokensModalView
       chainId={chainId}
       // WalletConnectionModalView
-      onWalletConnected={() => setSelectedViewId(DepositViewIds.deposit)}
+      onWalletConnected={() => setSelectedViewId(ViewIds.deposit)}
       // DepositView
       token={tokenData?.token}
       transaction={depositTransaction}
@@ -162,7 +166,7 @@ export const DepositModal: React.FC<{
       // ReviewView
       depositAmount={depositAmount}
       sendTransaction={sendTransaction}
-      connectWallet={() => setSelectedViewId(DepositViewIds.walletConnection)}
+      connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
     />
   )
 }

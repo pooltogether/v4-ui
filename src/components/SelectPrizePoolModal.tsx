@@ -9,10 +9,10 @@ import { useTranslation } from 'react-i18next'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { Token, usePrizePoolTokens } from '@pooltogether/hooks'
-import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
+import { Token } from '@pooltogether/hooks'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { PrizePoolLabel } from './PrizePoolLabel'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 interface SelectPrizePoolModalProps {
   className?: string

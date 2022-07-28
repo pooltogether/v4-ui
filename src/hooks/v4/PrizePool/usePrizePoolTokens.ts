@@ -1,14 +1,7 @@
-import { Token } from '@pooltogether/hooks'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { NO_REFETCH } from '@constants/query'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Token } from '@pooltogether/hooks'
 import { useQuery, UseQueryOptions } from 'react-query'
-
-export interface PrizePoolTokens {
-  chainId: number
-  prizePoolId: string
-  token: Token
-  ticket: Token
-}
 
 export const PRIZE_POOL_TOKENS_QUERY_KEY = 'prizePoolTokens'
 
@@ -16,7 +9,7 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
   return useQuery(
     [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool?.id()],
     async () => getPrizePoolTokens(prizePool),
-    { ...NO_REFETCH } as UseQueryOptions<PrizePoolTokens>
+    { ...NO_REFETCH }
   )
 }
 
@@ -44,9 +37,9 @@ export const getPrizePoolTokens = async (prizePool: PrizePool) => {
   }
 
   return {
-    chainId: prizePool.chainId,
     prizePoolId: prizePool.id(),
+    chainId: prizePool.chainId,
     ticket,
     token
-  } as PrizePoolTokens
+  }
 }
