@@ -28,53 +28,6 @@ export enum ViewIds {
   walletConnection
 }
 
-const views: ModalWithViewStateView[] = [
-  {
-    id: ViewIds.main,
-    view: MainView
-  },
-  {
-    id: ViewIds.deposit,
-    view: DepositView,
-    title: 'Deposit',
-    previousViewId: ViewIds.main
-  },
-  {
-    id: ViewIds.depositReview,
-    view: DepositReviewView,
-    title: 'Deposit review',
-    previousViewId: ViewIds.deposit
-  },
-  {
-    id: ViewIds.withdraw,
-    view: WithdrawView,
-    title: 'Withdraw',
-    previousViewId: ViewIds.main,
-    bgClassName: 'bg-pt-purple-light dark:bg-pt-purple-dark'
-  },
-  {
-    id: ViewIds.withdrawReview,
-    view: WithdrawReviewView,
-    title: 'Withdraw review',
-    previousViewId: ViewIds.withdraw,
-    bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
-  },
-  {
-    id: ViewIds.moreInfo,
-    view: PrizePoolInfoView,
-    title: 'More info',
-    previousViewId: ViewIds.main
-  },
-  {
-    id: ViewIds.walletConnection,
-    view: WalletConnectionView,
-    previousViewId: ViewIds.deposit,
-    title: 'Connect a wallet',
-    bgClassName: 'bg-new-modal',
-    onCloseViewId: ViewIds.main
-  }
-]
-
 export const BalanceModal: React.FC<{
   isOpen: boolean
   closeModal: () => void
@@ -92,6 +45,53 @@ export const BalanceModal: React.FC<{
 
   const sendDepositTransaction = useSendDepositTransaction(depositAmount)
   const sendWithdrawTransaction = useSendWithdrawTransaction(withdrawAmount)
+
+  const views: ModalWithViewStateView[] = [
+    {
+      id: ViewIds.main,
+      view: MainView
+    },
+    {
+      id: ViewIds.deposit,
+      view: DepositView,
+      title: 'Deposit',
+      previousViewId: ViewIds.main
+    },
+    {
+      id: ViewIds.depositReview,
+      view: DepositReviewView,
+      title: 'Deposit review',
+      previousViewId: ViewIds.deposit
+    },
+    {
+      id: ViewIds.withdraw,
+      view: WithdrawView,
+      title: 'Withdraw',
+      previousViewId: ViewIds.main,
+      bgClassName: 'bg-pt-purple-light dark:bg-pt-purple-dark'
+    },
+    {
+      id: ViewIds.withdrawReview,
+      view: WithdrawReviewView,
+      title: 'Withdraw review',
+      previousViewId: ViewIds.withdraw,
+      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
+    },
+    {
+      id: ViewIds.moreInfo,
+      view: PrizePoolInfoView,
+      title: 'More info',
+      previousViewId: ViewIds.main
+    },
+    {
+      id: ViewIds.walletConnection,
+      view: WalletConnectionView,
+      previousViewId: ViewIds.deposit,
+      title: 'Connect a wallet',
+      bgClassName: 'bg-new-modal',
+      onCloseViewId: ViewIds.main
+    }
+  ]
 
   const closeModal = useCallback(() => {
     if (depositTransaction?.state === TransactionState.complete) {

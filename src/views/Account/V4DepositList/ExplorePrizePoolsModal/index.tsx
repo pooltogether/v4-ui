@@ -17,38 +17,6 @@ export enum ViewIds {
   walletConnection
 }
 
-const views: ModalWithViewStateView[] = [
-  {
-    id: ViewIds.explore,
-    view: ExplorePrizePoolsView,
-    title: 'Select a prize pool',
-    nextViewId: ViewIds.deposit,
-    hideNextNavButton: true
-  },
-  {
-    id: ViewIds.deposit,
-    view: DepositView,
-    title: 'Deposit in a Prize Pool',
-    previousViewId: ViewIds.explore,
-    onCloseViewId: ViewIds.explore
-  },
-  {
-    id: ViewIds.depositReview,
-    view: DepositReviewView,
-    title: 'Deposit review',
-    previousViewId: ViewIds.deposit,
-    onCloseViewId: ViewIds.explore
-  },
-  {
-    id: ViewIds.walletConnection,
-    view: WalletConnectionView,
-    previousViewId: ViewIds.deposit,
-    title: 'Connect a wallet',
-    bgClassName: 'bg-new-modal',
-    onCloseViewId: ViewIds.explore
-  }
-]
-
 export const ExplorePrizePoolsModal: React.FC<{
   isOpen: boolean
   closeModal: () => void
@@ -73,6 +41,38 @@ export const ExplorePrizePoolsModal: React.FC<{
     setSelectedViewId(ViewIds.explore)
     _closeModal()
   }, [depositTransaction?.state])
+
+  const views: ModalWithViewStateView[] = [
+    {
+      id: ViewIds.explore,
+      view: ExplorePrizePoolsView,
+      title: 'Select a prize pool',
+      nextViewId: ViewIds.deposit,
+      hideNextNavButton: true
+    },
+    {
+      id: ViewIds.deposit,
+      view: DepositView,
+      title: 'Deposit in a Prize Pool',
+      previousViewId: ViewIds.explore,
+      onCloseViewId: ViewIds.explore
+    },
+    {
+      id: ViewIds.depositReview,
+      view: DepositReviewView,
+      title: 'Deposit review',
+      previousViewId: ViewIds.deposit,
+      onCloseViewId: ViewIds.explore
+    },
+    {
+      id: ViewIds.walletConnection,
+      view: WalletConnectionView,
+      previousViewId: ViewIds.deposit,
+      title: 'Connect a wallet',
+      bgClassName: 'bg-new-modal',
+      onCloseViewId: ViewIds.explore
+    }
+  ]
 
   return (
     <ModalWithViewState

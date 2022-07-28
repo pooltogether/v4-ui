@@ -30,53 +30,6 @@ export enum ViewIds {
   walletConnection
 }
 
-const views: ModalWithViewStateView[] = [
-  {
-    id: ViewIds.deposit,
-    view: DepositView,
-    title: 'Deposit in a Prize Pool'
-  },
-  {
-    id: ViewIds.explore,
-    view: ExplorePrizePoolsView,
-    title: 'Select a prize pool',
-    nextViewId: ViewIds.deposit,
-    onCloseViewId: ViewIds.deposit,
-    hideNextNavButton: true
-  },
-  {
-    id: ViewIds.reviewTransaction,
-    view: DepositReviewView,
-    title: 'Deposit review',
-    previousViewId: ViewIds.deposit,
-    onCloseViewId: ViewIds.deposit
-  },
-  {
-    id: ViewIds.bridgeTokens,
-    view: BridgeTokensView,
-    previousViewId: ViewIds.deposit,
-    title: '',
-    bgClassName: 'bg-card',
-    onCloseViewId: ViewIds.deposit
-  },
-  {
-    id: ViewIds.swapTokens,
-    view: SwapTokensView,
-    previousViewId: ViewIds.deposit,
-    title: '',
-    bgClassName: 'bg-card',
-    onCloseViewId: ViewIds.deposit
-  },
-  {
-    id: ViewIds.walletConnection,
-    view: WalletConnectionView,
-    previousViewId: ViewIds.deposit,
-    title: 'Connect a wallet',
-    bgClassName: 'bg-new-modal',
-    onCloseViewId: ViewIds.deposit
-  }
-]
-
 export const DepositModal: React.FC<{
   isOpen: boolean
   closeModal: () => void
@@ -141,6 +94,53 @@ export const DepositModal: React.FC<{
     })
     setDepositTransactionId(transactionId)
   }
+
+  const views: ModalWithViewStateView[] = [
+    {
+      id: ViewIds.deposit,
+      view: DepositView,
+      title: 'Deposit in a Prize Pool'
+    },
+    {
+      id: ViewIds.explore,
+      view: ExplorePrizePoolsView,
+      title: 'Select a prize pool',
+      nextViewId: ViewIds.deposit,
+      onCloseViewId: ViewIds.deposit,
+      hideNextNavButton: true
+    },
+    {
+      id: ViewIds.reviewTransaction,
+      view: DepositReviewView,
+      title: 'Deposit review',
+      previousViewId: ViewIds.deposit,
+      onCloseViewId: ViewIds.deposit
+    },
+    {
+      id: ViewIds.bridgeTokens,
+      view: BridgeTokensView,
+      previousViewId: ViewIds.deposit,
+      title: '',
+      bgClassName: 'bg-card',
+      onCloseViewId: ViewIds.deposit
+    },
+    {
+      id: ViewIds.swapTokens,
+      view: SwapTokensView,
+      previousViewId: ViewIds.deposit,
+      title: '',
+      bgClassName: 'bg-card',
+      onCloseViewId: ViewIds.deposit
+    },
+    {
+      id: ViewIds.walletConnection,
+      view: WalletConnectionView,
+      previousViewId: ViewIds.deposit,
+      title: 'Connect a wallet',
+      bgClassName: 'bg-new-modal',
+      onCloseViewId: ViewIds.deposit
+    }
+  ]
 
   return (
     <ModalWithViewState

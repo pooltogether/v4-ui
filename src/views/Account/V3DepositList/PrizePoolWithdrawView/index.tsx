@@ -3,11 +3,7 @@ import { ModalTitle } from '@pooltogether/react-components'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import {
-  useCallTransaction,
-  useIsWalletOnChainId,
-  useTransaction
-} from '@pooltogether/wallet-connection'
+import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
@@ -59,7 +55,8 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     amountToWithdraw?.amountUnformatted
   )
 
-  const callTransaction = useCallTransaction('withdrawInstantlyFrom', poolAddress, PrizePoolAbi)
+  // const callTransaction = useCallTransaction('withdrawInstantlyFrom', poolAddress, PrizePoolAbi)
+  const callTransaction = (a: any) => console.error('temporarily disabled')
 
   const sendWithdrawTx = async () => {
     const args = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]

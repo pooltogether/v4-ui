@@ -13,7 +13,6 @@ import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import {
   useIsWalletOnChainId,
   useSendTransaction,
-  useCallTransaction,
   useTransaction
 } from '@pooltogether/wallet-connection'
 import { usePodExitFee } from '@hooks/v3/usePodExitFee'
@@ -60,7 +59,9 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
     token.decimals
   )
 
-  const callTransaction = useCallTransaction('withdraw', prizePool.addresses.pod, PodAbi)
+  // const callTransaction = useCallTransaction('withdraw', prizePool.addresses.pod, PodAbi)
+  // TODO:
+  const callTransaction = (a: any) => console.error('temporarily disabled')
 
   const sendWithdrawTx = async () => {
     const args = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]
