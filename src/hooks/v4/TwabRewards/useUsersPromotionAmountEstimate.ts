@@ -13,7 +13,7 @@ interface Promotion {
 }
 
 /**
- * Get the amount Estimate for a promotion for a user
+ * Get the estimated amount a user will receive for an entire promotion
  */
 export const useUsersPromotionAmountEstimate = (
   chainId: number,

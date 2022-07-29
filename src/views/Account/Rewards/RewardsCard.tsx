@@ -198,18 +198,17 @@ const PromotionRow = (props) => {
   } = useUsersPromotionAmountClaimable(chainId, promotionId, usersPromotionData, token)
   const { amount: claimableAmount, usd: claimableUsd } = claimable || {}
 
-  const {
-    data: estimate,
-    isFetched: estimateIsFetched,
-    refetch: refetchEstimate
-  } = useUsersPromotionAmountEstimate(chainId, promotion, token)
-  const { amount: estimateAmount, usd: estimateUsd } = estimate || {}
+  const { data: estimate, refetch: refetchEstimate } = useUsersPromotionAmountEstimate(
+    chainId,
+    promotion,
+    token
+  )
+  const { amount: estimateAmount } = estimate || {}
 
   const vapr = usePromotionVAPR(promotion)
+  // TODO: This might make more sense to check the user's TWAB balance for this chain/prizePool
+  // to see if it is 0 or not
   const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
-
-  const total = Number(estimateAmount?.amount) + Number(claimableAmount?.amount)
-  const totalUsd = estimateUsd + claimableUsd
 
   const refetch = () => {
     refetchUsersRewardsHistory()
@@ -284,10 +283,7 @@ const PromotionRow = (props) => {
             claimableAmount={claimableAmount}
             claimableUsd={claimableUsd}
             estimateAmount={estimateAmount}
-            estimateUsd={estimateUsd}
             token={token}
-            total={total}
-            totalUsd={totalUsd}
             refetch={refetch}
             usersPromotionData={usersPromotionData}
           />
@@ -370,7 +366,6 @@ const ClaimModalForm = (props) => {
     claimableAmount,
     claimableUsd,
     estimateAmount,
-    estimateUsd,
     promotion,
     transactionPending,
     token,
@@ -390,6 +385,8 @@ const ClaimModalForm = (props) => {
 
   const vapr = usePromotionVAPR(promotion)
 
+  // TODO: This might make more sense to check the user's TWAB balance for this chain/prizePool
+  // to see if it is 0 or not
   const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
   const userNeedsToDeposit = !userIsEarning && claimableAmount?.amountUnformatted.isZero()
 
@@ -505,6 +502,8 @@ const RewardsEndInBanner = (props) => {
   const [days, sentence] = useRewardsEndInSentence(promotion, token)
   const hasEnded = days <= 0
 
+  // TODO: This might make more sense to check the user's TWAB balance for this chain/prizePool
+  // to see if it is 0 or not
   const userIsEarning = estimateAmount?.amountUnformatted?.gt(0)
 
   return (
@@ -682,15 +681,11 @@ const UnitPanel = (props) => {
 }
 
 const BalanceDisplay = (props) => {
-  const { prizePool, claimableIsFetched, estimateAmount, claimableAmount, promotion } = props
+  const { prizePool, claimableAmount, promotion } = props
 
   let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
 
-  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(
-    prizePool,
-    promotion,
-    estimateAmount
-  )
+  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(prizePool, promotion)
   if (currentEpochEstimateAccrued) {
     balance = balance + currentEpochEstimateAccrued
   }
