@@ -1,7 +1,12 @@
 import { sToD, msToS } from '@pooltogether/utilities'
-import { Amount } from '@pooltogether/hooks'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { formatUnits } from '@ethersproject/units'
+import { useToken } from '@pooltogether/hooks'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
+import { useUsersPrizePoolTwabBetween } from '@hooks/v4/PrizePool/useUsersPrizePoolTwabBetween'
+import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
 
 export const useNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
@@ -35,21 +40,39 @@ export const usePromotionDaysRemaining = (promotion: Promotion) => {
   return sToD(lastEpochEndTime) - sToD(now)
 }
 
-export const useUsersCurrentEpochEstimateAccrued = (
-  promotion: Promotion,
-  estimateAmount: Amount
-) => {
-  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
+export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promotion: Promotion) => {
+  const { prizePoolTotalSupply: totalTwabSupply, decimals: depositTokenDecimals } =
+    useChainPrizePoolTicketTotalSupply(prizePool.chainId)
 
+  const { data: token, isFetched: tokenIsFetched } = useToken(prizePool.chainId, promotion.token)
+
+  const usersAddress = useUsersAddress()
   const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
+  const epochStartTimestamp = currentEpoch?.epochStartTimestamp
+  const now = Math.round(msToS(Date.now()))
+  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabBetween(
+    usersAddress,
+    prizePool,
+    epochStartTimestamp,
+    now
+  )
 
-  let currentEpochEstimateAccrued
-  if (currentEpoch) {
+  let currentEpochAccrued
+  if (currentEpoch && isTwabDataFetched && tokenIsFetched) {
+    const users = formatUnits(twabData.twab.amountUnformatted, depositTokenDecimals)
+    const total = formatUnits(totalTwabSupply, depositTokenDecimals)
+
+    const usersChainTwabPercentage = parseFloat(users) / parseFloat(total)
+
     const epochSecondsRemaining = currentEpoch?.epochEndTimestamp - msToS(Date.now())
     const epochElapsedPercent = 1 - epochSecondsRemaining / promotion.epochDuration
 
-    currentEpochEstimateAccrued = estimatePerEpoch * epochElapsedPercent
+    const tokensPerEpochFormatted = formatUnits(promotion.tokensPerEpoch, token.decimals)
+
+    const currentEpochTotalEstimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted)
+
+    currentEpochAccrued = epochElapsedPercent * currentEpochTotalEstimate
   }
 
-  return currentEpochEstimateAccrued
+  return currentEpochAccrued
 }
