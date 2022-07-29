@@ -5,7 +5,7 @@ import { formatUnits } from '@ethersproject/units'
 import { useToken } from '@pooltogether/hooks'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
-import { useUsersPrizePoolTwabAtTimestamp } from '@hooks/v4/PrizePool/useUsersPrizePoolTwabAtTimestamp'
+import { useUsersPrizePoolTwabBetween } from '@hooks/v4/PrizePool/useUsersPrizePoolTwabBetween'
 import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
 
 export const useNextRewardIn = (promotion: Promotion) => {
@@ -49,21 +49,13 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
   const usersAddress = useUsersAddress()
   const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
   const epochStartTimestamp = currentEpoch?.epochStartTimestamp
-  // console.log(epochStartTimestamp)
-  const timestamp = Math.round(msToS(Date.now()))
-  // console.log(timestamp)
-  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabAtTimestamp(
+  const now = Math.round(msToS(Date.now()))
+  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabBetween(
     usersAddress,
     prizePool,
-    epochStartTimestamp
+    epochStartTimestamp,
+    now
   )
-  // const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabAtTimestamp(
-  //   usersAddress,
-  //   prizePool,
-  //   epochStartTimestamp
-  // )
-  // console.log(twabData)
-  console.log(twabData?.twab?.amountUnformatted)
 
   let currentEpochAccrued
   if (currentEpoch && isTwabDataFetched && tokenIsFetched) {
@@ -78,10 +70,8 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
     const tokensPerEpochFormatted = formatUnits(promotion.tokensPerEpoch, token.decimals)
 
     const currentEpochTotalEstimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted)
-    // console.log(currentEpochTotalEstimate)
 
     currentEpochAccrued = epochElapsedPercent * currentEpochTotalEstimate
-    // console.log(currentEpochAccrued)
   }
 
   return currentEpochAccrued
