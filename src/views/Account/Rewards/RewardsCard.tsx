@@ -49,6 +49,7 @@ import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPr
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import {
   useUsersCurrentEpochEstimateAccrued,
   useNextRewardIn,
@@ -183,6 +184,7 @@ const PromotionRow = (props) => {
   const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
 
   const usersAddress = useUsersAddress()
+  const prizePool = usePrizePoolByChainId(chainId)
 
   const { data: usersPromotionData, refetch: refetchUsersRewardsAmount } =
     useUsersPromotionRewardsAmount(chainId, Number(id), maxCompletedEpochId, usersAddress)
@@ -264,10 +266,11 @@ const PromotionRow = (props) => {
                   className='mr-1 xs:mr-2'
                 />
                 <BalanceDisplay
+                  prizePool={prizePool}
                   promotion={promotion}
                   estimateAmount={estimateAmount}
                   claimableAmount={claimableAmount}
-                  isFetched={claimableIsFetched}
+                  claimableIsFetched={claimableIsFetched}
                 />{' '}
                 <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />
               </div>
@@ -679,11 +682,15 @@ const UnitPanel = (props) => {
 }
 
 const BalanceDisplay = (props) => {
-  const { isFetched, estimateAmount, claimableAmount, promotion } = props
+  const { prizePool, claimableIsFetched, estimateAmount, claimableAmount, promotion } = props
 
   let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
 
-  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(promotion, estimateAmount)
+  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(
+    prizePool,
+    promotion,
+    estimateAmount
+  )
   if (currentEpochEstimateAccrued) {
     balance = balance + currentEpochEstimateAccrued
   }
@@ -696,7 +703,7 @@ const BalanceDisplay = (props) => {
         'opacity-50': balance <= 0
       })}
     >
-      {isReady && isFetched ? (
+      {isReady ? (
         <>{numberWithCommas(balance)}</>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />

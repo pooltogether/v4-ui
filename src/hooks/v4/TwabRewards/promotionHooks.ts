@@ -1,7 +1,10 @@
 import { sToD, msToS } from '@pooltogether/utilities'
 import { Amount } from '@pooltogether/hooks'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { PrizePool } from '@pooltogether/v4-client-js'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
+import { useUsersPrizePoolTwabAtTimestamp } from '@hooks/v4/PrizePool/useUsersPrizePoolTwabAtTimestamp'
 
 export const useNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
@@ -36,12 +39,22 @@ export const usePromotionDaysRemaining = (promotion: Promotion) => {
 }
 
 export const useUsersCurrentEpochEstimateAccrued = (
+  prizePool: PrizePool,
   promotion: Promotion,
   estimateAmount: Amount
 ) => {
-  const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
+  // const estimatePerEpoch = Number(estimateAmount?.amount) / promotion.numberOfEpochs
 
+  const usersAddress = useUsersAddress()
   const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
+  const epochStartTimestamp = currentEpoch?.epochStartTimestamp
+
+  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabAtTimestamp(
+    usersAddress,
+    prizePool,
+    epochStartTimestamp
+  )
+  console.log({ twabData })
 
   let currentEpochEstimateAccrued
   if (currentEpoch) {
