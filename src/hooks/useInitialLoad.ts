@@ -1,3 +1,5 @@
+import { useConnectWallet } from '@pooltogether/wallet-connection'
+import { useConnect } from 'wagmi'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
 
 /**
@@ -7,6 +9,7 @@ import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
  */
 export const useInitialLoad = () => {
   const queryResults = useAllPrizePoolTokens()
+  const { status } = useConnect()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return isFetched
+  return isFetched && status !== 'reconnecting' && status !== 'connecting'
 }
