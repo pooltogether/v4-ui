@@ -33,7 +33,7 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
     const isReady =
       tokenPricesIsFetched && tokenIsFetched && totalTwabSupply && depositToken?.decimals
 
-    if (daysRemaining > 0 && isReady) {
+    if (daysRemaining > 0 && isReady && tokenPrices) {
       const promotionTokenUsd = tokenPrices[promotionTokenAddress].usd
       const depositTokenUsd = 1 // assume 1 ptaUSDC equals $1 here
 

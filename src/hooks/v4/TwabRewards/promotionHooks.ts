@@ -49,11 +49,21 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
   const usersAddress = useUsersAddress()
   const currentEpoch = promotion.epochCollection.remainingEpochsArray?.[0]
   const epochStartTimestamp = currentEpoch?.epochStartTimestamp
+  // console.log(epochStartTimestamp)
+  const timestamp = Math.round(msToS(Date.now()))
+  // console.log(timestamp)
   const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabAtTimestamp(
     usersAddress,
     prizePool,
     epochStartTimestamp
   )
+  // const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwabAtTimestamp(
+  //   usersAddress,
+  //   prizePool,
+  //   epochStartTimestamp
+  // )
+  // console.log(twabData)
+  console.log(twabData?.twab?.amountUnformatted)
 
   let currentEpochAccrued
   if (currentEpoch && isTwabDataFetched && tokenIsFetched) {
@@ -68,7 +78,10 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
     const tokensPerEpochFormatted = formatUnits(promotion.tokensPerEpoch, token.decimals)
 
     const currentEpochTotalEstimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted)
+    // console.log(currentEpochTotalEstimate)
+
     currentEpochAccrued = epochElapsedPercent * currentEpochTotalEstimate
+    // console.log(currentEpochAccrued)
   }
 
   return currentEpochAccrued
