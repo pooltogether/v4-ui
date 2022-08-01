@@ -590,6 +590,8 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
     <span className='mr-2'>👍</span>
   )
 
+  const isOPToken = token.symbol === 'OP'
+
   return (
     <>
       <div className='flex flex-grow flex-col justify-between'>
@@ -620,8 +622,10 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
           </div>
         </div>
 
+        {isOPToken && <OPTokenCTAs />}
+
         <div className='space-y-4'>
-          <AccountPageButton {...props} />
+          {!isOPToken && <AccountPageButton {...props} />}
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
@@ -632,6 +636,38 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
         </div>
       </div>
     </>
+  )
+}
+
+const OPTokenCTAs = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <>
+      <div className='mb-8 px-4 py-8 rounded-lg text-center' style={{ backgroundColor: '#D72B1D' }}>
+        <p className='text-xl' style={{ textShadow: 'rgb(170,4,4) 0 0 10px' }}>
+          🗳
+        </p>
+
+        <p>Learn about voting and delegate the voting power of your OP now:</p>
+        <DelegateOPButton />
+      </div>
+    </>
+  )
+}
+
+export const DelegateOPButton = (props) => {
+  const { t } = useTranslation()
+
+  return (
+    <SquareLink
+      href=''
+      size={SquareButtonSize.md}
+      theme={SquareButtonTheme.white}
+      className='w-full text-center mt-2'
+    >
+      {t('delegateOp', 'Delegate OP')}
+    </SquareLink>
   )
 }
 
