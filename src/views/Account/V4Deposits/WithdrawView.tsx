@@ -85,6 +85,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
       <ModalTitle
         chainId={prizePool.chainId}
         title={t('withdrawTicker', { ticker: token.symbol })}
+        className='pb-2'
       />
       <WithdrawStepContent
         form={form}

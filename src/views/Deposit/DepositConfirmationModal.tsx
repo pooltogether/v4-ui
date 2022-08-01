@@ -24,7 +24,7 @@ import { InfoListHeader, ModalInfoList } from '@components/InfoList'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
-import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
+import { ModalDepositGate } from '@views/Deposit/ModalDepositGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
@@ -81,7 +81,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
-        className='flex flex-col space-y-1'
+        className='flex flex-col space-y-1 xs:space-y-2'
       >
         <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
         <ModalLoadingGate className='mt-8' />
@@ -93,10 +93,15 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
-        className='flex flex-col space-y-1'
+        className='flex flex-col space-y-1 xs:space-y-2'
       >
-        <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
-        <ModalApproveGate
+        <ModalTitle
+          chainId={chainId}
+          title={t('completeYourDeposit', 'Complete your deposit')}
+          className='pb-2'
+        />
+        <ModalDepositGate
+          token={token}
           amountToDeposit={amountToDeposit}
           chainId={chainId}
           approveTx={approveTx}
@@ -111,7 +116,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
-        className='flex flex-col space-y-1'
+        className='flex flex-col space-y-1 xs:space-y-2'
       >
         <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
         <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
@@ -142,7 +147,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         label={t('confirmDepositModal', 'Confirm deposit - modal')}
         open={isOpen}
         onDismiss={closeModal}
-        className='flex flex-col space-y-1'
+        className='flex flex-col space-y-1 xs:space-y-2'
       >
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
@@ -158,7 +163,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       label={t('confirmDepositModal', 'Confirm deposit - modal')}
       open={isOpen}
       onDismiss={closeModal}
-      className='flex flex-col space-y-1'
+      className='flex flex-col space-y-1 xs:space-y-2'
     >
       <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
       <div className='w-full mx-auto mt-8 space-y-4'>

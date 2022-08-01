@@ -15,7 +15,7 @@ import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 
-interface ModalApproveGateProps {
+interface V3ModalApproveGateProps {
   className?: string
   amountToDeposit?: Amount
   chainId: number
@@ -23,7 +23,7 @@ interface ModalApproveGateProps {
   sendApproveTx: () => void
 }
 
-export const ModalApproveGate = (props: ModalApproveGateProps) => {
+export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
   const { className, chainId, approveTx, sendApproveTx, amountToDeposit } = props
 
   const { t } = useTranslation()

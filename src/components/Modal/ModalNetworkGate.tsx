@@ -29,7 +29,7 @@ export const ModalNetworkGate = (props: ModalNetworkGateProps) => {
             { networkName }
           )}
         </p>
-        <p className='mb-10'>
+        <p className='mb-4'>
           {t(
             'toContinueYouMustSwitchNetwork',
             'To continue you must switch the network your wallet is on to {{networkName}}, or connect another wallet.',
