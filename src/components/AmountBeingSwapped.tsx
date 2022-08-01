@@ -18,19 +18,19 @@ export const AmountBeingSwapped = (props: AmountBeingSwappedProps) => {
   return (
     <div>
       <span className='mb-3 font-bold opacity-50 uppercase'>{title}</span>
-      <div className='bg-pt-purple-lighter dark:bg-pt-purple-dark border-2 border-pt-purple-light dark:border-pt-purple-darkest rounded-lg relative text-lg font-bold'>
+      <div className='bg-pt-purple-lighter dark:bg-pt-purple-dark border-2 border-pt-purple-light dark:border-pt-purple-darkest rounded-lg relative text-xs xs:text-lg font-bold'>
         <div className='absolute inset-0 flex justify-center'>
           <div className='bg-pt-purple-light dark:bg-pt-purple-darkest rounded-full p-2 h-fit-content my-auto'>
             <DownArrow className='text-inverse' />
           </div>
         </div>
-        <div className='flex justify-between items-center border-b border-pt-purple-light dark:border-pt-purple-darkest p-4'>
+        <div className='flex justify-between items-center border-b border-pt-purple-light dark:border-pt-purple-darkest p-2 xs:p-4'>
           <TokenAndSymbol chainId={chainId} token={from} />
           <span>
             {numberWithCommas(amountFrom.amount, { precision: getMaxPrecision(amountFrom.amount) })}
           </span>
         </div>
-        <div className='flex justify-between items-center border-t border-pt-purple-light dark:border-pt-purple-darkest p-4'>
+        <div className='flex justify-between items-center border-t border-pt-purple-light dark:border-pt-purple-darkest p-2 xs:p-4'>
           <TokenAndSymbol chainId={chainId} token={to} />
           <span>
             {numberWithCommas(amountTo.amount, { precision: getMaxPrecision(amountTo.amount) })}

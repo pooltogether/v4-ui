@@ -67,7 +67,13 @@ export const InfoListItem = (props: InfoListItemProps) => {
     <li className={classnames('flex justify-between', className, fontSizeClassName)}>
       <div className={classnames('flex space-x-1 items-center', labelClassName)}>
         <span className='capitalize'>{label}</span>
-        {labelToolTip && <Tooltip id={`info-item-${label}`} tip={labelToolTip} />}
+        {labelToolTip && (
+          <Tooltip
+            id={`info-item-${label}`}
+            tip={labelToolTip}
+            iconSizeClassName='w-3 h-3 xs:w-4 xs:h-4'
+          />
+        )}
         {labelLink && (
           <a
             href={labelLink}
@@ -75,7 +81,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
             rel='noopener noreferrer'
             className='hover:opacity-50 transition-opacity'
           >
-            <FeatherIcon icon='external-link' className='h-4 w-4' />
+            <FeatherIcon icon='external-link' className='w-3 h-3 xs:h-4 xs:w-4' />
           </a>
         )}
       </div>
@@ -87,7 +93,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
 }
 
 InfoListItem.defaultProps = {
-  fontSizeClassName: 'text-xxs xs:text-xs'
+  fontSizeClassName: 'text-xxxs xs:text-xs'
 }
 
 interface InfoListHeaderProps {
@@ -103,5 +109,5 @@ export const InfoListHeader = (props: InfoListHeaderProps) => {
 }
 
 InfoListHeader.defaultProps = {
-  textClassName: 'font-semibold capitalize'
+  textClassName: 'font-semibold capitalize text-xxs xs:text-sm'
 }
