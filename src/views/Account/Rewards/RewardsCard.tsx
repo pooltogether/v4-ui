@@ -463,7 +463,8 @@ const ClaimModalForm = (props) => {
                 sizeClassName='w-4 h-4'
                 className='mx-1'
               />{' '}
-              {numberWithCommas(amount.amountPretty)} {symbol}
+              {symbol}
+              {/* {numberWithCommas(amount.amountPretty)} {symbol} */}
             </>
           </span>
         </div>
