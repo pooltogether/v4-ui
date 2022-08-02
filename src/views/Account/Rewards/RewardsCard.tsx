@@ -462,7 +462,7 @@ const ClaimModalForm = (props) => {
                 address={token?.address}
                 sizeClassName='w-4 h-4'
                 className='mx-1'
-              />{' '}
+              />
               {numberWithCommas(amount.amountPretty)} {symbol}
             </>
           </span>
@@ -571,16 +571,18 @@ const useRewardsEndInSentence = (promotion, token) => {
 interface ClaimModalReceiptProps {
   chainId: number
   token: Token
+  claimableAmount: Amount
   claimableUsd: number
   tx: Transaction
   transactionPending: boolean
 }
 
 const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
-  const { chainId, token, claimableUsd, tx, transactionPending } = props
+  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending } = props
   const { t } = useTranslation()
 
   const [cachedClaimableUsd] = useState(claimableUsd)
+  const [cachedClaimableAmount] = useState(claimableAmount)
 
   const label = transactionPending ? t('claiming', 'Claiming') : t('claimed', 'Claimed!')
 
@@ -610,13 +612,14 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
           <div className='flex items-center justify-center w-full bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl p-6 my-4 xs:my-8 xs:text-xl font-bold'>
             <span className='mx-auto flex items-center mt-1'>
               {icon}
-              <span className='opacity-70 font-bold ml-1 mr-2'>{label}</span>
+              <span className='opacity-70 font-bold mr-2'>{label}</span>
               <TokenIcon
                 chainId={chainId}
                 address={token?.address}
                 sizeClassName='w-4 h-4 xs:w-6 xs:h-6'
+                className='ml-2 mr-1'
               />{' '}
-              <span className='mx-1'>{numberWithCommas(cachedClaimableUsd)}</span>
+              <span className='mx-1'>{numberWithCommas(cachedClaimableAmount.amountPretty)}</span>
               <span>{token.symbol}</span>
             </span>
           </div>
