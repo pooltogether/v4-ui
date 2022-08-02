@@ -75,26 +75,28 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
   const { t } = useTranslation()
   const amountUnformatted = amountToDeposit?.amountUnformatted
 
+  const bottomSheetProps = {
+    label: t('confirmDepositModal', 'Confirm deposit - modal'),
+    open: isOpen,
+    onDismiss: closeModal,
+    className: 'flex flex-col space-y-1 xs:space-y-2'
+  }
+
+  let content = null
   if (!isDataFetched) {
-    return (
-      <BottomSheet
-        label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        open={isOpen}
-        onDismiss={closeModal}
-        className='flex flex-col space-y-1 xs:space-y-2'
-      >
+    content = (
+      <>
         <ModalTitle chainId={chainId} title={t('loadingYourData', 'Loading your data')} />
         <ModalLoadingGate className='mt-8' />
-      </BottomSheet>
+      </>
     )
-  } else if (!!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) {
-    return (
-      <BottomSheet
-        label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        open={isOpen}
-        onDismiss={closeModal}
-        className='flex flex-col space-y-1 xs:space-y-2'
-      >
+  } else if (
+    (!!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) ||
+    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    depositTx?.status === TransactionStatus.pendingUserConfirmation
+  ) {
+    content = (
+      <>
         <ModalTitle
           chainId={chainId}
           title={t('completeYourDeposit', 'Complete your deposit')}
@@ -105,19 +107,16 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           amountToDeposit={amountToDeposit}
           chainId={chainId}
           approveTx={approveTx}
+          depositTx={depositTx}
           sendApproveTx={sendApproveTx}
+          sendDepositTx={sendDepositTx}
           className='mt-8'
         />
-      </BottomSheet>
+      </>
     )
   } else if (depositTx?.status === TransactionStatus.error) {
-    return (
-      <BottomSheet
-        label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        open={isOpen}
-        onDismiss={closeModal}
-        className='flex flex-col space-y-1 xs:space-y-2'
-      >
+    content = (
+      <>
         <ModalTitle chainId={chainId} title={t('errorDepositing', 'Error depositing')} />
         <p className='my-2 text-accent-1 text-center mx-8'>😔 {t('ohNo', 'Oh no')}!</p>
         <p className='mb-8 text-accent-1 text-center mx-8'>
@@ -136,104 +135,99 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         >
           {t('tryAgain', 'Try again')}
         </SquareButton>
-      </BottomSheet>
+      </>
     )
-  } else if (
-    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
-    depositTx?.status === TransactionStatus.success
-  ) {
-    return (
-      <BottomSheet
-        label={t('confirmDepositModal', 'Confirm deposit - modal')}
-        open={isOpen}
-        onDismiss={closeModal}
-        className='flex flex-col space-y-1 xs:space-y-2'
-      >
+  } else if (depositTx?.status === TransactionStatus.success) {
+    bottomSheetProps.className = 'flex flex-col space-y-4'
+
+    content = (
+      <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
         <AddTicketToWallet />
-      </BottomSheet>
+      </>
+    )
+  } else {
+    content = (
+      <>
+        <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
+        <div className='w-full mx-auto mt-8 space-y-4'>
+          <p className='text-center text-xxs xs:text-xs opacity-70'>
+            <Trans
+              i18nKey='checkDailyForMoreInfoSeeHere'
+              components={{
+                a: (
+                  <a
+                    href='https://docs.pooltogether.com/welcome/faq#prizes-and-winning'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-highlight-1 hover:opacity-70 transition-opacity'
+                  />
+                )
+              }}
+            />
+          </p>
+          <AmountBeingSwapped
+            title={t('depositTicker', { ticker: token.symbol })}
+            chainId={chainId}
+            from={token}
+            to={ticket}
+            amountFrom={amountToDeposit}
+            amountTo={amountToDeposit}
+          />
+
+          {prizePool && (
+            <>
+              <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
+
+              <ModalInfoList>
+                {prizePool && (
+                  <>
+                    <InfoListHeader
+                      className='mt-2'
+                      textColorClassName='text-pt-purple-light'
+                      label={'Estimated stats'}
+                    />
+                    <PrizePoolNetworkAPRItem />
+                    <TwabRewardsAprItem />
+                    <UpdatedPrizePoolNetworkOddsListItem
+                      amount={amountToDeposit}
+                      action={EstimateAction.deposit}
+                      prizePool={prizePool}
+                    />
+                    <UpdatedPrizePoolOddsListItem
+                      amount={amountToDeposit}
+                      prizePool={prizePool}
+                      action={EstimateAction.deposit}
+                    />
+                  </>
+                )}
+                <EstimatedDepositGasItems chainId={chainId} />
+              </ModalInfoList>
+            </>
+          )}
+
+          <TxButton
+            className='mt-8 w-full'
+            chainId={chainId}
+            onClick={sendDepositTx}
+            state={depositTx?.state}
+            status={depositTx?.status}
+          >
+            {t('confirmDeposit', 'Confirm deposit')}
+          </TxButton>
+          <TransactionTosDisclaimer buttonTexti18nKey='confirmDeposit' />
+        </div>
+      </>
     )
   }
 
   return (
-    <BottomSheet
-      label={t('confirmDepositModal', 'Confirm deposit - modal')}
-      open={isOpen}
-      onDismiss={closeModal}
-      className='flex flex-col space-y-1 xs:space-y-2'
-    >
-      <ModalTitle chainId={chainId} title={t('depositConfirmation')} />
-      <div className='w-full mx-auto mt-8 space-y-4'>
-        <p className='text-center text-xxs xs:text-xs opacity-70'>
-          <Trans
-            i18nKey='checkDailyForMoreInfoSeeHere'
-            components={{
-              a: (
-                <a
-                  href='https://docs.pooltogether.com/welcome/faq#prizes-and-winning'
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='text-highlight-1 hover:opacity-70 transition-opacity'
-                />
-              )
-            }}
-          />
-        </p>
-        <AmountBeingSwapped
-          title={t('depositTicker', { ticker: token.symbol })}
-          chainId={chainId}
-          from={token}
-          to={ticket}
-          amountFrom={amountToDeposit}
-          amountTo={amountToDeposit}
-        />
-
-        {prizePool && (
-          <>
-            <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
-
-            <ModalInfoList>
-              {prizePool && (
-                <>
-                  <InfoListHeader
-                    className='mt-2'
-                    textColorClassName='text-pt-purple-light'
-                    label={'Estimated stats'}
-                  />
-                  <PrizePoolNetworkAPRItem />
-                  <TwabRewardsAprItem />
-                  <UpdatedPrizePoolNetworkOddsListItem
-                    amount={amountToDeposit}
-                    action={EstimateAction.deposit}
-                    prizePool={prizePool}
-                  />
-                  <UpdatedPrizePoolOddsListItem
-                    amount={amountToDeposit}
-                    prizePool={prizePool}
-                    action={EstimateAction.deposit}
-                  />
-                </>
-              )}
-              <EstimatedDepositGasItems chainId={chainId} />
-            </ModalInfoList>
-          </>
-        )}
-
-        <TxButton
-          className='mt-8 w-full'
-          chainId={chainId}
-          onClick={sendDepositTx}
-          state={depositTx?.state}
-          status={depositTx?.status}
-        >
-          {t('confirmDeposit', 'Confirm deposit')}
-        </TxButton>
-        <TransactionTosDisclaimer buttonTexti18nKey='confirmDeposit' />
-      </div>
-    </BottomSheet>
+    <>
+      <BottomSheet {...bottomSheetProps}>{content}</BottomSheet>
+    </>
   )
 }
 

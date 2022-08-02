@@ -1,5 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { Token, Amount } from '@pooltogether/hooks'
 import {
@@ -23,47 +24,67 @@ interface ModalDepositGateProps {
   amountToDeposit?: Amount
   chainId: number
   approveTx: Transaction
+  depositTx: Transaction
   sendApproveTx: () => void
+  sendDepositTx: () => void
   className?: string
 }
 
-export const ModalDepositGate = (props: ModalDepositGateProps) => {
-  const { className, chainId, approveTx, sendApproveTx, amountToDeposit, token } = props
+enum Step {
+  approve = 'approve',
+  deposit = 'deposit'
+}
 
-  console.log(token)
+export const ModalDepositGate = (props: ModalDepositGateProps) => {
+  const {
+    className,
+    chainId,
+    approveTx,
+    depositTx,
+    sendApproveTx,
+    sendDepositTx,
+    amountToDeposit
+  } = props
 
   const { t } = useTranslation()
 
-  if (approveTx?.state === TransactionState.pending) {
-    const blockExplorerUrl = formatBlockExplorerTxUrl(approveTx.response?.hash, chainId)
+  const step = approveTx?.state === TransactionState.pending ? Step.approve : Step.deposit
 
+  if (
+    approveTx?.state === TransactionState.pending ||
+    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    depositTx?.status === TransactionStatus.pendingUserConfirmation
+  ) {
     return (
       <>
-        <div className='flex flex-col xs:flex-row items-center justify-center xs:justify-between px-4 py-2 text-xs font-bold bg-actually-black bg-opacity-5 dark:bg-white dark:bg-opacity-10 rounded-lg'>
-          <span className='uppercase font-averta-bold opacity-40'>
-            {t('depositSummary', 'Deposit summary')}
-          </span>
-          <div className='flex flex-col justify-center xs:justify-start'>
-            <div className='flex items-center justify-center xs:ml-2'>
-              <TokenIcon chainId={chainId} address={token.address} className='mr-1' />{' '}
-              {amountToDeposit.amountPretty} {token.symbol}
-            </div>
-            <div className='flex items-center justify-center xs:justify-start xs:ml-2'>
-              <NetworkIcon chainId={chainId} className='mr-1' />{' '}
-              {getNetworkNiceNameByChainId(chainId)}
-            </div>
-          </div>
-        </div>
+        <DepositSummary {...props} />
+
         <div className={classNames(className, 'flex flex-col pt-4')}>
           <div className='flex'>
-            <div className='relative'>
-              <div
-                className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-40'
-                style={{ paddingTop: 2 }}
-              >
-                1
-              </div>{' '}
-              <ThemedClipSpinner className='mx-auto' sizeClassName='w-10 h-10' />
+            <div className='relative h-10 w-10'>
+              {step === Step.approve && (
+                <>
+                  <div
+                    className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-40'
+                    style={{ paddingTop: 2 }}
+                  >
+                    1
+                  </div>{' '}
+                  <div className='w-10 h-10'></div>
+                  <ThemedClipSpinner className='mx-auto' sizeClassName='w-10 h-10' />
+                </>
+              )}
+              {step === Step.deposit && (
+                <>
+                  <div
+                    className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-teal rounded-full h-10 w-10'
+                    style={{ paddingTop: 2 }}
+                  >
+                    <FeatherIcon icon='check' className={'relative w-6 h-6'} style={{ top: -1 }} />
+                  </div>{' '}
+                  <div className='w-10 h-10'></div>
+                </>
+              )}
             </div>
             <div
               className='text-inverse mx-4'
@@ -77,6 +98,19 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
                   'You will be asked to approve this deposit from your wallet.'
                 )}
               </p>
+
+              {step === Step.approve &&
+                approveTx &&
+                approveTx?.status === TransactionStatus.pendingBlockchainConfirmation && (
+                  <SquareLink
+                    href={formatBlockExplorerTxUrl(approveTx.response?.hash, chainId)}
+                    className='mt-2'
+                    theme={SquareButtonTheme.tealOutline}
+                    target='_blank'
+                  >
+                    {t('viewReceipt', 'View receipt')}
+                  </SquareLink>
+                )}
             </div>
           </div>
 
@@ -101,17 +135,6 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
               </p> */}
             </div>
           </div>
-
-          {approveTx?.status === TransactionStatus.pendingBlockchainConfirmation && (
-            <SquareLink
-              href={blockExplorerUrl}
-              className='w-full mt-6'
-              theme={SquareButtonTheme.tealOutline}
-              target='_blank'
-            >
-              {t('viewReceipt', 'View receipt')}
-            </SquareLink>
-          )}
         </div>
       </>
     )
@@ -150,6 +173,34 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
       <SquareButton className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}
       </SquareButton>
+    </div>
+  )
+}
+
+const DepositSummary = (props) => {
+  const { chainId, token, amountToDeposit } = props
+  const { t } = useTranslation()
+
+  return (
+    <div className='flex flex-col items-center justify-center xs:justify-between px-4 py-2 text-xs font-bold bg-actually-black bg-opacity-5 dark:bg-white dark:bg-opacity-10 rounded-lg'>
+      <span className='uppercase font-averta-bold opacity-40'>
+        {t('depositSummary', 'Deposit summary')}
+      </span>
+      <div className='flex flex-col xs:flex-row justify-center xs:justify-start font-normal'>
+        <div className='flex items-center justify-center'>
+          <TokenIcon
+            chainId={chainId}
+            address={token.address}
+            className='mr-1'
+            sizeClassName='w-4 h-4'
+          />{' '}
+          {amountToDeposit.amountPretty} {token.symbol}
+        </div>
+        <div className='flex items-center justify-center xs:justify-start xs:ml-2'>
+          <NetworkIcon chainId={chainId} className='mr-1' sizeClassName='w-4 h-4' />{' '}
+          {getNetworkNiceNameByChainId(chainId)}
+        </div>
+      </div>
     </div>
   )
 }
