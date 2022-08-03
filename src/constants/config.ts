@@ -74,7 +74,7 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.optimism,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID['optimism-kovan']
 })
 
 // Native currency symbols in app

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { Amount, Token, useIsWalletOnNetwork } from '@pooltogether/hooks'
 import {
@@ -16,7 +16,12 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
-import { Transaction, TransactionStatus, useWalletChainId } from '@pooltogether/wallet-connection'
+import {
+  Transaction,
+  TransactionState,
+  TransactionStatus,
+  useWalletChainId
+} from '@pooltogether/wallet-connection'
 
 import { TxButton } from '@components/Input/TxButton'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
@@ -73,7 +78,24 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
   } = props
 
   const { t } = useTranslation()
+
+  const depositTxCancelled = depositTx?.status === TransactionStatus.cancelled
+
+  useEffect(() => {
+    const approveTxIsComplete = approveTx?.status === TransactionStatus.success
+    if (isOpen && approveTxIsComplete) {
+      sendDepositTx()
+    }
+  }, [isOpen, approveTx])
+
   const amountUnformatted = amountToDeposit?.amountUnformatted
+  const needsApproval = !!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)
+
+  const pendingTransaction =
+    approveTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    approveTx?.status === TransactionStatus.pendingUserConfirmation ||
+    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
+    depositTx?.status === TransactionStatus.pendingUserConfirmation
 
   const bottomSheetProps = {
     label: t('confirmDepositModal', 'Confirm deposit - modal'),
@@ -90,11 +112,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalLoadingGate className='mt-8' />
       </>
     )
-  } else if (
-    (!!amountUnformatted && depositAllowanceUnformatted?.lt(amountUnformatted)) ||
-    depositTx?.status === TransactionStatus.pendingBlockchainConfirmation ||
-    depositTx?.status === TransactionStatus.pendingUserConfirmation
-  ) {
+  } else if (pendingTransaction || depositTxCancelled) {
     content = (
       <>
         <ModalTitle
@@ -103,6 +121,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           className='pb-2'
         />
         <ModalDepositGate
+          ticket={ticket}
           token={token}
           amountToDeposit={amountToDeposit}
           chainId={chainId}
@@ -170,6 +189,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             />
           </p>
           <AmountBeingSwapped
+            isSummary
             title={t('depositTicker', { ticker: token.symbol })}
             chainId={chainId}
             from={token}
@@ -212,7 +232,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
           <TxButton
             className='mt-8 w-full'
             chainId={chainId}
-            onClick={sendDepositTx}
+            onClick={needsApproval ? sendApproveTx : sendDepositTx}
             state={depositTx?.state}
             status={depositTx?.status}
           >
@@ -224,11 +244,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
     )
   }
 
-  return (
-    <>
-      <BottomSheet {...bottomSheetProps}>{content}</BottomSheet>
-    </>
-  )
+  return <BottomSheet {...bottomSheetProps}>{content}</BottomSheet>
 }
 
 const CheckBackForPrizesBox = () => {
