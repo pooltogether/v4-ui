@@ -6,7 +6,6 @@ import { useQuery } from 'react-query'
 import { Amount } from '@pooltogether/hooks'
 import { EstimateAction } from '@constants/odds'
 import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
-import { NO_REFETCH } from '@constants/query'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -51,7 +50,7 @@ export const useUsersPrizePoolOdds = (
         action,
         actionAmountUnformatted
       ),
-    { enabled, ...NO_REFETCH }
+    { enabled }
   )
 }
 

@@ -7,10 +7,11 @@ interface PrizePoolDepositBalanceProps {
   chainId: number
   token: TokenWithUsdBalance | TokenWithBalance
   hideIcon?: boolean
+  icon?: string
 }
 
 export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => {
-  const { chainId, token, hideIcon } = props
+  const { chainId, token, icon, hideIcon } = props
 
   let balanceToDisplay = token.amountPretty
   if (
@@ -30,7 +31,11 @@ export const PrizePoolDepositBalance = (props: PrizePoolDepositBalanceProps) => 
       >
         {balanceToDisplay}
       </span>
-      {!hideIcon && <FeatherIcon icon='chevron-right' className='my-auto w-6 h-6 opacity-50' />}
+      {!hideIcon && <FeatherIcon icon={icon} className='my-auto w-6 h-6 opacity-50' />}
     </div>
   )
+}
+
+PrizePoolDepositBalance.defaultProps = {
+  icon: 'chevron-right'
 }

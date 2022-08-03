@@ -9,7 +9,6 @@ import Erc20Abi from '@abis/ERC20'
 import PrizePoolAbi from '@abis/V3_PrizePool'
 import PodAbi from '@abis/V3_Pod'
 import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
-import { NO_REFETCH } from '@constants/query'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { useReadProviders } from '@hooks/useReadProviders'
@@ -44,9 +43,7 @@ export const useV3PrizePools = () => {
   const chainIds = useV3ChainIds()
   const providers = useReadProviders(chainIds)
 
-  return useQuery(['useV3PrizePools', chainIds], () => getV3PrizePools(chainIds, providers), {
-    ...NO_REFETCH
-  })
+  return useQuery(['useV3PrizePools', chainIds], () => getV3PrizePools(chainIds, providers))
 }
 
 /**

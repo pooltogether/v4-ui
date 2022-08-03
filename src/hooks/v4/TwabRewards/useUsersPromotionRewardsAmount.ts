@@ -7,7 +7,7 @@ import { RPC_API_KEYS } from '@constants/config'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
-} from '@utils/TwabRewards/getTwabRewardsContract'
+} from '@utils/v4/TwabRewards/getTwabRewardsContract'
 
 /**
  * Fetch a promotion's data (eg. currentEpochId, etc)

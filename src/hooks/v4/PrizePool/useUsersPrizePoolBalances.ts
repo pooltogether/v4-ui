@@ -5,7 +5,6 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { PrizePoolTokens, usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { NO_REFETCH } from '@constants/query'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenWithUsdBalance
@@ -23,7 +22,6 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
     [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
     async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
     {
-      ...NO_REFETCH,
       enabled
     }
   )

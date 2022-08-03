@@ -9,8 +9,8 @@ import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
-import { usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
+import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -99,7 +99,7 @@ const PromotionCard = (props) => {
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
-  const daysRemaining = usePromotionDaysRemaining(promotion)
+  const daysRemaining = getPromotionDaysRemaining(promotion)
 
   if (daysRemaining < 0) {
     return null

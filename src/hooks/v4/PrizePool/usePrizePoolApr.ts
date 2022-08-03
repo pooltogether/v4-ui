@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
@@ -29,7 +28,6 @@ export const usePrizePoolApr = (prizePool: PrizePool) => {
       return calculateApr(ticketTwabTotalSupply.amount.amountUnformatted, scaledDailyPrize)
     },
     {
-      ...NO_REFETCH,
       enabled
     }
   )

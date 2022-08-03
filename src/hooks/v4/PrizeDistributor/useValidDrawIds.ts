@@ -1,7 +1,6 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@constants/query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 
 export const VALID_DRAW_IDS_QUERY_KEY = 'useValidDrawIds'
@@ -16,7 +15,7 @@ export const useValidDrawIds = (prizeDistributor: PrizeDistributor) => {
   return useQuery(
     [VALID_DRAW_IDS_QUERY_KEY, prizeDistributor?.id(), drawBeaconPeriod?.drawId],
     async () => getValidDrawIds(prizeDistributor),
-    { ...NO_REFETCH, enabled }
+    { enabled }
   )
 }
 

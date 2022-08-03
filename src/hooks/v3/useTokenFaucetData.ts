@@ -10,7 +10,6 @@ import TokenFaucetAbi from '@abis/TokenFaucet'
 import Erc20Abi from '@abis/ERC20'
 import { SECONDS_PER_DAY } from '@constants/misc'
 import { V3PrizePool } from './useV3PrizePools'
-import { NO_REFETCH } from '@constants/query'
 import { useReadProvider } from '@hooks/useReadProvider'
 
 export const useTokenFaucetData = (
@@ -26,7 +25,7 @@ export const useTokenFaucetData = (
   return useQuery(
     ['useTokenFaucetData', chainId, tokenFaucetAddress],
     () => getTokenFaucetData(provider, chainId, tokenFaucetAddress, prizePool, underlyingToken),
-    { ...NO_REFETCH, enabled }
+    { enabled }
   )
 }
 

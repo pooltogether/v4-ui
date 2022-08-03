@@ -2,7 +2,6 @@ import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@constants/query'
 import { useValidDrawIds } from './useValidDrawIds'
 
 /**
@@ -23,7 +22,6 @@ export const useUsersNormalizedBalances = (
     ['useUsersNormalizedBalances', prizeDistributor?.id(), usersAddress],
     () => getUsersNormalizedBalances(usersAddress, prizeDistributor, drawIds),
     {
-      ...NO_REFETCH,
       enabled
     }
   )

@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { BigNumber } from '@ethersproject/bignumber'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { parseEther } from 'ethers/lib/utils'
@@ -36,7 +35,6 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
       }
     },
     {
-      ...NO_REFETCH,
       enabled: isFetched
     }
   )

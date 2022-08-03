@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDraws } from './useValidDraws'
 import { useValidPrizeDistributions } from './useValidPrizeDistributions'
-import { NO_REFETCH } from '@constants/query'
 
 /**
  * Returns the valid Draws and PrizeDistributions for the provided PrizeDistributor
@@ -37,7 +36,6 @@ export const useValidDrawDatas = (prizeDistributor: PrizeDistributor) => {
       return drawDatas
     },
     {
-      ...NO_REFETCH,
       enabled
     }
   )

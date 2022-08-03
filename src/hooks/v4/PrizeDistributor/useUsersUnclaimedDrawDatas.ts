@@ -9,7 +9,7 @@ import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useValidDrawDatas } from './useValidDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
-import { NO_REFETCH } from '@constants/query'
+
 import { useLockedDrawIds } from './useLockedDrawIds'
 import { msToS } from '@pooltogether/utilities'
 
@@ -108,7 +108,6 @@ export const useUsersUnclaimedDrawDatas = (
         drawResults
       ),
     {
-      ...NO_REFETCH,
       enabled
     }
   )

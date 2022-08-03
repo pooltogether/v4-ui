@@ -8,7 +8,6 @@ import { Trans } from 'react-i18next'
 import {
   BottomSheet,
   BottomSheetTitle,
-  // ContractLink,
   snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
@@ -48,17 +47,14 @@ import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHis
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import {
-  useUsersCurrentEpochEstimateAccrued,
-  useNextRewardIn,
-  usePromotionDaysRemaining
-} from '@hooks/v4/TwabRewards/promotionHooks'
+import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
-import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
+import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
+import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
 
 enum ClaimModalState {
   'FORM',
@@ -379,7 +375,7 @@ const ClaimModalForm = (props) => {
   const { decimals, symbol } = token
   const tokenSymbol = symbol
 
-  const { value, unit } = useNextRewardIn(promotion)
+  const { value, unit } = getNextRewardIn(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -547,7 +543,7 @@ const useRewardsEndInSentence = (promotion, token) => {
   const { t } = useTranslation()
 
   const tokenSymbol = token.symbol
-  const daysRemaining = usePromotionDaysRemaining(promotion)
+  const daysRemaining = getPromotionDaysRemaining(promotion)
 
   let rewardsEndInSentence =
     daysRemaining < 0
@@ -694,7 +690,7 @@ const UnitPanel = (props) => {
   const { label, amount, icon, unit, value, vapr } = props
 
   return (
-    <div className='flex flex-col bg-white dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
+    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 

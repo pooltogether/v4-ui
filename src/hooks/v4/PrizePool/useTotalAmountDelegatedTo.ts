@@ -36,7 +36,9 @@ export const useTotalAmountDelegatedTo = (usersAddress: string) => {
       usersAddress,
       totalTwabData?.twab.amount,
       usersBalances?.totalValueUsd.amount,
-      ticketDelegates?.map((ticketDelegateData) => ticketDelegateData.data?.ticketDelegate)
+      ticketDelegates
+        ?.map((ticketDelegateData) => ticketDelegateData.data?.ticketDelegate)
+        .join('-')
     ],
     () => {
       let totalAmountDelegatedToUserUnformatted = totalTwabData.twab.amountUnformatted
