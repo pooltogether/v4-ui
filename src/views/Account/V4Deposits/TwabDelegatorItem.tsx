@@ -89,6 +89,8 @@ const DepositDelegationsSheet: React.FC<{
         ))}
       </ul>
       <SquareLink
+        target='_blank'
+        rel='noopener noreferrer'
         href={`https://tools.pooltogether.com/delegate`}
         className='items-center space-x-2 mt-6'
       >
