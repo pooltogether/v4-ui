@@ -5,7 +5,7 @@ import { useQueries } from 'react-query'
 import { sToMs } from '@pooltogether/utilities'
 
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
-import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
+import { getTwabRewardsSubgraphClient } from '@utils/v4/TwabRewards/getTwabRewardsSubgraphClient'
 
 export const useGraphFilteredPromotions = (chainIds) => {
   return useQueries(

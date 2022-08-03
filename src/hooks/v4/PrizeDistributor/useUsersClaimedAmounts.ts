@@ -2,7 +2,6 @@ import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@constants/query'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { useValidDrawIds } from './useValidDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
@@ -35,7 +34,6 @@ export const useUsersClaimedAmounts = (
     [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
     () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
     {
-      ...NO_REFETCH,
       enabled
     }
   )

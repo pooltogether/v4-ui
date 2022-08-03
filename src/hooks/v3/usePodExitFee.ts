@@ -5,7 +5,6 @@ import { useQuery } from 'react-query'
 import PodAbi from '@abis/V3_Pod'
 import Erc20Abi from '@abis/ERC20'
 import { batch, contract } from '@pooltogether/etherplex'
-import { NO_REFETCH } from '@constants/query'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useReadProvider } from '@hooks/useReadProvider'
 
@@ -28,7 +27,7 @@ export const usePodExitFee = (
         amountToWithdrawUnformatted,
         decimals
       ),
-    { ...NO_REFETCH, enabled: Boolean(amountToWithdrawUnformatted) }
+    { enabled: Boolean(amountToWithdrawUnformatted) }
   )
 }
 

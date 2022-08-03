@@ -109,5 +109,5 @@ export const InfoListHeader = (props: InfoListHeaderProps) => {
 }
 
 InfoListHeader.defaultProps = {
-  textClassName: 'font-semibold capitalize text-xxs xs:text-sm'
+  textClassName: 'font-semibold capitalize text-xxs xs:text-xs'
 }

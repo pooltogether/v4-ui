@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQueries } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizePools } from './usePrizePools'
@@ -10,7 +9,6 @@ export const useAllUpcomingPrizeTiers = () => {
 
   return useQueries(
     prizePools.map((prizePool) => ({
-      ...NO_REFETCH,
       queryKey: getUpcomingPrizeTierKey(drawBeaconPeriod?.drawId, prizePool?.id()),
       enabled: isFetched && !!prizePool,
       queryFn: () => getUpcomingPrizeTier(prizePool)

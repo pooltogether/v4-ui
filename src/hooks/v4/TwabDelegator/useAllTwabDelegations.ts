@@ -1,4 +1,5 @@
 import { RPC_API_KEYS } from '@constants/config'
+
 import {
   Delegation,
   DelegationId,
@@ -10,7 +11,7 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { useSupportedTwabDelegatorChainIds } from './useSupportedTwabDelegatorChainIds'
+import { getSupportedTwabDelegatorChainIds } from './getSupportedTwabDelegatorChainIds'
 
 /**
  * NOTE: This will need to be expanded for multiple prize pools on the same chain
@@ -19,7 +20,7 @@ import { useSupportedTwabDelegatorChainIds } from './useSupportedTwabDelegatorCh
  * @returns
  */
 export const useAllTwabDelegations = (delegator: string) => {
-  const supportedChainIds = useSupportedTwabDelegatorChainIds()
+  const supportedChainIds = getSupportedTwabDelegatorChainIds()
 
   return useQuery(
     ['useAllTwabDelegations', supportedChainIds, delegator],

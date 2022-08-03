@@ -74,7 +74,7 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.optimism,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID.rinkeby
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID['optimism-kovan']
 })
 
 // Native currency symbols in app
@@ -133,13 +133,15 @@ export const getExchangeUrl = (chainId: number, tokenAddress: string) =>
   EXCHANGE_URLS[chainId]?.(tokenAddress) || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)
 const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.mainnet]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+    `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.optimism]: (tokenAddress: string) =>
+    `https://app.uniswap.org/#/swap?chain=optimism&theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.rinkeby]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+    `https://app.uniswap.org/#/swap?chain=rinkeby&theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.polygon]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+    `https://app.uniswap.org/#/swap?chain=polygon&theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://quickswap.exchange/#/swap?theme=dark&outputCurrency=${tokenAddress}`,
+    `https://app.uniswap.org/#/swap?chain=mumbai&theme=dark&outputCurrency=${tokenAddress}`,
   [CHAIN_ID.avalanche]: (tokenAddress: string) =>
     `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
   [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`

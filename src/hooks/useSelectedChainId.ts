@@ -65,7 +65,6 @@ export const useSelectedChainIdWatcher = () => {
   // Watch for atom changes
   useEffect(() => {
     const queryParamNetwork = parseUrlNetwork()
-    console.log('atom change', { queryParamNetwork, selectedNetwork })
     if (selectedNetwork !== queryParamNetwork) {
       const url = new URL(window.location.href)
       url.searchParams.set(URL_QUERY_KEY.network, getNetworkNameAliasByChainId(selectedNetwork))

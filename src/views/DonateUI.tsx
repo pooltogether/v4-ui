@@ -41,7 +41,7 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
 import ordinal from 'ordinal'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { NO_REFETCH } from '@constants/query'
+
 import { loopXTimes } from '@utils/loopXTimes'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'
@@ -441,7 +441,7 @@ const usePrizesWon = () => {
     async () => {
       return getPrizesWon(data.drawIds, partialDrawData, prizeDistributor)
     },
-    { ...NO_REFETCH, enabled }
+    { enabled }
   )
 }
 

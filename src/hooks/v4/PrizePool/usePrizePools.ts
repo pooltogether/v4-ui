@@ -1,5 +1,6 @@
 import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
 import { usePrizePoolNetwork } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetwork'
+import { useMemo } from 'react'
 
 /**
  * Filter here to cut off any bad acting prize pools from the single config
@@ -8,7 +9,11 @@ import { usePrizePoolNetwork } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetw
 export const usePrizePools = () => {
   const prizePoolNetwork = usePrizePoolNetwork()
   const supportedChainIds = useSupportedChainIds()
-  return prizePoolNetwork?.prizePools.filter((prizePool) =>
-    supportedChainIds.includes(prizePool.chainId)
+  return useMemo(
+    () =>
+      prizePoolNetwork?.prizePools.filter((prizePool) =>
+        supportedChainIds.includes(prizePool.chainId)
+      ),
+    [prizePoolNetwork, supportedChainIds]
   )
 }

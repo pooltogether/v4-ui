@@ -48,7 +48,17 @@ import { RPC_API_KEYS } from '@constants/config'
 import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
 
 // Initialize react-query Query Client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false
+    }
+  }
+})
 // Initialize read provider API keys to @pooltogether/hooks
 initProviderApiKeysForHooks(RPC_API_KEYS)
 // Initialize read provider API keys to @pooltogether/wallet-connection

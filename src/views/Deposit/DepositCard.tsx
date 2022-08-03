@@ -267,7 +267,7 @@ const HelpLink = () => {
       href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
       target='_blank'
       rel='noreferrer noopener'
-      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3 flex flex-col items-center xs:flex-row xs:space-x-2 space-y-1 xs:space-y-0 justify-between xs:justify-center xs:space-x-2'
+      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3 flex flex-col items-center xs:flex-row xs:space-x-2 space-y-1 xs:space-y-2 justify-between xs:justify-center'
       style={{ minWidth: BUTTON_MIN_WIDTH }}
     >
       <FeatherIcon icon={'help-circle'} className='relative w-4 h-4 inline-block' />

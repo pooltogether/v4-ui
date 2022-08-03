@@ -13,7 +13,6 @@ import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import Erc20Abi from '@abis/ERC20'
-import { NO_REFETCH } from '@constants/query'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useReadProviders } from '@hooks/useReadProviders'
@@ -43,7 +42,6 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
 
   return useQueries(
     chainIds.map((chainId) => ({
-      ...NO_REFETCH,
       queryKey: ['useAllUsersV3Balances', usersAddress, chainId, tokenPrices],
       queryFn: async () =>
         getUsersV3BalancesByChainId(

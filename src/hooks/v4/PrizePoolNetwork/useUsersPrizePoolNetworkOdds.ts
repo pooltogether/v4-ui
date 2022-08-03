@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers'
 import { EstimateAction } from '../../../constants/odds'
 import { useQuery } from 'react-query'
-import { NO_REFETCH } from '@constants/query'
+
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import { usePrizePoolNetwork } from './usePrizePoolNetwork'
@@ -47,6 +47,6 @@ export const useUsersPrizePoolNetworkOdds = (
         oneOverOdds
       }
     },
-    { ...NO_REFETCH, enabled: isFetched && !!usersAddress }
+    { enabled: isFetched && !!usersAddress }
   )
 }

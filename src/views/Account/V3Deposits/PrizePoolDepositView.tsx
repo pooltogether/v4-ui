@@ -25,7 +25,7 @@ import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
+import { V3ModalApproveGate } from '@views/Deposit/V3ModalApproveGate'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { TxButton } from '@components/Input/TxButton'
@@ -300,7 +300,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     return (
       <>
         <ModalTitle chainId={chainId} title={t('approveDeposits', 'Approve deposits')} />
-        <ModalApproveGate
+        <V3ModalApproveGate
           amountToDeposit={amountToDeposit}
           chainId={chainId}
           approveTx={approveTx}

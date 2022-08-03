@@ -1,10 +1,11 @@
 import { sToMs } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { msToS } from '@pooltogether/utilities'
-import { useQuery } from 'react-query'
+import { useQueries, useQuery } from 'react-query'
 
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { usePrizePools } from './usePrizePools'
 
 /**
  * Fetches a users current TWAB
@@ -50,4 +51,26 @@ export const getUserPrizePoolTwab = async (
     usersAddress,
     twab
   }
+}
+
+/**
+ * Fetches the users current TWAB across all chains
+ * NOTE: Assumes all prize pool tickets have the same decimals
+ * @param usersAddress
+ * @returns
+ */
+export const useAllUsersPrizePoolTwabs = (usersAddress: string) => {
+  const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
+    useSelectedPrizePoolTicketDecimals()
+  const prizePools = usePrizePools()
+
+  return useQueries(
+    prizePools.map((prizePool) => {
+      return {
+        queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
+        queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
+        enabled: !!usersAddress && isTicketDecimalsFetched
+      }
+    })
+  )
 }

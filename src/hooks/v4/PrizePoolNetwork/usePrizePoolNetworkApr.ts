@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
@@ -30,7 +29,6 @@ export const usePrizePoolNetworkApr = () => {
       return calculateApr(scaledTvl, prizeTierData?.prizeTier.prize)
     },
     {
-      ...NO_REFETCH,
       enabled
     }
   )

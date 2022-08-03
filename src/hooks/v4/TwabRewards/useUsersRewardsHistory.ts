@@ -4,7 +4,7 @@ import { GraphQLClient } from 'graphql-request'
 import { useQuery } from 'react-query'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 
-import { getTwabRewardsSubgraphClient } from '@hooks/v4/TwabRewards/getTwabRewardsSubgraphClient'
+import { getTwabRewardsSubgraphClient } from '@utils/v4/TwabRewards/getTwabRewardsSubgraphClient'
 
 /**
  * Fetch an account's

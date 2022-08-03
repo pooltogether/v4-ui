@@ -1,5 +1,4 @@
 import { Amount, Token } from '@pooltogether/hooks'
-import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './useAllValidDrawIds'
@@ -25,7 +24,6 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
     }>[]
   >(
     prizeDistributors.map((prizeDistributor) => ({
-      ...NO_REFETCH,
       queryKey: [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
       queryFn: async () => {
         const drawIdQueryResult = drawIdQueryResults.find(

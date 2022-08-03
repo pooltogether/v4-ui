@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
@@ -14,7 +13,6 @@ export const useUsersTicketDelegate = (usersAddress: string, prizePool: PrizePoo
     getUsersTicketDelegateQueryKey(prizePool, usersAddress),
     async () => getUsersTicketDelegate(usersAddress, prizePool),
     {
-      ...NO_REFETCH,
       enabled
     }
   )
