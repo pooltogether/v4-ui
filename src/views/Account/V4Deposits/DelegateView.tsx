@@ -105,6 +105,8 @@ const DelegateReadState = (props: DelegateReadStateProps) => {
         href={`https://tools.pooltogether.com/delegate/?delegation_chain=${getNetworkNameAliasByChainId(
           chainId
         )}`}
+        target='_blank'
+        rel='noopener noreferrer'
         className='items-center space-x-2 mb-6'
       >
         <span>{t('delegateDeposit')}</span>
