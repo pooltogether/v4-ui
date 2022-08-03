@@ -116,8 +116,9 @@ const DrawCountdown = (props) => {
       </DrawNumberString>
       <Time
         seconds={secondsLeft}
-        className='mt-1 mx-auto h-14'
-        timeClassName='text-sm xs:text-lg'
+        className='mt-4 mx-auto justify-center items-center text-center'
+        timeClassName='text-sm xs:text-lg mx-auto w-6 xs:w-8'
+        colonYOffset={-12}
       />
     </div>
   )
