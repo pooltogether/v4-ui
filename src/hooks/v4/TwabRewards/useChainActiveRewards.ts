@@ -1,6 +1,6 @@
 import { UseQueryResult } from 'react-query'
 import { Promotion } from '@interfaces/promotions'
-import { usePromotionDaysRemaining } from '@hooks/v4/TwabRewards/promotionHooks'
+import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 
 export const useChainActiveRewards = (): {
@@ -23,7 +23,7 @@ export const useChainActiveRewards = (): {
     data.chains[chainId] = 0
 
     queryResult.data?.promotions?.forEach((promotion) => {
-      const daysRemaining = usePromotionDaysRemaining(promotion)
+      const daysRemaining = getPromotionDaysRemaining(promotion)
 
       if (daysRemaining > 0) {
         data.chains[chainId] += 1

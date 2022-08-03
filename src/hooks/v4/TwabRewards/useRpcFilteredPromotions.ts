@@ -9,7 +9,7 @@ import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
-} from '@utils/TwabRewards/getTwabRewardsContract'
+} from '@utils/v4/TwabRewards/getTwabRewardsContract'
 
 export const useRpcFilteredPromotions = (chainIds) => {
   return useQueries(

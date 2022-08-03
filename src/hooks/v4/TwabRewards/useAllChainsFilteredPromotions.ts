@@ -10,8 +10,7 @@ import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSuppor
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
-} from '@utils/TwabRewards/getTwabRewardsContract'
-import { V3StakingCards } from '@views/Account/V3StakingDeposits'
+} from '@utils/v4/TwabRewards/getTwabRewardsContract'
 
 /**
  * Fetch all chain's promotions that have been allow-listed

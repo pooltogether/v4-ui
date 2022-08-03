@@ -28,7 +28,15 @@ export const POOLTOGETHER_SNAPSHOT_URL = 'https://snapshot.org/#/pooltogether.et
 export const POOLTOGETHER_GOV_FORUM_URL = 'https://gov.pooltogether.com'
 export const DISCORD_INVITE_URL = 'https://pooltogether.com/discord'
 
-export const MAINNET_POOL_ADDRESS = '0x0cec1a9154ff802e7934fc916ed7ca50bde6844e'
-export const POLYGON_POOL_ADDRESS = '0x25788a1a171ec66da6502f9975a15b609ff54cf6'
+export const POOL_TOKEN = Object.freeze({
+  [CHAIN_ID.mainnet]: '0x0cec1a9154ff802e7934fc916ed7ca50bde6844e',
+  [CHAIN_ID.polygon]: '0x25788a1a171ec66da6502f9975a15b609ff54cf6',
+  [CHAIN_ID.optimism]: '0x395ae52bb17aef68c2888d941736a71dc6d4e125'
+})
+
+export const PPOOL_TICKET_TOKEN = Object.freeze({
+  [CHAIN_ID.mainnet]: '0x27d22a7648e955e510a40bdb058333e9190d12d4',
+  [CHAIN_ID.polygon]: '0xd80eaa761ccfdc8698999d73c96cec39fbb1fc48'
+})
 
 export const BUTTON_MIN_WIDTH = 100

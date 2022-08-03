@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 import { usePrizePools } from './usePrizePools'
 import {
@@ -11,7 +10,6 @@ export const useAllPrizePoolTokens = () => {
   const prizePools = usePrizePools()
   return useQueries<UseQueryOptions<PrizePoolTokens>[]>(
     prizePools.map((prizePool) => ({
-      ...NO_REFETCH,
       queryKey: [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool?.id()],
       queryFn: async () => getPrizePoolTokens(prizePool)
     }))

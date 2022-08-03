@@ -31,8 +31,8 @@ export const AccountCard: React.FC<{
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
-        <DailyOdds usersAddress={usersAddress} />
-        <WeeklyOdds usersAddress={usersAddress} />
+        {/* <DailyOdds usersAddress={usersAddress} />
+        <WeeklyOdds usersAddress={usersAddress} /> */}
       </div>
       <TotalWinnings usersAddress={usersAddress} />
     </div>

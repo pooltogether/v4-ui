@@ -13,28 +13,24 @@ import {
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
-import { NO_REFETCH } from '@constants/query'
 
 export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
   const queriesResult = useAllPrizePoolTokens()
 
-  const isAllPrizePoolTokensFetched = queriesResult.every((queryResult) => queryResult.isFetched)
-
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
+      const queryResult = queriesResult?.find((queryResult) => {
+        const { data: tokens } = queryResult
+        return tokens.prizePoolId === prizePool.id()
+      })
       return {
-        ...NO_REFETCH,
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
         queryFn: async () => {
-          const queryResult = queriesResult?.find((queryResult) => {
-            const { data: tokens } = queryResult
-            return tokens.prizePoolId === prizePool.id()
-          })
           const { data: tokens } = queryResult
           return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
         },
-        enabled: isAllPrizePoolTokensFetched && !!usersAddress
+        enabled: queryResult?.isFetched && !!usersAddress
       }
     })
   )

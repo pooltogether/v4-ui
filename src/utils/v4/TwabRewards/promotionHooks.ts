@@ -3,7 +3,7 @@ import { Amount } from '@pooltogether/hooks'
 
 import { Promotion, Epoch } from '@interfaces/promotions'
 
-export const useNextRewardIn = (promotion: Promotion) => {
+export const getNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
 
   const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
@@ -14,7 +14,7 @@ export const useNextRewardIn = (promotion: Promotion) => {
   return { value, unit: 'days' }
 }
 
-export const useRemainingEpochsArrays = (promotion: Promotion) => {
+export const getRemainingEpochsArrays = (promotion: Promotion) => {
   const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   if (!remainingEpochsArray || remainingEpochsArray?.length <= 0) {
     return []
@@ -23,19 +23,19 @@ export const useRemainingEpochsArrays = (promotion: Promotion) => {
   return remainingEpochsArray
 }
 
-export const useLastEpochEndTime = (remainingEpochsArray: Array<Epoch>) => {
+export const getLastEpochEndTime = (remainingEpochsArray: Array<Epoch>) => {
   return remainingEpochsArray?.[remainingEpochsArray.length - 1]?.epochEndTimestamp
 }
 
-export const usePromotionDaysRemaining = (promotion: Promotion) => {
-  const remainingEpochsArray = useRemainingEpochsArrays(promotion)
-  const lastEpochEndTime = useLastEpochEndTime(remainingEpochsArray)
+export const getPromotionDaysRemaining = (promotion: Promotion) => {
+  const remainingEpochsArray = getRemainingEpochsArrays(promotion)
+  const lastEpochEndTime = getLastEpochEndTime(remainingEpochsArray)
 
   const now = msToS(Date.now())
   return sToD(lastEpochEndTime) - sToD(now)
 }
 
-export const useUsersCurrentEpochEstimateAccrued = (
+export const getUsersCurrentEpochEstimateAccrued = (
   promotion: Promotion,
   estimateAmount: Amount
 ) => {

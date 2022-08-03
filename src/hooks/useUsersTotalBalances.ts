@@ -6,7 +6,6 @@ import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalanc
 import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
 import { useQuery } from 'react-query'
-import { NO_REFETCH } from '@constants/query'
 
 // NOTE: Assumes v4 balances are USD stable coins
 export const useUsersTotalBalances = (usersAddress: string) => {
@@ -85,7 +84,6 @@ export const useUsersTotalBalances = (usersAddress: string) => {
       }
     },
     {
-      ...NO_REFETCH,
       initialData: {
         data: {
           totalV4Balance: 0,

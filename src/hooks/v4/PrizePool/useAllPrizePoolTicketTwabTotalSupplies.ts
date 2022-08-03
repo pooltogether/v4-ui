@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQueries } from 'react-query'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
@@ -19,7 +18,6 @@ export const useAllPrizePoolTicketTwabTotalSupplies = () => {
             (queryResult) => queryResult.data?.prizePoolId === prizePool?.id()
           )
           return {
-            ...NO_REFETCH,
             queryKey: [
               PRIZE_POOL_TICKET_TWAB_TOTAL_SUPPLY_QUERY_KEY,
               prizePool?.id(),

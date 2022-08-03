@@ -4,7 +4,6 @@ import { useQueries } from 'react-query'
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { usePrizePools } from './usePrizePools'
 import { getUserPrizePoolTwab, getUsersPrizePoolTwabKey } from './useUsersPrizePoolTwab'
-import { NO_REFETCH } from '@constants/query'
 
 /**
  * Fetches the users current TWAB across all chains
@@ -20,7 +19,6 @@ export const useAllUsersPrizePoolTwabs = (usersAddress: string) => {
   return useQueries(
     prizePools.map((prizePool) => {
       return {
-        ...NO_REFETCH,
         queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
         queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
         enabled: !!usersAddress && isTicketDecimalsFetched

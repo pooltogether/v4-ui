@@ -8,7 +8,6 @@ import TokenFaucetAbi from '@abis/TokenFaucet'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useTokenFaucetData } from './useTokenFaucetData'
 import { V3PrizePool } from './useV3PrizePools'
-import { NO_REFETCH } from '@constants/query'
 import { useReadProvider } from '@hooks/useReadProvider'
 
 export const useUsersTokenFaucetRewards = (
@@ -32,7 +31,7 @@ export const useUsersTokenFaucetRewards = (
   return useQuery(
     ['useUsersTokenFaucetRewards', chainId, usersAddress, tokenFaucetAddress],
     () => getTokenFaucetRewards(provider, usersAddress, tokenFaucetAddress, tokenFaucetData),
-    { ...NO_REFETCH, enabled }
+    { enabled }
   )
 }
 

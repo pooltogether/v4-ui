@@ -48,14 +48,14 @@ import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHis
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
 import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/TwabRewards/misc'
+import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
 import {
-  useUsersCurrentEpochEstimateAccrued,
-  useNextRewardIn,
-  usePromotionDaysRemaining
-} from '@hooks/v4/TwabRewards/promotionHooks'
+  getUsersCurrentEpochEstimateAccrued,
+  getNextRewardIn,
+  getPromotionDaysRemaining
+} from '@utils/v4/TwabRewards/promotionHooks'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
-import { getTwabRewardsContract } from '@utils/TwabRewards/getTwabRewardsContract'
+import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
@@ -381,7 +381,7 @@ const ClaimModalForm = (props) => {
   const { decimals, symbol } = token
   const tokenSymbol = symbol
 
-  const { value, unit } = useNextRewardIn(promotion)
+  const { value, unit } = getNextRewardIn(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -545,7 +545,7 @@ const useRewardsEndInSentence = (promotion, token) => {
   const { t } = useTranslation()
 
   const tokenSymbol = token.symbol
-  const daysRemaining = usePromotionDaysRemaining(promotion)
+  const daysRemaining = getPromotionDaysRemaining(promotion)
 
   let rewardsEndInSentence =
     daysRemaining < 0
@@ -683,7 +683,7 @@ const BalanceDisplay = (props) => {
 
   let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
 
-  const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(promotion, estimateAmount)
+  const currentEpochEstimateAccrued = getUsersCurrentEpochEstimateAccrued(promotion, estimateAmount)
   if (currentEpochEstimateAccrued) {
     balance = balance + currentEpochEstimateAccrued
   }

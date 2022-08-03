@@ -2,13 +2,12 @@ import gql from 'graphql-tag'
 import { BigNumber } from 'ethers'
 import { GraphQLClient } from 'graphql-request'
 import { Token, Amount } from '@pooltogether/hooks'
-import { NO_REFETCH } from '@constants/query'
 import { useQueries, UseQueryOptions } from 'react-query'
 
 import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
-import { getPrizesClaimedSubgraphClient } from '@hooks/v4/TwabRewards/getPrizesClaimedSubgraphClient'
+import { getPrizesClaimedSubgraphClient } from '@utils/v4/TwabRewards/getPrizesClaimedSubgraphClient'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
 const getAllUsersClaimedAmountsGraphQueryKey = (chainId: number, usersAddress: string) => [
@@ -31,7 +30,6 @@ export const useAllUsersClaimedAmountsGraph = (usersAddress: string) => {
     }>[]
   >(
     prizeDistributors.map((prizeDistributor) => ({
-      ...NO_REFETCH,
       queryKey: getAllUsersClaimedAmountsGraphQueryKey(prizeDistributor.chainId, usersAddress),
       queryFn: async () => {
         const { chainId } = prizeDistributor

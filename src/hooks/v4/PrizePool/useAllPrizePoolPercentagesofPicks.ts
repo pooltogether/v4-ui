@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { useQueries } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
@@ -31,7 +30,6 @@ export const useAllPrizePoolPercentagesofPicks = () => {
             !!isTicketTwabFetched && !!isPrizePoolNetworkTvlFetched && !!isTwabsFetched
 
           return {
-            ...NO_REFETCH,
             queryKey: getPrizePoolPercentageOfPicksKey(
               prizePool,
               prizePoolTvl,

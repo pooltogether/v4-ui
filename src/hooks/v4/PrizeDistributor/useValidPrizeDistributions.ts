@@ -1,7 +1,6 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
-import { NO_REFETCH } from '@constants/query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDrawIds } from './useValidDrawIds'
 
@@ -25,6 +24,6 @@ export const useValidPrizeDistributions = (prizeDistributor: PrizeDistributor) =
       const validPrizeDistributions = await prizeDistributor.getPrizeDistributions(drawIds)
       return validPrizeDistributions
     },
-    { ...NO_REFETCH, enabled }
+    { enabled }
   )
 }

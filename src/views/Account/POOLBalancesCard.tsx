@@ -1,58 +1,35 @@
-import React, { useState, useMemo } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { Amount, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { BigNumber } from '@ethersproject/bignumber'
-import { Modal, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import React, { useMemo } from 'react'
+import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
+import { TokenIconWithNetwork, TokenIcon, PoolIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { CHAIN_ID } from '@constants/misc'
 import { POOL_ADDRESSES } from '@constants/v3'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useUsersV3POOLTokenBalances } from '@hooks/v3/useUsersV3POOLTokenBalances'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { UniswapWidgetCard } from '@views/Account/UniswapWidgetCard'
 import { VotingPromptCard } from '@components/VotingPromptCard'
+import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 
 export const POOLBalancesCard = () => {
   const { t } = useTranslation()
-  // const [showSwapModal, setShowSwapModal] = useState(false)
-
   const usersAddress = useUsersAddress()
-  const { data, isFetched } = useUsersV3POOLTokenBalances(usersAddress)
+  const { data, isFetched, isFetching } = useUsersPoolTokenBalances(usersAddress)
 
-  // const openModal = () => {
-  //   setShowSwapModal(true)
-  // }
+  const hasNoPoolBalance = useMemo(() => {
+    if (!isFetched) return null
+    const chainIds = Object.keys(data.balances).map(Number)
+    return chainIds.every((chainId) => {
+      return Object.values(data.balances[chainId]).every((token) => !token.hasBalance)
+    })
+  }, [isFetching])
 
-  // const closeModal = () => {
-  //   setShowSwapModal(false)
-  // }
+  if (!isFetched || hasNoPoolBalance) return null
 
   return (
     <div className='space-y-2'>
       <div className='flex items-center'>
-        <CardTitle
-          title={t('poolToken', 'POOL Token')}
-          secondary={`$${data?.totalValueUsd.amountPretty}`}
-          loading={!isFetched}
-        />
-        {/* <Modal label={'hi'} isOpen={showSwapModal} closeModal={closeModal}>
-          <UniswapWidgetCard />
-        </Modal>
-        <button
-          onClick={openModal}
-          className='opacity-50 hover:opacity-100 flex items-center transition-opacity'
-        >
-          <FeatherIcon
-            icon={'refresh-cw'}
-            className='relative w-3 h-3 mr-2 inline-block'
-            style={{ top: 1 }}
-          />{' '}
-          {t('getPool')}
-        </button> */}
+        <CardTitle title={t('poolToken', 'POOL Token')} loading={!isFetched} />
       </div>
       <POOLBalancesList data={data} isFetched={isFetched} />
       <VotingPromptCard persist />
@@ -62,11 +39,8 @@ export const POOLBalancesCard = () => {
 
 const POOLBalancesList = (props: {
   data: {
-    balances: {
-      [chainId: number]: TokenWithUsdBalance[]
-    }
-    totalValueUsdScaled: BigNumber
-    totalValueUsd: Amount
+    balances: { [chainId: number]: TokenBalances }
+    total: Amount
   }
   isFetched: boolean
 }) => {
@@ -80,13 +54,12 @@ const POOLBalancesList = (props: {
       />
     )
   }
-
   const chainIds = Object.keys(data.balances).map(Number)
 
   return (
     <PrizePoolDepositList bgClassName='bg-pt-purple-lightest dark:bg-opacity-40 dark:bg-pt-purple'>
       {chainIds.map((chainId) =>
-        data.balances[chainId].flatMap((token) => (
+        Object.values(data.balances[chainId]).map((token) => (
           <POOLTokenBalanceItem
             key={`POOL-balance-${chainId}-${token.address}`}
             chainId={chainId}
@@ -98,23 +71,21 @@ const POOLBalancesList = (props: {
   )
 }
 
-const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithUsdBalance }) => {
+const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithBalance }) => {
   const { chainId, token } = props
-  const { t } = useTranslation()
+
+  if (!token.hasBalance) return null
 
   return (
     <li className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg px-4 py-2 w-full flex justify-between items-center'>
-      <div className='flex'>
-        <NetworkIcon chainId={chainId} className='mr-2 my-auto' />
-        <span className='font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
+      <div className='flex space-x-2 items-center'>
+        <TokenIconWithNetwork chainId={chainId} address={token.address} />
+        <span className='font-bold'>{token.symbol}</span>
+        <span className='text-xxs opacity-80'>{token.name}</span>
       </div>
 
       <div className='flex items-center space-x-2'>
-        <TokenIcon
-          chainId={CHAIN_ID.mainnet}
-          address={POOL_ADDRESSES[CHAIN_ID.mainnet].pool}
-          className='my-auto'
-        />
+        <PoolIcon />
         <span>{token.amountPretty}</span>
       </div>
     </li>

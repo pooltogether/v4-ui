@@ -1,4 +1,3 @@
-import { NO_REFETCH } from '@constants/query'
 import { Token, usePrizePoolTokens, useRefetchInterval } from '@pooltogether/hooks'
 import { msToS } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -14,8 +13,7 @@ export const usePrizePoolTicketTwabTotalSupply = (prizePool: PrizePool) => {
     [PRIZE_POOL_TICKET_TWAB_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id(), tokenData?.ticket.address],
     () => getPrizePoolTicketTwabTotalSupply(prizePool, tokenData?.ticket),
     {
-      enabled,
-      ...NO_REFETCH
+      enabled
     }
   )
 }

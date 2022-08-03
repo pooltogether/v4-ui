@@ -5,7 +5,6 @@ import { usePrizePools } from './usePrizePools'
 import { useAllUsersPrizePoolTwabs } from './useAllUsersPrizePoolTwabs'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
 import { getUsersPrizePoolOdds, getUsersPrizePoolOddsKey } from './useUsersPrizePoolOdds'
-import { NO_REFETCH } from '@constants/query'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -71,8 +70,7 @@ export const useAllUsersPrizePoolOdds = (
                 actionAmountUnformatted
               )
             },
-            enabled: enabled && !!oddsData && !!twabData,
-            ...NO_REFETCH
+            enabled: enabled && !!oddsData && !!twabData
           }
         })
       : []
