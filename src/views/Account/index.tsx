@@ -33,7 +33,7 @@ export const AccountUI = (props) => {
       <AccountCard usersAddress={usersAddress} />
       <V4Deposits />
       <RewardsCard />
-      <POOLBalancesCard />
+      <POOLBalancesCard usersAddress={usersAddress} />
       <EarnRewardsCard />
       <V3StakingCards />
       <V3Deposits />

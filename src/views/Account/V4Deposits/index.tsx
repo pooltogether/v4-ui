@@ -226,6 +226,9 @@ const NetworkLabel = (props: { chainId: number }) => (
 const DepositBalance = (props: DepositItemsProps) => {
   const { balances, prizePool } = props
   const { ticket } = balances
+
+  if (!ticket.hasBalance) return null
+
   return <PrizePoolDepositBalance chainId={prizePool.chainId} token={ticket} />
 }
 

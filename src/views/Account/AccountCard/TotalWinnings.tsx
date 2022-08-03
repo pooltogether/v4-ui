@@ -21,12 +21,14 @@ export const TotalWinnings: React.FC<{ usersAddress: string }> = (props) => {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white dark:hover:bg-white dark:hover:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse transition'
+        className='p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white dark:hover:bg-white dark:hover:bg-opacity-10 rounded-lg flex justify-between font-bold text-inverse transition items-center'
       >
-        <span>
-          <span className='mr-1'>{'🎉 '}</span>
-          {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
-        </span>
+        <div className='flex items-center font-bold text-xs space-x-2 text-left w-1/2'>
+          <span>🎉</span>
+          <span className='leading-none'>
+            {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
+          </span>
+        </div>
         <div className='flex'>
           <span className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3'>
             {!isFetched ? (

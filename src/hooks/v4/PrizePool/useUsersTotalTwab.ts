@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useAllUsersPrizePoolTwabs } from './useAllUsersPrizePoolTwabs'
+import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
 
 /**
  * Fetches the users current TWAB across all chains and combines

@@ -6,7 +6,6 @@ import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
@@ -31,8 +30,8 @@ export const AccountCard: React.FC<{
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
-        {/* <DailyOdds usersAddress={usersAddress} />
-        <WeeklyOdds usersAddress={usersAddress} /> */}
+        <DailyOdds usersAddress={usersAddress} />
+        <WeeklyOdds usersAddress={usersAddress} />
       </div>
       <TotalWinnings usersAddress={usersAddress} />
     </div>
@@ -46,7 +45,11 @@ const TotalBalance: React.FC<{
 }> = (props) => {
   const { showAddress, usersAddress, className } = props
   const { t } = useTranslation()
-  const { data: balancesData } = useUsersTotalBalances(usersAddress)
+  const {
+    data: balancesData,
+    isFullyFetched,
+    isStillFetching
+  } = useUsersTotalBalances(usersAddress)
   return (
     <a href='#deposits' className={className}>
       {showAddress && (
@@ -56,11 +59,11 @@ const TotalBalance: React.FC<{
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
-          isFetched={balancesData.isFullyFetched}
-          totalBalanceUsd={balancesData.data.totalBalanceUsd}
-          totalV4Balance={balancesData.data.totalV4Balance}
+          isFetched={isFullyFetched}
+          totalBalanceUsd={balancesData.totalBalanceUsd}
+          totalV4Balance={balancesData.totalV4Balance}
         />
-        {balancesData.isStillFetching ? (
+        {isStillFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
@@ -76,6 +79,7 @@ const TotalBalanceAmount = (props: {
   isFetched: boolean
 }) => {
   const { totalBalanceUsd, totalV4Balance, isFetched } = props
+  console.log({ totalBalanceUsd, totalV4Balance, isFetched })
   // If not fetched
   // If no token price or balance
   // If token price
@@ -137,7 +141,9 @@ const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: n
   return (
     <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
       <span className='font-bold flex text-lg mx-auto'>1:{oneOverOddstring}</span>
-      <span className='mt-1 opacity-50 font-bold uppercase'>{t(i18nKey)}*</span>
+      <span className='mt-1 opacity-50 text-xxxs xs:text-xs font-bold uppercase'>
+        {t(i18nKey)}*
+      </span>
     </div>
   )
 }

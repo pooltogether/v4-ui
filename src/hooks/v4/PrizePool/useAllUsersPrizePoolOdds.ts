@@ -2,9 +2,9 @@ import { BigNumber } from 'ethers'
 import { EstimateAction } from '../../../constants/odds'
 import { useQueries } from 'react-query'
 import { usePrizePools } from './usePrizePools'
-import { useAllUsersPrizePoolTwabs } from './useAllUsersPrizePoolTwabs'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
 import { getUsersPrizePoolOdds, getUsersPrizePoolOddsKey } from './useUsersPrizePoolOdds'
+import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

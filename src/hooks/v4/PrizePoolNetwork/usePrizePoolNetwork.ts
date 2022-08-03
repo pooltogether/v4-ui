@@ -4,7 +4,6 @@ import { getReadProvider } from '@pooltogether/wallet-connection'
 import { atom, useAtom } from 'jotai'
 import { BaseProvider } from '@ethersproject/providers'
 import { getContractList } from '@utils/v4/getContractList'
-import { useEffect } from 'react'
 
 const initializePrizePoolNetwork = () => {
   const prizePoolNetworkContractList = getContractList()
@@ -20,8 +19,5 @@ const prizePoolNetworkAtom = atom<PrizePoolNetwork>(initializePrizePoolNetwork()
 
 export const usePrizePoolNetwork = (): PrizePoolNetwork => {
   const [prizePoolNetwork] = useAtom(prizePoolNetworkAtom)
-  useEffect(() => {
-    console.log({ prizePoolNetwork })
-  }, [prizePoolNetwork])
   return prizePoolNetwork
 }
