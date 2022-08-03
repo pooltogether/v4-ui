@@ -29,7 +29,7 @@ export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
     return chainIds.every((chainId) => {
       return Object.values(data.balances[chainId]).every((token) => !token.hasBalance)
     })
-  }, [isFetching])
+  }, [isFetched, isFetching])
 
   if (!isFetched) return null
 
