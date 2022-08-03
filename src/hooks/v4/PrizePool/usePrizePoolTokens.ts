@@ -20,7 +20,7 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
 }
 
 export const getPrizePoolTokens = async (prizePool: PrizePool) => {
-  const cachedData = PRIZE_POOL_TOKENS[prizePool.chainId].find(
+  const cachedData = PRIZE_POOL_TOKENS[prizePool.chainId]?.find(
     (data) => data.prizePoolId === prizePool.id()
   )
   if (cachedData) return cachedData
