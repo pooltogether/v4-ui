@@ -249,6 +249,7 @@ export const DepositInfoBox: React.FC<{
             prizePool={prizePool}
             labelClassName={labelClassName}
             valueClassName={valueClassName}
+            nullState={'-'}
           />
           <PrizePoolNetworkAPRItem
             labelClassName={labelClassName}

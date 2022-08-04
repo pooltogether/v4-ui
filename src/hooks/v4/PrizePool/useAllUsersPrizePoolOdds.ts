@@ -33,7 +33,7 @@ export const useAllUsersPrizePoolOdds = (
     ({ isFetched }) => isFetched
   )
 
-  const enabled = !!usersAddress && isPrizePoolTwabsFetched && isPrizePoolOddsDataFetched
+  const enabled = isPrizePoolTwabsFetched && isPrizePoolOddsDataFetched
 
   return useQueries(
     enabled

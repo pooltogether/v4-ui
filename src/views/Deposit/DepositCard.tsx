@@ -85,8 +85,8 @@ export const DepositCard = (props: { className?: string }) => {
   const setDepositTxId = (txId: string, prizePool: PrizePool) =>
     setSpecificTxId(txId, prizePool, 'deposit')
 
-  const token = usersBalances?.token
-  const ticket = usersBalances?.ticket
+  const token = prizePoolTokens?.token
+  const ticket = prizePoolTokens?.ticket
 
   const { setValue, watch, reset } = form
 
