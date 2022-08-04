@@ -155,3 +155,7 @@ export const COINBASE_CHAIN_KEYS = Object.freeze({
   [CHAIN_ID.mainnet]: 'ethereum',
   [CHAIN_ID.avalanche]: 'avalanche-c-chain'
 })
+export const COINBASE_ASSETS = Object.freeze({
+  [CHAIN_ID.mainnet]: ['ETH', 'USDC'],
+  [CHAIN_ID.avalanche]: ['AVAX']
+})

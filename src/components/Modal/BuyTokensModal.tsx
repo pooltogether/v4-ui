@@ -14,7 +14,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
 import { CHAIN_ID, DISCORD_INVITE_URL } from '@constants/misc'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { getCoinbaseChainKey } from '@constants/config'
+import { COINBASE_ASSETS, getCoinbaseChainKey } from '@constants/config'
 import classNames from 'classnames'
 
 /**
@@ -76,7 +76,8 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
         destinationWallets: [
           {
             address: usersAddress,
-            blockchains: [!!chainKey ? chainKey : mainnetChainKey]
+            blockchains: [!!chainKey ? chainKey : mainnetChainKey],
+            assets: COINBASE_ASSETS[!!chainKey ? chainId : CHAIN_ID.mainnet]
           }
         ]
       },
