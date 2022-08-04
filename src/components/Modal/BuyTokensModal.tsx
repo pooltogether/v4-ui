@@ -68,6 +68,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   const { t } = useTranslation()
   const chainKey = getCoinbaseChainKey(chainId)
   const mainnetChainKey = getCoinbaseChainKey(CHAIN_ID.mainnet)
+  const avalancheChainKey = getCoinbaseChainKey(CHAIN_ID.avalanche)
 
   useEffect(() => {
     onrampInstance.current = initOnRamp({
@@ -76,8 +77,10 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
         destinationWallets: [
           {
             address: usersAddress,
-            blockchains: [!!chainKey ? chainKey : mainnetChainKey],
-            assets: COINBASE_ASSETS[!!chainKey ? chainId : CHAIN_ID.mainnet]
+            blockchains: !!chainKey ? [chainKey] : [mainnetChainKey, avalancheChainKey],
+            assets: !!chainKey
+              ? COINBASE_ASSETS[chainId]
+              : [...COINBASE_ASSETS[CHAIN_ID.mainnet], ...COINBASE_ASSETS[CHAIN_ID.avalanche]]
           }
         ]
       },
