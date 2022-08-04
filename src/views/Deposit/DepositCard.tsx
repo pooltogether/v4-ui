@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
@@ -7,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { ethers, Overrides } from 'ethers'
 import { TransactionState, useTransaction } from '@pooltogether/wallet-connection'
 
-import { BUTTON_MIN_WIDTH } from '@constants/misc'
 import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
 import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
@@ -24,6 +22,8 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { BuyTokensModal } from '@components/Modal/BuyTokensModal'
+import { DepositCardBottomLinks } from './DepositCardBottomLinks'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -227,15 +227,7 @@ export const DepositCard = (props: { className?: string }) => {
           openModal={openModal}
           amountToDeposit={amountToDeposit}
         />
-
-        <div className='w-full flex justify-around xs:px-2 py-4'>
-          <BridgeTokensModalTrigger prizePool={prizePool} />
-          <HelpLink />
-          <SwapTokensModalTrigger
-            chainId={prizePool.chainId}
-            outputCurrencyAddress={prizePoolTokens?.token.address}
-          />
-        </div>
+        <DepositCardBottomLinks />
       </div>
 
       <DepositConfirmationModal
@@ -259,52 +251,6 @@ export const DepositCard = (props: { className?: string }) => {
   )
 }
 
-const HelpLink = () => {
-  const { t } = useTranslation()
-
-  return (
-    <a
-      href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
-      target='_blank'
-      rel='noreferrer noopener'
-      className='text-center text-xs text-inverse opacity-60 hover:opacity-100 transition-opacity xs:-ml-3 flex flex-col items-center xs:flex-row xs:space-x-2 space-y-1 xs:space-y-2 justify-between xs:justify-center'
-      style={{ minWidth: BUTTON_MIN_WIDTH }}
-    >
-      <FeatherIcon icon={'help-circle'} className='relative w-4 h-4 inline-block' />
-      <span>{t('help', 'Help')}</span>
-    </a>
-  )
-}
-
 interface ExternalLinkProps {
   prizePool: PrizePool
-}
-
-const BridgeTokensModalTrigger = (props: ExternalLinkProps) => {
-  const { prizePool } = props
-  const [showModal, setShowModal] = useState(false)
-
-  const { t } = useTranslation()
-
-  return (
-    <>
-      <button
-        className='text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-between items-center xs:flex-row xs:space-y-0 xs:space-x-2'
-        onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
-      >
-        <div className='flex -space-x-1'>
-          <FeatherIcon icon={'arrow-left'} className='relative w-3 h-3' />
-          <FeatherIcon icon={'arrow-right'} className='relative w-3 h-3' />
-        </div>
-        <span>{t('bridgeTokens', 'Bridge tokens')}</span>
-      </button>
-      <BridgeTokensModal
-        label={t('ethToL2BridgeModal', 'Ethereum to L2 bridge - modal')}
-        chainId={prizePool.chainId}
-        isOpen={showModal}
-        closeModal={() => setShowModal(false)}
-      />
-    </>
-  )
 }
