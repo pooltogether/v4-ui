@@ -13,10 +13,11 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
   amount: Amount
   action: EstimateAction
   nullState?: React.ReactNode
+  className?: string
   labelClassName?: string
   valueClassName?: string
 }> = (props) => {
-  const { amount, action, nullState, prizePool, labelClassName, valueClassName } = props
+  const { amount, action, className, nullState, prizePool, labelClassName, valueClassName } = props
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
@@ -44,6 +45,7 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
 
   return (
     <InfoListItem
+      className={className}
       label={'Prize Pool winning odds'}
       labelToolTip={'Your estimated odds of winning at least one prize in this prize pool'}
       loading={!isFetched}

@@ -12,8 +12,10 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
   amount: Amount
   action: EstimateAction
   prizePool: PrizePool
+  labelClassName?: string
+  valueClassName?: string
 }) => {
-  const { amount, action, prizePool } = props
+  const { amount, action, prizePool, labelClassName, valueClassName } = props
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
@@ -39,6 +41,8 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
       labelToolTip={'Your estimated odds of winning at least one prize across the whole network'}
       loading={!isFetched}
       value={value}
+      labelClassName={labelClassName}
+      valueClassName={valueClassName}
     />
   )
 }

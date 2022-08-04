@@ -5,9 +5,6 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { ethers, Overrides } from 'ethers'
 import { TransactionState, useTransaction } from '@pooltogether/wallet-connection'
-
-import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
-import { SwapTokensModalTrigger } from '@components/Modal/SwapTokensModal'
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -22,14 +19,12 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
-import { BuyTokensModal } from '@components/Modal/BuyTokensModal'
 import { DepositCardBottomLinks } from './DepositCardBottomLinks'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
 
   const router = useRouter()
-
   const prizePool = usePrizePoolBySelectedChainId()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =

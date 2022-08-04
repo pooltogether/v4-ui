@@ -33,7 +33,7 @@ export const useUsersPrizePoolNetworkOdds = (
       queryResults.map((queryResult) => queryResult.data?.odds).join('-'),
       Object.keys(actions)?.join('-'),
       Object.values(actions)
-        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted.toString())
+        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted?.toString())
         .join('-')
     ],
     () => {

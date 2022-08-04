@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
@@ -29,6 +30,7 @@ import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizeP
 import { EstimateAction } from '@constants/odds'
 import classNames from 'classnames'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -137,7 +139,7 @@ const DepositButton = (props: DepositBottomButtonProps) => {
 
   return (
     <TxButton
-      disabled={disabled}
+      // disabled={disabled}
       className={className}
       state={depositTx?.state}
       status={depositTx?.status}
@@ -173,6 +175,8 @@ export const DepositInfoBox: React.FC<{
     errors
   } = props
 
+  const [isAdvanced, setIsAdvanced] = useState(false)
+
   const { t } = useTranslation()
   const errorMessages = errors ? Object.values(errors) : null
   const isError =
@@ -205,16 +209,54 @@ export const DepositInfoBox: React.FC<{
         'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
         [bgClassName]: !isError
       })}
-      className={className}
+      className={classNames(className)}
     >
-      <UpdatedPrizePoolOddsListItem
-        prizePool={prizePool}
-        action={EstimateAction.deposit}
-        amount={amountToDeposit}
-        labelClassName={labelClassName}
-        valueClassName={valueClassName}
-        nullState={'-'}
-      />
+      {!isAdvanced ? (
+        <div className={classNames({ 'flex space-x-2 items-center': !isAdvanced })}>
+          <UpdatedPrizePoolOddsListItem
+            prizePool={prizePool}
+            action={EstimateAction.deposit}
+            amount={amountToDeposit}
+            labelClassName={labelClassName}
+            valueClassName={valueClassName}
+            nullState={'-'}
+            className='w-full'
+          />
+          <button
+            type='button'
+            className='justify-end flex items-center space-x-2'
+            onClick={() => setIsAdvanced(!isAdvanced)}
+          >
+            <FeatherIcon
+              icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
+              className='w-3 h-3 xs:w-5 xs:h-5 opacity-50'
+            />
+          </button>
+        </div>
+      ) : (
+        <>
+          <UpdatedPrizePoolOddsListItem
+            prizePool={prizePool}
+            action={EstimateAction.deposit}
+            amount={amountToDeposit}
+            labelClassName={labelClassName}
+            valueClassName={valueClassName}
+            nullState={'-'}
+          />
+          <UpdatedPrizePoolNetworkOddsListItem
+            amount={amountToDeposit}
+            action={EstimateAction.deposit}
+            prizePool={prizePool}
+            labelClassName={labelClassName}
+            valueClassName={valueClassName}
+          />
+          <PrizePoolNetworkAPRItem
+            labelClassName={labelClassName}
+            valueClassName={valueClassName}
+          />
+        </>
+      )}
+
       <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
       {isError && (
         <InfoListItem

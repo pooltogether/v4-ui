@@ -5,11 +5,14 @@ import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 interface InfoListProps
   extends DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement> {
+  paddingClassName?: string
   bgClassName?: string
   textClassName?: string
 }
 
-export const ModalInfoList = (props: Omit<InfoListProps, 'bgClassName' & 'textClassName'>) => (
+export const ModalInfoList = (
+  props: Omit<InfoListProps, 'paddingClassName' & 'bgClassName' & 'textClassName'>
+) => (
   <InfoList
     {...props}
     bgClassName='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10'
@@ -18,22 +21,24 @@ export const ModalInfoList = (props: Omit<InfoListProps, 'bgClassName' & 'textCl
 )
 
 export const InfoList = (props: InfoListProps) => {
-  const { className, bgClassName, textClassName, ...ulProps } = props
+  const { className, bgClassName, paddingClassName, textClassName, ...ulProps } = props
   return (
     <ul
       {...ulProps}
       className={classnames(
         className,
+        paddingClassName,
         bgClassName,
         textClassName,
-        'w-full px-4 py-2 rounded-lg transition'
+        'w-full rounded-lg transition'
       )}
     />
   )
 }
 
 InfoList.defaultProps = {
-  bgClassName: 'bg-tertiary'
+  bgClassName: 'bg-tertiary',
+  paddingClassName: 'px-4 py-2'
 }
 
 export interface InfoListItemProps {
