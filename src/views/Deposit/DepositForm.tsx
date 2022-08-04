@@ -181,7 +181,7 @@ export const DepositInfoBox: React.FC<{
     errorMessages[0].message !== '' &&
     depositTx?.state !== TransactionState.pending
   const messages = errorMessages?.map((error) => (
-    <span key={error.message} className='text-red font-semibold'>
+    <span key={error.message} className='text-pt-red-light'>
       {error.message}
     </span>
   ))
