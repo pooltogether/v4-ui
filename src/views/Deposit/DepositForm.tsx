@@ -7,7 +7,8 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import {
   useIsWalletConnected,
   Transaction,
-  TransactionState
+  TransactionState,
+  useUsersAddress
 } from '@pooltogether/wallet-connection'
 import { BigNumber } from '@ethersproject/bignumber'
 import { InfoList } from '@components/InfoList'
@@ -24,6 +25,10 @@ import { TxButton } from '@components/Input/TxButton'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { EstimateAction } from '@constants/odds'
+import classNames from 'classnames'
+import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -74,6 +79,7 @@ export const DepositForm = (props: DepositFormProps) => {
         </div>
 
         <DepositInfoBox
+          prizePool={prizePool}
           chainId={prizePool.chainId}
           className='mt-3'
           depositTx={depositTx}
@@ -81,6 +87,7 @@ export const DepositForm = (props: DepositFormProps) => {
           errors={isDirty ? errors : null}
           labelClassName='text-accent-1'
           valueClassName='text-inverse'
+          amountToDeposit={amountToDeposit}
         />
 
         <DepositBottomButton
@@ -142,7 +149,9 @@ const DepositButton = (props: DepositBottomButtonProps) => {
   )
 }
 
-interface DepositInfoBoxProps {
+export const DepositInfoBox: React.FC<{
+  prizePool: PrizePool
+  amountToDeposit: Amount
   className?: string
   bgClassName?: string
   depositTx: Transaction
@@ -151,14 +160,13 @@ interface DepositInfoBoxProps {
   labelClassName?: string
   valueClassName?: string
   errors?: { [x: string]: { message: string } }
-}
-
-export const DepositInfoBox = (props: DepositInfoBoxProps) => {
+}> = (props) => {
   const {
+    prizePool,
+    amountToDeposit,
     chainId,
     bgClassName,
     className,
-    depositAllowance,
     valueClassName,
     labelClassName,
     depositTx,
@@ -167,29 +175,16 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
 
   const { t } = useTranslation()
   const errorMessages = errors ? Object.values(errors) : null
-  if (
+  const isError =
     errorMessages &&
     errorMessages.length > 0 &&
     errorMessages[0].message !== '' &&
     depositTx?.state !== TransactionState.pending
-  ) {
-    const messages = errorMessages.map((error) => (
-      <span key={error.message} className='text-red font-semibold'>
-        {error.message}
-      </span>
-    ))
-
-    return (
-      <InfoList bgClassName='bg-pt-purple-lighter dark:bg-pt-purple-dark' className={className}>
-        <InfoListItem
-          label={t('issues', 'Issues')}
-          value={<div>{messages}</div>}
-          labelClassName={labelClassName}
-          valueClassName={valueClassName}
-        />
-      </InfoList>
-    )
-  }
+  const messages = errorMessages?.map((error) => (
+    <span key={error.message} className='text-red font-semibold'>
+      {error.message}
+    </span>
+  ))
 
   if (depositTx?.state === TransactionState.pending) {
     return (
@@ -205,22 +200,34 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   }
 
   return (
-    <InfoList bgClassName={bgClassName} className={className}>
-      <PrizePoolNetworkAPRItem labelClassName={labelClassName} valueClassName={valueClassName} />
+    <InfoList
+      bgClassName={classNames({
+        'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
+        [bgClassName]: !isError
+      })}
+      className={className}
+    >
+      <UpdatedPrizePoolOddsListItem
+        prizePool={prizePool}
+        action={EstimateAction.deposit}
+        amount={amountToDeposit}
+        labelClassName={labelClassName}
+        valueClassName={valueClassName}
+        nullState={'-'}
+      />
       <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
-      {depositAllowance?.gt(0) ? (
-        <EstimatedDepositGasItem
-          chainId={chainId}
-          labelClassName={labelClassName}
-          valueClassName={valueClassName}
-        />
-      ) : (
-        <EstimatedApproveAndDepositGasItem
-          chainId={chainId}
+      {isError && (
+        <InfoListItem
+          label={t('issues', 'Issues')}
+          value={<div>{messages}</div>}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
         />
       )}
     </InfoList>
   )
+}
+
+DepositInfoBox.defaultProps = {
+  bgClassName: 'bg-tertiary'
 }
