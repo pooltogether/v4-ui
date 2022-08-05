@@ -204,15 +204,14 @@ export const DepositInfoBox: React.FC<{
   }
 
   return (
-    <InfoList
-      bgClassName={classNames({
+    <div
+      className={classNames(className, 'rounded-lg pl-4 pr-1 py-2', {
         'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
         [bgClassName]: !isError
       })}
-      className={classNames(className)}
     >
-      {!isAdvanced ? (
-        <div className={classNames({ 'flex space-x-2 items-center': !isAdvanced })}>
+      <div className={classNames('flex space-x-1 w-full items-end')}>
+        <ul className='w-full'>
           <UpdatedPrizePoolOddsListItem
             prizePool={prizePool}
             action={EstimateAction.deposit}
@@ -222,52 +221,49 @@ export const DepositInfoBox: React.FC<{
             nullState={'-'}
             className='w-full'
           />
-          <button
-            type='button'
-            className='justify-end flex items-center space-x-2'
-            onClick={() => setIsAdvanced(!isAdvanced)}
-          >
-            <FeatherIcon
-              icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
-              className='w-3 h-3 xs:w-5 xs:h-5 opacity-50'
-            />
-          </button>
-        </div>
-      ) : (
-        <>
-          <UpdatedPrizePoolOddsListItem
-            prizePool={prizePool}
-            action={EstimateAction.deposit}
-            amount={amountToDeposit}
-            labelClassName={labelClassName}
-            valueClassName={valueClassName}
-            nullState={'-'}
-          />
-          <UpdatedPrizePoolNetworkOddsListItem
-            amount={amountToDeposit}
-            action={EstimateAction.deposit}
-            prizePool={prizePool}
-            labelClassName={labelClassName}
-            valueClassName={valueClassName}
-            nullState={'-'}
-          />
-          <PrizePoolNetworkAPRItem
-            labelClassName={labelClassName}
-            valueClassName={valueClassName}
-          />
-        </>
-      )}
+          <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
+          {isAdvanced && (
+            <>
+              <UpdatedPrizePoolOddsListItem
+                prizePool={prizePool}
+                action={EstimateAction.deposit}
+                amount={amountToDeposit}
+                labelClassName={labelClassName}
+                valueClassName={valueClassName}
+                nullState={'-'}
+              />
+              <UpdatedPrizePoolNetworkOddsListItem
+                amount={amountToDeposit}
+                action={EstimateAction.deposit}
+                prizePool={prizePool}
+                labelClassName={labelClassName}
+                valueClassName={valueClassName}
+                nullState={'-'}
+              />
+              <PrizePoolNetworkAPRItem
+                labelClassName={labelClassName}
+                valueClassName={valueClassName}
+              />
+            </>
+          )}
 
-      <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
-      {isError && (
-        <InfoListItem
-          label={t('issues', 'Issues')}
-          value={<div>{messages}</div>}
-          labelClassName={labelClassName}
-          valueClassName={valueClassName}
-        />
-      )}
-    </InfoList>
+          {isError && (
+            <InfoListItem
+              label={t('issues', 'Issues')}
+              value={<div>{messages}</div>}
+              labelClassName={labelClassName}
+              valueClassName={valueClassName}
+            />
+          )}
+        </ul>
+        <button type='button' onClick={() => setIsAdvanced(!isAdvanced)}>
+          <FeatherIcon
+            icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
+            className='w-3 h-3 xs:w-5 xs:h-5 opacity-50'
+          />
+        </button>
+      </div>
+    </div>
   )
 }
 
