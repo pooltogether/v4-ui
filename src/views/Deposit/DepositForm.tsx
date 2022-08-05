@@ -32,6 +32,7 @@ import classNames from 'classnames'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
+import { UpdatedPrizePoolNetworkOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItemBar'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -220,7 +221,7 @@ export const DepositInfoBox: React.FC<{
                 action={EstimateAction.deposit}
                 amount={amountToDeposit}
               />
-              <UpdatedPrizePoolOddsListItemBar
+              <UpdatedPrizePoolNetworkOddsListItemBar
                 amount={amountToDeposit}
                 action={EstimateAction.deposit}
                 prizePool={prizePool}
