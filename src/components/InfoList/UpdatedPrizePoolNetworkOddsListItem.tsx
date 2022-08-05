@@ -9,9 +9,9 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 export const UpdatedPrizePoolNetworkOddsListItem = (props: {
+  prizePool: PrizePool
   amount: Amount
   action: EstimateAction
-  prizePool: PrizePool
   nullState?: React.ReactNode
   className?: string
   labelClassName?: string

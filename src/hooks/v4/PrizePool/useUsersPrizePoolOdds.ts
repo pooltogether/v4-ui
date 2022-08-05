@@ -96,7 +96,6 @@ export const getUsersPrizePoolOdds = (
     actionAmountUnformatted
   )
 
-  console.log('odds', { odds, oneOverOdds, usersAddress })
   return {
     prizePoolId: prizePool?.id(),
     usersAddress,

@@ -31,6 +31,7 @@ import { EstimateAction } from '@constants/odds'
 import classNames from 'classnames'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -212,6 +213,20 @@ export const DepositInfoBox: React.FC<{
     >
       <div className={classNames('flex space-x-1 w-full items-end')}>
         <ul className='w-full'>
+          {isAdvanced && (
+            <>
+              <UpdatedPrizePoolOddsListItemBar
+                prizePool={prizePool}
+                action={EstimateAction.deposit}
+                amount={amountToDeposit}
+              />
+              <UpdatedPrizePoolOddsListItemBar
+                amount={amountToDeposit}
+                action={EstimateAction.deposit}
+                prizePool={prizePool}
+              />
+            </>
+          )}
           <UpdatedPrizePoolOddsListItem
             prizePool={prizePool}
             action={EstimateAction.deposit}
