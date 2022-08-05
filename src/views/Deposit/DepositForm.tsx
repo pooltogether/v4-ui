@@ -240,14 +240,6 @@ export const DepositInfoBox: React.FC<{
           <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
           {isAdvanced && (
             <>
-              <UpdatedPrizePoolOddsListItem
-                prizePool={prizePool}
-                action={EstimateAction.deposit}
-                amount={amountToDeposit}
-                labelClassName={labelClassName}
-                valueClassName={valueClassName}
-                nullState={'-'}
-              />
               <UpdatedPrizePoolNetworkOddsListItem
                 amount={amountToDeposit}
                 action={EstimateAction.deposit}
