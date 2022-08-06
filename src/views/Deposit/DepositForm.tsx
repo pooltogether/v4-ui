@@ -273,7 +273,7 @@ export const DepositInfoBox: React.FC<{
         >
           <FeatherIcon
             icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
-            className='w-3 h-3 xs:w-5 xs:h-5 opacity-50'
+            className='w-3 h-3 xs:w-5 xs:h-5 opacity-50 hover:opacity-100 transition'
           />
         </button>
       </div>
