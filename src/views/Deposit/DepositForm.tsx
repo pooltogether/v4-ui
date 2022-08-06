@@ -212,7 +212,7 @@ export const DepositInfoBox: React.FC<{
         [bgClassName]: !isError
       })}
     >
-      <div className={classNames('flex space-x-1 w-full items-end')}>
+      <div className={classNames('flex space-x-1 w-full items-center')}>
         <ul className='w-full'>
           {isAdvanced && (
             <>
@@ -221,11 +221,11 @@ export const DepositInfoBox: React.FC<{
                 action={EstimateAction.deposit}
                 amount={amountToDeposit}
               />
-              <UpdatedPrizePoolNetworkOddsListItemBar
+              {/* <UpdatedPrizePoolNetworkOddsListItemBar
                 amount={amountToDeposit}
                 action={EstimateAction.deposit}
                 prizePool={prizePool}
-              />
+              /> */}
             </>
           )}
           <UpdatedPrizePoolOddsListItem
@@ -256,15 +256,21 @@ export const DepositInfoBox: React.FC<{
           )}
 
           {isError && (
-            <InfoListItem
-              label={t('issues', 'Issues')}
-              value={<div>{messages}</div>}
-              labelClassName={labelClassName}
-              valueClassName={valueClassName}
-            />
+            <div className='mt-2'>
+              <InfoListItem
+                label={t('issues', 'Issues')}
+                value={<div>{messages}</div>}
+                labelClassName={labelClassName}
+                valueClassName={valueClassName}
+              />
+            </div>
           )}
         </ul>
-        <button type='button' onClick={() => setIsAdvanced(!isAdvanced)}>
+        <button
+          className='flex justify-center w-7'
+          type='button'
+          onClick={() => setIsAdvanced(!isAdvanced)}
+        >
           <FeatherIcon
             icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
             className='w-3 h-3 xs:w-5 xs:h-5 opacity-50'

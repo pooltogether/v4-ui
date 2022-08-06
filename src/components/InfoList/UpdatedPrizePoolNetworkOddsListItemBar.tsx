@@ -33,7 +33,7 @@ export const UpdatedPrizePoolNetworkOddsListItemBar = (props: {
     <li
       className={classNames(
         className,
-        'w-full rounded-full bg-white h-2 bg-opacity-10 overflow-hidden'
+        'w-full rounded-full bg-white h-2 bg-opacity-10 overflow-hidden my-2'
       )}
     >
       <div className='bg-pt-teal rounded-full h-full' style={{ width: `${width}%` }} />

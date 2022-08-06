@@ -1,11 +1,11 @@
-import { Amount } from '@pooltogether/hooks'
 import React, { useMemo } from 'react'
+import classNames from 'classnames'
+import { Amount } from '@pooltogether/hooks'
 
 import { EstimateAction } from '@constants/odds'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import classNames from 'classnames'
 
 export const UpdatedPrizePoolOddsListItemBar: React.FC<{
   prizePool: PrizePool
@@ -30,10 +30,20 @@ export const UpdatedPrizePoolOddsListItemBar: React.FC<{
     <li
       className={classNames(
         className,
-        'w-full rounded-full bg-white h-2 bg-opacity-10 overflow-hidden'
+        'rounded-full w-full bg-white h-2 bg-opacity-10 overflow-hidden my-2'
       )}
     >
-      <div className='bg-pt-teal rounded-full h-full' style={{ width: `${width}%` }} />
+      <div
+        className={classNames('h-full odds--progress-bar rounded-l-full', {
+          'bg-pt-purple-light dark:bg-pt-purple-bright': width < 20 && width > 0,
+          'bg-blue': width < 30 && width > 20,
+          'bg-pt-teal': width < 40 && width > 30,
+          'bg-orange': width < 47 && width > 40,
+          'bg-pink': width < 55 && width > 47,
+          'seamless-gradient-wrapper': width > 55
+        })}
+        style={{ width: `${width}%` }}
+      />
     </li>
   )
 }
