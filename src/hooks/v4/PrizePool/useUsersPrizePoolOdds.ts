@@ -25,11 +25,7 @@ export const useUsersPrizePoolOdds = (
   )
   const { data: oddsData, isFetched: isOddsDataFetched } = usePrizePoolOddsData(prizePool)
 
-  const enabled =
-    !!usersAddress &&
-    !!isOddsDataFetched &&
-    !!isTwabDataFetched &&
-    usersAddress === twabData?.usersAddress
+  const enabled = !!isOddsDataFetched && !!isTwabDataFetched
 
   return useQuery(
     getUsersPrizePoolOddsKey(
@@ -99,6 +95,8 @@ export const getUsersPrizePoolOdds = (
     action,
     actionAmountUnformatted
   )
+
+  console.log('odds', { odds, oneOverOdds, usersAddress })
   return {
     prizePoolId: prizePool?.id(),
     usersAddress,

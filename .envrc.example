@@ -5,6 +5,12 @@ export NEXT_PUBLIC_DOMAIN_NAME=
 export NEXT_PUBLIC_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
 export NEXT_PUBLIC_LOCIZE_VERSION=latest
 
+# Only one is needed
+# API keys for read only RPC calls.
+export NEXT_PUBLIC_ALCHEMY_API_KEY=
+export NEXT_PUBLIC_ETHERSCAN_API_KEY=
+export NEXT_PUBLIC_INFURA_ID=
+
 # Optional
 # Sentry DSN
 export NEXT_PUBLIC_SENTRY_DSN=
@@ -27,8 +33,5 @@ export NEXT_PUBLIC_LOCIZE_DEV_API_KEY=
 # Fathom API keys for analytics tracking.
 export NEXT_PUBLIC_FATHOM_SITE_ID=
 
-# Optional 
-# API keys for read only RPC calls.
-export NEXT_PUBLIC_ALCHEMY_API_KEY=
-export NEXT_PUBLIC_ETHERSCAN_API_KEY=
-export NEXT_PUBLIC_INFURA_ID=
+# Optional
+export NEXT_PUBLIC_COINBASE_PAY_APP_ID=

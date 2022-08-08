@@ -33,12 +33,14 @@ export const useUsersPrizePoolNetworkOdds = (
       queryResults.map((queryResult) => queryResult.data?.odds).join('-'),
       Object.keys(actions)?.join('-'),
       Object.values(actions)
-        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted.toString())
+        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted?.toString())
         .join('-')
     ],
     () => {
       const odds = unionProbabilities(...queryResults.map((queryResult) => queryResult.data.odds))
       const oneOverOdds = 1 / odds
+
+      console.log({ queryResults, odds, oneOverOdds })
 
       return {
         prizePoolNetworkId: prizePoolNetwork.id(),
@@ -47,6 +49,6 @@ export const useUsersPrizePoolNetworkOdds = (
         oneOverOdds
       }
     },
-    { enabled: isFetched && !!usersAddress }
+    { enabled: isFetched }
   )
 }
