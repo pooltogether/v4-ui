@@ -45,8 +45,11 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
 
   return (
     <InfoListItem
-      label={'Prize Pool Network winning odds'}
-      labelToolTip={'Your estimated odds of winning at least one prize across the whole network'}
+      label={t('networkWinningOdds', 'Network winning odds')}
+      labelToolTip={t(
+        'networkWinningOddsDescription',
+        'Your estimated odds of winning at least one prize across the whole network'
+      )}
       loading={!isFetched}
       value={value}
       className={className}
