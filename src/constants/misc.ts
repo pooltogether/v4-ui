@@ -38,5 +38,3 @@ export const PPOOL_TICKET_TOKEN = Object.freeze({
   [CHAIN_ID.mainnet]: '0x27d22a7648e955e510a40bdb058333e9190d12d4',
   [CHAIN_ID.polygon]: '0xd80eaa761ccfdc8698999d73c96cec39fbb1fc48'
 })
-
-export const BUTTON_MIN_WIDTH = 100

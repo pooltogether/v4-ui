@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
@@ -7,7 +8,8 @@ import { FieldValues, UseFormReturn } from 'react-hook-form'
 import {
   useIsWalletConnected,
   Transaction,
-  TransactionState
+  TransactionState,
+  useUsersAddress
 } from '@pooltogether/wallet-connection'
 import { BigNumber } from '@ethersproject/bignumber'
 import { InfoList } from '@components/InfoList'
@@ -24,6 +26,11 @@ import { TxButton } from '@components/Input/TxButton'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { EstimateAction } from '@constants/odds'
+import classNames from 'classnames'
+import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -74,6 +81,7 @@ export const DepositForm = (props: DepositFormProps) => {
         </div>
 
         <DepositInfoBox
+          prizePool={prizePool}
           chainId={prizePool.chainId}
           className='mt-3'
           depositTx={depositTx}
@@ -81,6 +89,7 @@ export const DepositForm = (props: DepositFormProps) => {
           errors={isDirty ? errors : null}
           labelClassName='text-accent-1'
           valueClassName='text-inverse'
+          amountToDeposit={amountToDeposit}
         />
 
         <DepositBottomButton
@@ -130,7 +139,6 @@ const DepositButton = (props: DepositBottomButtonProps) => {
 
   return (
     <TxButton
-      disabled={disabled}
       className={className}
       state={depositTx?.state}
       status={depositTx?.status}
@@ -142,7 +150,9 @@ const DepositButton = (props: DepositBottomButtonProps) => {
   )
 }
 
-interface DepositInfoBoxProps {
+export const DepositInfoBox: React.FC<{
+  prizePool: PrizePool
+  amountToDeposit: Amount
   className?: string
   bgClassName?: string
   depositTx: Transaction
@@ -151,45 +161,33 @@ interface DepositInfoBoxProps {
   labelClassName?: string
   valueClassName?: string
   errors?: { [x: string]: { message: string } }
-}
-
-export const DepositInfoBox = (props: DepositInfoBoxProps) => {
+}> = (props) => {
   const {
+    prizePool,
+    amountToDeposit,
     chainId,
     bgClassName,
     className,
-    depositAllowance,
     valueClassName,
     labelClassName,
     depositTx,
     errors
   } = props
 
+  const [isAdvanced, setIsAdvanced] = useState(false)
+
   const { t } = useTranslation()
   const errorMessages = errors ? Object.values(errors) : null
-  if (
+  const isError =
     errorMessages &&
     errorMessages.length > 0 &&
     errorMessages[0].message !== '' &&
     depositTx?.state !== TransactionState.pending
-  ) {
-    const messages = errorMessages.map((error) => (
-      <span key={error.message} className='text-red font-semibold'>
-        {error.message}
-      </span>
-    ))
-
-    return (
-      <InfoList bgClassName='bg-pt-purple-lighter dark:bg-pt-purple-dark' className={className}>
-        <InfoListItem
-          label={t('issues', 'Issues')}
-          value={<div>{messages}</div>}
-          labelClassName={labelClassName}
-          valueClassName={valueClassName}
-        />
-      </InfoList>
-    )
-  }
+  const messages = errorMessages?.map((error) => (
+    <span key={error.message} className='text-pt-red-light'>
+      {error.message}
+    </span>
+  ))
 
   if (depositTx?.state === TransactionState.pending) {
     return (
@@ -205,22 +203,63 @@ export const DepositInfoBox = (props: DepositInfoBoxProps) => {
   }
 
   return (
-    <InfoList bgClassName={bgClassName} className={className}>
-      <PrizePoolNetworkAPRItem labelClassName={labelClassName} valueClassName={valueClassName} />
-      <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
-      {depositAllowance?.gt(0) ? (
-        <EstimatedDepositGasItem
-          chainId={chainId}
+    <div
+      className={classNames(className, 'relative rounded-lg px-4 pt-2 pb-4', {
+        'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
+        [bgClassName]: !isError
+      })}
+    >
+      <ul className='w-full'>
+        <UpdatedPrizePoolOddsListItem
+          prizePool={prizePool}
+          action={EstimateAction.deposit}
+          amount={amountToDeposit}
           labelClassName={labelClassName}
           valueClassName={valueClassName}
+          nullState={'-'}
+          className='w-full'
         />
-      ) : (
-        <EstimatedApproveAndDepositGasItem
-          chainId={chainId}
-          labelClassName={labelClassName}
-          valueClassName={valueClassName}
+        <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
+        {isAdvanced && (
+          <>
+            <UpdatedPrizePoolNetworkOddsListItem
+              amount={amountToDeposit}
+              action={EstimateAction.deposit}
+              prizePool={prizePool}
+              labelClassName={labelClassName}
+              valueClassName={valueClassName}
+              nullState={'-'}
+            />
+            <PrizePoolNetworkAPRItem
+              labelClassName={labelClassName}
+              valueClassName={valueClassName}
+            />
+          </>
+        )}
+
+        {isError && (
+          <InfoListItem
+            label={t('issues', 'Issues')}
+            value={<div>{messages}</div>}
+            labelClassName={labelClassName}
+            valueClassName={valueClassName}
+          />
+        )}
+      </ul>
+      <button
+        type='button'
+        onClick={() => setIsAdvanced(!isAdvanced)}
+        className='absolute bottom-0 right-3'
+      >
+        <FeatherIcon
+          icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
+          className='w-5 h-5 opacity-50'
         />
-      )}
-    </InfoList>
+      </button>
+    </div>
   )
+}
+
+DepositInfoBox.defaultProps = {
+  bgClassName: 'bg-tertiary'
 }

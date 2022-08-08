@@ -6,6 +6,7 @@ import { useQuery } from 'react-query'
 import { Amount } from '@pooltogether/hooks'
 import { EstimateAction } from '@constants/odds'
 import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
+import { useEffect } from 'react'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -25,11 +26,7 @@ export const useUsersPrizePoolOdds = (
   )
   const { data: oddsData, isFetched: isOddsDataFetched } = usePrizePoolOddsData(prizePool)
 
-  const enabled =
-    !!usersAddress &&
-    !!isOddsDataFetched &&
-    !!isTwabDataFetched &&
-    usersAddress === twabData?.usersAddress
+  const enabled = !!isOddsDataFetched && !!isTwabDataFetched
 
   return useQuery(
     getUsersPrizePoolOddsKey(
@@ -99,6 +96,7 @@ export const getUsersPrizePoolOdds = (
     action,
     actionAmountUnformatted
   )
+
   return {
     prizePoolId: prizePool?.id(),
     usersAddress,
