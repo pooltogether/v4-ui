@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 const Test = () => {
   const a1 = useRef<HTMLVideoElement>(null)
   const a2 = useRef<HTMLVideoElement>(null)
+  const [isVideoAllowed, setIsVideoAllowed] = useState(true)
 
   const VIDEO_VERSION = 'v002'
   enum VideoState {
@@ -20,21 +21,33 @@ const Test = () => {
     `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}?raw=true`
 
   useEffect(() => {
+    a1.current.load()
+    a2.current.load()
+  }, [])
+
+  useEffect(() => {
     'Mount play'
     const promise = a1.current.play()
-    a2.current.load()
     if (promise !== undefined) {
-      promise.then((a) => console.log('m then', a)).catch((e) => console.error('m catch', e))
+      promise
+        .then((a) => console.log('m then', a))
+        .catch((e) => {
+          setIsVideoAllowed(false)
+        })
     }
   }, [])
 
   const [vidState, setVidState] = useState(true)
 
+  if (!isVideoAllowed) {
+    return <div>No video for you</div>
+  }
+
   return (
     <div>
       <button
         onClick={() => {
-          setVidState(!vidState)
+          setVidState(false)
           const promise = a1.current.play()
           if (promise !== undefined) {
             promise.then((a) => console.log('then', a)).catch((e) => console.error('catch', e))
@@ -65,7 +78,7 @@ const Test = () => {
             console.log('onEnded')
           }}
         >
-          <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
+          {/* <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' /> */}
           <source
             src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
             type='video/mp4'
@@ -92,10 +105,10 @@ const Test = () => {
             console.log('onEnded 2')
           }}
         >
-          <source
+          {/* <source
             src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')}
             type='video/webm'
-          />
+          /> */}
           <source
             src={getVideoSource(VideoClip.prize, VideoState.loop, 'original.mp4')}
             type='video/mp4'
