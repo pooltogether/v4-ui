@@ -1,3 +1,6 @@
+import axios from 'axios'
+import classNames from 'classnames'
+import { SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
@@ -13,6 +16,10 @@ import { DepositItemsProps } from '.'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { Label } from '@components/Label'
+import { StyledInput } from '@components/Input'
+
+const GOOGLE_SHEETS_WITHDRAW_REASON_API_URL = `https://main--pooltogether-google-sheets.netlify.app/.netlify/functions/google`
 
 export enum WithdrawalSteps {
   input,
@@ -75,7 +82,10 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
         />
+
         <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={tx} />
+
+        <WithdrawReasonForm />
       </>
     )
   }
@@ -100,6 +110,100 @@ export const WithdrawView = (props: WithdrawViewProps) => {
         setWithdrawTxId={setWithdrawTxId}
         sendWithdrawTx={sendWithdrawTx}
       />
+    </>
+  )
+}
+
+const REASON_KEY = 'reason'
+
+const WithdrawReasonForm = (props) => {
+  const { t } = useTranslation()
+
+  const [success, setSuccess] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+
+  const form = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid, isDirty, errors }
+  } = form
+
+  const onSubmit = async (data) => {
+    setSending(true)
+    setErrorMessage('')
+
+    const reason = data[REASON_KEY]
+    const response = await axios.get(`${GOOGLE_SHEETS_WITHDRAW_REASON_API_URL}?reason=${reason}`)
+
+    if (response.data.error) {
+      setSending(false)
+      setErrorMessage(response.data.message)
+    } else {
+      setSuccess(true)
+    }
+  }
+
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={classNames('border-t-2 dark:border-pt-purple-dark pt-4 mt-10', {
+          hidden: success
+        })}
+      >
+        <div className='flex flex-col justify-center field has-addons rounded w-full'>
+          <Label className='uppercase mb-1' htmlFor='reason'>
+            {t('letUsKnowWhyYoureWithdrawing')}
+          </Label>
+
+          <StyledInput
+            id='token'
+            disabled={sending}
+            invalid={!!errors.reason}
+            className='w-full'
+            placeholder={t('yourReasonForWithdrawing', 'your reason for withdrawing...')}
+            {...register(REASON_KEY, {
+              required: {
+                value: true,
+                message: t('reasonIsRequired', 'Reason is required')
+              }
+              // validate: {
+              //   isAddress: (v) => isAddress(v) || 'Invalid address'
+              // }
+            })}
+          />
+        </div>
+
+        {errorMessage && (
+          <div className='bg-pt-purple-darker rounded-lg px-2 mt-1 text-pt-red'>
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        <SquareButton
+          disabled={sending || success || (!isValid && isDirty)}
+          type='submit'
+          className='w-full mt-4'
+        >
+          {t('send')}
+        </SquareButton>
+      </form>
+
+      <div
+        className={classNames('mt-10 text-centered', {
+          hidden: !success
+        })}
+      >
+        <p className='text-sm text-center lg:text-lg my-2 lg:my-8 lg:my-12 text-white w-10/12 lg:w-3/4 m-auto'>
+          🙂 {t('thanksForTheFeedback')}
+        </p>
+      </div>
     </>
   )
 }
