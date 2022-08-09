@@ -1,3 +1,4 @@
+import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
@@ -75,6 +76,9 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
         />
+
+        <WithdrawReasonForm />
+
         <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={tx} />
       </>
     )
@@ -103,3 +107,74 @@ export const WithdrawView = (props: WithdrawViewProps) => {
     </>
   )
 }
+
+const REASON_KEY = 'reason'
+
+const WithdrawReasonForm = (props) => {
+  const { t } = useTranslation()
+
+  const form = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange'
+  })
+
+  const {
+    handleSubmit,
+    formState: { isValid, isDirty, errors },
+    watch
+  } = form
+
+  const onSubmit = (data) => {
+    const reason = data[REASON_KEY]
+    const result = await submitToGoogleSheets(reason)
+    setSuccess(true)
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={classNames('my-10 lg:my-16', {
+        hidden: success
+      })}
+    >
+      <div className='flex flex-col justify-center field has-addons rounded w-full'>
+        <label
+          className='block text-purple-600 text-xs sm:text-base cursor-pointer mb-1 lg:mb-2 text-center'
+          htmlFor='reason'
+        >
+          {t('letUsKnowWhyYoureWithdrawing')}
+        </label>
+        <Input
+          id='reason'
+          type='text'
+          placeholder={t('reason')}
+          className='input'
+          value={reason}
+          onChange={this.handleReasonChange}
+        />
+        {/* <Button
+              color='green'
+            >
+              {t('send')}
+            </Button> */}
+      </div>
+
+      <div
+        className={classnames('my-10 text-centered', {
+          hidden: !success
+        })}
+      >
+        <p className='text-sm text-center lg:text-lg my-2 lg:my-8 lg:my-12 text-white w-10/12 lg:w-3/4 m-auto'>
+          <FeatherIcon icon='check' className='m-auto mb-2' />
+          {t('thanksForTheFeedback')}!
+        </p>
+      </div>
+
+      <SquareButton disabled={!isValid && isDirty} type='submit' className='w-full mt-8'>
+        {t('reviewWithdrawal')}
+      </SquareButton>
+    </form>
+  )
+}
+
+const submitToGoogleSheets = () => {}
