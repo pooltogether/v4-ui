@@ -34,6 +34,7 @@ import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUser
 import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
+import { NewPrizeVideoBackground } from './NewPrizeVideoBackground'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -121,7 +122,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const didUserWinAPrize = Boolean(winningDrawResults)
     ? Object.keys(winningDrawResults).length > 0
     : undefined
-  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
+  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(true)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -146,7 +147,13 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
 
   return (
     <>
-      <PrizeVideoBackground
+      {/* <PrizeVideoBackground
+        didUserWinAPrize={didUserWinAPrize}
+        setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
+        checkedState={checkedState}
+        className='absolute inset-0'
+      /> */}
+      <NewPrizeVideoBackground
         didUserWinAPrize={didUserWinAPrize}
         setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
         checkedState={checkedState}
