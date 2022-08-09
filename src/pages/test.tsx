@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import classNames from 'classnames'
+import { useEffect, useRef, useState } from 'react'
 
 const Test = () => {
   const a1 = useRef<HTMLVideoElement>(null)
@@ -21,15 +22,19 @@ const Test = () => {
   useEffect(() => {
     'Mount play'
     const promise = a1.current.play()
+    a2.current.load()
     if (promise !== undefined) {
       promise.then((a) => console.log('m then', a)).catch((e) => console.error('m catch', e))
     }
   }, [])
 
+  const [vidState, setVidState] = useState(true)
+
   return (
     <div>
       <button
         onClick={() => {
+          setVidState(!vidState)
           const promise = a1.current.play()
           if (promise !== undefined) {
             promise.then((a) => console.log('then', a)).catch((e) => console.error('catch', e))
@@ -38,43 +43,65 @@ const Test = () => {
       >
         play
       </button>
-      <video
-        ref={a1}
-        playsInline
-        muted
-        preload='auto'
-        onLoadStart={() => {
-          console.log('onLoadStart')
-        }}
-        onEnded={() => {
-          console.log('onEnded')
-        }}
-      >
-        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
-        <source
-          src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
-      <video
-        ref={a2}
-        autoPlay
-        playsInline
-        muted
-        preload='auto'
-        onLoadStart={() => {
-          console.log('onLoadStart')
-        }}
-        onEnded={() => {
-          console.log('onEnded')
-        }}
-      >
-        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
-        <source
-          src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <div className='relative'>
+        <video
+          className={classNames('border absolute inset-0', {
+            'z-10': vidState,
+            'z-0': !vidState
+          })}
+          ref={a1}
+          playsInline
+          muted
+          preload='auto'
+          onLoadStart={() => {
+            console.log('onLoadStart')
+          }}
+          onEnded={() => {
+            setVidState(!vidState)
+            a2.current
+              .play()
+              .then((a) => console.log('a2 then', a))
+              .catch((e) => console.error('a2 catch', e))
+            console.log('onEnded')
+          }}
+        >
+          <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
+          <source
+            src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
+            type='video/mp4'
+          />
+        </video>
+        <video
+          className={classNames(
+            // 'border absolute top-4 -bottom-4 left-4 -right-4',
+            'border absolute inset-0',
+            {
+              'z-0': vidState,
+              'z-10': !vidState
+            }
+          )}
+          ref={a2}
+          playsInline
+          muted
+          loop
+          preload='auto'
+          onLoadStart={() => {
+            console.log('onLoadStart 2')
+          }}
+          onEnded={() => {
+            console.log('onEnded 2')
+          }}
+        >
+          <source
+            src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')}
+            type='video/webm'
+          />
+          <source
+            src={getVideoSource(VideoClip.prize, VideoState.loop, 'original.mp4')}
+            type='video/mp4'
+          />
+        </video>
+      </div>
     </div>
   )
 }
