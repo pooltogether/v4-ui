@@ -53,7 +53,7 @@ export const RewardsBanners = () => {
             }
           )}
         >
-          <Link href={`https://app.hop.exchange`}>
+          <Link href={`https://zapper.fi/bridge`}>
             <a
               className='flex items-center h-auto xs:h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
               target='_blank'
