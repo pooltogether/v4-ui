@@ -290,7 +290,7 @@ const VideoWrapper = React.forwardRef<
     <video
       className={classNames(className, 'absolute inset-0', {
         'z-10': isActive,
-        'z-0 hidden': !isActive
+        'z-0': !isActive
       })}
       ref={ref}
       playsInline
