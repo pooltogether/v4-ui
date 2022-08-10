@@ -1,15 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import classnames from 'classnames'
 
-import { CheckedState } from '.'
-
-interface PrizeVideoBackgroundProps {
-  className?: string
-  borderRadiusClassName?: string
-  didUserWinAPrize: boolean
-  checkedState: CheckedState
-  setCheckedAnimationFinished: () => void
-}
+import classNames from 'classnames'
 
 const VIDEO_VERSION = 'v002'
 
@@ -28,285 +20,309 @@ enum VideoClip {
 const getVideoSource = (videoClip: VideoClip, videoState: VideoState, extension: string) =>
   `/videos/PT_Loot_${videoClip}_${videoState}_${VIDEO_VERSION}.${extension}?raw=true`
 
-export const NewPrizeVideoBackground = (props: PrizeVideoBackgroundProps) => {
-  const {
-    checkedState,
-    didUserWinAPrize,
-    className,
-    setCheckedAnimationFinished,
-    borderRadiusClassName
-  } = props
+export const NewPrizeVideoBackground: React.FC<{
+  videoClip: VideoClip
+  className?: string
+  onEnded?: () => void
+}> = (props) => {
+  const { className, videoClip: targetVideoClip, onEnded: _onEnded } = props
+  const [isVideoAllowed, setIsVideoAllowed] = useState(true)
 
-  // const a1 = useRef<HTMLVideoElement>(null)
-  const a2 = useRef<HTMLVideoElement>(null)
-  const b1 = useRef<HTMLVideoElement>(null)
-  const b2 = useRef<HTMLVideoElement>(null)
-  const c1 = useRef<HTMLVideoElement>(null)
-  const c2 = useRef<HTMLVideoElement>(null)
-  const d1 = useRef<HTMLVideoElement>(null)
-  const d2 = useRef<HTMLVideoElement>(null)
+  // Active video state
+  const [activeVideoClip, setActiveVideoClip] = useState<VideoClip>(VideoClip.rest)
+  const [activeVideoState, setActiveVideoState] = useState<VideoState>(VideoState.loop)
 
-  const [currentVideoClip, setCurrentVideoClip] = useState<VideoClip>(VideoClip.rest)
-  const [currentVideoState, setCurrentVideoState] = useState<VideoState>(VideoState.loop)
-  // const [nextVideoClip, setNextVideoClip] = useState<VideoClip>(VideoClip.reveal)
+  const restLoop = useRef<HTMLVideoElement>(null)
+  const revealTransitionIn = useRef<HTMLVideoElement>(null)
+  const revealLoop = useRef<HTMLVideoElement>(null)
+  const noPrizeTransitionIn = useRef<HTMLVideoElement>(null)
+  const noPrizeLoop = useRef<HTMLVideoElement>(null)
+  const prizeTransitionIn = useRef<HTMLVideoElement>(null)
+  const prizeLoop = useRef<HTMLVideoElement>(null)
 
-  const isHidden = (videoClip: VideoClip, videoState: VideoState) => {
-    if (videoClip !== currentVideoClip) return true
-    if (videoState !== currentVideoState) return true
-    return false
+  useEffect(() => {
+    console.log('State change - active', activeVideoClip, activeVideoState)
+  }, [activeVideoClip, activeVideoState])
+
+  useEffect(() => {
+    console.log('State change - target', targetVideoClip)
+  }, [targetVideoClip])
+
+  // Load all videos
+  // useEffect(() => {
+  //   console.log('load all videos')
+  //   restLoop.current?.load()
+  //   revealTransitionIn.current?.load()
+  //   revealLoop.current?.load()
+  //   noPrizeTransitionIn.current?.load()
+  //   noPrizeLoop.current?.load()
+  //   prizeTransitionIn.current?.load()
+  //   prizeLoop.current?.load()
+  // }, [
+  //   restLoop.current,
+  //   revealTransitionIn.current,
+  //   revealLoop.current,
+  //   noPrizeTransitionIn.current,
+  //   noPrizeLoop.current,
+  //   prizeTransitionIn.current,
+  //   prizeLoop.current
+  // ])
+
+  // Start playing the loop video
+  // useEffect(() => {
+  //   console.log('Start playing the loop video')
+  //   const promise = restLoop.current?.play()
+  //   if (promise !== undefined) {
+  //     promise
+  //       .then((a) => console.log('m then', a))
+  //       .catch((e) => {
+  //         setIsVideoAllowed(false)
+  //       })
+  //   }
+  // }, [restLoop.current])
+
+  const getRef = (videoClip: VideoClip, videoState: VideoState) => {
+    if (videoClip === VideoClip.rest && videoState === VideoState.loop) {
+      return restLoop
+    } else if (videoClip === VideoClip.reveal && videoState === VideoState.transition) {
+      return revealTransitionIn
+    } else if (videoClip === VideoClip.reveal && videoState === VideoState.loop) {
+      return revealLoop
+    } else if (videoClip === VideoClip.noPrize && videoState === VideoState.transition) {
+      return noPrizeTransitionIn
+    } else if (videoClip === VideoClip.noPrize && videoState === VideoState.loop) {
+      return noPrizeLoop
+    } else if (videoClip === VideoClip.prize && videoState === VideoState.transition) {
+      return prizeTransitionIn
+    } else if (videoClip === VideoClip.prize && videoState === VideoState.loop) {
+      return prizeLoop
+    }
+    return null
   }
 
-  console.log({ a2 })
+  const playVideo = (videoClip: VideoClip, videoState: VideoState) => {
+    console.log('playVideo', videoClip, videoState)
+    const ref = getRef(videoClip, videoState)
+    setActiveVideoClip(videoClip)
+    setActiveVideoState(videoState)
+    ref.current.play()
+  }
 
-  const showPrizeOrNoPrize = () => {
-    try {
-      setCurrentVideoState(VideoState.transition)
-      if (!didUserWinAPrize) {
-        setCurrentVideoClip(VideoClip.noPrize)
-        c1.current.play().then(console.log).catch(console.error)
-        c2.current.load()
+  const playNext = useCallback(
+    (videoClip: VideoClip, videoState: VideoState) => {
+      console.log('playNext', videoClip, videoState)
+      if (videoState === VideoState.transition) {
+        console.log('Transition ended - play loop', videoClip, videoState)
+        playVideo(videoClip, VideoState.loop)
       } else {
-        setCurrentVideoClip(VideoClip.prize)
-        d1.current.play().then(console.log).catch(console.error)
-        d2.current.load()
+        if (videoClip === VideoClip.rest) {
+          console.log('Rest loop ended - play reveal', videoClip, videoState)
+          playVideo(VideoClip.reveal, VideoState.transition)
+        } else if (videoClip === VideoClip.reveal) {
+          console.log(`Reveal loop ended - play target video - ${videoClip}`, videoClip, videoState)
+          playVideo(targetVideoClip, VideoState.transition)
+        } else {
+          console.log('Loop ended - repeating', videoClip, videoState)
+          playVideo(videoClip, videoState)
+        }
       }
-    } catch (e) {
-      console.log(e.message)
-    }
+    },
+    [targetVideoClip]
+  )
+
+  const onEnded = useCallback(
+    (videoClip: VideoClip, videoState: VideoState) => {
+      console.log('onEnded callback', videoClip, videoState, activeVideoClip, activeVideoState)
+      if (targetVideoClip !== videoClip || videoState !== VideoState.loop) {
+        console.log('Not at the target video clip, so play the next one', videoClip, videoState)
+        playNext(videoClip, videoState)
+      } else {
+        console.log('At target video clip - loop', videoClip, videoState)
+        playVideo(videoClip, videoState)
+      }
+      // _onEnded?.()
+    },
+    [activeVideoClip, activeVideoState, targetVideoClip]
+  )
+
+  if (!isVideoAllowed) {
+    return <PrizePictureBackgroud videoClip={activeVideoClip} videoState={activeVideoState} />
   }
 
   return (
-    <div className={classnames(className, 'h-full w-full')}>
+    <div className={classnames(className, 'h-full w-full relative')}>
       {/* Rest */}
-      {/* Rest Transition */}
-      {/* <video
-        className={classnames({ 'h-0': isHidden(VideoClip.rest, VideoState.transition) })}
-        ref={a1}
-        playsInline
-        
-        autoPlay
-        muted
-        onLoadStart={() => {
-          a2.current.load()
-        }}
-        onEnded={() => {
-          setCurrentVideoState(VideoState.loop)
-          a2.current.play()
-          b1.current.load()
-        }}
-      >
-      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'webm')} type='video/webm' />
-      <source src={getVideoSource(VideoClip.rest, VideoState.transition, 'original.mp4')} type='video/mp4' />
-      </video> */}
       {/* Rest Loop */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.rest, VideoState.loop),
-          'z-10': !isHidden(VideoClip.rest, VideoState.loop)
-        })}
-        ref={a2}
-        autoPlay
-        playsInline
-        muted
-        preload='auto'
-        onLoadStart={() => {
-          b1.current.load()
-        }}
-        onEnded={() => {
-          try {
-            if (checkedState !== CheckedState.unchecked) {
-              b1.current.play().then(console.log).catch(console.error)
-              b2.current.load()
-              setCurrentVideoClip(VideoClip.reveal)
-              setCurrentVideoState(VideoState.transition)
-            } else {
-              a2.current.play().then(console.log).catch(console.error)
-            }
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source src={getVideoSource(VideoClip.rest, VideoState.loop, 'webm')} type='video/webm' />
-        <source
-          src={getVideoSource(VideoClip.rest, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.rest}
+        videoState={VideoState.loop}
+        ref={getRef(VideoClip.rest, VideoState.loop)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.rest, VideoState.loop)}
+      />
 
       {/* Reveal */}
-      {/* Reveal Transition */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.reveal, VideoState.transition),
-          'z-10': !isHidden(VideoClip.reveal, VideoState.transition)
-        })}
-        ref={b1}
-        playsInline
-        muted
-        onLoadStart={() => {
-          b2.current.load()
-        }}
-        onEnded={() => {
-          try {
-            setCurrentVideoState(VideoState.loop)
-            b2.current.play().then(console.log).catch(console.error)
-            c1.current.load()
-            d1.current.load()
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source
-          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'webm')}
-          type='video/webm'
-        />
-        <source
-          src={getVideoSource(VideoClip.reveal, VideoState.transition, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
-      {/* Reveal Loop */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.reveal, VideoState.loop),
-          'z-10': !isHidden(VideoClip.reveal, VideoState.loop)
-        })}
-        ref={b2}
-        playsInline
-        muted
-        onEnded={() => {
-          try {
-            if (checkedState === CheckedState.checking && didUserWinAPrize === undefined) {
-              b2.current.play().then(console.log).catch(console.error)
-            } else {
-              showPrizeOrNoPrize()
-            }
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source src={getVideoSource(VideoClip.reveal, VideoState.loop, 'webm')} type='video/webm' />
-        <source
-          src={getVideoSource(VideoClip.reveal, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      {/* Reveal Transition In */}
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.reveal}
+        videoState={VideoState.transition}
+        ref={getRef(VideoClip.reveal, VideoState.transition)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.reveal, VideoState.transition)}
+      />
+      {/* No Prize Loop */}
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.reveal}
+        videoState={VideoState.loop}
+        ref={getRef(VideoClip.reveal, VideoState.loop)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.reveal, VideoState.loop)}
+      />
 
       {/* No Prize */}
       {/* No Prize Transition */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.noPrize, VideoState.transition),
-          'z-10': !isHidden(VideoClip.noPrize, VideoState.transition)
-        })}
-        ref={c1}
-        playsInline
-        muted
-        onPlay={() => setCheckedAnimationFinished()}
-        onEnded={() => {
-          try {
-            setCurrentVideoState(VideoState.loop)
-            c2.current.play().then(console.log).catch(console.error)
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source
-          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'webm')}
-          type='video/webm'
-        />
-        <source
-          src={getVideoSource(VideoClip.noPrize, VideoState.transition, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.noPrize}
+        videoState={VideoState.transition}
+        ref={getRef(VideoClip.noPrize, VideoState.transition)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.noPrize, VideoState.transition)}
+      />
       {/* No Prize Loop */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.noPrize, VideoState.loop),
-          'z-10': !isHidden(VideoClip.noPrize, VideoState.loop)
-        })}
-        ref={c2}
-        playsInline
-        muted
-        onEnded={() => {
-          try {
-            c2.current.play().then(console.log).catch(console.error)
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source
-          src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'webm')}
-          type='video/webm'
-        />
-        <source
-          src={getVideoSource(VideoClip.noPrize, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.noPrize}
+        videoState={VideoState.loop}
+        ref={getRef(VideoClip.noPrize, VideoState.loop)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.noPrize, VideoState.loop)}
+      />
 
       {/* Prize */}
       {/* Prize Transition */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.prize, VideoState.transition),
-          'z-10': !isHidden(VideoClip.prize, VideoState.transition)
-        })}
-        ref={d1}
-        playsInline
-        muted
-        onPlay={() => setCheckedAnimationFinished()}
-        onEnded={() => {
-          try {
-            setCurrentVideoState(VideoState.loop)
-            d2.current.play().then(console.log).catch(console.error)
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source
-          src={getVideoSource(VideoClip.prize, VideoState.transition, 'webm')}
-          type='video/webm'
-        />
-        <source
-          src={getVideoSource(VideoClip.prize, VideoState.transition, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.prize}
+        videoState={VideoState.transition}
+        ref={getRef(VideoClip.prize, VideoState.transition)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.prize, VideoState.transition)}
+      />
       {/* Prize Loop */}
-      <video
-        className={classnames(borderRadiusClassName, {
-          'z-0': isHidden(VideoClip.prize, VideoState.loop),
-          'z-10': isHidden(VideoClip.prize, VideoState.loop)
-        })}
-        ref={d2}
-        playsInline
-        muted
-        onEnded={() => {
-          try {
-            d2.current.play().then(console.log).catch(console.error)
-          } catch (e) {
-            console.log(e.message)
-          }
-        }}
-      >
-        <source src={getVideoSource(VideoClip.prize, VideoState.loop, 'webm')} type='video/webm' />
-        <source
-          src={getVideoSource(VideoClip.prize, VideoState.loop, 'original.mp4')}
-          type='video/mp4'
-        />
-      </video>
+      <VideoWrapper
+        setIsVideoAllowed={setIsVideoAllowed}
+        videoClip={VideoClip.prize}
+        videoState={VideoState.loop}
+        ref={getRef(VideoClip.prize, VideoState.loop)}
+        activeVideoClip={activeVideoClip}
+        activeVideoState={activeVideoState}
+        setActiveVideoState={setActiveVideoState}
+        onEnded={() => onEnded(VideoClip.prize, VideoState.loop)}
+      />
     </div>
   )
 }
 
-NewPrizeVideoBackground.defaultProps = {
-  borderRadiusClassName: 'rounded-lg'
+const VideoWrapper = React.forwardRef<
+  HTMLVideoElement,
+  {
+    videoClip: VideoClip
+    videoState: VideoState
+    activeVideoClip: VideoClip
+    activeVideoState: VideoState
+    setActiveVideoState: (activeVideoState: VideoState) => void
+    setIsVideoAllowed: (isVideoAllowed: boolean) => void
+    onEnded: () => void
+    className?: string
+  }
+>((props, ref) => {
+  const {
+    videoClip,
+    videoState,
+    activeVideoClip,
+    activeVideoState,
+    className,
+    setIsVideoAllowed,
+    onEnded,
+    setActiveVideoState
+  } = props
+  const isActive = videoClip === activeVideoClip && videoState === activeVideoState
+
+  console.log('isActive', isActive, videoClip, videoState, activeVideoClip, activeVideoState)
+
+  // Load all videos
+  // useEffect(() => {
+  //   ref.current.load()
+  // }, [])
+
+  useEffect(() => {
+    console.log('VideoWrapper start playing rest loop', videoClip, videoState, ref)
+    if (videoClip === VideoClip.rest && videoState === VideoState.loop) {
+      const promise = ref.current.play()
+      if (promise !== undefined) {
+        promise
+          .then((a) => console.log('m then', a))
+          .catch((e) => {
+            console.error(e)
+            setIsVideoAllowed(false)
+          })
+      }
+    }
+  }, [])
+
+  return (
+    <video
+      className={classNames(className, 'absolute inset-0', {
+        'z-10': isActive,
+        'z-0 hidden': !isActive
+      })}
+      ref={ref}
+      playsInline
+      muted
+      onEnded={() => {
+        console.log('onEnded', videoClip, videoState, onEnded)
+        onEnded()
+      }}
+    >
+      <source src={getVideoSource(props.videoClip, props.videoState, 'webm')} type='video/webm' />
+      <source
+        src={getVideoSource(props.videoClip, props.videoState, 'original.mp4')}
+        type='video/mp4'
+      />
+    </video>
+  )
+})
+
+const PrizePictureBackgroud: React.FC<{
+  videoClip: VideoClip
+  videoState: VideoState
+  className?: string
+}> = (props) => {
+  const { videoClip, videoState, className } = props
+
+  const getImageSource = (videoClip: VideoClip, videoState: VideoState) =>
+    `/prize-images/${videoClip}_${videoState}.png`
+
+  return (
+    <img
+      src={getImageSource(videoClip, videoState)}
+      className={classNames(className, 'absolute inset-0')}
+    />
+  )
 }
