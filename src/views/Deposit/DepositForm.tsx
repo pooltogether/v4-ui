@@ -141,7 +141,6 @@ const DepositButton = (props: DepositBottomButtonProps) => {
 
   return (
     <TxButton
-      // disabled={disabled}
       className={className}
       state={depositTx?.state}
       status={depositTx?.status}
@@ -207,7 +206,7 @@ export const DepositInfoBox: React.FC<{
 
   return (
     <div
-      className={classNames(className, 'rounded-lg pl-4 pr-1 py-2', {
+      className={classNames(className, 'relative rounded-lg px-4 py-2', {
         'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
         [bgClassName]: !isError
       })}
@@ -266,6 +265,7 @@ export const DepositInfoBox: React.FC<{
             </div>
           )}
         </ul>
+
         <button
           className='flex justify-center w-7'
           type='button'

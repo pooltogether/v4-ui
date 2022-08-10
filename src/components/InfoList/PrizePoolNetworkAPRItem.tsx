@@ -19,10 +19,11 @@ export const PrizePoolNetworkAPRItem: React.FC<{
     <InfoListItem
       labelClassName={labelClassName}
       valueClassName={valueClassName}
-      label={'Prize Pool Network APR'}
-      labelToolTip={
+      label={t('networkApr', 'Network APR')}
+      labelToolTip={t(
+        'networkAprDescription',
         'Estimated Prize Pool Network APR is a rough estimate based on the current TVL of the entire Prize Pool Network and daily prizes for all prize pools'
-      }
+      )}
       loading={!isFetched}
       labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={`${numberWithCommas(apr)}%`}

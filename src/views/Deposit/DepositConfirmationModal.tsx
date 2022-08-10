@@ -43,6 +43,7 @@ import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAP
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { EstimateAction } from '@constants/odds'
+import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -208,20 +209,20 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
                     <InfoListHeader
                       className='mt-2'
                       textColorClassName='text-pt-purple-light'
-                      label={'Estimated stats'}
-                    />
-                    <PrizePoolNetworkAPRItem />
-                    <TwabRewardsAprItem />
-                    <UpdatedPrizePoolNetworkOddsListItem
-                      amount={amountToDeposit}
-                      action={EstimateAction.deposit}
-                      prizePool={prizePool}
+                      label={t('estimatedStats', 'Estimated stats')}
                     />
                     <UpdatedPrizePoolOddsListItem
                       amount={amountToDeposit}
                       prizePool={prizePool}
                       action={EstimateAction.deposit}
                     />
+                    <UpdatedPrizePoolNetworkOddsListItem
+                      amount={amountToDeposit}
+                      action={EstimateAction.deposit}
+                      prizePool={prizePool}
+                    />
+                    <PrizePoolNetworkAPRItem />
+                    <TwabRewardsAprItem />
                   </>
                 )}
                 <EstimatedDepositGasItems chainId={chainId} />
@@ -239,6 +240,10 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
             {t('confirmDeposit', 'Confirm deposit')}
           </TxButton>
           <TransactionTosDisclaimer buttonTexti18nKey='confirmDeposit' />
+          <OddsDisclaimer
+            textClassName='text-xxs opacity-70'
+            linkClassName='text-pt-teal transition hover:opacity-70 underline ml-1'
+          />
         </div>
       </>
     )

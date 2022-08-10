@@ -4,6 +4,7 @@ import { DepositCard } from '@views/Deposit/DepositCard'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 import { VotingPromptCard } from '@components/VotingPromptCard'
+import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 
 export const DepositUI = () => {
   return (
@@ -11,6 +12,7 @@ export const DepositUI = () => {
       <UpcomingPrizeCard className='mt-4' />
       <DepositCard />
       <VotingPromptCard />
+      <OddsDisclaimer />
     </PagePadding>
   )
 }

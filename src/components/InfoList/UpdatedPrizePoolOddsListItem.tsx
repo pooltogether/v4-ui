@@ -46,8 +46,11 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
   return (
     <InfoListItem
       className={className}
-      label={'Prize Pool winning odds'}
-      labelToolTip={'Your estimated odds of winning at least one prize in this prize pool'}
+      label={t('winningOdds', 'Winning odds') + '*'}
+      labelToolTip={t(
+        'winningOddsDescription',
+        'Your estimated odds of winning at least one prize in this prize pool'
+      )}
       loading={!isFetched}
       value={value}
       labelClassName={labelClassName}

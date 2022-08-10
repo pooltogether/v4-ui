@@ -19,12 +19,10 @@ export const getAmountFromString = (amount: string, decimals: string): Amount =>
     if (!amount || amount === undefined) {
       return EMPTY_AMOUNT
     }
-    const trimmedAmount = stringWithPrecision(amount, { precision: Number(decimals) })
-
     return {
       amount,
-      amountUnformatted: ethers.utils.parseUnits(trimmedAmount, decimals),
-      amountPretty: numberWithCommas(trimmedAmount) as string
+      amountUnformatted: ethers.utils.parseUnits(amount, decimals),
+      amountPretty: numberWithCommas(amount) as string
     }
   } catch (e) {
     console.error(e.message)
