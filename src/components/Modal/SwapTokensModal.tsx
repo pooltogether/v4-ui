@@ -3,7 +3,7 @@ import FeatherIcon from 'feather-icons-react'
 import { Modal, ModalProps } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
-import { BUTTON_MIN_WIDTH, CHAIN_ID } from '@constants/misc'
+import { CHAIN_ID } from '@constants/misc'
 import { getExchangeUrl } from '@constants/config'
 import classNames from 'classnames'
 
@@ -69,11 +69,10 @@ export const SwapTokensModalTrigger = (props: SwapTokensModalTriggerProps) => {
     <>
       <button
         className={classNames(
-          'text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col xs:flex-row items-center space-y-1 xs:space-y-0 xs:space-x-2',
+          'min-w-1/4 text-xxxs xs:text-xs text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col xs:flex-row items-center space-y-1 xs:space-y-0 xs:space-x-2',
           className
         )}
         onClick={() => setShowModal(true)}
-        style={{ minWidth: BUTTON_MIN_WIDTH }}
       >
         <FeatherIcon icon={'refresh-cw'} className='relative w-4 h-4' />
         <span>{buttonLabel || t('swapTokens', 'Swap tokens')}</span>

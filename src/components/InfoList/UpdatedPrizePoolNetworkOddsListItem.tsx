@@ -9,25 +9,35 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 export const UpdatedPrizePoolNetworkOddsListItem = (props: {
+  prizePool: PrizePool
   amount: Amount
   action: EstimateAction
-  prizePool: PrizePool
+  nullState?: React.ReactNode
+  className?: string
+  labelClassName?: string
+  valueClassName?: string
 }) => {
-  const { amount, action, prizePool } = props
+  const { amount, action, nullState, className, prizePool, labelClassName, valueClassName } = props
   const { t } = useTranslation()
 
   const usersAddress = useUsersAddress()
-  const { data: oddsData, isFetched } = useUsersPrizePoolNetworkOdds(usersAddress, {
+  const { data: oddsData } = useUsersPrizePoolNetworkOdds(usersAddress, {
     [prizePool?.id()]: {
       action,
       actionAmountUnformatted: amount?.amountUnformatted
     }
   })
 
+  const isFetched = !!oddsData
+
   let value
   if (isFetched) {
     if (oddsData?.odds === 0) {
-      value = <span className='opacity-80'>{t('none')}</span>
+      if (nullState) {
+        value = <span className='opacity-80'>{nullState}</span>
+      } else {
+        value = <span className='opacity-80'>{t('none')}</span>
+      }
     } else {
       value = t('oneInOdds', { odds: oddsData.oneOverOdds.toFixed(2) })
     }
@@ -35,10 +45,16 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
 
   return (
     <InfoListItem
-      label={'Prize Pool Network winning odds'}
-      labelToolTip={'Your estimated odds of winning at least one prize across the whole network'}
+      label={t('networkWinningOdds', 'Network winning odds')}
+      labelToolTip={t(
+        'networkWinningOddsDescription',
+        'Your estimated odds of winning at least one prize across the whole network'
+      )}
       loading={!isFetched}
       value={value}
+      className={className}
+      labelClassName={labelClassName}
+      valueClassName={valueClassName}
     />
   )
 }

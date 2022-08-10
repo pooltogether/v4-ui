@@ -15,9 +15,7 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
   const { chainId } = props
 
   const { t } = useTranslation()
-
   const links = getBridgeUrls(chainId)
-
   const networkName = getNetworkNiceNameByChainId(chainId)
 
   return (
@@ -44,7 +42,6 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
               networkName
             }
           )}
-          :
         </p>
         <ul className='space-y-2'>
           {links.map((link) => (
@@ -61,7 +58,7 @@ const BridgeLink = (props: { url: string; title: string }) => {
   return (
     <li>
       <a
-        className='flex text-sm text-accent-1 transition-colors hover:text-inverse'
+        className='flex text-xl items-center space-x-2 transition hover:opacity-50'
         href={url}
         target='_blank'
         rel='noopener noreferrer'

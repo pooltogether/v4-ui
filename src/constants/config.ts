@@ -146,3 +146,16 @@ const EXCHANGE_URLS = Object.freeze({
     `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
   [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
 })
+
+/**
+ * Coinbase Keys for Coinbase Pay
+ */
+export const getCoinbaseChainKey = (chainId: number) => COINBASE_CHAIN_KEYS[chainId]
+export const COINBASE_CHAIN_KEYS = Object.freeze({
+  [CHAIN_ID.mainnet]: 'ethereum',
+  [CHAIN_ID.avalanche]: 'avalanche-c-chain'
+})
+export const COINBASE_ASSETS = Object.freeze({
+  [CHAIN_ID.mainnet]: ['ETH', 'USDC'],
+  [CHAIN_ID.avalanche]: ['AVAX']
+})

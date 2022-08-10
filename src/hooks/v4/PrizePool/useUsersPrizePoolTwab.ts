@@ -6,6 +6,7 @@ import { useQueries, useQuery } from 'react-query'
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
+import { ethers } from 'ethers'
 
 /**
  * Fetches a users current TWAB
@@ -17,7 +18,7 @@ export const useUsersPrizePoolTwab = (usersAddress: string, prizePool: PrizePool
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
     useSelectedPrizePoolTicketDecimals()
 
-  const enabled = !!usersAddress && isTicketDecimalsFetched
+  const enabled = isTicketDecimalsFetched
 
   return useQuery(
     getUsersPrizePoolTwabKey(usersAddress, prizePool),
@@ -40,6 +41,15 @@ export const getUserPrizePoolTwab = async (
   usersAddress: string,
   decimals: string
 ) => {
+  if (!usersAddress) {
+    return {
+      prizePoolId: prizePool.id(),
+      chainId: prizePool.chainId,
+      usersAddress,
+      twab: getAmountFromBigNumber(ethers.constants.Zero, decimals)
+    }
+  }
+
   const timestamp = Math.round(msToS(Date.now()))
   const twabUnformatted = await prizePool.getUsersTicketTwabAt(usersAddress, timestamp)
 
@@ -69,7 +79,7 @@ export const useAllUsersPrizePoolTwabs = (usersAddress: string) => {
       return {
         queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
         queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
-        enabled: !!usersAddress && isTicketDecimalsFetched
+        enabled: isTicketDecimalsFetched
       }
     })
   )
