@@ -32,14 +32,14 @@
 }
 
 /* scale the height by the view width, maintains aspect ratio */
-.draw-card {
+.maintain-aspect-ratio {
   padding-top: calc(77.77% + 5rem);
   position: relative;
   overflow: hidden;
 }
 
 @screen xs {
-  .draw-card {
+  .maintain-aspect-ratio {
     padding-top: 77.77%;
   }
 }

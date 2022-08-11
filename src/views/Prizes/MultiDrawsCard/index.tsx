@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import { Token } from '@pooltogether/hooks'
 import {
@@ -23,7 +23,6 @@ import {
 } from '@pooltogether/wallet-connection'
 import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { DrawData } from '../../../interfaces/v4'
-import { PrizeVideoBackground } from './PrizeVideoBackground'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { LoadingCard } from './LoadingCard'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
@@ -31,10 +30,10 @@ import { MultipleDrawDetails } from './MultipleDrawDetails'
 import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorage'
 import { useAtom } from 'jotai'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
-import { StaticPrizeVideoBackground, VideoClip } from './StaticPrizeVideoBackground'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
-import { NewPrizeVideoBackground } from './NewPrizeVideoBackground'
+import { VideoClip } from './PrizeVideoBackground'
+import { PrizeAnimationCard } from './PrizeAnimationCard'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -90,16 +89,12 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   }
 
   return (
-    <div>
-      <Card className='draw-card' paddingClassName=''>
-        <MultiDrawsClaimSection
-          {...props}
-          drawDatas={drawDatas}
-          token={prizePoolTokens.token}
-          ticket={prizePoolTokens.ticket}
-        />
-      </Card>
-    </div>
+    <MultiDrawsClaimSection
+      {...props}
+      drawDatas={drawDatas}
+      token={prizePoolTokens.token}
+      ticket={prizePoolTokens.ticket}
+    />
   )
 }
 
@@ -114,6 +109,7 @@ export enum CheckedState {
 
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const { drawDatas, ticket, token } = props
+  const [targetVideoClip, setTargetVideoClip] = useState<VideoClip>(VideoClip.rest)
   const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
   const [winningDrawResults, setWinningDrawResults] = useState<{ [drawId: number]: DrawResults }>(
     null
@@ -122,7 +118,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   const didUserWinAPrize = Boolean(winningDrawResults)
     ? Object.keys(winningDrawResults).length > 0
     : undefined
-  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(true)
+  const [hasCheckedAnimationFinished, setHasCheckedAnimationFinished] = useState<boolean>(false)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -145,27 +141,30 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
     })
   }
 
+  useEffect(() => {
+    console.log('useEffect', targetVideoClip, checkedState)
+    if (checkedState === CheckedState.checking) {
+      setTargetVideoClip(VideoClip.reveal)
+    } else if (checkedState === CheckedState.checked) {
+      if (!!didUserWinAPrize) {
+        setTargetVideoClip(VideoClip.prize)
+      } else if (!didUserWinAPrize) {
+        setTargetVideoClip(VideoClip.noPrize)
+      }
+    }
+  }, [checkedState])
+
+  const onTargetReached = useCallback(() => {
+    console.log('onTargetReached', targetVideoClip)
+    if (targetVideoClip === VideoClip.prize || targetVideoClip === VideoClip.noPrize) {
+      setHasCheckedAnimationFinished(true)
+    }
+  }, [targetVideoClip])
+
   return (
-    <>
-      {/* <PrizeVideoBackground
-        didUserWinAPrize={didUserWinAPrize}
-        setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
-        checkedState={checkedState}
-        className='absolute inset-0'
-      /> */}
-      <NewPrizeVideoBackground
-        didUserWinAPrize={didUserWinAPrize}
-        setCheckedAnimationFinished={() => setHasCheckedAnimationFinished(true)}
-        checkedState={checkedState}
-        className='absolute inset-0'
-      />
-      <MultipleDrawDetails
-        drawDatas={drawDatas}
-        token={token}
-        ticket={ticket}
-        className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
-      />
-      <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
+    <PrizeAnimationCard targetVideoClip={targetVideoClip} onTargetReached={onTargetReached}>
+      <MultipleDrawDetails drawDatas={drawDatas} token={token} ticket={ticket} />
+      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-4'>
         <MultiDrawsClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
@@ -189,7 +188,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
-    </>
+    </PrizeAnimationCard>
   )
 }
 
@@ -262,20 +261,14 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
   }
 
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <StaticPrizeVideoBackground videoClip={VideoClip.prize} className='absolute inset-0' />
-      <MultipleDrawDetails
-        drawDatas={winningDrawData}
-        token={token}
-        ticket={ticket}
-        className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
-      />
-      <div className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8'>
+    <PrizeAnimationCard targetVideoClip={VideoClip.prize}>
+      <MultipleDrawDetails drawDatas={winningDrawData} token={token} ticket={ticket} />
+      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-4'>
         <SquareButton
           theme={SquareButtonTheme.rainbow}
           size={SquareButtonSize.md}
           onClick={() => setIsModalOpen(true)}
-          className='mx-auto xs:mx-0 w-full sm:w-auto'
+          className='flex items-center text-center mx-auto xs:mx-0 w-full sm:w-auto'
           style={{ minWidth: 230 }}
         >
           {t('viewPrizes', 'View prizes')}
@@ -292,7 +285,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
         isOpen={isModalOpen}
         closeModal={() => setIsModalOpen(false)}
       />
-    </Card>
+    </PrizeAnimationCard>
   )
 }
 
@@ -363,7 +356,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         className={className}
         style={{ minWidth: 230 }}
       >
-        {t('viewPrizes', 'View prizes')}
+        <span>{t('viewPrizes', 'View prizes')}</span>
       </SquareButton>
     )
   } else if (
@@ -373,7 +366,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   ) {
     btnJsx = (
       <SquareButton size={size} disabled className={className}>
-        {t('noPrizesToClaim', 'No prizes to claim')}
+        <span>{t('noPrizesToClaim', 'No prizes to claim')}</span>
       </SquareButton>
     )
   } else {
@@ -399,10 +392,10 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         {isChecking ? (
           <>
             <ThemedClipSpinner size={12} className='mr-2' />
-            {t('checkingForPrizes', 'Checking for prizes')}
+            <span>{t('checkingForPrizes', 'Checking for prizes')}</span>
           </>
         ) : (
-          t('checkForPrizes', 'Check for prizes')
+          <span>{t('checkForPrizes', 'Check for prizes')}</span>
         )}
       </SquareButton>
     )
