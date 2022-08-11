@@ -126,7 +126,7 @@ export const PrizeVideoBackground: React.FC<{
   return (
     <div className={classnames(className, 'h-full w-full relative')}>
       {/* Fallback image while loading so there isn't a flicker */}
-      <img src={'/prize-images/REST.png'} className='absolute inset-0 z-1' />
+      {/* <img src={'/prize-images/REST.png'} className='absolute inset-0 z-1' /> */}
       {/* Rest */}
       {/* Rest Loop */}
       <VideoWrapper
@@ -243,6 +243,7 @@ const VideoWrapper = React.forwardRef<
       const promise = ref.current.play()
       if (promise !== undefined) {
         promise.catch((e) => {
+          console.error(e)
           setIsVideoAllowed(false)
         })
       }

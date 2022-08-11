@@ -356,7 +356,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         className={className}
         style={{ minWidth: 230 }}
       >
-        <span>{t('viewPrizes', 'View prizes')}</span>
+        <span className='w-max'>{t('viewPrizes', 'View prizes')}</span>
       </SquareButton>
     )
   } else if (
@@ -366,7 +366,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
   ) {
     btnJsx = (
       <SquareButton size={size} disabled className={className}>
-        <span>{t('noPrizesToClaim', 'No prizes to claim')}</span>
+        <span className='w-max'>{t('noPrizesToClaim', 'No prizes to claim')}</span>
       </SquareButton>
     )
   } else {
@@ -392,10 +392,10 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         {isChecking ? (
           <>
             <ThemedClipSpinner size={12} className='mr-2' />
-            <span>{t('checkingForPrizes', 'Checking for prizes')}</span>
+            <span className='w-max'>{t('checkingForPrizes', 'Checking for prizes')}</span>
           </>
         ) : (
-          <span>{t('checkForPrizes', 'Check for prizes')}</span>
+          <span className='w-max'>{t('checkForPrizes', 'Check for prizes')}</span>
         )}
       </SquareButton>
     )
