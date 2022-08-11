@@ -7,7 +7,6 @@ import { Token } from '@pooltogether/hooks'
 import { useTranslation } from 'react-i18next'
 
 import { LoadingCard } from './LoadingCard'
-import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { DrawData } from '../../../interfaces/v4'
@@ -17,44 +16,75 @@ import { useTimeUntil } from '@hooks/useTimeUntil'
 import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDraws'
 import { Time } from '@components/Time'
+import { PrizeVideoBackground, VideoClip } from './PrizeVideoBackground'
+import { PrizeAnimationCard } from './PrizeAnimationCard'
 
-export const LockedDrawsCard = (props: {
+export const LockedDrawsCard: React.FC<{
   prizeDistributor: PrizeDistributor
   token: Token
   ticket: Token
-}) => {
+}> = (props) => (
+  <PrizeAnimationCard>
+    <LockedDrawsCardContent {...props} />
+  </PrizeAnimationCard>
+)
+
+export const LockedDrawsCardContent: React.FC<{
+  prizeDistributor: PrizeDistributor
+  token: Token
+  ticket: Token
+}> = (props) => {
   const { prizeDistributor, ticket, token } = props
   const lockedPartialDrawDatas = useLockedPartialDrawDatas(prizeDistributor)
   const { data: propagatingDraws, isFetched: isPropagatingDrawsFetched } =
     usePropagatingDraws(prizeDistributor)
 
   if (!lockedPartialDrawDatas || !isPropagatingDrawsFetched) {
-    return <LoadingCard />
+    return <ThemedClipSpinner />
   }
 
   if (Object.keys(propagatingDraws).length > 0) {
-    return <PropagatingDrawsCard draws={propagatingDraws} />
+    return <PropagatingDrawsContent draws={propagatingDraws} />
   }
 
   const lockedPartialDrawDatasList = Object.values(lockedPartialDrawDatas)
   if (lockedPartialDrawDatasList.length === 0) {
-    return <NoDrawsCard />
+    return <NoDrawsContent />
   }
 
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <StaticPrizeVideoBackground className='absolute inset-0' />
-      <LockedDrawDetails
-        partialDrawDatas={lockedPartialDrawDatas}
-        token={token}
-        ticket={ticket}
-        className='absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
-      />
-      <LockedDrawsCountdown
-        firstLockDrawId={lockedPartialDrawDatasList[0].draw.drawId}
-        className='absolute bottom-4 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex justify-center'
-      />
-    </Card>
+    <>
+      <LockedDrawsHeader partialDrawDatas={lockedPartialDrawDatas} />
+      <div className='flex flex-col-reverse justify-between h-full xs:flex-row'>
+        <LockedDrawsCountdown
+          firstLockDrawId={lockedPartialDrawDatasList[0].draw.drawId}
+          className='mx-auto xs:mx-0'
+        />
+        <LockedDrawDetails
+          partialDrawDatas={lockedPartialDrawDatas}
+          token={token}
+          ticket={ticket}
+          className='mt-0 xs:-mt-8'
+        />
+      </div>
+    </>
+  )
+}
+
+const LockedDrawsHeader: React.FC<{
+  className?: string
+  partialDrawDatas: {
+    [drawId: number]: {
+      draw: Draw
+      prizeDistribution?: PrizeDistribution
+    }
+  }
+}> = (props) => {
+  return (
+    <div className={classNames(props.className)}>
+      <MultipleDrawIds partialDrawDatas={props.partialDrawDatas} />
+      <MultipleDrawsDate partialDrawDatas={props.partialDrawDatas} />
+    </div>
   )
 }
 
@@ -84,16 +114,7 @@ const LockedDrawDetails = (props: {
   })
 
   return (
-    <div
-      className={classNames(
-        className,
-        'flex flex-col xs:flex-row justify-between leading-none xs:w-full'
-      )}
-    >
-      <div>
-        <MultipleDrawIds partialDrawDatas={partialDrawDatas} />
-        <MultipleDrawsDate partialDrawDatas={partialDrawDatas} />
-      </div>
+    <div className={classNames(className, 'flex flex-col leading-none items-start')}>
       <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
         <MultiDrawsPrizeTiersTrigger
           className='mt-2 xs:mt-0'
@@ -128,39 +149,30 @@ const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: stri
   )
 }
 
-const NoDrawsCard = (props: { className?: string }) => {
+const NoDrawsContent = (props: { className?: string }) => {
   const { t } = useTranslation()
+
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <StaticPrizeVideoBackground className='absolute inset-0' />
-      <div className='absolute bottom-4 left-0 right-0 xs:top-8 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center xs:text-left'>
+    <div className='flex flex-col justify-end h-full xs:flex-row xs:justify-start'>
+      <div className='flex flex-col text-center mx-auto xs:mx-0 xs:text-left'>
         <span className='text-lg text-inverse'>{t('noDrawsToCheckNoDeposits')}</span>
         <span className=''>{t('comeBackSoon')}</span>
       </div>
-    </Card>
+    </div>
   )
 }
 
-const PropagatingDrawsCard = (props: {
+const PropagatingDrawsContent = (props: {
   draws: { [chainId: number]: { draw: Draw } }
   className?: string
 }) => {
   const { draws } = props
   const { t } = useTranslation()
+
   return (
-    <Card className='draw-card' paddingClassName=''>
-      <StaticPrizeVideoBackground className='absolute inset-0' />
-      <div
-        className={classNames(
-          'flex flex-col xs:flex-row justify-between leading-none xs:w-full absolute top-4 xs:top-8 left-0 px-4 xs:px-8'
-        )}
-      >
-        <div>
-          <MultipleDrawIds partialDrawDatas={draws} />
-          <MultipleDrawsDate partialDrawDatas={draws} />
-        </div>
-      </div>
-      <div className='absolute bottom-6 left-0 right-0 xs:top-14 xs:bottom-auto xs:left-auto xs:right-auto px-4 xs:px-8 flex flex-col text-center'>
+    <div className='flex flex-col justify-end h-full xs:flex-row xs:justify-start'>
+      <LockedDrawsHeader partialDrawDatas={draws} />
+      <div className='flex flex-col text-center mx-auto xs:mx-0 xs:text-left'>
         <div className='font-bold text-white text-xs xs:text-sm opacity-90 mx-auto flex flex-col justify-center'>
           <Tooltip
             id={`tooltip-what-is-propagating`}
@@ -182,6 +194,6 @@ const PropagatingDrawsCard = (props: {
           </Tooltip>
         </div>
       </div>
-    </Card>
+    </div>
   )
 }

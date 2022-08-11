@@ -206,7 +206,7 @@ export const DepositInfoBox: React.FC<{
 
   return (
     <div
-      className={classNames(className, 'relative rounded-lg px-4 py-2', {
+      className={classNames(className, 'relative rounded-lg pl-4 pr-2 py-2', {
         'bg-pt-purple-lighter dark:bg-pt-purple-dark': isError,
         [bgClassName]: !isError
       })}
@@ -220,11 +220,6 @@ export const DepositInfoBox: React.FC<{
                 action={EstimateAction.deposit}
                 amount={amountToDeposit}
               />
-              {/* <UpdatedPrizePoolNetworkOddsListItemBar
-                amount={amountToDeposit}
-                action={EstimateAction.deposit}
-                prizePool={prizePool}
-              /> */}
             </>
           )}
           <UpdatedPrizePoolOddsListItem

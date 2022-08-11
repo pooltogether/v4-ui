@@ -76,29 +76,23 @@ export const PastDrawsList = (props: {
           </div>
         </Card>
       )}
-      <div className='relative'>
-        <div
-          className='absolute inset-0 pointer-events-none bg-body-list-fade'
-          style={{ zIndex: 1 }}
-        />
-        <ul className='space-y-4 max-h-96 overflow-y-auto pb-10'>
-          {drawDatasList.map((drawData) => {
-            const drawId = drawData.draw.drawId
-            return (
-              <PastPrizeListItem
-                key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
-                drawData={drawData}
-                prizeDistributor={prizeDistributor}
-                token={prizePoolTokens.token}
-                ticket={prizePoolTokens.ticket}
-                claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
-                normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
-                drawLock={drawLocks[drawId]}
-              />
-            )
-          })}
-        </ul>
-      </div>
+      <ul className='space-y-4'>
+        {drawDatasList.map((drawData) => {
+          const drawId = drawData.draw.drawId
+          return (
+            <PastPrizeListItem
+              key={`past-prize-list-${drawId}-${prizeDistributor.id()}`}
+              drawData={drawData}
+              prizeDistributor={prizeDistributor}
+              token={prizePoolTokens.token}
+              ticket={prizePoolTokens.ticket}
+              claimedAmount={claimedAmountsData?.claimedAmounts[drawId]}
+              normalizedBalance={normalizedBalancesData?.normalizedBalances[drawId]}
+              drawLock={drawLocks[drawId]}
+            />
+          )
+        })}
+      </ul>
     </>
   )
 }
