@@ -125,6 +125,8 @@ export const PrizeVideoBackground: React.FC<{
 
   return (
     <div className={classnames(className, 'h-full w-full relative')}>
+      {/* Fallback image while loading so there isn't a flicker */}
+      <img src={'/prize-images/REST.png'} className='absolute inset-0 z-1' />
       {/* Rest */}
       {/* Rest Loop */}
       <VideoWrapper
@@ -202,8 +204,6 @@ export const PrizeVideoBackground: React.FC<{
         activeVideoState={activeVideoState}
         onEnded={() => onEnded(VideoClip.prize, VideoState.loop)}
       />
-      {/* Fallback image while loading so there isn't a flicker */}
-      <img src={'/prize-images/REST.png'} className='absolute inset-0 z-1' />
     </div>
   )
 }
@@ -252,7 +252,7 @@ const VideoWrapper = React.forwardRef<
   return (
     <video
       className={classNames(className, 'absolute inset-0', {
-        'z-2': isActive,
+        'z-1': isActive,
         'z-0': !isActive
       })}
       ref={ref}

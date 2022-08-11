@@ -10,7 +10,7 @@ export const PrizeAnimationCard: React.FC<{
   const { children, targetVideoClip, onTargetReached, className } = props
   return (
     <Card className={classNames('relative overflow-hidden', className)} paddingClassName=''>
-      <div className='absolute inset-0 z-3'>
+      <div className='absolute inset-0 z-2'>
         <div className='py-4 xs:py-8 px-4 xs:px-8 flex flex-col h-full'>{children}</div>
       </div>
       <PrizeVideoBackground
