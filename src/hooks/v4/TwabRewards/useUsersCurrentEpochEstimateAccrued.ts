@@ -4,6 +4,7 @@ import { msToS } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { formatUnits } from 'ethers/lib/utils'
+import { useMemo } from 'react'
 import { useChainPrizePoolTicketTotalSupply } from '../PrizePool/useChainPrizePoolTicketTotalSupply'
 import { useUsersPrizePoolTwabBetween } from '../PrizePool/useUsersPrizePoolTwabBetween'
 
@@ -24,8 +25,10 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
     now
   )
 
-  let currentEpochAccrued
-  if (currentEpoch && isTwabDataFetched && tokenIsFetched) {
+  return useMemo(() => {
+    if (!currentEpoch || !isTwabDataFetched || !tokenIsFetched || !totalTwabSupply) {
+      return undefined
+    }
     const users = formatUnits(twabData.twab.amountUnformatted, depositTokenDecimals)
     const total = formatUnits(totalTwabSupply, depositTokenDecimals)
 
@@ -38,8 +41,6 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
 
     const currentEpochTotalEstimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted)
 
-    currentEpochAccrued = epochElapsedPercent * currentEpochTotalEstimate
-  }
-
-  return currentEpochAccrued
+    return epochElapsedPercent * currentEpochTotalEstimate
+  }, [currentEpoch, isTwabDataFetched, tokenIsFetched, totalTwabSupply])
 }
