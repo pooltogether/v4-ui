@@ -2,7 +2,7 @@ import {
   BalanceBottomSheet,
   ContractLink,
   NetworkIcon,
-  SquareButtonTheme,
+  ButtonTheme,
   TokenIcon
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
@@ -189,7 +189,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         transactionHash={tx?.response?.hash}
@@ -283,7 +283,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         transactionHash={tx?.response?.hash}

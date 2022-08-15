@@ -1,6 +1,6 @@
 import axios from 'axios'
 import classNames from 'classnames'
-import { SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { Button, ButtonTheme } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { Overrides } from 'ethers'
@@ -186,13 +186,13 @@ const WithdrawReasonForm = (props) => {
           </div>
         )}
 
-        <SquareButton
+        <Button
           disabled={sending || success || (!isValid && isDirty)}
           type='submit'
           className='w-full mt-4'
         >
           {t('send')}
-        </SquareButton>
+        </Button>
       </form>
 
       <div

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SquareButton, SquareButtonProps } from '@pooltogether/react-components'
+import { Button, ButtonProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
   TransactionState,
@@ -11,7 +11,7 @@ import {
 } from '@pooltogether/wallet-connection'
 import { useNetwork } from 'wagmi'
 
-export interface TxButtonProps extends SquareButtonProps {
+export interface TxButtonProps extends ButtonProps {
   state?: TransactionState
   status?: TransactionStatus
   chainId: number
@@ -30,7 +30,7 @@ export const TxButton = (props: TxButtonProps) => {
     children,
     onClick: _onClick,
     disabled: _disabled,
-    ...squareButtonProps
+    ...buttonProps
   } = props
   const isWalletConnected = useIsWalletConnected()
   const connectWallet = useConnectWallet()
@@ -58,9 +58,9 @@ export const TxButton = (props: TxButtonProps) => {
 
   return (
     <>
-      <SquareButton {...squareButtonProps} onClick={(e) => onClick?.(e)} disabled={disabled}>
+      <Button {...buttonProps} onClick={(e) => onClick?.(e)} disabled={disabled}>
         {content}
-      </SquareButton>
+      </Button>
     </>
   )
 }

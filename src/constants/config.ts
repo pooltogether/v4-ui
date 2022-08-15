@@ -5,6 +5,7 @@ import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@constants/misc'
 import { Chain } from 'wagmi'
 import { getChain } from '@pooltogether/wallet-connection'
+import { ContractType } from '@pooltogether/v4-client-js'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -20,12 +21,41 @@ export const RPC_API_KEYS = {
 // NOTE: Should be empty. Add a chain id to hide it in app.
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
+// Pull prize pool addresses from the contract list
+export const V4_PRIZE_POOLS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: mainnet.contracts
+    .filter(({ type }) => type === ContractType.YieldSourcePrizePool)
+    .map(({ address }) => address),
+  [APP_ENVIRONMENTS.testnets]: testnet.contracts
+    .filter(({ type }) => type === ContractType.YieldSourcePrizePool)
+    .map(({ address }) => address)
+})
+
+// Pull chain ids from the contract list
 export const V4_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
   ),
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId))).filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  )
+})
+
+// Set default addresses for all of the chain ids provided
+export const DEFAULT_PRIZE_POOLS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: Object.freeze(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].reduce(
+      (defaultPrizePools, chainId) =>
+        (defaultPrizePools[chainId] = V4_PRIZE_POOLS[APP_ENVIRONMENTS.mainnets][chainId]?.[0]),
+      {} // Add overrides here and check if set above before setting the first address in the list
+    )
+  ),
+  [APP_ENVIRONMENTS.testnets]: Object.freeze(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets].reduce(
+      (defaultPrizePools, chainId) =>
+        (defaultPrizePools[chainId] = V4_PRIZE_POOLS[APP_ENVIRONMENTS.testnets][chainId]?.[0]),
+      {} // Add overrides here and check if set above before setting the first address in the list
+    )
   )
 })
 

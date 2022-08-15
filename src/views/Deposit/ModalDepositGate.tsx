@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next'
 import { Token, Amount } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
-  SquareLink,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize,
+  ButtonLink,
+  Button,
+  ButtonTheme,
+  ButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 
@@ -109,15 +109,15 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
             {step === Step.approve &&
               approveTx &&
               approveTx?.status === TransactionStatus.pendingBlockchainConfirmation && (
-                <SquareLink
+                <ButtonLink
                   href={formatBlockExplorerTxUrl(approveTx.response?.hash, chainId)}
                   className='mt-2'
-                  theme={SquareButtonTheme.tealOutline}
-                  size={SquareButtonSize.sm}
+                  theme={ButtonTheme.tealOutline}
+                  size={ButtonSize.sm}
                   target='_blank'
                 >
                   {t('viewReceipt', 'View receipt')}
-                </SquareLink>
+                </ButtonLink>
               )}
           </div>
         </div>
@@ -138,23 +138,23 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
             {step === Step.deposit &&
               depositTx &&
               depositTx?.status === TransactionStatus.cancelled && (
-                <SquareButton className='mt-2' onClick={sendDepositTx}>
+                <Button className='mt-2' onClick={sendDepositTx}>
                   {t('continue', 'Continue')}
-                </SquareButton>
+                </Button>
               )}
 
             {step === Step.deposit &&
               depositTx &&
               depositTx?.status === TransactionStatus.pendingBlockchainConfirmation && (
-                <SquareLink
+                <ButtonLink
                   href={formatBlockExplorerTxUrl(depositTx.response?.hash, chainId)}
                   className='mt-2'
-                  theme={SquareButtonTheme.tealOutline}
-                  size={SquareButtonSize.sm}
+                  theme={ButtonTheme.tealOutline}
+                  size={ButtonSize.sm}
                   target='_blank'
                 >
                   {t('viewReceipt', 'View receipt')}
-                </SquareLink>
+                </ButtonLink>
               )}
           </div>
         </div>

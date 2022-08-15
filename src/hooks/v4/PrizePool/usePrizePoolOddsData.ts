@@ -4,8 +4,8 @@ import { usePrizePoolTotalNumberOfPrizes } from '../PrizePool/usePrizePoolTotalN
 import { usePrizePoolTicketTwabTotalSupply } from '../PrizePool/usePrizePoolTicketTwabTotalSupply'
 import { BigNumber, ethers } from 'ethers'
 import { useQuery } from 'react-query'
-import { usePrizePoolTokens } from '../PrizePool/usePrizePoolTokens'
 import { EstimateAction } from '../../../constants/odds'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 export const getPrizePoolOddsDataKey = (
   prizePool: PrizePool,

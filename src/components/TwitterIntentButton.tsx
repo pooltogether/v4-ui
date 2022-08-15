@@ -1,6 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
-import { SquareLink } from '@pooltogether/react-components'
+import { ButtonLink } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 
 interface TwitterIntentButtonProps {
@@ -13,13 +13,13 @@ export const TwitterIntentButton = (props: TwitterIntentButtonProps) => {
   const { t } = useTranslation()
 
   return (
-    <SquareLink
+    <ButtonLink
       href={`http://twitter.com/intent/tweet?text=${text}&url=${url}`}
       target='_blank'
       className='w-full flex items-center mx-auto mt-4'
     >
       <TwitterIconSvg className='w-5 mr-2' /> {t('shareTweet', 'Share Tweet')}
-    </SquareLink>
+    </ButtonLink>
   )
 }
 

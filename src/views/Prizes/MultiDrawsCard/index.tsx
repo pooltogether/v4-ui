@@ -4,10 +4,10 @@ import { Token } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
   Card,
-  SquareLink,
-  SquareButton,
-  SquareButtonTheme,
-  SquareButtonSize,
+  ButtonLink,
+  Button,
+  ButtonTheme,
+  ButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 import { PrizeDistributor, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
@@ -198,7 +198,7 @@ interface MultiDrawsClaimButtonProps extends MultiDrawsCardPropsWithDetails {
   didUserWinAPrize: boolean
   claimTx: Transaction
   className?: string
-  size?: SquareButtonSize
+  size?: ButtonSize
   setWinningDrawResults: (drawResultsList: { [drawId: number]: DrawResults }) => void
   setCheckedState: (state: CheckedState) => void
   openModal: () => void
@@ -264,15 +264,15 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
     <PrizeAnimationCard targetVideoClip={VideoClip.prize}>
       <MultipleDrawDetails drawDatas={winningDrawData} token={token} ticket={ticket} />
       <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-4'>
-        <SquareButton
-          theme={SquareButtonTheme.rainbow}
-          size={SquareButtonSize.md}
+        <Button
+          theme={ButtonTheme.rainbow}
+          size={ButtonSize.md}
           onClick={() => setIsModalOpen(true)}
           className='flex items-center text-center mx-auto xs:mx-0 w-full sm:w-auto'
           style={{ minWidth: 230 }}
         >
           {t('viewPrizes', 'View prizes')}
-        </SquareButton>
+        </Button>
       </div>
       <PrizeClaimSheet
         {...props}
@@ -320,28 +320,28 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
 
   if (claimTx?.state === TransactionState.pending) {
     btnJsx = (
-      <SquareLink
+      <ButtonLink
         target='_blank'
         href={url}
-        theme={SquareButtonTheme.teal}
+        theme={ButtonTheme.teal}
         size={size}
         className={className}
       >
         <ThemedClipSpinner className='mr-2' size={12} />
         {t('claiming', 'Claiming')}
-      </SquareLink>
+      </ButtonLink>
     )
   } else if (claimTx?.status === TransactionStatus.success) {
     btnJsx = (
-      <SquareLink
+      <ButtonLink
         target='_blank'
         href={url}
-        theme={SquareButtonTheme.tealOutline}
+        theme={ButtonTheme.tealOutline}
         size={size}
         className={className}
       >
         {t('viewReceipt', 'View receipt')}
-      </SquareLink>
+      </ButtonLink>
     )
   } else if (
     checkedState === CheckedState.checked &&
@@ -349,15 +349,15 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     hasCheckedAnimationFinished
   ) {
     btnJsx = (
-      <SquareButton
-        theme={SquareButtonTheme.rainbow}
+      <Button
+        theme={ButtonTheme.rainbow}
         size={size}
         onClick={() => openModal()}
         className={className}
         style={{ minWidth: 230 }}
       >
         <span className='w-max'>{t('viewPrizes', 'View prizes')}</span>
-      </SquareButton>
+      </Button>
     )
   } else if (
     checkedState === CheckedState.checked &&
@@ -365,14 +365,14 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
     hasCheckedAnimationFinished
   ) {
     btnJsx = (
-      <SquareButton size={size} disabled className={className}>
+      <Button size={size} disabled className={className}>
         <span className='w-max'>{t('noPrizesToClaim', 'No prizes to claim')}</span>
-      </SquareButton>
+      </Button>
     )
   } else {
     const isChecking = checkedState !== CheckedState.unchecked
     btnJsx = (
-      <SquareButton
+      <Button
         size={size}
         onClick={() => {
           getUsersDrawResults(
@@ -397,7 +397,7 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
         ) : (
           <span className='w-max'>{t('checkForPrizes', 'Check for prizes')}</span>
         )}
-      </SquareButton>
+      </Button>
     )
   }
 
@@ -405,5 +405,5 @@ const MultiDrawsClaimButton = (props: MultiDrawsClaimButtonProps) => {
 }
 
 MultiDrawsClaimButton.defaultProps = {
-  size: SquareButtonSize.md
+  size: ButtonSize.md
 }

@@ -2,22 +2,12 @@ import { useState } from 'react'
 import { getAddress } from 'ethers/lib/utils'
 import { BigNumber, ethers } from 'ethers'
 import { useSigner } from 'wagmi'
-import {
-  BalanceBottomSheet,
-  ContractLink,
-  NetworkIcon,
-  SquareButtonSize,
-  SquareButtonTheme,
-  SquareLink
-} from '@pooltogether/react-components'
-
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
-
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
@@ -38,6 +28,8 @@ import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { ButtonLink, ButtonSize, ButtonTheme, NetworkIcon } from '@pooltogether/react-components'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -161,13 +153,9 @@ const DepositItem = (props: DepositItemsProps) => {
         delegate={delegate}
         internalLinks={
           <Link href={{ pathname: '/deposit', query: router.query }}>
-            <SquareLink
-              size={SquareButtonSize.md}
-              theme={SquareButtonTheme.teal}
-              className='w-full'
-            >
+            <ButtonLink size={ButtonSize.md} theme={ButtonTheme.teal} className='w-full'>
               {t('deposit')}
-            </SquareLink>
+            </ButtonLink>
           </Link>
         }
         views={[
@@ -184,7 +172,7 @@ const DepositItem = (props: DepositItemsProps) => {
               />
             ),
             label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
+            theme: ButtonTheme.tealOutline
           }
         ]}
         sendRevokeAllowanceTransaction={sendRevokeAllowanceTransaction}
@@ -200,14 +188,12 @@ const DepositItem = (props: DepositItemsProps) => {
             ),
             icon: 'gift',
             label: t('delegateDeposit', 'Delegate deposit'),
-            theme: SquareButtonTheme.teal
+            theme: ButtonTheme.teal
           }
         ]}
-        ticket={balances.ticket}
         token={balances.token}
         balance={balances.ticket}
         balanceUsd={balances.ticket}
-        t={t}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}

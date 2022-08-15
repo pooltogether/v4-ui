@@ -2,8 +2,8 @@ import { Amount, Token } from '@pooltogether/hooks'
 import {
   CheckboxInputGroup,
   ErrorsBox,
-  SquareButton,
-  SquareButtonTheme,
+  Button,
+  ButtonTheme,
   ModalTitle
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
@@ -177,9 +177,9 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <WithdrawWarning className='mt-2' />
 
-      <SquareButton disabled={!isValid && isDirty} type='submit' className='w-full mt-8'>
+      <Button disabled={!isValid && isDirty} type='submit' className='w-full mt-8'>
         {t('reviewWithdrawal')}
-      </SquareButton>
+      </Button>
     </form>
   )
 }
@@ -244,7 +244,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
       <TxButton
         chainId={prizePool.chainId}
         className='w-full'
-        theme={SquareButtonTheme.orangeOutline}
+        theme={ButtonTheme.orangeOutline}
         onClick={() => {
           sendWithdrawTx()
         }}

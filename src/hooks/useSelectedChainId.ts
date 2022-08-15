@@ -38,7 +38,7 @@ const parseUrlNetwork = () => {
  * Reads from the app environment & the URL to set the proper
  * initial selected network
  */
-const getInitialSelectedChainId = () => {
+export const getInitialSelectedChainId = () => {
   if (typeof window === 'undefined') return CHAIN_ID.mainnet
 
   const appEnv = getStoredIsTestnetsCookie() ? APP_ENVIRONMENTS.testnets : APP_ENVIRONMENTS.mainnets

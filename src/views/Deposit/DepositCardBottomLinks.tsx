@@ -6,7 +6,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
 import { BuyTokensModal } from '@components/Modal/BuyTokensModal'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 export const DepositCardBottomLinks = () => {
   const prizePool = usePrizePoolBySelectedChainId()

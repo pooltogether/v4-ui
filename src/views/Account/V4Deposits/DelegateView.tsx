@@ -1,11 +1,11 @@
 import {
   BlockExplorerLink,
   ModalTitle,
-  SquareButton,
-  SquareButtonTheme,
+  Button,
+  ButtonTheme,
   ThemedClipSpinner,
   Collapse,
-  SquareLink
+  ButtonLink
 } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
@@ -101,7 +101,7 @@ const DelegateReadState = (props: DelegateReadStateProps) => {
 
   return (
     <div className='flex flex-col w-full'>
-      <SquareLink
+      <ButtonLink
         href={`https://tools.pooltogether.com/delegate/?delegation_chain=${getNetworkNameAliasByChainId(
           chainId
         )}`}
@@ -111,20 +111,20 @@ const DelegateReadState = (props: DelegateReadStateProps) => {
       >
         <span>{t('delegateDeposit')}</span>
         <FeatherIcon icon='external-link' className='w-5 h-5' />
-      </SquareLink>
+      </ButtonLink>
       <Collapse title={'Advanced'} className='mx-auto'>
         <span className='text-xs opacity-70 font-bold'>
           {t('currentTicketDelegate', 'Current ticket delegate')}
         </span>
         <DelegateDisplay {...props} className='mb-4' />
-        <SquareButton
+        <Button
           onClick={setWriteView}
           disabled={!isFetched}
           className='flex space-x-2 items-center'
         >
           <FeatherIcon icon='edit' className='w-5 h-5' />
           <span>{t('editTicketDelegate', 'Edit ticket delegate')}</span>
-        </SquareButton>
+        </Button>
       </Collapse>
     </div>
   )
@@ -181,9 +181,9 @@ const DelegateWriteState = (props: DelegateWriteStateProps) => {
     <div className='flex flex-col w-full space-y-4'>
       <DelegateForm {...props} setTxId={setTxId} tx={tx} />
       {!Boolean(tx) && (
-        <SquareButton theme={SquareButtonTheme.tealOutline} onClick={setReadView}>
+        <Button theme={ButtonTheme.tealOutline} onClick={setReadView}>
           {t('cancel')}
-        </SquareButton>
+        </Button>
       )}
     </div>
   )

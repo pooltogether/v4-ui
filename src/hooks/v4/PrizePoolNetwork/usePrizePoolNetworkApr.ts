@@ -3,7 +3,7 @@ import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkT
 import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
 import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
-import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { calculateApr } from '@pooltogether/utilities'
 
 /**

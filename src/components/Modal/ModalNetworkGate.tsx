@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useAddNetworkToMetamask } from '@pooltogether/hooks'
-import { SquareButton } from '@pooltogether/react-components'
+import { Button } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
@@ -61,9 +61,5 @@ const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
     return null
   }
 
-  return (
-    <SquareButton onClick={addNetwork}>
-      {t('switchToNetwork', { network: networkName })}
-    </SquareButton>
-  )
+  return <Button onClick={addNetwork}>{t('switchToNetwork', { network: networkName })}</Button>
 }

@@ -3,9 +3,9 @@ import classNames from 'classnames'
 import { useToken, Token, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { numberWithCommas } from '@pooltogether/utilities'
 import {
-  SquareButton,
-  SquareButtonTheme,
-  SquareLink,
+  Button,
+  ButtonTheme,
+  ButtonLink,
   ModalTitle,
   BottomSheet,
   snapTo90
@@ -157,8 +157,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
               )}
             </p>
           </div>
-          <SquareButton
-            theme={SquareButtonTheme.tealOutline}
+          <Button
+            theme={ButtonTheme.tealOutline}
             className='w-full'
             onClick={() => {
               setTxId('')
@@ -166,7 +166,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             }}
           >
             {t('tryAgain', 'Try again')}
-          </SquareButton>
+          </Button>
         </BottomSheet>
       )
     } else if (
@@ -255,7 +255,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             rewardRef.current.rewardMe()
             sendClaimTx()
           }}
-          theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
+          theme={isWalletOnProperNetwork ? ButtonTheme.rainbow : ButtonTheme.teal}
           state={claimTx?.state}
           status={claimTx?.status}
           disabled={drawIdsToClaim.length === 0}

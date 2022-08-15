@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import classnames from 'classnames'
+import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
 
@@ -24,56 +24,38 @@ const NavLinks: NavLink[] = [
   }
 ]
 
-export const TopNavigation = (props: { className?: string }) => {
+export const Navigation: React.FC<{ className?: string }> = (props) => {
   const { className } = props
 
   const router = useRouter()
 
   return (
-    <nav
-      className={classnames(
+    <div
+      className={classNames(
         className,
-        'hidden sm:flex flex-row justify-center',
-        'bg-pt-purple-bright shadow-lg rounded-xl p-1',
-        'w-max'
-      )}
-    >
-      {NavLinks.map((navLink) => (
-        <TopNavTab
-          key={navLink.i18nKey}
-          isSelected={navLink.href === router.pathname}
-          {...navLink}
-        />
-      ))}
-    </nav>
-  )
-}
-
-export const BottomNavigation = (props: { className?: string }) => {
-  const { className } = props
-
-  const router = useRouter()
-
-  return (
-    <nav
-      className={classnames(
-        className,
-        'p-1',
+        'z-10',
         'flex flex-row justify-center',
-        'sm:hidden',
-        'bg-pt-purple-bright shadow-lg',
-        'fixed bottom-0 inset-x-0'
+        'w-full pointer-events-none',
+        'fixed bottom-3 top-auto sm:bottom-auto sm:top-2 inset-x-0'
       )}
-      style={{ zIndex: 2 }}
     >
-      {NavLinks.map((navLink) => (
-        <BottomNavTab
-          key={navLink.i18nKey}
-          isSelected={navLink.href === router.pathname}
-          {...navLink}
-        />
-      ))}
-    </nav>
+      <nav
+        className={classNames(
+          className,
+          'flex flex-row space-x-4 pointer-events-auto py-2 px-5',
+          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-xl p-1 backdrop-filter backdrop-blur-sm',
+          'rounded-full'
+        )}
+      >
+        {NavLinks.map((navLink) => (
+          <NavTab
+            key={navLink.i18nKey}
+            isSelected={navLink.href === router.pathname}
+            {...navLink}
+          />
+        ))}
+      </nav>
+    </div>
   )
 }
 
@@ -81,7 +63,7 @@ interface NavTabProps extends NavLink {
   isSelected: boolean
 }
 
-const TopNavTab = (props: NavTabProps) => {
+const NavTab = (props: NavTabProps) => {
   const { isSelected, i18nKey, href } = props
   const { t } = useTranslation()
   const router = useRouter()
@@ -94,44 +76,23 @@ const TopNavTab = (props: NavTabProps) => {
       }}
     >
       <a
-        className={classnames(
-          'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-0 px-3 flex flex-row',
-          'text-xs hover:text-white active:bg-highlight-9',
-          { 'bg-highlight-9 text-white': isSelected },
-          { 'hover:bg-card-purple': !isSelected }
+        className={classNames(
+          'group transition mx-1 first:ml-0 last:mr-0 rounded-lg flex flex-col',
+          'text-xs font-bold text-inverse uppercase tracking-tight'
         )}
       >
-        <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
+        <span className={classNames({ 'opacity-70 hover:opacity-100': !isSelected })}>
           {t(i18nKey)}
         </span>
-      </a>
-    </Link>
-  )
-}
-
-const BottomNavTab = (props: NavTabProps) => {
-  const { isSelected, i18nKey, href } = props
-  const { t } = useTranslation()
-  const router = useRouter()
-
-  return (
-    <Link
-      href={{
-        pathname: href,
-        query: router.query
-      }}
-    >
-      <a
-        className={classnames(
-          'transition mx-1 first:ml-0 last:mr-0 rounded-lg py-2 px-3 flex flex-row',
-          'text-xs hover:text-white active:bg-highlight-9',
-          { 'bg-highlight-9 text-white': isSelected },
-          { 'hover:opacity-60': !isSelected }
-        )}
-      >
-        <span className={classnames({ 'text-white opacity-70 hover:opacity-100': !isSelected })}>
-          {t(i18nKey)}
-        </span>
+        <div
+          className={classNames(
+            'h-0.5 rounded-full w-1/3 mx-auto dark:group-hover:bg-white dark:group-hover:bg-opacity-10 group-hover:bg-actually-black group-hover:bg-opacity-10',
+            {
+              'bg-gradient-magenta': isSelected,
+              'bg-transparent': !isSelected
+            }
+          )}
+        />
       </a>
     </Link>
   )

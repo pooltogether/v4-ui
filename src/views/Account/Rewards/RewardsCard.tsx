@@ -12,9 +12,9 @@ import {
   ThemedClipSpinner,
   NetworkIcon,
   TokenIcon,
-  SquareButtonTheme,
-  SquareLink,
-  SquareButtonSize
+  ButtonTheme,
+  ButtonLink,
+  ButtonSize
 } from '@pooltogether/react-components'
 import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import {
@@ -409,13 +409,13 @@ const ClaimModalForm = (props) => {
               />
             </div>
 
-            <SquareLink
+            <ButtonLink
               href='/deposit'
-              theme={SquareButtonTheme.rainbow}
+              theme={ButtonTheme.rainbow}
               className='mt-4 mb-8 flex w-full items-center justify-center'
             >
               {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
-            </SquareLink>
+            </ButtonLink>
           </div>
         </>
       ) : (
@@ -659,14 +659,14 @@ export const DelegateOPButton = (props) => {
   const { t } = useTranslation()
 
   return (
-    <SquareLink
+    <ButtonLink
       href=''
-      size={SquareButtonSize.md}
-      theme={SquareButtonTheme.white}
+      size={ButtonSize.md}
+      theme={ButtonTheme.white}
       className='w-full text-center mt-2'
     >
       {t('delegateOp', 'Delegate OP')}
-    </SquareLink>
+    </ButtonLink>
   )
 }
 
@@ -675,14 +675,14 @@ export const AccountPageButton = (props) => {
   const { t } = useTranslation()
 
   return (
-    <SquareLink
-      size={SquareButtonSize.md}
-      theme={SquareButtonTheme.tealOutline}
+    <ButtonLink
+      size={ButtonSize.md}
+      theme={ButtonTheme.tealOutline}
       className='w-full text-center'
       onClick={onDismiss}
     >
       {t('viewAccount', 'View account')}
-    </SquareLink>
+    </ButtonLink>
   )
 }
 
@@ -869,8 +869,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const disabled =
     !signer || transactionPending || !claimableAmount || Number(claimableAmount?.amount) === 0
 
-  const theme =
-    isWalletOnProperNetwork && !disabled ? SquareButtonTheme.rainbow : SquareButtonTheme.teal
+  const theme = isWalletOnProperNetwork && !disabled ? ButtonTheme.rainbow : ButtonTheme.teal
 
   return (
     <TxButton

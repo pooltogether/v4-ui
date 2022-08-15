@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BalanceBottomSheet, ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
+import { BalanceBottomSheet, ContractLink, ButtonTheme } from '@pooltogether/react-components'
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
 import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
@@ -89,20 +89,20 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       id: 'deposit',
       view: () => depositView,
       label: t('deposit'),
-      theme: SquareButtonTheme.teal
+      theme: ButtonTheme.teal
     },
     {
       id: 'claim',
       view: () => claimView,
       label: t('rewards'),
-      theme: SquareButtonTheme.rainbow
+      theme: ButtonTheme.rainbow
     },
     {
       id: 'withdraw',
       view: () => withdrawView,
       disabled: ticket.amountUnformatted.isZero(),
       label: t('withdraw'),
-      theme: SquareButtonTheme.tealOutline
+      theme: ButtonTheme.tealOutline
     }
   ]
 

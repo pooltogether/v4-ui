@@ -11,26 +11,27 @@ import {
   ThemeSettingsItem,
   SocialLinks,
   Modal,
-  NetworkIcon
+  NetworkIcon,
+  SettingsModal
 } from '@pooltogether/react-components'
+import { NetworkSelectionList } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
 
-import { TopNavigation } from '@components/Layout/Navigation'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
-
-export enum ContentPaneState {
-  deposit = 'deposit',
-  prizes = 'prizes',
-  account = 'account'
-}
+import classNames from 'classnames'
+import { getSupportedChains } from '@utils/getSupportedChains'
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
-      <TopNavigation className='absolute mx-auto inset-x-0' />
+    <PageHeaderContainer
+      Link={Link}
+      as='/deposit'
+      href='/deposit'
+      className='backdrop-filter backdrop-blur-xl'
+    >
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />
@@ -42,6 +43,25 @@ export const PageHeader = (props) => {
 
 const Settings = () => {
   const { t } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+  const chains = getSupportedChains()
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>
+        <FeatherIcon
+          icon='menu'
+          className={classNames('w-6 h-6 text-gradient-magenta hover:text-inverse transition')}
+        />
+      </button>
+      <SettingsModal
+        t={t}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        networkView={() => <NetworkSelectionList chains={chains} />}
+      />
+    </>
+  )
 
   return (
     <SettingsContainer t={t} className='ml-1 my-auto' sizeClassName='w-6 h-6 overflow-hidden'>

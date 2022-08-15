@@ -1,5 +1,5 @@
 import { Amount, TokenWithBalance, useTokenAllowance } from '@pooltogether/hooks'
-import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
+import { ModalTitle, Button, ButtonTheme } from '@pooltogether/react-components'
 import { useState } from 'react'
 import { BigNumber } from 'ethers'
 import { useForm, UseFormReturn } from 'react-hook-form'
@@ -322,9 +322,9 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
             'Something went wrong while processing your transaction.'
           )}
         </p>
-        <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
+        <Button theme={ButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
           {t('tryAgain', 'Try again')}
-        </SquareButton>
+        </Button>
       </>
     )
   } else if (depositTx?.status === TransactionStatus.success) {

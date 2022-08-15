@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Amount } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
-  SquareLink,
-  SquareButton,
-  SquareButtonTheme,
+  ButtonLink,
+  Button,
+  ButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 
@@ -42,14 +42,14 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
             )}
           </p>
         </div>
-        <SquareLink
+        <ButtonLink
           href={blockExplorerUrl}
           className='w-full mt-6'
-          theme={SquareButtonTheme.tealOutline}
+          theme={ButtonTheme.tealOutline}
           target='_blank'
         >
           {t('viewReceipt', 'View receipt')}
-        </SquareLink>
+        </ButtonLink>
       </div>
     )
   }
@@ -82,9 +82,9 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
       <div className='mb-6'>
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
       </div>
-      <SquareButton className='w-full' onClick={sendApproveTx}>
+      <Button className='w-full' onClick={sendApproveTx}>
         {t('confirmApproval', 'Confirm approval')}
-      </SquareButton>
+      </Button>
     </div>
   )
 }

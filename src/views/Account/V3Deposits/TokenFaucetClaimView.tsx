@@ -1,7 +1,7 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import {
   ModalTitle,
-  SquareButtonTheme,
+  ButtonTheme,
   ThemedClipSpinner,
   TokenIcon
 } from '@pooltogether/react-components'
@@ -212,7 +212,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
         disabled={!tokenFaucetRewards.amountUnformatted.gt(0)}
         onClick={sendClaimTx}
         className='mt-6 flex w-full items-center justify-center'
-        theme={SquareButtonTheme.rainbow}
+        theme={ButtonTheme.rainbow}
       >
         {t('claim', 'Claim')}
       </TxButton>
