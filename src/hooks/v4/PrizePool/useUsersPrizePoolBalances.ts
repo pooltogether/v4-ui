@@ -3,7 +3,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { PrizePoolTokens, usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export interface UsersPrizePoolBalances {
@@ -30,7 +30,10 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
 export const getUsersPrizePoolBalances = async (
   prizePool: PrizePool,
   usersAddress: string,
-  tokens: PrizePoolTokens
+  tokens: {
+    ticket: Token
+    token: Token
+  }
 ): Promise<{
   prizePool: PrizePool
   usersAddress: string

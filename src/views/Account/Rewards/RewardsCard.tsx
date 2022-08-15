@@ -37,7 +37,6 @@ import { useSigner } from 'wagmi'
 import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
 import { TxButton } from '@components/Input/TxButton'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
@@ -55,6 +54,7 @@ import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
 import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
+import { LoadingList } from '../AccountList/LoadingList'
 
 enum ClaimModalState {
   'FORM',

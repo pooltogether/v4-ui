@@ -22,23 +22,18 @@ interface TriggerButtonProps {
 }
 
 export const ViewPrizesSheetCustomTrigger = (props: ViewPrizesSheetTriggerProps) => {
-  const { children, prizeTier, label, Button } = props
+  const { children, prizeConfig, label, Button } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
 
   return (
     <>
-      <Button className={props.className} onClick={() => setIsOpen(true)} disabled={!prizeTier}>
-        {children || label || t('viewPrizeTiers', 'View prize tiers')}
+      <Button className={props.className} onClick={() => setIsOpen(true)} disabled={!prizeConfig}>
+        {children || label || t('viewPrizes', 'View prizes')}
       </Button>
 
-      <PrizeBreakdownModal
-        {...props}
-        prizeTier={prizeTier}
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-      />
+      <PrizeBreakdownModal {...props} isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
 }

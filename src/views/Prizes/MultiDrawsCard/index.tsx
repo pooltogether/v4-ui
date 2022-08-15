@@ -52,7 +52,7 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
     usePrizePoolTokens(prizePool)
   const usersAddress = useUsersAddress()
   const { data: unclaimedDrawDatasData, isFetched: isUnclaimedDrawDataFetched } =
-    useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
+    useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor, prizePoolTokens?.ticket)
   const { data: hasUserCheckedAllDrawsData, isFetched: isHasUserCheckedAllDrawsFetched } =
     useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
 

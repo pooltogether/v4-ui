@@ -5,7 +5,6 @@ import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { useTimeUntil } from '@hooks/useTimeUntil'
@@ -14,10 +13,11 @@ import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
   const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)

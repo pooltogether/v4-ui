@@ -5,14 +5,14 @@ import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-c
 import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
+import { LoadingList } from '../AccountList/LoadingList'
 
-export const EarnRewardsCard = () => {
+export const EarnRewardsCard: React.FC<{ className?: string }> = (props) => {
   const { t } = useTranslation()
 
   const { data: activeChainRewards, isFetched, isError } = useChainActiveRewards()
@@ -26,7 +26,7 @@ export const EarnRewardsCard = () => {
   }
 
   return (
-    <div className='flex flex-col space-y-2'>
+    <div className={classNames(props.className)}>
       <CardTitle title={t('earnRewards')} loading={!isFetched} />
 
       {!isFetched && (

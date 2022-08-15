@@ -9,12 +9,12 @@ import { PrizeBreakdown } from '@components/PrizeBreakdown'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 
 export const MultiDrawPrizeBreakdownSheet = (
-  props: { drawDatas: { [drawId: number]: DrawData }; ticket: Token } & Omit<
+  props: { drawDatas: { [drawId: number]: DrawData }; prizeToken: Token } & Omit<
     ModalProps,
     'label' | 'children'
   >
 ) => {
-  const { drawDatas, ticket, closeModal } = props
+  const { drawDatas, prizeToken, closeModal } = props
   const { t } = useTranslation()
   const drawIds = Object.keys(drawDatas).map(Number)
   const [selectedDrawId, setSelectedDrawId] = useState(drawIds[0])
@@ -25,9 +25,9 @@ export const MultiDrawPrizeBreakdownSheet = (
     const drawData = drawDatas[selectedDrawId]
     if (!drawData) {
       setSelectedDrawId(drawIds[0])
-      return drawDatas[drawIds[0]].prizeDistribution
+      return drawDatas[drawIds[0]].prizeConfig
     } else {
-      return drawData.prizeDistribution
+      return drawData.prizeConfig
     }
   }, [selectedDrawId, drawDatas])
 
@@ -84,7 +84,11 @@ export const MultiDrawPrizeBreakdownSheet = (
 
       <hr className='opacity-10 border-pt-purple dark:border-white w-80' />
 
-      <PrizeBreakdown className='w-full mx-auto' prizeTier={prizeDistribution} ticket={ticket} />
+      <PrizeBreakdown
+        className='w-full mx-auto'
+        prizeConfig={prizeDistribution}
+        prizeToken={prizeToken}
+      />
     </BottomSheet>
   )
 }

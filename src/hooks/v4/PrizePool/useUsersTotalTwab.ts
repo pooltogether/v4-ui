@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
-import { Amount } from '@pooltogether/hooks'
+import { Amount, getRefetchInterval } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
 
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
+import { usePrizePools } from './usePrizePools'
+import { getUserPrizePoolTwab, getUsersPrizePoolTwabKey } from './useUsersPrizePoolTwab'
+import { useQueries } from 'react-query'
 
 /**
  * Fetches the users current TWAB across all chains and combines
@@ -14,13 +16,21 @@ import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
  */
 export const useUsersTotalTwab = (usersAddress: string) => {
   // NOTE: Assumes all prize pool tickets have the same decimals
+  const prizePools = usePrizePools()
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
     useSelectedPrizePoolTicketDecimals()
 
-  const queryResults = useAllUsersPrizePoolTwabs(usersAddress)
-  const queryKey = queryResults
-    .map((qr) => qr.data?.prizePoolId + qr.data?.usersAddress + qr.data?.twab.amount)
-    .join('-')
+  const queryResults = useQueries(
+    prizePools.map((prizePool) => {
+      const refetchInterval = getRefetchInterval(prizePool.chainId)
+      return {
+        refetchInterval: refetchInterval,
+        queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
+        queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
+        enabled: Boolean(usersAddress) && isTicketDecimalsFetched
+      }
+    })
+  )
 
   return useMemo(() => {
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
@@ -46,7 +56,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
       isFetched,
       refetch
     }
-  }, [queryKey])
+  }, [queryResults])
 }
 
 const getTotalTwab = (twabs: Amount[], decimals: string) => {

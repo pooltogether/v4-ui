@@ -3,12 +3,6 @@ import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery, UseQueryOptions } from 'react-query'
 
-export interface PrizePoolTokens {
-  prizePoolId: string
-  token: Token
-  ticket: Token
-}
-
 export const PRIZE_POOL_TOKENS_QUERY_KEY = 'prizePoolTokens'
 
 export const usePrizePoolTokens = (prizePool: PrizePool) => {
@@ -51,7 +45,7 @@ export const getPrizePoolTokens = async (prizePool: PrizePool) => {
     prizePoolId: prizePool.id(),
     ticket,
     token
-  } as PrizePoolTokens
+  }
 }
 
 const PRIZE_POOL_TOKENS = Object.freeze({

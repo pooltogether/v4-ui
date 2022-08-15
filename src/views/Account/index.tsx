@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { AccountCard } from '@views/Account/AccountCard'
@@ -19,6 +20,10 @@ import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrize
 import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
+import { RewardsCard } from './Rewards/RewardsCard'
+import { CardTitle } from '@components/Text/CardTitle'
+import Link from 'next/link'
 
 export const AccountUI = (props) => {
   const usersAddress = useUsersAddress()
@@ -36,13 +41,12 @@ export const AccountUI = (props) => {
           </HeaderContent>
           <CardContent>
             <V4DepositList />
+            <RewardsHaveMoved />
             <hr />
             <DelegationList />
+            <EarnRewardsCard className='w-full sm:hidden flex flex-col space-y-2' />
             <V3StakingList />
             <V3DepositList />
-            <SidebarCardContent>
-              <DoMoreWithPool />
-            </SidebarCardContent>
           </CardContent>
           <OddsDisclaimer className='block mt-6' />
         </MainContent>
@@ -50,7 +54,7 @@ export const AccountUI = (props) => {
         <SidebarContent>
           <PastPrizesSidebarCard />
           <GovernanceSidebarCard />
-          <DoMoreWithPool />
+          <EarnRewardsCard />
         </SidebarContent>
       </div>
     </PagePadding>
@@ -70,13 +74,7 @@ const HeaderContent: React.FC<{ className?: string }> = (props) => {
   if (!isWalletConnected) {
     children = <NoWalletAccountHeader className='mx-auto' />
   }
-  return (
-    <div
-      {...remainingProps}
-      children={children}
-      className={classNames('w-full px-2 xs:px-4 sm:px-8 lg:px-12', className)}
-    />
-  )
+  return <div {...remainingProps} children={children} className={classNames('w-full', className)} />
 }
 
 const CardContent: React.FC<{ className?: string }> = (props) => {
@@ -99,29 +97,8 @@ const CardContent: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const SidebarCardContent: React.FC<{ className?: string }> = (props) => {
-  let { children, className, ...remainingProps } = props
-
-  const isWalletConnected = useIsWalletConnected()
-  if (!isWalletConnected) {
-    children = <DoMoreWithPool />
-  }
-  return (
-    <div
-      {...remainingProps}
-      children={children}
-      className={classNames('w-full sm:hidden block', className)}
-    />
-  )
-}
-
 const SidebarContent: React.FC<{ className?: string }> = (props) => {
   let { children, className, ...remainingProps } = props
-
-  const isWalletConnected = useIsWalletConnected()
-  if (!isWalletConnected) {
-    children = <DoMoreWithPool />
-  }
 
   return (
     <div
@@ -213,3 +190,18 @@ const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (props) => {
     </div>
   )
 }
+
+const RewardsHaveMoved = () => (
+  <div className=''>
+    <CardTitle title='Rewards' />
+    <p className='opacity-70 text-xs'>
+      Claiming rewards has moved!
+      <Link href={'/prizes'}>
+        <a className='transition-opacity text-xs hover:opacity-70 inline-block h-fit-content items-center'>
+          Take me there
+          <FeatherIcon icon='arrow-up-right' className='w-4 h-4 ml-1 mb-1 inline-block' />
+        </a>
+      </Link>
+    </p>
+  </div>
+)

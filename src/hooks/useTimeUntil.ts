@@ -1,5 +1,5 @@
 import { getTimeBreakdown, msToS } from '@pooltogether/utilities'
-import { useInterval } from 'beautiful-react-hooks'
+import useInterval from 'beautiful-react-hooks/useInterval'
 import { useEffect, useState } from 'react'
 
 export const useTimeUntil = (_epochTimeSeconds: number = 0) => {
@@ -7,7 +7,6 @@ export const useTimeUntil = (_epochTimeSeconds: number = 0) => {
   const [secondsLeft, setSecondsLeft] = useState(getInitialSecondsLeft(epochTimeSeconds))
   const [timeBreakdown, setTimeBreakdown] = useState<{
     years: number
-    weeks: number
     days: number
     hours: number
     minutes: number

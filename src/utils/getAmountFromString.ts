@@ -16,7 +16,7 @@ const EMPTY_AMOUNT: Amount = {
  */
 export const getAmountFromString = (amount: string, decimals: string): Amount => {
   try {
-    if (!amount || amount === undefined) {
+    if (!amount || amount === undefined || !decimals || decimals === undefined) {
       return EMPTY_AMOUNT
     }
     return {

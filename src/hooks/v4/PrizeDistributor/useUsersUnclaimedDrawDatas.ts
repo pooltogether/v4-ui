@@ -1,4 +1,4 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
@@ -10,8 +10,8 @@ import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useValidDrawDatas } from './useValidDrawDatas'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 
-import { useLockedDrawIds } from './useLockedDrawIds'
 import { msToS } from '@pooltogether/utilities'
+import { useLockedDrawIds } from './useLockedDrawIds'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.
@@ -37,14 +37,15 @@ import { msToS } from '@pooltogether/utilities'
  */
 export const useUsersUnclaimedDrawDatas = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor
+  prizeDistributor: PrizeDistributor,
+  ticket: Token
 ) => {
   // Generic data
   const lockedDrawIds = useLockedDrawIds()
   const { isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
   // User specific data
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
   const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
     useUsersNormalizedBalances(usersAddress, prizeDistributor)
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(

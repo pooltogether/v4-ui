@@ -45,15 +45,23 @@ export const V4_CHAIN_IDS = Object.freeze({
 export const DEFAULT_PRIZE_POOLS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Object.freeze(
     V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].reduce(
-      (defaultPrizePools, chainId) =>
-        (defaultPrizePools[chainId] = V4_PRIZE_POOLS[APP_ENVIRONMENTS.mainnets][chainId]?.[0]),
+      (defaultPrizePools, chainId) => {
+        defaultPrizePools[chainId] = mainnet.contracts.find(
+          (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
+        ).address
+        return defaultPrizePools
+      },
       {} // Add overrides here and check if set above before setting the first address in the list
     )
   ),
   [APP_ENVIRONMENTS.testnets]: Object.freeze(
     V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets].reduce(
-      (defaultPrizePools, chainId) =>
-        (defaultPrizePools[chainId] = V4_PRIZE_POOLS[APP_ENVIRONMENTS.testnets][chainId]?.[0]),
+      (defaultPrizePools, chainId) => {
+        defaultPrizePools[chainId] = testnet.contracts.find(
+          (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
+        )
+        return defaultPrizePools
+      },
       {} // Add overrides here and check if set above before setting the first address in the list
     )
   )

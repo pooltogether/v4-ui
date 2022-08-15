@@ -1,6 +1,7 @@
 import { useConnectWallet } from '@pooltogether/wallet-connection'
 import { useConnect } from 'wagmi'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
+import { usePrizePools } from './v4/PrizePool/usePrizePools'
 
 /**
  * Initial fetches required, regardless of the page loaded.

@@ -4,7 +4,7 @@ import { InfoListItem } from '.'
 import { numberWithCommas } from '@pooltogether/utilities'
 
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 
 /**
@@ -20,7 +20,7 @@ export const TwabRewardsAprItem: React.FC<{
 
   const { t } = useTranslation()
 
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
 
   const promotionsQueryResults = useAllChainsFilteredPromotions()
   const isFetched = promotionsQueryResults.every((queryResult) => queryResult.isFetched)

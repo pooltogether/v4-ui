@@ -4,7 +4,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useRouter } from 'next/router'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
-import { useAllUsersV4BalancesWithFiat } from '@hooks/v4/PrizePool/useAllUsersV4BalancesWithFiat'
+import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -27,7 +27,7 @@ import { ExplorePrizePoolsModal } from './ExplorePrizePoolsModal'
 export const V4DepositList = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
-  const { data } = useAllUsersV4BalancesWithFiat(usersAddress)
+  const { data } = useAllUsersV4Balances(usersAddress)
 
   return (
     <div id='deposits'>
@@ -45,7 +45,7 @@ export const V4DepositList = () => {
 const DepositsList: React.FC = () => {
   const usersAddress = useUsersAddress()
   const [isOpen, setIsOpen] = useState(false)
-  const { data, isFetched, refetch } = useAllUsersV4BalancesWithFiat(usersAddress)
+  const { data, isFetched, refetch } = useAllUsersV4Balances(usersAddress)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
   const { setSelectedChainId } = useSelectedChainId()
 

@@ -41,9 +41,9 @@ export function CustomErrorBoundary(props) {
           }}
           beforeCapture={(scope) => {
             if (activeConnector?.name) {
-              scope.setTag('web3', activeConnector.name)
+              scope.setTag('web3', activeConnector?.name)
               scope.setContext('wallet', {
-                name: activeConnector.name
+                name: activeConnector?.name
               })
             }
           }}

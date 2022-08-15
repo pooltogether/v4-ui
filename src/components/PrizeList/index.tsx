@@ -18,7 +18,7 @@ interface PrizeListProps
   chainId: number
   drawData: DrawData
   drawResults: DrawResults
-  ticket: Token
+  prizeToken: Token
   token: Token
   drawIdsToNotClaim: Set<number>
   addDrawIdToClaim: (drawId: number) => void
@@ -28,7 +28,7 @@ interface PrizeListProps
 export const PrizeList = (props: PrizeListProps) => {
   const {
     drawResults,
-    ticket,
+    prizeToken,
     token,
     className,
     drawData,
@@ -63,7 +63,7 @@ export const PrizeList = (props: PrizeListProps) => {
             key={prize.pick.toString()}
             prize={prize}
             token={token}
-            ticket={ticket}
+            prizeToken={prizeToken}
             drawData={drawData}
           />
         ))}
@@ -78,15 +78,15 @@ const sortByPrizeAmountDesc = (a: PrizeAwardable, b: PrizeAwardable) =>
 interface PrizeRowProps {
   chainId: number
   prize: PrizeAwardable
-  ticket: Token
+  prizeToken: Token
   token: Token
   drawData: DrawData
 }
 
 const PrizeRow = (props: PrizeRowProps) => {
-  const { chainId, prize, ticket, drawData } = props
-  const { prizeDistribution } = drawData
-  const { tiers } = prizeDistribution
+  const { chainId, prize, prizeToken, drawData } = props
+  const { prizeConfig } = drawData
+  const { tiers } = prizeConfig
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()
@@ -94,7 +94,8 @@ const PrizeRow = (props: PrizeRowProps) => {
   const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
   const tierIndex = filteredTiers.indexOf(tiers[_tierIndex])
 
-  const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
+  const amount = roundPrizeAmount(amountUnformatted, prizeToken.decimals)
+  const amountPretty = amount.amountPretty
 
   return (
     <li
@@ -113,7 +114,7 @@ const PrizeRow = (props: PrizeRowProps) => {
       >
         <span className='flex items-center '>
           <span className='mr-2'>{amountPretty}</span>{' '}
-          <TokenSymbolAndIcon chainId={chainId} token={ticket} />
+          <TokenSymbolAndIcon chainId={chainId} token={prizeToken} />
         </span>
         <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')} 🏆`}</span>
       </div>

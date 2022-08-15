@@ -1,22 +1,21 @@
 import React from 'react'
 import classnames from 'classnames'
 import { Token } from '@pooltogether/hooks'
-import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
+import { calculate, PrizeConfig } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'react-i18next'
 
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 
 interface PrizeBreakdownProps {
-  prizeTier: PrizeTier
-  ticket: Token
+  prizeConfig: PrizeConfig
+  prizeToken: Token
   className?: string
-  isFetched?: boolean
 }
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { prizeTier, className, ticket, isFetched } = props
-  const { tiers } = prizeTier
+  const { prizeConfig, className, prizeToken } = props
+  const tiers = prizeConfig?.tiers
   const { t } = useTranslation()
 
   return (
@@ -26,7 +25,7 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
         <PrizeTableHeader>{t('projectedPrizes', 'Prizes (Projected)')}</PrizeTableHeader>
       </div>
       <div className='flex flex-col space-y-2'>
-        {!isFetched ? (
+        {!prizeConfig || !prizeToken ? (
           Array.from(Array(3)).map((_, i) => <LoadingPrizeRow key={`loading-row-${i}`} />)
         ) : (
           <>
@@ -34,8 +33,8 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
               <PrizeBreakdownTableRow
                 key={`distribution_row_${i}`}
                 index={i}
-                prizeTier={prizeTier}
-                ticket={ticket}
+                prizeConfig={prizeConfig}
+                prizeToken={prizeToken}
               />
             ))}
           </>
@@ -64,23 +63,23 @@ const PrizeTableHeader = (
 )
 
 interface PrizeBreakdownTableRowProps {
-  prizeTier: PrizeTier
+  prizeConfig: PrizeConfig
   index: number
-  ticket: Token
+  prizeToken: Token
 }
 
 // Calculate prize w draw settings
 const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
-  const { index, prizeTier, ticket } = props
+  const { index, prizeConfig, prizeToken } = props
 
   const prizeForDistributionUnformatted = calculate.calculatePrizeForTierPercentage(
     index,
-    prizeTier.tiers[index],
-    prizeTier.bitRangeSize,
-    prizeTier.prize
+    prizeConfig.tiers[index],
+    prizeConfig.bitRangeSize,
+    prizeConfig.prize
   )
   const numberOfWinners = calculate.calculateNumberOfPrizesForTierIndex(
-    prizeTier.bitRangeSize,
+    prizeConfig.bitRangeSize,
     index
   )
 
@@ -91,12 +90,12 @@ const PrizeBreakdownTableRow = (props: PrizeBreakdownTableRowProps) => {
 
   const amountPretty = roundPrizeAmount(
     prizeForDistributionUnformatted,
-    ticket.decimals
+    prizeToken.decimals
   ).amountPretty
 
   return (
     <div className='flex flex-row justify-between space-x-2 sm:space-x-4'>
-      <PrizeTableCell index={index}>${amountPretty}</PrizeTableCell>
+      <PrizeTableCell index={index}>{`${amountPretty} ${prizeToken.symbol}`}</PrizeTableCell>
       <PrizeTableCell index={index}>{numberOfWinners}</PrizeTableCell>
     </div>
   )

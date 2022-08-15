@@ -6,8 +6,8 @@ import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { useV4ChainIds } from '@hooks/useV4ChainIds'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
+import { useV4ChainIds } from '@hooks/v4/useV4ChainIds'
 
 interface SelectAppChainIdModalProps {
   className?: string

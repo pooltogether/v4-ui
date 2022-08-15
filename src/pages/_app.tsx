@@ -17,7 +17,7 @@ import {
   initProviderApiKeys as initProviderApiKeysForHooks
 } from '@pooltogether/hooks'
 import { ThemeContext, ThemeContextProvider } from '@pooltogether/react-components'
-import { Flip, ToastContainer, ToastContainerProps } from 'react-toastify'
+import { Slide, ToastContainer, ToastContainerProps } from 'react-toastify'
 
 import type { AppProps } from 'next/app'
 
@@ -45,7 +45,6 @@ import {
   initProviderApiKeys as initProviderApiKeysForWalletConnection
 } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
-import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient({
@@ -93,7 +92,6 @@ const connectors = ({ chainId }) => {
     new InjectedConnector({ chains, options: {} })
   ]
 }
-
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
@@ -168,7 +166,7 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
   // These hooks doesn't quite fit here, it needs to be nested below Jotai though.
   useUpdateStoredPendingTransactions()
-  useSelectedChainIdWatcher()
+  // TODO: wat? useSelectedChainIdWatcher()
 
   const { theme } = useContext(ThemeContext)
   const screenSize = useScreenSize()
@@ -180,7 +178,7 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
       position={screenSize > ScreenSize.sm ? 'bottom-right' : 'top-center'}
       autoClose={7000}
       theme={theme}
-      transition={Flip}
+      transition={Slide}
       closeOnClick={false}
     />
   )

@@ -4,7 +4,7 @@ The user interface for interacting with V4 of the PoolTogether prize-savings pro
 
 ## 💾 &nbsp; Installation
 
-Install dependencies:
+Install dependencies: 
 
 ```bash
 $ yarn

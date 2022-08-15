@@ -6,7 +6,7 @@ import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { TotalWinnings } from './TotalWinnings'
+import { TotalWinningsCard } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { unionProbabilities } from '@utils/unionProbabilities'
@@ -19,12 +19,7 @@ export const AccountCard: React.FC<{
 }> = (props) => {
   const { showAddress, usersAddress, className } = props
   return (
-    <div
-      className={classNames(
-        'flex flex-col p-4 pink-purple-gradient rounded-lg space-y-2',
-        className
-      )}
-    >
+    <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
       <div className='flex justify-between p-4'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
         <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
@@ -33,7 +28,7 @@ export const AccountCard: React.FC<{
         <DailyOdds usersAddress={usersAddress} />
         <WeeklyOdds usersAddress={usersAddress} />
       </div>
-      <TotalWinnings usersAddress={usersAddress} />
+      <TotalWinningsCard />
     </div>
   )
 }
@@ -45,11 +40,7 @@ const TotalBalance: React.FC<{
 }> = (props) => {
   const { showAddress, usersAddress, className } = props
   const { t } = useTranslation()
-  const {
-    data: balancesData,
-    isFullyFetched,
-    isStillFetching
-  } = useUsersTotalBalances(usersAddress)
+  const { isStillFetching } = useUsersTotalBalances(usersAddress)
   return (
     <a href='#deposits' className={className}>
       {showAddress && (
@@ -58,11 +49,7 @@ const TotalBalance: React.FC<{
 
       <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
-        <TotalBalanceAmount
-          isFetched={isFullyFetched}
-          totalBalanceUsd={balancesData.totalBalanceUsd}
-          totalV4Balance={balancesData.totalV4Balance}
-        />
+        <TotalBalanceAmount usersAddress={usersAddress} />
         {isStillFetching ? (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 my-auto' />
         ) : (
@@ -73,28 +60,25 @@ const TotalBalance: React.FC<{
   )
 }
 
-const TotalBalanceAmount = (props: {
-  totalBalanceUsd: Amount
-  totalV4Balance: number
-  isFetched: boolean
-}) => {
-  const { totalBalanceUsd, totalV4Balance, isFetched } = props
+export const TotalBalanceAmount: React.FC<{ usersAddress: string }> = (props) => {
+  const { usersAddress } = props
+  const { data: balancesData, isFullyFetched } = useUsersTotalBalances(usersAddress)
+
   // If not fetched
   // If no token price or balance
-  // If token price
   if (
-    !isFetched ||
-    !totalBalanceUsd.amountUnformatted.isZero() ||
-    (totalBalanceUsd.amountUnformatted.isZero() && !totalV4Balance)
+    !isFullyFetched ||
+    !balancesData?.totalBalanceUsd.amountUnformatted.isZero() ||
+    (balancesData?.totalBalanceUsd.amountUnformatted.isZero() && !balancesData?.totalV4Balance)
   ) {
     return (
       <>
-        $<CountUp countTo={Number(totalBalanceUsd.amount)} />
+        $<CountUp countTo={Number(balancesData?.totalBalanceUsd.amount)} />
       </>
     )
   }
 
-  return <CountUp countTo={Number(totalV4Balance)} />
+  return <CountUp countTo={Number(balancesData?.totalV4Balance)} />
 }
 
 const DailyOdds: React.FC<{ usersAddress: string }> = (props) => (

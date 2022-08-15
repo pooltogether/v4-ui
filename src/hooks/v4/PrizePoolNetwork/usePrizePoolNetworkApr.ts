@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
-import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '../PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -12,7 +12,7 @@ import { calculateApr } from '@pooltogether/utilities'
  * @returns
  */
 export const usePrizePoolNetworkApr = () => {
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   const { data: prizeTierData, isFetched: isPrizeConfigFetched } = useUpcomingPrizeTier(prizePool)
   const { data: tokenData, isFetched: isTokenDataFetched } = usePrizePoolTokens(prizePool)
   const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =

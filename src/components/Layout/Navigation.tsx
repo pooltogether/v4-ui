@@ -35,15 +35,15 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
         className,
         'z-10',
         'flex flex-row justify-center',
-        'w-full pointer-events-none',
-        'fixed bottom-3 top-auto sm:bottom-auto sm:top-2 inset-x-0'
+        'pointer-events-none',
+        'fixed bottom-3 top-auto xs:bottom-auto xs:top-1 sm:top-4 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0'
       )}
     >
       <nav
         className={classNames(
           className,
           'flex flex-row space-x-4 pointer-events-auto py-2 px-5',
-          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-xl p-1 backdrop-filter backdrop-blur-sm',
+          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-xl p-1 backdrop-filter backdrop-blur-sm xs:backdrop-blur-none',
           'rounded-full'
         )}
       >

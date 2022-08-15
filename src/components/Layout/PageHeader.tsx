@@ -1,9 +1,8 @@
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
-import Link from 'next/link'
 import {
   LanguagePickerDropdown,
-  PageHeaderContainer,
+  HidingPageHeaderContainer,
   SettingsContainer,
   SettingsItem,
   TestnetSettingsItem,
@@ -26,18 +25,16 @@ import { getSupportedChains } from '@utils/getSupportedChains'
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer
-      Link={Link}
-      as='/deposit'
+    <HidingPageHeaderContainer
       href='/deposit'
-      className='backdrop-filter backdrop-blur-xl'
+      className='backdrop-filter backdrop-blur-xl w-full sticky top-0'
     >
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />
         <Settings />
       </div>
-    </PageHeaderContainer>
+    </HidingPageHeaderContainer>
   )
 }
 

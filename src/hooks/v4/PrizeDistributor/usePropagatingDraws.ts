@@ -1,8 +1,8 @@
-import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
-import { useAllPartialDrawDatas } from './useAllPartialDrawDatas'
+import { Draw, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
+import { useAllDrawDatas } from './useAllDrawDatas'
 
-export const usePropagatingDraws = (prizeDistributor: PrizeDistributor) => {
-  const { data: drawDatas, isFetched } = useAllPartialDrawDatas(prizeDistributor)
+export const usePropagatingDraws = (prizeDistributor: PrizeDistributorV2) => {
+  const { data: drawDatas, isFetched } = useAllDrawDatas(prizeDistributor)
 
   if (!isFetched) {
     return {

@@ -3,6 +3,7 @@ import { atom, useAtom } from 'jotai'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { DEFAULT_PRIZE_POOLS, V4_PRIZE_POOLS } from '@constants/config'
 import { getInitialSelectedChainId } from './useSelectedChainId'
+import { getAppEnv } from '@utils/getAppEnv'
 
 const parseUrlPrizePoolAddress = () => {
   const url = new URL(window.location.href)
@@ -25,7 +26,7 @@ const parseUrlPrizePoolAddress = () => {
  */
 const getInitialSelectedPrizePoolAddress = () => {
   const chainId = getInitialSelectedChainId()
-  const defaultPrizePoolAddress = DEFAULT_PRIZE_POOLS[chainId]
+  const defaultPrizePoolAddress = DEFAULT_PRIZE_POOLS[getAppEnv()][chainId]
 
   if (typeof window === 'undefined') return defaultPrizePoolAddress
 
