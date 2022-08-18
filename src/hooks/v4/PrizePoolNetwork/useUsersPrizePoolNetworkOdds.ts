@@ -1,10 +1,9 @@
 import { BigNumber } from 'ethers'
 import { EstimateAction } from '../../../constants/odds'
-import { useQuery } from 'react-query'
 
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
-import { unionProbabilities } from '@utils/unionProbabilities'
-import { usePrizePoolNetwork } from './usePrizePoolNetwork'
+import { useMemo } from 'react'
+import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'
 
 /**
  * Calculates the users overall chances of winning a prize on any network
@@ -21,32 +20,10 @@ export const useUsersPrizePoolNetworkOdds = (
     }
   } = {}
 ) => {
-  const prizePoolNetwork = usePrizePoolNetwork()
   const queryResults = useAllUsersPrizePoolOdds(usersAddress, actions)
-  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-
-  return useQuery(
-    [
-      'useUsersPrizePoolNetworkOdds',
-      prizePoolNetwork?.id(),
-      usersAddress,
-      queryResults.map((queryResult) => queryResult.data?.odds).join('-'),
-      Object.keys(actions)?.join('-'),
-      Object.values(actions)
-        ?.map(({ action, actionAmountUnformatted }) => action + actionAmountUnformatted?.toString())
-        .join('-')
-    ],
-    () => {
-      const odds = unionProbabilities(...queryResults.map((queryResult) => queryResult.data.odds))
-      const oneOverOdds = 1 / odds
-
-      return {
-        prizePoolNetworkId: prizePoolNetwork.id(),
-        usersAddress,
-        odds,
-        oneOverOdds
-      }
-    },
-    { enabled: isFetched }
+  const allOddsData = useMemo(
+    () => queryResults.filter(({ isFetched }) => isFetched).map(({ data }) => data),
+    [queryResults]
   )
+  return usePrizePoolNetworkOdds(allOddsData, actions)
 }

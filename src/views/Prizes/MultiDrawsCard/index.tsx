@@ -31,9 +31,9 @@ import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorag
 import { useAtom } from 'jotai'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
-import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 import { VideoClip } from './PrizeVideoBackground'
 import { PrizeAnimationCard } from './PrizeAnimationCard'
+import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor

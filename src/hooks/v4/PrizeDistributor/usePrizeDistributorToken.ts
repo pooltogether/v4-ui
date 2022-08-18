@@ -11,7 +11,7 @@ export const usePrizeDistributorToken = (prizeDistributor: PrizeDistributor) => 
 }
 
 export const getPrizeDistributorToken = async (
-  prizeDistributor: PrizeDistributorV2
+  prizeDistributor: PrizeDistributor
 ): Promise<{
   prizeDistributorId: string
   token: Token

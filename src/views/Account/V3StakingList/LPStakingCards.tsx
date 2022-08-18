@@ -84,6 +84,7 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
       tokenLabel={`${lpPrizePoolMetadata.tokens.underlyingToken.pair} ${lpPrizePoolMetadata.tokens.underlyingToken.symbol}`}
       tokenIcon={
         <LPTokenIcon
+          className='flex'
           chainId={chainId}
           sizeClassName='w-6 h-6'
           token1Address={lpPrizePoolMetadata.tokens.underlyingToken.token1.address}
@@ -95,7 +96,6 @@ const LPStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => vo
       tokenFaucetRewards={tokenFaucetRewards}
       isTokenFaucetRewardsFetched={isTokenFaucetRewardsFetched}
       isTokenFaucetDataFetched={isTokenFaucetDataFetched}
-      poolEmoji={'💎'}
       colorFrom={'#eC2BB8'}
       colorTo={'#EA69D6'}
       depositPrompt={t('lpDepositDescription')}

@@ -28,8 +28,11 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
       <AccountListItem
         onClick={() => setIsOpen(true)}
         left={
-          <span className='font-bold text-lg'>
-            {'🎁 ' + t('totalDelegatedToYou', 'Total delegated to you')}
+          <span className='flex items-center font-bold space-x-2 text-left'>
+            <span>{'🎁 '}</span>
+            <span className='leading-none'>
+              {t('totalDelegatedToYou', 'Total delegated to you')}
+            </span>
           </span>
         }
         right={

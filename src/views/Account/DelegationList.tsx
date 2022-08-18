@@ -26,8 +26,8 @@ export const DelegationList = () => {
           delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero() &&
           delegatedToData.delegatedAmount.amountUnformatted.isZero() && (
             <p className='opacity-70 text-xs'>
-              Delegations let you share chances to win!
-              <ExternalLink href='https://tools.pooltogether.com/delegate' className='ml-1'>
+              Delegations let you share chances to win!{' '}
+              <ExternalLink href='https://tools.pooltogether.com/delegate'>
                 Check it out
               </ExternalLink>
             </p>

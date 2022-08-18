@@ -15,6 +15,7 @@ import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
 import { PastDrawsList } from './PastDrawsList'
 import { RewardsCard } from '@views/Account/Rewards/RewardsCard'
+import { CardTitle } from '@components/Text/CardTitle'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -33,12 +34,8 @@ export const PrizesUI = () => {
 
   if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (
-      <PagePadding className='flex flex-col'>
-        <CheckForPrizesOnNetwork
-          prizePool={prizePool}
-          prizeDistributor={prizeDistributor}
-          className='mb-3'
-        />
+      <PagePadding className='flex flex-col space-y-4'>
+        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
         <LoadingCard />
       </PagePadding>
     )
@@ -46,17 +43,15 @@ export const PrizesUI = () => {
 
   if (!usersAddress) {
     return (
-      <PagePadding className='flex flex-col'>
-        <CheckForPrizesOnNetwork
-          prizePool={prizePool}
-          prizeDistributor={prizeDistributor}
-          className='mb-3'
-        />
-        <LockedDrawsCard
-          prizeDistributor={prizeDistributor}
-          token={prizePoolTokens?.token}
-          ticket={prizePoolTokens?.ticket}
-        />
+      <PagePadding className='flex flex-col space-y-8'>
+        <div className='flex flex-col space-y-4'>
+          <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+          <LockedDrawsCard
+            prizeDistributor={prizeDistributor}
+            token={prizePoolTokens?.token}
+            ticket={prizePoolTokens?.ticket}
+          />
+        </div>
         <RewardsCard />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
@@ -65,15 +60,13 @@ export const PrizesUI = () => {
 
   return (
     <>
-      <PagePadding className='flex flex-col'>
-        <CheckForPrizesOnNetwork
-          prizePool={prizePool}
-          prizeDistributor={prizeDistributor}
-          className='mb-3'
-        />
-        <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
+      <PagePadding className='flex flex-col space-y-8'>
+        <div className='flex flex-col space-y-4'>
+          <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+          <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
+        </div>
         <RewardsCard />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
+        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
       </PagePadding>
     </>
   )
@@ -87,15 +80,10 @@ const CheckForPrizesOnNetwork = (props: {
   const { t } = useTranslation()
   return (
     <div
-      className={classNames(
-        'font-semibold flex items-center justify-center text-xs xs:text-sm',
-        className
-      )}
+      className={classNames('font-semibold flex flex-col space-y-2 text-xs xs:text-sm', className)}
     >
-      <span className='uppercase text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
-        {t('prizesOn', 'Prizes on')}
-      </span>
-      <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
+      <CardTitle title='Prizes for Prize Pool' />
+      <SelectAppChainIdModal className='network-dropdown' />
     </div>
   )
 }

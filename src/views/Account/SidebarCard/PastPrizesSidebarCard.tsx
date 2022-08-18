@@ -1,14 +1,15 @@
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useState } from 'react'
-import { TotalWinningsAmount, TotalWinningsSheet } from './AccountCard/TotalWinnings'
-import { SidebarCard } from './SidebarCard'
+import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWinnings'
+import { SidebarCard } from '.'
 
-export const PastPrizesSidebarCard = () => {
+export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
+  const { usersAddress } = props
   const [isOpen, setIsOpen] = useState(false)
-
-  const usersAddress = useUsersAddress()
   const { isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
+
+  if (!usersAddress) return null
 
   return (
     <>

@@ -12,7 +12,8 @@ export const BrowsePrizePoolsHeader: React.FC<{ className?: string }> = (props) 
     <div className={classNames(className)}>
       <div className='flex justify-between mb-2 items-center'>
         <div className='font-bold text-xl'>Browse prize pools</div>
-        <select
+        {/* TODO: Add back the network filter later */}
+        {/* <select
           name='prizePoolNetwork'
           id='prizePoolNetwork'
           className={classNames(
@@ -25,7 +26,7 @@ export const BrowsePrizePoolsHeader: React.FC<{ className?: string }> = (props) 
               {getNetworkNiceNameByChainId(chainId)}
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
       <div className='opacity-50'>
         Join any prize pool for a chance to win prizes daily! I know, it sounds crazy.

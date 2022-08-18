@@ -1,12 +1,11 @@
-import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
-import { useEffect, useState } from 'react'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { useEffect, useMemo, useState } from 'react'
 
 import { getStoredDrawResults } from '@utils/drawResultsStorage'
 import { useUnclaimedDrawIds } from './useUnclaimedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
-import { useUsersPickCounts } from './useUsersPickCounts'
+import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTicket'
 
 /**
  * TODO: useState, set once data is loaded on mount, check if it is set, if it is, don't overwrite.
@@ -15,7 +14,7 @@ import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTic
  */
 export const useHasUserCheckedAllDraws = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2
+  prizeDistributor: PrizeDistributor
 ) => {
   const { chainId } = useSelectedChainId()
   const [hasUserCheckedAllDraws, setHasUserCheckedAllDraws] = useState(null)
@@ -27,24 +26,20 @@ export const useHasUserCheckedAllDraws = (
     usersAddress,
     prizeDistributor
   )
-  const { data: ticket } = useSelectedPrizePoolTicket()
-  const { data: pickCountsData, isFetched: isPickCountsFetched } = useUsersPickCounts(
-    usersAddress,
-    ticket?.address,
-    prizeDistributor
-  )
+  const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
+    useUsersNormalizedBalances(usersAddress, prizeDistributor)
 
   const claimedAmounts = claimedAmountsData?.claimedAmounts
-  const pickCounts = pickCountsData?.pickCounts
+  const normalizedBalances = normalizedBalancesData?.normalizedBalances
 
   const isDataFetched =
     usersAddress &&
     isDrawIdsFetched &&
     isClaimedAmountsFetched &&
-    isPickCountsFetched &&
+    isNormalizedBalancesFetched &&
     Boolean(prizeDistributor) &&
     usersAddress === claimedAmountsData?.usersAddress &&
-    usersAddress === pickCountsData?.usersAddress
+    usersAddress === normalizedBalancesData?.usersAddress
 
   // Clear state when chain id or users address updates
   useEffect(() => {
@@ -65,10 +60,10 @@ export const useHasUserCheckedAllDraws = (
       })
       const checkedDrawIds = Object.keys(drawResults).map(Number)
       const drawIdsWithoutANormalizedBalance: number[] = []
-      Object.keys(pickCounts)
+      Object.keys(normalizedBalances)
         .map(Number)
         .forEach((drawId) => {
-          if (pickCounts[drawId].isZero()) {
+          if (normalizedBalances[drawId].isZero()) {
             drawIdsWithoutANormalizedBalance.push(drawId)
           }
         })

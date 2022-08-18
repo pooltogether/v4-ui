@@ -20,6 +20,7 @@ import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
 import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
+import { CardTitle } from '@components/Text/CardTitle'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -53,22 +54,22 @@ export const PastDrawsList = (props: {
     (usersAddress && !isDataForCurrentUser)
   ) {
     return (
-      <>
-        <PastDrawsListHeader className={classNames(className, 'mb-1')} />
+      <div className='flex flex-col space-x-2'>
+        <CardTitle title={t('pastDraws', 'Past draws')} />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
           <LoadingRow />
         </ul>
-      </>
+      </div>
     )
   }
 
   const drawDatasList = Object.values(drawDatas).reverse()
 
   return (
-    <>
-      <PastDrawsListHeader className={classNames(className, 'mb-1')} />
+    <div className='flex flex-col space-y-2'>
+      <CardTitle title={t('pastDraws', 'Past draws')} />
       {drawDatasList.length === 0 && (
         <Card>
           <div className='opacity-70 text-center w-full'>
@@ -93,7 +94,7 @@ export const PastDrawsList = (props: {
           )
         })}
       </ul>
-    </>
+    </div>
   )
 }
 
@@ -301,11 +302,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
 
 const PastDrawsListHeader = (props: { className?: string }) => {
   const { t } = useTranslation()
-  return (
-    <div className={classNames(props.className, 'pt-4 pb-2')}>
-      <span className='font-semibold text-accent-1 text-lg'>{t('pastDraws', 'Past draws')}</span>
-    </div>
-  )
+  return <div className={classNames(props.className, 'pt-4 pb-2')}></div>
 }
 
 const LoadingRow = () => <div className='w-full rounded-lg animate-pulse bg-card h-24' />

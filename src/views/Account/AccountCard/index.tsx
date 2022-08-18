@@ -20,15 +20,15 @@ export const AccountCard: React.FC<{
   const { showAddress, usersAddress, className } = props
   return (
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
-      <div className='flex justify-between p-4'>
+      <div className='flex justify-between p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
-        <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
+        <img src={WalletIllustration} className='w-16 xs:w-20' />
       </div>
-      <div className='flex space-x-2'>
+      <div className='flex sm:hidden space-x-2'>
         <DailyOdds usersAddress={usersAddress} />
         <WeeklyOdds usersAddress={usersAddress} />
       </div>
-      <TotalWinningsCard />
+      <TotalWinningsCard className='block sm:hidden' />
     </div>
   )
 }
@@ -47,7 +47,7 @@ const TotalBalance: React.FC<{
         <span className='font-semibold text-xs mr-1'>{shorten({ hash: usersAddress }) + `'s`}</span>
       )}
 
-      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='font-semibold text-xs'>{t('totalBalance', 'Total balance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount usersAddress={usersAddress} />
         {isStillFetching ? (
@@ -114,9 +114,9 @@ const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: n
     return (
       <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <span className='font-bold flex text-lg mx-auto'>
-          {daysOfPrizes === 1 ? '0 😔' : t('stillZero', 'Still 0')}
+          {daysOfPrizes === 1 ? '0 😔' : '0 😭'}
         </span>
-        <span className='mt-1 opacity-50 font-bold uppercase'>{t(i18nKey)}*</span>
+        <span className='mt-1 opacity-50 font-bold'>{t(i18nKey)}*</span>
       </div>
     )
   }

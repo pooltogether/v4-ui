@@ -9,68 +9,26 @@ import { ExplorePrizePoolsView } from '@components/ModalViews/ExplorePrizePoolsV
 import { DepositView } from '@views/Deposit/DepositModal/DepositView'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Router, useRouter } from 'next/router'
 
 export enum ViewIds {
-  explore,
-  deposit,
-  depositReview,
-  walletConnection
+  explore
 }
 
 export const ExplorePrizePoolsModal: React.FC<{
   isOpen: boolean
   closeModal: () => void
+  onPrizePoolSelect?: (prizePool: PrizePool) => void
 }> = (props) => {
-  const { isOpen, closeModal: _closeModal } = props
+  const { isOpen, closeModal, onPrizePoolSelect } = props
   const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.explore)
-  const [depositAmount, setDepositAmount] = useState<Amount>()
-  const { chainId } = useSelectedChainId()
-  const { data: tokenData } = useSelectedPrizePoolTokens()
-  const [depositTransactionId, setDepositTransactionId] = useState('')
-  const depositTransaction = useTransaction(depositTransactionId)
-
-  /**
-   * Submit the transaction to deposit and store the transaction id in state
-   */
-  const sendDepositransaction = useSendDepositTransaction(depositAmount)
-
-  const closeModal = useCallback(() => {
-    if (depositTransaction?.state === TransactionState.complete) {
-      setDepositTransactionId('')
-    }
-    setSelectedViewId(ViewIds.explore)
-    _closeModal()
-  }, [depositTransaction?.state])
 
   const views: ModalWithViewStateView[] = [
     {
       id: ViewIds.explore,
       view: ExplorePrizePoolsView,
-      title: 'Select a prize pool',
-      nextViewId: ViewIds.deposit,
-      hideNextNavButton: true
-    },
-    {
-      id: ViewIds.deposit,
-      view: DepositView,
-      title: 'Deposit in a Prize Pool',
-      previousViewId: ViewIds.explore,
-      onCloseViewId: ViewIds.explore
-    },
-    {
-      id: ViewIds.depositReview,
-      view: DepositReviewView,
-      title: 'Deposit review',
-      previousViewId: ViewIds.deposit,
-      onCloseViewId: ViewIds.explore
-    },
-    {
-      id: ViewIds.walletConnection,
-      view: WalletConnectionView,
-      previousViewId: ViewIds.deposit,
-      title: 'Connect a wallet',
-      bgClassName: 'bg-new-modal',
-      onCloseViewId: ViewIds.explore
+      title: 'Select a prize pool'
     }
   ]
 
@@ -85,19 +43,10 @@ export const ExplorePrizePoolsModal: React.FC<{
       selectedViewId={selectedViewId}
       setSelectedViewId={setSelectedViewId}
       // View props
-      // BridgeTokensModalView
-      chainId={chainId}
-      // TODO: This is needed pretty much everywhere...
-      // WalletConnectionModalView
-      onWalletConnected={() => setSelectedViewId(ViewIds.deposit)}
-      // DepositView
-      token={tokenData?.token}
-      depositTransaction={depositTransaction}
-      setDepositAmount={setDepositAmount}
-      clearDepositTransaction={() => setDepositTransactionId('')}
-      // DepositReviewView
-      depositAmount={depositAmount}
-      sendDepositransaction={() => setDepositTransactionId(sendDepositransaction())}
+      onPrizePoolSelect={(prizePool: PrizePool) => {
+        closeModal()
+        onPrizePoolSelect?.(prizePool)
+      }}
     />
   )
 }

@@ -8,7 +8,6 @@ import { TransactionState, useTransaction } from '@pooltogether/wallet-connectio
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useSendTransaction } from '@hooks/useSendTransaction'
@@ -19,7 +18,10 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
-import { DepositCardBottomLinks } from '../../DepositCardBottomLinks'
+import { DepositCardBottomLinks } from '../DepositCardBottomLinks'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { PrizePoolSelectionDropdown } from './PrizePoolSelectionDropdown'
+import classNames from 'classnames'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
@@ -203,13 +205,8 @@ export const DepositCard = (props: { className?: string }) => {
 
   return (
     <>
-      <div className={className}>
-        <div className='font-semibold uppercase flex items-center justify-center text-xs xs:text-sm mb-2 mt-4'>
-          <span className='text-pt-purple-dark text-opacity-60 dark:text-pt-purple-lighter'>
-            {t('depositOn', 'Deposit on')}
-          </span>
-          <SelectAppChainIdModal className='network-dropdown ml-1 xs:ml-2' />
-        </div>
+      <div className={classNames(className, 'flex flex-col space-y-4')}>
+        <PrizePoolSelectionDropdown />
         <DepositForm
           form={form}
           prizePool={prizePool}

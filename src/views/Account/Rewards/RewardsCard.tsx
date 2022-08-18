@@ -79,7 +79,7 @@ export const RewardsCard = () => {
   }
 
   return (
-    <div className='flex flex-col space-y-2'>
+    <div className='flex flex-col space-y-2' id='rewards'>
       <CardTitle title={t('rewards')} loading={!isFetched} />
 
       {!isFetched && (

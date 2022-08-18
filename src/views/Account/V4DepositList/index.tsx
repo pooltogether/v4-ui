@@ -63,8 +63,7 @@ const DepositsList: React.FC = () => {
             {...balances}
             refetchBalances={refetch}
             onClick={() => {
-              setSelectedPrizePoolAddress(balances.prizePool.address)
-              setSelectedChainId(balances.prizePool.chainId)
+              setSelectedPrizePoolAddress(balances.prizePool)
               setIsOpen(true)
             }}
           />
@@ -150,13 +149,18 @@ const getDelegateAddress = (
 
 const ExplorePrizePools = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
 
   return (
     <>
       <AccentTextButton className='ml-4 mt-8' onClick={() => setIsOpen(true)}>
         Explore Prize Pools
       </AccentTextButton>
-      <ExplorePrizePoolsModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
+      <ExplorePrizePoolsModal
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        onPrizePoolSelect={() => router.push('/deposit')}
+      />
     </>
   )
 }

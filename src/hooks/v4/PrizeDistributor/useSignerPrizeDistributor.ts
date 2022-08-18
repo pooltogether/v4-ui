@@ -1,4 +1,4 @@
-import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import {
   useUsersAddress,
   useIsWalletConnected,
@@ -8,11 +8,11 @@ import { useMemo } from 'react'
 import { useSigner } from 'wagmi'
 
 /**
- * Returns a PrizeDistributorV2 built with a Signer from the users wallet
+ * Returns a PrizeDistributor built with a Signer from the users wallet
  * @param prizeDistributor
  * @returns
  */
-export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributorV2) => {
+export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributor) => {
   const isWalletConnected = useIsWalletConnected()
   const usersAddress = useUsersAddress()
   const { data: signer } = useSigner()
@@ -22,7 +22,7 @@ export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributorV2) 
     const enabled =
       isWalletConnected && !!signer && Boolean(usersAddress) && Boolean(prizeDistributor)
     if (!enabled) return null
-    return new PrizeDistributorV2(
+    return new PrizeDistributor(
       prizeDistributor.prizeDistributorMetadata,
       signer,
       prizeDistributor.contractMetadataList

@@ -13,7 +13,7 @@ import {
   NetworkIcon,
   SettingsModal
 } from '@pooltogether/react-components'
-import { NetworkSelectionList } from '@pooltogether/wallet-connection'
+import { NetworkSelectionList, useWalletChainId } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
 
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
@@ -39,9 +39,11 @@ export const PageHeader = (props) => {
 }
 
 const Settings = () => {
-  const { t } = useTranslation()
+  const { t, i18n: i18next } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const chains = getSupportedChains()
+  const walletChainId = useWalletChainId()
+  const [currentLang, setCurrentLang] = useState(i18next.language)
 
   return (
     <>
@@ -54,8 +56,15 @@ const Settings = () => {
       <SettingsModal
         t={t}
         isOpen={isOpen}
+        walletChainId={walletChainId}
         closeModal={() => setIsOpen(false)}
-        networkView={() => <NetworkSelectionList chains={chains} />}
+        networkView={() => <NetworkView />}
+        langs={SUPPORTED_LANGUAGES}
+        currentLang={currentLang}
+        changeLang={(newLang) => {
+          setCurrentLang(newLang)
+          i18next.changeLanguage(newLang)
+        }}
       />
     </>
   )
@@ -75,6 +84,20 @@ const Settings = () => {
         </div>
       </div>
     </SettingsContainer>
+  )
+}
+
+const NetworkView = () => {
+  const chains = getSupportedChains()
+  const { t } = useTranslation()
+  return (
+    <>
+      <p className='mb-3 text-center'>
+        Selecting a network will prompt you to switch to the network selected in your wallet.
+      </p>
+      <NetworkSelectionList chains={chains} />
+      <NetworkSelectionCurrentlySelected t={t} />
+    </>
   )
 }
 

@@ -48,7 +48,7 @@ export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
         <div className='flex justify-between w-full'>
           <span>
             <span className='mr-1'>{'🎉 '}</span>
-            {t('totalClaimedWinningsExclamation', 'Total claimed winnings!')}
+            {t('claimedWinningsExclamation', 'Claimed winnings!')}
           </span>
           <div className='flex'>
             <TotalWinningsAmount className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3' />

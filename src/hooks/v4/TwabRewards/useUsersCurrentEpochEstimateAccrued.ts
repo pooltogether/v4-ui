@@ -30,7 +30,7 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
       return undefined
     }
     const users = formatUnits(twabData.twab.amountUnformatted, depositTokenDecimals)
-    const total = formatUnits(totalTwabSupply, depositTokenDecimals)
+    const total = formatUnits(totalTwabSupply.amountUnformatted, depositTokenDecimals)
 
     const usersChainTwabPercentage = parseFloat(users) / parseFloat(total)
 

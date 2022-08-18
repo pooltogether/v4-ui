@@ -166,7 +166,6 @@ function MyApp({ Component, pageProps, router }: AppProps) {
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
   // These hooks doesn't quite fit here, it needs to be nested below Jotai though.
   useUpdateStoredPendingTransactions()
-  // TODO: wat? useSelectedChainIdWatcher()
 
   const { theme } = useContext(ThemeContext)
   const screenSize = useScreenSize()

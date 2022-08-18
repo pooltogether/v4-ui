@@ -8,6 +8,13 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
 import { useV4ChainIds } from '@hooks/v4/useV4ChainIds'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
+import { PrizePoolCard } from './PrizePoolCard'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { PrizePoolLabel, PrizePoolLabelFlat } from './PrizePoolLabel'
+import { ExplorePrizePoolsModal } from '@views/Account/V4DepositList/ExplorePrizePoolsModal'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -16,11 +23,13 @@ interface SelectAppChainIdModalProps {
 export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
   const { className } = props
 
+  const selectedPrizePool = useSelectedPrizePool()
+  const prizePools = usePrizePools()
+
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
-  const supportedChainIds = useV4ChainIds()
-  const { chainId: selectedChainId, setSelectedChainId } = useSelectedChainId()
+  const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
   return (
     <>
@@ -28,32 +37,50 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
         onClick={() => setIsOpen(true)}
         className={classNames(
           className,
-          'bg-tertiary rounded-lg py-2 px-3 flex items-center',
+          'bg-tertiary rounded-lg py-2 px-3 flex justify-between items-center text-left',
           'border border-transparent hover:border-highlight-1'
         )}
       >
-        <NetworkIcon chainId={selectedChainId} className='mx-1' sizeClassName='w-5 h-5' />
-        <span className='capitalize leading-none tracking-wider font-bold'>
-          {getNetworkNiceNameByChainId(selectedChainId)}
-        </span>
-        <FeatherIcon icon='chevron-down' className='ml-2' />
+        <PrizePoolLabelFlat prizePool={selectedPrizePool} />
+        {/* <div className='flex items-center space-x-1'>
+          <NetworkIcon
+            chainId={selectedPrizePool.chainId}
+            className='mx-1'
+            sizeClassName='w-5 h-5'
+          />
+          <span className='capitalize leading-none tracking-wider font-bold'>
+            {getNetworkNiceNameByChainId(selectedPrizePool.chainId)}
+          </span>
+        </div> */}
+        <FeatherIcon icon='chevron-down' className='' />
       </button>
-      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
-        <h6 className='text-center uppercase text-sm mb-3'>{t('chooseANetwork')}</h6>
-        <p className='max-w-sm mx-auto text-xs mb-12 text-center'>{t('v4NetworkSelectPrompt')}</p>
+      <ExplorePrizePoolsModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
+      {/* <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
+        <h6 className='text-center uppercase text-sm mb-3'>Choose a Prize Pool</h6>
+        <p className='max-w-sm mx-auto text-xs mb-12 text-center'>
+          Every prize pool has a different way of distributing prizes!
+        </p>
 
-        <ul className='space-y-2 mx-auto max-w-sm'>
-          {supportedChainIds.map((chainId) => (
-            <NetworkItem
-              key={chainId}
-              chainId={chainId}
-              isSelected={chainId === selectedChainId}
-              onDismiss={() => setIsOpen(false)}
-              setSelectedChainId={setSelectedChainId}
-            />
-          ))}
+        <ul className='space-y-2 mx-auto'>
+          {prizePools.map((prizePool) => {
+            const isSelected = prizePool.id() === selectedPrizePool.id()
+            return (
+              <PrizePoolCard
+                prizePool={prizePool}
+                sizeClassName='w-full'
+                onClick={() => {
+                  setIsOpen(false)
+                  setSelectedPrizePoolAddress(prizePool)
+                }}
+                className={classNames('border', {
+                  'border-transparent hover:border-pt-teal': !isSelected,
+                  'border-pt-purple-light hover:border-pt-teal': isSelected
+                })}
+              />
+            )
+          })}
         </ul>
-      </BottomSheet>
+      </BottomSheet> */}
     </>
   )
 }

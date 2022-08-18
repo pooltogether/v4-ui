@@ -6,16 +6,14 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { DrawData } from '../../../interfaces/v4'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { ethers } from 'ethers'
-import { MultiDrawsPrizeConfigsTrigger } from './MultiDrawsPrizeConfigsTrigger'
+import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import classNames from 'classnames'
 import { Draw } from '@pooltogether/v4-client-js'
-import { TokenIcon } from '@pooltogether/react-components'
 
 interface MultipleDrawDetailsProps {
-  chainId: number
   drawDatas: { [drawId: number]: DrawData }
   token: Token
-  prizeToken: Token
+  ticket: Token
   className?: string
 }
 
@@ -29,7 +27,7 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
           <MultipleDrawsDate {...remainingProps} partialDrawDatas={drawDatas} />
         </span>
         <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
-          <MultiDrawsPrizeConfigsTrigger
+          <MultiDrawsPrizeTiersTrigger
             className='mt-2 xs:mt-0 text-white'
             {...remainingProps}
             drawDatas={drawDatas}
@@ -42,31 +40,29 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
 }
 
 export const TotalPrizes = (props: {
-  chainId: number
-  prizeToken: Token
+  token: Token
   drawDatas: { [drawId: number]: DrawData }
   className?: string
   numberClassName?: string
   textClassName?: string
 }) => {
   const { t } = useTranslation()
-  const { drawDatas, chainId, prizeToken } = props
+  const { drawDatas, token } = props
 
-  if (!drawDatas || !prizeToken) {
+  if (!drawDatas) {
     return null
   }
 
   const totalAmountUnformatted = Object.values(drawDatas)
-    .filter((drawData) => Boolean(drawData.prizeConfig))
+    .filter((drawData) => Boolean(drawData.prizeDistribution))
     .reduce((acc, drawData) => {
-      return acc.add(drawData.prizeConfig.prize)
+      return acc.add(drawData.prizeDistribution.prize)
     }, ethers.constants.Zero)
-  const { amountPretty } = roundPrizeAmount(totalAmountUnformatted, prizeToken.decimals)
+  const { amountPretty } = roundPrizeAmount(totalAmountUnformatted, token.decimals)
 
   return (
-    <div className={classNames(props.className, 'flex items-center space-x-2')}>
-      <TokenIcon chainId={chainId} address={prizeToken.address} />
-      <span className={props.numberClassName}>{amountPretty}</span>
+    <div className={props.className}>
+      <span className={props.numberClassName}>${amountPretty}</span>
       <span className={props.textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
   )

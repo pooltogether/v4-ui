@@ -9,14 +9,14 @@ import { calculateApr, calculatePercentageOfBigNumber } from '@pooltogether/util
  * @returns
  */
 export const usePrizePoolApr = (prizePool: PrizePool) => {
-  const { data: prizeTierData, isFetched: isPrizeConfigFetched } = useUpcomingPrizeTier(prizePool)
+  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
   const { data: ticketTwabTotalSupply, isFetched: isTotalSupplyFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
   const { data: percentage, isFetched: isPercentageFetched } =
     usePrizePoolPercentageOfPicks(prizePool)
 
   const enabled =
-    isPrizeConfigFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isPercentageFetched
+    isPrizeTierFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isPercentageFetched
 
   return useQuery(
     ['usePrizePoolApr', prizeTierData?.prizeTier, ticketTwabTotalSupply?.amount],

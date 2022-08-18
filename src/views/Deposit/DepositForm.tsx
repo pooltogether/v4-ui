@@ -33,6 +33,7 @@ import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
 import { UpdatedPrizePoolNetworkOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItemBar'
+import { ButtonTheme } from '@pooltogether/react-components'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -268,7 +269,7 @@ export const DepositInfoBox: React.FC<{
         >
           <FeatherIcon
             icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
-            className='w-3 h-3 xs:w-5 xs:h-5 opacity-50 hover:opacity-100 transition'
+            className='w-6 h-6 opacity-50 hover:opacity-100 transition'
           />
         </button>
       </div>

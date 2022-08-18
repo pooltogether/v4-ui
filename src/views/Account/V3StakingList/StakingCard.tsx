@@ -18,7 +18,6 @@ interface StakingCardProps {
   colorFrom: string
   colorTo: string
   tokenLabel: string
-  poolEmoji: string
   vapr: number
   tokenFaucetRewards: TokenWithBalance
   tokenIcon: React.ReactNode
@@ -65,7 +64,6 @@ const Right: React.FC<StakingCardProps> = (props) => {
   if (vapr) {
     return (
       <>
-        <span className='font-bold text-sm xs:text-lg'>{t('earning')}</span>
         <TokenAndVAPR
           chainId={chainId}
           token={tokenFaucetRewards}
@@ -81,17 +79,14 @@ const Right: React.FC<StakingCardProps> = (props) => {
 }
 
 const Left: React.FC<StakingCardProps> = (props) => {
-  const { tokenIcon, tokenLabel, poolEmoji } = props
+  const { tokenIcon, tokenLabel } = props
   const { t } = useTranslation()
 
   return (
     <>
-      <div className='flex flex-row items-center space-x-2'>
+      <div className='flex flex-row items-center space-x-2 flex-wrap'>
         {tokenIcon}
-        <span>
-          {t('stake')} {tokenLabel}
-        </span>
-        <span>{poolEmoji}</span>
+        <span className='text-xs xs:text-lg'>{tokenLabel}</span>
       </div>
     </>
   )
@@ -127,7 +122,7 @@ const TokenAndVAPR = (props: {
   isTokenFaucetDataFetched: boolean
   isTokenFetched: boolean
 }) => (
-  <div className='flex space-x-2 font-bold text-lg items-center'>
+  <div className='flex space-x-2 font-bold text-sm xs:text-lg items-center'>
     <TokenIconOrLoading
       chainId={props.chainId}
       token={props.token}
@@ -146,7 +141,7 @@ const TokenIconOrLoading = (props: { chainId: number; token: Token; isFetched: b
       <TokenIcon
         chainId={props.chainId}
         address={props.token.address}
-        sizeClassName='w-4 h-4 xs:w-6 xs:h-6'
+        sizeClassName='hidden xs:block w-4 h-4 xs:w-6 xs:h-6'
       />
     ) : (
       <ThemedClipSpinner sizeClassName='w-4 h-4 xs:w-6 xs:h-6' className='opacity-50' />

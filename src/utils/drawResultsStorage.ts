@@ -1,5 +1,5 @@
 import { deserializeBigNumbers } from '@pooltogether/utilities'
-import { PrizeDistributorV2, DrawResults } from '@pooltogether/v4-client-js'
+import { PrizeDistributor, DrawResults } from '@pooltogether/v4-client-js'
 import { atomWithStorage } from 'jotai/utils'
 
 /**
@@ -16,9 +16,6 @@ export const drawIdsToNotClaimAtom = atomWithStorage<Set<number>>(
     },
     setItem: async (key: string, value: Set<number>) => {
       localStorage.setItem(key, Array.from(value).join(','))
-    },
-    removeItem: (key: string) => {
-      // TODO:
     }
   }
 )
@@ -45,17 +42,13 @@ export const drawResultsAtom = atomWithStorage<StoredDrawResults>(
     },
     setItem: async (key: string, value: StoredDrawResults) => {
       localStorage.setItem(key, JSON.stringify(value))
-    },
-    removeItem: (key: string) => {
-      // TODO:
     }
   }
 )
 
 export const getStoredDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2,
-  ticketAddress: string
+  prizeDistributor: PrizeDistributor
 ): { [drawId: number]: DrawResults } => {
   const storedDrawResults = readStoredDrawResults()
   return storedDrawResults[usersAddress]?.[prizeDistributor.id()] || {}
@@ -66,8 +59,7 @@ const readStoredDrawResults = (): StoredDrawResults =>
 
 export const updateDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2,
-  ticketAddress: string,
+  prizeDistributor: PrizeDistributor,
   drawResults: { [drawId: number]: DrawResults },
   setStoredDrawResults: (storedDrawResults: StoredDrawResults) => void
 ) => {
@@ -77,17 +69,12 @@ export const updateDrawResults = (
     usersDrawResults = {}
     storedDrawResults[usersAddress] = usersDrawResults
   }
-  let usersDrawResultsForPrizeDistributor = usersDrawResults[prizeDistributor.id()]
+  const usersDrawResultsForPrizeDistributor = usersDrawResults[prizeDistributor.id()]
   if (!usersDrawResultsForPrizeDistributor) {
-    usersDrawResultsForPrizeDistributor = {}
-  }
-
-  let usersDrawResultsForPrizePool = usersDrawResultsForPrizeDistributor[ticketAddress]
-  if (!usersDrawResultsForPrizePool) {
-    usersDrawResultsForPrizePool = drawResults
+    usersDrawResults[prizeDistributor.id()] = drawResults
   } else {
-    usersDrawResults[prizeDistributor.id()][ticketAddress] = {
-      ...usersDrawResultsForPrizePool,
+    usersDrawResults[prizeDistributor.id()] = {
+      ...usersDrawResultsForPrizeDistributor,
       ...drawResults
     }
   }

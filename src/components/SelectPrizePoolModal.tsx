@@ -77,17 +77,17 @@ const NetworkItem = (props: {
   isSelected: boolean
   onDismiss: () => void
   setSelectedChainId: (chainId: number) => void
-  setSelectedPrizePoolAddress: (address: string) => void
+  setSelectedPrizePoolAddress: (prizePool: PrizePool) => void
 }) => {
   const { prizePool, isSelected, setSelectedChainId, setSelectedPrizePoolAddress, onDismiss } =
     props
-  const { chainId, address } = prizePool
+  const { chainId } = prizePool
   const { data: tokens } = usePrizePoolTokens(prizePool)
   return (
     <li>
       <button
         onClick={() => {
-          setSelectedPrizePoolAddress(address)
+          setSelectedPrizePoolAddress(prizePool)
           setSelectedChainId(chainId)
           onDismiss()
         }}

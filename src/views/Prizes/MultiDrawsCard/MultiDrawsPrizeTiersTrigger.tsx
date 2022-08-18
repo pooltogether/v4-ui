@@ -1,5 +1,5 @@
 import { Token } from '@pooltogether/hooks'
-import { Button, ButtonSize, ButtonTheme } from '@pooltogether/react-components'
+import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
 import { DrawData } from '../../../interfaces/v4'
@@ -8,14 +8,14 @@ import { useTranslation } from 'react-i18next'
 
 import { MultiDrawPrizeBreakdownSheet } from './MultiDrawPrizeBreakdownSheet'
 
-export const MultiDrawsPrizeConfigsTrigger = (props: {
-  prizeToken: Token
+export const MultiDrawsPrizeTiersTrigger = (props: {
+  ticket: Token
   drawDatas: { [drawId: number]: DrawData }
   label?: string
   className?: string
   textClassName?: string
 }) => {
-  const { drawDatas, label, prizeToken, textClassName, className } = props
+  const { drawDatas, label, ticket, textClassName, className } = props
   const [isOpen, setIsOpen] = useState(false)
 
   const { t } = useTranslation()
@@ -28,13 +28,13 @@ export const MultiDrawsPrizeConfigsTrigger = (props: {
         className={classNames(className, textClassName, 'flex items-center')}
         onClick={() => setIsOpen(true)}
       >
-        {label || t('viewPrizes', 'View prizes')}
+        {label || t('viewPrizeTiers', 'View prize tiers')}
         <FeatherIcon icon='chevron-right' className='w-4 h-4 ml-1' />
       </button>
 
       <MultiDrawPrizeBreakdownSheet
         drawDatas={drawDatas}
-        prizeToken={prizeToken}
+        ticket={ticket}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
       />
@@ -42,7 +42,7 @@ export const MultiDrawsPrizeConfigsTrigger = (props: {
   )
 }
 
-MultiDrawsPrizeConfigsTrigger.defaultProps = {
+MultiDrawsPrizeTiersTrigger.defaultProps = {
   textClassName:
     'uppercase font-bold text-xxs sm:text-xs opacity-70 hover:opacity-100 transition leading-none tracking-wide'
 }

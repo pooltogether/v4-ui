@@ -1,20 +1,19 @@
-import { DrawResults, PrizeDistributorV2 } from '@pooltogether/v4-client-js'
+import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
 
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
-import { useAvailableDrawIds } from './useAvailableDrawIds'
-import { useSelectedPrizePoolTicket } from '../PrizePool/useSelectedPrizePoolTicket'
+import { useValidDrawIds } from './useValidDrawIds'
 
 /**
- * Returns a users unclaimed winning draw results for available draw ids
+ * Returns a users unclaimed winning draw results for valid draw ids
  * @param usersAddress
  * @param prizeDistributor
  * @returns
  */
 export const useUsersUnclaimedWinningDrawResults = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2
+  prizeDistributor: PrizeDistributor
 ): {
   data: {
     [usersAddress: string]: {
@@ -23,13 +22,12 @@ export const useUsersUnclaimedWinningDrawResults = (
   }
   isFetched: boolean
 } => {
-  const { data: drawIdData, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
+  const { data: drawIdData, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(
     usersAddress,
     prizeDistributor
   )
-  const { data: ticket, isFetched: isTicketFetched } = useSelectedPrizePoolTicket()
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
   const drawResults = storedDrawResults?.[usersAddress]
 
   return useMemo(() => {
@@ -38,7 +36,6 @@ export const useUsersUnclaimedWinningDrawResults = (
       !prizeDistributor ||
       !isClaimedAmountsFetched ||
       !isDrawIdsFetched ||
-      !isTicketFetched ||
       usersAddress !== claimedAmountsData?.usersAddress ||
       drawIdData.prizeDistributorId !== prizeDistributor.id()
     ) {

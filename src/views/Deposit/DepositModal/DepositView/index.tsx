@@ -48,8 +48,6 @@ export const DepositView: React.FC<
       chainId={prizePool.chainId}
       token={tokens?.token}
       defaultValue={depositAmount?.amount}
-    >
-      <button onClick={() => setSelectedViewId(ViewIds.explore)}>Explore</button>
-    </TokenAmountInputFormView>
+    />
   )
 }

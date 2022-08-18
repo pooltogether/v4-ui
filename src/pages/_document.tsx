@@ -57,7 +57,7 @@ class MyDocument extends Document {
             <link rel='manifest' href='manifest.json' />
           </>
         </Head>
-        <body className='bg-body text-inverse'>
+        <body className='bg-body text-inverse overscroll-y-none'>
           <Meta />
 
           <Main />

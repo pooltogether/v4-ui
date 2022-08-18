@@ -1,8 +1,8 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { getNumberOfPrizes } from '@utils/getNumberOfPrizes'
 import { usePrizeDistributorByChainId } from '../PrizeDistributor/usePrizeDistributorByChainId'
-import { useUpcomingPrizeConfig } from '../PrizeDistributor/useUpcomingPrizeConfig'
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
+import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 
 /**
  * NOTE: Assumes only 1 prize distributor per prize pool
@@ -10,25 +10,20 @@ import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
  * @returns
  */
 export const usePrizePoolTotalPicks = (prizePool: PrizePool) => {
-  const prizeDistributor = usePrizeDistributorByChainId(prizePool.chainId)
-  const { data: prizeConfigData, isFetched: isPrizeConfigFetched } =
-    useUpcomingPrizeConfig(prizeDistributor)
+  const { data, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
   const { data: prizePoolPercentageOfPicks, isFetched: isPercentageFetched } =
     usePrizePoolPercentageOfPicks(prizePool)
 
-  if (!isPrizeConfigFetched || !isPercentageFetched || !prizeConfigData.prizeConfig) {
+  if (!isPrizeTierFetched || !isPercentageFetched || !data.prizeTier) {
     return {
       data: null,
       isFetched: false
     }
   }
 
-  const totalNumberOfPrizes = getNumberOfPrizes(
-    prizeConfigData.prizeConfig.tiers,
-    prizeConfigData.prizeConfig.bitRangeSize
-  )
+  const totalNumberOfPrizes = getNumberOfPrizes(data.prizeTier.tiers, data.prizeTier.bitRangeSize)
   return {
-    data: totalNumberOfPrizes * prizePoolPercentageOfPicks,
+    data: totalNumberOfPrizes * prizePoolPercentageOfPicks.percentage,
     isFetched: true
   }
 }

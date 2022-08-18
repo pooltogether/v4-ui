@@ -6,6 +6,7 @@ import { CHAIN_ID } from '@constants/misc'
 import { Chain } from 'wagmi'
 import { getChain } from '@pooltogether/wallet-connection'
 import { ContractType } from '@pooltogether/v4-client-js'
+import { contract } from '@pooltogether/etherplex'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -23,12 +24,30 @@ export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
 // Pull prize pool addresses from the contract list
 export const V4_PRIZE_POOLS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: mainnet.contracts
-    .filter(({ type }) => type === ContractType.YieldSourcePrizePool)
-    .map(({ address }) => address),
-  [APP_ENVIRONMENTS.testnets]: testnet.contracts
-    .filter(({ type }) => type === ContractType.YieldSourcePrizePool)
-    .map(({ address }) => address)
+  [APP_ENVIRONMENTS.mainnets]: mainnet.contracts.reduce<{ [chainId: number]: string[] }>(
+    (prizePoolsByChainId, contract) => {
+      if (contract.type === ContractType.YieldSourcePrizePool) {
+        if (!prizePoolsByChainId[contract.chainId]) {
+          prizePoolsByChainId[contract.chainId] = []
+        }
+        prizePoolsByChainId[contract.chainId].push(contract.address.toLowerCase())
+      }
+      return prizePoolsByChainId
+    },
+    {}
+  ),
+  [APP_ENVIRONMENTS.testnets]: testnet.contracts.reduce<{ [chainId: number]: string[] }>(
+    (prizePoolsByChainId, contract) => {
+      if (contract.type === ContractType.YieldSourcePrizePool) {
+        if (!prizePoolsByChainId[contract.chainId]) {
+          prizePoolsByChainId[contract.chainId] = []
+        }
+        prizePoolsByChainId[contract.chainId].push(contract.address.toLowerCase())
+      }
+      return prizePoolsByChainId
+    },
+    {}
+  )
 })
 
 // Pull chain ids from the contract list
@@ -44,7 +63,7 @@ export const V4_CHAIN_IDS = Object.freeze({
 // Set default addresses for all of the chain ids provided
 export const DEFAULT_PRIZE_POOLS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Object.freeze(
-    V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].reduce(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].reduce<{ [chainId: number]: string }>(
       (defaultPrizePools, chainId) => {
         defaultPrizePools[chainId] = mainnet.contracts.find(
           (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
@@ -55,11 +74,11 @@ export const DEFAULT_PRIZE_POOLS = Object.freeze({
     )
   ),
   [APP_ENVIRONMENTS.testnets]: Object.freeze(
-    V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets].reduce(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets].reduce<{ [chainId: number]: string }>(
       (defaultPrizePools, chainId) => {
         defaultPrizePools[chainId] = testnet.contracts.find(
           (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
-        )
+        ).address
         return defaultPrizePools
       },
       {} // Add overrides here and check if set above before setting the first address in the list

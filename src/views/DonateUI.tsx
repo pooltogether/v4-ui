@@ -66,7 +66,7 @@ export const DonateUI = () => {
 }
 
 const Title = () => (
-  <div className='flex flex-col items-center justify-center mt-4 sm:mt-10 mb-4 sm:mb-12 px-8'>
+  <div className='flex flex-col items-center justify-center mb-4 sm:mb-12 px-8'>
     <div className='flex'>
       <span className='text-4xl sm:text-9xl'>🤝</span>
       <span className='text-4xl sm:text-9xl'>🇺🇦</span>

@@ -1,8 +1,8 @@
-import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 
 import { useUsersUnclaimedDrawDatas } from './useUsersUnclaimedDrawDatas'
 
-export const useUnclaimedDrawIds = (usersAddress: string, prizeDistributor: PrizeDistributorV2) => {
+export const useUnclaimedDrawIds = (usersAddress: string, prizeDistributor: PrizeDistributor) => {
   const {
     data: unclaimedDrawDatas,
     isFetched,

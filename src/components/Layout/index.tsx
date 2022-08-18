@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { LoadingLogo } from '@pooltogether/react-components'

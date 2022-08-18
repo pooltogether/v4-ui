@@ -1,24 +1,24 @@
 import { Amount, Token } from '@pooltogether/hooks'
-import { PrizeDistributorV2 } from '@pooltogether/v4-client-js'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { useAvailableDrawIds } from './useAvailableDrawIds'
+import { useValidDrawIds } from './useValidDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
 
 export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
 
 /**
- * Returns the amounts a user has claimed for all available draw ids.
+ * Returns the amounts a user has claimed for all valid draw ids.
  * @param prizeDistributor
  * @param token
  * @returns
  */
 export const useUsersClaimedAmounts = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2
+  prizeDistributor: PrizeDistributor
 ) => {
-  const { data, isFetched: isDrawIdsFetched } = useAvailableDrawIds(prizeDistributor)
+  const { data, isFetched: isDrawIdsFetched } = useValidDrawIds(prizeDistributor)
   const { data: prizeDistributorTokenData, isFetched: isPrizeDistributorTokenFetched } =
     usePrizeDistributorToken(prizeDistributor)
   const enabled =
@@ -32,16 +32,16 @@ export const useUsersClaimedAmounts = (
 
   return useQuery(
     [USERS_CLAIMED_AMOUNTS_QUERY_KEY, prizeDistributor?.id(), usersAddress],
-    () => getUserClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
+    () => getUsersClaimedAmounts(usersAddress, prizeDistributor, drawIds, token),
     {
       enabled
     }
   )
 }
 
-export const getUserClaimedAmounts = async (
+export const getUsersClaimedAmounts = async (
   usersAddress: string,
-  prizeDistributor: PrizeDistributorV2,
+  prizeDistributor: PrizeDistributor,
   drawIds: number[],
   token: Token
 ): Promise<{
@@ -50,7 +50,7 @@ export const getUserClaimedAmounts = async (
   prizeDistributorId: string
   claimedAmounts: { [drawId: number]: Amount }
 }> => {
-  const claimedAmounts = await prizeDistributor.getUserClaimedAmounts(usersAddress, drawIds)
+  const claimedAmounts = await prizeDistributor.getUsersClaimedAmounts(usersAddress, drawIds)
 
   const claimedAmountsKeyedByDrawId: {
     [drawId: number]: Amount

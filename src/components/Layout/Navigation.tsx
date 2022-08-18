@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'react-i18next'
+import { useOnScroll } from '@pooltogether/hooks'
 
 interface NavLink {
   i18nKey: string
@@ -29,14 +30,22 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
 
   const router = useRouter()
 
+  const [positionClassName, setPositionClassName] = useState('transform translate-y-0')
+  useOnScroll({
+    onScrollTop: () => setPositionClassName('transform translate-y-0'),
+    onScrollDown: () => setPositionClassName('transform translate-y-0'),
+    onScrollUp: () => setPositionClassName('transform translate-y-14 xs:translate-y-0')
+  })
+
   return (
     <div
       className={classNames(
         className,
-        'z-10',
+        'z-3',
         'flex flex-row justify-center',
         'pointer-events-none',
-        'fixed bottom-3 top-auto xs:bottom-auto xs:top-1 sm:top-4 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0'
+        'transition fixed bottom-6 top-auto xs:bottom-auto xs:top-1 sm:top-2 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0',
+        positionClassName
       )}
     >
       <nav
@@ -78,7 +87,7 @@ const NavTab = (props: NavTabProps) => {
       <a
         className={classNames(
           'group transition mx-1 first:ml-0 last:mr-0 rounded-lg flex flex-col',
-          'text-xs font-bold text-inverse uppercase tracking-tight'
+          'text-xs font-bold text-inverse tracking-tight'
         )}
       >
         <span className={classNames({ 'opacity-70 hover:opacity-100': !isSelected })}>

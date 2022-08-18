@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
-import { PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
 
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
@@ -14,6 +14,8 @@ import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { usePrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/usePrizePoolTotalNumberOfPrizes'
+import { useAllPrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolTotalNumberOfPrizes'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
@@ -26,24 +28,43 @@ export const UpcomingPrizeCard = (props: { className?: string }) => {
   const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
 
   return (
-    <div className={classNames('flex flex-col text-center space-y-2 relative', className)}>
+    <div className={classNames('flex flex-col text-center  relative', className)}>
       <LightningBolts />
       <Dots />
 
-      <AmountOfPrizes isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
+      <AmountOfPrizes
+        prizePool={prizePool}
+        isFetched={isFetched}
+        prizeTier={prizeTierData?.prizeTier}
+        ticket={ticket}
+      />
       <PrizeAmount isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
+      <p className='uppercase font-semibold text-inverse text-xs xs:text-lg'>In prizes</p>
       <DrawCountdown />
     </div>
   )
 }
 
-const AmountOfPrizes = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTier }) => {
-  const { isFetched, ticket, prizeTier } = props
+const AmountOfPrizes = (props: {
+  prizePool: PrizePool
+  isFetched: boolean
+  ticket: Token
+  prizeTier: PrizeTier
+}) => {
+  const { ticket, prizeTier, prizePool } = props
 
-  let amountOfPrizes = '--'
-  if (isFetched) {
-    amountOfPrizes = String(calculateTotalNumberOfPrizes(prizeTier))
-  }
+  const queryResults = useAllPrizePoolTotalNumberOfPrizes()
+
+  const amountOfPrizes = useMemo(() => {
+    const isFetched = queryResults.some(({ isFetched }) => isFetched)
+    return isFetched
+      ? Math.round(
+          queryResults
+            .filter(({ isFetched }) => isFetched)
+            .reduce((sum, { data }) => sum + data.numberOfPrizes, 0)
+        )
+      : 0
+  }, [queryResults])
 
   return (
     <div className='uppercase font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1'>

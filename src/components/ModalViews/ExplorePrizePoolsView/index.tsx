@@ -1,19 +1,36 @@
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
 import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
-import { TopPoolsHorizontalList } from '@components/BrowsePrizePools/TopPoolsHorizontalList'
+import { HorizontalListByTvl } from '@components/BrowsePrizePools/PrizePoolHorizontalList/HorizontalListByTvl'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { Tabs, ViewProps } from '@pooltogether/react-components'
+import { ViewProps } from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 
-export const ExplorePrizePoolsView: React.FC<{} & ViewProps> = (props) => {
-  const { next } = props
+const horizontalListMarginClassName = 'mb-12 -mx-2 xs:-mx-8 px-2 xs:px-8'
+
+export const ExplorePrizePoolsView: React.FC<
+  { onPrizePoolSelect?: (prizePool: PrizePool) => void } & ViewProps
+> = (props) => {
+  const { onPrizePoolSelect } = props
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
-  // Explore button to go there
-  // Submit for valid hook-form moves to confirm view with a TxButton
+  const onClick = (prizePool: PrizePool) => {
+    setSelectedPrizePoolAddress(prizePool)
+    onPrizePoolSelect?.(prizePool)
+  }
+
   return (
     <div>
       <BrowsePrizePoolsHeader className='mb-12' />
+      <div className='flex flex-col'>
+        <Title className='mb-3'>Top pools</Title>
+        <HorizontalListByTvl onClick={onClick} marginClassName={horizontalListMarginClassName} />
+        <div className='flex justify-between font-bold text-lg mb-2'>
+          <span>All prize pools</span>
+        </div>
+        <BrowsePrizePoolsList onClick={onClick} />
+      </div>
+      {/* TODO: Add a list of filtered prize pools by token holdings
       <Tabs
         titleClassName='mb-12'
         tabs={[
@@ -27,19 +44,16 @@ export const ExplorePrizePoolsView: React.FC<{} & ViewProps> = (props) => {
             view: (
               <div className='flex flex-col'>
                 <Title className='mb-3'>Top pools</Title>
-                <TopPoolsHorizontalList
-                  selectPrizePool={(prizePool) => {
-                    setSelectedPrizePoolAddress(prizePool.address)
-                    next()
-                  }}
-                  marginClassName='mb-12 -mx-2 xs:-mx-8 px-2 xs:px-8'
+                <HorizontalListByTvl
+                  onClick={onClick}
+                  marginClassName={horizontalListMarginClassName}
                 />
                 <div className='flex justify-between font-bold text-lg mb-2'>
                   <span>All prize pools</span>
                 </div>
                 <BrowsePrizePoolsList
-                  selectPrizePool={(prizePool) => {
-                    setSelectedPrizePoolAddress(prizePool.address)
+                  onClick={(prizePool) => {
+                    setSelectedPrizePoolAddress(prizePool)
                     next()
                   }}
                 />
@@ -49,7 +63,7 @@ export const ExplorePrizePoolsView: React.FC<{} & ViewProps> = (props) => {
           }
         ]}
         initialTabId={'all'}
-      />
+      /> */}
     </div>
   )
 }

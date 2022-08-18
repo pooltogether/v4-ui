@@ -13,12 +13,12 @@ import { calculateApr } from '@pooltogether/utilities'
  */
 export const usePrizePoolNetworkApr = () => {
   const prizePool = useSelectedPrizePool()
-  const { data: prizeTierData, isFetched: isPrizeConfigFetched } = useUpcomingPrizeTier(prizePool)
+  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
   const { data: tokenData, isFetched: isTokenDataFetched } = usePrizePoolTokens(prizePool)
   const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
   const enabled =
-    isPrizeConfigFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isTokenDataFetched
+    isPrizeTierFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isTokenDataFetched
   return useQuery(
     ['usePrizePoolNetworkApr', prizeTierData?.prizeTier.prize.toString(), totalSupplyData],
     () => {

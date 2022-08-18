@@ -9,6 +9,6 @@ export const useChainPrizePoolTicketTotalSupply = (chainId) => {
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
   return useMemo(
     () => ({ prizePoolTotalSupply, decimals: tokens?.ticket.decimals, ticket: tokens?.ticket }),
-    [tokens, prizePoolTotalSupply]
+    [prizePool, tokens, prizePoolTotalSupply]
   )
 }

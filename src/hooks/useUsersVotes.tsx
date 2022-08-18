@@ -18,8 +18,6 @@ const getUsersVotes = async (usersAddress: string) => {
     GovernanceTokenAbi,
     getReadProvider(CHAIN_ID.mainnet, RPC_API_KEYS)
   )
-  console.log('poolContract', poolContract, usersAddress)
   const votes = await poolContract.getCurrentVotes(usersAddress)
-  console.log('votes', votes, getAmountFromBigNumber(votes, '18'))
   return getAmountFromBigNumber(votes, '18')
 }

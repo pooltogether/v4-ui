@@ -1,13 +1,15 @@
+import { CardTitle } from '@components/Text/CardTitle'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React, { ReactNode } from 'react'
-import { AccentTextButton } from './AccentTextButton'
+import { AccentTextButton } from '../AccentTextButton'
 
 export const SidebarCard: React.FC<{
   title: ReactNode
   description: ReactNode
   main: ReactNode
+  isLoading?: boolean
   // Link
   link?: ReactNode
   links?: ReactNode[]
@@ -18,13 +20,24 @@ export const SidebarCard: React.FC<{
   showTrigger?: boolean
   trigger?: ReactNode
   disabled?: boolean
+  className?: string
 }> = (props) => (
-  <TransparentDiv className='rounded-lg px-4 py-2 flex flex-col'>
-    <div className='font-bold text-lg'>{props.title}</div>
+  <div
+    className={classNames(
+      'sm:bg-white sm:bg-opacity-20 sm:dark:bg-actually-black sm:dark:bg-opacity-10',
+      'rounded-lg sm:px-4 sm:py-2 flex flex-col',
+      props.className
+    )}
+  >
+    <CardTitle title={props.title} loading={props.isLoading} className='mb-2 sm:mb-0' />
     <div className='text-xxs opacity-70'>{props.description}</div>
     <div className='font-bold text-xl'>{props.main}</div>
     {props.showTrigger && (
-      <AccentTextButton onClick={props.onClick} disabled={props.disabled}>
+      <AccentTextButton
+        onClick={props.onClick}
+        disabled={props.disabled}
+        className='ml-4 sm:ml-0 mt-4 sm:mt-0'
+      >
         {props.trigger}
       </AccentTextButton>
     )}
@@ -34,10 +47,11 @@ export const SidebarCard: React.FC<{
           href={props.href}
           rel='noopener noreferrer'
           theme={'text-gradient-magenta hover:opacity-70 trans text-lg font-bold text-left'}
+          className='ml-4 sm:ml-0 mt-4 sm:mt-0'
         >
           {props.link}
         </ExternalLink>
       </>
     )}
-  </TransparentDiv>
+  </div>
 )
