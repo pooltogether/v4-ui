@@ -86,11 +86,18 @@ export const PageHeader = (props) => {
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />
+        {userWallet ? 
+        <UnstoppableBotton
+          onClick={logout}
+          width='150px'
+          children={userWallet}
+        /> :
         <UnstoppableBotton
           onClick={login}
           width='150px'
           children='Login With Unstoppable'
-        />
+        />}
+        
         <Settings />
       </div>
     </PageHeaderContainer>
