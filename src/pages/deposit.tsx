@@ -5,7 +5,7 @@ import { DepositUI } from '@views/Deposit'
 
 export default function IndexPage(props) {
   return (
-    <Layout>
+    <Layout className='bg-pt-purple-lightest dark:bg-pt-purple-darkest'>
       <DepositUI />
     </Layout>
   )

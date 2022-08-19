@@ -23,6 +23,7 @@ import { AccentTextButton } from '../AccentTextButton'
 import { BalanceModal } from './BalanceModal'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { ExplorePrizePoolsModal } from './ExplorePrizePoolsModal'
+import { DepositModal } from '@views/Deposit/DepositTrigger/DepositModal'
 
 export const V4DepositList = () => {
   const { t } = useTranslation()
@@ -156,11 +157,7 @@ const ExplorePrizePools = () => {
       <AccentTextButton className='ml-4 mt-8' onClick={() => setIsOpen(true)}>
         Explore Prize Pools
       </AccentTextButton>
-      <ExplorePrizePoolsModal
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-        onPrizePoolSelect={() => router.push('/deposit')}
-      />
+      <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
 }

@@ -12,6 +12,7 @@ import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTick
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { useAppEnvString } from '@hooks/useAppEnvString'
 import { V4_CHAIN_IDS } from '@constants/config'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 
 export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
@@ -41,7 +42,8 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
   const { className } = props
   const appEnv = useAppEnvString()
 
-  const [chainId, setChainId] = useState(V4_CHAIN_IDS[appEnv][0])
+  const { chainId: selectedChainId } = useSelectedChainId()
+  const [chainId, setChainId] = useState(selectedChainId)
   const prizePool = usePrizePoolByChainId(chainId)
   const { data: decimals } = usePrizePoolTicketDecimals(prizePool)
   const [amount, setAmount] = useState('1000')
@@ -57,7 +59,7 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
           <select
             name='amount'
             id='amount'
-            className={'inline font-bold bg-transparent'}
+            className={'inline font-bold bg-transparent text-opacity-100'}
             onChange={(event) => setAmount(event.target.value)}
             value={amount}
           >

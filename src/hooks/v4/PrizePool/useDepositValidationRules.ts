@@ -36,10 +36,7 @@ export const useDepositValidationRules = (prizePool: PrizePool) => {
         if (!tokenBalance) return 'No token balance fetched'
         if (!ticketBalance) return 'No ticket balance fetched'
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
-          return t(
-            'insufficientFundsGetTokensBelow',
-            'Insufficient funds. Get or swap tokens below.'
-          )
+          return t('insufficientFunds', 'Insufficient funds.')
         if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
           return t(
             'minimumDepositOfAmountRequired',

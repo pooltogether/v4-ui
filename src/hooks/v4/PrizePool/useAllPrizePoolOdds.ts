@@ -47,6 +47,7 @@ export const useAllPrizePoolOdds = (
         ),
         queryFn: () => {
           return getOdds(
+            prizePool,
             oddsData?.totalSupply,
             twab,
             oddsData?.numberOfPrizes,

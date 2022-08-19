@@ -30,10 +30,10 @@ export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?
             <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-3 h-3' />
             <span className='opacity-70'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
           </div>
-          <div className='flex space-x-1 items-center'>
+          {/* <div className='flex space-x-1 items-center'>
             <YieldSourceIcon yieldSource={YieldSourceKey.aave} sizeClassName='w-3 h-3' />
             <span className='opacity-70'>{getYieldSourceNiceName(YieldSourceKey.aave)}</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
@@ -69,10 +69,10 @@ export const PrizePoolLabelFlat = (props: { prizePool: PrizePool; fontSizeClassN
         <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
         <span className='opacity-70'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
       </div>
-      <div className='flex space-x-1 items-center'>
+      {/* <div className='flex space-x-1 items-center'>
         <YieldSourceIcon yieldSource={YieldSourceKey.aave} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
         <span className='opacity-70'>{getYieldSourceNiceName(YieldSourceKey.aave)}</span>
-      </div>
+      </div> */}
     </div>
   )
 }

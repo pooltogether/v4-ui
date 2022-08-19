@@ -44,7 +44,7 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
         'z-3',
         'flex flex-row justify-center',
         'pointer-events-none',
-        'transition fixed bottom-6 top-auto xs:bottom-auto xs:top-1 sm:top-2 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0',
+        'transition fixed bottom-6 top-auto xs:bottom-auto xs:top-0 sm:top-1 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0',
         positionClassName
       )}
     >

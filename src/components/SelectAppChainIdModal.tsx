@@ -54,8 +54,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
         </div> */}
         <FeatherIcon icon='chevron-down' className='' />
       </button>
-      <ExplorePrizePoolsModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
-      {/* <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
+      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
         <h6 className='text-center uppercase text-sm mb-3'>Choose a Prize Pool</h6>
         <p className='max-w-sm mx-auto text-xs mb-12 text-center'>
           Every prize pool has a different way of distributing prizes!
@@ -65,9 +64,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
           {prizePools.map((prizePool) => {
             const isSelected = prizePool.id() === selectedPrizePool.id()
             return (
-              <PrizePoolCard
-                prizePool={prizePool}
-                sizeClassName='w-full'
+              <button
                 onClick={() => {
                   setIsOpen(false)
                   setSelectedPrizePoolAddress(prizePool)
@@ -76,11 +73,13 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
                   'border-transparent hover:border-pt-teal': !isSelected,
                   'border-pt-purple-light hover:border-pt-teal': isSelected
                 })}
-              />
+              >
+                <PrizePoolLabelFlat prizePool={prizePool} />
+              </button>
             )
           })}
         </ul>
-      </BottomSheet> */}
+      </BottomSheet>
     </>
   )
 }

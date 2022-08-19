@@ -24,13 +24,13 @@ export const SidebarCard: React.FC<{
 }> = (props) => (
   <div
     className={classNames(
-      'sm:bg-white sm:bg-opacity-20 sm:dark:bg-actually-black sm:dark:bg-opacity-10',
+      'sm:bg-white sm:bg-opacity-100 sm:dark:bg-actually-black sm:dark:bg-opacity-10',
       'rounded-lg sm:px-4 sm:py-2 flex flex-col',
       props.className
     )}
   >
     <CardTitle title={props.title} loading={props.isLoading} className='mb-2 sm:mb-0' />
-    <div className='text-xxs opacity-70'>{props.description}</div>
+    <div className='text-xxs text-opacity-50 font-light'>{props.description}</div>
     <div className='font-bold text-xl'>{props.main}</div>
     {props.showTrigger && (
       <AccentTextButton

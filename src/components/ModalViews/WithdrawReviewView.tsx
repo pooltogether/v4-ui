@@ -87,10 +87,7 @@ const WithdrawReviewViewContent: React.FC<{ withdrawAmount: Amount }> = (props) 
           ticket={balances?.balances.ticket}
         />
         <UnderlyingReceivedStat amount={withdrawAmount?.amount} token={tokenData.token} />
-        <EstimatedWithdrawalGasItem
-          chainId={prizePool.chainId}
-          amountUnformatted={withdrawAmount?.amountUnformatted}
-        />
+        <EstimatedWithdrawalGasItem chainId={prizePool.chainId} />
       </ModalInfoList>
     </div>
   )

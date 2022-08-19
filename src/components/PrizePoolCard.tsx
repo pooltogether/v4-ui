@@ -1,5 +1,6 @@
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { usePrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/usePrizePoolTotalNumberOfPrizes'
+import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import {
   TokenIcon,
@@ -9,7 +10,7 @@ import {
   NetworkIcon,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId, numberWithCommas, shorten } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 
@@ -58,22 +59,22 @@ export const PrizePoolCard: React.FC<{
         }
       )}
     >
-      <div className='flex space-x-2'>
+      <div className='flex justify-between mb-2'>
         {isPrizePoolTokensFetched && (
-          <>
+          <div className='flex space-x-2'>
             <TokenIcon
               address={tokens.token.address}
               chainId={prizePool.chainId}
               sizeClassName='w-8 h-8'
             />
             <CardLabelLarge>{tokens.token.symbol}</CardLabelLarge>
-          </>
+          </div>
         )}
       </div>
       {children}
       <div className='flex justify-between'>
-        <YieldSource prizePool={prizePool} />
         <Network prizePool={prizePool} />
+        {/* <Rewards prizePool={prizePool} /> */}
       </div>
     </button>
   )
@@ -91,7 +92,7 @@ const CardLabelSmall = (props) => (
 )
 
 const CardLabelMedium = (props) => (
-  <span {...props} className={classNames('text-xxs', props.className)} />
+  <span {...props} className={classNames('text-xs', props.className)} />
 )
 
 const CardLabelLarge = (props) => (
@@ -120,24 +121,45 @@ const YieldSource: React.FC<{ prizePool: PrizePool }> = (props) => {
  * @param props
  * @returns
  */
-const Network: React.FC<{ prizePool: PrizePool }> = (props) => {
-  const { prizePool } = props
+const Network: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
   return (
-    <div className='flex flex-col'>
+    <div className={classNames('flex flex-col', className)}>
       <CardLabelSmall>Network</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
         <CardLabelMedium>{getNetworkNiceNameByChainId(prizePool.chainId)}</CardLabelMedium>
-        <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-4 h-4' />
+        <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-5 h-5' />
       </div>
     </div>
   )
 }
 
-export const ChancesPerThousand: React.FC<{ prizePool: PrizePool }> = (props) => {
+/**
+ * TODO: Eventually we'll need to actually map the prize pools to yield source images. Aave is fine for now.
+ * @param props
+ * @returns
+ */
+const Rewards: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
+  return <div className={classNames('animate-rainbow', className)}>Rewards</div>
+}
+
+export const OddsPerX: React.FC<{ prizePool: PrizePool; amount: string; decimals: string }> = (
+  props
+) => {
+  const { prizePool, amount, decimals } = props
+  const { data, isFetched } = useSpoofedPrizePoolNetworkOdds(amount, decimals, prizePool.id())
   return (
     <div className='flex flex-col'>
-      <CardLabelSmall>Weekly chances per $1,000 deposit</CardLabelSmall>
-      <CardLabelLarge>1:45</CardLabelLarge>
+      <CardLabelSmall>
+        Odds to win at least one prize per draw with a ${numberWithCommas(amount, { precision: 0 })}{' '}
+        deposit
+      </CardLabelSmall>
+      {isFetched ? (
+        <CardLabelLarge>1:{numberWithCommas(data.oneOverOdds, { precision: 2 })}</CardLabelLarge>
+      ) : (
+        <ThemedClipSpinner sizeClassName='w-6 h-6' />
+      )}
     </div>
   )
 }

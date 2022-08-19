@@ -1,15 +1,14 @@
 import { PrizePoolLabel } from '@components/PrizePoolLabel'
 import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
-import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { AccountListItem, LoadingAccountListItem } from '@views/Account/AccountList/AccountListItem'
 import classNames from 'classnames'
 
 export const BrowsePrizePoolsList: React.FC<{
   className?: string
-  onClick?: (prizePool: PrizePool) => void
+  onPrizePoolSelect?: (prizePool: PrizePool) => void
 }> = (props) => {
-  const { className, onClick } = props
+  const { className, onPrizePoolSelect } = props
   const { prizePools, isFetched } = usePrizePoolsByTvl()
 
   return (
@@ -24,7 +23,7 @@ export const BrowsePrizePoolsList: React.FC<{
       {prizePools?.map((prizePool) => (
         <AccountListItem
           key={prizePool.id()}
-          onClick={() => onClick(prizePool)}
+          onClick={() => onPrizePoolSelect(prizePool)}
           left={<PrizePoolLabel prizePool={prizePool} />}
           right={null}
         />

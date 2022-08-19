@@ -92,10 +92,7 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
         if (!tokenBalance) return false
         if (!ticketBalance) return false
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
-          return t(
-            'insufficientFundsGetTokensBelow',
-            'Insufficient funds. Get or swap tokens below.'
-          )
+          return t('insufficientFunds', 'Insufficient funds')
         if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
           return t(
             'minimumDepositOfAmountRequired',

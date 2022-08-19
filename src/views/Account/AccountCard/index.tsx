@@ -20,7 +20,7 @@ export const AccountCard: React.FC<{
   const { showAddress, usersAddress, className } = props
   return (
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
-      <div className='flex justify-between p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
+      <div className='flex justify-between p-4 bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
         <img src={WalletIllustration} className='w-16 xs:w-20' />
       </div>

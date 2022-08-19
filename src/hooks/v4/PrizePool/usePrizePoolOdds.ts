@@ -19,6 +19,7 @@ export const usePrizePoolOdds = (
 ) => {
   const { data: oddsData } = usePrizePoolOddsData(prizePool)
   return useOdds(
+    prizePool,
     oddsData?.totalSupply,
     twab,
     oddsData?.numberOfPrizes,

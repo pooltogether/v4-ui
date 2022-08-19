@@ -12,6 +12,7 @@ import {
   Transaction,
   TransactionState,
   TransactionStatus,
+  useConnectWallet,
   useIsWalletConnected,
   useTransaction,
   useUsersAddress
@@ -20,7 +21,6 @@ import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { AccountPageButton } from '@views/Deposit/DepositConfirmationModal'
-import { DepositBottomButton, DepositInfoBox } from '@views/Deposit/DepositForm'
 import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
@@ -182,24 +182,16 @@ const DepositFormView = (props: DepositFormViewProps) => {
           />
         </div>
 
-        <DepositInfoBox
-          className='mt-3'
-          bgClassName='bg-body'
-          chainId={chainId}
-          depositTx={depositTx}
-          errors={isDirty ? errors : null}
-          amountToDeposit={amountToDeposit}
-        />
-
-        <DepositBottomButton
-          className='mt-4 w-full'
+        <TxButton
           disabled={(!isValid && isDirty) || depositTx?.state === TransactionState.pending}
-          depositTx={depositTx}
-          isWalletConnected={isWalletConnected}
-          amountToDeposit={amountToDeposit}
+          className='mt-4 w-full'
+          state={depositTx?.state}
+          status={depositTx?.status}
+          type='submit'
           chainId={chainId}
-          connectWallet={connectWallet}
-        />
+        >
+          {t('reviewDeposit')}
+        </TxButton>
       </form>
     </>
   )

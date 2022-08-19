@@ -1,7 +1,6 @@
 import { TxButton } from '@components/Input/TxButton'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { ButtonRadius } from '@pooltogether/react-components'
-import { TransactionState, TransactionStatus } from '@pooltogether/wallet-connection'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 

@@ -6,9 +6,6 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 
 /**
- * TODO: Brendan promised that the bit range size would be consistent.
- *
- * Eventually we will want to read this from the chain.
  * @param prizePool
  * @param token
  * @returns

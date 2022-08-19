@@ -1,33 +1,25 @@
 import React from 'react'
 
-import { DepositCard } from '@views/Deposit/DepositCard'
 import { PagePadding } from '@components/Layout/PagePadding'
-import { UpcomingPrizeCard } from './UpcomingPrizeCard'
-import { VotingPromptCard } from '@components/VotingPromptCard'
-import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
-import { Carousel } from '@pooltogether/react-components'
-import { PrizeBreakdown as PrizeBreakdownTable } from '@components/PrizeBreakdown'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { useSelectedPrizeDistributorToken } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributorToken'
+import { NetworkCarousel } from './NetworkCarousel'
+import { DepositTrigger } from './DepositTrigger'
+import { Footer } from './Footer'
 
 export const DepositUI = () => {
   return (
-    <PagePadding className='flex flex-col justify-center'>
-      <Carousel className='pb-2' marginClassName='-mx-2'>
-        <UpcomingPrizeCard />
-        <PrizeBreakdown />
-      </Carousel>
-      <DepositCard />
-      <VotingPromptCard />
-      <OddsDisclaimer />
+    <PagePadding
+      paddingClassName=''
+      widthClassName=''
+      marginClassName=''
+      className='absolute inset-0'
+    >
+      <div className='mx-auto h-full pt-11 sm:pt-14 flex flex-col'>
+        <div className='h-full flex flex-col justify-center space-y-16 xs:space-y-20 md:space-y-28'>
+          <NetworkCarousel />
+          <DepositTrigger />
+        </div>
+        <Footer />
+      </div>
     </PagePadding>
   )
-}
-
-const PrizeBreakdown = () => {
-  const prizePool = useSelectedPrizePool()
-  const { data: prizeTierData } = useUpcomingPrizeTier(prizePool)
-  const { data: prizeTokenData } = useSelectedPrizeDistributorToken()
-  return <PrizeBreakdownTable prizeTier={prizeTierData?.prizeTier} ticket={prizeTokenData?.token} />
 }

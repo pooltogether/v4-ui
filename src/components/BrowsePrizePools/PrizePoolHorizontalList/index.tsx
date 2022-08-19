@@ -21,7 +21,7 @@ export const PrizePoolHorizontalList: React.FC<{
   isFetched?: boolean
   className?: string
   marginClassName?: string
-  onClick?: (prizePool: PrizePool) => void
+  onPrizePoolSelect?: (prizePool: PrizePool) => void
 }> = (props) => {
   const {
     isPartiallyFetched,
@@ -29,7 +29,7 @@ export const PrizePoolHorizontalList: React.FC<{
     prizePools,
     prizePoolCardContent,
     label,
-    onClick,
+    onPrizePoolSelect,
     className,
     marginClassName
   } = props
@@ -46,9 +46,9 @@ export const PrizePoolHorizontalList: React.FC<{
             key={`${label}-horizontal-pools-list-${prizePool.id()}`}
             prizePool={prizePool}
             onClick={(prizePool) => {
-              console.log('onClick', onClick, prizePool)
-              if (!!onClick) {
-                onClick(prizePool)
+              console.log('onClick', onPrizePoolSelect, prizePool)
+              if (!!onPrizePoolSelect) {
+                onPrizePoolSelect(prizePool)
               } else {
                 setSelectedPrizePoolAddress(prizePool)
               }

@@ -43,7 +43,10 @@ export const TxButton = (props: TxButtonProps) => {
 
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const networkName = getNetworkNiceNameByChainId(chainId)
-  const disabled = _disabled || state === TransactionState.pending
+  const disabled =
+    (_disabled || state === TransactionState.pending) &&
+    isWalletConnected &&
+    isWalletOnProperNetwork
 
   const [content, onClick, type] = useMemo(() => {
     if (!isWalletConnected) {

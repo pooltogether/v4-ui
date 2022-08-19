@@ -40,8 +40,9 @@ export const AccountUI = (props) => {
         <CardContent>
           <V4DepositList />
           <RewardsHaveMoved />
-          <hr />
+          <hr className='sm:hidden' />
           <GovernanceSidebarCard usersAddress={usersAddress} className='sm:hidden' />
+          <OddsOfWinningWithX className='sm:hidden' />
           <hr className='sm:hidden' />
           <DelegationList />
           <EarnRewardsCard />
@@ -84,7 +85,9 @@ const CardContent: React.FC<{ className?: string }> = (props) => {
     children = (
       <>
         <BrowsePrizePools />
+        <hr className='sm:hidden' />
         <OddsOfWinningWithX className='sm:hidden' />
+        <hr className='sm:hidden' />
         <FunWalletConnectionPrompt />
       </>
     )
@@ -95,7 +98,7 @@ const CardContent: React.FC<{ className?: string }> = (props) => {
       {...props}
       children={children}
       className={classNames(
-        'w-full bg-white bg-opacity-80 dark:bg-pt-purple-darkest py-10 lg:py-12 rounded-xl space-y-8 px-4 sm:px-6 lg:px-12',
+        'w-full bg-white bg-opacity-80 dark:bg-pt-purple-darkest py-10 lg:py-12 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12',
         className
       )}
     />

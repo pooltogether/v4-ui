@@ -3,6 +3,7 @@ import { useQuery } from 'react-query'
 import { Amount } from '@pooltogether/hooks'
 import { EstimateAction } from '@constants/odds'
 import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
+import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
  * Calculates the overall chances of winning a prize on any network
@@ -11,6 +12,7 @@ import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
  * @returns
  */
 export const useOdds = (
+  prizePool: PrizePool,
   totalSupply: Amount,
   twab: Amount,
   numberOfPrizes: number,
@@ -22,7 +24,16 @@ export const useOdds = (
 
   return useQuery(
     getOddsKey(totalSupply, twab, numberOfPrizes, action, actionAmountUnformatted),
-    () => getOdds(totalSupply, twab, numberOfPrizes, decimals, action, actionAmountUnformatted),
+    () =>
+      getOdds(
+        prizePool,
+        totalSupply,
+        twab,
+        numberOfPrizes,
+        decimals,
+        action,
+        actionAmountUnformatted
+      ),
     { enabled }
   )
 }
@@ -43,6 +54,7 @@ export const getOddsKey = (
 ]
 
 export const getOdds = (
+  prizePool: PrizePool,
   totalSupply: Amount,
   twab: Amount,
   numberOfPrizes: number,
@@ -60,6 +72,7 @@ export const getOdds = (
   )
 
   return {
+    prizePoolId: prizePool.id(),
     odds,
     oneOverOdds
   }
