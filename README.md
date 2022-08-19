@@ -1,33 +1,27 @@
-# PoolTogether V4 UI
+# Project Name
 
-The user interface for interacting with V4 of the PoolTogether prize-savings protocol.
+Pool-Together
 
-## 💾 &nbsp; Installation
+## Link to working code in a public repo
 
-Install dependencies:
+https://pooltogether-v4-ui.vercel.app/ ---- temporary url
 
-```bash
-$ yarn
-```
+https://github.com/pooltogether/v4-ui/pull/89 ---- pull Request
 
-Make sure you have `direnv` installed and copy `.envrc.example` to `.envrc`:
+### Recorded video demo of the integration (max. 3 mins)
 
-```bash
-$ cp .envrc.example .envrc
-```
+https://vimeo.com/741095338
 
-Fill in your own values for `.envrc`, then run:
+### Person of contact in case there are any questions
 
-```bash
-$ direnv allow
-```
+Nwakaku Wisdom
+Blessingchidinmanwakaku@gmail.com
 
-To run the local server, run:
+### Discord ID
+blessingnwa#4891
 
-```
-$ yarn dev
-```
+### UnstoppableDomain registered account email address
 
-#### Developer Tools
+Blessingchidinmanwakaku@gmail.com
 
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+## Learn More
