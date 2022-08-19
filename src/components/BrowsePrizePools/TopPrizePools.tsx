@@ -1,6 +1,6 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
-import { HorizontalListByPrizes } from './PrizePoolHorizontalList/HorizontalListByPrizes'
+import { HorizontalListByOdds } from './PrizePoolHorizontalList/HorizontalListByOdds'
 import { HorizontalListByTvl } from './PrizePoolHorizontalList/HorizontalListByTvl'
 
 export const TopPrizePools: React.FC<{
@@ -9,16 +9,10 @@ export const TopPrizePools: React.FC<{
 }> = (props) => {
   const { onClick, marginClassName } = props
   return (
-    <>
-      <div className='flex flex-col'>
-        <ListHeader>Total Value Locked</ListHeader>
-        <HorizontalListByTvl onClick={onClick} marginClassName={marginClassName} />
-      </div>
-      <div className='flex flex-col'>
-        <ListHeader>Expected Daily Prizes</ListHeader>
-        <HorizontalListByPrizes onClick={onClick} marginClassName={marginClassName} />
-      </div>
-    </>
+    <div className='space-y-16'>
+      <HorizontalListByTvl onPrizePoolSelect={onClick} marginClassName={marginClassName} />
+      <HorizontalListByOdds onPrizePoolSelect={onClick} marginClassName={marginClassName} />
+    </div>
   )
 }
 
