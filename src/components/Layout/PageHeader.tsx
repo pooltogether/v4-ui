@@ -26,7 +26,7 @@ import UAuth from '@uauth/js'
 const uauth = new UAuth(
   {
     clientID: "da07b4f5-d452-4a95-b798-298776d04d6d",
-    redirectUri: "http://localhost:3000",
+    redirectUri: "https://pooltogether-v4-ui.vercel.app/deposit",
     scope: "openid wallet"
   }
 )
