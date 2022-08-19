@@ -21,7 +21,7 @@ export const ExplorePrizePoolsView: React.FC<
   }
 
   return (
-    <div>
+    <div className='pb-16'>
       <BrowsePrizePoolsHeader className='mb-12' />
       {/* TODO: Add a list of filtered prize pools by token holdings */}
       <Tabs
