@@ -1,5 +1,5 @@
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   LanguagePickerDropdown,
@@ -20,6 +20,16 @@ import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
+import UnstoppableBotton from './UnstoppableBotton'
+import UAuth from '@uauth/js'
+
+const uauth = new UAuth(
+  {
+    clientID: "da07b4f5-d452-4a95-b798-298776d04d6d",
+    redirectUri: "http://localhost:3000",
+    scope: "openid wallet"
+  }
+)
 
 export enum ContentPaneState {
   deposit = 'deposit',
@@ -28,12 +38,59 @@ export enum ContentPaneState {
 }
 
 export const PageHeader = (props) => {
+    const [userWallet, setUserWallet] = useState<string>('')
+
+          //useEffect model
+  useEffect(() => {
+    // setUserWallet("Login With Unstoppable")
+    uauth
+      .user()
+      .then((user) => {
+        setUserWallet(user.sub)
+        // user exists
+        console.log('User information:', user)
+      })
+      .catch((err) => {
+        console.log(err)
+        // user does not exist
+      })
+  }, [])
+
+    //login button
+  const login = async () => {
+    try {
+      const authorization = await uauth.loginWithPopup()
+      uauth.user().then((user) => {
+        setUserWallet(user.sub)
+        // user exist
+        console.log('User information:', user)
+      })
+      console.log(authorization)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const logout = async () => {
+    try {
+      await uauth.logout()
+      setUserWallet('')
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
       <TopNavigation className='absolute mx-auto inset-x-0' />
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />
+        <UnstoppableBotton
+          onClick={login}
+          width='150px'
+          children='Login With Unstoppable'
+        />
         <Settings />
       </div>
     </PageHeaderContainer>
