@@ -25,7 +25,7 @@ export const useUsersPrizePoolBalancesWithFiat = (usersAddress: string, prizePoo
     [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
     async () => getUsersPrizePoolBalances(prizePool, usersAddress, balances?.balances),
     {
-      enabled: !!balances
+      enabled: !!balances && !!usersAddress
     }
   )
 }

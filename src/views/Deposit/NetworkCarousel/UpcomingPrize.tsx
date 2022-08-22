@@ -17,6 +17,7 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useAllPrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolTotalNumberOfPrizes'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
+import { Dot } from '@components/Dot'
 
 export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -221,7 +222,7 @@ const LightningBolts = () => (
     />
     <LightningBolt
       color='teal'
-      className='top-28 xs:top-28 sm:top-32 left-0 xs:pt-2 w-8 h-8 xs:w-12 xs:h-12'
+      className='top-24 xs:top-28 sm:top-32 left-0 xs:pt-2 w-8 h-8 xs:w-12 xs:h-12'
       scale={0.8}
       rotate={-20}
     />
@@ -231,7 +232,7 @@ const LightningBolts = () => (
       color='teal'
       scale={1.2}
       rotate={5}
-      className='top-28 xs:top-28 sm:top-32 right-0 xs:right-2 w-10 h-10 xs:w-12 xs:h-12'
+      className='top-20 xs:top-28 sm:top-32 right-0 xs:right-2 lg:-right-8 w-10 h-10 xs:w-12 xs:h-12'
     />
     <LightningBolt
       flip
@@ -248,37 +249,12 @@ const Dots = () => (
     {/* Left */}
     <Dot className='top-4 left-2' />
     <Dot className='top-2 left-24' />
-    <Dot className='top-24 sm:top-28 left-0 xs:-left-8' />
+    <Dot className='top-22 sm:top-28 left-0 xs:-left-8' />
 
     {/* Right */}
     <Dot className='top-2  right-32' />
     <Dot className='top-10 right-52' />
-    <Dot className='top-16 right-0' />
+    <Dot className='top-14 right-0 xs:-right-12' />
     <Dot className='top-28 right-10 xs:right-20 sm:right-28' />
   </>
 )
-
-const Dot = (props: { className?: string }) => {
-  const [id] = useState(Math.random())
-
-  return (
-    <FeatherIcon
-      icon={id > 0.5 ? 'circle' : 'triangle'}
-      className={classNames(props.className, 'absolute stroke-1 w-2 xs:w-3 fill-current', {
-        'text-pt-green': id > 0.8,
-        'text-pt-purple-light': 0.3 < id && id <= 0.8,
-        'text-pt-red-light': 0.2 < id && id <= 0.3,
-        'text-gradient-yellow': 0.1 < id && id <= 0.2,
-        'text-gradient-cyan': id <= 0.1,
-        'transform rotate-12': id > 0.6,
-        'transform rotate-0': id <= 0.4 && id <= 0.3,
-        'transform rotate-90': id < 0.3,
-        'hidden xs:block': id < 0.3
-      })}
-    />
-  )
-}
-
-Dot.defaultProps = {
-  square: false
-}

@@ -34,7 +34,6 @@ import '@assets/styles/tsunami.css'
 // Bottom sheet
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-spring-bottom-sheet/dist/style.css'
-import '@assets/styles/bottomSheet.css'
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { CHAIN_ID } from '@constants/misc'
 import {

@@ -1,7 +1,6 @@
-import { useConnectWallet } from '@pooltogether/wallet-connection'
 import { useConnect } from 'wagmi'
+import { useActualFullScreen } from './useActualFullScreen'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
-import { usePrizePools } from './v4/PrizePool/usePrizePools'
 
 /**
  * Initial fetches required, regardless of the page loaded.
@@ -9,6 +8,7 @@ import { usePrizePools } from './v4/PrizePool/usePrizePools'
  * core data required to render everything
  */
 export const useInitialLoad = () => {
+  useActualFullScreen()
   const queryResults = useAllPrizePoolTokens()
   const { status } = useConnect()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)

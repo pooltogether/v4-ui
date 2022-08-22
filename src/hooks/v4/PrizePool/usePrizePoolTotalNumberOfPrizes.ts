@@ -55,6 +55,7 @@ export const getPrizePoolTotalNumberofPrizes = (
   percentageOfPicks: number,
   decimals: string
 ) => {
+  console.log(prizePool.id(), { percentageOfPicks })
   const totalNumberOfPrizes = getNumberOfPrizes(prizeTier.tiers, prizeTier.bitRangeSize)
   const totalValueOfPrizes = getAmountFromBigNumber(
     prizeTier.prize.mul(parseUnits(percentageOfPicks.toString(), 8)).div(parseUnits('1', 8)),

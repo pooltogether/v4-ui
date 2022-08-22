@@ -21,16 +21,12 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
       const queryResult = queriesResult?.find((queryResult) => {
-        const { data: tokens } = queryResult
-        return tokens.prizePoolId === prizePool.id()
+        return queryResult.isFetched && queryResult.data?.prizePoolId === prizePool.id()
       })
       return {
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
-        queryFn: async () => {
-          const { data: tokens } = queryResult
-          return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)
-        },
-        enabled: queryResult?.isFetched && !!usersAddress
+        queryFn: async () => getUsersPrizePoolBalances(prizePool, usersAddress, queryResult?.data),
+        enabled: !!queryResult?.isFetched && !!usersAddress
       }
     })
   )
@@ -83,12 +79,11 @@ const getTotalValueUsdScaled = (
 ) => {
   let totalValueUsdScaled = BigNumber.from(0)
 
-  data.forEach((balanceData) => {
+  data?.forEach((balanceData) => {
     if (!balanceData) return
 
-    const { prizePool, balances } = balanceData
     // NOTE: Assumes stablecoins
-    const valueUsdScaled = toScaledUsdBigNumber(balances.ticket.amount)
+    const valueUsdScaled = toScaledUsdBigNumber(balanceData.balances.ticket.amount)
     totalValueUsdScaled = totalValueUsdScaled.add(valueUsdScaled)
   })
 

@@ -39,6 +39,7 @@ export const getUsersPrizePoolBalances = async (
   usersAddress: string
   balances: UsersPrizePoolBalances
 }> => {
+  console.log('getUsersPrizePoolBalances', usersAddress, prizePool?.id())
   const balances = await prizePool.getUsersPrizePoolBalances(usersAddress)
   const { ticket, token } = tokens
 

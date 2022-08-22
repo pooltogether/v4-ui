@@ -1,3 +1,5 @@
+import { Dot } from '@components/Dot'
+import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.png'
 import { useAllPrizeDistributorTokens } from '@hooks/v4/PrizeDistributor/useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from '@hooks/v4/PrizeDistributor/useAllValidDrawIds'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
@@ -18,6 +20,8 @@ import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { useQuery } from 'wagmi'
+import { CHAIN_ID } from '@constants/misc'
+import { NetworkIcon } from '@pooltogether/react-components'
 
 export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -32,56 +36,53 @@ export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
     totalAmountWon: Amount
     totalPrizesWon: number
   }>(() => {
-    return {
-      isFetched: true,
-      isPartiallyFetched: true,
-      totalAmountWon: getAmountFromBigNumber(ethers.constants.Zero, '6'),
-      totalPrizesWon: 0
+    const isFetched = queryResults.every(({ isFetched }) => isFetched)
+    const isPartiallyFetched = queryResults.some(({ isFetched }) => isFetched)
+    if (!isPartiallyFetched) {
+      return {
+        isFetched,
+        isPartiallyFetched,
+        totalAmountWon: null,
+        totalPrizesWon: null
+      }
     }
-
-    // const isFetched = queryResults.every(({ isFetched }) => isFetched)
-    // const isPartiallyFetched = queryResults.some(({ isFetched }) => isFetched)
-    // if (!isPartiallyFetched) {
-    //   return {
-    //     isFetched,
-    //     isPartiallyFetched,
-    //     totalAmountWon: null,
-    //     totalPrizesWon: null
-    //   }
-    // }
-    // // NOTE: Assumes all tokens are the same decimals
-    // // We will need to migrate this to a fiat value in the near future.
-    // const decimals = prizeDistributorTokenData?.token.decimals
-    // const data = queryResults.reduce(
-    //   (totalData, { isError, isFetched, data }) => {
-    //     if (!isFetched || isError) {
-    //       return totalData
-    //     }
-    //     totalData.totalAmountWon = totalData.totalAmountWon.add(data.amount.amountUnformatted)
-    //     totalData.totalPrizesWon = totalData.totalPrizesWon + data.prizesWon
-    //     return totalData
-    //   },
-    //   { totalAmountWon: ethers.constants.Zero, totalPrizesWon: 0 }
-    // )
-    // return {
-    //   isFetched,
-    //   isPartiallyFetched,
-    //   totalAmountWon: getAmountFromBigNumber(data.totalAmountWon, decimals),
-    //   totalPrizesWon: data.totalPrizesWon
-    // }
-    // }, [queryResults])
-  }, [])
+    // NOTE: Assumes all tokens are the same decimals
+    // We will need to migrate this to a fiat value in the near future.
+    const decimals = prizeDistributorTokenData?.token.decimals
+    const { totalAmountWon, totalPrizesWon } = queryResults.reduce(
+      (totalData, { isError, isFetched, data }) => {
+        if (!isFetched || isError) {
+          return totalData
+        }
+        totalData.totalAmountWon = totalData.totalAmountWon.add(data.amount.amountUnformatted)
+        totalData.totalPrizesWon = totalData.totalPrizesWon + data.prizesWon
+        return totalData
+      },
+      { totalAmountWon: ethers.constants.Zero, totalPrizesWon: 0 }
+    )
+    return {
+      isFetched,
+      isPartiallyFetched,
+      totalAmountWon: getAmountFromBigNumber(totalAmountWon, decimals),
+      totalPrizesWon: totalPrizesWon
+    }
+  }, [queryResults, prizeDistributorTokenData])
 
   return (
-    <div className={classNames('max-w-md', className)}>
-      <div className='flex flex-col'>
-        <span>Last draw</span>
-        <div>
+    <div className={classNames('max-w-lg py-8 relative', className)}>
+      <Art />
+      <div className='flex flex-col xs:ml-20 max-w-xs mx-auto'>
+        <span className='opacity-70'>Last draw</span>
+        <div className='flex mb-4'>
           <span className='text-8xl xs:text-12xl leading-none'>{totalPrizesWon}</span>
-          <span>prizes won</span>
+          <span className='mt-auto opacity-70'>prizes won</span>
         </div>
-        <span>totalling</span>
-        <span className='text-8xl xs:text-12xl leading-none'>${totalAmountWon?.amountPretty}</span>
+        <div className='flex flex-col'>
+          <span className='opacity-70'>totalling</span>
+          <span className='text-12xl xs:text-14xl leading-none'>
+            ${totalAmountWon?.amountPretty}
+          </span>
+        </div>
       </div>
     </div>
   )
@@ -95,7 +96,6 @@ const getQueryKey = (prizeDistributor: PrizeDistributor) => [
 const useAllLastDrawWinners = () => {
   const prizeDistributors = usePrizeDistributors()
   const drawIdQueries = useAllValidDrawIds()
-  const tokenQueries = useAllPrizeDistributorTokens()
   const queries = useMemo(
     () =>
       prizeDistributors.map((prizeDistributor) => {
@@ -103,38 +103,18 @@ const useAllLastDrawWinners = () => {
           (query) => query.isFetched && query.data?.prizeDistributorId === prizeDistributor.id()
         )?.data.drawIds
 
-        const token = tokenQueries.find(
-          (query) => query.isFetched && query.data?.prizeDistributorId === prizeDistributor.id()
-        )?.data.token
-
         return {
           queryKey: getQueryKey(prizeDistributor),
-          queryFn: () => getLastDrawStats(prizeDistributor, drawIds?.[drawIds.length - 1], token)
+          queryFn: () => getLastDrawStats(prizeDistributor, drawIds?.[drawIds.length - 1]),
+          enabled: !!drawIds
         }
       }),
-    [prizeDistributors, tokenQueries, drawIdQueries]
+    [prizeDistributors, drawIdQueries]
   )
   return useQueries(queries)
 }
 
-const useLastDrawWinners = (prizeDistributor: PrizeDistributor) => {
-  const { data, isFetched } = useValidDrawIds(prizeDistributor)
-  const { data: tokenData, isFetched: isTokenDataFetched } =
-    usePrizeDistributorToken(prizeDistributor)
-
-  return useQuery(
-    getQueryKey(prizeDistributor),
-    () =>
-      getLastDrawStats(prizeDistributor, data?.drawIds[data?.drawIds.length - 1], tokenData.token),
-    { enabled: isFetched && isTokenDataFetched }
-  )
-}
-
-const getLastDrawStats = async (
-  prizeDistributor: PrizeDistributor,
-  _drawId: number,
-  token: Token
-) => {
+const getLastDrawStats = async (prizeDistributor: PrizeDistributor, _drawId: number) => {
   let drawId = _drawId
   const fetchData = (drawId: number) =>
     fetch(
@@ -160,9 +140,59 @@ const getLastDrawStats = async (
       throw new Error('Could not fetch draw results')
     }
   }
+
   return {
     prizesWon: data.meta.prizeLength,
-    amount: getAmountFromString(data.meta.amountsTotal, token.decimals),
+    amount: getAmountFromString(data.meta.amountsTotal, '0'),
     drawId
   }
 }
+
+const Art = () => (
+  <>
+    {/* Trophy */}
+    <img src={TrophyIcon} className='w-16 absolute right-2 top-20 transform rotate-3' />
+    <Dot className='top-4 -right-4 xs:-top-8 xs:-right-12' />
+    <Dot className='top-0 -right-6' />
+    <Dot className='top-8 right-0' />
+    <Dot className='top-8 -right-4' />
+    <Dot className='top-10 right-12' />
+    <Dot className='top-12 right-8' />
+    <Dot className='top-14 right-4' />
+    <Dot className='top-16 right-10' />
+    <Dot className='bottom-20 -right-2 xs:-right-8 sm:-right-20' />
+
+    <NetworkIcon
+      chainId={CHAIN_ID.mainnet}
+      sizeClassName='w-8 h-8 xs:w-12 xs:h-12'
+      className='absolute -top-4 xs:top-0 -left-4 transform -rotate-6'
+    />
+    <NetworkIcon
+      chainId={CHAIN_ID.polygon}
+      sizeClassName='w-8 h-8  xs:w-10 xs:h-10'
+      className='absolute right-16 -top-8'
+    />
+    <NetworkIcon
+      chainId={CHAIN_ID.avalanche}
+      sizeClassName='w-8 h-8'
+      className='absolute right-12 -top-3'
+    />
+    <NetworkIcon
+      chainId={CHAIN_ID.optimism}
+      sizeClassName='w-10 h-10 sm:w-14 sm:h-14'
+      className='absolute top-28 -right-10 xs:-right-12 sm:-right-28 transform rotate-6'
+    />
+
+    <span className='absolute top-0 right-0 transform -rotate-6'>🥳</span>
+    <span className='absolute top-8 right-5 transform -rotate-4'>🥳</span>
+    <span className='absolute top-6 right-12 transform '>🎉</span>
+
+    {/* Left */}
+    <Dot className='top-0 -left-2 xs:-left-6' />
+    <Dot className='-top-4 left-12' />
+    <Dot className='top-0 left-24' />
+    <Dot className='top-8 sm:top-12 -left-4 xs:-left-8' />
+
+    {/* Right */}
+  </>
+)

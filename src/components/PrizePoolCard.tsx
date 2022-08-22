@@ -184,7 +184,7 @@ export const NumberOfPrizes: React.FC<{ prizePool: PrizePool }> = (props) => {
     <div className='flex flex-col'>
       <CardLabelSmall>Expected number of prizes</CardLabelSmall>
       {isFetched ? (
-        <CardLabelLarge>{Math.max(1, Math.round(data?.numberOfPrizes))}</CardLabelLarge>
+        <CardLabelLarge>{Math.round(data?.numberOfPrizes)}</CardLabelLarge>
       ) : (
         <ThemedClipSpinner />
       )}

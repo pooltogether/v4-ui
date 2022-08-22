@@ -102,7 +102,7 @@ const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: n
 
   if (!isFetched || data?.odds === undefined) {
     return (
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
+      <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <ThemedClipSpinner sizeClassName='w-5 h-5' className='mx-auto' />
       </div>
     )
@@ -112,7 +112,7 @@ const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: n
 
   if (data.odds === 0) {
     return (
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
+      <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
         <span className='font-bold flex text-lg mx-auto'>
           {daysOfPrizes === 1 ? '0 😔' : '0 😭'}
         </span>
@@ -122,7 +122,7 @@ const OddsBox = (props: { usersAddress: string; i18nKey: string; daysOfPrizes: n
   }
 
   return (
-    <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
+    <div className='bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-lg w-full p-4 flex flex-col leading-none text-center'>
       <span className='font-bold flex text-lg mx-auto'>1:{oneOverOddstring}</span>
       <span className='mt-1 opacity-50 text-xxxs xs:text-xs font-bold uppercase'>
         {t(i18nKey)}*

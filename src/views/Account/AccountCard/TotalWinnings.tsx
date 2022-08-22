@@ -42,7 +42,7 @@ export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
         onClick={() => setIsOpen(true)}
         className={classNames(
           className,
-          'p-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg font-bold text-inverse'
+          'p-4 bg-white dark:bg-actually-black dark:bg-opacity-10 hover:bg-white rounded-lg font-bold text-inverse'
         )}
       >
         <div className='flex justify-between w-full'>
@@ -51,7 +51,7 @@ export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
             {t('claimedWinningsExclamation', 'Claimed winnings!')}
           </span>
           <div className='flex'>
-            <TotalWinningsAmount className='relative rounded-full bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 px-3' />
+            <TotalWinningsAmount />
             <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
           </div>
         </div>

@@ -17,7 +17,7 @@ export const useAllUsersPrizePoolBalances = (usersAddress: string) => {
       return {
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool?.id(), usersAddress],
         queryFn: async () => getUsersPrizePoolBalances(prizePool, usersAddress, queryResult?.data),
-        enabled: !!queryResult && !!usersAddress && !!prizePools
+        enabled: !!queryResult?.isFetched && !!usersAddress
       }
     })
   )

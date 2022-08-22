@@ -414,7 +414,7 @@ const ClaimModalForm = (props) => {
               theme={ButtonTheme.rainbow}
               className='mt-4 mb-8 flex w-full items-center justify-center'
             >
-              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
+              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit')}
             </ButtonLink>
           </div>
         </>
@@ -530,7 +530,7 @@ const RewardsEndInBanner = (props) => {
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
             <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
-              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
+              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit')}
             </a>
           </Link>
         )}

@@ -153,8 +153,11 @@ export const DepositModal: React.FC<{
     <ModalWithViewState
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-white to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
-      modalHeightClassName='h-screen xs:h-auto min-h-1/2'
+      modalHeightClassName='h-actually-full-screen sm:h-auto min-h-1/2'
+      widthClassName='w-screen sm:w-full'
+      roundedClassName='rounded-none sm:rounded-xl'
       className='h-full'
+      maxWidthClassName='sm:max-w-2xl'
       isOpen={isOpen}
       closeModal={() => {
         setDepositTransactionId('')

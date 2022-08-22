@@ -43,7 +43,7 @@ export const SelectPrizePoolModal = (props: SelectPrizePoolModalProps) => {
         <PrizePoolLabel prizePool={selectedPrizePool} />
         <FeatherIcon icon='chevron-down' />
       </button>
-      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='max-w-md'>
+      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='xs:max-w-md'>
         <h6 className='text-center uppercase text-sm mb-3'>
           {t('chooseAPrizePool', 'Choose a Prize Pool')}
         </h6>
