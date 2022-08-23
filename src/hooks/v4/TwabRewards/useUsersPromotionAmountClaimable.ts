@@ -50,8 +50,9 @@ export const getUsersPromotionAmountClaimable = async (
   token: TokenWithAllBalances
 ) => {
   const { decimals, address } = token
-
   let claimableUnformatted = BigNumber.from(0)
+
+  console.log('here', usersPromotionData.rewardsAmount, claimableUnformatted)
 
   usersPromotionData.rewardsAmount.forEach((numString) => {
     const amountUnformatted = BigNumber.from(numString)
@@ -66,5 +67,6 @@ export const getUsersPromotionAmountClaimable = async (
     usd = Number(claimableFormatted) * tokenPrices[address].usd
   }
 
+  console.log('after', claimableUnformatted, claimableFormatted, amount)
   return { amount, usd }
 }

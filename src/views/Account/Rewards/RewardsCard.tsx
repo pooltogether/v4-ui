@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
@@ -30,7 +30,8 @@ import {
   displayPercentage,
   numberWithCommas,
   getNetworkNameAliasByChainId,
-  getNetworkNiceNameByChainId
+  getNetworkNiceNameByChainId,
+  sToD
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
@@ -375,7 +376,8 @@ const ClaimModalForm = (props) => {
   const { decimals, symbol } = token
   const tokenSymbol = symbol
 
-  const { value, unit } = getNextRewardIn(promotion)
+  const { value, unit, seconds } = getNextRewardIn(promotion)
+  console.log(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -437,13 +439,27 @@ const ClaimModalForm = (props) => {
               vapr={vapr}
             />
 
-            <UnitPanel
-              label={t('nextReward', 'Next Reward')}
-              chainId={chainId}
-              icon={<span className='mr-1'>🗓️</span>}
-              value={value}
-              unit={t(unit)}
-            />
+            {promotion.epochDuration >= seconds ? (
+              <UnitPanel
+                label={
+                  promotion.currentEpochId === promotion.numberOfEpochs
+                    ? 'Rewards end in'
+                    : t('nextReward', 'Next Reward')
+                }
+                chainId={chainId}
+                icon={<span className='mr-1'>🗓️</span>}
+                value={value}
+                unit={t(unit)}
+              />
+            ) : (
+              <UnitPanel
+                label={'Rewards start in'}
+                chainId={chainId}
+                icon={<span className='mr-1'>🗓️</span>}
+                value={sToD(seconds - promotion.epochDuration)}
+                unit={t(unit)}
+              />
+            )}
           </div>
         </>
       )}
@@ -718,26 +734,30 @@ const UnitPanel = (props) => {
 const BalanceDisplay = (props) => {
   const { prizePool, claimableAmount, promotion } = props
 
-  let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
-
   const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(prizePool, promotion)
-  if (currentEpochEstimateAccrued) {
-    balance = balance + currentEpochEstimateAccrued
-  }
 
-  const isReady = !isNaN(balance)
+  const balance = useMemo(() => {
+    if (
+      currentEpochEstimateAccrued === null ||
+      currentEpochEstimateAccrued < 0 ||
+      !claimableAmount
+    ) {
+      return null
+    }
+    return numberWithCommas(Number(claimableAmount.amount) + currentEpochEstimateAccrued)
+  }, [claimableAmount?.amount, currentEpochEstimateAccrued])
+
+  if (currentEpochEstimateAccrued === null) {
+    return <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
+  }
 
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-1', {
-        'opacity-50': balance <= 0
+        'opacity-50': balance === 0 || !balance
       })}
     >
-      {isReady ? (
-        <>{numberWithCommas(balance)}</>
-      ) : (
-        <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
-      )}
+      {balance || 0}
     </div>
   )
 }

@@ -27,7 +27,7 @@ export const useUsersCurrentEpochEstimateAccrued = (prizePool: PrizePool, promot
 
   return useMemo(() => {
     if (!currentEpoch || !isTwabDataFetched || !tokenIsFetched || !totalTwabSupply) {
-      return undefined
+      return null
     }
     const users = formatUnits(twabData.twab.amountUnformatted, depositTokenDecimals)
     const total = formatUnits(totalTwabSupply, depositTokenDecimals)
