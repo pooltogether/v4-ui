@@ -738,7 +738,7 @@ const BalanceDisplay = (props) => {
 
   const balance = useMemo(() => {
     if (
-      currentEpochEstimateAccrued === null ||
+      (!claimableAmount && currentEpochEstimateAccrued === null) ||
       currentEpochEstimateAccrued < 0 ||
       !claimableAmount
     ) {
@@ -747,7 +747,7 @@ const BalanceDisplay = (props) => {
     return numberWithCommas(Number(claimableAmount.amount) + currentEpochEstimateAccrued)
   }, [claimableAmount?.amount, currentEpochEstimateAccrued])
 
-  if (currentEpochEstimateAccrued === null) {
+  if (!claimableAmount && currentEpochEstimateAccrued === null) {
     return <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
   }
 
