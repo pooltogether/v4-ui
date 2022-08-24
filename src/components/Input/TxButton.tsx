@@ -9,7 +9,7 @@ import {
   useIsWalletConnected,
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
-import { useNetwork } from 'wagmi'
+import { useSwitchNetwork } from 'wagmi'
 
 export interface TxButtonProps extends SquareButtonProps {
   state?: TransactionState
@@ -34,7 +34,7 @@ export const TxButton = (props: TxButtonProps) => {
   } = props
   const isWalletConnected = useIsWalletConnected()
   const connectWallet = useConnectWallet()
-  const { switchNetwork } = useNetwork()
+  const { switchNetwork } = useSwitchNetwork()
 
   const { t } = useTranslation()
 
