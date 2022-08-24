@@ -14,7 +14,8 @@ import {
   TokenIcon,
   SquareButtonTheme,
   SquareLink,
-  SquareButtonSize
+  SquareButtonSize,
+  ExternalLink
 } from '@pooltogether/react-components'
 import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import {
@@ -675,14 +676,9 @@ export const DelegateOPButton = (props) => {
   const { t } = useTranslation()
 
   return (
-    <SquareLink
-      href=''
-      size={SquareButtonSize.md}
-      theme={SquareButtonTheme.white}
-      className='w-full text-center mt-2'
-    >
+    <ExternalLink href='https://app.optimism.io/delegates' className='w-full text-center mt-2'>
       {t('delegateOp', 'Delegate OP')}
-    </SquareLink>
+    </ExternalLink>
   )
 }
 
