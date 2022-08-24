@@ -16,6 +16,7 @@ import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
 import { PastDrawsList } from './PastDrawsList'
 import { RewardsCard } from '@views/Account/Rewards/RewardsCard'
 import { CardTitle } from '@components/Text/CardTitle'
+import { EarnRewardsCard } from '@views/Account/Rewards/EarnRewardsCard'
 
 export const PRIZE_UI_STATES = {
   initialState: 'initialState',
@@ -52,7 +53,7 @@ export const PrizesUI = () => {
             ticket={prizePoolTokens?.ticket}
           />
         </div>
-        <RewardsCard />
+        <EarnRewardsCard />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
     )

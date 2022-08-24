@@ -57,7 +57,7 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
           />
           {children}
         </div>
-        <div className='space-y-6'>
+        <div className='space-y-10'>
           {(!!infoListItems || !!carouselChildren) && (
             <InfoBox infoListItems={infoListItems} carouselChildren={carouselChildren} />
           )}

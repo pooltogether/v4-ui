@@ -1,11 +1,11 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
-import { useAllPrizePoolTotalNumberOfPrizes } from './v4/PrizePool/useAllPrizePoolTotalNumberOfPrizes'
+import { useAllPrizePoolExpectedPrizes } from './v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from './v4/PrizePool/usePrizePools'
 
 export const usePrizePoolsByPrizes = () => {
   const _prizePools = usePrizePools()
-  const queryResults = useAllPrizePoolTotalNumberOfPrizes()
+  const queryResults = useAllPrizePoolExpectedPrizes()
   return useMemo(() => {
     const isPartiallyFetched = queryResults.some(({ isFetched }) => isFetched)
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
@@ -13,7 +13,7 @@ export const usePrizePoolsByPrizes = () => {
     const sortedPrizePoolIds = queryResults
       .filter(({ isFetched }) => isFetched)
       .map(({ data }) => data)
-      .sort((a, b) => b.numberOfPrizes - a.numberOfPrizes)
+      .sort((a, b) => b.expectedTotalNumberOfPrizes - a.expectedTotalNumberOfPrizes)
       .map(({ prizePoolId }) => prizePoolId)
     prizePools = sortedPrizePoolIds.map((prizePoolId) =>
       _prizePools.find((prizePool) => prizePool.id() === prizePoolId)

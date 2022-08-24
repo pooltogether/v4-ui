@@ -1,3 +1,4 @@
+import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { usePrizePoolsByOdds } from '@hooks/usePrizePoolsByOdds'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -21,11 +22,11 @@ export const HorizontalListByOdds: React.FC<{
     <div className={classNames(className, 'space-y-2')}>
       <div className='flex justify-between'>
         <span className='font-bold text-lg'>By odds</span>
-        <div className='bg-actually-black bg-opacity-10 rounded-full px-4 flex items-center'>
-          <select
+        <div className='flex items-center space-x-1'>
+          <span>per</span>
+          <TransparentSelect
             name='amount'
             id='amount'
-            className={'inline bg-transparent font-bold text-opacity-100'}
             onChange={(event) => setAmount(event.target.value)}
             value={amount}
           >
@@ -34,7 +35,7 @@ export const HorizontalListByOdds: React.FC<{
                 ${numberWithCommas(amount, { precision: 0 })}
               </option>
             ))}
-          </select>
+          </TransparentSelect>
         </div>
       </div>
       <PrizePoolHorizontalList

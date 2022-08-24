@@ -27,7 +27,7 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
   const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
 
   return useCallback(() => {
-    const name = `${t('save')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
+    const name = `${t('deposit')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
     const overrides: Overrides = { gasLimit: 750000 }
     let callTransaction
     if (delegateData.ticketDelegate === ethers.constants.AddressZero) {
@@ -48,9 +48,11 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
       callbacks: {
         onConfirmedByUser: () => logEvent(FathomEvent.deposit),
         onSuccess: () => {
+          console.log('onSuccess')
           refetchTicketDelegate()
         },
         refetch: () => {
+          console.log('refetching')
           refetchUsersTotalTwab()
           refetchUsersBalances()
         }

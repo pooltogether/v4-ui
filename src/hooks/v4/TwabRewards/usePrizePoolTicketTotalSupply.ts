@@ -6,19 +6,29 @@ import { usePrizePoolTicketDecimals } from '../PrizePool/usePrizePoolTicketDecim
 
 export const PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY = 'usePrizePoolTicketTotalSupply'
 
+export const getPrizePoolTicketTotalSupplyQueryKey = (prizePool: PrizePool) => [
+  PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY,
+  prizePool?.id()
+]
+
 export const usePrizePoolTicketTotalSupply = (prizePool: PrizePool) => {
   const refetchInterval = useRefetchInterval(prizePool?.chainId)
   const { data: decimals, isFetched } = usePrizePoolTicketDecimals(prizePool)
   const enabled = !!prizePool && isFetched
   return useQuery(
-    [PRIZE_POOL_TICKET_TOTAL_SUPPLY_QUERY_KEY, prizePool?.id()],
-    async () => {
-      const amountUnformatted = await prizePool?.getTicketTotalSupply()
-      return getAmountFromBigNumber(amountUnformatted, decimals)
-    },
+    getPrizePoolTicketTotalSupplyQueryKey(prizePool),
+    async () => getPrizePoolTicketTotalSupply(prizePool, decimals),
     {
       enabled,
       refetchInterval
     }
   )
+}
+
+export const getPrizePoolTicketTotalSupply = async (prizePool: PrizePool, decimals: string) => {
+  const amountUnformatted = await prizePool?.getTicketTotalSupply()
+  return {
+    prizePoolId: prizePool.id(),
+    amount: getAmountFromBigNumber(amountUnformatted, decimals)
+  }
 }

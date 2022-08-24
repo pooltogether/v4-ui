@@ -16,8 +16,9 @@ export const Dot = (props: { className?: string }) => {
         'text-gradient-cyan': id <= 0.1,
         'transform rotate-12': id > 0.6,
         'transform rotate-0': id <= 0.4 && id <= 0.3,
-        'transform rotate-90': id < 0.3
-        // 'hidden xs:block': id < 0.3
+        'transform rotate-90': id < 0.3,
+        'hidden': id < 0.2,
+        'hidden xs:block': id >= 0.2 && id < 0.5
       })}
     />
   )

@@ -14,8 +14,6 @@ export const BalanceHeader = () => {
   const usersAddress = useUsersAddress()
   const { data: balanceData } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
 
-  console.log({ balanceData })
-
   return (
     <TransparentDiv className='flex flex-col mt-5 rounded-xl px-2 xs:px-8 pb-2 xs:pb-2'>
       <TokenIcon

@@ -1,7 +1,9 @@
+import { ExpectedPrizeBreakdown } from '@components/ExpectedPrizeBreakdown'
 import {
   TokenAmountFormValues,
   TokenAmountInputFormView
 } from '@components/ModalViews/TokenAmountInputFormView'
+import { TransparentDiv } from '@components/TransparentDiv'
 import { useDepositValidationRules } from '@hooks/v4/PrizePool/useDepositValidationRules'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
@@ -51,12 +53,18 @@ export const DepositView: React.FC<
       }}
       carouselChildren={[
         <DepositInfoBox
+          key='deposit-info-box'
           formKey={formKey}
           transaction={transaction}
           bgClassName='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 transition-opacity'
           errorBgClassName='bg-white bg-opacity-10 dark:bg-actually-black dark:bg-opacity-30 transition-opacity'
         />,
-        <PrizeBreakdownCard key='prize-breakdown-card' />
+        <TransparentDiv
+          key='expected-prize-breakdown'
+          className='px-4 py-2 overflow-y-auto rounded-lg minimal-scrollbar max-h-48'
+        >
+          <ExpectedPrizeBreakdown className='mx-auto' />
+        </TransparentDiv>
       ]}
       chainId={prizePool.chainId}
       token={tokens?.token}

@@ -1,5 +1,5 @@
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { usePrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/usePrizePoolTotalNumberOfPrizes'
+import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import {
@@ -171,7 +171,7 @@ export const TotalValueLocked: React.FC<{ prizePool: PrizePool }> = (props) => {
     <div className='flex flex-col'>
       <CardLabelSmall>Total value locked</CardLabelSmall>
       <div className='flex items-end space-x-1'>
-        <CardLabelLarge>{data?.amountPretty}</CardLabelLarge>
+        <CardLabelLarge>{data?.amount.amountPretty}</CardLabelLarge>
         <CardLabelSmall className='mb-1'>{tokenData?.token.symbol}</CardLabelSmall>
       </div>
     </div>
@@ -179,12 +179,12 @@ export const TotalValueLocked: React.FC<{ prizePool: PrizePool }> = (props) => {
 }
 
 export const NumberOfPrizes: React.FC<{ prizePool: PrizePool }> = (props) => {
-  const { data, isFetched } = usePrizePoolTotalNumberOfPrizes(props.prizePool)
+  const { data, isFetched } = usePrizePoolExpectedPrizes(props.prizePool)
   return (
     <div className='flex flex-col'>
       <CardLabelSmall>Expected number of prizes</CardLabelSmall>
       {isFetched ? (
-        <CardLabelLarge>{Math.round(data?.numberOfPrizes)}</CardLabelLarge>
+        <CardLabelLarge>{Math.round(data?.expectedTotalNumberOfPrizes)}</CardLabelLarge>
       ) : (
         <ThemedClipSpinner />
       )}

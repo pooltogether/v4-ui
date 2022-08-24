@@ -67,7 +67,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
         totalValueUsdScaled
       }
     }
-  }, [queryResults])
+  }, [prizePools, queriesResult, queryResults, delegationData])
 }
 
 const getTotalValueUsdScaled = (

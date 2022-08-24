@@ -21,7 +21,7 @@ import { useMemo } from 'react'
 import { useQueries } from 'react-query'
 import { useQuery } from 'wagmi'
 import { CHAIN_ID } from '@constants/misc'
-import { NetworkIcon } from '@pooltogether/react-components'
+import { NetworkIcon, PoolIcon } from '@pooltogether/react-components'
 
 export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -51,7 +51,7 @@ export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
     const decimals = prizeDistributorTokenData?.token.decimals
     const { totalAmountWon, totalPrizesWon } = queryResults.reduce(
       (totalData, { isError, isFetched, data }) => {
-        if (!isFetched || isError) {
+        if (!isFetched || isError || !data) {
           return totalData
         }
         totalData.totalAmountWon = totalData.totalAmountWon.add(data.amount.amountUnformatted)
@@ -179,6 +179,10 @@ const Art = () => (
     />
     <NetworkIcon
       chainId={CHAIN_ID.optimism}
+      sizeClassName='w-10 h-10 sm:w-14 sm:h-14'
+      className='absolute top-12 right-20 xs:right-28 transform rotate-6'
+    />
+    <PoolIcon
       sizeClassName='w-10 h-10 sm:w-14 sm:h-14'
       className='absolute top-28 -right-10 xs:-right-12 sm:-right-28 transform rotate-6'
     />

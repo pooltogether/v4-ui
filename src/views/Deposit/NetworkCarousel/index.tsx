@@ -4,10 +4,13 @@ import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Carousel } from '@pooltogether/react-components'
 import { UpcomingPrize } from './UpcomingPrize'
 import { PrizeBreakdown as PrizeBreakdownTable } from '@components/PrizeBreakdown'
-import { PerDrawPrizeDistribution } from './PerDrawPrizeDistribution'
+import { PerDrawPrizeMoneyDistribution } from './PerDrawPrizeMoneyDistribution'
 import { LastDrawWinners } from './LastDrawWinners'
 import FeatherIcon from 'feather-icons-react'
+import { PerDrawPrizeCountDistribution } from './PerDrawPrizeCountDistribution'
+import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
 import classNames from 'classnames'
+import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
 
 export const NetworkCarousel = () => {
   return (
@@ -25,8 +28,10 @@ export const NetworkCarousel = () => {
       }}
     >
       <UpcomingPrize className='mx-auto' />
-      <LastDrawWinners className='mx-auto' />
-      <PerDrawPrizeDistribution className='mx-auto' />
+      <PrizePoolNetworkTvl className='mx-auto' />
+      <PerDrawPrizeMoneyDistribution className='mx-auto' />
+      <PerDrawPrizeCountDistribution className='mx-auto' />
+      <PerDrawAveragePrizeSize className='mx-auto' />
     </Carousel>
   )
 }
@@ -34,7 +39,7 @@ export const NetworkCarousel = () => {
 const PrevArrow = (props) => {
   const { className, style, onClick } = props
   return (
-    <button className={className} onClick={onClick}>
+    <button className={classNames('z-1', className)} onClick={onClick}>
       <FeatherIcon
         className={'w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8 mr-auto text-inverse'}
         style={{ ...style }}
@@ -47,7 +52,7 @@ const PrevArrow = (props) => {
 const NextArrow = (props) => {
   const { className, style, onClick } = props
   return (
-    <button className={className} onClick={onClick}>
+    <button className={classNames('z-1', className)} onClick={onClick}>
       <FeatherIcon
         className={'w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8 ml-auto text-inverse'}
         style={{ ...style }}
@@ -55,11 +60,4 @@ const NextArrow = (props) => {
       />
     </button>
   )
-}
-
-const PrizeBreakdown = () => {
-  const prizePool = useSelectedPrizePool()
-  const { data: prizeTierData } = useUpcomingPrizeTier(prizePool)
-  const { data: prizeTokenData } = useSelectedPrizeDistributorToken()
-  return <PrizeBreakdownTable prizeTier={prizeTierData?.prizeTier} ticket={prizeTokenData?.token} />
 }

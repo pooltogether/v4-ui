@@ -1,21 +1,17 @@
-import React, { useMemo, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import React, { useMemo } from 'react'
 import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { Token } from '@pooltogether/hooks'
-import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
-
+import { PrizeTier } from '@pooltogether/v4-client-js'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { useTimeUntil } from '@hooks/useTimeUntil'
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { Time } from '@components/Time'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useAllPrizePoolTotalNumberOfPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolTotalNumberOfPrizes'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { formatUnits } from 'ethers/lib/utils'
 import { BigNumber } from 'ethers'
 import { Dot } from '@components/Dot'
 
@@ -33,13 +29,7 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
     <div className={classNames('flex flex-col text-center relative max-w-xl pt-20 ', className)}>
       <LightningBolts />
       <Dots />
-
-      <AmountOfPrizes
-        prizePool={prizePool}
-        isFetched={isFetched}
-        prizeTier={prizeTierData?.prizeTier}
-        ticket={ticket}
-      />
+      <AmountOfPrizes />
       <PrizeAmount isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
       <p className='uppercase font-semibold text-inverse text-xs xs:text-lg'>to win</p>
       <DrawCountdown />
@@ -47,60 +37,26 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const AmountOfPrizes = (props: {
-  prizePool: PrizePool
-  isFetched: boolean
-  ticket: Token
-  prizeTier: PrizeTier
-}) => {
-  const { ticket, prizeTier, prizePool } = props
-
-  const queryResults = useAllPrizePoolTotalNumberOfPrizes()
-
+const AmountOfPrizes = (props) => {
+  const queryResults = useAllPrizePoolExpectedPrizes()
   const amountOfPrizes = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
-    return isFetched
-      ? Math.round(
-          queryResults
-            .filter(({ isFetched }) => isFetched)
-            .reduce((sum, { data }) => sum + data.numberOfPrizes, 0)
-        )
-      : 0
+    if (!isFetched) {
+      return 0
+    }
+    return Math.round(
+      queryResults
+        .filter(({ isFetched }) => isFetched)
+        .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
+    )
   }, [queryResults])
 
   return (
-    <div className='uppercase font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1'>
-      <ViewPrizesSheetCustomTrigger
-        ticket={ticket}
-        prizeTier={prizeTier}
-        Button={(props) => (
-          <button
-            {...props}
-            className='uppercase text-gradient-magenta hover:opacity-50 font-bold transition'
-          >
-            <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} /> Prizes.
-          </button>
-        )}
-      />{' '}
+    <div className=' font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1 uppercase'>
+      <span className='text-gradient-magenta'>
+        <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} /> Prizes.
+      </span>{' '}
       Every. Week.
-      {/* <Trans
-        i18nKey='prizesEverySingleDay'
-        components={{
-          button: (
-            <ViewPrizesSheetCustomTrigger
-              ticket={ticket}
-              prizeTier={prizeTier}
-              Button={(props) => (
-                <button
-                  {...props}
-                  className='underline text-gradient-magenta hover:opacity-50 font-bold transition'
-                />
-              )}
-            />
-          )
-        }}
-        values={{ amount: amountOfPrizes }}
-      /> */}
     </div>
   )
 }

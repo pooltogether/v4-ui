@@ -22,7 +22,6 @@ import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountL
 import { AccentTextButton } from '../AccentTextButton'
 import { BalanceModal } from './BalanceModal'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { ExplorePrizePoolsModal } from './ExplorePrizePoolsModal'
 import { DepositModal } from '@views/Deposit/DepositTrigger/DepositModal'
 
 export const V4DepositList = () => {
@@ -46,9 +45,8 @@ export const V4DepositList = () => {
 const DepositsList: React.FC = () => {
   const usersAddress = useUsersAddress()
   const [isOpen, setIsOpen] = useState(false)
-  const { data, isFetched, refetch } = useAllUsersV4Balances(usersAddress)
+  const { data } = useAllUsersV4Balances(usersAddress)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
-  const { setSelectedChainId } = useSelectedChainId()
 
   if (data.balances.length === 0) {
     return <LoadingList />
@@ -58,15 +56,18 @@ const DepositsList: React.FC = () => {
     <>
       <BalanceModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
       <AccountList>
-        {data.balances.map((balances) => (
-          <DepositItem
-            key={'deposit-balance-' + balances.prizePool.id()}
-            {...balances}
-            refetchBalances={refetch}
+        {data.balances.map(({ prizePool, balances }) => (
+          <AccountListItem
+            key={'deposit-balance-' + prizePool.id()}
             onClick={() => {
-              setSelectedPrizePoolAddress(balances.prizePool)
+              setSelectedPrizePoolAddress(prizePool)
               setIsOpen(true)
             }}
+            left={<PrizePoolLabel prizePool={prizePool} />}
+            right={
+              <AccountListItemTokenBalance chainId={prizePool.chainId} token={balances?.ticket} />
+            }
+            bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
           />
         ))}
       </AccountList>
@@ -81,76 +82,8 @@ export interface DepositItemsProps {
   onClick: () => void
 }
 
-const DepositItem = (props: DepositItemsProps) => {
-  const { prizePool, balances, onClick, refetchBalances } = props
-
-  const router = useRouter()
-  const { setSelectedChainId } = useSelectedChainId()
-  const { t } = useTranslation()
-  const [txId, setTxId] = useState('')
-  const tx = useTransaction(txId)
-  const usersAddress = useUsersAddress()
-  const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
-  const delegate = getDelegateAddress(usersAddress, delegateData)
-
-  const chainId = prizePool.chainId
-  const contractLinks: ContractLink[] = [
-    {
-      i18nKey: 'prizePool',
-      chainId,
-      address: prizePool.address
-    },
-    {
-      i18nKey: 'token',
-      chainId,
-      address: balances.ticket.address
-    },
-    {
-      i18nKey: 'depositToken',
-      chainId,
-      address: balances.token.address
-    }
-  ]
-  const isWalletMetaMask = useIsWalletMetamask()
-  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
-
-  return (
-    <>
-      <AccountListItem
-        onClick={onClick}
-        left={<PrizePoolLabel prizePool={prizePool} />}
-        right={<AccountListItemTokenBalance chainId={prizePool.chainId} token={balances?.ticket} />}
-        bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
-      />
-    </>
-  )
-}
-
-/**
- * Returns the delegate address if it has been set manually.
- * @param usersAddress
- * @param delegateData
- * @returns
- */
-const getDelegateAddress = (
-  usersAddress: string,
-  delegateData: { ticketDelegate: string; usersAddress: string }
-): string => {
-  const delegateAddress = delegateData?.ticketDelegate
-  if (
-    !delegateAddress ||
-    getAddress(usersAddress) === delegateAddress ||
-    ethers.constants.AddressZero === delegateAddress
-  ) {
-    return null
-  } else {
-    return delegateAddress
-  }
-}
-
 const ExplorePrizePools = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
 
   return (
     <>

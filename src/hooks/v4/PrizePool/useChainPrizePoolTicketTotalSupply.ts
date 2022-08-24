@@ -8,7 +8,11 @@ export const useChainPrizePoolTicketTotalSupply = (chainId) => {
   const { data: tokens } = usePrizePoolTokens(prizePool)
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
   return useMemo(
-    () => ({ prizePoolTotalSupply, decimals: tokens?.ticket.decimals, ticket: tokens?.ticket }),
+    () => ({
+      prizePoolTotalSupply: prizePoolTotalSupply?.amount,
+      decimals: tokens?.ticket.decimals,
+      ticket: tokens?.ticket
+    }),
     [prizePool, tokens, prizePoolTotalSupply]
   )
 }

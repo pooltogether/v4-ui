@@ -1,5 +1,5 @@
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { BridgeTokensView } from './BridgeTokensView'
 import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
 import { SwapTokensView } from './SwapTokensView'
@@ -20,6 +20,7 @@ import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 
 export enum ViewIds {
   deposit,
@@ -38,63 +39,18 @@ export const DepositModal: React.FC<{
   const { isOpen, closeModal } = props
   const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.explore)
   const [depositAmount, setDepositAmount] = useState<Amount>()
-  const prizePool = useSelectedPrizePool()
   const { chainId } = useSelectedChainId()
-  const getUser = useGetUser(prizePool)
-  const { t } = useTranslation()
-  const { data: tokenData } = useSelectedPrizePoolTokens()
   const [depositTransactionId, setDepositTransactionId] = useState('')
   const depositTransaction = useTransaction(depositTransactionId)
-  const usersAddress = useUsersAddress()
-  const { data: delegateData, refetch: refetchTicketDelegate } = useUsersTicketDelegate(
-    usersAddress,
-    prizePool
-  )
-  const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
-    usersAddress,
-    prizePool
-  )
-  const _sendTransaction = useSendTransaction()
 
   /**
    * Submit the transaction to deposit and store the transaction id in state
    */
-  const sendTransaction = async () => {
-    const name = `${t('save')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
-    const overrides: Overrides = { gasLimit: 750000 }
-    let contractMethod
-    let callTransaction
-    if (delegateData.ticketDelegate === ethers.constants.AddressZero) {
-      contractMethod = 'depositToAndDelegate'
-      callTransaction = async () => {
-        const user = await getUser()
-        return user.depositAndDelegate(depositAmount.amountUnformatted, usersAddress, overrides)
-      }
-    } else {
-      contractMethod = 'depositTo'
-      callTransaction = async () => {
-        const user = await getUser()
-        return user.deposit(depositAmount.amountUnformatted, overrides)
-      }
-    }
-
-    const transactionId = await _sendTransaction({
-      name,
-      callTransaction,
-      callbacks: {
-        onConfirmedByUser: () => logEvent(FathomEvent.deposit),
-        onSuccess: () => {
-          refetchTicketDelegate()
-        },
-        refetch: () => {
-          refetchUsersTotalTwab()
-          refetchUsersBalances()
-        }
-      }
-    })
-    setDepositTransactionId(transactionId)
-  }
+  const _sendDepositTransaction = useSendDepositTransaction(depositAmount)
+  const sendDepositTransaction = useCallback(
+    () => setDepositTransactionId(_sendDepositTransaction()),
+    [_sendDepositTransaction]
+  )
 
   const views: ModalWithViewStateView[] = [
     {
@@ -119,22 +75,6 @@ export const DepositModal: React.FC<{
       onCloseViewId: ViewIds.deposit
     },
     {
-      id: ViewIds.bridgeTokens,
-      view: BridgeTokensView,
-      previousViewId: ViewIds.deposit,
-      title: '',
-      bgClassName: 'bg-card',
-      onCloseViewId: ViewIds.explore
-    },
-    {
-      id: ViewIds.swapTokens,
-      view: SwapTokensView,
-      previousViewId: ViewIds.deposit,
-      title: '',
-      bgClassName: 'bg-card',
-      onCloseViewId: ViewIds.explore
-    },
-    {
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
@@ -145,14 +85,13 @@ export const DepositModal: React.FC<{
   ]
 
   const onPrizePoolSelect = (prizePool: PrizePool) => {
-    console.log('onPrizePoolSelect', prizePool)
     setSelectedViewId(ViewIds.deposit)
   }
 
   return (
     <ModalWithViewState
       label='deposit-modal'
-      bgClassName='bg-gradient-to-br from-white to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
+      bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
       modalHeightClassName='h-actually-full-screen sm:h-auto min-h-1/2'
       widthClassName='w-screen sm:w-full'
       roundedClassName='rounded-none sm:rounded-xl'
@@ -174,12 +113,12 @@ export const DepositModal: React.FC<{
       // WalletConnectionModalView
       onWalletConnected={() => setSelectedViewId(ViewIds.deposit)}
       // DepositView
-      token={tokenData?.token}
-      transaction={depositTransaction}
+      depositTransaction={depositTransaction}
+      depositAmount={depositAmount}
       setDepositAmount={setDepositAmount}
       // ReviewView
-      depositAmount={depositAmount}
-      sendTransaction={sendTransaction}
+      sendDepositTransaction={sendDepositTransaction}
+      clearDepositTransaction={() => setDepositTransactionId('')}
       connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
     />
   )

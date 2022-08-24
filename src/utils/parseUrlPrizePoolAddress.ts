@@ -9,7 +9,6 @@ export const parseUrlPrizePoolAddress = () => {
   if (!urlPrizePoolAddress) return null
 
   const chainId = getInitialSelectedChainId()
-  console.log({ V4_PRIZE_POOLS, chainId, urlPrizePoolAddress })
   const prizePoolAddresses = V4_PRIZE_POOLS[getAppEnv()][chainId]
   if (prizePoolAddresses.includes(urlPrizePoolAddress)) {
     return urlPrizePoolAddress

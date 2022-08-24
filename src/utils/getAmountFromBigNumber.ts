@@ -17,7 +17,7 @@ export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: s
     return {
       amountUnformatted,
       amount,
-      amountPretty: numberWithCommas(amount, { precision: 0 }) as string
+      amountPretty: numberWithCommas(amount) as string
     }
   } catch (e) {
     return EMPTY_AMOUNT

@@ -9,7 +9,13 @@ export const usePrizePoolTokens = (prizePool: PrizePool) => {
   return useQuery(
     [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool.id()],
     async () => getPrizePoolTokens(prizePool),
-    { initialData: PRIZE_POOL_TOKENS[prizePool.id()] }
+    {
+      initialData: PRIZE_POOL_TOKENS[prizePool.id()] as {
+        prizePoolId: string
+        ticket: Token
+        token: Token
+      }
+    }
   )
 }
 

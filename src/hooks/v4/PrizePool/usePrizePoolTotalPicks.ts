@@ -1,6 +1,6 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getNumberOfPrizes } from '@utils/getNumberOfPrizes'
-import { usePrizeDistributorByChainId } from '../PrizeDistributor/usePrizeDistributorByChainId'
+import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
+import { useMemo } from 'react'
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 
@@ -10,20 +10,25 @@ import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
  * @returns
  */
 export const usePrizePoolTotalPicks = (prizePool: PrizePool) => {
-  const { data, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
+  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
   const { data: prizePoolPercentageOfPicks, isFetched: isPercentageFetched } =
     usePrizePoolPercentageOfPicks(prizePool)
 
-  if (!isPrizeTierFetched || !isPercentageFetched || !data.prizeTier) {
-    return {
-      data: null,
-      isFetched: false
+  return useMemo(() => {
+    if (!isPrizeTierFetched || !isPercentageFetched || !prizeTierData.prizeTier) {
+      return {
+        data: null,
+        isFetched: false
+      }
     }
-  }
-
-  const totalNumberOfPrizes = getNumberOfPrizes(data.prizeTier.tiers, data.prizeTier.bitRangeSize)
-  return {
-    data: totalNumberOfPrizes * prizePoolPercentageOfPicks.percentage,
-    isFetched: true
-  }
+    const numberOfnumberOfPrizesByTier = getPrizeTierNumberOfPrizes(prizeTierData.prizeTier)
+    const totalNumberOfPrizes = numberOfnumberOfPrizesByTier.reduce(
+      (total, numberOfPrizes) => total + numberOfPrizes,
+      0
+    )
+    return {
+      data: totalNumberOfPrizes * prizePoolPercentageOfPicks.percentage,
+      isFetched: true
+    }
+  }, [prizeTierData, prizePoolPercentageOfPicks, isPrizeTierFetched, isPercentageFetched])
 }

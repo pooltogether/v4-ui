@@ -7,9 +7,9 @@ import { usePrizePools } from './usePrizePools'
 import {
   getPrizePoolTotalNumberofPrizes,
   getPrizePoolTotalNumberOfPrizesKey
-} from './usePrizePoolTotalNumberOfPrizes'
+} from './usePrizePoolExpectedPrizes'
 
-export const useAllPrizePoolTotalNumberOfPrizes = () => {
+export const useAllPrizePoolExpectedPrizes = () => {
   const prizePools = usePrizePools()
   const allPrizeTiersQueryResults = useAllUpcomingPrizeTiers()
   const allPercentagesOfPicksQueryResults = useAllPrizePoolPercentagesofPicks()

@@ -1,5 +1,4 @@
 import { InfoList } from '@components/InfoList'
-import { TransparentDiv } from '@components/TransparentDiv'
 import { Carousel } from '@pooltogether/react-components'
 import React from 'react'
 

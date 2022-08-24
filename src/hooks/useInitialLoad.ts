@@ -12,5 +12,5 @@ export const useInitialLoad = () => {
   const queryResults = useAllPrizePoolTokens()
   const { status } = useConnect()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return isFetched && status !== 'reconnecting' && status !== 'connecting'
+  return isFetched // && status !== 'reconnecting' && status !== 'connecting'
 }

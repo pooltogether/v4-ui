@@ -68,14 +68,14 @@ export const BalanceModal: React.FC<{
       view: WithdrawView,
       title: 'Withdraw',
       previousViewId: ViewIds.main,
-      bgClassName: 'bg-pt-purple-light dark:bg-pt-purple-dark'
+      bgClassName: 'bg-pt-purple-lightest dark:bg-pt-purple-darkest'
     },
     {
       id: ViewIds.withdrawReview,
       view: WithdrawReviewView,
       title: 'Withdraw review',
       previousViewId: ViewIds.withdraw,
-      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
+      bgClassName: 'bg-pt-purple-lightest dark:bg-pt-purple-darkest'
     },
     {
       id: ViewIds.moreInfo,
@@ -105,7 +105,7 @@ export const BalanceModal: React.FC<{
     <ModalWithViewState
       title={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
-      bgClassName='bg-gradient-to-br from-white to-gradient-purple dark:from-gradient-purple dark:to-gradient-pink'
+      bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-gradient-pink'
       isOpen={isOpen}
       closeModal={closeModal}
       viewIds={ViewIds}

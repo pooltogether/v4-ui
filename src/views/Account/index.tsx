@@ -29,7 +29,7 @@ export const AccountUI = (props) => {
 
   return (
     <PagePadding
-      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4'
+      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-screen'
       widthClassName='max-w-screen-lg'
       paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
     >
@@ -176,7 +176,7 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (props) => {
+export const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (props) => {
   return (
     <div className={classNames('flex flex-col text-center pt-28', props.className)}>
       <span className='text-9xl filter grayscale'>🩲</span>

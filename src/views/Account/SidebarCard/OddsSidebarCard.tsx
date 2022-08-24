@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import FeatherIcon from 'feather-icons-react'
+import { DetailedHTMLProps, SelectHTMLAttributes, useMemo, useState } from 'react'
 import { SidebarCard } from '.'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import {
@@ -6,13 +7,14 @@ import {
   numberWithCommas,
   unionProbabilities
 } from '@pooltogether/utilities'
-import { ThemedClipSpinner } from '@pooltogether/react-components'
+import { NetworkIcon, ThemedClipSpinner } from '@pooltogether/react-components'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { useAppEnvString } from '@hooks/useAppEnvString'
 import { V4_CHAIN_IDS } from '@constants/config'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { TransparentSelect } from '@components/Input/TransparentSelect'
 
 export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
@@ -54,26 +56,24 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
       title={'🎲 Winning odds'}
       className={className}
       description={
-        <div>
+        <>
           Odds of a deposit of{' '}
-          <select
+          <TransparentSelect
             name='amount'
             id='amount'
-            className={'inline font-bold bg-transparent text-opacity-100'}
             onChange={(event) => setAmount(event.target.value)}
             value={amount}
           >
             {AMOUNT_OPTIONS.map((amount) => (
               <option key={amount} value={amount}>
-                {numberWithCommas(amount, { precision: 0 })}
+                ${numberWithCommas(amount, { precision: 0 })}
               </option>
             ))}
-          </select>{' '}
+          </TransparentSelect>{' '}
           winning at least one prize in the{' '}
-          <select
+          <TransparentSelect
             name='chainId'
             id='chainId'
-            className={'inline font-bold bg-transparent'}
             onChange={(event) => setChainId(Number(event.target.value))}
           >
             {V4_CHAIN_IDS[appEnv].map((chainId) => (
@@ -81,9 +81,9 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
                 {getNetworkNiceNameByChainId(chainId)}
               </option>
             ))}
-          </select>{' '}
+          </TransparentSelect>{' '}
           prize pool
-        </div>
+        </>
       }
       main={
         <>
