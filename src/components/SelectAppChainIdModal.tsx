@@ -69,7 +69,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
                   setIsOpen(false)
                   setSelectedPrizePoolAddress(prizePool)
                 }}
-                className={classNames('border', {
+                className={classNames('rounded-lg p-2 w-full border', {
                   'border-transparent hover:border-pt-teal': !isSelected,
                   'border-pt-purple-light hover:border-pt-teal': isSelected
                 })}

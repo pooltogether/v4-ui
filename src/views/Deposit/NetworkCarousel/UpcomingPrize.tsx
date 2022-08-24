@@ -39,21 +39,29 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
 
 const AmountOfPrizes = (props) => {
   const queryResults = useAllPrizePoolExpectedPrizes()
-  const amountOfPrizes = useMemo(() => {
+  const { isFetched, amountOfPrizes } = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     if (!isFetched) {
-      return 0
+      return { isFetched: false, amountOfPrizes: 0 }
     }
-    return Math.round(
-      queryResults
-        .filter(({ isFetched }) => isFetched)
-        .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
-    )
+    return {
+      isFetched,
+      amountOfPrizes: Math.round(
+        queryResults
+          .filter(({ isFetched }) => isFetched)
+          .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
+      )
+    }
   }, [queryResults])
 
   return (
-    <div className=' font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1 uppercase'>
-      <span className='text-gradient-magenta'>
+    <div className='font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1 uppercase'>
+      <span
+        className={classNames('transition text-gradient-magenta', {
+          'text-opacity-100': isFetched,
+          'text-opacity-70': !isFetched
+        })}
+      >
         <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} /> Prizes.
       </span>{' '}
       Every. Week.
