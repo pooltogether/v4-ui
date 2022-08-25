@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { parseEther } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
+
 import { useAllPrizePoolTicketTwabTotalSupplies } from '../PrizePool/useAllPrizePoolTicketTwabTotalSupplies'
 
 /**

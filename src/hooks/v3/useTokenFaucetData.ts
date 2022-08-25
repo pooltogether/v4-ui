@@ -1,16 +1,17 @@
-import { getCoingeckoTokenPrices, Token, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { Provider } from '@ethersproject/abstract-provider'
-import { useQuery } from 'react-query'
-import { batch, Context, contract } from '@pooltogether/etherplex'
-import { BigNumber } from 'ethers'
-import { amountMultByUsd } from '@pooltogether/utilities'
-import { formatUnits } from '@ethersproject/units'
-
-import TokenFaucetAbi from '@abis/TokenFaucet'
 import Erc20Abi from '@abis/ERC20'
+import TokenFaucetAbi from '@abis/TokenFaucet'
 import { SECONDS_PER_DAY } from '@constants/misc'
-import { V3PrizePool } from './useV3PrizePools'
+import { Provider } from '@ethersproject/abstract-provider'
+import { formatUnits } from '@ethersproject/units'
 import { useReadProvider } from '@hooks/useReadProvider'
+import { batch, Context, contract } from '@pooltogether/etherplex'
+import { getCoingeckoTokenPrices, Token, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { amountMultByUsd } from '@pooltogether/utilities'
+import { BigNumber } from 'ethers'
+import { useQuery } from 'react-query'
+
+import { V3PrizePool } from './useV3PrizePools'
+
 
 export const useTokenFaucetData = (
   chainId: number,

@@ -23,6 +23,7 @@ import { CardTitle } from '@components/Text/CardTitle'
 import Link from 'next/link'
 import { TopPrizePools } from '@components/BrowsePrizePools/TopPrizePools'
 import { OddsOfWinningWithX, OddsSidebarCard } from './SidebarCard/OddsSidebarCard'
+import { DepositModal, ViewIds } from '@views/Deposit/DepositTrigger/DepositModal'
 
 export const AccountUI = (props) => {
   const usersAddress = useUsersAddress()
@@ -143,7 +144,7 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
-  const onClick = (prizePool: PrizePool) => {
+  const onPrizePoolSelect = (prizePool: PrizePool) => {
     setSelectedPrizePoolAddress(prizePool)
     setIsOpen(true)
   }
@@ -158,7 +159,7 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
             id: 'top',
             view: (
               <TopPrizePools
-                onClick={onClick}
+                onPrizePoolSelect={onPrizePoolSelect}
                 marginClassName='mb-12 px-4 sm:px-6 lg:px-12 -mx-4 sm:-mx-6 lg:-mx-12'
               />
             ),
@@ -166,11 +167,17 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
           },
           {
             id: 'all',
-            view: <BrowsePrizePoolsList onClick={onClick} className='' />,
+            view: <BrowsePrizePoolsList onPrizePoolSelect={onPrizePoolSelect} className='' />,
             title: 'All Pools'
           }
         ]}
         initialTabId={'top'}
+      />
+      {/* TODO: Make another modal without the browse view */}
+      <DepositModal
+        initialViewId={ViewIds.deposit}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
       />
     </div>
   )

@@ -35,9 +35,10 @@ export enum ViewIds {
 export const DepositModal: React.FC<{
   isOpen: boolean
   closeModal: () => void
+  initialViewId?: ViewIds
 }> = (props) => {
-  const { isOpen, closeModal } = props
-  const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.explore)
+  const { isOpen, initialViewId, closeModal } = props
+  const [selectedViewId, setSelectedViewId] = useState<string | number>(initialViewId)
   const [depositAmount, setDepositAmount] = useState<Amount>()
   const { chainId } = useSelectedChainId()
   const [depositTransactionId, setDepositTransactionId] = useState('')
@@ -64,8 +65,7 @@ export const DepositModal: React.FC<{
       id: ViewIds.deposit,
       view: DepositView,
       title: 'Deposit in a Prize Pool',
-      previousViewId: ViewIds.explore,
-      onCloseViewId: ViewIds.explore
+      previousViewId: ViewIds.explore
     },
     {
       id: ViewIds.reviewTransaction,
@@ -122,4 +122,8 @@ export const DepositModal: React.FC<{
       connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
     />
   )
+}
+
+DepositModal.defaultProps = {
+  initialViewId: ViewIds.explore
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "next dev",
+    "lint": "next lint",
     "build": "next build && next export && yarn postexport",
     "postexport": "node post-export.js",
     "dist": "yarn build",
@@ -24,6 +25,9 @@
     "@testing-library/react-hooks": "^7.0.1",
     "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
+    "eslint": "8.22.0",
+    "eslint-config-next": "12.2.5",
+    "eslint-config-prettier": "^8.5.0",
     "jest": "^27.5.1",
     "typescript": "^4.4.4"
   },

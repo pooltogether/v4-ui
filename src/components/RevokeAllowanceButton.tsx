@@ -3,26 +3,27 @@ import FeatherIcon from 'feather-icons-react'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { Token } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
-
 import { toast } from 'react-toastify'
 import { Button } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
+import { useSendRevokeAllowance } from '@hooks/useSendRevokeAllowance'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 
 export interface DepositAllowance {
   allowanceUnformatted: BigNumber
   isApproved: boolean
 }
 
-interface RevokeAllowanceButtonProps {
-  isWalletOnProperNetwork: boolean
+export const RevokeAllowanceButton: React.FC<{
   chainId: number
   token: Token
-  sendRevokeAllowanceTransaction: () => Promise<string>
-}
-
-export const RevokeAllowanceButton = (props: RevokeAllowanceButtonProps) => {
-  const { isWalletOnProperNetwork, token, chainId, sendRevokeAllowanceTransaction } = props
+  prizePoolAddress: string
+}> = (props) => {
+  const { chainId, token, prizePoolAddress } = props
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const { t } = useTranslation()
+
+  const sendRevokeAllowanceTransaction = useSendRevokeAllowance(token, prizePoolAddress)
 
   const handleRevokeAllowanceClick = async () => {
     if (!isWalletOnProperNetwork) {

@@ -147,10 +147,10 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       isWalletOnProperNetwork={isWalletOnProperNetwork}
       isWalletMetaMask={isWalletMetaMask}
       chainId={chainId}
-      ticket={ticket}
       token={token}
       balance={ticket}
       balanceUsd={ticket.balanceUsd}
+      prizePoolAddress={prizePool.addresses.prizePool}
     />
   )
 }

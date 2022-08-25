@@ -1,5 +1,5 @@
-import { sToD, msToS } from '@pooltogether/utilities'
 import { Promotion, Epoch } from '@interfaces/promotions'
+import { sToD, msToS } from '@pooltogether/utilities'
 
 export const getNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())

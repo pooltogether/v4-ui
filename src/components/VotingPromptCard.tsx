@@ -17,7 +17,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
     <a
       className={classNames('hover:opacity-70 transition-opacity block', className)}
       href='https://vote.pooltogether.com/proposals'
-      target='_blank'
+      target='_blank' rel="noreferrer"
     >
       <div className='rounded-lg px-8 py-4 xs:py-2 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
         <span

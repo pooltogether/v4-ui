@@ -4,6 +4,7 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
+
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
 import { usePrizePoolPrizes } from './usePrizePoolPrizes'
 

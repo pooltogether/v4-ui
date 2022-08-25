@@ -155,7 +155,6 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   }, [checkedState])
 
   const onTargetReached = useCallback(() => {
-    console.log('onTargetReached', targetVideoClip)
     if (targetVideoClip === VideoClip.prize || targetVideoClip === VideoClip.noPrize) {
       setHasCheckedAnimationFinished(true)
     }

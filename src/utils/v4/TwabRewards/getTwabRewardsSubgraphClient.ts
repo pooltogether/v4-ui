@@ -1,7 +1,7 @@
-import { GraphQLClient } from 'graphql-request'
 
 import { CHAIN_ID } from '@constants/misc'
 import { theGraphCustomFetch } from '@utils/theGraphCustomFetch'
+import { GraphQLClient } from 'graphql-request'
 
 const TWAB_REWARDS_SUBGRAPH_URIS = {
   [CHAIN_ID.optimism]: `https://api.thegraph.com/subgraphs/name/pooltogether/optimism-twab-rewards`,

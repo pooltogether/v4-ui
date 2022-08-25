@@ -41,12 +41,14 @@ export const DepositView: React.FC<
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
 
+  const useValidationRules = () => useDepositValidationRules(prizePool)
+
   return (
     <TokenAmountInputFormView
       {...remainingProps}
       formKey={formKey}
       connectWallet={connectWallet}
-      useValidationRules={() => useDepositValidationRules(prizePool)}
+      useValidationRules={useValidationRules}
       handleSubmit={(values: TokenAmountFormValues) => {
         setDepositAmount(getAmountFromString(values[formKey], tokens?.token.decimals))
         onSubmit?.()

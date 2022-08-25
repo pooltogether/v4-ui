@@ -1,4 +1,5 @@
 import { TxButton } from '@components/Input/TxButton'
+import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -110,7 +111,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           )}
         </p>
         {transaction && (
-          <TransactionReceiptButton className='w-full mb-2' chainId={chainId} tx={transaction} />
+          <ModalTransactionSubmitted className='w-full mb-2' chainId={chainId} tx={transaction} />
         )}
         <Button
           theme={ButtonTheme.tealOutline}
@@ -131,7 +132,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     return (
       <>
         {!!successView && <div className='mb-4'>{successView}</div>}
-        <TransactionReceiptButton className='w-full' chainId={chainId} tx={transaction} />
+        <ModalTransactionSubmitted className='w-full' chainId={chainId} tx={transaction} />
       </>
     )
   }

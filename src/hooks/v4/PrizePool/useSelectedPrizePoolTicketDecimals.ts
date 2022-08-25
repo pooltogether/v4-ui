@@ -1,4 +1,5 @@
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+
 import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
 
 /**

@@ -1,4 +1,5 @@
 import { V4_CHAIN_IDS } from '@constants/config'
+
 import { getAppEnv } from './getAppEnv'
 
 export const getSupportedChainIds = () => {

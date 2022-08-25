@@ -271,6 +271,7 @@ const VideoWrapper = React.forwardRef<
     </video>
   )
 })
+VideoWrapper.displayName = 'VideoWrapper'
 
 export const PrizePictureBackgroud: React.FC<{
   videoClip?: VideoClip

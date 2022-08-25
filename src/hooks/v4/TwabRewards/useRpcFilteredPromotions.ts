@@ -1,15 +1,14 @@
+import { RPC_API_KEYS } from '@constants/config'
+import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import { Provider } from '@ethersproject/providers'
 import { batch } from '@pooltogether/etherplex'
-import { useQueries } from 'react-query'
-import { getReadProvider } from '@pooltogether/wallet-connection'
-import { RPC_API_KEYS } from '@constants/config'
 import { sToMs } from '@pooltogether/utilities'
-
-import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { useQueries } from 'react-query'
 
 export const useRpcFilteredPromotions = (chainIds) => {
   return useQueries(

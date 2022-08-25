@@ -99,6 +99,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
           <a
             href={`https://app.optimism.io/bridge`}
             target='_blank'
+            rel='noreferrer'
             className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
           >
             {t('bridge')}{' '}

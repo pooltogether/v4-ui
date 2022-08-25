@@ -1,4 +1,5 @@
 import { useConnect } from 'wagmi'
+
 import { useActualFullScreen } from './useActualFullScreen'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
 

@@ -1,12 +1,13 @@
+import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { sToMs } from '@pooltogether/utilities'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { msToS } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { ethers } from 'ethers'
 import { useQueries, useQuery } from 'react-query'
 
-import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { usePrizePools } from './usePrizePools'
-import { ethers } from 'ethers'
+
 
 /**
  * Fetches a users current TWAB

@@ -1,13 +1,12 @@
-import { getRefetchInterval } from '@pooltogether/hooks'
-import { batch } from '@pooltogether/etherplex'
-import { useQuery } from 'react-query'
-import { getReadProvider } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
-
+import { batch } from '@pooltogether/etherplex'
+import { getRefetchInterval } from '@pooltogether/hooks'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { useQuery } from 'react-query'
 
 /**
  * Fetch a promotion's data (eg. currentEpochId, etc)

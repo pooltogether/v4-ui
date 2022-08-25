@@ -1,10 +1,10 @@
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { Token, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 
 export interface UsersPrizePoolBalances {
   ticket: TokenWithUsdBalance

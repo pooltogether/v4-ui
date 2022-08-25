@@ -7,7 +7,7 @@ const nextConfig = {
   generateEtags: false,
   compress: false,
   productionBrowserSourceMaps: true,
-  inlineImageLimit: 48, // make it tiny so that it doesn't inline,
+  // inlineImageLimit: 48, // make it tiny so that it doesn't inline,
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if your project has type errors.

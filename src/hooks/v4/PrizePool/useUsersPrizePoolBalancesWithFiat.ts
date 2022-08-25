@@ -1,8 +1,9 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
-import { useQuery } from 'react-query'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useQuery } from 'react-query'
+
 import { useUsersPrizePoolBalances } from './useUsersPrizePoolBalances'
 
 export interface UsersPrizePoolBalances {

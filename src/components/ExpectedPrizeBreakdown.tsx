@@ -19,6 +19,7 @@ export const ExpectedPrizeBreakdown: React.FC<{
 
   return (
     <div className={classnames('flex flex-col max-w-md text-center', className)}>
+      <span className='mb-2 font-bold'>Prize Breakdown for next draw</span>
       <div className='grid grid-cols-2 mb-2'>
         <PrizeTableHeader>Prize Value</PrizeTableHeader>
         <PrizeTableHeader>Expected Prizes</PrizeTableHeader>
@@ -52,7 +53,7 @@ const PrizeTableHeader = (
   <div
     {...props}
     className={classnames(
-      'text-xxs uppercase text-pt-purple-darkest text-opacity-70 dark:text-pt-purple-lightest dark:text-opacity-70',
+      'text-xxs text-pt-purple-darkest text-opacity-70 dark:text-pt-purple-lightest dark:text-opacity-70',
       props.className
     )}
   />

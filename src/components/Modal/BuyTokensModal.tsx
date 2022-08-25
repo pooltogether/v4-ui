@@ -111,7 +111,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
     >
       <ExchangeIcon exchange={ExchangeKey.coinbase} sizeClassName='w-6 h-6' />
       <span>{t('buyOnCoinbase')}</span>
-      <FeatherIcon icon={'external-link'} className='w-4 h-4 my-auto' />
+      <FeatherIcon icon={'arrow-up-right'} className='w-4 h-4 my-auto' />
     </button>
   )
 }

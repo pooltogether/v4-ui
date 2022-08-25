@@ -10,8 +10,8 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 
 export const UpdatedPrizePoolOddsListItem: React.FC<{
   prizePool: PrizePool
-  amount: Amount
-  action: EstimateAction
+  amount?: Amount
+  action?: EstimateAction
   nullState?: React.ReactNode
   className?: string
   labelClassName?: string

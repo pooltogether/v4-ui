@@ -6,6 +6,8 @@ import { numberWithCommas } from '@pooltogether/utilities'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
+import { Promotion } from '@interfaces/promotions'
+import { TokenIcon } from '@pooltogether/react-components'
 
 /**
  *
@@ -31,7 +33,13 @@ export const TwabRewardsAprItem: React.FC<{
 
   const atLeastOnePromotionActive = chainPromotions?.some((promotion) => !promotion.isComplete)
 
-  const value = <PromotionsVAPRSum promotions={chainPromotions} />
+  const value = (
+    <ul className='flex flex-col space-y-1'>
+      {chainPromotions?.map((promotion) => (
+        <PromotionsVapr key={`promotion-${promotion.id}`} promotion={promotion} />
+      ))}
+    </ul>
+  )
 
   if (!atLeastOnePromotionActive) {
     return null
@@ -53,15 +61,18 @@ export const TwabRewardsAprItem: React.FC<{
   )
 }
 
-const PromotionsVAPRSum = (props) => {
-  const { promotions } = props
+const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
+  const { promotion } = props
+  const vapr = usePromotionVAPR(promotion)
 
-  const promotionsVaprs = promotions.reduce((accumulator, promotion) => {
-    const vapr = usePromotionVAPR(promotion)
-    return accumulator + vapr
-  }, 0)
+  if (vapr <= 0) return null
 
-  return <>{numberWithCommas(promotionsVaprs)}%</>
+  return (
+    <li className='flex space-x-1 items-center'>
+      <span>{numberWithCommas(vapr)}% in</span>
+      <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-3 h-3' />
+    </li>
+  )
 }
 
 TwabRewardsAprItem.defaultProps = {

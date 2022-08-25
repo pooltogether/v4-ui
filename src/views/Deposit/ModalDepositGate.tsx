@@ -98,6 +98,7 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
                   </span>
                   <a
                     target='_blank'
+                    rel='noreferrer'
                     className='underline dark:text-pt-teal transition opacity-60 hover:opacity-100'
                     href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
                   >
@@ -115,6 +116,7 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
                   theme={ButtonTheme.tealOutline}
                   size={ButtonSize.sm}
                   target='_blank'
+                  rel='noreferrer'
                 >
                   {t('viewReceipt', 'View receipt')}
                 </ButtonLink>

@@ -29,6 +29,7 @@ export const WithdrawView: React.FC<
   } = props
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
+  const useValidationRules = () => useWithdrawValidationRules(prizePool)
 
   return (
     <TokenAmountInputFormView
@@ -38,12 +39,11 @@ export const WithdrawView: React.FC<
       setSelectedViewId={setSelectedViewId}
       viewIds={viewIds}
       infoListItems={<WithdrawInfoListItems transaction={transaction} />}
-      useValidationRules={() => useWithdrawValidationRules(prizePool)}
+      useValidationRules={useValidationRules}
       handleSubmit={(values: TokenAmountFormValues) => {
         setWithdrawAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))
         setSelectedViewId(ViewIds.withdrawReview)
       }}
-      // carouselChildren={[]}
       chainId={prizePool.chainId}
       token={tokens?.ticket}
       defaultValue={withdrawAmount?.amount}

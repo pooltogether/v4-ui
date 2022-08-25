@@ -278,7 +278,11 @@ const ExitFeeWarning = (props: {
             {t('withdrawalFeeOfAmount', {
               amount: `${numberWithCommas(exitFee, { decimals: token.decimals })} ${token.symbol}`
             })}{' '}
-            <a href='https://docs.pooltogether.com/protocol/prize-pool/fairness' target='_blank'>
+            <a
+              href='https://docs.pooltogether.com/protocol/prize-pool/fairness'
+              target='_blank'
+              rel='noreferrer'
+            >
               {t('learnMore')}
             </a>
             .

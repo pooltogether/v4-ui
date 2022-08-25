@@ -55,6 +55,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           className='w-full mt-6'
           theme={ButtonTheme.tealOutline}
           target='_blank'
+          rel='noreferrer'
         >
           {t('viewReceipt', 'View receipt')}
         </ButtonLink>
@@ -76,6 +77,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
           <a
             target='_blank'
+            rel='noreferrer'
             className='underline'
             href='https://docs.pooltogether.com/how-to/how-to-deposit'
           >

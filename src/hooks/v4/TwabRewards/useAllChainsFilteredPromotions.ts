@@ -1,16 +1,16 @@
-import { batch } from '@pooltogether/etherplex'
-import { useQueries } from 'react-query'
-import { sToMs } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
 
-import { Promotion } from '@interfaces/promotions'
 import { useGraphFilteredPromotions } from '@hooks/v4/TwabRewards/useGraphFilteredPromotions'
 import { useRpcFilteredPromotions } from '@hooks/v4/TwabRewards/useRpcFilteredPromotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
+import { Promotion } from '@interfaces/promotions'
+import { batch } from '@pooltogether/etherplex'
+import { sToMs } from '@pooltogether/utilities'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { BigNumber } from 'ethers'
+import { useQueries } from 'react-query'
 
 /**
  * Fetch all chain's promotions that have been allow-listed

@@ -1,5 +1,6 @@
 import { V4_PRIZE_POOLS } from '@constants/config'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+
 import { getInitialSelectedChainId } from '../atoms'
 import { getAppEnv } from './getAppEnv'
 

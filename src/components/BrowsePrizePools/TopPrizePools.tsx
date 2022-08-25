@@ -4,14 +4,20 @@ import { HorizontalListByOdds } from './PrizePoolHorizontalList/HorizontalListBy
 import { HorizontalListByTvl } from './PrizePoolHorizontalList/HorizontalListByTvl'
 
 export const TopPrizePools: React.FC<{
-  onClick: (prizePool: PrizePool) => void
+  onPrizePoolSelect: (prizePool: PrizePool) => void
   marginClassName?: string
 }> = (props) => {
-  const { onClick, marginClassName } = props
+  const { onPrizePoolSelect, marginClassName } = props
   return (
     <div className='space-y-16'>
-      <HorizontalListByTvl onPrizePoolSelect={onClick} marginClassName={marginClassName} />
-      <HorizontalListByOdds onPrizePoolSelect={onClick} marginClassName={marginClassName} />
+      <HorizontalListByTvl
+        onPrizePoolSelect={onPrizePoolSelect}
+        marginClassName={marginClassName}
+      />
+      <HorizontalListByOdds
+        onPrizePoolSelect={onPrizePoolSelect}
+        marginClassName={marginClassName}
+      />
     </div>
   )
 }

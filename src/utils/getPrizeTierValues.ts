@@ -1,4 +1,5 @@
 import { calculate, PrizeTier } from '@pooltogether/v4-utils-js'
+
 import { getAmountFromBigNumber } from './getAmountFromBigNumber'
 
 /**

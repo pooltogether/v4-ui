@@ -98,7 +98,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
 }
 
 InfoListItem.defaultProps = {
-  fontSizeClassName: 'text-xxxs xs:text-xs'
+  fontSizeClassName: 'text-xxs xs:text-xs'
 }
 
 interface InfoListHeaderProps {

@@ -1,17 +1,18 @@
-import { useQuery } from 'react-query'
-import { Amount, Token } from '@pooltogether/hooks'
+
+import Erc20Abi from '@abis/ERC20'
+import PodAbi from '@abis/V3_Pod'
+import PrizePoolAbi from '@abis/V3_PrizePool'
+import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
+import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { Provider } from '@ethersproject/abstract-provider'
-import { batch, Context, contract } from '@pooltogether/etherplex'
 import { getAddress } from '@ethersproject/address'
+import { useReadProviders } from '@hooks/useReadProviders'
+import { batch, Context, contract } from '@pooltogether/etherplex'
+import { Amount, Token } from '@pooltogether/hooks'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useQuery } from 'react-query'
 
 import { useV3ChainIds } from './useV3ChainIds'
-import Erc20Abi from '@abis/ERC20'
-import PrizePoolAbi from '@abis/V3_PrizePool'
-import PodAbi from '@abis/V3_Pod'
-import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
-import { useReadProviders } from '@hooks/useReadProviders'
 
 export interface PodToken extends Token {
   pricePerShare: Amount

@@ -1,7 +1,7 @@
-import { UseQueryResult } from 'react-query'
+import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { Promotion } from '@interfaces/promotions'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
-import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { UseQueryResult } from 'react-query'
 
 export const useChainActiveRewards = (): {
   data: {

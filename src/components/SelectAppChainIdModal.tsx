@@ -65,6 +65,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
             const isSelected = prizePool.id() === selectedPrizePool.id()
             return (
               <button
+                key={prizePool.id()}
                 onClick={() => {
                   setIsOpen(false)
                   setSelectedPrizePoolAddress(prizePool)

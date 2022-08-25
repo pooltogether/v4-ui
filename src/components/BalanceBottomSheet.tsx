@@ -238,7 +238,7 @@ interface MoreInfoViewProps {
   contractLinks: ContractLink[]
   moreInfoViews?: View[]
   delegate?: string
-  sendRevokeAllowanceTransaction?: () => Promise<string>
+  prizePoolAddress: string
   isWalletOnProperNetwork: boolean
   isWalletMetaMask: boolean
 }
@@ -250,7 +250,7 @@ const MoreInfoView = (
 ) => {
   const {
     setView,
-    sendRevokeAllowanceTransaction,
+    prizePoolAddress,
     chainId,
     delegate,
     token,
@@ -329,14 +329,11 @@ const MoreInfoView = (
           </Button>
         )}
 
-        {sendRevokeAllowanceTransaction && (
-          <RevokeAllowanceButton
-            token={token}
-            isWalletOnProperNetwork={isWalletOnProperNetwork}
-            chainId={chainId}
-            sendRevokeAllowanceTransaction={sendRevokeAllowanceTransaction}
-          />
-        )}
+        <RevokeAllowanceButton
+          token={token}
+          chainId={chainId}
+          prizePoolAddress={prizePoolAddress}
+        />
       </div>
     </>
   )

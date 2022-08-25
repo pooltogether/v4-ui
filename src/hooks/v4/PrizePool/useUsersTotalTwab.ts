@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
-import { Amount, getRefetchInterval } from '@pooltogether/hooks'
-import { ethers } from 'ethers'
-
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
+import { Amount, getRefetchInterval } from '@pooltogether/hooks'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { ethers } from 'ethers'
+import { useMemo } from 'react'
+import { useQueries } from 'react-query'
+
 import { usePrizePools } from './usePrizePools'
 import { getUserPrizePoolTwab, getUsersPrizePoolTwabKey } from './useUsersPrizePoolTwab'
-import { useQueries } from 'react-query'
 
 /**
  * Fetches the users current TWAB across all chains and combines
@@ -22,9 +22,9 @@ export const useUsersTotalTwab = (usersAddress: string) => {
 
   const queryResults = useQueries(
     prizePools.map((prizePool) => {
-      const refetchInterval = getRefetchInterval(prizePool.chainId)
+      // const refetchInterval = getRefetchInterval(prizePool.chainId)
       return {
-        refetchInterval: refetchInterval,
+        // refetchInterval: refetchInterval,
         queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
         queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
         enabled: Boolean(usersAddress) && isTicketDecimalsFetched

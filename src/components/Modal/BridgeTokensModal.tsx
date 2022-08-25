@@ -1,7 +1,7 @@
 import React from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
-import { Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
+import { ExternalLink, Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { CHAIN_ID } from '@constants/misc'
@@ -57,15 +57,9 @@ const BridgeLink = (props: { url: string; title: string }) => {
   const { url, title } = props
   return (
     <li>
-      <a
-        className='flex text-xl items-center space-x-2 transition hover:opacity-50'
-        href={url}
-        target='_blank'
-        rel='noopener noreferrer'
-      >
+      <ExternalLink className='text-xl' href={url}>
         {title}
-        <FeatherIcon icon={'external-link'} className='w-4 h-4 ml-2 my-auto' />
-      </a>
+      </ExternalLink>
     </li>
   )
 }

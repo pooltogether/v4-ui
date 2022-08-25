@@ -13,7 +13,11 @@ import {
   NetworkIcon,
   SettingsModal
 } from '@pooltogether/react-components'
-import { NetworkSelectionList, useWalletChainId } from '@pooltogether/wallet-connection'
+import {
+  NetworkSelectionCurrentlySelected,
+  NetworkSelectionList,
+  useWalletChainId
+} from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
 
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
@@ -177,7 +181,7 @@ const NetworkWarning = () => {
           )}
         </p>
         {CHAIN_IDS_TO_BLOCK.map((chainId) => (
-          <div className='flex space-x-2 items-center mx-auto w-full justify-center'>
+          <div className='flex space-x-2 items-center mx-auto w-full justify-center' key={chainId}>
             <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
             <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
           </div>

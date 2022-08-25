@@ -105,7 +105,11 @@ export const BalanceModal: React.FC<{
     <ModalWithViewState
       title={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
-      bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-gradient-pink'
+      bgClassName='bg-gradient-to-b from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-dark'
+      modalHeightClassName='h-actually-full-screen xs:h-auto min-h-1/2'
+      widthClassName='w-screen xs:w-full'
+      roundedClassName='rounded-none xs:rounded-xl'
+      className='h-full'
       isOpen={isOpen}
       closeModal={closeModal}
       viewIds={ViewIds}
@@ -113,9 +117,7 @@ export const BalanceModal: React.FC<{
       selectedViewId={selectedViewId}
       setSelectedViewId={setSelectedViewId}
       // View props
-      // BridgeTokensModalView
       chainId={chainId}
-      // TODO: This is needed pretty much everywhere...
       // WalletConnectionModalView
       onWalletConnected={() => setSelectedViewId(ViewIds.main)}
       // DepositView

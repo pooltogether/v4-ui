@@ -2,6 +2,7 @@ import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { useMemo } from 'react'
+
 import { useAllPrizePoolOdds } from './v4/PrizePool/useAllPrizePoolOdds'
 import { usePrizePools } from './v4/PrizePool/usePrizePools'
 

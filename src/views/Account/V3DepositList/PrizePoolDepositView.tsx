@@ -32,6 +32,7 @@ import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { useSigner } from 'wagmi'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -324,7 +325,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     return (
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
-        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <ModalTransactionSubmitted className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
       </>
     )

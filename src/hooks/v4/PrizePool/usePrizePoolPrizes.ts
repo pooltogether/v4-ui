@@ -4,6 +4,7 @@ import { getAmountFromString } from '@utils/getAmountFromString'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
 import { useQuery } from 'react-query'
+
 import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 

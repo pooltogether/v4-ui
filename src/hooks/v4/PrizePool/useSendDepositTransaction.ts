@@ -5,6 +5,7 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { ethers, Overrides } from 'ethers'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
@@ -48,11 +49,9 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
       callbacks: {
         onConfirmedByUser: () => logEvent(FathomEvent.deposit),
         onSuccess: () => {
-          console.log('onSuccess')
           refetchTicketDelegate()
         },
         refetch: () => {
-          console.log('refetching')
           refetchUsersTotalTwab()
           refetchUsersBalances()
         }

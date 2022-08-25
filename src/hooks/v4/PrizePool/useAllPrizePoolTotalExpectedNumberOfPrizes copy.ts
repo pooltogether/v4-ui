@@ -1,13 +1,14 @@
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
+
 import { useAllPrizePoolPercentagesofPicks } from './useAllPrizePoolPercentagesofPicks'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
-import { usePrizePools } from './usePrizePools'
 import {
   getPrizePoolTotalNumberofPrizes,
   getPrizePoolTotalNumberOfPrizesKey
 } from './usePrizePoolExpectedPrizes'
+import { usePrizePools } from './usePrizePools'
 
 export const useAllPrizePoolExpectedPrizes = () => {
   const prizePools = usePrizePools()

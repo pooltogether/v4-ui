@@ -44,6 +44,7 @@ import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { EstimateAction } from '@constants/odds'
 import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
+import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -164,7 +165,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
-        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <ModalTransactionSubmitted className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
         <AddTicketToWallet />
       </>

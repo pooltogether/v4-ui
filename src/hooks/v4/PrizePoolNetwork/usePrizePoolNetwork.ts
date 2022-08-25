@@ -1,9 +1,9 @@
 import { RPC_API_KEYS } from '@constants/config'
+import { BaseProvider } from '@ethersproject/providers'
 import { getContractListChainIds, PrizePoolNetwork } from '@pooltogether/v4-client-js'
 import { getReadProvider } from '@pooltogether/wallet-connection'
-import { atom, useAtom } from 'jotai'
-import { BaseProvider } from '@ethersproject/providers'
 import { getContractList } from '@utils/v4/getContractList'
+import { atom, useAtom } from 'jotai'
 
 const initializePrizePoolNetwork = () => {
   const prizePoolNetworkContractList = getContractList()

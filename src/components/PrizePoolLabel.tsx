@@ -44,14 +44,19 @@ PrizePoolLabel.defaultProps = {
   fontSizeClassName: 'xs:text-lg'
 }
 
-export const PrizePoolLabelFlat = (props: { prizePool: PrizePool; fontSizeClassName?: string }) => {
-  const { prizePool, fontSizeClassName } = props
+export const PrizePoolLabelFlat: React.FC<{
+  prizePool: PrizePool
+  className?: string
+  fontSizeClassName?: string
+}> = (props) => {
+  const { prizePool, className, fontSizeClassName } = props
   const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
 
   return (
     <div
       className={classNames(
         'flex space-x-2 xs:space-x-3 xs:space-x-3 items-center',
+        className,
         fontSizeClassName
       )}
     >

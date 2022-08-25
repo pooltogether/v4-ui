@@ -17,7 +17,7 @@ export const PoolPartySeason1CTA = (props) => {
       )}
     >
       <div>
-        <a target='_blank' href='https://pooltogether.com/pool-party/season1'>
+        <a target='_blank' href='https://pooltogether.com/pool-party/season1' rel="noreferrer">
           <img className='w-20 xs:w-10' src={PoolPartySeason1Nft7} />
         </a>
       </div>
@@ -33,7 +33,7 @@ export const PoolPartySeason1CTA = (props) => {
           <a
             target='_blank'
             href='https://pooltogether.com/pool-party/season1'
-            className='flex items-center underline text-pt-purple dark:text-pt-teal dark:hover:text-white hover:text-pt-purple-light'
+            className='flex items-center underline text-pt-purple dark:text-pt-teal dark:hover:text-white hover:text-pt-purple-light' rel="noreferrer"
           >
             {t('learnMore')} <FeatherIcon icon='external-link' className='w-4 h-4 ml-1' />
           </a>

@@ -1,9 +1,8 @@
-import { Token } from '@pooltogether/hooks'
-import { TransactionResponse } from '@ethersproject/providers'
-import { Signer } from '@ethersproject/abstract-signer'
-import { BigNumber, Contract, constants } from 'ethers'
-
 import PrizePoolAbi from '@abis/V3_PrizePool'
+import { Signer } from '@ethersproject/abstract-signer'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Token } from '@pooltogether/hooks'
+import { BigNumber, Contract, constants } from 'ethers'
 
 /**
  * Builds an ethers Contract and returns the function to deposit to a v3 prize pool

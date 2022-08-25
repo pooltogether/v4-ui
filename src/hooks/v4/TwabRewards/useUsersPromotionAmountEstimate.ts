@@ -1,10 +1,9 @@
-import { useQuery } from 'react-query'
 import { formatUnits } from '@ethersproject/units'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
-
 import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
+import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
+import { useQuery } from 'react-query'
 
 interface Promotion {
   id: number

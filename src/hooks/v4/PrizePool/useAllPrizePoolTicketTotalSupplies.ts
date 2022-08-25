@@ -1,4 +1,5 @@
 import { useQueries } from 'react-query'
+
 import {
   getPrizePoolTicketTotalSupply,
   getPrizePoolTicketTotalSupplyQueryKey

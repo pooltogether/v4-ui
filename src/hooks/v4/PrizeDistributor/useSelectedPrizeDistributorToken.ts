@@ -1,5 +1,5 @@
-import { useSelectedPrizeDistributor } from './useSelectedPrizeDistributor'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
+import { useSelectedPrizeDistributor } from './useSelectedPrizeDistributor'
 
 export const PRIZE_DISTRIBUTOR_TOKEN_QUERY_KEY = 'usePrizeDistributorToken'
 

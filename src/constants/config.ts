@@ -1,12 +1,11 @@
-import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
-import { testnet, mainnet } from '@pooltogether/v4-pool-data'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
-
 import { CHAIN_ID } from '@constants/misc'
-import { Chain } from 'wagmi'
-import { getChain } from '@pooltogether/wallet-connection'
-import { ContractType } from '@pooltogether/v4-client-js'
 import { contract } from '@pooltogether/etherplex'
+import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { ContractType } from '@pooltogether/v4-client-js'
+import { testnet, mainnet } from '@pooltogether/v4-pool-data'
+import { getChain } from '@pooltogether/wallet-connection'
+import { Chain } from 'wagmi'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -188,20 +187,36 @@ const BRIDGE_URLS = Object.freeze({
  */
 export const getExchangeUrl = (chainId: number, tokenAddress: string) =>
   EXCHANGE_URLS[chainId]?.(tokenAddress) || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)
+
 const EXCHANGE_URLS = Object.freeze({
-  [CHAIN_ID.mainnet]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.optimism]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=optimism&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.rinkeby]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=rinkeby&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.polygon]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=polygon&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=mumbai&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.avalanche]: (tokenAddress: string) =>
-    `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`
+  [CHAIN_ID.mainnet]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.optimism]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=optimism&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.rinkeby]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=rinkeby&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.polygon]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=polygon&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.mumbai]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=mumbai&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.avalanche]: (tokenAddress: string) => ({
+    url: `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
+    title: 'Trader Joe'
+  }),
+  [CHAIN_ID.fuji]: (tokenAddress: string) => ({
+    url: `https://traderjoexyz.com/#/trade`,
+    title: 'Trader Joe'
+  })
 })
 
 /**

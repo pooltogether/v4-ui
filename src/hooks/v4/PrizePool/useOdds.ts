@@ -1,9 +1,9 @@
+import { EstimateAction } from '@constants/odds'
+import { Amount } from '@pooltogether/hooks'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
 import { BigNumber, ethers } from 'ethers'
 import { useQuery } from 'react-query'
-import { Amount } from '@pooltogether/hooks'
-import { EstimateAction } from '@constants/odds'
-import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
-import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
  * Calculates the overall chances of winning a prize on any network

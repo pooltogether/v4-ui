@@ -1,7 +1,8 @@
 import { Amount, Token } from '@pooltogether/hooks'
 import { useQueries, UseQueryOptions } from 'react-query'
-import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
+
 import { useAllAvailableDrawIds } from './useAllAvailableDrawIds'
+import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
 import { usePrizeDistributors } from './usePrizeDistributors'
 import { getUserClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
 

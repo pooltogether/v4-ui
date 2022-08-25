@@ -189,7 +189,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
           }
         ]}
         transactionHash={tx?.response?.hash}
-        ticket={ticket}
+        prizePoolAddress={prizePool.addresses.prizePool}
         token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
@@ -280,13 +280,13 @@ const PodDepositItem = (props: DepositItemsProps) => {
           }
         ]}
         transactionHash={tx?.response?.hash}
-        ticket={ticket}
         token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         contractLinks={contractLinks}
         isWalletOnProperNetwork={isWalletOnProperNetwork}
         isWalletMetaMask={isWalletMetaMask}
+        prizePoolAddress={prizePool.addresses.prizePool}
       />
     </>
   )
@@ -303,6 +303,7 @@ const DeprecatedBanner = () => {
           href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
           className='underline text-sm'
           target='_blank'
+          rel='noreferrer'
         >
           {t('readMoreHere', 'read more here')}
           <FeatherIcon icon='external-link' className='inline-block w-4 h-4 ml-1' />

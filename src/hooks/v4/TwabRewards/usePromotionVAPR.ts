@@ -1,12 +1,11 @@
 import { formatUnits } from '@ethersproject/units'
-import { useMemo } from 'react'
-import { sToD } from '@pooltogether/utilities'
+import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
+import { Promotion } from '@interfaces/promotions'
 import { useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { useToken } from '@pooltogether/hooks'
-
-import { Promotion } from '@interfaces/promotions'
-import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
+import { sToD } from '@pooltogether/utilities'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
+import { useMemo } from 'react'
 
 // Calculate the variable annual percentage rate for a promotion
 export const usePromotionVAPR = (promotion: Promotion): number => {

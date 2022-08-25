@@ -1,10 +1,10 @@
 import { Amount, Token } from '@pooltogether/hooks'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { useQuery } from 'react-query'
 
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { useValidDrawIds } from './useValidDrawIds'
 import { usePrizeDistributorToken } from './usePrizeDistributorToken'
+import { useValidDrawIds } from './useValidDrawIds'
 
 export const USERS_CLAIMED_AMOUNTS_QUERY_KEY = 'useUsersClaimedAmounts'
 

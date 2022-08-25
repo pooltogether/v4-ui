@@ -1,5 +1,6 @@
 import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+
 import { selectedChainIdAtom, setSelectedChainIdWriteAtom } from '../atoms'
 
 export const useSelectedChainId = () => {
