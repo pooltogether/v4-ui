@@ -2081,10 +2081,10 @@
     lodash.merge "^4.6.2"
     zen-observable-ts "^0.8.20"
 
-"@pooltogether/evm-chains-extended@^0.7.0":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/evm-chains-extended/-/evm-chains-extended-0.7.1.tgz#5087b12cf89056cf9f42c67354584c6c61022eac"
-  integrity sha512-M1DSMe2uR4QGgKspqoEjKGJv7D9uARrQ2/B/eTXz4uow+F232rSu5R3as3JdxE7lFmpLdCVib8Pzc3CmQ248Iw==
+"@pooltogether/evm-chains-extended@0.7.2-beta.4":
+  version "0.7.2-beta.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/evm-chains-extended/-/evm-chains-extended-0.7.2-beta.4.tgz#3f7e8e3c7636364f095130eb459bfc84d90f3c09"
+  integrity sha512-N49xdd9Jrixjvq1LsU5CVUiBNWxRX5q/0jLwYIXumy2ppXe8LreKLSJm6X6jrElSlPXTVgmlEOPTk6sV783Xig==
   dependencies:
     evm-chains "^0.2.0"
 
@@ -2098,10 +2098,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@1.11.0-beta.1":
-  version "1.11.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.11.0-beta.1.tgz#661b7c7c5ad24fe363d3eb65e20978d478167638"
-  integrity sha512-xVHyJP70mvypw5yIRpmjpoMMThJYv0MJojqqUUFgukUrKGFtWn1EUynLQL7iRhSr+MPdCOquqtPIJ23AE3YLsg==
+"@pooltogether/hooks@1.11.0-beta.4":
+  version "1.11.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-1.11.0-beta.4.tgz#e5595c446a007dee46bb73980e2a225a4899a502"
+  integrity sha512-lq8QgNH9LIKFGhw6ix1MUMoI6T34K2bC3H3271ILvvwyrynNP4uDpUjXsNW4vsNiCW+ZFIFzXjA2ouQBSH6lnQ==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
@@ -2137,10 +2137,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@1.19.0-beta.2":
-  version "1.19.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.19.0-beta.2.tgz#82b681ec3573147be92f36fc037d901a36617aae"
-  integrity sha512-jQRKPgkR/tWbnlzoQbI/JFKBGGcxq0QXLs2YCOgpHdus6UoQhBQt/u1h7kC8PQmnKVuzLLp9bKbvCssGlLRVOQ==
+"@pooltogether/react-components@1.19.0-beta.3":
+  version "1.19.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.19.0-beta.3.tgz#8893e0a278679b29db1efc07c6ace69db6f3e39d"
+  integrity sha512-avgnb7c30xy9uaS00St431NiCDdBWOXHBkIhJ9o9e5LxtcwRTl5KbHkQBTvqklMgQwXKDOf5f3aNrloXZS7jiA==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2169,21 +2169,21 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.2-beta.1.tgz#65a5a1b47a3b163947c1a06331d7c5273d0b6b4f"
   integrity sha512-v+XKCxFwyF6wc3xS5rwo2A+ZFmeY1aXMONax3SRD7/XMKC0C79ZUzEebK9k0uaSt+k2k0NAXp3Uv2Ug6I9lZSg==
 
-"@pooltogether/utilities@^0.5.0":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.1.tgz#1f89e164de5f2672f644de60bf11e8d07911d1d9"
-  integrity sha512-m8jtY+8+RzoGHc1OXl3uNQ/ZC3JAg8abmqGriQACr7v7B36E8vcw7KbZCkH/4Fp8WJNRPMsQ+X7hfVDKG+bKNQ==
+"@pooltogether/utilities@0.5.2-beta.2":
+  version "0.5.2-beta.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.5.2-beta.2.tgz#ecc6d271b9eea03633fd6d39220c98288fc8dc6b"
+  integrity sha512-VheMyIY8GHgiSBcfEYCdDR9xliQmvXg7TkCaAiMDVfuoVkk57W3IRQTAtm27I3dpR+SwnZmRoeUjlbUtaQaOmg==
 
-"@pooltogether/v4-client-js@^0.14.2":
-  version "0.14.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.14.2.tgz#da38da910dd78fb02a589a74cecce3fd0a1080f3"
-  integrity sha512-DOjpPQXxBPnmjGfMwFirWWZiHXzItLC8wGONqif1puFm7Op1jRWMavO1McwRKnaglLwK6WcPlO2M5MPGkOgHgQ==
+"@pooltogether/v4-client-js@0.15.0-beta.1":
+  version "0.15.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.0-beta.1.tgz#c4da9c9f56971be002be1bf9a86c7710140ad9a9"
+  integrity sha512-SHUXySs/V5F2R3LTZlJ5XQMtxNv/L1oYiWGaWmSq5bDAgBiWyn4P9i3eepqT8TS6qG4k+yuKQQEBL8pIdI2g7g==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/etherplex" "^1.1.4"
-    "@pooltogether/evm-chains-extended" "^0.7.0"
-    "@pooltogether/utilities" "^0.5.0"
+    "@pooltogether/evm-chains-extended" "0.7.2-beta.4"
+    "@pooltogether/utilities" "0.5.2-beta.2"
     "@pooltogether/v4-utils-js" "^0.1.3"
     debug "^4.3.3"
     ethers "^5.4.6"
@@ -2274,14 +2274,14 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-timelocks/-/v4-timelocks-1.1.0.tgz#c34389917f210c4802ad8d37ba8c3356ce0d23a9"
   integrity sha512-8YaBUy9HaF9zuyPNtt4dt4KA6NFYawhxfqEuxZSHv/lMgU/cSltaZu4DomFRncEDzlGbRvZ4oSMVsO11FIGjgw==
 
-"@pooltogether/v4-twab-delegator-js@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-twab-delegator-js/-/v4-twab-delegator-js-0.2.0.tgz#64a52c43d7014438198a0a6f7462ec7808dfb90a"
-  integrity sha512-wkO5q1q/6J0sUa2wo1bFAxxrfh0NY67gPekTv+bokPp+u0ySKnGIqk6xYbSpXHZIBj+v8ZuYddJ/JXR7MiMJAg==
+"@pooltogether/v4-twab-delegator-js@0.2.1-beta.1":
+  version "0.2.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-twab-delegator-js/-/v4-twab-delegator-js-0.2.1-beta.1.tgz#5c2a47311798dceae612a06f3f5eefe012b39c46"
+  integrity sha512-yQ6ODuaYXroSAh9rPVihL2hHwA+JIpqMsh+K1Zfkn3SULTdWys8bDbW2XPsRh+wOFnC5Zw4hKdQtOrtzAhZ3LA==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/etherplex" "^1.1.4"
-    "@pooltogether/utilities" "^0.5.0"
+    "@pooltogether/utilities" "0.5.2-beta.1"
     eth-permit "^0.2.1"
     ethers "^5.4.6"
 
@@ -2293,7 +2293,7 @@
     "@openzeppelin/contracts" "4.5.0"
     "@pooltogether/v4-core" "1.2.0"
 
-"@pooltogether/v4-utils-js@^0.1.3":
+"@pooltogether/v4-utils-js@0.1.4", "@pooltogether/v4-utils-js@^0.1.3":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-utils-js/-/v4-utils-js-0.1.4.tgz#39d6b7ea31e3179a9636d1cab02a31a8dcee1c6c"
   integrity sha512-AOgkUGlKdJVv73wMGZe7oZb2sYtfMgUzBhH7r61+YPyehhQzORJpwwiVMwb9xLbcoTD5b2y880gPSlUoTi/tdg==
@@ -2312,10 +2312,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@0.6.0-beta.2":
-  version "0.6.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.6.0-beta.2.tgz#a605a4087da7bf1bd8638b153fd5f14bfee1f4e8"
-  integrity sha512-E8VD3znaJUzBmDm4bzV/kU4iH3QvDf3BmX8m1SUkj8DPRaUve3gvrkD25+yznjtjbEe8ESoi9k3VmPin4ihwQg==
+"@pooltogether/wallet-connection@0.6.0-beta.3":
+  version "0.6.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-0.6.0-beta.3.tgz#a909c384100e552a19d4130bd3ebc87971037503"
+  integrity sha512-35yXvUSrXL/4RFoCS9cm4UTIVHJOxPVXMPii/cqcdI39J2mgJyqWreXAS1Vvx5eA6zJn5ApTQlE5OgfsN8GFJw==
   dependencies:
     "@download/blockies" "^1.0.3"
 
@@ -3051,9 +3051,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/jest@*":
-  version "28.1.7"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-28.1.7.tgz#a680c5d05b69634c2d54a63cb106d7fb1adaba16"
-  integrity sha512-acDN4VHD40V24tgu0iC44jchXavRNVFXQ/E6Z5XNsswgoSO/4NgsXoEYmPUGookKldlZQyIpmrEXsHI9cA3ZTA==
+  version "28.1.8"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-28.1.8.tgz#6936409f3c9724ea431efd412ea0238a0f03b09b"
+  integrity sha512-8TJkV++s7B6XqnDrzR1m/TT0A0h948Pnl/097veySPN67VRAgQ4gZ7n2KfJo2rVq6njQjdxU3GCCyDvAeuHoiw==
   dependencies:
     expect "^28.0.0"
     pretty-format "^28.0.0"
@@ -3084,9 +3084,9 @@
     form-data "^3.0.0"
 
 "@types/node@*":
-  version "18.7.11"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.11.tgz#486e72cfccde88da24e1f23ff1b7d8bfb64e6250"
-  integrity sha512-KZhFpSLlmK/sdocfSAjqPETTMd0ug6HIMIAwkwUpU79olnZdQtMxpQP+G1wDzCH7na+FltSIhbaZuKdwZ8RDrw==
+  version "18.7.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.13.tgz#23e6c5168333480d454243378b69e861ab5c011a"
+  integrity sha512-46yIhxSe5xEaJZXWdIBP7GU4HDTG8/eo0qd9atdiL+lFpA03y8KS+lkTN834TWJj5767GbWv4n/P6efyTFt1Dw==
 
 "@types/node@^10.0.5":
   version "10.17.60"
@@ -3104,9 +3104,9 @@
   integrity sha512-s3nugnZumCC//n4moGGe6tkNMyYEdaDBitVjwPxXmR5lnMG5dHePinH2EdxkG3Rh1ghFHHixAG4NJhpJW1rthQ==
 
 "@types/node@^16.7.2":
-  version "16.11.55"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.55.tgz#4b1e4fa4238b083cf0d0b4ad9077629123950caa"
-  integrity sha512-ZZepNkqPNCBy6PlCjeOY0gI1q91v7l5MUhVc5RMAUV39OxRO8lF8fqGnhY2j8FWz8fxcN8HvAUWoccWpOzl/Ug==
+  version "16.11.56"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.56.tgz#dcbb617669481e158e0f1c6204d1c768cd675901"
+  integrity sha512-aFcUkv7EddxxOa/9f74DINReQ/celqH8DiB3fRYgVDM2Xm5QJL8sl80QKuAnGvwAsMn+H3IFA6WCrQh1CY7m1A==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -5016,9 +5016,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30001332, caniuse-lite@^1.0.30001370, caniuse-lite@^1.0.30001373:
-  version "1.0.30001382"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001382.tgz#4d37f0d0b6fffb826c8e5e1c0f4bf8ce592db949"
-  integrity sha512-2rtJwDmSZ716Pxm1wCtbPvHtbDWAreTPxXbkc5RkKglow3Ig/4GNGazDI9/BVnXbG/wnv6r3B5FEbkfg9OcTGg==
+  version "1.0.30001383"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001383.tgz#aecf317ccd940690725ae3ae4f28293c5fb8050e"
+  integrity sha512-swMpEoTp5vDoGBZsYZX7L7nXHe6dsHxi9o6/LKf/f0LukVtnrxly5GVb/fWdCDTqi/yw6Km6tiJ0pmBacm0gbg==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -5434,17 +5434,17 @@ copy-to-clipboard@^3.3.1:
     toggle-selection "^1.0.6"
 
 core-js-compat@^3.21.0, core-js-compat@^3.22.1:
-  version "3.24.1"
-  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.24.1.tgz#d1af84a17e18dfdd401ee39da9996f9a7ba887de"
-  integrity sha512-XhdNAGeRnTpp8xbD+sR/HFDK9CbeeeqXT6TuofXh3urqEevzkWmLRgrVoykodsw8okqo2pu1BOmuCKrHx63zdw==
+  version "3.25.0"
+  resolved "https://registry.yarnpkg.com/core-js-compat/-/core-js-compat-3.25.0.tgz#489affbfbf9cb3fa56192fe2dd9ebaee985a66c5"
+  integrity sha512-extKQM0g8/3GjFx9US12FAgx8KJawB7RCQ5y8ipYLbmfzEzmFRWdDjIlxDx82g7ygcNG85qMVUSRyABouELdow==
   dependencies:
     browserslist "^4.21.3"
     semver "7.0.0"
 
 core-js-pure@^3.0.1:
-  version "3.24.1"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.24.1.tgz#8839dde5da545521bf282feb7dc6d0b425f39fd3"
-  integrity sha512-r1nJk41QLLPyozHUUPmILCEMtMw24NG4oWK6RbsDdjzQgg9ZvrUsPBj1MnG0wXXp1DCDU6j+wUvEmBSrtRbLXg==
+  version "3.25.0"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.25.0.tgz#f8d1f176ff29abbfeb610110de891d5ae5a361d4"
+  integrity sha512-IeHpLwk3uoci37yoI2Laty59+YqH9x5uR65/yiA0ARAJrTrN4YU0rmauLWfvqOuk77SlNJXj2rM6oT/dBD87+A==
 
 core-js@^2.4.0, core-js@^2.5.0:
   version "2.6.12"
@@ -6099,9 +6099,9 @@ eip1193-provider@1.0.1:
     "@json-rpc-tools/provider" "^1.5.5"
 
 electron-to-chromium@^1.3.47, electron-to-chromium@^1.4.202:
-  version "1.4.228"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.228.tgz#3baff13cf54198c2045f9bdd8b64db93aafd7f33"
-  integrity sha512-XfDHCvou7CsDMlFwb0WZ1tWmW48e7Sn7VBRyPfZsZZila9esRsJl1trO+OqDNV97GggFSt0ISbWslKXfQkG//g==
+  version "1.4.230"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.230.tgz#666909fdf5765acb1348b69752ee9955dc1664b7"
+  integrity sha512-3pwjAK0qHSDN9+YAF4fJknsSruP7mpjdWzUSruIJD/JCH77pEh0SorEyb3xVaKkfwk2tzjOt2D8scJ0KAdfXLA==
 
 elliptic@6.5.4, elliptic@^6.4.0, elliptic@^6.5.2, elliptic@^6.5.3, elliptic@^6.5.4:
   version "6.5.4"
@@ -13157,9 +13157,9 @@ toidentifier@1.0.1:
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
 tough-cookie@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-4.1.0.tgz#039b203b2ad95cd9d2a2aae07b238cb83adc46c7"
-  integrity sha512-IVX6AagLelGwl6F0E+hoRpXzuD192cZhAcmT7/eoLr0PnsB1wv2E5c+A2O+V8xth9FlL2p0OstFsWn0bZpVn4w==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-4.1.1.tgz#3600960f1e1c83545f130ac80043b9de8e5d488b"
+  integrity sha512-Ns3k8QxkEzIfLZbRwLOrMPDqRa1BEAl4BzNNAOYY4BhBmEkf+HvP467F4NrD9loK3NcYflWOpUH3LJg0ehq/rQ==
   dependencies:
     psl "^1.1.33"
     punycode "^2.1.1"
