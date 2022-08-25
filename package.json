@@ -6,10 +6,9 @@
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "next dev",
-    "build": "next build && next export && yarn postexport",
-    "postexport": "node post-export.js",
+    "lint": "next lint --fix",
+    "build": "next build",
     "dist": "yarn build",
-    "export": "next export",
     "distrelease": "export NEXT_PUBLIC_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
     "sentryrelease": "./src/scripts/sentry-release.sh",
     "start": "next start",
