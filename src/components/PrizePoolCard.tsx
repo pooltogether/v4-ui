@@ -15,7 +15,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 
 const SIZE_CLASSNAME = 'w-64'
-const BG_CLASSNAME = 'bg-actually-black bg-opacity-10 dark:bg-white dark:bg-opacity-10'
+const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-white dark:bg-opacity-10'
 const RADIUS_CLASSNAME = 'rounded-xl'
 
 export const PrizePoolCardLoader = () => (
@@ -84,7 +84,7 @@ PrizePoolCard.defaultProps = {
   sizeClassName: SIZE_CLASSNAME,
   bgClassName: BG_CLASSNAME,
   radiusClassName: RADIUS_CLASSNAME,
-  hoverClassName: 'hover:bg-opacity-5 dark:hover:bg-opacity-5'
+  hoverClassName: 'hover:bg-opacity-50 dark:hover:bg-opacity-5'
 }
 
 const CardLabelSmall = (props) => (

@@ -4,7 +4,6 @@ import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
-
 /**
  * Fetch a user's current percentage of the chain based on their TWAB
  * @returns
@@ -17,7 +16,13 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
 
   return useQuery(
     getUsersChainTwabPercentageKey(chainId, usersAddress),
-    () => getUsersChainTwabPercentage(chainId, totalTwabSupply, usersTwabs, Number(decimals)),
+    () =>
+      getUsersChainTwabPercentage(
+        chainId,
+        totalTwabSupply?.amountUnformatted,
+        usersTwabs,
+        Number(decimals)
+      ),
     {
       enabled: isTwabsFetched && Boolean(totalTwabSupply) && Boolean(decimals)
     }

@@ -1,4 +1,5 @@
-import { ViewProps } from '@pooltogether/react-components'
+import { useTheme } from '@hooks/useTheme'
+import { ButtonTheme, ViewProps } from '@pooltogether/react-components'
 import { FormProvider, useForm } from 'react-hook-form'
 import { InfoBox, InfoBoxProps } from './InfoBox'
 import { SubmitButton, SubmitButtonProps } from './SubmitButton'
@@ -36,6 +37,8 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
     defaultValue
   } = props
 
+  const { theme } = useTheme()
+
   const methods = useForm<TokenAmountFormValues>({
     mode: 'onChange',
     defaultValues: { [formKey]: defaultValue },
@@ -61,7 +64,12 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
           {(!!infoListItems || !!carouselChildren) && (
             <InfoBox infoListItems={infoListItems} carouselChildren={carouselChildren} />
           )}
-          <SubmitButton connectWallet={connectWallet}>{submitButtonContent}</SubmitButton>
+          <SubmitButton
+            theme={theme === 'dark' ? ButtonTheme.teal : ButtonTheme.pink}
+            connectWallet={connectWallet}
+          >
+            {submitButtonContent}
+          </SubmitButton>
         </div>
       </form>
     </FormProvider>

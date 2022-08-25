@@ -12,7 +12,6 @@ import { ViewProps } from '@pooltogether/react-components'
 import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { DepositInfoBox } from './DepositInfoBox'
-import { PrizeBreakdownCard } from './PrizeBreakdownCard'
 
 /**
  * Handles passing default values to the TokenAmountInputFormView for depositing into V4 prize pools.
@@ -58,8 +57,8 @@ export const DepositView: React.FC<
           key='deposit-info-box'
           formKey={formKey}
           transaction={transaction}
-          bgClassName='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 transition-opacity'
-          errorBgClassName='bg-white bg-opacity-10 dark:bg-actually-black dark:bg-opacity-30 transition-opacity'
+          bgClassName='bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 transition-opacity'
+          errorBgClassName='bg-white bg-opacity-50 dark:bg-actually-black dark:bg-opacity-30 transition-opacity'
         />,
         <TransparentDiv
           key='expected-prize-breakdown'

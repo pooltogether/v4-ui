@@ -7,7 +7,7 @@ export const TransparentDiv: React.FC<
   <div
     {...props}
     className={classNames(
-      'bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10',
+      'bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10',
       props.className
     )}
   />

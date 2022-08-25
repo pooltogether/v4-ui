@@ -71,7 +71,7 @@ const PrizePoolLabel: React.FC<{ prizePool: PrizePool; percentage?: number }> = 
 
   return (
     <div className='flex items-center ml-3 xs:ml-10'>
-      {!!percentage && (
+      {/* {!!percentage && (
         <FeatherIcon
           icon={id > 0.5 ? 'triangle' : 'circle'}
           style={{
@@ -81,14 +81,25 @@ const PrizePoolLabel: React.FC<{ prizePool: PrizePool; percentage?: number }> = 
           }}
           className='fill-current mr-3'
         />
-      )}
+      )} */}
       {/* <TokenIcon
         chainId={prizePool.chainId}
         address={data?.token.address}
         sizeClassName='w-4 h-4'
         className='-mr-1'
       /> */}
-      <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-4 h-4' className='mr-2' />
+      <NetworkIcon
+        chainId={prizePool.chainId}
+        sizeClassName='w-4 h-4'
+        className='mr-2'
+        style={
+          percentage
+            ? {
+                scale: `${Math.min(percentage + 0.7, 1.5)}`
+              }
+            : undefined
+        }
+      />
       <span>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
     </div>
   )

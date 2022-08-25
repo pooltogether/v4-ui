@@ -9,14 +9,14 @@ import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrize
 import { Amount } from '@pooltogether/hooks'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { MainView } from './MainView'
-import { DepositView } from './DepositView'
 import { WithdrawView } from './WithdrawView'
 import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
-import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
 import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
+import { DepositView } from './DepositView'
+import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
 
 export enum ViewIds {
   main,
@@ -55,27 +55,29 @@ export const BalanceModal: React.FC<{
       id: ViewIds.deposit,
       view: DepositView,
       title: 'Deposit',
-      previousViewId: ViewIds.main
+      previousViewId: ViewIds.main,
+      bgClassName: 'bg-pt-purple-lightest dark:bg-gradient-purple'
     },
     {
       id: ViewIds.depositReview,
       view: DepositReviewView,
       title: 'Deposit review',
-      previousViewId: ViewIds.deposit
+      previousViewId: ViewIds.deposit,
+      bgClassName: 'bg-pt-purple-lightest dark:bg-gradient-purple'
     },
     {
       id: ViewIds.withdraw,
       view: WithdrawView,
       title: 'Withdraw',
       previousViewId: ViewIds.main,
-      bgClassName: 'bg-pt-purple-lightest dark:bg-pt-purple-darkest'
+      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
     },
     {
       id: ViewIds.withdrawReview,
       view: WithdrawReviewView,
       title: 'Withdraw review',
       previousViewId: ViewIds.withdraw,
-      bgClassName: 'bg-pt-purple-lightest dark:bg-pt-purple-darkest'
+      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
     },
     {
       id: ViewIds.moreInfo,
@@ -105,7 +107,7 @@ export const BalanceModal: React.FC<{
     <ModalWithViewState
       title={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
-      bgClassName='bg-gradient-to-b from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-dark'
+      bgClassName='bg-gradient-to-b from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-darker'
       modalHeightClassName='h-actually-full-screen xs:h-auto min-h-1/2'
       widthClassName='w-screen xs:w-full'
       roundedClassName='rounded-none xs:rounded-xl'

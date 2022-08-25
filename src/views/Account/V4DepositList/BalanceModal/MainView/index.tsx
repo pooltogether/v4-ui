@@ -8,7 +8,6 @@ import { BalanceHeader } from './BalanceHeader'
 
 export const MainView: React.FC<{} & ViewProps> = (props) => {
   const { setSelectedViewId } = props
-  const router = useRouter()
 
   return (
     <div className='flex flex-col h-full justify-between space-y-8'>
@@ -22,10 +21,14 @@ export const MainView: React.FC<{} & ViewProps> = (props) => {
         </TransparentDiv>
       </Carousel>
       <div className='flex justify-evenly'>
-        <RoundButton onClick={() => router.push('/deposit')} icon={'arrow-up'} label={'Deposit'} />
+        <RoundButton
+          onClick={() => setSelectedViewId(ViewIds.deposit)}
+          icon={'arrow-down'}
+          label={'Deposit'}
+        />
         <RoundButton
           onClick={() => setSelectedViewId(ViewIds.withdraw)}
-          icon={'arrow-down'}
+          icon={'arrow-up'}
           label={'Withdraw'}
         />
         <RoundButton

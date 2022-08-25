@@ -1,12 +1,16 @@
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
 import { ModalInfoList } from '@components/InfoList'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import {
   ReviewTransactionView,
   ReviewTransactionViewProps
 } from '@components/ModalViews/ReviewTransactionView'
+import { EstimateAction } from '@constants/odds'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -102,14 +106,24 @@ const DepositReviewViewContent: React.FC<{ depositAmount: Amount }> = (props) =>
       <ModalInfoList>
         {prizePool && (
           <>
-            <EstimatedAPRItem prizePool={prizePool} />
-            {/* // TODO: Add back odds from main branch */}
+            <UpdatedPrizePoolOddsListItem
+              prizePool={prizePool}
+              action={EstimateAction.deposit}
+              amount={depositAmount}
+              nullState={'-'}
+              className='w-full'
+            />
+            <UpdatedPrizePoolNetworkOddsListItem
+              amount={depositAmount}
+              action={EstimateAction.deposit}
+              prizePool={prizePool}
+              nullState={'-'}
+            />
+            <TwabRewardsAprItem />
+            <PrizePoolNetworkAPRItem />
           </>
         )}
-        <EstimatedDepositGasItems
-          chainId={chainId}
-          amountUnformatted={depositAmount.amountUnformatted}
-        />
+        <EstimatedDepositGasItems chainId={chainId} />
       </ModalInfoList>
     </div>
   )

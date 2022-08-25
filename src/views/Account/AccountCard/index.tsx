@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import { Amount } from '@pooltogether/hooks'
 import classNames from 'classnames'
 
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
@@ -11,6 +10,7 @@ import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import { shorten } from '@pooltogether/utilities'
+import { TransparentDiv } from '@components/TransparentDiv'
 
 export const AccountCard: React.FC<{
   usersAddress: string
@@ -20,10 +20,10 @@ export const AccountCard: React.FC<{
   const { showAddress, usersAddress, className } = props
   return (
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
-      <div className='flex justify-between p-4 bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
+      <TransparentDiv className='flex justify-between p-4 rounded-lg'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
         <img src={WalletIllustration} className='w-16 xs:w-20' />
-      </div>
+      </TransparentDiv>
       <div className='flex sm:hidden space-x-2'>
         <DailyOdds usersAddress={usersAddress} />
         <WeeklyOdds usersAddress={usersAddress} />

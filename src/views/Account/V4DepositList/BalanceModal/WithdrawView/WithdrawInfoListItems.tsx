@@ -1,18 +1,41 @@
 import { InfoListItem } from '@components/InfoList'
 import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { EstimateAction } from '@constants/odds'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { Amount } from '@pooltogether/hooks'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-export const WithdrawInfoListItems: React.FC<{ transaction: Transaction }> = (props) => {
-  const { transaction } = props
+export const WithdrawInfoListItems: React.FC<{
+  withdrawAmount: Amount
+  transaction: Transaction
+}> = (props) => {
+  const { withdrawAmount, transaction } = props
   const prizePool = useSelectedPrizePool()
 
   return (
     <>
       <ErrorItem transaction={transaction} key='error-item' />
-      <EstimatedAPRItem prizePool={prizePool} key='apr-item' />
+      <UpdatedPrizePoolOddsListItem
+        prizePool={prizePool}
+        action={EstimateAction.withdraw}
+        amount={withdrawAmount}
+        nullState={'-'}
+        className='w-full'
+      />
+      <TwabRewardsAprItem />
+      <UpdatedPrizePoolNetworkOddsListItem
+        amount={withdrawAmount}
+        action={EstimateAction.withdraw}
+        prizePool={prizePool}
+        nullState={'-'}
+      />
+      <PrizePoolNetworkAPRItem />
     </>
   )
 }

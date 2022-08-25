@@ -66,40 +66,25 @@ export const DepositInfoBox: React.FC<{
             prizePool={prizePool}
             action={EstimateAction.deposit}
             amount={amount}
-            // labelClassName={labelClassName}
-            // valueClassName={valueClassName}
             nullState={'-'}
             className='w-full'
           />
-          <TwabRewardsAprItem
-          // labelClassName={labelClassName}
-          // valueClassName={valueClassName}
-          />
+          <TwabRewardsAprItem />
           {isAdvanced && (
             <>
               <UpdatedPrizePoolNetworkOddsListItem
                 amount={amount}
                 action={EstimateAction.deposit}
                 prizePool={prizePool}
-                // labelClassName={labelClassName}
-                // valueClassName={valueClassName}
                 nullState={'-'}
               />
-              <PrizePoolNetworkAPRItem
-              // labelClassName={labelClassName}
-              // valueClassName={valueClassName}
-              />
+              <PrizePoolNetworkAPRItem />
             </>
           )}
 
           {isError && (
             <div className='mt-2'>
-              <InfoListItem
-                label={t('issues', 'Issues')}
-                value={<div>{messages}</div>}
-                // labelClassName={labelClassName}
-                // valueClassName={valueClassName}
-              />
+              <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
             </div>
           )}
         </ul>

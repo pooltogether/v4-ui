@@ -10,13 +10,16 @@ import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import { ViewIds } from '..'
 import { WithdrawInfoListItems } from './WithdrawInfoListItems'
-import { PrizeBreakdownCard } from './PrizeBreakdownCard'
 import { useWithdrawValidationRules } from '@hooks/v4/PrizePool/useWithdrawValidationRules'
 
 const FORM_KEY = 'withdrawAmount'
 
 export const WithdrawView: React.FC<
-  { setWithdrawAmount: (amount: Amount) => void; withdrawTransaction?: Transaction } & ViewProps
+  {
+    withdrawAmount: Amount
+    setWithdrawAmount: (amount: Amount) => void
+    withdrawTransaction?: Transaction
+  } & ViewProps
 > = (props) => {
   const {
     previous,
@@ -25,7 +28,8 @@ export const WithdrawView: React.FC<
     withdrawAmount,
     setWithdrawAmount,
     transaction,
-    viewIds
+    viewIds,
+    ...remainingProps
   } = props
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
@@ -33,12 +37,15 @@ export const WithdrawView: React.FC<
 
   return (
     <TokenAmountInputFormView
+      {...remainingProps}
       formKey={FORM_KEY}
       previous={previous}
       next={next}
       setSelectedViewId={setSelectedViewId}
       viewIds={viewIds}
-      infoListItems={<WithdrawInfoListItems transaction={transaction} />}
+      infoListItems={
+        <WithdrawInfoListItems transaction={transaction} withdrawAmount={withdrawAmount} />
+      }
       useValidationRules={useValidationRules}
       handleSubmit={(values: TokenAmountFormValues) => {
         setWithdrawAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))

@@ -3,8 +3,8 @@ import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrize
 import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { ViewIds } from '..'
 import { DepositView as DepositViewCore } from '@components/ModalViews/DepositView'
+import { ViewIds } from '.'
 
 const FORM_KEY = 'depositAmount'
 
@@ -31,7 +31,7 @@ export const DepositView: React.FC<
       depositAmount={depositAmount}
       formKey={FORM_KEY}
       setSelectedViewId={setSelectedViewId}
-      onSubmit={() => setSelectedViewId(ViewIds.reviewTransaction)}
+      onSubmit={() => setSelectedViewId(ViewIds.depositReview)}
       chainId={prizePool.chainId}
       token={tokens?.token}
       defaultValue={depositAmount?.amount}
