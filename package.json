@@ -17,15 +17,15 @@
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
     "watch": "yarn run test --watch"
   },
+  "engines": {
+    "node": ">=16"
+  },
   "devDependencies": {
-    "@sentry/cli": "^1.72.2",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.1",
-    "@types/node": "^16.7.2",
     "@types/react": "^17.0.19",
-    "jest": "^27.5.1",
-    "typescript": "^4.4.4"
+    "jest": "^27.5.1"
   },
   "dependencies": {
     "@coinbase/cbpay-js": "^1.0.2",
@@ -45,9 +45,11 @@
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",
     "@reach/visually-hidden": "^0.15.2",
+    "@sentry/cli": "2.5.2",
     "@sentry/react": "^6.17.5",
     "@sentry/tracing": "^6.17.5",
     "@svgr/webpack": "^6.2.1",
+    "@types/node": "18.7.13",
     "autoprefixer": "^10.3.1",
     "beautiful-react-hooks": "^1.0.2",
     "classnames": "^2.3.1",
@@ -86,6 +88,7 @@
     "react-tooltip": "^4.2.21",
     "redux": "^4.1.2",
     "tailwindcss": "^2.2.19",
+    "typescript": "4.7.4",
     "wagmi": "0.6.4"
   }
 }
