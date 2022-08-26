@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { Provider as JotaiProvider } from 'jotai'
-import { createClient, Provider as WagmiProvider } from 'wagmi'
+import { createClient, WagmiConfig as WagmiProvider } from 'wagmi'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
@@ -39,8 +39,6 @@ import { getSupportedChains } from '@utils/getSupportedChains'
 import { CHAIN_ID } from '@constants/misc'
 import {
   getReadProvider,
-  getRpcUrl,
-  getRpcUrls,
   useUpdateStoredPendingTransactions,
   initProviderApiKeys as initProviderApiKeysForWalletConnection
 } from '@pooltogether/wallet-connection'
@@ -68,17 +66,12 @@ initSentry()
 
 // Initialize WAGMI wallet connectors
 const chains = getSupportedChains()
-const connectors = ({ chainId }) => {
+const connectors = () => {
   return [
     new MetaMaskConnector({ chains, options: {} }),
     new WalletConnectConnector({
       chains,
       options: {
-        chainId: chainId || CHAIN_ID.mainnet,
-        rpc: getRpcUrls(
-          chains.map((chain) => chain.id),
-          RPC_API_KEYS
-        ),
         bridge: 'https://pooltogether.bridge.walletconnect.org/',
         qrcode: true
       }
@@ -86,8 +79,7 @@ const connectors = ({ chainId }) => {
     new CoinbaseWalletConnector({
       chains,
       options: {
-        appName: 'PoolTogether',
-        jsonRpcUrl: getRpcUrl(chainId || CHAIN_ID.mainnet, RPC_API_KEYS)
+        appName: 'PoolTogether'
       }
     }),
     new InjectedConnector({ chains, options: {} })
