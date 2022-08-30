@@ -106,7 +106,7 @@ const OddsOfWinning: React.FC<{
   odds: number
   oneOverOdds: number
   isFetched: boolean
-  prizePool: PrizePool
+  prizePool?: PrizePool
 }> = (props) => {
   const { odds, oneOverOdds, isFetched, prizePool } = props
 
@@ -117,8 +117,6 @@ const OddsOfWinning: React.FC<{
     const oneOverOdds = 1 / totalOdds
     return Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds
   }, [isFetched, odds])
-
-  const { data, isFetched: isPrizeFetched } = usePrizePoolPrizes(prizePool)
 
   return (
     <ul className='font-normal text-xs'>
@@ -142,14 +140,23 @@ const OddsOfWinning: React.FC<{
           <ThemedClipSpinner sizeClassName='w-4 h-4' />
         )}
       </li>
-      <li className='flex justify-between'>
-        <span>Average Prize Value</span>
-        {isPrizeFetched ? (
-          <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
-        ) : (
-          <ThemedClipSpinner sizeClassName='w-4 h-4' />
-        )}
-      </li>
+      {prizePool && <AveragePrizeValue prizePool={prizePool} />}
     </ul>
+  )
+}
+
+const AveragePrizeValue: React.FC<{ prizePool: PrizePool }> = (props) => {
+  const { prizePool } = props
+  const { data, isFetched: isPrizeFetched } = usePrizePoolPrizes(prizePool)
+
+  return (
+    <li className='flex justify-between'>
+      <span>Average Prize Value</span>
+      {isPrizeFetched ? (
+        <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
+      ) : (
+        <ThemedClipSpinner sizeClassName='w-4 h-4' />
+      )}
+    </li>
   )
 }
