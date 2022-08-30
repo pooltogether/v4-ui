@@ -50,6 +50,8 @@ export const getPrizePoolExpectedPrizes = (
     totalNumberOfPrizes: number
     valueOfPrizesByTier: Amount[]
     totalValueOfPrizes: Amount
+    averagePrizeValue: Amount
+    grandPrizeValue: Amount
     decimals: string
   },
   percentageOfPicks: number

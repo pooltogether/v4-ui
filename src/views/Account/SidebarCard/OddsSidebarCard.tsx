@@ -15,6 +15,8 @@ import { useAppEnvString } from '@hooks/useAppEnvString'
 import { V4_CHAIN_IDS } from '@constants/config'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
+import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
+import { PrizePool } from '@pooltogether/v4-client-js'
 
 export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
@@ -75,6 +77,7 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
             name='chainId'
             id='chainId'
             onChange={(event) => setChainId(Number(event.target.value))}
+            value={chainId}
           >
             {V4_CHAIN_IDS[appEnv].map((chainId) => (
               <option key={chainId} value={chainId}>
@@ -87,7 +90,12 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
       }
       main={
         <>
-          <OddsOfWinning odds={data?.odds} oneOverOdds={data?.oneOverOdds} isFetched={isFetched} />
+          <OddsOfWinning
+            odds={data?.odds}
+            oneOverOdds={data?.oneOverOdds}
+            isFetched={isFetched}
+            prizePool={prizePool}
+          />
         </>
       }
     />
@@ -98,8 +106,9 @@ const OddsOfWinning: React.FC<{
   odds: number
   oneOverOdds: number
   isFetched: boolean
+  prizePool: PrizePool
 }> = (props) => {
-  const { odds, oneOverOdds, isFetched } = props
+  const { odds, oneOverOdds, isFetched, prizePool } = props
 
   const weeklyOneOverOdds = useMemo(() => {
     if (!isFetched) return null
@@ -108,6 +117,8 @@ const OddsOfWinning: React.FC<{
     const oneOverOdds = 1 / totalOdds
     return Number(oneOverOdds.toFixed(2)) < 1.01 ? 1 : oneOverOdds
   }, [isFetched, odds])
+
+  const { data, isFetched: isPrizeFetched } = usePrizePoolPrizes(prizePool)
 
   return (
     <ul className='font-normal text-xs'>
@@ -127,6 +138,14 @@ const OddsOfWinning: React.FC<{
           <span className='font-bold'>
             {weeklyOneOverOdds === Infinity ? '0 😭' : `1:${weeklyOneOverOdds.toFixed(2)}`}
           </span>
+        ) : (
+          <ThemedClipSpinner sizeClassName='w-4 h-4' />
+        )}
+      </li>
+      <li className='flex justify-between'>
+        <span>Average Prize Value</span>
+        {isPrizeFetched ? (
+          <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
         ) : (
           <ThemedClipSpinner sizeClassName='w-4 h-4' />
         )}

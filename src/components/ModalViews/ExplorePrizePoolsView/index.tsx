@@ -25,7 +25,7 @@ export const ExplorePrizePoolsView: React.FC<
       <BrowsePrizePoolsHeader className='mb-12' />
       {/* TODO: Add a list of filtered prize pools by token holdings */}
       <Tabs
-        titleClassName='mb-12'
+        titleClassName='mb-8 xs:mb-12'
         tabs={[
           {
             id: 'all-pools',
@@ -39,7 +39,7 @@ export const ExplorePrizePoolsView: React.FC<
           {
             id: 'top-pools',
             view: (
-              <div className='flex flex-col space-y-12'>
+              <div className='flex flex-col space-y-8 sm:space-y-16'>
                 <HorizontalListByTvl
                   onPrizePoolSelect={onPrizePoolSelect}
                   marginClassName={horizontalListMarginClassName}

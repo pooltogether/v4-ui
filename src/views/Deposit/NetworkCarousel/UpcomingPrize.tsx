@@ -59,7 +59,7 @@ const AmountOfPrizes = (props) => {
       <span
         className={classNames('transition text-gradient-magenta', {
           'text-opacity-100': isFetched,
-          'text-opacity-70': !isFetched
+          'opacity-50 animate-pulse': !isFetched
         })}
       >
         <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} /> Prizes.
@@ -81,7 +81,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
     <h1
       className={classNames(
         'text-12xl xs:text-14xl xs:-mt-0 font-extrabold  pointer-events-none mx-auto leading-none relative hover:text-gradient-magenta',
-        { 'opacity-50': !amount }
+        { 'opacity-50 animate-pulse': !amount }
       )}
     >
       $<CountUp countFrom={0} countTo={amount} decimals={0} />

@@ -15,6 +15,7 @@ import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/Update
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
+import { PrizePoolYieldSourceItem } from '@components/InfoList/PrizePoolYieldSourceItem'
 
 export const DepositInfoBox: React.FC<{
   formKey: string
@@ -79,6 +80,7 @@ export const DepositInfoBox: React.FC<{
                 nullState={'-'}
               />
               <PrizePoolNetworkAPRItem />
+              <PrizePoolYieldSourceItem prizePool={prizePool} />
             </>
           )}
 

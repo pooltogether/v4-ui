@@ -9,7 +9,7 @@ export const TopPrizePools: React.FC<{
 }> = (props) => {
   const { onPrizePoolSelect, marginClassName } = props
   return (
-    <div className='space-y-16'>
+    <div className='space-y-8 sm:space-y-16'>
       <HorizontalListByTvl
         onPrizePoolSelect={onPrizePoolSelect}
         marginClassName={marginClassName}

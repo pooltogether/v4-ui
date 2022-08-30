@@ -61,7 +61,7 @@ export const TwabRewardsAprItem: React.FC<{
   )
 }
 
-const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
+export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
   const { promotion } = props
   const vapr = usePromotionVAPR(promotion)
 
@@ -70,7 +70,11 @@ const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
   return (
     <li className='flex space-x-1 items-center'>
       <span>{numberWithCommas(vapr)}% in</span>
-      <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-3 h-3' />
+      <TokenIcon
+        chainId={promotion.chainId}
+        address={promotion.token}
+        sizeClassName='w-3 h-3 sm:w-4 sm:h-4'
+      />
     </li>
   )
 }

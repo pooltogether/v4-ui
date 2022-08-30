@@ -13,6 +13,8 @@ import {
 import { getNetworkNiceNameByChainId, numberWithCommas, shorten } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
+import { useChainTwabRewardsPromotions } from '@hooks/v4/TwabRewards/useChainTwabRewardsPromotions'
+import { PromotionsVapr } from './InfoList/TwabRewardsAprItem'
 
 const SIZE_CLASSNAME = 'w-64'
 const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-white dark:bg-opacity-10'
@@ -74,7 +76,7 @@ export const PrizePoolCard: React.FC<{
       {children}
       <div className='flex justify-between'>
         <Network prizePool={prizePool} />
-        {/* <Rewards prizePool={prizePool} /> */}
+        <Rewards prizePool={prizePool} className='text-right' />
       </div>
     </button>
   )
@@ -141,7 +143,23 @@ const Network: React.FC<{ prizePool: PrizePool; className?: string }> = (props) 
  */
 const Rewards: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
   const { prizePool, className } = props
-  return <div className={classNames('animate-rainbow', className)}>Rewards</div>
+
+  const { data, isFetched } = useChainTwabRewardsPromotions(prizePool.chainId)
+
+  if (!isFetched || !data?.hasActivePromotions) return null
+
+  return (
+    <div className={classNames('flex flex-col', className)}>
+      <span className='text-xxs animate-rainbow'>Rewards</span>
+      <div className='flex space-x-1 items-center'>
+        <CardLabelMedium>
+          {data.promotions.map((promotion, index) => (
+            <PromotionsVapr key={`promotion-${promotion.id}`} promotion={promotion} />
+          ))}
+        </CardLabelMedium>
+      </div>
+    </div>
+  )
 }
 
 export const OddsPerX: React.FC<{ prizePool: PrizePool; amount: string; decimals: string }> = (

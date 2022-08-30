@@ -1,5 +1,5 @@
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
 import { Amount, Token } from '@pooltogether/hooks'
@@ -97,34 +97,42 @@ const PrizesClaimedList = (props: PrizesClaimedListProps) => {
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
   const { t } = useTranslation()
 
-  let listItems: React.ReactNode[] = [
-    <LoadingRow key={'loadingrow1'} />,
-    <LoadingRow key={'loadingrow2'} />,
-    <LoadingRow key={'loadingrow3'} />
-  ]
-  if (isFetched) {
-    listItems = []
-    queryResults.forEach((queryResult) => {
-      const { data } = queryResult
+  const listItems: React.ReactNode[] = useMemo(() => {
+    let listItems = [
+      <LoadingRow key={'loadingrow1'} />,
+      <LoadingRow key={'loadingrow2'} />,
+      <LoadingRow key={'loadingrow3'} />
+    ]
+    if (isFetched) {
+      let itemData = queryResults
+        .flatMap((queryResult) => {
+          const { data } = queryResult
 
-      const items = Object.keys(data.claimedAmounts).map((drawId) => {
-        const claimedAmount = data.claimedAmounts[drawId]
-        const ticket = data.ticket
+          return Object.keys(data.claimedAmounts).map((drawId) => {
+            const claimedAmount = data.claimedAmounts[drawId]
+            const ticket = data.ticket
 
-        return (
-          <ClaimedPrizeItem
-            key={`${data.chainId}-${drawId}`}
-            token={ticket}
-            drawId={drawId}
-            chainId={data.chainId}
-            claimedAmount={claimedAmount}
-          />
-        )
-      })
-
-      listItems = [...listItems, ...items]
-    })
-  }
+            return {
+              data,
+              ticket,
+              drawId,
+              claimedAmount
+            }
+          })
+        })
+        .sort((a, b) => Number(b.drawId) - Number(a.drawId))
+      return itemData.map(({ data, ticket, drawId, claimedAmount }) => (
+        <ClaimedPrizeItem
+          key={`${data.chainId}-${drawId}`}
+          token={ticket}
+          drawId={drawId}
+          chainId={data.chainId}
+          claimedAmount={claimedAmount}
+        />
+      ))
+    }
+    return listItems
+  }, [])
 
   if (listItems.length === 0) {
     return <EmptyState />

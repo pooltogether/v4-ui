@@ -1,5 +1,6 @@
 import { useTheme } from '@hooks/useTheme'
 import { ButtonTheme, ViewProps } from '@pooltogether/react-components'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { InfoBox, InfoBoxProps } from './InfoBox'
 import { SubmitButton, SubmitButtonProps } from './SubmitButton'
@@ -45,11 +46,15 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
     shouldUnregister: true
   })
 
+  useEffect(() => {
+    methods?.setFocus(formKey)
+  }, [methods])
+
   return (
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(_handleSubmit)}
-        className='flex w-full h-full flex-col justify-between space-y-6'
+        className='flex w-full h-full flex-col space-y-6'
       >
         <div className='flex flex-col space-y-2'>
           <TokenAmountInput

@@ -5,11 +5,14 @@ import { useAllProposalsByStatus } from '@pooltogether/hooks'
 import { ExternalLink, ThemedClipSpinner } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { TotalWinningsSheet } from '../AccountCard/TotalWinnings'
 import { SidebarCard } from '.'
 
+/**
+ * TODO: If the user is not delegating their POOL, prompt them to delegate
+ * @param props
+ * @returns
+ */
 export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress: string }> = (
   props
 ) => {

@@ -25,21 +25,16 @@ export const PerDrawAveragePrizeSize: React.FC<{ className?: string }> = (props)
     const data = queryResults
       .filter(({ isFetched }) => isFetched)
       .map(({ data }) => {
-        data.valueOfPrizesByTier.forEach((valueOfPrize) => {
-          if (!grandPrizeValue) {
-            grandPrizeValue = valueOfPrize
-          } else if (valueOfPrize.amountUnformatted.gt(grandPrizeValue.amountUnformatted)) {
-            grandPrizeValue = valueOfPrize
-          }
-        })
-        const averagePrizeValue = getAmountFromBigNumber(
-          data.totalValueOfPrizes.amountUnformatted.div(data.totalNumberOfPrizes),
-          data.decimals
-        )
+        if (!grandPrizeValue) {
+          grandPrizeValue = data.grandPrizeValue
+        } else if (data.grandPrizeValue.amountUnformatted.gt(grandPrizeValue.amountUnformatted)) {
+          grandPrizeValue = data.grandPrizeValue
+        }
+
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          amount: averagePrizeValue,
-          averagePrizeValue: `$${averagePrizeValue.amountPretty}`
+          amount: data.averagePrizeValue,
+          averagePrizeValue: `$${data.averagePrizeValue.amountPretty}`
         }
       })
       .sort((a, b) => (b.amount.amountUnformatted.gt(a.amount.amountUnformatted) ? 1 : -1))

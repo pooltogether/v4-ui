@@ -53,7 +53,8 @@ export const DepositModal: React.FC<{
       id: ViewIds.deposit,
       view: DepositView,
       title: 'Deposit in a Prize Pool',
-      previousViewId: ViewIds.explore
+      previousViewId: ViewIds.explore,
+      onCloseViewId: ViewIds.explore
     },
     {
       id: ViewIds.reviewTransaction,
@@ -80,11 +81,12 @@ export const DepositModal: React.FC<{
     <ModalWithViewState
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
-      modalHeightClassName='h-actually-full-screen sm:h-auto min-h-1/2'
+      modalHeightClassName='h-actually-full-screen min-h-1/2 sm:h-auto '
+      maxHeightClassName='sm:max-h-90-screen'
       widthClassName='w-screen sm:w-full'
+      maxWidthClassName='sm:max-w-screen-sm'
       roundedClassName='rounded-none sm:rounded-xl'
       className='h-full'
-      maxWidthClassName='sm:max-w-2xl'
       isOpen={isOpen}
       closeModal={() => {
         setDepositTransactionId('')

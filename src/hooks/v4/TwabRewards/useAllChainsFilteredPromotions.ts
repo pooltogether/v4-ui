@@ -1,4 +1,3 @@
-
 import { useGraphFilteredPromotions } from '@hooks/v4/TwabRewards/useGraphFilteredPromotions'
 import { useRpcFilteredPromotions } from '@hooks/v4/TwabRewards/useRpcFilteredPromotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
@@ -62,7 +61,9 @@ const getAllFilteredPromotions = async (chainId, graphQueryResults, rpcQueryResu
     promotions.push(promotion)
   }
 
-  return { chainId, promotions }
+  const hasActivePromotions = promotions?.some((promotion) => !promotion.isComplete)
+
+  return { chainId, promotions, hasActivePromotions }
 }
 
 const combinePromotionData = (chainId: number, promotion, promotionRpcData): Promotion => {

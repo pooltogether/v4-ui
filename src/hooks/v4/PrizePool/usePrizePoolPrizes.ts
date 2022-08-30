@@ -48,6 +48,15 @@ export const getPrizePoolPrizes = (
   )
   const valueOfPrizesByTier = getPrizeTierValues(prizeTier, decimals)
   const totalValueOfPrizes = getAmountFromBigNumber(prizeTier.prize, decimals)
+  const averagePrizeValue = getAmountFromBigNumber(
+    totalValueOfPrizes.amountUnformatted.div(totalNumberOfPrizes),
+    decimals
+  )
+
+  const grandPrizeValue = valueOfPrizesByTier.sort((a, b) =>
+    b.amountUnformatted.lte(a.amountUnformatted) ? -1 : 1
+  )[0]
+
   return {
     chainId: prizePool.chainId,
     prizePoolId: prizePool.id(),
@@ -56,6 +65,8 @@ export const getPrizePoolPrizes = (
     totalNumberOfPrizes,
     valueOfPrizesByTier,
     totalValueOfPrizes,
+    averagePrizeValue,
+    grandPrizeValue,
     decimals
   }
 }
