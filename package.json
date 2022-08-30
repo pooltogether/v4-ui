@@ -8,7 +8,7 @@
     "dev": "next dev",
     "lint": "next lint --fix",
     "build": "next build",
-    "dist": "yarn build && node post-export.js",
+    "dist": "yarn build",
     "distrelease": "export NEXT_PUBLIC_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
     "sentryrelease": "./src/scripts/sentry-release.sh",
     "start": "next start",
