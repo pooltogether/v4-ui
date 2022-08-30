@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+
 import { useAllChainsFilteredPromotions } from './useAllChainsFilteredPromotions'
 
 export const useChainTwabRewardsPromotions = (chainId: number) => {
