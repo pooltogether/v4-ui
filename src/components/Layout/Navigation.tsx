@@ -51,7 +51,7 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
       <nav
         className={classNames(
           className,
-          'flex flex-row justify-center space-x-4 w-full pointer-events-auto pt-2 pb-8 px-5',
+          'flex flex-row justify-center space-x-4 w-full xs:w-auto pointer-events-auto pt-2 pb-8 px-5',
           'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-t-xl p-1 backdrop-filter backdrop-blur-xl xs:backdrop-blur-none'
         )}
       >
