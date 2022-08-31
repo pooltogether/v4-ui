@@ -14,7 +14,7 @@ export const HorizontalListByTvl: React.FC<{
 
   return (
     <div className={classNames(className, 'space-y-2')}>
-      <span className='font-bold text-lg'>By popularity</span>
+      <span className='font-bold text-lg'>Popular</span>
       <PrizePoolHorizontalList
         label='by-tvl'
         marginClassName={marginClassName}
