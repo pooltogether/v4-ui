@@ -1,3 +1,4 @@
+import { NextArrow, PrevArrow } from '@components/Arrows'
 import { ExpectedPrizeBreakdown } from '@components/ExpectedPrizeBreakdown'
 import { RoundButton } from '@components/Input/RoundButton'
 import { TransparentDiv } from '@components/TransparentDiv'
@@ -11,7 +12,18 @@ export const MainView: React.FC<{} & ViewProps> = (props) => {
 
   return (
     <div className='flex flex-col h-full justify-between space-y-8'>
-      <Carousel className='-mx-2 xs:-mx-8'>
+      <Carousel
+        className='-mx-2 xs:-mx-8'
+        settings={{
+          arrows: true,
+          dots: true,
+          speed: 500,
+          slidesToShow: 1,
+          slidesToScroll: 1
+          // nextArrow: <NextArrow />,
+          // prevArrow: <PrevArrow />
+        }}
+      >
         <BalanceHeader key='balance-header' />
         <TransparentDiv
           key='expected-prize-breakdown'

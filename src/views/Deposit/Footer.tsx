@@ -10,11 +10,10 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 export const Footer = () => {
   const prizePool = useSelectedPrizePool()
-  const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
-    usePrizePoolTokens(prizePool)
+  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
 
   return (
-    <div className='w-full flex justify-around sm:justify-between py-4 max-w-xl mx-auto mb-14 xs:mb-4 md:mb-8 lg:mb-12'>
+    <div className='w-full flex justify-around sm:justify-between py-4 max-w-xl mx-auto mb-20 xs:mb-4 md:mb-8 lg:mb-12'>
       <BuyTokensModalTrigger chainId={prizePool.chainId} />
       <BridgeTokensModalTrigger prizePool={prizePool} />
       <SwapTokensModalTrigger
@@ -127,7 +126,7 @@ const ModalTrigger: React.FC<{
   label: React.ReactNode
 }> = (props) => (
   <button
-    className='text-xxxs xs:text-xs text-center text-inverse opacity-60 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-center items-center xs:flex-row xs:space-y-0 xs:space-x-1 sm:space-x-2'
+    className='text-xxxs xs:text-xs text-center text-inverse opacity-50 hover:opacity-100 transition-opacity flex flex-col space-y-1 justify-center items-center xs:flex-row xs:space-y-0 xs:space-x-1 sm:space-x-2'
     onClick={props.onClick}
   >
     {props.icon}

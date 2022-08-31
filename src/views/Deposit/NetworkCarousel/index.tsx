@@ -11,6 +11,7 @@ import { PerDrawPrizeCountDistribution } from './PerDrawPrizeCountDistribution'
 import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
 import classNames from 'classnames'
 import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
+import { NextArrow, PrevArrow } from '@components/Arrows'
 
 export const NetworkCarousel = () => {
   return (
@@ -33,31 +34,5 @@ export const NetworkCarousel = () => {
       <PerDrawPrizeCountDistribution className='mx-auto' />
       <PerDrawAveragePrizeSize className='mx-auto' />
     </Carousel>
-  )
-}
-
-const PrevArrow = (props) => {
-  const { className, style, onClick } = props
-  return (
-    <button className={classNames('z-1', className)} onClick={onClick}>
-      <FeatherIcon
-        className={'w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8 mr-auto text-inverse'}
-        style={{ ...style }}
-        icon='chevron-left'
-      />
-    </button>
-  )
-}
-
-const NextArrow = (props) => {
-  const { className, style, onClick } = props
-  return (
-    <button className={classNames('z-1', className)} onClick={onClick}>
-      <FeatherIcon
-        className={'w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8 ml-auto text-inverse'}
-        style={{ ...style }}
-        icon='chevron-right'
-      />
-    </button>
   )
 }

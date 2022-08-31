@@ -44,16 +44,15 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
         'z-3',
         'flex flex-row justify-center',
         'pointer-events-none',
-        'transition fixed bottom-6 top-auto xs:bottom-auto xs:top-1 sm:top-2 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0',
+        'transition fixed bottom-0 top-auto xs:bottom-auto xs:top-1 sm:top-2 inset-x-0 xs:left-12 xs:right-auto sm:inset-x-0',
         positionClassName
       )}
     >
       <nav
         className={classNames(
           className,
-          'flex flex-row space-x-4 pointer-events-auto py-2 px-5',
-          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-xl p-1 backdrop-filter backdrop-blur-sm xs:backdrop-blur-none',
-          'rounded-full'
+          'flex flex-row justify-center space-x-4 w-full pointer-events-auto pt-2 pb-8 px-5',
+          'dark:bg-actually-black bg-opacity-10 bg-white dark:bg-opacity-10 xs:bg-opacity-0 xs:dark:bg-opacity-0 shadow-lg xs:shadow-none rounded-t-xl p-1 backdrop-filter backdrop-blur-xl xs:backdrop-blur-none'
         )}
       >
         {NavLinks.map((navLink) => (
