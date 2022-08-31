@@ -30,7 +30,7 @@ export const SidebarCard: React.FC<{
     )}
   >
     <CardTitle title={props.title} loading={props.isLoading} className='mb-2 sm:mb-0' />
-    <div className='text-xxs dark:text-white text-pt-purple-darkest text-opacity-50 dark:text-opacity-50 font-light'>
+    <div className='text-xxs dark:text-white text-pt-purple-darkest text-opacity-80 dark:text-opacity-80 font-light'>
       {props.description}
     </div>
     <div className='font-bold text-xl'>{props.main}</div>

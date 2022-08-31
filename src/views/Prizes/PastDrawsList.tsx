@@ -111,7 +111,7 @@ interface PastPrizeListItemProps {
 // Components inside need to account for the case where there is no prizeDistribution
 const PastPrizeListItem = (props: PastPrizeListItemProps) => {
   const { ticket, drawData } = props
-  const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-90'
+  const pendingClassName = 'font-bold text-inverse text-xs xs:text-sm opacity-80'
   const { draw, prizeDistribution } = drawData
   const amount = prizeDistribution
     ? roundPrizeAmount(prizeDistribution.prize, ticket.decimals)

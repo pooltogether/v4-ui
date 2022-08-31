@@ -57,7 +57,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
           $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
         </span>
       </div>
-      <div className='opacity-50 mt-2 text-center'>
+      <div className='opacity-70 mt-2 text-center'>
         Prize money is distributed to prize pools based on their TVL{' '}
         <ExternalLink href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'>
           Read more

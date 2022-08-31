@@ -1,4 +1,3 @@
-
 import Erc20Abi from '@abis/ERC20'
 import PodAbi from '@abis/V3_Pod'
 import PrizePoolAbi from '@abis/V3_PrizePool'
@@ -43,7 +42,6 @@ export interface V3PrizePool {
 export const useV3PrizePools = () => {
   const chainIds = useV3ChainIds()
   const providers = useReadProviders(chainIds)
-
   return useQuery(['useV3PrizePools', chainIds], () => getV3PrizePools(chainIds, providers))
 }
 

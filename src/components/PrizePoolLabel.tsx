@@ -28,11 +28,11 @@ export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?
         <div className='text-xxxs flex space-x-2 items-center font-normal'>
           <div className='flex space-x-1 items-center'>
             <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-3 h-3' />
-            <span className='opacity-70'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
+            <span className='opacity-80'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
           </div>
           {/* <div className='flex space-x-1 items-center'>
             <YieldSourceIcon yieldSource={YieldSourceKey.aave} sizeClassName='w-3 h-3' />
-            <span className='opacity-70'>{getYieldSourceNiceName(YieldSourceKey.aave)}</span>
+            <span className='opacity-90'>{getYieldSourceNiceName(YieldSourceKey.aave)}</span>
           </div> */}
         </div>
       </div>

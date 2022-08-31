@@ -156,6 +156,11 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
         titleClassName='mb-8'
         tabs={[
           {
+            id: 'all',
+            view: <BrowsePrizePoolsList onPrizePoolSelect={onPrizePoolSelect} className='' />,
+            title: 'All Pools'
+          },
+          {
             id: 'top',
             view: (
               <TopPrizePools
@@ -164,11 +169,6 @@ const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
               />
             ),
             title: 'Top Pools'
-          },
-          {
-            id: 'all',
-            view: <BrowsePrizePoolsList onPrizePoolSelect={onPrizePoolSelect} className='' />,
-            title: 'All Pools'
           }
         ]}
         initialTabId={'top'}

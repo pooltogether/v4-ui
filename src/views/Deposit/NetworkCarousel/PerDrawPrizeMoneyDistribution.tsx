@@ -54,7 +54,7 @@ export const PerDrawPrizeMoneyDistribution: React.FC<{ className?: string }> = (
           <CountUp countTo={amount} decimals={0} />
         </span>
       </div>
-      <div className='opacity-50 mt-2 text-center'>
+      <div className='opacity-70 mt-2 text-center'>
         The per draw prize money gets split between all of the prize pools.{' '}
         <ExternalLink href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'>
           Read more

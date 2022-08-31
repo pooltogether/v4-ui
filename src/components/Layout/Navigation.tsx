@@ -89,7 +89,7 @@ const NavTab = (props: NavTabProps) => {
           'text-lg xs:text-xs font-bold text-inverse tracking-tight cursor-pointer'
         )}
       >
-        <span className={classNames({ 'opacity-70 hover:opacity-100': !isSelected })}>
+        <span className={classNames({ 'opacity-80 hover:opacity-100': !isSelected })}>
           {t(i18nKey)}
         </span>
         <div

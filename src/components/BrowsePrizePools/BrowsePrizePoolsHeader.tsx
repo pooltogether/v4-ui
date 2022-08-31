@@ -28,7 +28,7 @@ export const BrowsePrizePoolsHeader: React.FC<{ className?: string }> = (props) 
           ))}
         </select> */}
       </div>
-      <div className='opacity-50'>
+      <div className='opacity-80'>
         Join any prize pool for a chance to win prizes daily! I know, it sounds crazy.
       </div>
     </div>

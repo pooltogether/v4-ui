@@ -22,7 +22,7 @@ export const PrizePoolTable: React.FC<{
 
   return (
     <div className={classNames('', className)}>
-      <div className={`ml-auto text-xxs opacity-50 grid grid-cols-${columns} text-center`}>
+      <div className={`ml-auto text-xxs opacity-80 grid grid-cols-${columns} text-center`}>
         <div className='' />
         {Object.values(headers).map((header, index) => (
           <div className='' key={`header-${index}`}>

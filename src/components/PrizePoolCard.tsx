@@ -90,7 +90,7 @@ PrizePoolCard.defaultProps = {
 }
 
 const CardLabelSmall = (props) => (
-  <span {...props} className={classNames('text-xxs opacity-70', props.className)} />
+  <span {...props} className={classNames('text-xxs opacity-80', props.className)} />
 )
 
 const CardLabelMedium = (props) => (
