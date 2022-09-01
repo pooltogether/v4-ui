@@ -24,7 +24,7 @@ export const SidebarCard: React.FC<{
 }> = (props) => (
   <div
     className={classNames(
-      'bg-white bg-opacity-0 xs:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 xs:dark:bg-opacity-10',
+      'bg-white bg-opacity-0 sm:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 sm:dark:bg-opacity-10',
       'rounded-lg sm:px-4 sm:py-2 flex flex-col',
       props.className
     )}

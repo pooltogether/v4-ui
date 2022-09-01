@@ -54,7 +54,7 @@ export const PrizeVideoBackground: React.FC<{
   const prizeLoop = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (activeVideoClip === targetVideoClip && activeVideoState === VideoState.loop) {
+    if (activeVideoClip === targetVideoClip && activeVideoState === VideoState.transition) {
       onTargetReached?.()
     }
   }, [targetVideoClip, activeVideoClip, activeVideoState])
