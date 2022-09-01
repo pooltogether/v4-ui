@@ -86,7 +86,7 @@ const getTotalValueUsdScaled = (
   data.forEach((balanceData) => {
     if (!balanceData) return
 
-    const { prizePool, balances } = balanceData
+    const { balances } = balanceData
     // NOTE: Assumes stablecoins
     const valueUsdScaled = toScaledUsdBigNumber(balances.ticket.amount)
     totalValueUsdScaled = totalValueUsdScaled.add(valueUsdScaled)

@@ -5,8 +5,7 @@ import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
-import { useQuery } from 'react-query'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 // NOTE: Assumes v4 balances are USD stable coins
 export const useUsersTotalBalances = (usersAddress: string) => {
@@ -56,12 +55,12 @@ export const useUsersTotalBalances = (usersAddress: string) => {
     // Fallback in case there is no token price data
     const totalV4Balance = isV4Fetched
       ? v4BalancesData.balances.reduce((total, balance) => {
-          if (balance?.balances.ticket.amount) {
-            return total + Number(balance.balances.ticket.amount)
-          } else {
-            return total
-          }
-        }, 0)
+        if (balance?.balances.ticket.amount) {
+          return total + Number(balance.balances.ticket.amount)
+        } else {
+          return total
+        }
+      }, 0)
       : 0
 
     return {
