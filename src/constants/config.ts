@@ -153,9 +153,13 @@ const EXCHANGE_URLS = Object.freeze({
 export const getCoinbaseChainKey = (chainId: number) => COINBASE_CHAIN_KEYS[chainId]
 export const COINBASE_CHAIN_KEYS = Object.freeze({
   [CHAIN_ID.mainnet]: 'ethereum',
-  [CHAIN_ID.avalanche]: 'avalanche-c-chain'
+  [CHAIN_ID.avalanche]: 'avalanche-c-chain',
+  // [CHAIN_ID.optimism]: 'optimism',
+  [CHAIN_ID.polygon]: 'polygon'
 })
 export const COINBASE_ASSETS = Object.freeze({
   [CHAIN_ID.mainnet]: ['ETH', 'USDC'],
-  [CHAIN_ID.avalanche]: ['AVAX']
+  [CHAIN_ID.avalanche]: ['AVAX'],
+  [CHAIN_ID.polygon]: ['USDC', 'MATIC'],
+  [CHAIN_ID.optimism]: ['USDC', 'ETH']
 })
