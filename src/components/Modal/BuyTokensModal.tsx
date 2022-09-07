@@ -69,6 +69,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   const chainKey = getCoinbaseChainKey(chainId)
   const mainnetChainKey = getCoinbaseChainKey(CHAIN_ID.mainnet)
   const avalancheChainKey = getCoinbaseChainKey(CHAIN_ID.avalanche)
+  const polygonChainKey = getCoinbaseChainKey(CHAIN_ID.polygon)
 
   useEffect(() => {
     onrampInstance.current = initOnRamp({
@@ -77,10 +78,16 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
         destinationWallets: [
           {
             address: usersAddress,
-            blockchains: !!chainKey ? [chainKey] : [mainnetChainKey, avalancheChainKey],
+            blockchains: !!chainKey
+              ? [chainKey]
+              : [mainnetChainKey, avalancheChainKey, polygonChainKey],
             assets: !!chainKey
               ? COINBASE_ASSETS[chainId]
-              : [...COINBASE_ASSETS[CHAIN_ID.mainnet], ...COINBASE_ASSETS[CHAIN_ID.avalanche]]
+              : [
+                  ...COINBASE_ASSETS[CHAIN_ID.mainnet],
+                  ...COINBASE_ASSETS[CHAIN_ID.avalanche],
+                  ...COINBASE_ASSETS[CHAIN_ID.polygon]
+                ]
           }
         ]
       },
@@ -129,7 +136,9 @@ const TemporaryWarningForNoOnRamp: React.FC<{ chainId: number }> = (props) => {
           networkName: getNetworkNiceNameByChainId(chainId),
           supportedNetworks: `${getNetworkNiceNameByChainId(
             CHAIN_ID.mainnet
-          )}, ${getNetworkNiceNameByChainId(CHAIN_ID.avalanche)}`
+          )}, ${getNetworkNiceNameByChainId(CHAIN_ID.avalanche)}, ${getNetworkNiceNameByChainId(
+            CHAIN_ID.polygon
+          )} `
         })}
       </div>
     )
