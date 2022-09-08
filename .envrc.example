@@ -1,3 +1,5 @@
+export NODE_ENV=development
+
 # Blank if development. Domain if production.
 export NEXT_PUBLIC_DOMAIN_NAME=
 
@@ -5,10 +7,7 @@ export NEXT_PUBLIC_DOMAIN_NAME=
 export NEXT_PUBLIC_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
 export NEXT_PUBLIC_LOCIZE_VERSION=latest
 
-# Only one is needed
-# API keys for read only RPC calls.
-export NEXT_PUBLIC_ALCHEMY_API_KEY=
-export NEXT_PUBLIC_ETHERSCAN_API_KEY=
+# API keys for read only RPC calls
 export NEXT_PUBLIC_INFURA_ID=
 
 # Optional
@@ -18,12 +17,6 @@ export NEXT_PUBLIC_SENTRY_ENV=
 export SENTRY_REPO_NAME=pooltogether/v4-ui
 export SENTRY_PROJECT=v4-ui
 export SENTRY_ORG=pooltogether
-
-# Optional
-# API keys for extra wallet support.
-export NEXT_PUBLIC_FORTMATIC_API_KEY=
-export NEXT_PUBLIC_FORTMATIC_PRODUCTION_API_KEY=
-export NEXT_PUBLIC_PORTIS_API_KEY=
 
 # Optional
 # Locize Dev API key for writing values.

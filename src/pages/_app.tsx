@@ -9,13 +9,7 @@ import { BaseProvider } from '@ethersproject/providers'
 import * as Fathom from 'fathom-client'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import {
-  ScreenSize,
-  useScreenSize,
-  useInitCookieOptions,
-  useInitReducedMotion,
-  initProviderApiKeys as initProviderApiKeysForHooks
-} from '@pooltogether/hooks'
+import { ScreenSize, useScreenSize, useInitCookieOptions } from '@pooltogether/hooks'
 import { ThemeContext, ThemeContextProvider } from '@pooltogether/react-components'
 import { Flip, ToastContainer, ToastContainerProps } from 'react-toastify'
 
@@ -57,8 +51,7 @@ const queryClient = new QueryClient({
     }
   }
 })
-// Initialize read provider API keys to @pooltogether/hooks
-initProviderApiKeysForHooks(RPC_API_KEYS)
+
 // Initialize read provider API keys to @pooltogether/wallet-connection
 initProviderApiKeysForWalletConnection(RPC_API_KEYS)
 // Initialize Sentry error logging
@@ -182,7 +175,6 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
  * Initializes PoolTogether tooling global state
  */
 const useInitPoolTogetherHooks = () => {
-  useInitReducedMotion(Boolean(process.env.NEXT_PUBLIC_REDUCE_MOTION))
   useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
 }
 

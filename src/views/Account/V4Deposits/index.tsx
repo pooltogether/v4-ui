@@ -3,21 +3,18 @@ import { getAddress } from 'ethers/lib/utils'
 import { BigNumber, ethers } from 'ethers'
 import { useSigner } from 'wagmi'
 import {
-  BalanceBottomSheet,
   ContractLink,
   NetworkIcon,
   SquareButtonSize,
   SquareButtonTheme,
   SquareLink
 } from '@pooltogether/react-components'
-
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'react-i18next'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
-
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
@@ -38,6 +35,7 @@ import { TwabDelegatorItem } from './TwabDelegatorItem'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
+import { BalanceBottomSheet } from '@components/BalanceBottomSheet'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()

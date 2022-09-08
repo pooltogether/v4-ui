@@ -9,12 +9,11 @@
     "lint": "next lint --fix",
     "build": "next build",
     "dist": "yarn build",
-    "distrelease": "export NEXT_PUBLIC_RELEASE_VERSION=$(sentry-cli releases propose-version) && yarn dist && yarn sentryrelease",
-    "sentryrelease": "./src/scripts/sentry-release.sh",
     "start": "next start",
     "test": "jest",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
-    "watch": "yarn run test --watch"
+    "watch": "yarn run test --watch",
+    "config:sentry": "npx @sentry/wizard -i nextjs"
   },
   "engines": {
     "node": ">=16"
@@ -23,18 +22,16 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.1",
-    "@types/react": "^17.0.19",
+    "@types/react": "^18.0.18",
     "jest": "^27.5.1"
   },
   "dependencies": {
     "@coinbase/cbpay-js": "^1.0.2",
-    "@pooltogether/current-pool-data": "^3.7.2",
     "@pooltogether/etherplex": "^1.1.4",
-    "@pooltogether/evm-chains-extended": "0.7.2-beta.4",
     "@pooltogether/hooks": "1.11.0-beta.4",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
     "@pooltogether/react-components": "1.19.0-beta.4",
-    "@pooltogether/utilities": "0.5.2-beta.2",
+    "@pooltogether/utilities": "0.6.1",
     "@pooltogether/v4-client-js": "0.15.0-beta.1",
     "@pooltogether/v4-pool-data": "1.8.2-beta.2",
     "@pooltogether/v4-twab-delegator-js": "0.2.1-beta.1",
@@ -44,9 +41,7 @@
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",
     "@reach/visually-hidden": "^0.15.2",
-    "@sentry/cli": "2.5.2",
-    "@sentry/react": "^6.17.5",
-    "@sentry/tracing": "^6.17.5",
+    "@sentry/nextjs": "^7.12.1",
     "@svgr/webpack": "^6.2.1",
     "@types/node": "18.7.13",
     "autoprefixer": "^10.3.1",
@@ -68,7 +63,7 @@
     "js-cookie": "^3.0.0",
     "lodash": "^4.17.21",
     "lodash.clonedeep": "^4.5.0",
-    "next": "12",
+    "next": "12.1.0",
     "ordinal": "^1.0.3",
     "postcss": "^8.4.6",
     "postcss-custom-properties-fallback": "^1.0.1",
@@ -87,7 +82,7 @@
     "react-tooltip": "^4.2.21",
     "redux": "^4.1.2",
     "tailwindcss": "^2.2.19",
-    "typescript": "4.7.4",
+    "typescript": "^4.7.4",
     "wagmi": "0.6.4"
   }
 }
