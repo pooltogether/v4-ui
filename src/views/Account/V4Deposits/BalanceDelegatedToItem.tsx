@@ -16,9 +16,9 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const { chainId } = useSelectedChainId()
-  const { data, isFetched } = useTotalAmountDelegatedTo(usersAddress)
+  const { data, isFetched, isError } = useTotalAmountDelegatedTo(usersAddress)
 
-  if (!isFetched || data.delegatedAmount.amountUnformatted.isZero()) return null
+  if (isError || !isFetched || data?.delegatedAmount.amountUnformatted.isZero()) return null
 
   return (
     <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg'>
