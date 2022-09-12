@@ -125,20 +125,18 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
     onRampInstance?.open()
   }
 
-  const disabled = !usersAddress || !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID
+  const disabled = !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID || !onRampInstance
 
   return (
-    <button
+    <a
+      id='cbpay-button-container'
       className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-50', {
-        'opacity-50': disabled
+        'opacity-50 pointer-events-none': disabled
       })}
       onClick={handleClick}
-      disabled={disabled}
     >
-      <ExchangeIcon exchange={ExchangeKey.coinbase} sizeClassName='w-6 h-6' />
-      <span>{t('buyOnCoinbase')}</span>
-      <FeatherIcon icon={'external-link'} className='w-4 h-4 my-auto' />
-    </button>
+      <img src={'/buy-with-coinbase-pay.png'} />
+    </a>
   )
 }
 
