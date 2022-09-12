@@ -157,6 +157,7 @@ export const COINBASE_CHAIN_KEYS = Object.freeze({
   // [CHAIN_ID.optimism]: 'optimism',
   [CHAIN_ID.polygon]: 'polygon'
 })
+export const getCoinbaseChainAssets = (chainId: number) => COINBASE_ASSETS[chainId]
 export const COINBASE_ASSETS = Object.freeze({
   [CHAIN_ID.mainnet]: ['ETH', 'USDC'],
   [CHAIN_ID.avalanche]: ['AVAX'],
