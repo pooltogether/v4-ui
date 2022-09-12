@@ -1,4 +1,3 @@
-import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { BlockExplorerLink, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
@@ -15,6 +14,7 @@ import { FieldValues, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import {
+  CHAIN_ID,
   Transaction,
   TransactionState,
   TransactionStatus,

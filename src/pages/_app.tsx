@@ -36,11 +36,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'react-spring-bottom-sheet/dist/style.css'
 import '@assets/styles/bottomSheet.css'
 import { getSupportedChains } from '@utils/getSupportedChains'
-import { CHAIN_ID } from '@constants/misc'
 import {
   getReadProvider,
   useUpdateStoredPendingTransactions,
-  initProviderApiKeys as initProviderApiKeysForWalletConnection
+  initProviderApiKeys as initProviderApiKeysForWalletConnection,
+  CHAIN_ID
 } from '@pooltogether/wallet-connection'
 import { RPC_API_KEYS } from '@constants/config'
 import { useSelectedChainIdWatcher } from '@hooks/useSelectedChainId'

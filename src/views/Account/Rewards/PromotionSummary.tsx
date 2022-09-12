@@ -8,8 +8,8 @@ import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltoget
 import { useToken } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
 import { Trans } from 'react-i18next'
-
-import { CHAIN_ID, SECONDS_PER_DAY } from '@constants/misc'
+import { SECONDS_PER_DAY } from '@constants/misc'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 interface PromotionSummaryProps {
   chainId: number

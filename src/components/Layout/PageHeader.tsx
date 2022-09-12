@@ -14,7 +14,6 @@ import {
   NetworkIcon
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-
 import { TopNavigation } from '@components/Layout/Navigation'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'

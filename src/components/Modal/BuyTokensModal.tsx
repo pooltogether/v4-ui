@@ -10,16 +10,11 @@ import {
   ExchangeKey,
   ExternalLink
 } from '@pooltogether/react-components'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
-import { CHAIN_ID, DISCORD_INVITE_URL } from '@constants/misc'
+import { DISCORD_INVITE_URL } from '@constants/misc'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import {
-  COINBASE_ASSETS,
-  COINBASE_CHAIN_KEYS,
-  getCoinbaseChainAssets,
-  getCoinbaseChainKey
-} from '@constants/config'
+import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
 import classNames from 'classnames'
 
 /**
@@ -78,20 +73,29 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
     initOnRamp(
       {
         appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
+        // widgetParameters: {
+        //   destinationWallets: !!chainKey
+        //     ? [
+        //         {
+        //           address: usersAddress,
+        //           blockchains: [chainKey],
+        //           assets: getCoinbaseChainAssets(chainId)
+        //         }
+        //       ]
+        //     : supportedCoinbaseChainIds.map((chainId) => ({
+        //         address: usersAddress,
+        //         blockchains: [getCoinbaseChainKey(chainId)],
+        //         assets: getCoinbaseChainAssets(chainId)
+        //       }))
+        // },
         widgetParameters: {
-          destinationWallets: !!chainKey
-            ? [
-                {
-                  address: usersAddress,
-                  blockchains: [chainKey],
-                  assets: getCoinbaseChainAssets(chainId)
-                }
-              ]
-            : supportedCoinbaseChainIds.map((chainId) => ({
-                address: usersAddress,
-                blockchains: [getCoinbaseChainKey(chainId)],
-                assets: getCoinbaseChainAssets(chainId)
-              }))
+          destinationWallets: [
+            {
+              address: usersAddress,
+              blockchains: [getCoinbaseChainKey(CHAIN_ID.mainnet)],
+              assets: getCoinbaseChainAssets(chainId)
+            }
+          ]
         },
         experienceLoggedIn: 'popup',
         experienceLoggedOut: 'popup',

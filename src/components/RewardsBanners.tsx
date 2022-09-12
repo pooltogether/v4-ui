@@ -4,10 +4,9 @@ import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import { TokenIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-
-import { CHAIN_ID } from '@constants/misc'
 import { useAppEnvString } from '@hooks/useAppEnvString'
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 

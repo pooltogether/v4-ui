@@ -1,10 +1,8 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
-
-import { CHAIN_ID } from '@constants/misc'
 import { Chain } from 'wagmi'
-import { getChain } from '@pooltogether/wallet-connection'
+import { CHAIN_ID, getChain } from '@pooltogether/wallet-connection'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
