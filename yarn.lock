@@ -1051,9 +1051,9 @@
     "@eth-optimism/contracts" "^0.5.21"
 
 "@coinbase/cbpay-js@^1.0.2":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@coinbase/cbpay-js/-/cbpay-js-1.2.0.tgz#56d1dcb947e1144ee397c9d1b5c2631139895c46"
-  integrity sha512-PjdP0OG2Pa0yJnxlN75jhL1FcWYOd7NiqkMTiohbWlI53ahqHYqMbGsfzCq+oVWBtfe6L8C7H3pWnoTa5JfMzA==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@coinbase/cbpay-js/-/cbpay-js-1.4.0.tgz#4ebeecf0135e3b9aa0029500a6df2ab64a79324d"
+  integrity sha512-duhfcrONe6Nwn+/JxTZo79321BsdUuvRCEE9cVUVYW0qnnFc4dXKwoyER6QIW0bQCKZ4TQOuuvhutbs8DILPWg==
 
 "@coinbase/wallet-sdk@^3.3.0":
   version "3.5.0"

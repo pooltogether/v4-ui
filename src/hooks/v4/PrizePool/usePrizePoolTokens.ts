@@ -1,7 +1,7 @@
-import { CHAIN_ID } from '@constants/misc'
 import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { useQuery, UseQueryOptions } from 'react-query'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import { useQuery } from 'react-query'
 
 export interface PrizePoolTokens {
   prizePoolId: string

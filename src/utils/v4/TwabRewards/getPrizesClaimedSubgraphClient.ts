@@ -1,7 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
-
-import { CHAIN_ID } from '@constants/misc'
 import { theGraphCustomFetch } from '@utils/theGraphCustomFetch'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 const PRIZES_CLAIMED_SUBGRAPH_URIS = {
   [CHAIN_ID.optimism]: `https://api.thegraph.com/subgraphs/name/pooltogether/optimism-v4-prizes-claimed`,

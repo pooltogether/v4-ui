@@ -1,4 +1,4 @@
-import { NETWORK } from '@pooltogether/utilities'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 export const SECONDS_PER_BLOCK = 13
 
@@ -7,8 +7,6 @@ export const SECONDS_PER_DAY = 86400
 export const SECONDS_PER_HOUR = 3600
 
 export const MAX_SAFE_INTEGER = 9007199254740991
-
-export const CHAIN_ID = NETWORK
 
 // cookie names
 export const TRANSACTIONS_KEY = 'txs'

@@ -1,5 +1,5 @@
-import { CHAIN_ID } from '@constants/misc'
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 export const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID['optimism-goerli']]: [],

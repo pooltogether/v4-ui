@@ -1,21 +1,14 @@
-import { initOnRamp } from '@coinbase/cbpay-js'
-import React, { useEffect, useRef } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
+import React, { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import {
-  Modal,
-  ModalProps,
-  ModalTitle,
-  ExchangeIcon,
-  ExchangeKey,
-  ExternalLink
-} from '@pooltogether/react-components'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { Modal, ModalProps, ModalTitle, ExternalLink } from '@pooltogether/react-components'
+import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
-import { CHAIN_ID, DISCORD_INVITE_URL } from '@constants/misc'
+import { DISCORD_INVITE_URL } from '@constants/misc'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { COINBASE_ASSETS, getCoinbaseChainKey } from '@constants/config'
+import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
 import classNames from 'classnames'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 /**
  * Currently just a Coinbase Pay modal but will be extended to include other on ramps in the future.
@@ -63,63 +56,66 @@ export const BuyTokensModal: React.FC<{ chainId: number } & Omit<ModalProps, 'ch
 
 const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   const { chainId } = props
-  const onrampInstance = useRef()
+  const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
   const chainKey = getCoinbaseChainKey(chainId)
-  const mainnetChainKey = getCoinbaseChainKey(CHAIN_ID.mainnet)
-  const avalancheChainKey = getCoinbaseChainKey(CHAIN_ID.avalanche)
-  const polygonChainKey = getCoinbaseChainKey(CHAIN_ID.polygon)
+  const supportedCoinbaseChainIds = Object.keys(COINBASE_CHAIN_KEYS).map(Number)
 
   useEffect(() => {
-    onrampInstance.current = initOnRamp({
-      appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
-      widgetParameters: {
-        destinationWallets: [
-          {
-            address: usersAddress,
-            blockchains: !!chainKey
-              ? [chainKey]
-              : [mainnetChainKey, avalancheChainKey, polygonChainKey],
-            assets: !!chainKey
-              ? COINBASE_ASSETS[chainId]
-              : [
-                  ...COINBASE_ASSETS[CHAIN_ID.mainnet],
-                  ...COINBASE_ASSETS[CHAIN_ID.avalanche],
-                  ...COINBASE_ASSETS[CHAIN_ID.polygon]
-                ]
-          }
-        ]
+    initOnRamp(
+      {
+        appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
+        widgetParameters: {
+          destinationWallets: !!chainKey
+            ? [
+                {
+                  address: usersAddress,
+                  blockchains: [chainKey],
+                  assets: getCoinbaseChainAssets(chainId)
+                }
+              ]
+            : supportedCoinbaseChainIds.map((chainId) => ({
+                address: usersAddress,
+                blockchains: [getCoinbaseChainKey(chainId)],
+                assets: getCoinbaseChainAssets(chainId)
+              }))
+        },
+        experienceLoggedIn: 'popup',
+        experienceLoggedOut: 'popup',
+        closeOnExit: true,
+        closeOnSuccess: true,
+        onSuccess: () => {
+          logEvent(FathomEvent.buyCoinbasePay)
+        }
       },
-      experienceLoggedIn: 'popup',
-      experienceLoggedOut: 'popup',
-      closeOnExit: true,
-      closeOnSuccess: true
-    })
+      (_, instance) => {
+        setOnRampInstance(instance)
+      }
+    )
 
     return () => {
-      onrampInstance.current?.destroy()
+      onRampInstance?.destroy()
+      setOnRampInstance(undefined)
     }
   }, [])
 
   const handleClick = () => {
-    onrampInstance.current?.open()
+    onRampInstance?.open()
   }
 
-  const disabled = !usersAddress || !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID
+  const disabled = !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID || !onRampInstance
 
   return (
-    <button
-      className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-50', {
-        'opacity-50': disabled
+    <a
+      id='cbpay-button-container'
+      className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-90', {
+        'opacity-50 pointer-events-none': disabled
       })}
       onClick={handleClick}
-      disabled={disabled}
     >
-      <ExchangeIcon exchange={ExchangeKey.coinbase} sizeClassName='w-6 h-6' />
-      <span>{t('buyOnCoinbase')}</span>
-      <FeatherIcon icon={'external-link'} className='w-4 h-4 my-auto' />
-    </button>
+      <img src={'/buy-with-coinbase-pay.png'} />
+    </a>
   )
 }
 
