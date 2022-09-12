@@ -92,8 +92,8 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
           destinationWallets: [
             {
               address: usersAddress,
-              blockchains: [getCoinbaseChainKey(CHAIN_ID.mainnet)],
-              assets: getCoinbaseChainAssets(chainId)
+              blockchains: ['ethereum'],
+              assets: ['ETH']
             }
           ]
         },
@@ -118,6 +118,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
 
     return () => {
       onRampInstance?.destroy()
+      setOnRampInstance(undefined)
     }
   }, [])
 
@@ -130,7 +131,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   return (
     <a
       id='cbpay-button-container'
-      className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-50', {
+      className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-90', {
         'opacity-50 pointer-events-none': disabled
       })}
       onClick={handleClick}
