@@ -11,7 +11,7 @@ export const DepositTrigger: React.FC = () => {
       <Button
         theme={ButtonTheme.pink}
         radius={ButtonRadius.full}
-        className='mx-auto w-full max-w-xs'
+        className='mx-auto w-full max-w-xs transform delay-150 hover:scale-105 xs:hover:scale-110 sm:hover:scale-125  transition '
         onClick={() => setIsOpen(true)}
       >
         {t('depositToWin', 'Deposit to win')}
