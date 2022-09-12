@@ -1,5 +1,5 @@
-import { initOnRamp } from '@coinbase/cbpay-js'
-import React, { useEffect, useRef } from 'react'
+import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
+import React, { useEffect, useRef, useState } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Trans, useTranslation } from 'react-i18next'
 import {
@@ -63,7 +63,7 @@ export const BuyTokensModal: React.FC<{ chainId: number } & Omit<ModalProps, 'ch
 
 const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   const { chainId } = props
-  const onrampInstance = useRef()
+  const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
   const chainKey = getCoinbaseChainKey(chainId)
@@ -72,38 +72,52 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   const polygonChainKey = getCoinbaseChainKey(CHAIN_ID.polygon)
 
   useEffect(() => {
-    onrampInstance.current = initOnRamp({
-      appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
-      widgetParameters: {
-        destinationWallets: [
-          {
-            address: usersAddress,
-            blockchains: !!chainKey
-              ? [chainKey]
-              : [mainnetChainKey, avalancheChainKey, polygonChainKey],
-            assets: !!chainKey
-              ? COINBASE_ASSETS[chainId]
-              : [
-                  ...COINBASE_ASSETS[CHAIN_ID.mainnet],
-                  ...COINBASE_ASSETS[CHAIN_ID.avalanche],
-                  ...COINBASE_ASSETS[CHAIN_ID.polygon]
-                ]
-          }
-        ]
+    initOnRamp(
+      {
+        appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
+        widgetParameters: {
+          destinationWallets: [
+            {
+              address: usersAddress,
+              blockchains: !!chainKey
+                ? [chainKey]
+                : [mainnetChainKey, avalancheChainKey, polygonChainKey],
+              assets: !!chainKey
+                ? COINBASE_ASSETS[chainId]
+                : [
+                    ...COINBASE_ASSETS[CHAIN_ID.mainnet],
+                    ...COINBASE_ASSETS[CHAIN_ID.avalanche],
+                    ...COINBASE_ASSETS[CHAIN_ID.polygon]
+                  ]
+            }
+          ]
+        },
+        experienceLoggedIn: 'popup',
+        experienceLoggedOut: 'popup',
+        closeOnExit: true,
+        closeOnSuccess: true,
+        onSuccess: () => {
+          console.log('success')
+        },
+        onExit: () => {
+          console.log('exit')
+        },
+        onEvent: (event) => {
+          console.log('event', event)
+        }
       },
-      experienceLoggedIn: 'popup',
-      experienceLoggedOut: 'popup',
-      closeOnExit: true,
-      closeOnSuccess: true
-    })
+      (_, instance) => {
+        setOnRampInstance(instance)
+      }
+    )
 
     return () => {
-      onrampInstance.current?.destroy()
+      onRampInstance?.destroy()
     }
   }, [])
 
   const handleClick = () => {
-    onrampInstance.current?.open()
+    onRampInstance?.open()
   }
 
   const disabled = !usersAddress || !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID
