@@ -1,21 +1,14 @@
 import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
-import React, { useEffect, useRef, useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import React, { useEffect, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import {
-  Modal,
-  ModalProps,
-  ModalTitle,
-  ExchangeIcon,
-  ExchangeKey,
-  ExternalLink
-} from '@pooltogether/react-components'
+import { Modal, ModalProps, ModalTitle, ExternalLink } from '@pooltogether/react-components'
 import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
 import { DISCORD_INVITE_URL } from '@constants/misc'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
 import classNames from 'classnames'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 
 /**
  * Currently just a Coinbase Pay modal but will be extended to include other on ramps in the future.
@@ -73,42 +66,27 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
     initOnRamp(
       {
         appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
-        // widgetParameters: {
-        //   destinationWallets: !!chainKey
-        //     ? [
-        //         {
-        //           address: usersAddress,
-        //           blockchains: [chainKey],
-        //           assets: getCoinbaseChainAssets(chainId)
-        //         }
-        //       ]
-        //     : supportedCoinbaseChainIds.map((chainId) => ({
-        //         address: usersAddress,
-        //         blockchains: [getCoinbaseChainKey(chainId)],
-        //         assets: getCoinbaseChainAssets(chainId)
-        //       }))
-        // },
         widgetParameters: {
-          destinationWallets: [
-            {
-              address: usersAddress,
-              blockchains: ['ethereum'],
-              assets: ['ETH']
-            }
-          ]
+          destinationWallets: !!chainKey
+            ? [
+                {
+                  address: usersAddress,
+                  blockchains: [chainKey],
+                  assets: getCoinbaseChainAssets(chainId)
+                }
+              ]
+            : supportedCoinbaseChainIds.map((chainId) => ({
+                address: usersAddress,
+                blockchains: [getCoinbaseChainKey(chainId)],
+                assets: getCoinbaseChainAssets(chainId)
+              }))
         },
         experienceLoggedIn: 'popup',
         experienceLoggedOut: 'popup',
         closeOnExit: true,
         closeOnSuccess: true,
         onSuccess: () => {
-          console.log('success')
-        },
-        onExit: () => {
-          console.log('exit')
-        },
-        onEvent: (event) => {
-          console.log('event', event)
+          logEvent(FathomEvent.buyCoinbasePay)
         }
       },
       (_, instance) => {
