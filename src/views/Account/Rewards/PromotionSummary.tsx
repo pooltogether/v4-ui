@@ -84,11 +84,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
         </div>
       </div>
 
-      <div
-        className={classNames(
-          'flex items-center justify-end w-full font-averta-bold space-x-4 mt-4'
-        )}
-      >
+      <div className={classNames('flex items-center justify-end w-full font-bold space-x-4 mt-4')}>
         <Link href={`/deposit?network=${getNetworkNiceNameByChainId(chainId).toLowerCase()}`}>
           <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
             {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />

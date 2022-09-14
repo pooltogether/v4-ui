@@ -57,7 +57,7 @@ const PrizeTableHeader = (
   <div
     {...props}
     className={classnames(
-      'font-inter text-xxs uppercase font-semibold text-inverse mt-8 mb-2 opacity-60 w-full',
+      ' text-xxs uppercase font-semibold text-inverse mt-8 mb-2 opacity-60 w-full',
       props.className
     )}
   />

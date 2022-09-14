@@ -1,6 +1,6 @@
 import { CHAIN_ID } from '@constants/misc'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { BlockExplorerLink, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
 import { useEffect, useState } from 'react'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
@@ -19,7 +19,8 @@ import {
   TransactionState,
   TransactionStatus,
   useTransaction,
-  useUsersAddress
+  useUsersAddress,
+  BlockExplorerLink
 } from '@pooltogether/wallet-connection'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { ethers } from 'ethers'

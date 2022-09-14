@@ -1,12 +1,7 @@
 import React, { useMemo } from 'react'
 import FeatherIcon from 'feather-icons-react'
 import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
-import {
-  TokenIconWithNetwork,
-  TokenIcon,
-  PoolIcon,
-  formatBlockExplorerAddressUrl
-} from '@pooltogether/react-components'
+import { TokenIconWithNetwork, TokenIcon, PoolIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -15,7 +10,7 @@ import { VotingPromptCard } from '@components/VotingPromptCard'
 import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 import { getExchangeUrl } from '@constants/config'
 import { CHAIN_ID, POOL_TOKEN } from '@constants/misc'
-import { useWalletChainId } from '@pooltogether/wallet-connection'
+import { formatBlockExplorerAddressUrl, useWalletChainId } from '@pooltogether/wallet-connection'
 
 export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

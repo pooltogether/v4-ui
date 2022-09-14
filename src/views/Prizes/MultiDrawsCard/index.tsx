@@ -142,7 +142,6 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   }
 
   useEffect(() => {
-    console.log('useEffect', targetVideoClip, checkedState)
     if (checkedState === CheckedState.checking) {
       setTargetVideoClip(VideoClip.reveal)
     } else if (checkedState === CheckedState.checked) {

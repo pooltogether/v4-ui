@@ -1,5 +1,4 @@
 import {
-  BlockExplorerLink,
   ModalTitle,
   SquareButton,
   SquareButtonTheme,
@@ -18,7 +17,8 @@ import {
   useUsersAddress,
   Transaction,
   useTransaction,
-  TransactionStatus
+  TransactionStatus,
+  BlockExplorerLink
 } from '@pooltogether/wallet-connection'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 

@@ -17,14 +17,15 @@ import {
   SquareButtonSize,
   ExternalLink
 } from '@pooltogether/react-components'
-import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
+import { Token, Amount, useToken } from '@pooltogether/hooks'
 import {
   useSendTransaction,
   useUsersAddress,
   useIsWalletOnChainId,
   TransactionState,
   useTransaction,
-  Transaction
+  Transaction,
+  getChainColorByChainId
 } from '@pooltogether/wallet-connection'
 import {
   msToS,
@@ -35,7 +36,6 @@ import {
   sToD
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
-
 import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
 import { TxButton } from '@components/Input/TxButton'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
@@ -55,7 +55,7 @@ import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
+import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
 import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
 
 enum ClaimModalState {
@@ -117,13 +117,13 @@ const ChainPromotions = (props) => {
   const { data } = queryResult
   const { chainId, promotions } = data || {}
 
-  const backgroundColor = useNetworkHexColor(chainId)
+  const backgroundColor = getChainColorByChainId(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
 
   return (
     <div
       className='rounded-xl text-white p-4'
-      style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
+      style={{ backgroundColor: backgroundColor, minHeight: 100 }}
     >
       <div className='flex items-center font-bold mb-4'>
         <NetworkIcon
@@ -378,7 +378,6 @@ const ClaimModalForm = (props) => {
   const tokenSymbol = symbol
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
-  console.log(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -466,7 +465,7 @@ const ClaimModalForm = (props) => {
       )}
 
       {amount.amountPretty && (
-        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-averta-bold'>
+        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-bold'>
           <span className='opacity-40 uppercase text-xxs '>{t('claimed', 'Claimed')}: </span>
           <span className='flex items-center'>
             <>
@@ -546,7 +545,7 @@ const RewardsEndInBanner = (props) => {
 
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
-            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
+            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-bold'>
               {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
             </a>
           </Link>
@@ -702,7 +701,7 @@ const UnitPanel = (props) => {
   const { label, amount, icon, unit, value, vapr } = props
 
   return (
-    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
+    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 
@@ -896,7 +895,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       className='mt-2 flex w-full items-center justify-center'
       theme={theme}
     >
-      <span className='font-averta-bold'>
+      <span className='font-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}
       </span>
     </TxButton>

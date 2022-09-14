@@ -1,20 +1,18 @@
 import { Provider } from '@ethersproject/providers'
 import { batch } from '@pooltogether/etherplex'
 import { useQueries } from 'react-query'
-import { getReadProvider } from '@pooltogether/wallet-connection'
-import { RPC_API_KEYS } from '@constants/config'
 import { sToMs } from '@pooltogether/utilities'
-
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 
 export const useRpcFilteredPromotions = (chainIds) => {
   return useQueries(
     chainIds.map((chainId) => {
-      const provider = getReadProvider(chainId, RPC_API_KEYS)
+      const provider = getReadProvider(chainId)
 
       return {
         refetchInterval: sToMs(60),

@@ -7,8 +7,28 @@ export NEXT_PUBLIC_DOMAIN_NAME=
 export NEXT_PUBLIC_LOCIZE_PROJECT_ID=4436efaa-7b18-4332-a5e2-57437e041619
 export NEXT_PUBLIC_LOCIZE_VERSION=latest
 
-# API keys for read only RPC calls
-export NEXT_PUBLIC_INFURA_ID=
+# RPC URLs to use. Provided URLs will take precedence in the app.
+# Ethereum
+export NEXT_PUBLIC_ETHEREUM_MAINNET_RPC_URL=https://mainnet.infura.io/v3/
+export NEXT_PUBLIC_ETHEREUM_RINKEBY_RPC_URL=https://rinkeby.infura.io/v3/
+export NEXT_PUBLIC_ETHEREUM_KOVAN_RPC_URL=https://goerli.infura.io/v3/
+export NEXT_PUBLIC_ETHEREUM_GOERLI_RPC_URL=
+# Polygon
+export NEXT_PUBLIC_POLYGON_MAINNET_RPC_URL=https://polygon-mainnet.infura.io/v3/
+export NEXT_PUBLIC_POLYGON_MUMBAI_RPC_URL=https://polygon-mumbai.infura.io/v3/
+# Optimism
+export NEXT_PUBLIC_OPTIMISM_MAINNET_RPC_URL=https://optimism-mainnet.infura.io/v3/
+export NEXT_PUBLIC_OPTIMISM_KOVAN_RPC_URL=https://optimism-kovan.infura.io/v3/
+export NEXT_PUBLIC_OPTIMISM_GOERLI_RPC_URL=https://optimism-goerli.infura.io/v3/
+# Arbitrum
+export NEXT_PUBLIC_ARBITRUM_MAINNET_RPC_URL=
+export NEXT_PUBLIC_ARBITRUM_GOERLI_RPC_URL=
+# Avalanche
+export NEXT_PUBLIC_AVALANCHE_MAINNET_RPC_URL=https://avalanche-mainnet.infura.io/v3/
+export NEXT_PUBLIC_AVALANCHE_FUJI_RPC_URL=
+# Celo
+export NEXT_PUBLIC_CELO_MAINNET_RPC_URL=
+export NEXT_PUBLIC_CELO_TESTNET_RPC_URL=
 
 # Optional
 # Sentry DSN

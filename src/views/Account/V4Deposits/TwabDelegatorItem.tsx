@@ -2,18 +2,13 @@ import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
 import { Delegation, DelegationId } from '@pooltogether/v4-twab-delegator-js'
 import { getNetworkNiceNameByChainId, prettyNumber } from '@pooltogether/utilities'
-import {
-  BlockExplorerLink,
-  NetworkIcon,
-  SquareLink,
-  TokenIcon,
-  BottomSheet
-} from '@pooltogether/react-components'
+import { NetworkIcon, SquareLink, TokenIcon, BottomSheet } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
 import { Amount, Token } from '@pooltogether/hooks'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import classNames from 'classnames'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
+import { BlockExplorerLink } from '@pooltogether/wallet-connection'
 
 export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
   const { delegator } = props

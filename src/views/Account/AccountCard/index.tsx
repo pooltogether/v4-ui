@@ -8,7 +8,6 @@ import classNames from 'classnames'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import { shorten } from '@pooltogether/utilities'
 
@@ -27,7 +26,7 @@ export const AccountCard: React.FC<{
     >
       <div className='flex justify-between p-4'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
-        <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
+        <img src={'/wallet-illustration.png'} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
         <DailyOdds usersAddress={usersAddress} />

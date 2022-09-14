@@ -204,7 +204,7 @@ const WithdrawLabel = (props) => {
   const { symbol } = props
   const { t } = useTranslation()
   return (
-    <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+    <div className=' font-semibold uppercase text-accent-3 opacity-60'>
       {t('withdrawTicker', { ticker: symbol })}
     </div>
   )

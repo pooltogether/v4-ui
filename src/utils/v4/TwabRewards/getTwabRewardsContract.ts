@@ -2,10 +2,9 @@ import { contract, MulticallContract } from '@pooltogether/etherplex'
 import { Contract, ethers } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
-import { getReadProvider } from '@pooltogether/utilities'
-
 import TwabRewardsAbi from '@abis/TwabRewards'
 import { TWAB_REWARDS_ADDRESS } from '@constants/promotions'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 
 export const getTwabRewardsContract = (
   chainId: number,

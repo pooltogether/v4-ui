@@ -5,25 +5,22 @@ import { Amount, Token } from '@pooltogether/hooks'
 import {
   getNetworkNiceNameByChainId,
   numberWithCommas,
-  getMaxPrecision
+  getMaxPrecision,
+  addTicketTokenToMetamask
 } from '@pooltogether/utilities'
-
-import { TOKEN_IMG_URL } from '../../../react-components-2/src/constants'
-import { BottomSheet } from '../../../react-components-2/src/components/BottomSheets/BottomSheet'
-import {
-  SquareButton,
-  SquareButtonTheme,
-  SquareLink
-} from '../../../react-components-2/src/components/Buttons/SquareButton'
-import { BlockExplorerLink } from '../../../react-components-2/src/components/Links/BlockExplorerLink'
-import { ModalTitle } from '../../../react-components-2/src/components/Modal/Modal'
-import { TokenIcon } from '../../../react-components-2/src/components/Icons/TokenIcon'
-import { CountUp } from '../../../react-components-2/src/components/CountUp'
-import { Tooltip } from '../../../react-components-2/src/components/Containers/Tooltip'
-import { addTokenToMetamask } from '../../../react-components-2/src/services/addTokenToMetamask'
-import { RevokeAllowanceButton } from '../../../react-components-2/src/components/Buttons/RevokeAllowanceButton'
 import { toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import {
+  BottomSheet,
+  CountUp,
+  ModalTitle,
+  SquareButton,
+  SquareButtonTheme,
+  SquareLink,
+  TokenIcon,
+  Tooltip
+} from '@pooltogether/react-components'
+import { BlockExplorerLink } from '@pooltogether/wallet-connection'
 
 enum DefaultViews {
   main = 'main',
@@ -280,12 +277,8 @@ const MoreInfoView = (
       return null
     }
 
-    addTokenToMetamask(
-      ticket.symbol,
-      ticket.address,
-      Number(ticket.decimals),
-      TOKEN_IMG_URL[ticket.symbol]
-    )
+    // TODO: addTicketTokenToMetamask
+    return addTicketTokenToMetamask(ticket)
   }
 
   return (
@@ -330,7 +323,7 @@ const MoreInfoView = (
           </SquareButton>
         )}
 
-        {sendRevokeAllowanceTransaction && (
+        {/* {sendRevokeAllowanceTransaction && (
           <RevokeAllowanceButton
             t={t}
             token={token}
@@ -338,7 +331,7 @@ const MoreInfoView = (
             chainId={chainId}
             sendRevokeAllowanceTransaction={sendRevokeAllowanceTransaction}
           />
-        )}
+        )} */}
       </div>
     </>
   )
