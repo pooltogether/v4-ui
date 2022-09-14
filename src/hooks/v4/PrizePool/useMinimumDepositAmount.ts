@@ -5,8 +5,6 @@ import { getAmountFromString } from '@utils/getAmountFromString'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
- * Brendan promised that the bit range size would be consistent.
- * Eventually we will want to read this from the chain.
  * @param prizePool
  * @param token
  * @returns

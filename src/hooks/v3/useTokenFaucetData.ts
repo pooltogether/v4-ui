@@ -5,12 +5,11 @@ import { batch, Context, contract } from '@pooltogether/etherplex'
 import { BigNumber } from 'ethers'
 import { amountMultByUsd } from '@pooltogether/utilities'
 import { formatUnits } from '@ethersproject/units'
-
 import TokenFaucetAbi from '@abis/TokenFaucet'
 import Erc20Abi from '@abis/ERC20'
 import { SECONDS_PER_DAY } from '@constants/misc'
 import { V3PrizePool } from './useV3PrizePools'
-import { useReadProvider } from '@hooks/useReadProvider'
+import { useReadProvider } from '@pooltogether/wallet-connection'
 
 export const useTokenFaucetData = (
   chainId: number,

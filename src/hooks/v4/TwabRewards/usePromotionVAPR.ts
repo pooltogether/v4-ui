@@ -3,10 +3,10 @@ import { useMemo } from 'react'
 import { sToD } from '@pooltogether/utilities'
 import { useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { useToken } from '@pooltogether/hooks'
-
 import { Promotion } from '@interfaces/promotions'
 import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
+import { useReadProvider } from '@pooltogether/wallet-connection'
 
 // Calculate the variable annual percentage rate for a promotion
 export const usePromotionVAPR = (promotion: Promotion): number => {
@@ -15,9 +15,11 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
   const { prizePoolTotalSupply: totalTwabSupply, ticket: depositToken } =
     useChainPrizePoolTicketTotalSupply(promotion.chainId)
 
+  const readProvider = useReadProvider(promotion.chainId)
   const { data: promotionToken, isFetched: tokenIsFetched } = useToken(
     promotion.chainId,
-    promotionTokenAddress
+    promotionTokenAddress,
+    readProvider
   )
   const { decimals: promotionTokenDecimals } = promotionToken || {}
 

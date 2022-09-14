@@ -44,13 +44,10 @@ export const RewardsBanners = () => {
         </div>
 
         <div
-          className={classNames(
-            'flex items-center justify-center w-full font-averta-bold space-x-4',
-            {
-              'xs:w-56': page !== '/account',
-              'xs:w-32': page === '/account'
-            }
-          )}
+          className={classNames('flex items-center justify-center w-full font-bold space-x-4', {
+            'xs:w-56': page !== '/account',
+            'xs:w-32': page === '/account'
+          })}
         >
           <Link href={`https://app.hop.exchange`}>
             <a

@@ -80,11 +80,11 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   return (
     <h1
       className={classNames(
-        'text-10xl xs:text-13xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
+        'text-12xl xs:text-14xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
         { 'opacity-50': !amount }
       )}
     >
-      $<CountUp countTo={amount} />
+      $<CountUp countTo={amount} decimals={0} />
       {!amount && <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />}
     </h1>
   )

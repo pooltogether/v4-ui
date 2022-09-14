@@ -199,13 +199,14 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     <BottomSheet
       snapPoints={snapTo90}
       label='Claim prizes modal'
+      className='overflow-hidden'
       open={isOpen}
       onDismiss={() => {
         setTxId('')
         closeModal()
       }}
     >
-      <div className='w-full mx-auto flex flex-col max-h-full'>
+      <div className='w-full mx-auto flex flex-col max-h-full '>
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
         <div className='flex items-center mx-auto font-bold text-inverse mb-4 text-3xl'>

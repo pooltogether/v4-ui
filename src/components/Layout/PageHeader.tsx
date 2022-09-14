@@ -11,10 +11,10 @@ import {
   ThemeSettingsItem,
   SocialLinks,
   Modal,
-  NetworkIcon
+  NetworkIcon,
+  HeaderLogo
 } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-import { TopNavigation } from '@components/Layout/Navigation'
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
@@ -28,8 +28,15 @@ export enum ContentPaneState {
 
 export const PageHeader = (props) => {
   return (
-    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
-      <TopNavigation className='absolute mx-auto inset-x-0' />
+    <PageHeaderContainer
+      logo={
+        <Link href='/deposit'>
+          <a>
+            <HeaderLogo />
+          </a>
+        </Link>
+      }
+    >
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />

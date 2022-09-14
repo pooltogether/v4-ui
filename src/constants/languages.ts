@@ -3,13 +3,21 @@ export const SUPPORTED_LANGUAGES = Object.freeze({
     name: 'English',
     nativeName: 'English'
   },
+  de: {
+    name: 'German',
+    nativeName: 'Deutsch'
+  },
   es: {
     name: 'Spanish',
     nativeName: 'Español'
   },
-  de: {
-    name: 'German',
-    nativeName: 'Deutsch'
+  fa: {
+    name: 'Persian',
+    nativeName: 'فارسی'
+  },
+  fil: {
+    name: 'Filipino',
+    nativeName: 'Filipino'
   },
   fr: {
     name: 'French',
@@ -31,6 +39,10 @@ export const SUPPORTED_LANGUAGES = Object.freeze({
     name: 'Portuguese',
     nativeName: 'Português'
   },
+  sk: {
+    name: 'Slovak',
+    nativeName: 'Slovenčina'
+  },
   tr: {
     name: 'Turkish',
     nativeName: 'Türkçe'
@@ -38,9 +50,5 @@ export const SUPPORTED_LANGUAGES = Object.freeze({
   zh: {
     name: 'Zhōngwén',
     nativeName: '中文'
-  },
-  sk: {
-    name: 'Slovak',
-    nativeName: 'Slovenčina'
   }
 })

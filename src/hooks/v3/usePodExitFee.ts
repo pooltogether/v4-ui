@@ -1,12 +1,11 @@
 import { Provider } from '@ethersproject/abstract-provider'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import PodAbi from '@abis/V3_Pod'
 import Erc20Abi from '@abis/ERC20'
 import { batch, contract } from '@pooltogether/etherplex'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useReadProvider } from '@hooks/useReadProvider'
+import { useReadProvider } from '@pooltogether/wallet-connection'
 
 export const usePodExitFee = (
   chainId: number,

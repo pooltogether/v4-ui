@@ -11,11 +11,10 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
-
 import Erc20Abi from '@abis/ERC20'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { useReadProviders } from '@hooks/useReadProviders'
+import { useReadProviders } from '@pooltogether/wallet-connection'
 
 export interface V3PrizePoolBalances {
   chainId: number

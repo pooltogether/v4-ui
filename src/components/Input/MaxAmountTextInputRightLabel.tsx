@@ -1,8 +1,6 @@
 import React from 'react'
 import { numberWithCommas } from '@pooltogether/utilities'
 
-import WalletIcon from '@assets/images/icon-wallet.svg'
-
 export const MaxAmountTextInputRightLabel = (props) => {
   const { valueKey, disabled, setValue, isAmountZero, amount, tokenSymbol } = props
 
@@ -19,7 +17,7 @@ export const MaxAmountTextInputRightLabel = (props) => {
         setValue(valueKey, amount, { shouldValidate: true })
       }}
     >
-      <img src={WalletIcon} className='mr-2' style={{ maxHeight: 12 }} />
+      <img src={'/icon-wallet.svg'} className='mr-2' style={{ maxHeight: 12 }} />
       {numberWithCommas(amount)} {tokenSymbol}
     </button>
   )

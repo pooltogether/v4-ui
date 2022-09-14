@@ -1,4 +1,5 @@
-import { useConnectWallet } from '@pooltogether/wallet-connection'
+import { useInitCookieOptions } from '@pooltogether/hooks'
+import { useUpdateStoredPendingTransactions } from '@pooltogether/wallet-connection'
 import { useConnect } from 'wagmi'
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
 
@@ -8,8 +9,10 @@ import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
  * core data required to render everything
  */
 export const useInitialLoad = () => {
+  useUpdateStoredPendingTransactions()
+  useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
   const queryResults = useAllPrizePoolTokens()
   const { status } = useConnect()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return isFetched && status !== 'reconnecting' && status !== 'connecting'
+  return isFetched && status !== 'success' && status !== 'loading'
 }
