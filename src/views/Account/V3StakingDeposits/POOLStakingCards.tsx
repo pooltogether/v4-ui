@@ -4,12 +4,10 @@ import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
 import { TokenIcon } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
 import { StakingCard } from './StakingCard'
-
-
 
 export const POOLStakingCards = () => {
   const usersAddress = useUsersAddress()

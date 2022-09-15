@@ -8,8 +8,8 @@ import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
-import { useTranslation } from 'react-i18next'
-import { Trans } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
+import { Trans } from 'next-i18next'
 
 interface PromotionSummaryProps {
   chainId: number
@@ -95,7 +95,8 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
           <a
             href={`https://app.optimism.io/bridge`}
             target='_blank'
-            className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100' rel="noreferrer"
+            className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
+            rel='noreferrer'
           >
             {t('bridge')}{' '}
             <FeatherIcon

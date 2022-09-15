@@ -15,7 +15,7 @@ import {
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface V3ModalApproveGateProps {
   className?: string

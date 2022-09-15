@@ -1,5 +1,5 @@
 import { RPC_URLS } from '@constants/config'
-import { useInitialLoad } from '@hooks/useInitialLoad'
+import { useInitCookieOptions } from '@pooltogether/hooks'
 import {
   LoadingScreen,
   ThemeContext,
@@ -7,25 +7,29 @@ import {
   useScreenSize,
   ScreenSize
 } from '@pooltogether/react-components'
-import { CHAIN_ID, getReadProvider, initRpcUrls } from '@pooltogether/wallet-connection'
+import {
+  CHAIN_ID,
+  getReadProvider,
+  initRpcUrls,
+  useUpdateStoredPendingTransactions
+} from '@pooltogether/wallet-connection'
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { initSentry } from '@utils/services/initSentry'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { AppProps } from 'next/app'
 import { useContext, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
-import { createClient, WagmiConfig } from 'wagmi'
+import { createClient, useConnect, WagmiConfig } from 'wagmi'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 
 import { CustomErrorBoundary } from './CustomErrorBoundary'
-import '../utils/services/i18n'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient({
@@ -82,7 +86,7 @@ const wagmiClient = createClient({
  * @returns
  */
 export const AppContainer: React.FC<AppProps> = (props) => {
-  const { Component, pageProps, router } = props
+  const { router } = props
 
   useEffect(() => {
     const fathomSiteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID
@@ -123,11 +127,20 @@ export const AppContainer: React.FC<AppProps> = (props) => {
 const Content: React.FC<AppProps> = (props) => {
   const { Component, pageProps } = props
   const isInitialized = useInitialLoad()
-  const { i18n } = useTranslation()
-  if (!isInitialized || !i18n.isInitialized) {
+
+  if (!isInitialized) {
     return <LoadingScreen />
   }
   return <Component {...pageProps} />
+}
+
+const useInitialLoad = () => {
+  const { i18n } = useTranslation()
+  useUpdateStoredPendingTransactions()
+  useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
+  const { status } = useConnect()
+  console.log('useInitialLoad', !!i18n.isInitialized && status !== 'loading')
+  return !!i18n.isInitialized && status !== 'loading'
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {

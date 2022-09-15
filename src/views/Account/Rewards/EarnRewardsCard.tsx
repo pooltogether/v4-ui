@@ -10,7 +10,7 @@ import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()

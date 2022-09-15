@@ -41,7 +41,7 @@ import { BigNumber } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

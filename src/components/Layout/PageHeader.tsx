@@ -17,7 +17,7 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
@@ -68,15 +68,14 @@ const Settings = () => {
 
 const LanguagePicker = () => {
   const { i18n: i18next, t } = useTranslation()
-  const [currentLang, setCurrentLang] = useState(i18next.language)
+
   return (
     <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
         langs={SUPPORTED_LANGUAGES}
         className='dark:text-white'
-        currentLang={currentLang}
-        changeLang={(newLang) => {
-          setCurrentLang(newLang)
+        currentLang={i18next.language}
+        onValueSet={(newLang) => {
           i18next.changeLanguage(newLang)
         }}
       />

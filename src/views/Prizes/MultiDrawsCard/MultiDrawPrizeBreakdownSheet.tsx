@@ -4,7 +4,7 @@ import { Token } from '@pooltogether/hooks'
 import { ModalProps, BottomSheet } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React, { useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 import { DrawData } from '../../../interfaces/v4'
 

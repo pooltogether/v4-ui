@@ -6,8 +6,7 @@ import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'next-i18next'
 
 interface DepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>

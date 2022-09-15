@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const AmountInPrizes = (props: {
   amount: Amount

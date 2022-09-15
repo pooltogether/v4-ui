@@ -8,7 +8,7 @@ import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import classNames from 'classnames'
 import React, { useEffect, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 /**
  * Currently just a Coinbase Pay modal but will be extended to include other on ramps in the future.

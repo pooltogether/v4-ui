@@ -1,12 +1,12 @@
 import Head from 'next/head'
+import { useEffect, useState } from 'react'
 
 export const Meta = (props: { title?: string }) => {
   const fullTitle = props.title ? `${props.title} - PoolTogether` : 'PoolTogether'
 
-  let url = `https://v4.pooltogether.com`
-  if (typeof window !== 'undefined') {
-    url = window.location.href
-  }
+  const [url, setUrl] = useState(`https://app.pooltogether.com`)
+  useEffect(() => setUrl(window.location.href), [])
+
   const description = `PoolTogether is a crypto-powered savings protocol based on Premium Bonds. Save money and have a chance to win every day.`
   const keywords = 'ethereum polygon celo bsc binance avalanche dapp'
   const twitterHandle = '@PoolTogether_'

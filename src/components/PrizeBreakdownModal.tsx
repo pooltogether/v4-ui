@@ -2,7 +2,7 @@ import { Token } from '@pooltogether/hooks'
 import { ModalProps, BottomSheet } from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 import React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 import { PrizeWLaurels } from './Images/PrizeWithLaurels'
 import { PrizeBreakdown } from './PrizeBreakdown'

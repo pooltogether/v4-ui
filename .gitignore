@@ -3,6 +3,8 @@
 .yalc/**
 yalc.lock
 
+/public/locales
+
 # dependencies
 .envrc
 /node_modules

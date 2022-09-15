@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 

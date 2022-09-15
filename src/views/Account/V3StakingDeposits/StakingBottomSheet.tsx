@@ -4,7 +4,7 @@ import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { SquareButtonTheme } from '@pooltogether/react-components'
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'

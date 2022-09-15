@@ -7,10 +7,9 @@ import { unionProbabilities } from '@utils/unionProbabilities'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { TotalWinnings } from './TotalWinnings'
-
 
 export const AccountCard: React.FC<{
   usersAddress: string

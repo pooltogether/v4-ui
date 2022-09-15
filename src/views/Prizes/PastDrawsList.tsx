@@ -18,7 +18,7 @@ import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor

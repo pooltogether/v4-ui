@@ -8,7 +8,7 @@ import {
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { useSwitchNetwork } from 'wagmi'
 
 export interface TxButtonProps extends SquareButtonProps {

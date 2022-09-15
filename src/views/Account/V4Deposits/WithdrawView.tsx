@@ -14,11 +14,10 @@ import classNames from 'classnames'
 import { Overrides } from 'ethers'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { DepositItemsProps } from '.'
 import { WithdrawStepContent } from './WithdrawStepContent'
-
 
 const GOOGLE_SHEETS_WITHDRAW_REASON_API_URL = `https://main--pooltogether-google-sheets.netlify.app/.netlify/functions/google`
 

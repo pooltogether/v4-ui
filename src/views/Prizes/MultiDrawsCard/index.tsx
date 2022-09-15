@@ -25,7 +25,7 @@ import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 import axios from 'axios'
 import { useAtom } from 'jotai'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { DrawData } from '../../../interfaces/v4'
 import { LoadingCard } from './LoadingCard'

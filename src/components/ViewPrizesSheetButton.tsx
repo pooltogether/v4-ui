@@ -2,7 +2,7 @@ import { Token } from '@pooltogether/hooks'
 import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { PrizeBreakdownModal } from './PrizeBreakdownModal'
 

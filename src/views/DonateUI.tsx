@@ -41,7 +41,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import ordinal from 'ordinal'
 import { useEffect, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { useQuery } from 'react-query'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'

@@ -8,7 +8,7 @@ import { getTimestampString } from '@utils/getTimestampString'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const TotalWinnings: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

@@ -53,8 +53,8 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
-import { Trans } from 'react-i18next'
-import { useTranslation } from 'react-i18next'
+import { Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
 
 enum ClaimModalState {

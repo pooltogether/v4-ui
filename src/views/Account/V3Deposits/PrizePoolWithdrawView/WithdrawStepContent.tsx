@@ -25,7 +25,7 @@ import { BigNumber, ethers } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { WithdrawalSteps } from '.'
 

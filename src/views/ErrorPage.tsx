@@ -1,6 +1,6 @@
 import FeatherIcon from 'feather-icons-react'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { DISCORD_INVITE_URL } from '../constants/misc'
 

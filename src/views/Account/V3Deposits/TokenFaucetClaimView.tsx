@@ -23,7 +23,7 @@ import {
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { buildTokenFaucetClaimTx } from '@utils/transactions/buildTokenFaucetClaimTx'
 import { useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
 
 interface TokenFaucetClaimViewProps {

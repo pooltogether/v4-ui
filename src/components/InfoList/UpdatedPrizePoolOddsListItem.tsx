@@ -4,10 +4,9 @@ import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { InfoListItem } from '.'
-
 
 export const UpdatedPrizePoolOddsListItem: React.FC<{
   prizePool: PrizePool

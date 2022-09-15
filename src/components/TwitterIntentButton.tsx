@@ -1,7 +1,7 @@
 import { SquareLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface TwitterIntentButtonProps {
   text: string

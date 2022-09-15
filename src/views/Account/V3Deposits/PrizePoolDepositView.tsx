@@ -29,7 +29,7 @@ import { V3ModalApproveGate } from '@views/Deposit/V3ModalApproveGate'
 import { BigNumber } from 'ethers'
 import { useState } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'

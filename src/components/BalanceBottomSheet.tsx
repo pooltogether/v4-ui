@@ -19,7 +19,7 @@ import { BlockExplorerLink, useIsWalletMetamask } from '@pooltogether/wallet-con
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import React, { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { toast } from 'react-toastify'
 
 enum DefaultViews {

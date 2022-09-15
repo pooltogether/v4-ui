@@ -9,7 +9,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { Contract } from 'ethers'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
 
 import { DepositItemsProps } from '..'

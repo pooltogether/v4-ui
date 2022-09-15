@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface CountdownStringProps {
   className?: string

@@ -10,7 +10,7 @@ import classNames from 'classnames'
 import classnames from 'classnames'
 import ordinal from 'ordinal'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface PrizeListProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement> {

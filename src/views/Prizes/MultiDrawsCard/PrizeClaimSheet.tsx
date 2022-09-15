@@ -31,11 +31,10 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import React, { useCallback, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import Reward, { RewardElement } from 'react-rewards'
 
 import { DrawData } from '../../../interfaces/v4'
-
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000

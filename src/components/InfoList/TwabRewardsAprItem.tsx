@@ -6,7 +6,7 @@ import { Promotion } from '@interfaces/promotions'
 import { TokenIcon } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { InfoListItem } from '.'
 

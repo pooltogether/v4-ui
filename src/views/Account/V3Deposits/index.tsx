@@ -13,7 +13,7 @@ import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 

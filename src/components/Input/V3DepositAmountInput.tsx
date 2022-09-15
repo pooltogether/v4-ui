@@ -1,4 +1,3 @@
-
 import { WalletSvg } from '@components/Icons/SvgComponents'
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
 import { TokenWithBalance } from '@pooltogether/hooks'
@@ -8,7 +7,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import React, { useEffect } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface V3DepositAmountInputProps {
   chainId: number

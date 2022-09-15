@@ -2,7 +2,7 @@ import { InfoListItem } from '@components/InfoList'
 import { Tooltip } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 const TokensToReceiveItem = (props) => {
   const { token, amount } = props

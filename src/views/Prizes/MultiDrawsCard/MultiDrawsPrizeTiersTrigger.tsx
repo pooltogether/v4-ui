@@ -3,7 +3,7 @@ import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { DrawData } from '../../../interfaces/v4'
 import { MultiDrawPrizeBreakdownSheet } from './MultiDrawPrizeBreakdownSheet'

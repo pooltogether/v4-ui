@@ -5,7 +5,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { LPStakingCards } from './LPStakingCards'
 import { POOLStakingCards } from './POOLStakingCards'

@@ -1,6 +1,6 @@
 import { FullWalletConnectionButton } from '@pooltogether/wallet-connection'
 import { getSupportedChains } from '@utils/getSupportedChains'
-import { Trans } from 'react-i18next'
+import { Trans } from 'next-i18next'
 
 /**
  * NOTE: Only render one per app

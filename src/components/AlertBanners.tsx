@@ -4,7 +4,7 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { constants } from 'ethers'
 import Link from 'next/link'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const AlertBanners = () => {
   return <DelegateTicketsBanner />

@@ -8,7 +8,7 @@ import { BlockExplorerLink } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
   const { delegator } = props

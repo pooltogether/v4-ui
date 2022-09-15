@@ -1,4 +1,3 @@
-
 import { EstimateAction } from '@constants/odds'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { Amount } from '@pooltogether/hooks'
@@ -6,7 +5,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { getOddsWidth } from './UpdatedPrizePoolOddsListItemBar'
 

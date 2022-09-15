@@ -12,7 +12,7 @@ import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrize
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
 import React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props

@@ -4,13 +4,11 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'next-i18next'
 
 import { DrawData } from '../../../interfaces/v4'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
-
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }

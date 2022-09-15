@@ -14,7 +14,7 @@ import {
 } from '@pooltogether/wallet-connection'
 import FeatherIcon from 'feather-icons-react'
 import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

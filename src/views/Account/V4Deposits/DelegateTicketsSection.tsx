@@ -1,4 +1,3 @@
-
 import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { TxButton } from '@components/Input/TxButton'
@@ -13,7 +12,7 @@ import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogethe
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool
