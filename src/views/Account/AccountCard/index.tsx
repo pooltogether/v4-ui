@@ -54,7 +54,7 @@ const TotalBalance: React.FC<{
         <span className='font-semibold text-xs mr-1'>{shorten({ hash: usersAddress }) + `'s`}</span>
       )}
 
-      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='font-semibold uppercase text-xs'>{t('totalBalance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
           isFetched={isFullyFetched}

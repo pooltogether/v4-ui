@@ -8,7 +8,8 @@ const isBrowser = typeof window !== 'undefined'
 module.exports = {
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']
+    locales: ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk'],
+    localePath: path.resolve('./public/locales')
   },
   localePath: path.resolve('./public/locales'),
   backend: {
