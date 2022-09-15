@@ -42,7 +42,7 @@
     "@pooltogether/v4-pool-data": "1.8.2-beta.2",
     "@pooltogether/v4-twab-delegator-js": "0.2.2",
     "@pooltogether/v4-utils-js": "0.1.4",
-    "@pooltogether/wallet-connection": "0.7.2",
+    "@pooltogether/wallet-connection": "0.7.3",
     "@reach/dialog": "^0.15.3",
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",
