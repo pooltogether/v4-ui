@@ -1,7 +1,6 @@
 import { unionProbabilities } from '@utils/unionProbabilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import { EstimateAction } from '../../../constants/odds'
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
 import { usePrizePoolNetwork } from './usePrizePoolNetwork'

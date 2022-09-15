@@ -5,8 +5,8 @@ import { TokenAmountInput } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { useTranslation } from 'next-i18next'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 interface DepositAmountInputProps {
   form: UseFormReturn<FieldValues, object>

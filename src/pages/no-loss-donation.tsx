@@ -1,8 +1,13 @@
-import Layout from '@components/Layout'
+import { LoadingScreen } from '@pooltogether/react-components'
 import { DonateUI } from '@views/DonateUI'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
+import dynamic from 'next/dynamic.js'
+import React, { Suspense } from 'react'
 import nextI18NextConfig from '../../next-i18next.config.js'
+
+const Layout = dynamic(() => import('@components/Layout'), {
+  suspense: true
+})
 
 export async function getStaticProps({ locale }) {
   return {
@@ -14,8 +19,10 @@ export async function getStaticProps({ locale }) {
 
 export default function Donate(props) {
   return (
-    <Layout>
-      <DonateUI />
-    </Layout>
+    <Suspense fallback={<LoadingScreen />}>
+      <Layout>
+        <DonateUI />
+      </Layout>
+    </Suspense>
   )
 }

@@ -12,9 +12,8 @@ import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
-import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import { useState } from 'react'
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0

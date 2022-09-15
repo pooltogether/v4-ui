@@ -6,7 +6,6 @@ import { useReadProvider } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import { useTokenFaucetData } from './useTokenFaucetData'
 import { V3PrizePool } from './useV3PrizePools'
 

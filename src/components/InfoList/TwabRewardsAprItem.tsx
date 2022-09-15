@@ -5,9 +5,8 @@ import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { Promotion } from '@interfaces/promotions'
 import { TokenIcon } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React from 'react'
 import { InfoListItem } from '.'
 
 /**

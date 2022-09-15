@@ -14,7 +14,6 @@ import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { useReadProviders } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQueries } from 'react-query'
-
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
 
 

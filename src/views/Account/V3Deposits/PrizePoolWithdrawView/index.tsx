@@ -7,11 +7,10 @@ import { numberWithCommas } from '@pooltogether/utilities'
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { Contract } from 'ethers'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
-
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
 

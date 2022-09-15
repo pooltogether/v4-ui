@@ -29,10 +29,10 @@ import {
 } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 

@@ -11,7 +11,6 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
-
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
 import { StakingCard } from './StakingCard'
 

@@ -2,7 +2,6 @@ import { LP_PRIZE_POOL_METADATA } from '@constants/v3'
 import { formatUnits } from '@ethersproject/units'
 import { useCoingeckoTokenPrices, useTokenBalances } from '@pooltogether/hooks'
 import { calculateLPTokenPrice } from '@pooltogether/utilities'
-
 import { V3PrizePool } from './useV3PrizePools'
 
 /**

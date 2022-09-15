@@ -24,9 +24,8 @@ import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorag
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
 import axios from 'axios'
 import { useAtom } from 'jotai'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { DrawData } from '../../../interfaces/v4'
 import { LoadingCard } from './LoadingCard'
 import { LockedDrawsCard } from './LockedDrawsCard'

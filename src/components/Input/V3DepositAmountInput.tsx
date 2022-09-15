@@ -5,9 +5,9 @@ import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
 
 interface V3DepositAmountInputProps {
   chainId: number

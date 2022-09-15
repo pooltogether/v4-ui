@@ -1,6 +1,6 @@
 import { Tooltip } from '@pooltogether/react-components'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const VAPRTooltip = () => {
   const { t } = useTranslation()

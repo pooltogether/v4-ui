@@ -2,9 +2,8 @@ import { Token } from '@pooltogether/hooks'
 import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React, { useState } from 'react'
 import { DrawData } from '../../../interfaces/v4'
 import { MultiDrawPrizeBreakdownSheet } from './MultiDrawPrizeBreakdownSheet'
 

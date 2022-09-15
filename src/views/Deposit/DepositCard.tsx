@@ -15,11 +15,10 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { DepositConfirmationModal } from '@views/Deposit/DepositConfirmationModal'
 import { DepositForm, DEPOSIT_QUANTITY_KEY } from '@views/Deposit/DepositForm'
 import { ethers, Overrides } from 'ethers'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
-
 import { DepositCardBottomLinks } from './DepositCardBottomLinks'
 
 export const DepositCard = (props: { className?: string }) => {

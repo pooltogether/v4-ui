@@ -11,8 +11,8 @@ import { PrizeTier } from '@pooltogether/v4-client-js'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
-import React from 'react'
 import { Trans, useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props

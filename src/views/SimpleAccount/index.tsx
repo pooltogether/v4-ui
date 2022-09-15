@@ -5,7 +5,6 @@ import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 import { POOLBalancesCard } from '@views/Account/POOLBalancesCard'
 import { useRouter } from 'next/router'
 import React from 'react'
-
 import { SimpleV4DepositList, SimpleV3DepositList } from './DepositLists'
 
 export const SimpleAccountUI = () => {

@@ -9,7 +9,6 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import { getSupportedTwabDelegatorChainIds } from './getSupportedTwabDelegatorChainIds'
 
 /**

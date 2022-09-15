@@ -16,8 +16,8 @@ import {
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface ModalDepositGateProps {
   token: Token

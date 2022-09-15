@@ -3,7 +3,6 @@ import { TokenWithUsdBalance } from '@pooltogether/hooks'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-
 import { useAllUsersV3Balances } from './useAllUsersV3Balances'
 
 /**

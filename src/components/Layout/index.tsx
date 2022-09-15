@@ -1,11 +1,7 @@
-import { AlertBanners } from '@components/AlertBanners'
 import { PageHeader } from '@components/Layout/PageHeader'
-import { RewardsBanners } from '@components/RewardsBanners'
 import classNames from 'classnames'
 import React from 'react'
-
 import { Navigation } from './Navigation'
-
 
 interface LayoutProps {
   className?: string

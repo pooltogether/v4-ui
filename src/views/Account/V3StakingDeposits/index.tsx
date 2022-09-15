@@ -4,9 +4,8 @@ import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
-import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import { useMemo } from 'react'
 import { LPStakingCards } from './LPStakingCards'
 import { POOLStakingCards } from './POOLStakingCards'
 

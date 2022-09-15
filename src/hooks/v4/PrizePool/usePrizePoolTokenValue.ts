@@ -1,7 +1,6 @@
 import { TokenPrice, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { UseQueryResult } from 'react-query'
-
 import { usePrizePoolTokens } from './usePrizePoolTokens'
 
 export const usePrizePoolTokenValue = (

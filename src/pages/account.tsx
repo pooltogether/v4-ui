@@ -1,11 +1,16 @@
-import Layout from '@components/Layout'
+import { LoadingScreen } from '@pooltogether/react-components'
 import { AccountUI } from '@views/Account'
 import { SimpleAccountUI } from '@views/SimpleAccount'
 import { isAddress } from 'ethers/lib/utils'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import dynamic from 'next/dynamic.js'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { Suspense } from 'react'
 import nextI18NextConfig from '../../next-i18next.config.js'
+
+const Layout = dynamic(() => import('@components/Layout'), {
+  suspense: true
+})
 
 export async function getStaticProps({ locale }) {
   return {
@@ -21,15 +26,19 @@ export default function IndexPage(props) {
 
   if (!!user && isAddress(user)) {
     return (
-      <Layout>
-        <SimpleAccountUI />
-      </Layout>
+      <Suspense fallback={<LoadingScreen />}>
+        <Layout>
+          <SimpleAccountUI />
+        </Layout>
+      </Suspense>
     )
   }
 
   return (
-    <Layout>
-      <AccountUI />
-    </Layout>
+    <Suspense fallback={<LoadingScreen />}>
+      <Layout>
+        <AccountUI />
+      </Layout>
+    </Suspense>
   )
 }

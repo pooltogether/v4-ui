@@ -2,7 +2,6 @@ import { AppContainer } from '@components/AppContainer'
 import { appWithTranslation } from 'next-i18next'
 import type { AppProps } from 'next/app'
 import React from 'react'
-
 import nextI18NextConfig from '../../next-i18next.config.js'
 
 // CSS

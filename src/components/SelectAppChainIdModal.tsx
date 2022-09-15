@@ -5,8 +5,8 @@ import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 interface SelectAppChainIdModalProps {
   className?: string

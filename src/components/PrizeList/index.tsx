@@ -8,9 +8,9 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { sortByBigNumber } from '@utils/sortByBigNumber'
 import classNames from 'classnames'
 import classnames from 'classnames'
+import { useTranslation } from 'next-i18next'
 import ordinal from 'ordinal'
 import React from 'react'
-import { useTranslation } from 'next-i18next'
 
 interface PrizeListProps
   extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLUListElement>, HTMLUListElement> {

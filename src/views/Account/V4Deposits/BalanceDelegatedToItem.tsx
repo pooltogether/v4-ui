@@ -5,8 +5,8 @@ import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDel
 import { Amount } from '@pooltogether/hooks'
 import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 // TODO: Bottom sheet for this showing breakdown
 export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props) => {

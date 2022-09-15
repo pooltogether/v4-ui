@@ -1,4 +1,5 @@
 import { RPC_URLS } from '@constants/config'
+import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
 import { useInitCookieOptions } from '@pooltogether/hooks'
 import {
   LoadingScreen,
@@ -17,9 +18,9 @@ import { getSupportedChains } from '@utils/getSupportedChains'
 import { initSentry } from '@utils/services/initSentry'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
+import { useTranslation } from 'next-i18next'
 import { AppProps } from 'next/app'
 import { useContext, useEffect } from 'react'
-import { useTranslation } from 'next-i18next'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
@@ -28,7 +29,6 @@ import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-
 import { CustomErrorBoundary } from './CustomErrorBoundary'
 
 // Initialize react-query Query Client
@@ -139,8 +139,9 @@ const useInitialLoad = () => {
   useUpdateStoredPendingTransactions()
   useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
   const { status } = useConnect()
-  console.log('useInitialLoad', !!i18n.isInitialized && status !== 'loading')
-  return !!i18n.isInitialized && status !== 'loading'
+  const queryResults = useAllPrizePoolTokens()
+  const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+  return !!i18n.isInitialized && status !== 'loading' && !!isFetched
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {

@@ -3,8 +3,8 @@ import { Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import FeatherIcon from 'feather-icons-react'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

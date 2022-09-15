@@ -10,7 +10,6 @@ import { Amount, Token } from '@pooltogether/hooks'
 import { useReadProviders } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
-
 import { useV3ChainIds } from './useV3ChainIds'
 
 export interface PodToken extends Token {

@@ -2,8 +2,8 @@ import { Token } from '@pooltogether/hooks'
 import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classnames from 'classnames'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface PrizeBreakdownProps {
   prizeTier: PrizeTier

@@ -12,10 +12,9 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import axios from 'axios'
 import classNames from 'classnames'
 import { Overrides } from 'ethers'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
-
 import { DepositItemsProps } from '.'
 import { WithdrawStepContent } from './WithdrawStepContent'
 

@@ -17,8 +17,8 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor

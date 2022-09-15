@@ -11,8 +11,8 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { TransactionStatus, useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 interface DelegateTicketsSectionProps {
   prizePool: PrizePool

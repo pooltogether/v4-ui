@@ -5,7 +5,6 @@ import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances
 import { TokenIcon } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'next-i18next'
-
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
 import { StakingCard } from './StakingCard'
 

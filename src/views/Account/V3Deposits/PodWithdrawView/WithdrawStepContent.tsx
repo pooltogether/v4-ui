@@ -23,10 +23,9 @@ import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
-
 import { WithdrawalSteps } from '.'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'

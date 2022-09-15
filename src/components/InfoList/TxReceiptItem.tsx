@@ -1,8 +1,7 @@
 import { shorten } from '@pooltogether/utilities'
 import { Transaction, BlockExplorerLink } from '@pooltogether/wallet-connection'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React from 'react'
 import { InfoListItem } from '.'
 
 interface TxReceiptItemProps {

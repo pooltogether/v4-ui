@@ -5,8 +5,8 @@ import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface EstimatedGasItemProps {
   chainId: number

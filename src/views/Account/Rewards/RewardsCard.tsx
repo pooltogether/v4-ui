@@ -51,10 +51,10 @@ import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
 import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
-import { useMemo, useState } from 'react'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
 import { useSigner } from 'wagmi'
 
 enum ClaimModalState {

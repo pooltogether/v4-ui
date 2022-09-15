@@ -7,9 +7,9 @@ import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { Trans } from 'next-i18next'
+import Link from 'next/link'
 
 interface PromotionSummaryProps {
   chainId: number

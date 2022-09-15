@@ -12,11 +12,10 @@ import {
 } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { Contract } from 'ethers'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
 import { useSigner } from 'wagmi'
-
 import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
 

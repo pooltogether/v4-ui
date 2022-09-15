@@ -5,7 +5,6 @@ import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
 import { BigNumber, ethers } from 'ethers'
 import { useEffect } from 'react'
 import { useQuery } from 'react-query'
-
 import { usePrizePoolOddsData } from './usePrizePoolOddsData'
 import { useUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
 

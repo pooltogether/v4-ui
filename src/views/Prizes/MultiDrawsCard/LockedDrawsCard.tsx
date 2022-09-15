@@ -8,9 +8,8 @@ import { Card, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React from 'react'
 import { DrawData } from '../../../interfaces/v4'
 import { LoadingCard } from './LoadingCard'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'

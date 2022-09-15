@@ -1,5 +1,4 @@
 import { useQuery } from 'react-query'
-
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizePoolNetwork } from '../PrizePoolNetwork/usePrizePoolNetwork'
 

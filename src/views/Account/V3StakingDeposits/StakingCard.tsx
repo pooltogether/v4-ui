@@ -5,9 +5,8 @@ import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { displayPercentage } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useState } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import { useState } from 'react'
 import { StakingBottomSheet } from './StakingBottomSheet'
 
 interface StakingCardProps {

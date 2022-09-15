@@ -3,8 +3,8 @@ import { Modal, ModalProps } from '@pooltogether/react-components'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 interface SwapTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

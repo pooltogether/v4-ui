@@ -4,9 +4,8 @@ import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
-import React, { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React, { useMemo } from 'react'
 import { getOddsWidth } from './UpdatedPrizePoolOddsListItemBar'
 
 export const UpdatedPrizePoolNetworkOddsListItemBar = (props: {

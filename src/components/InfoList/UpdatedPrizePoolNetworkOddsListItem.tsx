@@ -3,9 +3,8 @@ import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUser
 import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
-
+import React from 'react'
 import { InfoListItem } from '.'
 
 export const UpdatedPrizePoolNetworkOddsListItem = (props: {

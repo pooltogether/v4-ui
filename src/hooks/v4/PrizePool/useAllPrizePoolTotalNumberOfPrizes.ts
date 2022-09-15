@@ -1,5 +1,4 @@
 import { useQueries } from 'react-query'
-
 import { useAllPrizePoolPercentagesofPicks } from './useAllPrizePoolPercentagesofPicks'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import { usePrizePools } from './usePrizePools'

@@ -5,8 +5,8 @@ import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolB
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 export const DepositCardBottomLinks = () => {
   const prizePool = usePrizePoolBySelectedChainId()

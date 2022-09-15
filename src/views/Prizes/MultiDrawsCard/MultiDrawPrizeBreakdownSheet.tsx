@@ -3,9 +3,8 @@ import { PrizeBreakdown } from '@components/PrizeBreakdown'
 import { Token } from '@pooltogether/hooks'
 import { ModalProps, BottomSheet } from '@pooltogether/react-components'
 import classNames from 'classnames'
-import React, { useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'next-i18next'
-
+import React, { useMemo, useState } from 'react'
 import { DrawData } from '../../../interfaces/v4'
 
 export const MultiDrawPrizeBreakdownSheet = (

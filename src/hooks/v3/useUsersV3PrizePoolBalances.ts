@@ -2,7 +2,6 @@ import { LP_PRIZE_POOL_METADATA, POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
 
 /**

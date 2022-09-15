@@ -9,7 +9,6 @@ import { amountMultByUsd } from '@pooltogether/utilities'
 import { useReadProvider } from '@pooltogether/wallet-connection'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import { V3PrizePool } from './useV3PrizePools'
 
 

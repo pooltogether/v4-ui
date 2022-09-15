@@ -1,6 +1,5 @@
 import { Card } from '@pooltogether/react-components'
 import classNames from 'classnames'
-
 import { PrizeVideoBackground, VideoClip } from './PrizeVideoBackground'
 
 export const PrizeAnimationCard: React.FC<{

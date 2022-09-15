@@ -4,7 +4,6 @@ import { PagePadding } from '@components/Layout/PagePadding'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
 import React from 'react'
-
 import { AccountCard } from './AccountCard'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { POOLBalancesCard } from './POOLBalancesCard'

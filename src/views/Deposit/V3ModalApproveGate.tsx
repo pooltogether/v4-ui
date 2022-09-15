@@ -14,8 +14,8 @@ import {
 } from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface V3ModalApproveGateProps {
   className?: string

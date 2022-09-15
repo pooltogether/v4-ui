@@ -27,5 +27,16 @@ module.exports = {
     backends: isBrowser ? [LocalStorageBackend, LocizeBackend] : []
   },
   serializeConfig: false,
-  use: isBrowser ? [ChainedBackend] : []
+  use: isBrowser ? [ChainedBackend] : [],
+  detection: {
+    // check if language is cached in cookies, if not check local storage
+    order: ['cookie', 'localStorage', 'path'],
+
+    // next-i18next by default searches for the 'next-i18next' cookie on server requests
+    lookupCookie: 'NEXT_LOCALE',
+    lookupLocalStorage: 'i18nextLng',
+
+    // cache the language in cookies and local storage
+    caches: ['cookie', 'localStorage']
+  }
 }

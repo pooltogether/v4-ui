@@ -38,10 +38,10 @@ import { ModalDepositGate } from '@views/Deposit/ModalDepositGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { BigNumber } from 'ethers'
+import { Trans, useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { Trans, useTranslation } from 'next-i18next'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

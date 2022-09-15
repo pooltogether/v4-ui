@@ -3,7 +3,6 @@ import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
 
 

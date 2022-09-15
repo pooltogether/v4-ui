@@ -30,10 +30,9 @@ import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
-import React, { useCallback, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useCallback, useRef } from 'react'
 import Reward, { RewardElement } from 'react-rewards'
-
 import { DrawData } from '../../../interfaces/v4'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000

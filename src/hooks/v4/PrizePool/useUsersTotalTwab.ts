@@ -3,7 +3,6 @@ import { Amount } from '@pooltogether/hooks'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
-
 import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
 
 /**

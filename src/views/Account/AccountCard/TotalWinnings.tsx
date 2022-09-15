@@ -7,8 +7,8 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getTimestampString } from '@utils/getTimestampString'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 export const TotalWinnings: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

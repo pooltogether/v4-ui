@@ -4,7 +4,6 @@ import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
-
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'

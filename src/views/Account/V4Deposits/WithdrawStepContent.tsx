@@ -20,10 +20,9 @@ import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
-
 import { WithdrawalSteps } from './WithdrawView'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'

@@ -1,5 +1,4 @@
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
-import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import {
   LanguagePickerDropdown,
   PageHeaderContainer,
@@ -15,10 +14,11 @@ import {
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
-
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import nextI18NextConfig from '../../../next-i18next.config.js'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
 export enum ContentPaneState {
@@ -68,15 +68,19 @@ const Settings = () => {
 
 const LanguagePicker = () => {
   const { i18n: i18next, t } = useTranslation()
+  const router = useRouter()
 
   return (
     <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
-        langs={SUPPORTED_LANGUAGES}
+        locales={nextI18NextConfig.i18n.locales}
         className='dark:text-white'
         currentLang={i18next.language}
-        onValueSet={(newLang) => {
-          i18next.changeLanguage(newLang)
+        onValueSet={(newLocale) => {
+          i18next.changeLanguage(newLocale)
+          router.push({ pathname: router.pathname, query: router.query }, router.asPath, {
+            locale: newLocale
+          })
         }}
       />
     </SettingsItem>
