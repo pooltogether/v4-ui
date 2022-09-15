@@ -1,19 +1,19 @@
-import { TokenIcon } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
-
-import { StakingCard } from './StakingCard'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
-import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
-import { useTokenFaucetData } from '@hooks/v3/useTokenFaucetData'
+import { LPTokenIcon } from '@components/LPTokenIcon'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { getLPPrizePoolMetadata, useLPTokenUsdValue } from '@hooks/v3/useLPTokenUsdValue'
+import { useTokenFaucetData } from '@hooks/v3/useTokenFaucetData'
+import { useUsersTokenFaucetRewards } from '@hooks/v3/useUsersTokenFaucetRewards'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
-import { LPTokenIcon } from '@components/LPTokenIcon'
+import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { TokenIcon } from '@pooltogether/react-components'
+import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
+import { useTranslation } from 'react-i18next'
+
+import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
+import { StakingCard } from './StakingCard'
 
 export const LPStakingCards = () => {
   const usersAddress = useUsersAddress()

@@ -1,7 +1,7 @@
-import React from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
+import classNames from 'classnames'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface ModalLoadingGateProps {
   className?: string

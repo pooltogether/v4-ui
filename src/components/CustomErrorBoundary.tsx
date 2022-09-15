@@ -1,10 +1,9 @@
-import React from 'react'
 import * as Sentry from '@sentry/react'
-
 import { ErrorPage } from '@views/ErrorPage'
+import React from 'react'
 import { useConnect } from 'wagmi'
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
   constructor(props) {
     super(props)
     this.state = { hasError: false }
@@ -25,7 +24,7 @@ class ErrorBoundary extends React.Component {
 
 export function CustomErrorBoundary(props) {
   const { children } = props
-  const { activeConnector } = useConnect()
+  const { data } = useConnect()
 
   if (!process.env.NEXT_PUBLIC_SENTRY_DSN) {
     return <ErrorBoundary>{children}</ErrorBoundary>
@@ -40,10 +39,10 @@ export function CustomErrorBoundary(props) {
             }
           }}
           beforeCapture={(scope) => {
-            if (activeConnector?.name) {
-              scope.setTag('web3', activeConnector.name)
+            if (!!data?.connector) {
+              scope.setTag('web3', data.connector.name)
               scope.setContext('wallet', {
-                name: activeConnector.name
+                name: data.connector.name
               })
             }
           }}

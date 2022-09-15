@@ -1,7 +1,7 @@
 import { useQueries } from 'react-query'
+
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
-
 import {
   getPrizePoolPercentageOfPicks,
   getPrizePoolPercentageOfPicksKey

@@ -1,10 +1,9 @@
-import gql from 'graphql-tag'
 import { getRefetchInterval } from '@pooltogether/hooks'
-import { GraphQLClient } from 'graphql-request'
-import { useQuery } from 'react-query'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-
 import { getTwabRewardsSubgraphClient } from '@utils/v4/TwabRewards/getTwabRewardsSubgraphClient'
+import { GraphQLClient } from 'graphql-request'
+import gql from 'graphql-tag'
+import { useQuery } from 'react-query'
 
 /**
  * Fetch an account's

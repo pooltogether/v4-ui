@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useV4ChainIds } from '@hooks/useV4ChainIds'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
+import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface SelectAppChainIdModalProps {
   className?: string

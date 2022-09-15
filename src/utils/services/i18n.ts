@@ -2,9 +2,9 @@ const env = process.env.NODE_ENV || 'development'
 const dev = env !== 'production'
 
 import i18n from 'i18next'
-import { initReactI18next } from 'react-i18next'
-import Locize from 'i18next-locize-backend/cjs'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import Locize from 'i18next-locize-backend/cjs'
+import { initReactI18next } from 'react-i18next'
 
 const supportedLocales = ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']
 
@@ -17,10 +17,6 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    i18n: {
-      defaultLocale: 'en',
-      locales: supportedLocales
-    },
     // debug: dev,
     partialBundledLanguages: true,
     fallbackLng: 'en',

@@ -1,3 +1,7 @@
+import Erc20Abi from '@abis/ERC20'
+import { Provider } from '@ethersproject/abstract-provider'
+import { BigNumber } from '@ethersproject/bignumber'
+import { parseUnits } from '@ethersproject/units'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import {
   Token,
@@ -6,15 +10,13 @@ import {
   Amount,
   TokenPrice
 } from '@pooltogether/hooks'
-import { useQueries } from 'react-query'
-import { Provider } from '@ethersproject/abstract-provider'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
-import { parseUnits } from '@ethersproject/units'
-import { BigNumber } from '@ethersproject/bignumber'
-import Erc20Abi from '@abis/ERC20'
-import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useReadProviders } from '@pooltogether/wallet-connection'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useQueries } from 'react-query'
+
+import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
+
 
 export interface V3PrizePoolBalances {
   chainId: number

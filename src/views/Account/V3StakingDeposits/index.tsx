@@ -1,11 +1,12 @@
-import { BigNumber } from 'ethers'
 import { CardTitle } from '@components/Text/CardTitle'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+
 import { LPStakingCards } from './LPStakingCards'
 import { POOLStakingCards } from './POOLStakingCards'
 

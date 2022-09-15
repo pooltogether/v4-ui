@@ -1,11 +1,11 @@
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { getStoredDrawResults } from '@utils/drawResultsStorage'
 import { useEffect, useMemo, useState } from 'react'
 
-import { getStoredDrawResults } from '@utils/drawResultsStorage'
 import { useUnclaimedDrawIds } from './useUnclaimedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
 
 /**
  * TODO: useState, set once data is loaded on mount, check if it is set, if it is, don't overwrite.

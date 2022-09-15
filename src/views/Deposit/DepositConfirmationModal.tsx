@@ -1,6 +1,18 @@
-import React, { useEffect } from 'react'
-import Link from 'next/link'
-import { Amount, Token, useIsWalletOnNetwork } from '@pooltogether/hooks'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import { AnimatedBorderCard } from '@components/AnimatedCard'
+import { InfoListHeader, ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { TxButton } from '@components/Input/TxButton'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { EstimateAction } from '@constants/odds'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { Amount, Token } from '@pooltogether/hooks'
 import {
   ModalProps,
   SquareButton,
@@ -8,42 +20,28 @@ import {
   SquareButtonSize,
   SquareButtonTheme,
   ModalTitle,
-  BottomSheet,
-  AddTokenToMetamaskButton
+  BottomSheet
 } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { Trans, useTranslation } from 'react-i18next'
-import { useRouter } from 'next/router'
 import { msToS } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import {
   Transaction,
   TransactionState,
   TransactionStatus,
+  useIsWalletMetamask,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
-
-import { TxButton } from '@components/Input/TxButton'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { InfoListHeader, ModalInfoList } from '@components/InfoList'
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
-import { AnimatedBorderCard } from '@components/AnimatedCard'
+import { addDays } from '@utils/date'
+import { getTimestampString } from '@utils/getTimestampString'
+import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 import { ModalDepositGate } from '@views/Deposit/ModalDepositGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { addDays } from '@utils/date'
-import { getTimestampString } from '@utils/getTimestampString'
-import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
-import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
-import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { EstimateAction } from '@constants/odds'
-import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
+import { BigNumber } from 'ethers'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -301,18 +299,10 @@ export const AddTicketToWallet = () => {
   if (!isMetaMask || !isWalletOnProperNetwork) return null
 
   return (
-    <AddTokenToMetamaskButton
-      t={t}
-      token={ticket}
-      isMetaMask={isMetaMask}
-      isWalletOnProperNetwork={isWalletOnProperNetwork}
-      className='w-full'
-    >
-      <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full'>
-        {t('addTicketTokenToMetamask', {
-          token: ticket.symbol
-        })}
-      </SquareButton>
-    </AddTokenToMetamaskButton>
+    <SquareButton theme={SquareButtonTheme.tealOutline} className='w-full'>
+      {t('addTicketTokenToMetamask', {
+        token: ticket.symbol
+      })}
+    </SquareButton>
   )
 }

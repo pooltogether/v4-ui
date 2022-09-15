@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/react'
 import { useSendTransaction as _useSendTransaction } from '@pooltogether/wallet-connection'
+import * as Sentry from '@sentry/react'
 import { useTranslation } from 'react-i18next'
 
 /**

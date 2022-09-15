@@ -1,4 +1,5 @@
 import { useQueries } from 'react-query'
+
 import { usePrizePools } from './usePrizePools'
 import { getPrizePoolTokens, PRIZE_POOL_TOKENS_QUERY_KEY } from './usePrizePoolTokens'
 

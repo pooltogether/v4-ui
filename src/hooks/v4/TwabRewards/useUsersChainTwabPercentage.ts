@@ -1,9 +1,9 @@
+import { formatUnits } from '@ethersproject/units'
+import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { formatUnits } from '@ethersproject/units'
 
-import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { useChainPrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/useChainPrizePoolTicketTotalSupply'
 
 /**
  * Fetch a user's current percentage of the chain based on their TWAB

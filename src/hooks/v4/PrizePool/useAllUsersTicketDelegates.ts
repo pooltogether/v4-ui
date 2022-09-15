@@ -1,6 +1,6 @@
+import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useQueries } from 'react-query'
 
-import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { getUsersTicketDelegate, getUsersTicketDelegateQueryKey } from './useUsersTicketDelegate'
 
 /**

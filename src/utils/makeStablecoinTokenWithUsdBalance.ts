@@ -1,6 +1,7 @@
 import { Token, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
+
 import { getAmountFromBigNumber } from './getAmountFromBigNumber'
 import { getAmountFromString } from './getAmountFromString'
 

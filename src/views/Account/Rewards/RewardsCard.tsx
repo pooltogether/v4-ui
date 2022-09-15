@@ -1,10 +1,21 @@
-import { useMemo, useState } from 'react'
-import Link from 'next/link'
-import FeatherIcon from 'feather-icons-react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
+import { TxButton } from '@components/Input/TxButton'
+import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
+import { CardTitle } from '@components/Text/CardTitle'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
+import { VAPRTooltip } from '@components/VAPRTooltip'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trans } from 'react-i18next'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
+import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
+import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
+import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
+import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
+import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
+import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
+import { Token, Amount, useToken, useTokenBalance } from '@pooltogether/hooks'
 import {
   BottomSheet,
   BottomSheetTitle,
@@ -17,7 +28,13 @@ import {
   SquareButtonSize,
   ExternalLink
 } from '@pooltogether/react-components'
-import { Token, Amount, useToken } from '@pooltogether/hooks'
+import {
+  displayPercentage,
+  numberWithCommas,
+  getNetworkNameAliasByChainId,
+  getNetworkNiceNameByChainId,
+  sToD
+} from '@pooltogether/utilities'
 import {
   useSendTransaction,
   useUsersAddress,
@@ -27,36 +44,18 @@ import {
   Transaction,
   getChainColorByChainId
 } from '@pooltogether/wallet-connection'
-import {
-  msToS,
-  displayPercentage,
-  numberWithCommas,
-  getNetworkNameAliasByChainId,
-  getNetworkNiceNameByChainId,
-  sToD
-} from '@pooltogether/utilities'
-import { useSigner } from 'wagmi'
-import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
-import { TxButton } from '@components/Input/TxButton'
-import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
-import { CardTitle } from '@components/Text/CardTitle'
-import { TwitterIntentButton } from '@components/TwitterIntentButton'
-import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
-import { VAPRTooltip } from '@components/VAPRTooltip'
-import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
-import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
-import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
-import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
-import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
-import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
-import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
-import { loopXTimes } from '@utils/loopXTimes'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { loopXTimes } from '@utils/loopXTimes'
+import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
-import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
+import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
+import { Trans } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import { useSigner } from 'wagmi'
 
 enum ClaimModalState {
   'FORM',
@@ -178,10 +177,14 @@ const PromotionRow = (props) => {
   const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)
-
-  const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
-
   const usersAddress = useUsersAddress()
+
+  const { data: token, isFetched: tokenIsFetched } = useTokenBalance(
+    chainId,
+    usersAddress,
+    tokenAddress
+  )
+
   const prizePool = usePrizePoolByChainId(chainId)
 
   const { data: usersPromotionData, refetch: refetchUsersRewardsAmount } =
@@ -740,7 +743,7 @@ const BalanceDisplay = (props) => {
       return null
     }
     return numberWithCommas(Number(claimableAmount.amount) + currentEpochEstimateAccrued)
-  }, [claimableAmount?.amount, currentEpochEstimateAccrued])
+  }, [claimableAmount, currentEpochEstimateAccrued])
 
   if (!claimableAmount && currentEpochEstimateAccrued === null) {
     return <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
@@ -749,7 +752,7 @@ const BalanceDisplay = (props) => {
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-1', {
-        'opacity-50': balance === 0 || !balance
+        'opacity-50': balance === '0' || !balance
       })}
     >
       {balance || 0}
@@ -849,7 +852,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendTransaction = useSendTransaction()
 
   const sendClaimTx = async () => {
-    const epochIds = [...Array(maxCompletedEpochId).keys()].filter(
+    const epochIds = Array.from(Array(maxCompletedEpochId).keys()).filter(
       (completedEpochId) =>
         !usersClaimedPromotionHistory?.epochs.includes(completedEpochId.toString())
     )

@@ -1,5 +1,5 @@
-import React from 'react'
 import { numberWithCommas } from '@pooltogether/utilities'
+import React from 'react'
 
 export const MaxAmountTextInputRightLabel = (props) => {
   const { valueKey, disabled, setValue, isAmountZero, amount, tokenSymbol } = props

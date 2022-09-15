@@ -1,5 +1,6 @@
-import { BigNumber } from 'ethers'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { BigNumber } from 'ethers'
+
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 

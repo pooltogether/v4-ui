@@ -3,6 +3,7 @@ import { divideBigNumbers } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { parseEther } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
+
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 

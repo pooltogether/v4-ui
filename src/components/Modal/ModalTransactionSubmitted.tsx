@@ -1,10 +1,10 @@
-import { Transaction } from '@pooltogether/wallet-connection'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
-import React from 'react'
-
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { Transaction } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+
 
 interface ModalTransactionSubmittedProps {
   className?: string

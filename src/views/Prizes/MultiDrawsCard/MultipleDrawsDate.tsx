@@ -1,5 +1,4 @@
 import { Draw } from '@pooltogether/v4-client-js'
-
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { sortDrawsByDrawIdAsc } from '@utils/sortByDrawId'
 

@@ -1,10 +1,8 @@
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
-import { useAddNetworkToMetamask } from '@pooltogether/hooks'
 import { SquareButton } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
+import classNames from 'classnames'
+import { useTranslation } from 'react-i18next'
+import { useSwitchNetwork } from 'wagmi'
 
 interface ModalNetworkGateProps {
   className?: string
@@ -52,17 +50,11 @@ const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
   const { chainId, onSuccess } = props
 
   const { t } = useTranslation()
-  const addNetwork = useAddNetworkToMetamask(chainId, { onSuccess })
   const networkName = getNetworkNiceNameByChainId(chainId)
-
-  const isWalletMetamask = useIsWalletMetamask()
-
-  if (!isWalletMetamask) {
-    return null
-  }
+  const { switchNetwork } = useSwitchNetwork({ onSuccess })
 
   return (
-    <SquareButton onClick={addNetwork}>
+    <SquareButton onClick={() => switchNetwork(chainId)}>
       {t('switchToNetwork', { network: networkName })}
     </SquareButton>
   )

@@ -1,5 +1,3 @@
-import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { SquareButton, SquareButtonProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
@@ -9,6 +7,8 @@ import {
   useIsWalletConnected,
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSwitchNetwork } from 'wagmi'
 
 export interface TxButtonProps extends SquareButtonProps {

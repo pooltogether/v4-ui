@@ -1,19 +1,21 @@
-import React from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { Amount } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   SquareLink,
   SquareButton,
   SquareButtonTheme,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-
+import {
+  formatBlockExplorerTxUrl,
+  Transaction,
+  TransactionState
+} from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface V3ModalApproveGateProps {
   className?: string
@@ -70,6 +72,7 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
             target='_blank'
             className='underline'
             href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
+            rel='noreferrer'
           >
             {t('howToDeposit', 'How to deposit')}
           </a>

@@ -1,7 +1,8 @@
-import classNames from 'classnames'
 import { Token, Amount } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import classNames from 'classnames'
+
 import { DownArrow } from './DownArrow'
 
 interface AmountBeingSwappedProps {

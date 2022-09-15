@@ -19,6 +19,7 @@ interface TriggerButtonProps {
   onClick: () => void
   disabled: boolean
   className?: string
+  children: React.ReactNode
 }
 
 export const ViewPrizesSheetCustomTrigger = (props: ViewPrizesSheetTriggerProps) => {

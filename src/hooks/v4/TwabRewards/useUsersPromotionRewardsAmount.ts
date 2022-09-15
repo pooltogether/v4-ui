@@ -1,11 +1,11 @@
-import { getRefetchInterval } from '@pooltogether/hooks'
 import { batch } from '@pooltogether/etherplex'
-import { useQuery } from 'react-query'
+import { getRefetchInterval } from '@pooltogether/hooks'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
-import { getReadProvider } from '@pooltogether/wallet-connection'
+import { useQuery } from 'react-query'
 
 /**
  * Fetch a promotion's data (eg. currentEpochId, etc)
@@ -42,11 +42,12 @@ export const getUsersPromotionRewardsAmount = async (
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
 
-  const epochIds = [...Array(maxCompletedEpochId).keys()]
+  const epochIds = Array.from(Array(maxCompletedEpochId).keys())
 
   try {
     const twabRewardsResults = await batch(
       provider,
+      // @ts-ignore
       twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
     )
 

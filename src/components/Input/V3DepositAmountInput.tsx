@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react'
-import classNames from 'classnames'
-import { TokenWithBalance } from '@pooltogether/hooks'
-import { useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
-import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 import { WalletSvg } from '@components/Icons/SvgComponents'
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
+import { TokenWithBalance } from '@pooltogether/hooks'
+import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import React, { useEffect } from 'react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 interface V3DepositAmountInputProps {
   chainId: number

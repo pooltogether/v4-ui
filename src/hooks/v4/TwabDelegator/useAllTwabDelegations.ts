@@ -4,11 +4,12 @@ import {
   TwabDelegator,
   TWAB_DELEGATOR_ADDRESS
 } from '@pooltogether/v4-twab-delegator-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { getReadProvider } from '@pooltogether/wallet-connection'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
+
 import { getSupportedTwabDelegatorChainIds } from './getSupportedTwabDelegatorChainIds'
 
 /**

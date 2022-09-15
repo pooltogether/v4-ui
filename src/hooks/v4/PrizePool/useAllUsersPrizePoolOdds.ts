@@ -1,8 +1,9 @@
 import { BigNumber } from 'ethers'
-import { EstimateAction } from '../../../constants/odds'
 import { useQueries } from 'react-query'
-import { usePrizePools } from './usePrizePools'
+
+import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
+import { usePrizePools } from './usePrizePools'
 import { getUsersPrizePoolOdds, getUsersPrizePoolOddsKey } from './useUsersPrizePoolOdds'
 import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
 

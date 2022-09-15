@@ -1,6 +1,6 @@
-import React from 'react'
-import type { AppProps } from 'next/app'
 import { AppContainer } from '@components/AppContainer'
+import type { AppProps } from 'next/app'
+import React from 'react'
 
 // CSS
 import '@styles/index.css'

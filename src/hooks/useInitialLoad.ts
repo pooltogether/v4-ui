@@ -1,6 +1,7 @@
 import { useInitCookieOptions } from '@pooltogether/hooks'
 import { useUpdateStoredPendingTransactions } from '@pooltogether/wallet-connection'
 import { useConnect } from 'wagmi'
+
 import { useAllPrizePoolTokens } from './v4/PrizePool/useAllPrizePoolTokens'
 
 /**

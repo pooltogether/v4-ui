@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
-import { TokenWithUsdBalance } from '@pooltogether/hooks'
-import { BigNumber } from 'ethers'
-
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3'
+import { TokenWithUsdBalance } from '@pooltogether/hooks'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { BigNumber } from 'ethers'
+import { useMemo } from 'react'
+
 import { useAllUsersV3Balances } from './useAllUsersV3Balances'
 
 /**

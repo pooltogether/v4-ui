@@ -1,10 +1,10 @@
-import React from 'react'
 
 import Layout from '@components/Layout'
 import { AccountUI } from '@views/Account'
-import { useRouter } from 'next/router'
-import { isAddress } from 'ethers/lib/utils'
 import { SimpleAccountUI } from '@views/SimpleAccount'
+import { isAddress } from 'ethers/lib/utils'
+import { useRouter } from 'next/router'
+import React from 'react'
 
 export default function IndexPage(props) {
   const router = useRouter()

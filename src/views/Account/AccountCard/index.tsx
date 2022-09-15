@@ -1,15 +1,16 @@
-import React, { useMemo } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { Amount } from '@pooltogether/hooks'
-import classNames from 'classnames'
-
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import { unionProbabilities } from '@utils/unionProbabilities'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { Amount } from '@pooltogether/hooks'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { shorten } from '@pooltogether/utilities'
+import { unionProbabilities } from '@utils/unionProbabilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { TotalWinnings } from './TotalWinnings'
+
 
 export const AccountCard: React.FC<{
   usersAddress: string

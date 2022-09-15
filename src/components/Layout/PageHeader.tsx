@@ -1,6 +1,5 @@
-import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
-import Link from 'next/link'
+import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
+import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import {
   LanguagePickerDropdown,
   PageHeaderContainer,
@@ -14,10 +13,12 @@ import {
   NetworkIcon,
   HeaderLogo
 } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { SUPPORTED_LANGUAGES } from '@constants/languages'
+import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
 export enum ContentPaneState {
@@ -26,25 +27,23 @@ export enum ContentPaneState {
   account = 'account'
 }
 
-export const PageHeader = (props) => {
-  return (
-    <PageHeaderContainer
-      logo={
-        <Link href='/deposit'>
-          <a>
-            <HeaderLogo />
-          </a>
-        </Link>
-      }
-    >
-      <div className='flex flex-row justify-end items-center space-x-4'>
-        <NetworkWarning />
-        <FullWalletConnectionButtonWrapper />
-        <Settings />
-      </div>
-    </PageHeaderContainer>
-  )
-}
+export const PageHeader = (props) => (
+  <PageHeaderContainer
+    logo={
+      <Link href='/deposit'>
+        <a>
+          <HeaderLogo />
+        </a>
+      </Link>
+    }
+  >
+    <div className='flex flex-row justify-end items-center space-x-4'>
+      <NetworkWarning />
+      <FullWalletConnectionButtonWrapper />
+      <Settings />
+    </div>
+  </PageHeaderContainer>
+)
 
 const Settings = () => {
   const { t } = useTranslation()
@@ -143,7 +142,10 @@ const NetworkWarning = () => {
           )}
         </p>
         {CHAIN_IDS_TO_BLOCK.map((chainId) => (
-          <div className='flex space-x-2 items-center mx-auto w-full justify-center'>
+          <div
+            key={`chain-to-block-${chainId}`}
+            className='flex space-x-2 items-center mx-auto w-full justify-center'
+          >
             <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
             <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
           </div>

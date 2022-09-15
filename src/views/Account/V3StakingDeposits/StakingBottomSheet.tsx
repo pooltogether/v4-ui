@@ -1,15 +1,14 @@
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
+import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
+import { SquareButtonTheme } from '@pooltogether/react-components'
+import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ContractLink, SquareButtonTheme } from '@pooltogether/react-components'
-import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
 import { TokenFaucetClaimView } from '../V3Deposits/TokenFaucetClaimView'
-import { V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
-import { BalanceBottomSheet } from '@components/BalanceBottomSheet'
 
 interface StakingBalanceBottomSheetProps {
   chainId: number
@@ -25,7 +24,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const { t } = useTranslation()
 
   const prizePool = balances.prizePool
-  const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   const [depositTxId, setDepositTxId] = useState('')
@@ -132,7 +130,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
 
   return (
     <BalanceBottomSheet
-      t={t}
       views={views}
       title={`${t('manage')}: ${prizePool.tokens.token.symbol}`}
       contractLinks={contractLinks}
@@ -146,7 +143,6 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       }
       className='space-y-4'
       isWalletOnProperNetwork={isWalletOnProperNetwork}
-      isWalletMetaMask={isWalletMetaMask}
       chainId={chainId}
       ticket={ticket}
       token={token}

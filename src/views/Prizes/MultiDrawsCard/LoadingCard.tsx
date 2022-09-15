@@ -1,5 +1,6 @@
 import { Card, ThemedClipSpinner } from '@pooltogether/react-components'
 import classNames from 'classnames'
+
 import { PrizePictureBackgroud } from './PrizeVideoBackground'
 
 export const LoadingCard: React.FC<{ className?: string }> = (props) => (

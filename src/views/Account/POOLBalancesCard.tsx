@@ -1,20 +1,20 @@
-import React, { useMemo } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
-import { TokenIconWithNetwork, TokenIcon, PoolIcon } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
+import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
-import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { VotingPromptCard } from '@components/VotingPromptCard'
-import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 import { getExchangeUrl } from '@constants/config'
 import { POOL_TOKEN } from '@constants/misc'
+import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
+import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
+import { TokenIconWithNetwork, TokenIcon, PoolIcon } from '@pooltogether/react-components'
 import {
   CHAIN_ID,
   formatBlockExplorerAddressUrl,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
+import FeatherIcon from 'feather-icons-react'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

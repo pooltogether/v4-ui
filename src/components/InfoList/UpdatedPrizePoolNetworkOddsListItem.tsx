@@ -1,12 +1,13 @@
+import { EstimateAction } from '@constants/odds'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { Amount } from '@pooltogether/hooks'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { EstimateAction } from '@constants/odds'
 import { InfoListItem } from '.'
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { PrizePool } from '@pooltogether/v4-client-js'
+
 
 export const UpdatedPrizePoolNetworkOddsListItem = (props: {
   prizePool: PrizePool

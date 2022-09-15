@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
 import classnames from 'classnames'
-
 import classNames from 'classnames'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const VIDEO_VERSION = 'v002'
 
@@ -240,12 +239,14 @@ const VideoWrapper = React.forwardRef<
 
   useEffect(() => {
     if (videoClip === VideoClip.rest && videoState === VideoState.loop) {
-      const promise = ref.current.play()
-      if (promise !== undefined) {
-        promise.catch((e) => {
-          console.error(e)
-          setIsVideoAllowed(false)
-        })
+      if (typeof ref !== 'function' && !!ref.current) {
+        const promise = ref.current.play()
+        if (promise !== undefined) {
+          promise.catch((e) => {
+            console.error(e)
+            setIsVideoAllowed(false)
+          })
+        }
       }
     }
   }, [])
@@ -271,6 +272,7 @@ const VideoWrapper = React.forwardRef<
     </video>
   )
 })
+VideoWrapper.displayName = 'VideoWrapper'
 
 export const PrizePictureBackgroud: React.FC<{
   videoClip?: VideoClip
@@ -283,11 +285,15 @@ export const PrizePictureBackgroud: React.FC<{
 
   useEffect(() => {
     onTargetReached?.()
-  }, [videoClip])
+  }, [onTargetReached, videoClip])
 
   return (
     <div className={classnames(className, 'h-full w-full relative')}>
-      <img src={getImageSource(videoClip)} className={'absolute inset-0'} />
+      <img
+        alt='Video of a treasure chest'
+        src={getImageSource(videoClip)}
+        className={'absolute inset-0'}
+      />
     </div>
   )
 }

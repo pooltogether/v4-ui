@@ -1,30 +1,30 @@
-import React from 'react'
-import classnames from 'classnames'
-import { SquareButton, SquareButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
-import { Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { parseUnits } from '@ethersproject/units'
-import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { Transaction } from '@pooltogether/wallet-connection'
-
-import { TextInputGroup } from '@components/Input/TextInputGroup'
-import { RectangularInput } from '@components/Input/TextInputs'
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
-import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
-import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { TxButton } from '@components/Input/TxButton'
 import { InfoListHeader, InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
-import { getAmountFromString } from '@utils/getAmountFromString'
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { WithdrawalSteps } from './WithdrawView'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { EstimateAction } from '@constants/odds'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
+import { TextInputGroup } from '@components/Input/TextInputGroup'
+import { RectangularInput } from '@components/Input/TextInputs'
+import { TxButton } from '@components/Input/TxButton'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { EstimateAction } from '@constants/odds'
+import { parseUnits } from '@ethersproject/units'
+import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { Amount, TokenWithBalance } from '@pooltogether/hooks'
+import { SquareButton, SquareButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Transaction } from '@pooltogether/wallet-connection'
+import { getAmountFromString } from '@utils/getAmountFromString'
+import classnames from 'classnames'
+import { ethers } from 'ethers'
+import React from 'react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
+import { WithdrawalSteps } from './WithdrawView'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -131,7 +131,14 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <SquaredTokenAmountContainer chainId={chainId} amount={amount} token={token} />
 
-      <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
+      <ErrorsBox
+        errors={
+          isDirty && !!errors
+            ? Object.values(errors).map((e) => (typeof e.message === 'string' ? e.message : null))
+            : null
+        }
+        className='opacity-75'
+      />
 
       <WithdrawWarning className='mt-2' />
 

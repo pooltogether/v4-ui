@@ -1,10 +1,10 @@
-import React from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
+import { getBridgeUrls } from '@constants/config'
 import { Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { getBridgeUrls } from '@constants/config'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import FeatherIcon from 'feather-icons-react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface BridgeTokensModalProps extends Omit<ModalProps, 'children'> {
   chainId: number

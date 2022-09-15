@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
-import classNames from 'classnames'
-import { Amount } from '@pooltogether/hooks'
 
 import { EstimateAction } from '@constants/odds'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
+import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import React, { useMemo } from 'react'
 
 export const UpdatedPrizePoolOddsListItemBar: React.FC<{
   prizePool: PrizePool

@@ -1,11 +1,11 @@
 import { BigNumber } from 'ethers'
 import { useQueries } from 'react-query'
+
 import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { useAllPrizePoolTotalNumberOfPrizes } from './useAllPrizePoolTotalNumberOfPrizes'
 import { getPrizePoolOddsData, getPrizePoolOddsDataKey } from './usePrizePoolOddsData'
-
 import { usePrizePools } from './usePrizePools'
 
 export const useAllPrizePoolOddsData = (

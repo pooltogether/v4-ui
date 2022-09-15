@@ -1,15 +1,4 @@
-import React, { useMemo, useState } from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import { Amount, Token } from '@pooltogether/hooks'
-import {
-  getNetworkNiceNameByChainId,
-  numberWithCommas,
-  getMaxPrecision,
-  addTicketTokenToMetamask
-} from '@pooltogether/utilities'
-import { toast } from 'react-toastify'
-import { useTranslation } from 'react-i18next'
 import {
   BottomSheet,
   CountUp,
@@ -20,7 +9,18 @@ import {
   TokenIcon,
   Tooltip
 } from '@pooltogether/react-components'
-import { BlockExplorerLink } from '@pooltogether/wallet-connection'
+import {
+  getNetworkNiceNameByChainId,
+  numberWithCommas,
+  getMaxPrecision,
+  addUsdcTicketTokenToMetaMask
+} from '@pooltogether/utilities'
+import { BlockExplorerLink, useIsWalletMetamask } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 enum DefaultViews {
   main = 'main',
@@ -55,7 +55,7 @@ export const BalanceBottomSheet = (props: BalanceBottomSheetProps) => {
 
   const View = useMemo(
     () => getView(selectedView, props.views, props.moreInfoViews),
-    [selectedView]
+    [props.moreInfoViews, props.views, selectedView]
   )
 
   return (
@@ -240,7 +240,6 @@ interface MoreInfoViewProps {
   delegate?: string
   sendRevokeAllowanceTransaction?: () => Promise<string>
   isWalletOnProperNetwork: boolean
-  isWalletMetaMask: boolean
 }
 
 const MoreInfoView = (
@@ -257,10 +256,11 @@ const MoreInfoView = (
     token,
     moreInfoViews,
     contractLinks,
-    isWalletOnProperNetwork,
-    isWalletMetaMask
+    isWalletOnProperNetwork
   } = props
   const { t } = useTranslation()
+
+  const isWalletMetaMask = useIsWalletMetamask()
 
   const handleAddTicketToMetaMask = async () => {
     if (!ticket) {
@@ -277,8 +277,7 @@ const MoreInfoView = (
       return null
     }
 
-    // TODO: addTicketTokenToMetamask
-    return addTicketTokenToMetamask(ticket)
+    return addUsdcTicketTokenToMetaMask(ticket)
   }
 
   return (

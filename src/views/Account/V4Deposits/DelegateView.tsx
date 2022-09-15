@@ -1,3 +1,9 @@
+import { InfoList } from '@components/InfoList'
+import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
+import { TxButton } from '@components/Input/TxButton'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 import {
   ModalTitle,
   SquareButton,
@@ -6,12 +12,7 @@ import {
   Collapse,
   SquareLink
 } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
-import classNames from 'classnames'
-import { ethers } from 'ethers'
-import { useState } from 'react'
-import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import {
   useUsersAddress,
@@ -20,16 +21,15 @@ import {
   TransactionStatus,
   BlockExplorerLink
 } from '@pooltogether/wallet-connection'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
-
-import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
-import { DepositItemsProps } from '.'
-import { useSendTransaction } from '@hooks/useSendTransaction'
-import { InfoList } from '@components/InfoList'
-import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { TxButton } from '@components/Input/TxButton'
-import { useGetUser } from '@hooks/v4/User/useGetUser'
+import classNames from 'classnames'
+import { ethers } from 'ethers'
+import FeatherIcon from 'feather-icons-react'
+import { useState } from 'react'
+import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
+
+import { DepositItemsProps } from '.'
 
 const DELEGATE_ADDRESS_KEY = 'delegate'
 
@@ -270,7 +270,7 @@ export const DelegateForm = (props: DelegateFormProps) => {
         autoComplete='off'
       />
       <div className='h-8 text-pt-red text-center'>
-        <span>{errorMessage}</span>
+        <span>{typeof errorMessage === 'string' && errorMessage}</span>
       </div>
       <TxButton
         chainId={prizePool.chainId}

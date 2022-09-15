@@ -1,5 +1,6 @@
-import { PrizePoolDepositList } from '.'
 import { loopXTimes } from '@utils/loopXTimes'
+
+import { PrizePoolDepositList } from '.'
 
 export const LoadingList = (props: {
   listItems: number

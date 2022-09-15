@@ -1,8 +1,7 @@
-import { Token } from '@pooltogether/hooks'
-
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { getAmountFromString } from '@utils/getAmountFromString'
+import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { getAmountFromString } from '@utils/getAmountFromString'
 
 /**
  * @param prizePool

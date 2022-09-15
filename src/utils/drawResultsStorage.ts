@@ -6,19 +6,22 @@ import { atomWithStorage } from 'jotai/utils'
  * Draw ids the user doesn't want to claim
  */
 const DRAW_IDS_TO_NOT_CLAIM_KEY = 'draw_ids_to_not_claim'
-export const drawIdsToNotClaimAtom = atomWithStorage<Set<number>>(
-  DRAW_IDS_TO_NOT_CLAIM_KEY,
-  new Set<number>(),
-  {
-    getItem: (key: string) => {
+export const drawIdsToNotClaimAtom = atomWithStorage(DRAW_IDS_TO_NOT_CLAIM_KEY, new Set<number>(), {
+  getItem: (key: string) => {
+    if (typeof window !== 'undefined') {
       const item = localStorage.getItem(key)
       return item ? new Set(item.split(',').map(Number)) : new Set<number>()
-    },
-    setItem: async (key: string, value: Set<number>) => {
-      localStorage.setItem(key, Array.from(value).join(','))
+    } else {
+      return undefined
     }
+  },
+  setItem: async (key: string, value: Set<number>) => {
+    localStorage.setItem(key, Array.from(value).join(','))
+  },
+  removeItem: (key: string) => {
+    localStorage.removeItem(key)
   }
-)
+})
 
 export interface StoredDrawResults {
   [usersAddress: string]: {
@@ -37,11 +40,18 @@ export const drawResultsAtom = atomWithStorage<StoredDrawResults>(
   {},
   {
     getItem: (key: string) => {
-      const item = localStorage.getItem(key)
-      return item ? deserializeBigNumbers(JSON.parse(item)) : {}
+      if (typeof window !== 'undefined') {
+        const item = localStorage.getItem(key)
+        return item ? deserializeBigNumbers(JSON.parse(item)) : {}
+      } else {
+        return undefined
+      }
     },
     setItem: async (key: string, value: StoredDrawResults) => {
       localStorage.setItem(key, JSON.stringify(value))
+    },
+    removeItem: (key: string) => {
+      localStorage.removeItem(key)
     }
   }
 )

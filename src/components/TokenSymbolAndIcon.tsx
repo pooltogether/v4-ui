@@ -1,7 +1,7 @@
-import React from 'react'
-import classNames from 'classnames'
 import { Token } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
+import classNames from 'classnames'
+import React from 'react'
 
 interface TokenSymbolAndIconProps {
   token: Token

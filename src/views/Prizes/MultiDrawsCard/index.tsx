@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import axios from 'axios'
+import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
+import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
+import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { Token } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   Card,
   SquareLink,
   SquareButton,
@@ -11,29 +12,28 @@ import {
   ThemedClipSpinner
 } from '@pooltogether/react-components'
 import { PrizeDistributor, DrawResults, PrizePool } from '@pooltogether/v4-client-js'
-import { useTranslation } from 'react-i18next'
-
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import {
+  formatBlockExplorerTxUrl,
   Transaction,
   TransactionState,
   TransactionStatus,
   useTransaction,
   useUsersAddress
 } from '@pooltogether/wallet-connection'
-import { PrizeClaimSheet } from './PrizeClaimSheet'
-import { DrawData } from '../../../interfaces/v4'
-import { LockedDrawsCard } from './LockedDrawsCard'
-import { LoadingCard } from './LoadingCard'
-import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
-import { MultipleDrawDetails } from './MultipleDrawDetails'
 import { drawIdsToNotClaimAtom, drawResultsAtom } from '@utils/drawResultsStorage'
-import { useAtom } from 'jotai'
-import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
-import { useUsersUnclaimedWinningDrawResults } from '@hooks/v4/PrizeDistributor/useUnclaimedWInningDrawResults'
 import { getUsersDrawResults } from '@utils/getUsersDrawResults'
-import { VideoClip } from './PrizeVideoBackground'
+import axios from 'axios'
+import { useAtom } from 'jotai'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { DrawData } from '../../../interfaces/v4'
+import { LoadingCard } from './LoadingCard'
+import { LockedDrawsCard } from './LockedDrawsCard'
+import { MultipleDrawDetails } from './MultipleDrawDetails'
 import { PrizeAnimationCard } from './PrizeAnimationCard'
+import { PrizeClaimSheet } from './PrizeClaimSheet'
+import { VideoClip } from './PrizeVideoBackground'
 
 interface MultiDrawsCardProps {
   prizeDistributor: PrizeDistributor
@@ -151,7 +151,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
         setTargetVideoClip(VideoClip.noPrize)
       }
     }
-  }, [checkedState])
+  }, [checkedState, didUserWinAPrize])
 
   const onTargetReached = useCallback(() => {
     console.log('onTargetReached', targetVideoClip)

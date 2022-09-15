@@ -1,7 +1,8 @@
-import { useTranslation } from 'react-i18next'
-import { InfoListItem } from '.'
 import { usePrizePoolNetworkApr } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkApr'
 import { getMinPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { useTranslation } from 'react-i18next'
+
+import { InfoListItem } from '.'
 
 /**
  *

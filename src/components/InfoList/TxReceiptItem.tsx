@@ -1,7 +1,7 @@
+import { shorten } from '@pooltogether/utilities'
+import { Transaction, BlockExplorerLink } from '@pooltogether/wallet-connection'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Transaction, BlockExplorerLink } from '@pooltogether/wallet-connection'
-import { shorten } from '@pooltogether/utilities'
 
 import { InfoListItem } from '.'
 

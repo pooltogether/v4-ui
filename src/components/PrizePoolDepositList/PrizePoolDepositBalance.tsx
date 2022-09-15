@@ -1,7 +1,7 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import FeatherIcon from 'feather-icons-react'
 import { TokenIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 
 interface PrizePoolDepositBalanceProps {
   chainId: number

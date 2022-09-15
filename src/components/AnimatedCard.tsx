@@ -1,6 +1,6 @@
+import { useTheme } from '@hooks/useTheme'
 import { Card, CardProps } from '@pooltogether/react-components'
 import classNames from 'classnames'
-import { useTheme } from '@hooks/useTheme'
 import React from 'react'
 
 enum BorderGradient {

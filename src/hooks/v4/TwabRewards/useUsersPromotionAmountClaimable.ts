@@ -1,11 +1,10 @@
-import { useQuery } from 'react-query'
-import { BigNumber } from 'ethers'
 import { formatUnits } from '@ethersproject/units'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
 import { getRefetchInterval } from '@pooltogether/hooks'
-
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
+import { BigNumber } from 'ethers'
+import { useQuery } from 'react-query'
 
 interface UsersPromotionData {
   rewardsAmount: Array<string>

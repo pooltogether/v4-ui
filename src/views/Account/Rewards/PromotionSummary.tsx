@@ -1,15 +1,15 @@
-import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
+import { SECONDS_PER_DAY } from '@constants/misc'
+import { useToken } from '@pooltogether/hooks'
+import { TokenIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltogether/utilities'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
+import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
 import { useTranslation } from 'react-i18next'
-import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltogether/utilities'
-import { useToken } from '@pooltogether/hooks'
-import { TokenIcon } from '@pooltogether/react-components'
 import { Trans } from 'react-i18next'
-import { SECONDS_PER_DAY } from '@constants/misc'
-import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 interface PromotionSummaryProps {
   chainId: number
@@ -95,7 +95,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
           <a
             href={`https://app.optimism.io/bridge`}
             target='_blank'
-            className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
+            className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100' rel="noreferrer"
           >
             {t('bridge')}{' '}
             <FeatherIcon

@@ -1,13 +1,5 @@
-import { Provider as JotaiProvider } from 'jotai'
-import * as Fathom from 'fathom-client'
-import { createClient, WagmiConfig } from 'wagmi'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
-import { useTranslation } from 'react-i18next'
+import { RPC_URLS } from '@constants/config'
+import { useInitialLoad } from '@hooks/useInitialLoad'
 import {
   LoadingScreen,
   ThemeContext,
@@ -15,16 +7,25 @@ import {
   useScreenSize,
   ScreenSize
 } from '@pooltogether/react-components'
-import { CustomErrorBoundary } from './CustomErrorBoundary'
 import { CHAIN_ID, getReadProvider, initRpcUrls } from '@pooltogether/wallet-connection'
-import '../utils/services/i18n'
-import { ToastContainer, ToastContainerProps } from 'react-toastify'
-import { useContext, useEffect } from 'react'
 import { getSupportedChains } from '@utils/getSupportedChains'
-import { AppProps } from 'next/app'
-import { useInitialLoad } from '@hooks/useInitialLoad'
 import { initSentry } from '@utils/services/initSentry'
-import { RPC_URLS } from '@constants/config'
+import * as Fathom from 'fathom-client'
+import { Provider as JotaiProvider } from 'jotai'
+import { AppProps } from 'next/app'
+import { useContext, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { ToastContainer, ToastContainerProps } from 'react-toastify'
+import { createClient, WagmiConfig } from 'wagmi'
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+
+import { CustomErrorBoundary } from './CustomErrorBoundary'
+import '../utils/services/i18n'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient({

@@ -1,6 +1,7 @@
 import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
 import { getNumberOfPrizes } from '@utils/getNumberOfPrizes'
 import { useQuery } from 'react-query'
+
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 

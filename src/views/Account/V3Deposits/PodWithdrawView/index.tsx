@@ -1,24 +1,25 @@
+import PodAbi from '@abis/V3_Pod'
+import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
+import { parseUnits } from '@ethersproject/units'
+import { usePodExitFee } from '@hooks/v3/usePodExitFee'
 import { Amount } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
 import { numberWithCommas } from '@pooltogether/utilities'
-import { parseUnits } from '@ethersproject/units'
-
-import PodAbi from '@abis/V3_Pod'
-import { DepositItemsProps } from '..'
-import { WithdrawStepContent } from './WithdrawStepContent'
-import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
 import {
   useIsWalletOnChainId,
   useSendTransaction,
   useTransaction
 } from '@pooltogether/wallet-connection'
-import { usePodExitFee } from '@hooks/v3/usePodExitFee'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { Contract } from 'ethers'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useSigner } from 'wagmi'
+
+import { DepositItemsProps } from '..'
+import { WithdrawStepContent } from './WithdrawStepContent'
+
 
 export enum WithdrawalSteps {
   input,

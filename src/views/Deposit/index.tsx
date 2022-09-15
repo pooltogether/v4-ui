@@ -1,10 +1,11 @@
-import React from 'react'
 
-import { DepositCard } from '@views/Deposit/DepositCard'
 import { PagePadding } from '@components/Layout/PagePadding'
-import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
+import { DepositCard } from '@views/Deposit/DepositCard'
+import React from 'react'
+
+import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 
 export const DepositUI = () => {
   return (
