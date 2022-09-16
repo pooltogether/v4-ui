@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import React, { Suspense } from 'react'
 import nextI18NextConfig from '../../next-i18next.config.js'
 
-const Layout = dynamic(() => import('@components/Layout'), {
+const Layout = dynamic(() => import('../components/Layout'), {
   suspense: true
 })
 

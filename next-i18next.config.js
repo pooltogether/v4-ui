@@ -3,13 +3,13 @@ const LocizeBackend = require('i18next-locize-backend/cjs')
 const ChainedBackend = require('i18next-chained-backend').default
 const LocalStorageBackend = require('i18next-localstorage-backend').default
 
+const isDev = process.env.NODE_ENV !== 'production'
 const isBrowser = typeof window !== 'undefined'
 
 module.exports = {
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk'],
-    localePath: path.resolve('./public/locales')
+    locales: ['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']
   },
   localePath: path.resolve('./public/locales'),
   backend: {
@@ -22,12 +22,15 @@ module.exports = {
       },
       {
         projectId: process.env.NEXT_PUBLIC_LOCIZE_PROJECT_ID,
-        version: 'latest'
+        version: 'latest',
+        reloadInterval: false
       }
     ],
     backends: isBrowser ? [LocalStorageBackend, LocizeBackend] : []
   },
+  saveMissing: isDev,
   serializeConfig: false,
+  reloadOnPrerender: isDev,
   use: isBrowser ? [ChainedBackend] : [],
   detection: {
     // check if language is cached in cookies, if not check local storage

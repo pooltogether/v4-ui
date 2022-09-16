@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic.js'
 import React, { Suspense } from 'react'
 import nextI18NextConfig from '../../next-i18next.config.js'
 
-const Layout = dynamic(() => import('@components/Layout'), {
+const Layout = dynamic(() => import('../components/Layout'), {
   suspense: true
 })
 
