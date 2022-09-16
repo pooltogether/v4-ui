@@ -7,12 +7,8 @@ import React from 'react'
 import { UpcomingPrizeCard } from './UpcomingPrizeCard'
 
 export const DepositUI = () => {
-  const { t } = useTranslation()
-
   return (
     <PagePadding className='flex flex-col space-y-6'>
-      <span>{t('thisIsATest')}</span>
-      <span>{t('thisIsATestTwo', 'This is a test too')}</span>
       <UpcomingPrizeCard className='mt-4' />
       <DepositCard />
       <VotingPromptCard />
