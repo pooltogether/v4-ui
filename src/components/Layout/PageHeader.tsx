@@ -73,7 +73,7 @@ const LanguagePicker = () => {
   return (
     <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
-        locales={['en', 'es', 'de', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']}
+        locales={['en', 'es', 'de', 'fa', 'fil', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']}
         className='dark:text-white'
         currentLang={i18next.language}
         onValueSet={(newLocale) => {

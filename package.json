@@ -6,19 +6,16 @@
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "next dev",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
     "prebuild": "yarn locize:download",
     "build": "next build",
-    "dist": "yarn build",
     "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "test": "jest",
-    "locize:sync": "locize sync --path ./public/locales",
-    "locize:download": "locize download --path ./public/locales",
     "testcov": "jest --coverage --coverageDirectory=coverage && open ./coverage/index.html",
     "watch": "yarn run test --watch",
-    "config:sentry": "npx @sentry/wizard -i nextjs",
-    "config:locize": ""
+    "locize:download": "locize download --path ./public/locales",
+    "config:sentry": "npx @sentry/wizard -i nextjs"
   },
   "engines": {
     "node": ">=16"
