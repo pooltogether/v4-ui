@@ -1,13 +1,7 @@
 import { RPC_URLS } from '@constants/config'
 import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
 import { useInitCookieOptions } from '@pooltogether/hooks'
-import {
-  LoadingScreen,
-  ThemeContext,
-  ThemeContextProvider,
-  useScreenSize,
-  ScreenSize
-} from '@pooltogether/react-components'
+import { LoadingScreen, useScreenSize, ScreenSize } from '@pooltogether/react-components'
 import {
   CHAIN_ID,
   getReadProvider,
@@ -19,8 +13,9 @@ import { initSentry } from '@utils/services/initSentry'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { useTranslation } from 'next-i18next'
+import { ThemeProvider, useTheme } from 'next-themes'
 import { AppProps } from 'next/app'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
@@ -112,12 +107,12 @@ export const AppContainer: React.FC<AppProps> = (props) => {
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools />
-          <ThemeContextProvider>
+          <ThemeProvider attribute='class'>
             <ThemedToastContainer />
             <CustomErrorBoundary>
               <Content {...props} />
             </CustomErrorBoundary>
-          </ThemeContextProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       </JotaiProvider>
     </WagmiConfig>
@@ -145,7 +140,7 @@ const useInitialLoad = () => {
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
-  const { theme } = useContext(ThemeContext)
+  const { theme } = useTheme()
   const screenSize = useScreenSize()
   return (
     <ToastContainer
@@ -153,7 +148,7 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
       style={{ zIndex: '99999' }}
       position={screenSize > ScreenSize.sm ? 'bottom-right' : 'top-center'}
       autoClose={7000}
-      theme={theme}
+      theme={theme as 'light' | 'dark'}
     />
   )
 }

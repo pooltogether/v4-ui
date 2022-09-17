@@ -2329,10 +2329,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@^1.20.4":
-  version "1.20.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.20.4.tgz#52c19b2803241704dc137df23b425136fb7108d0"
-  integrity sha512-qBWwt4QXpoQel+m5fDDlwx2vfBF1+rDqLnuU2cKEdwI/lBONhYdpCm0T4eX3la6Wp4QBcZRQ+Xj20+eUS4Go5A==
+"@pooltogether/react-components@^1.20.5":
+  version "1.20.5"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.20.5.tgz#455d6fb97a0ac9307987d8498d132884899ce5a6"
+  integrity sha512-xuGiQAIaAKD9VV69hdMug/6dzvqMgRhFtt6lFuxGYoIG8+P5Quh+Z84aaUXfP0qUnudVkvQSarPxPhVdGCDMGQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2342,6 +2342,7 @@
     classnames "^2.2.6"
     deep-equal "^2.0.5"
     js-cookie "^2.2.1"
+    next-themes "^0.2.1"
     react-content-loader "^6.0.3"
     react-copy-to-clipboard "^5.0.3"
     react-countup "^6.1.0"
@@ -9181,13 +9182,6 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
-i18next-browser-languagedetector@^6.1.2:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-6.1.5.tgz#ed8c9319a8d246995d8ec8fccb5bf5f4248d0fb1"
-  integrity sha512-11t7b39oKeZe4uyMxLSPnfw28BCPNLZgUk7zyufex0zKXZ+Bv+JnmJgoB+IfQLZwDt1d71PM8vwBX1NCgliY3g==
-  dependencies:
-    "@babel/runtime" "^7.18.9"
-
 i18next-chained-backend@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/i18next-chained-backend/-/i18next-chained-backend-3.1.0.tgz#b37d2980598deb8ec5656eba0df8fe15d3d62f1f"
@@ -9213,13 +9207,6 @@ i18next-locize-backend@^5.1.3:
   integrity sha512-YQpFe/62TtCnJKXZ/8NlP4MzyUUY8EMLMzERjQWxBwqPALkFfjDl+Lci1pCg9UmCzStkmbCRDZn+wod3CODYiA==
   dependencies:
     cross-fetch "3.1.5"
-
-i18next-node-locize-backend@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/i18next-node-locize-backend/-/i18next-node-locize-backend-3.1.2.tgz#f62c17cdfc819dae3d0a4302b73d08c95e46474e"
-  integrity sha512-G1DrE6xG8BUiVWyeuCIznbNatjqbBgT8hRqYNpGfxgiLVk0iinwrB2NB9UVwf/XuqHLAiDw6Y7+UKbhLmkjOlw==
-  dependencies:
-    request "^2.88.0"
 
 i18next@^21.9.1:
   version "21.9.1"
@@ -11632,6 +11619,11 @@ next-i18next@^12.0.1:
     i18next-fs-backend "^1.1.5"
     react-i18next "^11.18.4"
 
+next-themes@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/next-themes/-/next-themes-0.2.1.tgz#0c9f128e847979daf6c67f70b38e6b6567856e45"
+  integrity sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==
+
 next-tick@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
@@ -13285,7 +13277,7 @@ repeating@^2.0.0:
   dependencies:
     is-finite "^1.0.0"
 
-request@^2.79.0, request@^2.85.0, request@^2.88.0:
+request@^2.79.0, request@^2.85.0:
   version "2.88.2"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.2.tgz#d73c918731cb5a87da047e207234146f664d12b3"
   integrity sha512-MsvtOrfG9ZcrOwAW+Qi+F6HbD0CWXEh9ou77uOb7FM2WPhwT7smM833PzanhJLsgXjN89Ir6V2PczXNnMpwKhw==
