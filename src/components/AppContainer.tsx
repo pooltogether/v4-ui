@@ -19,7 +19,7 @@ import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
-import { createClient, useConnect, WagmiConfig } from 'wagmi'
+import { createClient, useAccount, useConnect, WagmiConfig } from 'wagmi'
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
@@ -133,14 +133,14 @@ const useInitialLoad = () => {
   const { i18n } = useTranslation()
   useUpdateStoredPendingTransactions()
   useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
-  const { status } = useConnect()
+  const { status } = useAccount()
   const queryResults = useAllPrizePoolTokens()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return !!i18n.isInitialized && status !== 'loading' && !!isFetched
+  return !!i18n.isInitialized && status !== 'reconnecting' && !!isFetched && status !== 'connecting'
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
-  const { theme } = useTheme()
+  const { theme, systemTheme } = useTheme()
   const screenSize = useScreenSize()
   return (
     <ToastContainer
@@ -148,7 +148,7 @@ const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
       style={{ zIndex: '99999' }}
       position={screenSize > ScreenSize.sm ? 'bottom-right' : 'top-center'}
       autoClose={7000}
-      theme={theme as 'light' | 'dark'}
+      theme={theme === 'system' ? systemTheme : (theme as 'dark' | 'light')}
     />
   )
 }

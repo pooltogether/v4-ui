@@ -21,16 +21,16 @@ export const useLPTokenUsdValue = (prizePool: V3PrizePool) => {
     [token1Address, token2Address]
   )
 
-  const { data: lPTokenBalances, isFetched: tokenBalancesIsFetched } = useTokenBalances(
+  const { data: lPTokenBalances, isFetched: isTokenBalancesFetched } = useTokenBalances(
     prizePool.chainId,
     lpPrizePoolMetadata.tokens.underlyingToken.address,
     [token1Address, token2Address, lpTokenAddress]
   )
 
-  const isFetched = isTokenPricesFetched && tokenBalancesIsFetched
-  const token1BalanceData = tokenBalancesIsFetched && lPTokenBalances[token1Address]
+  const isFetched = isTokenPricesFetched && isTokenBalancesFetched
+  const token1BalanceData = isTokenBalancesFetched && lPTokenBalances[token1Address]
   const token1ValueUsd = tokenPrices && tokenPrices?.[token1Address]?.usd
-  const token2BalanceData = tokenBalancesIsFetched && lPTokenBalances[token2Address]
+  const token2BalanceData = isTokenBalancesFetched && lPTokenBalances[token2Address]
   const token2ValueUsd = tokenPrices && tokenPrices?.[token2Address]?.usd
 
   const lpTokenValueUsd =
