@@ -136,7 +136,6 @@ const useInitialLoad = () => {
   const { status } = useAccount()
   const queryResults = useAllPrizePoolTokens()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  console.log(status)
   return !!i18n.isInitialized && status !== 'reconnecting' && !!isFetched
 }
 

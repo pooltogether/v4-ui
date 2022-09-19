@@ -35,7 +35,9 @@ To run the local server, run:
 yarn dev
 ```
 
-#### Developer Tools
+## Developer
+
+### Tools
 
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -45,3 +47,24 @@ yarn dev
 
 - Be sure to download latest copy locally. This is done automatically on build.
 - To add strings they must be manually added to Locize. t(key, defaultValue) isn't fully set up for `next-i18next`
+
+### PoolTogether Repos
+
+Some configs are shared across multiple repos. Be sure to update across all if you make changes.
+
+#### Repos
+- v4-ui
+- governance-ui
+- tools-ui
+
+#### Shared
+- /public/fonts
+- /styles/index.css
+- eslintrc.json
+- .gitignore
+- .nvmrc
+- .prettierrc
+- .prettierignore
+- some .envrc
+- tsconfig.json
+- next-i18next.config.js
