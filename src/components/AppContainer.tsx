@@ -136,7 +136,8 @@ const useInitialLoad = () => {
   const { status } = useAccount()
   const queryResults = useAllPrizePoolTokens()
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
-  return !!i18n.isInitialized && status !== 'reconnecting' && !!isFetched && status !== 'connecting'
+  console.log(status)
+  return !!i18n.isInitialized && status !== 'reconnecting' && !!isFetched
 }
 
 const ThemedToastContainer: React.FC<ToastContainerProps> = (props) => {
