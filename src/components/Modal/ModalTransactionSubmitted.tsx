@@ -2,7 +2,6 @@ import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { Transaction } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ModalTransactionSubmittedProps {

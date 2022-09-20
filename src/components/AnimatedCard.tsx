@@ -1,4 +1,3 @@
-import { Card, CardProps } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useTheme } from 'next-themes'
 import React from 'react'
@@ -30,9 +29,15 @@ export const AnimatedBorderCard = (props: AnimatedBorderCardProps) => {
     children,
     ...rest
   } = props
-  const { theme } = useTheme()
+  const { theme, systemTheme } = useTheme()
   const innerBackgroundColor =
-    theme === 'dark' ? innerBackgroundColorDark : innerBackgroundColorLight
+    theme === 'system'
+      ? systemTheme === 'dark'
+        ? innerBackgroundColorDark
+        : innerBackgroundColorLight
+      : theme === 'dark'
+      ? innerBackgroundColorDark
+      : innerBackgroundColorLight
 
   return (
     <div {...rest} className={classNames('p-1', borderGradient, roundedClassName, className)}>

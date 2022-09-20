@@ -859,19 +859,9 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
 
-    let callTransaction: () => Promise<TransactionResponse>
-
-    try {
-      callTransaction = async () =>
-        twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds)
-    } catch (e) {
-      console.error(e)
-      return
-    }
-
     const transactionId = sendTransaction({
       name: `${t('claim')} ${numberWithCommas(claimableAmount.amount)} ${token.symbol}`,
-      callTransaction,
+      callTransaction: twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds),
       callbacks: {
         onConfirmedByUser: () => {
           setReceiptView()
