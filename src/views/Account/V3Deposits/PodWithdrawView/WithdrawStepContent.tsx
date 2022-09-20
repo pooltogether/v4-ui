@@ -193,7 +193,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
         errors={
           isDirty && !!errors
             ? Object.values(errors).map((e) => (typeof e.message === 'string' ? e.message : null))
-            : null
+            : []
         }
         className='opacity-75'
       />
