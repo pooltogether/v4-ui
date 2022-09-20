@@ -1,14 +1,13 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Token } from '@pooltogether/hooks'
-
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { DrawData } from '../../../interfaces/v4'
-import { MultipleDrawsDate } from './MultipleDrawsDate'
-import { ethers } from 'ethers'
-import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
-import classNames from 'classnames'
 import { Draw } from '@pooltogether/v4-client-js'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import classNames from 'classnames'
+import { ethers } from 'ethers'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { DrawData } from '../../../interfaces/v4'
+import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
+import { MultipleDrawsDate } from './MultipleDrawsDate'
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }

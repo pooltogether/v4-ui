@@ -1,12 +1,7 @@
-import {
-  formatBlockExplorerTxUrl,
-  SquareLink,
-  SquareButtonTheme,
-  SquareButtonSize
-} from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
+import { SquareLink, SquareButtonTheme, SquareButtonSize } from '@pooltogether/react-components'
+import { formatBlockExplorerTxUrl, Transaction } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Transaction } from '@pooltogether/wallet-connection'
 
 interface TransactionReceiptButtonProps {
   className?: string

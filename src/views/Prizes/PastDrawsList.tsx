@@ -1,25 +1,24 @@
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
-import { Amount, Token } from '@pooltogether/hooks'
-import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
-import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
-import { useTimeUntil } from '@hooks/useTimeUntil'
-import { CountdownString } from '@components/CountdownString'
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { AmountInPrizes } from '@components/AmountInPrizes'
+import { CountdownString } from '@components/CountdownString'
 import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
-import { getTimestampStringWithTime } from '@utils/getTimestampString'
+import { useTimeUntil } from '@hooks/useTimeUntil'
+import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
+import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
-import { BigNumber } from 'ethers'
 import { useUsersStoredDrawResults } from '@hooks/v4/PrizeDistributor/useUsersStoredDrawResults'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { Amount, Token } from '@pooltogether/hooks'
+import { ThemedClipSpinner, Card, Tooltip } from '@pooltogether/react-components'
+import { Draw, PrizeDistribution, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { getTimestampStringWithTime } from '@utils/getTimestampString'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import classNames from 'classnames'
+import { BigNumber } from 'ethers'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -254,8 +253,8 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
   const messageHeightClassName = 'h-6'
 
   if (drawLockCountdown?.secondsLeft) {
-    const { weeks, days, hours, minutes } = drawLockCountdown
-    const thereIsWeeks = weeks > 0
+    const { days, hours, minutes } = drawLockCountdown
+    const thereIsWeeks = false
     const thereIsDays = thereIsWeeks || days > 0
     const thereIsHours = thereIsDays || hours > 0
     const thereIsMinutes = thereIsHours || minutes > 0
@@ -268,6 +267,7 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
           {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
           {t('unlocksIn', 'unlocks in')}
           <CountdownString
+            weeks={0}
             className='ml-1'
             {...drawLockCountdown}
             hideHours={thereIsWeeks}

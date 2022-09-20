@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-
-import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { Amount } from '@pooltogether/hooks'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
+import { Amount } from '@pooltogether/hooks'
+import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 // TODO: Bottom sheet for this showing breakdown
 export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props) => {

@@ -1,6 +1,5 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
-
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDrawIds } from './useValidDrawIds'
 

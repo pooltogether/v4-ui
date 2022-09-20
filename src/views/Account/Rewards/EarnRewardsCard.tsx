@@ -1,16 +1,16 @@
-import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
-import { BigNumber } from 'ethers'
-import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
-import { useToken, useNetworkHexColor } from '@pooltogether/hooks'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
-
 import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
-import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
+import { useToken } from '@pooltogether/hooks'
+import { ThemedClipSpinner, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { getChainColorByChainId } from '@pooltogether/wallet-connection'
+import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
+import { PromotionSummary } from '@views/Account/Rewards/PromotionSummary'
+import classNames from 'classnames'
+import { BigNumber } from 'ethers'
+import { Trans, useTranslation } from 'next-i18next'
 
 export const EarnRewardsCard = () => {
   const { t } = useTranslation()
@@ -95,7 +95,7 @@ const PromotionCard = (props) => {
   const { promotion, chainId, moreThanOnePromotion } = props
   const { startTimestamp, numberOfEpochs, tokensPerEpoch, epochDuration, token } = promotion
 
-  const backgroundColor = useNetworkHexColor(chainId)
+  const backgroundColor = getChainColorByChainId(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
 
@@ -111,7 +111,7 @@ const PromotionCard = (props) => {
         'xs:w-96 w-64': moreThanOnePromotion,
         'xs:w-full': !moreThanOnePromotion
       })}
-      style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
+      style={{ backgroundColor: backgroundColor, minHeight: 100 }}
     >
       <div className='flex items-center justify-between font-bold'>
         <div className='flex items-center mb-2'>

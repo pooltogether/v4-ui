@@ -1,4 +1,3 @@
-import PrizeWLaurelsPng from '@assets/images/prize-w-laurels@2x.png'
 import { DetailedHTMLProps, ImgHTMLAttributes } from 'react'
 
 export const PrizeWLaurels = (
@@ -13,7 +12,7 @@ export const PrizeWLaurels = (
 }
 
 PrizeWLaurels.defaultProps = {
-  src: PrizeWLaurelsPng,
+  src: '/prize-w-laurels.svg',
   alt: 'Trophy icon',
   width: '88',
   height: '64'

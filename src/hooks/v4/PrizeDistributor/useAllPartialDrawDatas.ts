@@ -1,6 +1,5 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
-
 import { useValidDraws } from './useValidDraws'
 
 /**

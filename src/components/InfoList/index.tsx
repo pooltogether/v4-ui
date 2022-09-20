@@ -1,6 +1,6 @@
 import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 interface InfoListProps
@@ -98,7 +98,7 @@ export const InfoListItem = (props: InfoListItemProps) => {
 }
 
 InfoListItem.defaultProps = {
-  fontSizeClassName: 'text-xxxs xs:text-xs'
+  fontSizeClassName: 'text-xxs xs:text-xs'
 }
 
 interface InfoListHeaderProps {

@@ -1,7 +1,7 @@
 import { useAllProposalsByStatus } from '@pooltogether/hooks'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 export const VotingPromptCard = (props: { className?: string; persist?: boolean }) => {
   const { className, persist } = props
@@ -18,6 +18,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
       className={classNames('hover:opacity-70 transition-opacity block', className)}
       href='https://vote.pooltogether.com/proposals'
       target='_blank'
+      rel='noreferrer'
     >
       <div className='rounded-lg px-8 py-4 xs:py-2 bg-pt-purple-lightest dark:bg-pt-purple dark:bg-opacity-40 flex flex-row-reverse xs:flex-row justify-between'>
         <span

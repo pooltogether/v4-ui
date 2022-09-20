@@ -1,7 +1,7 @@
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { drawResultsAtom } from '@utils/drawResultsStorage'
 import { useAtom } from 'jotai'
 
-import { drawResultsAtom } from '@utils/drawResultsStorage'
 
 export const useUsersStoredDrawResults = (
   usersAddress: string,

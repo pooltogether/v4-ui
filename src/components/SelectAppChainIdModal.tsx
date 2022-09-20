@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useV4ChainIds } from '@hooks/useV4ChainIds'
 import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
+import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -118,7 +117,7 @@ const RewardsLabel = (props) => {
   }
 
   return (
-    <div className='flex items-center uppercase text-xxs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
+    <div className='flex items-center uppercase text-xxs font-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
       <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
     </div>
   )

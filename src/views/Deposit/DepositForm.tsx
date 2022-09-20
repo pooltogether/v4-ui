@@ -1,38 +1,38 @@
-import React, { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { useRouter } from 'next/router'
+import { ConnectWalletButton } from '@components/ConnectWalletButton'
+import { InfoList } from '@components/InfoList'
+import { InfoListItem } from '@components/InfoList'
+import {
+  EstimatedApproveAndDepositGasItem,
+  EstimatedDepositGasItem
+} from '@components/InfoList/EstimatedGasItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolNetworkOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItemBar'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
+import { DepositAmountInput } from '@components/Input/DepositAmountInput'
+import { TxButton } from '@components/Input/TxButton'
+import { EstimateAction } from '@constants/odds'
+import { BigNumber } from '@ethersproject/bignumber'
+import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
+import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
 import {
   useIsWalletConnected,
   Transaction,
   TransactionState,
   useUsersAddress
 } from '@pooltogether/wallet-connection'
-import { BigNumber } from '@ethersproject/bignumber'
-import { InfoList } from '@components/InfoList'
-import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
-import {
-  EstimatedApproveAndDepositGasItem,
-  EstimatedDepositGasItem
-} from '@components/InfoList/EstimatedGasItem'
-import { ConnectWalletButton } from '@components/ConnectWalletButton'
-import { InfoListItem } from '@components/InfoList'
-import { DepositAmountInput } from '@components/Input/DepositAmountInput'
-import { TxButton } from '@components/Input/TxButton'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
-import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
-import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
-import { EstimateAction } from '@constants/odds'
 import classNames from 'classnames'
-import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
-import { UpdatedPrizePoolNetworkOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItemBar'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -88,7 +88,11 @@ export const DepositForm = (props: DepositFormProps) => {
           className='mt-3'
           depositTx={depositTx}
           depositAllowance={depositAllowance}
-          errors={isDirty ? errors : null}
+          errorMessages={
+            isDirty && !!errors
+              ? Object.values(errors).map((e) => (typeof e.message === 'string' ? e.message : null))
+              : null
+          }
           labelClassName='text-accent-1'
           valueClassName='text-inverse'
           amountToDeposit={amountToDeposit}
@@ -162,7 +166,7 @@ export const DepositInfoBox: React.FC<{
   depositAllowance?: BigNumber
   labelClassName?: string
   valueClassName?: string
-  errors?: { [x: string]: { message: string } }
+  errorMessages?: string[]
 }> = (props) => {
   const {
     prizePool,
@@ -173,21 +177,17 @@ export const DepositInfoBox: React.FC<{
     valueClassName,
     labelClassName,
     depositTx,
-    errors
+    errorMessages
   } = props
 
   const [isAdvanced, setIsAdvanced] = useState(false)
 
   const { t } = useTranslation()
-  const errorMessages = errors ? Object.values(errors) : null
   const isError =
-    errorMessages &&
-    errorMessages.length > 0 &&
-    errorMessages[0].message !== '' &&
-    depositTx?.state !== TransactionState.pending
-  const messages = errorMessages?.map((error) => (
-    <span key={error.message} className='text-pt-red-light'>
-      {error.message}
+    errorMessages && errorMessages.length > 0 && depositTx?.state !== TransactionState.pending
+  const messages = errorMessages?.map((message) => (
+    <span key={`err-${message}`} className='text-pt-red-light'>
+      {message}
     </span>
   ))
 

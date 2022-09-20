@@ -1,16 +1,16 @@
-import { batch } from '@pooltogether/etherplex'
-import { useQueries } from 'react-query'
-import { sToMs } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
-
-import { Promotion } from '@interfaces/promotions'
 import { useGraphFilteredPromotions } from '@hooks/v4/TwabRewards/useGraphFilteredPromotions'
 import { useRpcFilteredPromotions } from '@hooks/v4/TwabRewards/useRpcFilteredPromotions'
 import { useSupportedTwabRewardsChainIds } from '@hooks/v4/TwabRewards/useSupportedTwabRewardsChainIds'
+import { Promotion } from '@interfaces/promotions'
+import { batch } from '@pooltogether/etherplex'
+import { sToMs } from '@pooltogether/utilities'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import {
   getTwabRewardsEtherplexContract,
   getTwabRewardsContractAddress
 } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { BigNumber } from 'ethers'
+import { useQueries } from 'react-query'
 
 /**
  * Fetch all chain's promotions that have been allow-listed
@@ -46,7 +46,7 @@ export const useAllChainsFilteredPromotions = () => {
 
 const getAllFilteredPromotionsKey = (chainId: number) => ['getAllFilteredPromotions', chainId]
 
-const getAllFilteredPromotions = async (chainId, graphQueryResults, rpcQueryResults) => {
+const getAllFilteredPromotions = async (chainId: number, graphQueryResults, rpcQueryResults) => {
   let promotions: Array<Promotion> = []
 
   const graphPromotions = graphQueryResults.find((result) => result.data.chainId === chainId).data
@@ -130,9 +130,10 @@ const getEpochCollection = (promotion, maxCompletedEpochId, remainingEpochs) => 
 export const getPromotion = async (chainId: number, promotionId: number) => {
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
-
+  const provider = getReadProvider(chainId)
   const twabRewardsResults = await batch(
     provider,
+    // @ts-ignore
     twabRewardsContract.getCurrentEpochId(promotionId)
   )
 

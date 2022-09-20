@@ -1,14 +1,14 @@
 import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
-import React, { useEffect, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { Modal, ModalProps, ModalTitle, ExternalLink } from '@pooltogether/react-components'
-import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
-import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
-import { DISCORD_INVITE_URL } from '@constants/misc'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
-import classNames from 'classnames'
+import { DISCORD_INVITE_URL } from '@constants/misc'
+import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
+import { Modal, ModalProps, ModalTitle, ExternalLink } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import classNames from 'classnames'
+import { Trans, useTranslation } from 'next-i18next'
+import React, { useEffect, useState } from 'react'
 
 /**
  * Currently just a Coinbase Pay modal but will be extended to include other on ramps in the future.
@@ -41,7 +41,7 @@ export const BuyTokensModal: React.FC<{ chainId: number } & Omit<ModalProps, 'ch
             i18nKey='buyTokensDescription'
             values={{ nativeCurrency }}
             components={{
-              a: <ExternalLink underline href={DISCORD_INVITE_URL} />
+              a: <ExternalLink underline href={DISCORD_INVITE_URL} children={undefined} />
             }}
           />
         </p>

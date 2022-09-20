@@ -1,10 +1,21 @@
-import { useMemo, useState } from 'react'
-import Link from 'next/link'
-import FeatherIcon from 'feather-icons-react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
+import { TxButton } from '@components/Input/TxButton'
+import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
+import { CardTitle } from '@components/Text/CardTitle'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
+import { VAPRTooltip } from '@components/VAPRTooltip'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Trans } from 'react-i18next'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
+import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
+import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
+import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
+import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
+import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
+import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
+import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
+import { Token, Amount, useToken, useTokenBalance } from '@pooltogether/hooks'
 import {
   BottomSheet,
   BottomSheetTitle,
@@ -17,46 +28,34 @@ import {
   SquareButtonSize,
   ExternalLink
 } from '@pooltogether/react-components'
-import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import {
-  useSendTransaction,
-  useUsersAddress,
-  useIsWalletOnChainId,
-  TransactionState,
-  useTransaction,
-  Transaction
-} from '@pooltogether/wallet-connection'
-import {
-  msToS,
   displayPercentage,
   numberWithCommas,
   getNetworkNameAliasByChainId,
   getNetworkNiceNameByChainId,
   sToD
 } from '@pooltogether/utilities'
-import { useSigner } from 'wagmi'
-
-import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
-import { TxButton } from '@components/Input/TxButton'
-import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
-import { CardTitle } from '@components/Text/CardTitle'
-import { TwitterIntentButton } from '@components/TwitterIntentButton'
-import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
-import { VAPRTooltip } from '@components/VAPRTooltip'
-import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
-import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
-import { useUsersPromotionAmountClaimable } from '@hooks/v4/TwabRewards/useUsersPromotionAmountClaimable'
-import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersPromotionAmountEstimate'
-import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
-import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
-import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
-import { loopXTimes } from '@utils/loopXTimes'
+import {
+  useSendTransaction,
+  useUsersAddress,
+  useIsWalletOnChainId,
+  TransactionState,
+  useTransaction,
+  Transaction,
+  getChainColorByChainId
+} from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { capitalizeFirstLetter, transformHexColor } from '@utils/v4/TwabRewards/misc'
-import { useUsersCurrentEpochEstimateAccrued } from '@hooks/v4/TwabRewards/useUsersCurrentEpochEstimateAccrued'
+import { loopXTimes } from '@utils/loopXTimes'
+import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
+import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
+import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
+import { useSigner } from 'wagmi'
 
 enum ClaimModalState {
   'FORM',
@@ -117,13 +116,13 @@ const ChainPromotions = (props) => {
   const { data } = queryResult
   const { chainId, promotions } = data || {}
 
-  const backgroundColor = useNetworkHexColor(chainId)
+  const backgroundColor = getChainColorByChainId(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
 
   return (
     <div
       className='rounded-xl text-white p-4'
-      style={{ backgroundColor: transformHexColor(backgroundColor), minHeight: 100 }}
+      style={{ backgroundColor: backgroundColor, minHeight: 100 }}
     >
       <div className='flex items-center font-bold mb-4'>
         <NetworkIcon
@@ -178,10 +177,14 @@ const PromotionRow = (props) => {
   const { t } = useTranslation()
 
   const [isOpen, setIsOpen] = useState(false)
-
-  const { data: token, isFetched: tokenIsFetched } = useToken(chainId, tokenAddress)
-
   const usersAddress = useUsersAddress()
+
+  const { data: token, isFetched: tokenIsFetched } = useTokenBalance(
+    chainId,
+    usersAddress,
+    tokenAddress
+  )
+
   const prizePool = usePrizePoolByChainId(chainId)
 
   const { data: usersPromotionData, refetch: refetchUsersRewardsAmount } =
@@ -378,7 +381,6 @@ const ClaimModalForm = (props) => {
   const tokenSymbol = symbol
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
-  console.log(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -466,7 +468,7 @@ const ClaimModalForm = (props) => {
       )}
 
       {amount.amountPretty && (
-        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-averta-bold'>
+        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-bold'>
           <span className='opacity-40 uppercase text-xxs '>{t('claimed', 'Claimed')}: </span>
           <span className='flex items-center'>
             <>
@@ -546,7 +548,7 @@ const RewardsEndInBanner = (props) => {
 
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
-            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
+            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-bold'>
               {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
             </a>
           </Link>
@@ -702,7 +704,7 @@ const UnitPanel = (props) => {
   const { label, amount, icon, unit, value, vapr } = props
 
   return (
-    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
+    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 
@@ -741,7 +743,7 @@ const BalanceDisplay = (props) => {
       return null
     }
     return numberWithCommas(Number(claimableAmount.amount) + currentEpochEstimateAccrued)
-  }, [claimableAmount?.amount, currentEpochEstimateAccrued])
+  }, [claimableAmount, currentEpochEstimateAccrued])
 
   if (!claimableAmount && currentEpochEstimateAccrued === null) {
     return <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
@@ -750,7 +752,7 @@ const BalanceDisplay = (props) => {
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-1', {
-        'opacity-50': balance === 0 || !balance
+        'opacity-50': balance === '0' || !balance
       })}
     >
       {balance || 0}
@@ -850,7 +852,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendTransaction = useSendTransaction()
 
   const sendClaimTx = async () => {
-    const epochIds = [...Array(maxCompletedEpochId).keys()].filter(
+    const epochIds = Array.from(Array(maxCompletedEpochId).keys()).filter(
       (completedEpochId) =>
         !usersClaimedPromotionHistory?.epochs.includes(completedEpochId.toString())
     )
@@ -896,7 +898,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       className='mt-2 flex w-full items-center justify-center'
       theme={theme}
     >
-      <span className='font-averta-bold'>
+      <span className='font-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}
       </span>
     </TxButton>

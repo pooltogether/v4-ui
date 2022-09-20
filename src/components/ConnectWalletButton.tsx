@@ -1,7 +1,7 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { SquareButton } from '@pooltogether/react-components'
 import { useConnectWallet } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface ConnectWalletButtonProps {
   className?: string

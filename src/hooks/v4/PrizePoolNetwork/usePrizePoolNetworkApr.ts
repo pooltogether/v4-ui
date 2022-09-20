@@ -1,10 +1,10 @@
-import { useQuery } from 'react-query'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
-import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
-import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
-import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { calculateApr } from '@pooltogether/utilities'
+import { formatUnits, parseUnits } from 'ethers/lib/utils'
+import { useQuery } from 'react-query'
+import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
+import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
 
 /**
  * NOTE: Assumes all networks award the same token.

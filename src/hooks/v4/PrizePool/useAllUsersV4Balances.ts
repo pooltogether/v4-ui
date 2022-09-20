@@ -1,10 +1,10 @@
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
-
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { usePrizePools } from './usePrizePools'
 import {
@@ -12,7 +12,6 @@ import {
   UsersPrizePoolBalances,
   USERS_PRIZE_POOL_BALANCES_QUERY_KEY
 } from './useUsersPrizePoolBalances'
-import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 
 export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()

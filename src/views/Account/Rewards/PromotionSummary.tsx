@@ -1,15 +1,15 @@
-import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
+import { SECONDS_PER_DAY } from '@constants/misc'
+import { useToken } from '@pooltogether/hooks'
+import { TokenIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltogether/utilities'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
-import { useTranslation } from 'react-i18next'
-import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltogether/utilities'
-import { useToken } from '@pooltogether/hooks'
-import { TokenIcon } from '@pooltogether/react-components'
-import { Trans } from 'react-i18next'
-import { SECONDS_PER_DAY } from '@constants/misc'
-import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import { Trans } from 'next-i18next'
+import Link from 'next/link'
 
 interface PromotionSummaryProps {
   chainId: number
@@ -84,11 +84,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
         </div>
       </div>
 
-      <div
-        className={classNames(
-          'flex items-center justify-end w-full font-averta-bold space-x-4 mt-4'
-        )}
-      >
+      <div className={classNames('flex items-center justify-end w-full font-bold space-x-4 mt-4')}>
         <Link href={`/deposit?network=${getNetworkNiceNameByChainId(chainId).toLowerCase()}`}>
           <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
             {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />
@@ -100,6 +96,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             href={`https://app.optimism.io/bridge`}
             target='_blank'
             className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
+            rel='noreferrer'
           >
             {t('bridge')}{' '}
             <FeatherIcon

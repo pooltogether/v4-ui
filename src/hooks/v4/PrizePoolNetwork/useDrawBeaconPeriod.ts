@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { sToMs } from '@pooltogether/utilities'
-
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { usePrizePoolNetwork } from './usePrizePoolNetwork'

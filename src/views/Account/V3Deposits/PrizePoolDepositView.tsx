@@ -1,13 +1,15 @@
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import { TxButton } from '@components/Input/TxButton'
+import { V3DepositAmountInput } from '@components/Input/V3DepositAmountInput'
+import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { MaxUint256 } from '@ethersproject/constants'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
+import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { Amount, TokenWithBalance, useTokenAllowance } from '@pooltogether/hooks'
 import { ModalTitle, SquareButton, SquareButtonTheme } from '@pooltogether/react-components'
-import { useState } from 'react'
-import { BigNumber } from 'ethers'
-import { useForm, UseFormReturn } from 'react-hook-form'
-import { Trans, useTranslation } from 'react-i18next'
-import { MaxUint256 } from '@ethersproject/constants'
-
-import { V3DepositAmountInput } from '@components/Input/V3DepositAmountInput'
-import { useSendTransaction } from '@hooks/useSendTransaction'
 import {
   Transaction,
   TransactionState,
@@ -16,22 +18,19 @@ import {
   useTransaction,
   useUsersAddress
 } from '@pooltogether/wallet-connection'
-import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
-import { buildApproveTx } from '@utils/transactions/buildApproveTx'
+import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
+import { buildApproveTx } from '@utils/transactions/buildApproveTx'
+import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { AccountPageButton } from '@views/Deposit/DepositConfirmationModal'
 import { DepositBottomButton, DepositInfoBox } from '@views/Deposit/DepositForm'
-import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
-import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance'
-import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { ModalNetworkGate } from '@components/Modal/ModalNetworkGate'
-import { V3ModalApproveGate } from '@views/Deposit/V3ModalApproveGate'
-import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { TxButton } from '@components/Input/TxButton'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
+import { V3ModalApproveGate } from '@views/Deposit/V3ModalApproveGate'
+import { BigNumber } from 'ethers'
+import { Trans, useTranslation } from 'next-i18next'
+import { useState } from 'react'
+import { useForm, UseFormReturn } from 'react-hook-form'
 import { useSigner } from 'wagmi'
-import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 
 export const DEPOSIT_QUANTITY_KEY = 'amountToDeposit'
 
@@ -181,15 +180,6 @@ const DepositFormView = (props: DepositFormViewProps) => {
             isTokenBalanceFetched
           />
         </div>
-
-        <DepositInfoBox
-          className='mt-3'
-          bgClassName='bg-body'
-          chainId={chainId}
-          depositTx={depositTx}
-          errors={isDirty ? errors : null}
-          amountToDeposit={amountToDeposit}
-        />
 
         <DepositBottomButton
           className='mt-4 w-full'

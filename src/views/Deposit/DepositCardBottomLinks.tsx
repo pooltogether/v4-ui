@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { SwapTokensModal } from '@components/Modal/SwapTokensModal'
-import { PrizePool } from '@pooltogether/v4-client-js'
 import { BridgeTokensModal } from '@components/Modal/BridgeTokensModal'
 import { BuyTokensModal } from '@components/Modal/BuyTokensModal'
+import { SwapTokensModal } from '@components/Modal/SwapTokensModal'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 export const DepositCardBottomLinks = () => {
   const prizePool = usePrizePoolBySelectedChainId()

@@ -1,8 +1,21 @@
+import { InfoList } from '@components/InfoList'
+import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
+import { TxButton } from '@components/Input/TxButton'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { EstimateAction } from '@constants/odds'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { BlockExplorerLink, ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
-import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
-import { useEffect, useState } from 'react'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
+import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
+import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
+import { DrawData } from '@interfaces/v4'
+import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
+import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import {
   Draw,
   PrizeAwardable,
@@ -10,39 +23,26 @@ import {
   PrizeDistributor,
   PrizePool
 } from '@pooltogether/v4-client-js'
-import { FieldValues, useForm } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
-import { useGetUser } from '@hooks/v4/User/useGetUser'
 import {
   CHAIN_ID,
   Transaction,
   TransactionState,
   TransactionStatus,
   useTransaction,
-  useUsersAddress
+  useUsersAddress,
+  BlockExplorerLink
 } from '@pooltogether/wallet-connection'
-import { useSendTransaction } from '@hooks/useSendTransaction'
-import { ethers } from 'ethers'
-import { InfoList } from '@components/InfoList'
-import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
-import { TxButton } from '@components/Input/TxButton'
-import { useQuery } from 'react-query'
-import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { msToS, numberWithCommas } from '@pooltogether/utilities'
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { EstimateAction } from '@constants/odds'
-import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
-import { useValidDrawIds } from '@hooks/v4/PrizeDistributor/useValidDrawIds'
-import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
-import classNames from 'classnames'
-import { DrawData } from '@interfaces/v4'
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
-import ordinal from 'ordinal'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-
 import { loopXTimes } from '@utils/loopXTimes'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import classNames from 'classnames'
+import { ethers } from 'ethers'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'next-i18next'
+import ordinal from 'ordinal'
+import { useEffect, useState } from 'react'
+import { FieldValues, useForm } from 'react-hook-form'
+import { useQuery } from 'react-query'
 
 const DELEGATE_ADDRESS_KEY = 'delegate_ukraine'
 
@@ -255,7 +255,7 @@ export const DelegateForm = (props: DelegateFormProps) => {
         <BlockExplorerLink shorten chainId={CHAIN_ID.polygon} address={UNCHAIN_ADDRESS} />
       </div>
       <div className='h-8 text-pt-red text-center'>
-        <span>{errorMessage}</span>
+        <span>{typeof errorMessage === 'string' && errorMessage}</span>
       </div>
       <TxButton
         chainId={prizePool.chainId}
@@ -337,12 +337,7 @@ const useBalance = () => {
 }
 
 const OddsOfWinning = () => {
-  const { data, isFetched } = useUsersPrizePoolNetworkOdds(
-    UNCHAIN_ADDRESS,
-    EstimateAction.none,
-    ethers.constants.Zero,
-    1
-  )
+  const { data, isFetched } = useUsersPrizePoolNetworkOdds(UNCHAIN_ADDRESS)
 
   const oneOverOddstring = isFetched
     ? Number(data.oneOverOdds.toFixed(2)) < 1.01

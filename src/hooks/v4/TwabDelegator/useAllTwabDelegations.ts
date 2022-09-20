@@ -1,5 +1,3 @@
-import { RPC_API_KEYS } from '@constants/config'
-
 import {
   Delegation,
   DelegationId,
@@ -57,7 +55,7 @@ const getAllTwabDelegations = async (chainIds: number[], delegator: string) => {
  * @returns
  */
 const getDelegations = async (chainId: number, delegator: string) => {
-  const provider = getReadProvider(chainId, RPC_API_KEYS)
+  const provider = getReadProvider(chainId)
   const twabDelegatorAddress = TWAB_DELEGATOR_ADDRESS[chainId]
   const twabDelegator = new TwabDelegator(chainId, provider, twabDelegatorAddress)
   const delegations = await fetchAllPagesOfDelegations(twabDelegator, delegator)

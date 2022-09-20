@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { PrizeVideoBackground, VideoClip } from './PrizeVideoBackground'
 
 export const PrizeAnimationCard: React.FC<{
+  children: React.ReactNode
   className?: string
   targetVideoClip?: VideoClip
   onTargetReached?: () => void

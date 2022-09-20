@@ -1,6 +1,6 @@
-import React from 'react'
 import classNames from 'classnames'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import React from 'react'
 
 interface PagePaddingProps {
   children?: React.ReactNode

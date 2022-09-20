@@ -1,7 +1,6 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
-
-import { DrawData } from '../../../interfaces/v4'
 import { useQuery } from 'react-query'
+import { DrawData } from '../../../interfaces/v4'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { useValidDraws } from './useValidDraws'
 import { useValidPrizeDistributions } from './useValidPrizeDistributions'

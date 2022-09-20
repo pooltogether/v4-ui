@@ -1,19 +1,18 @@
-import React from 'react'
-import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { Token } from '@pooltogether/hooks'
-import { PrizeTier } from '@pooltogether/v4-client-js'
-
+import { Time } from '@components/Time'
+import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
+import { useTimeUntil } from '@hooks/useTimeUntil'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
-import { useTimeUntil } from '@hooks/useTimeUntil'
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { Time } from '@components/Time'
+import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
+import { Token } from '@pooltogether/hooks'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { PrizeTier } from '@pooltogether/v4-client-js'
 import { calculateTotalNumberOfPrizes } from '@utils/calculateTotalNumberOfPrizes'
+import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import classNames from 'classnames'
+import { Trans, useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const UpcomingPrizeCard = (props: { className?: string }) => {
   const { className } = props
@@ -80,11 +79,11 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   return (
     <h1
       className={classNames(
-        'text-10xl xs:text-13xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
+        'text-12xl xs:text-14xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
         { 'opacity-50': !amount }
       )}
     >
-      $<CountUp countTo={amount} />
+      $<CountUp countTo={amount} decimals={0} />
       {!amount && <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />}
     </h1>
   )

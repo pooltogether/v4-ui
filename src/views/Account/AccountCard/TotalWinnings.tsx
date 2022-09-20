@@ -1,15 +1,14 @@
-import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, TokenIcon, BottomSheet } from '@pooltogether/react-components'
+import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
+import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { Amount, Token } from '@pooltogether/hooks'
+import { ThemedClipSpinner, TokenIcon, BottomSheet } from '@pooltogether/react-components'
 import { Draw } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-
-import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
-import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
 import { getTimestampString } from '@utils/getTimestampString'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 export const TotalWinnings: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

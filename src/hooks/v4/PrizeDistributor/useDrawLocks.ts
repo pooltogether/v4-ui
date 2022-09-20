@@ -1,8 +1,7 @@
-import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { sToMs } from '@pooltogether/utilities'
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 

@@ -1,16 +1,14 @@
-import React, { useMemo } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { Amount } from '@pooltogether/hooks'
-import classNames from 'classnames'
-
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { TotalWinnings } from './TotalWinnings'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import WalletIllustration from '@assets/images/wallet-illustration.png'
-import { unionProbabilities } from '@utils/unionProbabilities'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { Amount } from '@pooltogether/hooks'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { shorten } from '@pooltogether/utilities'
+import { unionProbabilities } from '@utils/unionProbabilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useMemo } from 'react'
+import { TotalWinnings } from './TotalWinnings'
 
 export const AccountCard: React.FC<{
   usersAddress: string
@@ -27,7 +25,7 @@ export const AccountCard: React.FC<{
     >
       <div className='flex justify-between p-4'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
-        <img src={WalletIllustration} style={{ width: '65px', height: '60px' }} />
+        <img src={'/wallet-illustration.png'} style={{ width: '65px', height: '60px' }} />
       </div>
       <div className='flex space-x-2'>
         <DailyOdds usersAddress={usersAddress} />
@@ -56,7 +54,7 @@ const TotalBalance: React.FC<{
         <span className='font-semibold text-xs mr-1'>{shorten({ hash: usersAddress }) + `'s`}</span>
       )}
 
-      <span className='font-semibold uppercase text-xs'>{t('totalBalance', 'Total balance')}</span>
+      <span className='font-semibold uppercase text-xs'>{t('totalBalance')}</span>
       <span className='leading-none flex text-2xl xs:text-4xl font-bold relative'>
         <TotalBalanceAmount
           isFetched={isFullyFetched}

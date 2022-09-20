@@ -1,14 +1,13 @@
-import gql from 'graphql-tag'
-import { BigNumber } from 'ethers'
-import { GraphQLClient } from 'graphql-request'
-import { Token, Amount } from '@pooltogether/hooks'
-import { useQueries, UseQueryOptions } from 'react-query'
-
+import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
-import { getPrizesClaimedSubgraphClient } from '@utils/v4/TwabRewards/getPrizesClaimedSubgraphClient'
+import { Token, Amount } from '@pooltogether/hooks'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import { getPrizesClaimedSubgraphClient } from '@utils/v4/TwabRewards/getPrizesClaimedSubgraphClient'
+import { BigNumber } from 'ethers'
+import { GraphQLClient } from 'graphql-request'
+import gql from 'graphql-tag'
+import { useQueries, UseQueryOptions } from 'react-query'
 
 const getAllUsersClaimedAmountsGraphQueryKey = (chainId: number, usersAddress: string) => [
   'useAllUsersClaimedAmountsGraph',

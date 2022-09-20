@@ -1,7 +1,6 @@
-import { useQuery } from 'react-query'
-
-import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useQuery } from 'react-query'
+import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 
 export const getUpcomingPrizeTierKey = (drawBeaconPeriodDrawId: number, prizePoolId: string) => [
   'useUpcomingPrizeTier',

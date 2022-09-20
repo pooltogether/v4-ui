@@ -1,5 +1,6 @@
 import { DrawData } from '@interfaces/v4'
 import { DrawResults, PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import { CheckedState } from '@views/Prizes/MultiDrawsCard'
 import { getStoredDrawResults, StoredDrawResults, updateDrawResults } from './drawResultsStorage'
 import { FathomEvent, logEvent } from './services/fathom'
@@ -37,10 +38,10 @@ export const getUsersDrawResults = async (
       } catch (e) {
         console.log(e.message)
         drawResults = await PrizeApi.computeDrawResults(
-          prizeDistributor.chainId,
           usersAddress,
           prizeDistributor.address,
-          draw.drawId
+          draw.drawId,
+          getReadProvider(prizeDistributor.chainId)
         )
       }
       newDrawResults[draw.drawId] = drawResults

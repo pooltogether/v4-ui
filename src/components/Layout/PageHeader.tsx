@@ -1,6 +1,4 @@
-import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
-import Link from 'next/link'
+import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import {
   LanguagePickerDropdown,
   PageHeaderContainer,
@@ -11,13 +9,16 @@ import {
   ThemeSettingsItem,
   SocialLinks,
   Modal,
-  NetworkIcon
+  NetworkIcon,
+  HeaderLogo
 } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { TopNavigation } from '@components/Layout/Navigation'
-import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { SUPPORTED_LANGUAGES } from '@constants/languages'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import nextI18NextConfig from '../../../next-i18next.config.js'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
 export enum ContentPaneState {
@@ -26,18 +27,23 @@ export enum ContentPaneState {
   account = 'account'
 }
 
-export const PageHeader = (props) => {
-  return (
-    <PageHeaderContainer Link={Link} as='/deposit' href='/deposit'>
-      <TopNavigation className='absolute mx-auto inset-x-0' />
-      <div className='flex flex-row justify-end items-center space-x-4'>
-        <NetworkWarning />
-        <FullWalletConnectionButtonWrapper />
-        <Settings />
-      </div>
-    </PageHeaderContainer>
-  )
-}
+export const PageHeader = (props) => (
+  <PageHeaderContainer
+    logo={
+      <Link href='/deposit'>
+        <a>
+          <HeaderLogo />
+        </a>
+      </Link>
+    }
+  >
+    <div className='flex flex-row justify-end items-center space-x-4'>
+      <NetworkWarning />
+      <FullWalletConnectionButtonWrapper />
+      <Settings />
+    </div>
+  </PageHeaderContainer>
+)
 
 const Settings = () => {
   const { t } = useTranslation()
@@ -62,16 +68,19 @@ const Settings = () => {
 
 const LanguagePicker = () => {
   const { i18n: i18next, t } = useTranslation()
-  const [currentLang, setCurrentLang] = useState(i18next.language)
+  const router = useRouter()
+
   return (
     <SettingsItem label={t('language')}>
       <LanguagePickerDropdown
-        langs={SUPPORTED_LANGUAGES}
+        locales={['en', 'es', 'de', 'fa', 'fil', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']}
         className='dark:text-white'
-        currentLang={currentLang}
-        changeLang={(newLang) => {
-          setCurrentLang(newLang)
-          i18next.changeLanguage(newLang)
+        currentLang={i18next.language}
+        onValueSet={(newLocale) => {
+          i18next.changeLanguage(newLocale)
+          router.push({ pathname: router.pathname, query: router.query }, router.asPath, {
+            locale: newLocale
+          })
         }}
       />
     </SettingsItem>
@@ -136,7 +145,10 @@ const NetworkWarning = () => {
           )}
         </p>
         {CHAIN_IDS_TO_BLOCK.map((chainId) => (
-          <div className='flex space-x-2 items-center mx-auto w-full justify-center'>
+          <div
+            key={`chain-to-block-${chainId}`}
+            className='flex space-x-2 items-center mx-auto w-full justify-center'
+          >
             <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
             <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
           </div>

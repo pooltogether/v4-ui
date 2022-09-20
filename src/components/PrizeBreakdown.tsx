@@ -1,10 +1,9 @@
-import React from 'react'
-import classnames from 'classnames'
 import { Token } from '@pooltogether/hooks'
 import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
-import { useTranslation } from 'react-i18next'
-
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
+import classnames from 'classnames'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface PrizeBreakdownProps {
   prizeTier: PrizeTier
@@ -57,7 +56,7 @@ const PrizeTableHeader = (
   <div
     {...props}
     className={classnames(
-      'font-inter text-xxs uppercase font-semibold text-inverse mt-8 mb-2 opacity-60 w-full',
+      ' text-xxs uppercase font-semibold text-inverse mt-8 mb-2 opacity-60 w-full',
       props.className
     )}
   />

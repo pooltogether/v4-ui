@@ -1,23 +1,23 @@
-import React from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { Token, Amount } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   SquareLink,
   SquareButton,
   SquareButtonTheme,
   SquareButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import {
+  formatBlockExplorerTxUrl,
+  Transaction,
+  TransactionState,
+  TransactionStatus
+} from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { Transaction, TransactionState, TransactionStatus } from '@pooltogether/wallet-connection'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface ModalDepositGateProps {
   token: Token
@@ -100,6 +100,7 @@ export const ModalDepositGate = (props: ModalDepositGateProps) => {
                     target='_blank'
                     className='underline dark:text-pt-teal transition opacity-60 hover:opacity-100'
                     href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
+                    rel='noreferrer'
                   >
                     {t('howToDeposit', 'How to deposit')}
                   </a>
@@ -168,14 +169,14 @@ const NumberDisplay = (props) => {
     <>
       {props.isChecked ? (
         <div
-          className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-teal rounded-full h-10 w-10'
+          className='absolute inset-0 flex justify-center text-lg font-bold border-2 border-pt-teal rounded-full h-10 w-10'
           style={{ paddingTop: 9 }}
         >
           <FeatherIcon icon='check' className={'relative w-5 h-5'} />
         </div>
       ) : (
         <div
-          className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-10'
+          className='absolute inset-0 flex justify-center text-lg font-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-10'
           style={{ paddingTop: 2 }}
         >
           {props.num}

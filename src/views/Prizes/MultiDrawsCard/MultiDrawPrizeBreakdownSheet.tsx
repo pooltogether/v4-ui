@@ -1,12 +1,11 @@
-import { ModalProps, BottomSheet } from '@pooltogether/react-components'
-import { Token } from '@pooltogether/hooks'
-import React, { useMemo, useState } from 'react'
-
-import { DrawData } from '../../../interfaces/v4'
-import classNames from 'classnames'
-import { Trans, useTranslation } from 'react-i18next'
-import { PrizeBreakdown } from '@components/PrizeBreakdown'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
+import { PrizeBreakdown } from '@components/PrizeBreakdown'
+import { Token } from '@pooltogether/hooks'
+import { ModalProps, BottomSheet } from '@pooltogether/react-components'
+import classNames from 'classnames'
+import { Trans, useTranslation } from 'next-i18next'
+import React, { useMemo, useState } from 'react'
+import { DrawData } from '../../../interfaces/v4'
 
 export const MultiDrawPrizeBreakdownSheet = (
   props: { drawDatas: { [drawId: number]: DrawData }; ticket: Token } & Omit<

@@ -1,12 +1,13 @@
-import { BigNumber, ethers } from 'ethers'
-import { usePrizePoolOddsData } from './usePrizePoolOddsData'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { useUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
-import { useQuery } from 'react-query'
-import { Amount } from '@pooltogether/hooks'
 import { EstimateAction } from '@constants/odds'
+import { Amount } from '@pooltogether/hooks'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import { estimateOddsForAmount } from '@utils/estimateOddsForAmount'
+import { BigNumber, ethers } from 'ethers'
 import { useEffect } from 'react'
+import { useQuery } from 'react-query'
+import { usePrizePoolOddsData } from './usePrizePoolOddsData'
+import { useUsersPrizePoolTwab } from './useUsersPrizePoolTwab'
+
 
 /**
  * Calculates the users overall chances of winning a prize on any network

@@ -1,10 +1,11 @@
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
-import { useSelectedPrizePoolTicket } from './useSelectedPrizePoolTicket'
-import { useAllUsersTicketDelegates } from './useAllUsersTicketDelegates'
-import { useUsersTotalTwab } from './useUsersTotalTwab'
-import { useAllUsersV4Balances } from './useAllUsersV4Balances'
 import { useQuery } from 'react-query'
+import { useAllUsersTicketDelegates } from './useAllUsersTicketDelegates'
+import { useAllUsersV4Balances } from './useAllUsersV4Balances'
+import { useSelectedPrizePoolTicket } from './useSelectedPrizePoolTicket'
+import { useUsersTotalTwab } from './useUsersTotalTwab'
+
 
 /**
  * Aggregates data to calculate the total amount delegated to a user

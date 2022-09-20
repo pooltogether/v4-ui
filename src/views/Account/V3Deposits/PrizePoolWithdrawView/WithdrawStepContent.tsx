@@ -1,3 +1,14 @@
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import { AmountToReceive } from '@components/AmountToReceive'
+import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
+import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
+import { TextInputGroup } from '@components/Input/TextInputGroup'
+import { RectangularInput } from '@components/Input/TextInputs'
+import { TxButton } from '@components/Input/TxButton'
+import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { parseUnits } from '@ethersproject/units'
+import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { Amount, Token } from '@pooltogether/hooks'
 import {
   CheckboxInputGroup,
@@ -6,28 +17,16 @@ import {
   SquareButtonTheme,
   ModalTitle
 } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { Transaction } from '@pooltogether/wallet-connection'
+import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
-import { parseUnits } from '@ethersproject/units'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { useTranslation } from 'react-i18next'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { Transaction } from '@pooltogether/wallet-connection'
-
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
-import { TextInputGroup } from '@components/Input/TextInputGroup'
-import { RectangularInput } from '@components/Input/TextInputs'
-import { TxButton } from '@components/Input/TxButton'
-import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
-import { getAmountFromString } from '@utils/getAmountFromString'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { WithdrawalSteps } from '.'
-import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
-import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
-import { AmountToReceive } from '@components/AmountToReceive'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
 
@@ -173,7 +172,14 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
         token={token}
       />
 
-      <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
+      <ErrorsBox
+        errors={
+          isDirty && !!errors
+            ? Object.values(errors).map((e) => (typeof e.message === 'string' ? e.message : null))
+            : null
+        }
+        className='opacity-75'
+      />
 
       <WithdrawWarning className='mt-2' />
 
@@ -278,7 +284,11 @@ const ExitFeeWarning = (props: {
             {t('withdrawalFeeOfAmount', {
               amount: `${numberWithCommas(exitFee, { decimals: token.decimals })} ${token.symbol}`
             })}{' '}
-            <a href='https://docs.pooltogether.com/protocol/prize-pool/fairness' target='_blank'>
+            <a
+              href='https://docs.pooltogether.com/protocol/prize-pool/fairness'
+              target='_blank'
+              rel='noreferrer'
+            >
               {t('learnMore')}
             </a>
             .
@@ -305,7 +315,7 @@ const WithdrawLabel = (props) => {
   const { symbol } = props
   const { t } = useTranslation()
   return (
-    <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+    <div className=' font-semibold uppercase text-accent-3 opacity-60'>
       {t('withdrawTicker', { ticker: symbol })}
     </div>
   )

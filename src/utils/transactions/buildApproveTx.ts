@@ -1,9 +1,8 @@
-import { Token } from '@pooltogether/hooks'
-import { TransactionResponse } from '@ethersproject/providers'
-import { Signer } from '@ethersproject/abstract-signer'
-import { BigNumber, Contract } from 'ethers'
-
 import Erc20Abi from '@abis/ERC20'
+import { Signer } from '@ethersproject/abstract-signer'
+import { TransactionResponse } from '@ethersproject/providers'
+import { Token } from '@pooltogether/hooks'
+import { BigNumber, Contract } from 'ethers'
 
 /**
  * Builds an ethers Contract and returns the function to approve spending of a token.

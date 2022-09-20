@@ -1,5 +1,4 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
-
 import { useUsersUnclaimedDrawDatas } from './useUsersUnclaimedDrawDatas'
 
 export const useUnclaimedDrawIds = (usersAddress: string, prizeDistributor: PrizeDistributor) => {

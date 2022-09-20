@@ -1,7 +1,6 @@
-import React from 'react'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { DISCORD_INVITE_URL } from '../constants/misc'
 
 export function ErrorPage() {

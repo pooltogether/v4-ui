@@ -1,11 +1,9 @@
-import gql from 'graphql-tag'
-import { GraphQLClient } from 'graphql-request'
-import { useQueries } from 'react-query'
-
-import { sToMs } from '@pooltogether/utilities'
-
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
+import { sToMs } from '@pooltogether/utilities'
 import { getTwabRewardsSubgraphClient } from '@utils/v4/TwabRewards/getTwabRewardsSubgraphClient'
+import { GraphQLClient } from 'graphql-request'
+import gql from 'graphql-tag'
+import { useQueries } from 'react-query'
 
 export const useGraphFilteredPromotions = (chainIds) => {
   return useQueries(

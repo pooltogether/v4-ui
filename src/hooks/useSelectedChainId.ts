@@ -1,11 +1,11 @@
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import { atom, useAtom } from 'jotai'
-import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
-import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS, SUPPORTED_CHAIN_NAMES } from '@constants/config'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie, useIsTestnets } from '@pooltogether/hooks'
 import { getChainIdByAlias, getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import { atom, useAtom } from 'jotai'
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 const parseUrlNetwork = () => {
   const url = new URL(window.location.href)
@@ -50,7 +50,8 @@ const getInitialSelectedChainId = () => {
   return defaultChainId
 }
 
-export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
+export const selectedNetworkAtom = atom<number>(CHAIN_ID.mainnet)
+selectedNetworkAtom.onMount = (setAtom) => setAtom(getInitialSelectedChainId())
 
 export const useSelectedChainId = () => {
   const [chainId, setSelectedChainId] = useAtom(selectedNetworkAtom)
