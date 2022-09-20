@@ -1,4 +1,5 @@
 import { PagePadding } from '@components/Layout/PagePadding'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
 import { DepositCard } from '@views/Deposit/DepositCard'

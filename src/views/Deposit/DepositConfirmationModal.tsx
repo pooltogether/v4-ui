@@ -9,6 +9,7 @@ import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizeP
 import { TxButton } from '@components/Input/TxButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { EstimateAction } from '@constants/odds'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
@@ -162,6 +163,10 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
+        <TwitterIntentButton
+          url='https://app.pooltogether.com'
+          text={`I just deposited $${amountToDeposit.amountPretty} into my @pooltogether_ prize savings account! Join me in saving and winning. %23PoolTogether`}
+        />
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
         <AddTicketToWallet />

@@ -24,7 +24,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
         return tokens?.prizePoolId === prizePool.id()
       })
       return {
-        queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
+        queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool?.id(), usersAddress],
         queryFn: async () => {
           const { data: tokens } = queryResult
           return getUsersPrizePoolBalances(prizePool, usersAddress, tokens)

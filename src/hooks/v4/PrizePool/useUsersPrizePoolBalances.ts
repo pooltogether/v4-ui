@@ -19,7 +19,7 @@ export const useUsersPrizePoolBalances = (usersAddress: string, prizePool: Prize
   const enabled = Boolean(prizePool) && Boolean(usersAddress) && isFetched
 
   return useQuery(
-    [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
+    [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool?.id(), usersAddress],
     async () => getUsersPrizePoolBalances(prizePool, usersAddress, tokens),
     {
       enabled

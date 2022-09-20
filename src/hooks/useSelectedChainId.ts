@@ -50,8 +50,7 @@ const getInitialSelectedChainId = () => {
   return defaultChainId
 }
 
-export const selectedNetworkAtom = atom<number>(CHAIN_ID.mainnet)
-selectedNetworkAtom.onMount = (setAtom) => setAtom(getInitialSelectedChainId())
+export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
 
 export const useSelectedChainId = () => {
   const [chainId, setSelectedChainId] = useAtom(selectedNetworkAtom)

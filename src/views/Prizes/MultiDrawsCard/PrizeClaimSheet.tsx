@@ -187,7 +187,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             url='https://app.pooltogether.com'
             text={`I just claimed $${numberWithCommas(
               claimAmountTwitter
-            )} in winnings from my @pooltogether_ deposit! Join me in saving and winning: `}
+            )} in winnings from my @pooltogether_ deposit! Join me in saving and winning. %23PoolTogether`}
           />
         </BottomSheet>
       )

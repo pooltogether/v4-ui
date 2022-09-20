@@ -226,7 +226,7 @@ export const DepositCard = (props: { className?: string }) => {
       </div>
 
       <DepositConfirmationModal
-        chainId={prizePool.chainId}
+        chainId={prizePool?.chainId}
         isOpen={showConfirmModal}
         closeModal={closeModal}
         label='deposit confirmation modal'
