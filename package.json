@@ -35,6 +35,7 @@
     "typescript": "^4.8.3"
   },
   "dependencies": {
+    "locize-cli": "^7.12.7",
     "@coinbase/cbpay-js": "^1.0.2",
     "@pooltogether/etherplex": "^1.1.4",
     "@pooltogether/hooks": "^1.13.4",
