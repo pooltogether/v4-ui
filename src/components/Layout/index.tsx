@@ -1,4 +1,5 @@
 import { PageHeader } from '@components/Layout/PageHeader'
+import { RewardsBanners } from '@components/RewardsBanners'
 import classNames from 'classnames'
 import React from 'react'
 import { Navigation } from './Navigation'
@@ -15,7 +16,7 @@ const Layout = (props: LayoutProps) => {
     <div className={classNames(className, 'min-h-screen minimal-scrollbar')}>
       <PageHeader />
       <Navigation />
-      {/* TODO: Add this back <RewardsBanners /> */}
+      <RewardsBanners />
       {/* <AlertBanners /> */}
       {children}
     </div>
