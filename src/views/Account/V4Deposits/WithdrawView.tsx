@@ -13,7 +13,7 @@ import axios from 'axios'
 import classNames from 'classnames'
 import { Overrides } from 'ethers'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { DepositItemsProps } from '.'
 import { WithdrawStepContent } from './WithdrawStepContent'
@@ -21,9 +21,9 @@ import { WithdrawStepContent } from './WithdrawStepContent'
 const GOOGLE_SHEETS_WITHDRAW_REASON_API_URL = `https://main--pooltogether-google-sheets.netlify.app/.netlify/functions/google`
 
 export enum WithdrawalSteps {
-  input,
-  review,
-  viewTxReceipt
+  input = 'INPUT',
+  review = 'REVIEW',
+  viewTxReceipt = 'VIEW_TX_RECEIPT'
 }
 
 interface WithdrawViewProps extends DepositItemsProps {
@@ -64,7 +64,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           setCurrentStep(WithdrawalSteps.viewTxReceipt)
           logEvent(FathomEvent.withdrawal)
         },
-        refetch: () => {
+        onSuccess: () => {
           refetchBalances()
           refetchUsersTotalTwab()
         }
@@ -81,9 +81,7 @@ export const WithdrawView = (props: WithdrawViewProps) => {
           chainId={prizePool.chainId}
           title={t('withdrawalSubmitted', 'Withdrawal submitted')}
         />
-
         <ModalTransactionSubmitted className='mt-8' chainId={prizePool.chainId} tx={tx} />
-
         <WithdrawReasonForm />
       </>
     )
@@ -199,7 +197,7 @@ const WithdrawReasonForm = (props) => {
           hidden: !success
         })}
       >
-        <p className='text-sm text-center lg:text-lg my-2 lg:my-8 lg:my-12 text-white w-10/12 lg:w-3/4 m-auto'>
+        <p className='text-sm text-center lg:text-lg my-2 lg:my-8 text-white w-10/12 lg:w-3/4 m-auto'>
           🙂 {t('thanksForTheFeedback')}
         </p>
       </div>

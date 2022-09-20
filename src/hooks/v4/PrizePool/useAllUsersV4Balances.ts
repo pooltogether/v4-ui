@@ -21,7 +21,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
     prizePools.map((prizePool) => {
       const queryResult = queriesResult?.find((queryResult) => {
         const { data: tokens } = queryResult
-        return tokens.prizePoolId === prizePool.id()
+        return tokens?.prizePoolId === prizePool.id()
       })
       return {
         queryKey: [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
@@ -70,7 +70,14 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
         totalValueUsdScaled
       }
     }
-  }, [queryResults])
+  }, [
+    delegationData?.delegations,
+    delegationData?.totalTokenWithUsdBalance.balanceUsdScaled,
+    isDelegationsFetched,
+    isDelegationsFetching,
+    queryResults,
+    refetchDelegations
+  ])
 }
 
 const getTotalValueUsdScaled = (

@@ -27,7 +27,7 @@ import { getAddress } from 'ethers/lib/utils'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSigner } from 'wagmi'
 import { BalanceDelegatedToItem } from './BalanceDelegatedToItem'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
@@ -55,9 +55,11 @@ export const V4Deposits = () => {
 const DepositsList = () => {
   const usersAddress = useUsersAddress()
   const { data, isFetched, refetch } = useAllUsersV4Balances(usersAddress)
+
   if (!isFetched) {
     return <LoadingList />
   }
+
   return (
     <PrizePoolDepositList>
       {data.balances.map((balances) => (
@@ -136,6 +138,46 @@ const DepositItem = (props: DepositItemsProps) => {
     return txId
   }
 
+  const views = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        view: () => (
+          <WithdrawView
+            usersAddress={usersAddress}
+            prizePool={prizePool}
+            balances={balances}
+            setWithdrawTxId={setTxId}
+            onDismiss={onDismiss}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        label: t('withdraw'),
+        theme: SquareButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
+
+  const moreInfoViews = useMemo(
+    () => [
+      {
+        id: 'delegate',
+        view: () => (
+          <DelegateView
+            prizePool={prizePool}
+            balances={balances}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        icon: 'gift',
+        label: t('delegateDeposit', 'Delegate deposit'),
+        theme: SquareButtonTheme.teal
+      }
+    ],
+    []
+  )
+
   return (
     <>
       <PrizePoolDepositListItem
@@ -148,12 +190,14 @@ const DepositItem = (props: DepositItemsProps) => {
         bottom={<DelegateTicketsSection prizePool={prizePool} balance={balances?.ticket} />}
       />
       <BalanceBottomSheet
+        key={'deposit-item-sheet-' + prizePool.id()}
         title={t('depositsOnNetwork', { network: getNetworkNiceNameByChainId(chainId) })}
         open={isOpen}
         label={`Manage deposits for ${prizePool.id()}`}
         onDismiss={onDismiss}
         chainId={chainId}
         delegate={delegate}
+        transactionHash={tx?.receipt?.transactionHash}
         internalLinks={
           <Link href={{ pathname: '/deposit', query: router.query }}>
             <SquareLink
@@ -165,39 +209,9 @@ const DepositItem = (props: DepositItemsProps) => {
             </SquareLink>
           </Link>
         }
-        views={[
-          {
-            id: 'withdraw',
-            view: () => (
-              <WithdrawView
-                usersAddress={usersAddress}
-                prizePool={prizePool}
-                balances={balances}
-                setWithdrawTxId={setTxId}
-                onDismiss={onDismiss}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
-          }
-        ]}
+        views={views}
         sendRevokeAllowanceTransaction={sendRevokeAllowanceTransaction}
-        moreInfoViews={[
-          {
-            id: 'delegate',
-            view: () => (
-              <DelegateView
-                prizePool={prizePool}
-                balances={balances}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            icon: 'gift',
-            label: t('delegateDeposit', 'Delegate deposit'),
-            theme: SquareButtonTheme.teal
-          }
-        ]}
+        moreInfoViews={moreInfoViews}
         ticket={balances.ticket}
         token={balances.token}
         balance={balances.ticket}

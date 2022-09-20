@@ -13,7 +13,7 @@ import { PodWithdrawView } from '@views/Account/V3Deposits/PodWithdrawView'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
@@ -138,6 +138,25 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
     }
   ]
   const onDismiss = () => setIsOpen(false)
+  const views = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        view: () => (
+          <PrizePoolWithdrawView
+            {...props}
+            prizePool={prizePool}
+            onDismiss={onDismiss}
+            setWithdrawTxId={setTxId}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        label: t('withdraw'),
+        theme: SquareButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
 
   return (
     <>
@@ -168,22 +187,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             href: `https://v3.pooltogether.com/account`
           }
         ]}
-        views={[
-          {
-            id: 'withdraw',
-            view: () => (
-              <PrizePoolWithdrawView
-                {...props}
-                prizePool={prizePool}
-                onDismiss={onDismiss}
-                setWithdrawTxId={setTxId}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
-          }
-        ]}
+        views={views}
         transactionHash={tx?.response?.hash}
         ticket={ticket}
         token={token}
@@ -230,6 +234,26 @@ const PodDepositItem = (props: DepositItemsProps) => {
   ]
   const onDismiss = () => setIsOpen(false)
 
+  const views = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        view: () => (
+          <PodWithdrawView
+            {...props}
+            prizePool={prizePool}
+            onDismiss={onDismiss}
+            setWithdrawTxId={setTxId}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        label: t('withdraw'),
+        theme: SquareButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
+
   return (
     <li className='transition bg-white bg-opacity-70 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg '>
       <button
@@ -259,22 +283,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
             href: `https://v3.pooltogether.com/account`
           }
         ]}
-        views={[
-          {
-            id: 'withdraw',
-            view: () => (
-              <PodWithdrawView
-                {...props}
-                prizePool={prizePool}
-                onDismiss={onDismiss}
-                setWithdrawTxId={setTxId}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            label: t('withdraw'),
-            theme: SquareButtonTheme.tealOutline
-          }
-        ]}
+        views={views}
         transactionHash={tx?.response?.hash}
         ticket={ticket}
         token={token}

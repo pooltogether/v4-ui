@@ -54,7 +54,18 @@ export const TxButton = (props: TxButtonProps) => {
     } else {
       return [children, _onClick]
     }
-  }, [chainId, state, status, isWalletOnProperNetwork, _onClick])
+  }, [
+    isWalletConnected,
+    status,
+    isWalletOnProperNetwork,
+    t,
+    connectWallet,
+    networkName,
+    switchNetwork,
+    chainId,
+    children,
+    _onClick
+  ])
 
   return (
     <>

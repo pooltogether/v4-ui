@@ -197,6 +197,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='w-full'
         theme={SquareButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
+        type='button'
         state={tx?.state}
         status={tx?.status}
       >

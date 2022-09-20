@@ -4,7 +4,7 @@ import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { SquareButtonTheme } from '@pooltogether/react-components'
 import { useIsWalletOnChainId, useTransaction } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PrizePoolDepositView } from '../V3Deposits/PrizePoolDepositView'
 import { PrizePoolWithdrawView } from '../V3Deposits/PrizePoolWithdrawView'
 import { TokenFaucetClaimView } from '../V3Deposits/TokenFaucetClaimView'
@@ -82,27 +82,30 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     />
   )
 
-  const views = [
-    {
-      id: 'deposit',
-      view: () => depositView,
-      label: t('deposit'),
-      theme: SquareButtonTheme.teal
-    },
-    {
-      id: 'claim',
-      view: () => claimView,
-      label: t('rewards'),
-      theme: SquareButtonTheme.rainbow
-    },
-    {
-      id: 'withdraw',
-      view: () => withdrawView,
-      disabled: ticket.amountUnformatted.isZero(),
-      label: t('withdraw'),
-      theme: SquareButtonTheme.tealOutline
-    }
-  ]
+  const views = useMemo(
+    () => [
+      {
+        id: 'deposit',
+        view: () => depositView,
+        label: t('deposit'),
+        theme: SquareButtonTheme.teal
+      },
+      {
+        id: 'claim',
+        view: () => claimView,
+        label: t('rewards'),
+        theme: SquareButtonTheme.rainbow
+      },
+      {
+        id: 'withdraw',
+        view: () => withdrawView,
+        disabled: ticket.amountUnformatted.isZero(),
+        label: t('withdraw'),
+        theme: SquareButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
 
   const contractLinks: ContractLink[] = [
     {
