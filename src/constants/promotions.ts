@@ -6,7 +6,7 @@ export const FILTERED_PROMOTION_IDS = {
   [CHAIN_ID.mumbai]: [],
   [CHAIN_ID.goerli]: [],
   [CHAIN_ID.fuji]: [],
-  [CHAIN_ID.optimism]: [5, 6],
+  [CHAIN_ID.optimism]: [5, 6, 7],
   [CHAIN_ID.polygon]: [],
   [CHAIN_ID.mainnet]: [],
   [CHAIN_ID.avalanche]: []
