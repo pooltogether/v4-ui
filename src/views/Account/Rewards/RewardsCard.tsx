@@ -251,7 +251,7 @@ const PromotionRow = (props: {
             }}
             left={
               <div className='flex items-center font-bold'>
-                <img className='w-5 mr-2 hidden xs:block' src='beach-with-umbrella.png' />{' '}
+                <img className='w-5 mr-2 hidden xs:block' src='/beach-with-umbrella.png' />{' '}
                 {token.symbol}{' '}
               </div>
             }
