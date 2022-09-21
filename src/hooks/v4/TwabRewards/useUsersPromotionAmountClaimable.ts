@@ -15,7 +15,7 @@ interface UsersPromotionData {
  */
 export const useUsersPromotionAmountClaimable = (
   chainId: number,
-  promotionId: number,
+  promotionId: string,
   usersPromotionData: UsersPromotionData,
   token: TokenWithAllBalances
 ) => {
@@ -36,7 +36,7 @@ export const useUsersPromotionAmountClaimable = (
 
 const getUsersPromotionAmountClaimableKey = (
   chainId: number,
-  promotionId: number,
+  promotionId: string,
   usersAddress: string,
   tokenAddress: string
 ) => ['getUsersPromotionAmountClaimable', chainId, promotionId, usersAddress, tokenAddress]
@@ -59,7 +59,7 @@ export const getUsersPromotionAmountClaimable = async (
   const claimableFormatted = formatUnits(claimableUnformatted, decimals)
   const amount = getAmountFromString(claimableFormatted, decimals)
 
-  let usd
+  let usd: number
   if (tokenPrices?.[address]) {
     usd = Number(claimableFormatted) * tokenPrices[address].usd
   }

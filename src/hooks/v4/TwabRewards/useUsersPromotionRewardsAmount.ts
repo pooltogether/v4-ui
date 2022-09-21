@@ -51,12 +51,22 @@ export const getUsersPromotionRewardsAmount = async (
       twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
     )
 
-    const rewardsAmount = twabRewardsResults[twabRewardsContractAddress].getRewardsAmount[0]
+    const rewardsAmount: string[] = twabRewardsResults[
+      twabRewardsContractAddress
+    ].getRewardsAmount[0]
       .toString()
       .split(',')
 
-    return { rewardsAmount }
+    const rewardsAndEpochs = rewardsAmount.map((reward, index) => ({
+      reward,
+      epochId: epochIds[index]
+    }))
+
+    return { rewardsAmount, rewardsAndEpochs }
   } catch (e) {
-    return { rewardsAmount: [] }
+    return {
+      rewardsAmount: [] as string[],
+      rewardsAndEpochs: [] as { reward: string; epochId: number }[]
+    }
   }
 }

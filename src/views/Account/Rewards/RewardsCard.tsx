@@ -5,7 +5,6 @@ import { CardTitle } from '@components/Text/CardTitle'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { VAPRTooltip } from '@components/VAPRTooltip'
-import { TransactionResponse } from '@ethersproject/providers'
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
@@ -15,7 +14,7 @@ import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersP
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
 import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
-import { Token, Amount, useToken, useTokenBalance } from '@pooltogether/hooks'
+import { Token, Amount, useToken, useTokenBalance, TokenWithAllBalances } from '@pooltogether/hooks'
 import {
   BottomSheet,
   BottomSheetTitle,
@@ -45,6 +44,7 @@ import {
   getChainColorByChainId
 } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromString } from '@utils/getAmountFromString'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
@@ -55,6 +55,7 @@ import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
+import { UseQueryResult } from 'react-query'
 import { useSigner } from 'wagmi'
 
 enum ClaimModalState {
@@ -96,19 +97,34 @@ export const RewardsCard = () => {
         </div>
       )}
 
-      {promotionsQueryResults.map((queryResult) => {
-        const { data } = queryResult || {}
-        const { chainId } = data || {}
-        if (!data?.promotions || data.promotions.length === 0) {
+      {promotionsQueryResults?.map((queryResult) => {
+        if (
+          !queryResult.isFetched ||
+          !queryResult.data?.promotions ||
+          queryResult.data.promotions.length === 0
+        ) {
           return null
         }
-        return <ChainPromotions key={`chain-promotions-${chainId}`} queryResult={queryResult} />
+        return (
+          <ChainPromotions
+            key={`chain-promotions-${queryResult.data.chainId}`}
+            queryResult={queryResult}
+          />
+        )
       })}
     </div>
   )
 }
 
-const ChainPromotions = (props) => {
+const ChainPromotions = (props: {
+  queryResult: UseQueryResult<
+    {
+      chainId: number
+      promotions: Promotion[]
+    },
+    unknown
+  >
+}) => {
   const { queryResult } = props
 
   const { t } = useTranslation()
@@ -137,7 +153,7 @@ const ChainPromotions = (props) => {
   )
 }
 
-const PromotionsList = (props) => {
+const PromotionsList = (props: { chainId: number; promotions: Promotion[] }) => {
   const { chainId, promotions } = props
 
   const {
@@ -170,7 +186,12 @@ const PromotionsList = (props) => {
   )
 }
 
-const PromotionRow = (props) => {
+const PromotionRow = (props: {
+  promotion: Promotion
+  chainId: number
+  refetchUsersRewardsHistory: () => void
+  usersClaimedPromotionHistory: ClaimedPromotion
+}) => {
   const { promotion, chainId, refetchUsersRewardsHistory } = props
   const { id, maxCompletedEpochId, token: tokenAddress } = promotion
 
@@ -294,7 +315,23 @@ const PromotionRow = (props) => {
   )
 }
 
-const ClaimModal = (props) => {
+const ClaimModal = (props: {
+  promotion: Promotion
+  chainId: number
+  refetchUsersRewardsHistory: () => void
+  usersClaimedPromotionHistory: ClaimedPromotion
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  claimableAmount: Amount
+  claimableUsd: number
+  estimateAmount: Amount
+  token: TokenWithAllBalances
+  refetch: () => void
+  usersPromotionData: {
+    rewardsAmount: string[]
+    rewardsAndEpochs: { reward: string; epochId: number }[]
+  }
+}) => {
   const { isOpen, setIsOpen } = props
 
   const [modalState, setModalState] = useState(ClaimModalState.FORM)
@@ -360,7 +397,26 @@ const ClaimModal = (props) => {
   )
 }
 
-const ClaimModalForm = (props) => {
+const ClaimModalForm = (props: {
+  promotion: Promotion
+  chainId: number
+  refetchUsersRewardsHistory: () => void
+  usersClaimedPromotionHistory: ClaimedPromotion
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  claimableAmount: Amount
+  claimableUsd: number
+  estimateAmount: Amount
+  token: TokenWithAllBalances
+  refetch: () => void
+  usersPromotionData: {
+    rewardsAmount: string[]
+    rewardsAndEpochs: { reward: string; epochId: number }[]
+  }
+  transactionPending: boolean
+  setReceiptView: () => void
+  setTxId: (id: string) => void
+}) => {
   const {
     chainId,
     refetch,
@@ -382,7 +438,7 @@ const ClaimModalForm = (props) => {
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
 
-  const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
+  const amount = getAmountFromString(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
 
@@ -395,7 +451,7 @@ const ClaimModalForm = (props) => {
     <>
       <RewardsEndInBanner {...props} />
 
-      {userNeedsToDeposit ? (
+      {userNeedsToDeposit && !promotion.isComplete && (
         <>
           <div className='flex flex-col xs:mt-4 mb-2'>
             <div className='font-bold text-lg'>
@@ -423,7 +479,9 @@ const ClaimModalForm = (props) => {
             </SquareLink>
           </div>
         </>
-      ) : (
+      )}
+
+      {!userNeedsToDeposit && !promotion.isComplete && (
         <>
           <div className='flex items-center text-lg xs:mt-4 mb-2'>
             <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
@@ -445,7 +503,7 @@ const ClaimModalForm = (props) => {
             {promotion.epochDuration >= seconds ? (
               <UnitPanel
                 label={
-                  promotion.currentEpochId === promotion.numberOfEpochs
+                  Number(promotion.currentEpochId) === promotion.numberOfEpochs
                     ? 'Rewards end in'
                     : t('nextReward', 'Next Reward')
                 }
@@ -583,17 +641,28 @@ const useRewardsEndInSentence = (promotion, token) => {
   return [daysRemaining, rewardsEndInSentence]
 }
 
-interface ClaimModalReceiptProps {
+const ClaimModalReceipt = (props: {
+  promotion: Promotion
   chainId: number
-  token: Token
+  refetchUsersRewardsHistory: () => void
+  usersClaimedPromotionHistory: ClaimedPromotion
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
   claimableAmount: Amount
   claimableUsd: number
+  estimateAmount: Amount
+  token: TokenWithAllBalances
+  refetch: () => void
+  usersPromotionData: {
+    rewardsAmount: string[]
+    rewardsAndEpochs: { reward: string; epochId: number }[]
+  }
   tx: Transaction
   transactionPending: boolean
-}
-
-const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
-  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending } = props
+  onDismiss: () => void
+  setFormView: () => void
+}) => {
+  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending, onDismiss } = props
   const { t } = useTranslation()
 
   const [cachedClaimableUsd] = useState(claimableUsd)
@@ -643,7 +712,7 @@ const ClaimModalReceipt: React.FC<ClaimModalReceiptProps> = (props) => {
         {isOPToken && <OPTokenCTAs />}
 
         <div className='space-y-4'>
-          {!isOPToken && <AccountPageButton {...props} />}
+          {!isOPToken && <AccountPageButton onDismiss={onDismiss} />}
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
@@ -684,7 +753,7 @@ export const DelegateOPButton = (props) => {
   )
 }
 
-export const AccountPageButton = (props) => {
+export const AccountPageButton = (props: { onDismiss: () => void }) => {
   const { onDismiss } = props
   const { t } = useTranslation()
 
@@ -828,7 +897,26 @@ interface SubmitTransactionButtonProps {
 /**
  * @param props
  */
-const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) => {
+const SubmitTransactionButton = (props: {
+  promotion: Promotion
+  chainId: number
+  refetchUsersRewardsHistory: () => void
+  usersClaimedPromotionHistory: ClaimedPromotion
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  claimableAmount: Amount
+  claimableUsd: number
+  estimateAmount: Amount
+  token: TokenWithAllBalances
+  refetch: () => void
+  usersPromotionData: {
+    rewardsAmount: string[]
+    rewardsAndEpochs: { reward: string; epochId: number }[]
+  }
+  transactionPending: boolean
+  setReceiptView: () => void
+  setTxId: (id: string) => void
+}) => {
   const {
     chainId,
     promotion,
@@ -838,7 +926,8 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
     setReceiptView,
     setTxId,
     refetch,
-    usersClaimedPromotionHistory
+    usersClaimedPromotionHistory,
+    usersPromotionData
   } = props
 
   const { id: promotionId, maxCompletedEpochId } = promotion
@@ -854,14 +943,17 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
   const sendClaimTx = async () => {
     const epochIds = Array.from(Array(maxCompletedEpochId).keys()).filter(
       (completedEpochId) =>
-        !usersClaimedPromotionHistory?.epochs.includes(completedEpochId.toString())
+        !usersClaimedPromotionHistory?.epochs.includes(completedEpochId.toString()) &&
+        usersPromotionData.rewardsAndEpochs.find(
+          (rewardAndEpoch) => rewardAndEpoch.epochId === completedEpochId
+        )?.reward !== '0'
     )
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
 
     const transactionId = sendTransaction({
       name: `${t('claim')} ${numberWithCommas(claimableAmount.amount)} ${token.symbol}`,
-      callTransaction: twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds),
+      callTransaction: () => twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds),
       callbacks: {
         onConfirmedByUser: () => {
           setReceiptView()

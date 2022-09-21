@@ -19,6 +19,5 @@ const prizePoolNetworkAtom = atom<PrizePoolNetwork>(initializePrizePoolNetwork()
 
 export const usePrizePoolNetwork = (): PrizePoolNetwork => {
   const [prizePoolNetwork] = useAtom(prizePoolNetworkAtom)
-  console.log(prizePoolNetwork)
   return prizePoolNetwork
 }

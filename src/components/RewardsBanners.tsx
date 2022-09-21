@@ -27,7 +27,7 @@ export const RewardsBanners = () => {
   }
 
   return (
-    <div className='my-8 px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-xl mx-auto rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center'>
+    <div className='mb-6 xs:mb-8 px-4 xs:px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-xl mx-auto xs:rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center'>
       <div className='flex space-x-2 items-center'>
         <TokenIcon
           chainId={CHAIN_ID.optimism}
