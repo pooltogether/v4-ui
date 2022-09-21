@@ -716,9 +716,9 @@ const ClaimModalReceipt = (props: {
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
-            text={`I just claimed $${numberWithCommas(
-              cachedClaimableUsd
-            )} in rewards from my @pooltogether_ deposit! Join me in saving and winning. #PoolTogether`}
+            text={t('rewardsTweet', {
+              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
+            })}
           />
         </div>
       </div>

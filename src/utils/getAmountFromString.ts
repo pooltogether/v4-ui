@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { numberWithCommas, stringWithPrecision } from '@pooltogether/utilities'
+import { numberWithCommas } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 
 const EMPTY_AMOUNT: Amount = {

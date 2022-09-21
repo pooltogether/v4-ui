@@ -6,6 +6,7 @@ import { useToken } from '@pooltogether/hooks'
 import { sToD } from '@pooltogether/utilities'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import { useMemo } from 'react'
+import { usePrizePoolByChainId } from '../PrizePool/usePrizePoolByChainId'
 
 // Calculate the variable annual percentage rate for a promotion
 export const usePromotionVAPR = (promotion: Promotion): number => {
@@ -45,7 +46,8 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
       // Deposit token (typically USDC)
       // Use deposit token decimals and USD value
       const totalValue =
-        Number(formatUnits(totalTwabSupply, depositToken.decimals)) * depositTokenUsd
+        Number(formatUnits(totalTwabSupply.amount.amountUnformatted, depositToken.decimals)) *
+        depositTokenUsd
 
       vapr = (valuePerDay / totalValue) * 365 * 100
     }

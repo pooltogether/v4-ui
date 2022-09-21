@@ -6,21 +6,31 @@ import React from 'react'
 interface TwitterIntentButtonProps {
   text: string
   url: string
+  hashTags?: string[]
+  disabled?: boolean
 }
 
 export const TwitterIntentButton = (props: TwitterIntentButtonProps) => {
-  const { url, text } = props
+  const { url, text, disabled, hashTags } = props
   const { t } = useTranslation()
 
   return (
     <SquareLink
-      href={`http://twitter.com/intent/tweet?text=${text}&url=${url}`}
+      href={`http://twitter.com/intent/tweet?text=${
+        text + ' ' + hashTags?.map((ht) => `%23${ht}`).join(' ')
+      }&url=${url}`}
       target='_blank'
-      className='w-full flex items-center mx-auto mt-4'
+      className={classNames('w-full flex items-center mx-auto mt-4', {
+        'pointer-events-none opacity-70': disabled
+      })}
     >
       <TwitterIconSvg className='w-5 mr-2' /> {t('shareTweet', 'Share Tweet')}
     </SquareLink>
   )
+}
+
+TwitterIntentButton.defaultProps = {
+  hashTags: ['PoolTogether']
 }
 
 export const TwitterIconSvg = (props) => {

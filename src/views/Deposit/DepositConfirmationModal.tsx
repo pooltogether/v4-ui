@@ -12,7 +12,10 @@ import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { EstimateAction } from '@constants/odds'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
+import { useTotalExpectedNumberOfPrizes } from '@hooks/v4/PrizePoolNetwork/useTotalExpectedNumberOfPrizes'
 import { Amount, Token } from '@pooltogether/hooks'
 import {
   ModalProps,
@@ -23,11 +26,10 @@ import {
   ModalTitle,
   BottomSheet
 } from '@pooltogether/react-components'
-import { msToS } from '@pooltogether/utilities'
+import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import {
   Transaction,
-  TransactionState,
   TransactionStatus,
   useIsWalletMetamask,
   useWalletChainId
@@ -163,9 +165,9 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
-        <TwitterIntentButton
-          url='https://app.pooltogether.com'
-          text={`I just deposited $${amountToDeposit.amountPretty} into my @pooltogether_ prize savings account! Join me in saving and winning. %23PoolTogether`}
+        <TweetAboutDeposit
+          amountUnformatted={amountToDeposit.amountUnformatted}
+          prizePool={prizePool}
         />
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
@@ -309,5 +311,34 @@ export const AddTicketToWallet = () => {
         token: ticket.symbol
       })}
     </SquareButton>
+  )
+}
+
+export const TweetAboutDeposit = (props: {
+  amountUnformatted: BigNumber
+  prizePool: PrizePool
+}) => {
+  const { amountUnformatted, prizePool } = props
+  const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
+  const { totalAmountOfPrizes } = useTotalExpectedNumberOfPrizes()
+  const { data: totalSupply, isFetched: isTotalSuppluFetched } =
+    usePrizePoolNetworkTicketTotalSupply()
+  const { t } = useTranslation()
+
+  const isReady = isDecimalsFetched && !!totalAmountOfPrizes && isTotalSuppluFetched
+
+  return (
+    <TwitterIntentButton
+      disabled={!isReady}
+      url='https://app.pooltogether.com'
+      text={t('depositTweet', {
+        amountDeposited: `$${numberWithCommas(amountUnformatted, {
+          decimals,
+          precision: 0
+        })}`,
+        totalAmountDeposited: `$${totalSupply?.totalSupply.amountPretty}`,
+        totalAmountOfPrizes
+      })}
+    />
   )
 }

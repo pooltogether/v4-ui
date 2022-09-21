@@ -1,4 +1,3 @@
-
 import { ConnectWalletCard } from '@components/ConnectWalletCard'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { VotingPromptCard } from '@components/VotingPromptCard'

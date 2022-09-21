@@ -185,9 +185,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
-            text={`I just claimed $${numberWithCommas(
-              claimAmountTwitter
-            )} in winnings from my @pooltogether_ deposit! Join me in saving and winning. %23PoolTogether`}
+            text={t('prizesTweet', {
+              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
+            })}
           />
         </BottomSheet>
       )
