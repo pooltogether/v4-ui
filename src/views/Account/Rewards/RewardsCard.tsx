@@ -950,10 +950,23 @@ const SubmitTransactionButton = (props: {
     )
 
     const twabRewardsContract = getTwabRewardsContract(chainId, signer)
+    let gasLimit = undefined
+
+    try {
+      const gasEstimate = await twabRewardsContract.estimateGas.claimRewards(
+        usersAddress,
+        promotionId,
+        epochIds
+      )
+      gasLimit = gasEstimate.mul(12).div(10)
+    } catch (e) {
+      console.error(e.message)
+    }
 
     const transactionId = sendTransaction({
       name: `${t('claim')} ${numberWithCommas(claimableAmount.amount)} ${token.symbol}`,
-      callTransaction: () => twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds),
+      callTransaction: () =>
+        twabRewardsContract.claimRewards(usersAddress, promotionId, epochIds, { gasLimit }),
       callbacks: {
         onConfirmedByUser: () => {
           setReceiptView()
