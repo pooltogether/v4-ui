@@ -2329,10 +2329,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@^1.20.6":
-  version "1.20.6"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.20.6.tgz#4c8a383bb3856fa9a3614482920db60ba7f70dd9"
-  integrity sha512-hxBhqC91nCvXszyEslpES+PXVslLUFHbzU+/fBNolRFxKTPp8l8OyjbnIHfSnwZoq7KGmVSr71ER0JjBVri8eg==
+"@pooltogether/react-components@^1.20.7":
+  version "1.20.7"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-1.20.7.tgz#f07dcd5636734e246e482743c17425c634281e9c"
+  integrity sha512-YFnAFKN23mjtdcx4uSmMmfSrGB8IY4zRBrcSI0qcaLO1M9MZRXbWafa5M1ml0BDqJWi4jOe/XxrUVja4fD+naQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
