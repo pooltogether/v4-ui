@@ -3,13 +3,11 @@ import { sToD, msToS } from '@pooltogether/utilities'
 
 export const getNextRewardIn = (promotion: Promotion) => {
   const now = msToS(Date.now())
-
   const remainingEpochsArray = promotion.epochCollection.remainingEpochsArray
   const nextEpochEndTime = remainingEpochsArray?.[0]?.epochEndTimestamp
-
-  const value = sToD(nextEpochEndTime - now)
-
-  return { value, unit: 'days' }
+  const seconds = nextEpochEndTime - now
+  const value = sToD(seconds)
+  return { value, unit: 'days', seconds }
 }
 
 export const getRemainingEpochsArrays = (promotion: Promotion) => {

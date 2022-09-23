@@ -1,11 +1,9 @@
-import { CHAIN_ID } from '@constants/misc'
-import { contract } from '@pooltogether/etherplex'
-import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { ContractType } from '@pooltogether/v4-client-js'
+import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
-import { getChain } from '@pooltogether/wallet-connection'
+import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { Chain } from 'wagmi'
+import { CHAIN_ID, getChain } from '@pooltogether/wallet-connection'
 
 /////////////////////////////////////////////////////////////////////
 // Constants pertaining to the networks and Prize Pools available in the app.
@@ -93,7 +91,7 @@ export const V3_CHAIN_IDS = Object.freeze({
     CHAIN_ID.polygon,
     CHAIN_ID.celo
   ].filter((chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)),
-  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.rinkeby, CHAIN_ID.mumbai].filter(
+  [APP_ENVIRONMENTS.testnets]: [CHAIN_ID.goerli, CHAIN_ID.mumbai].filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
   )
 })
@@ -130,7 +128,7 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
 
 export const DEFAULT_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.optimism,
-  [APP_ENVIRONMENTS.testnets]: CHAIN_ID['optimism-kovan']
+  [APP_ENVIRONMENTS.testnets]: CHAIN_ID['optimism-goerli']
 })
 
 // Native currency symbols in app
@@ -139,9 +137,9 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
   [CHAIN_ID.matic]: 'MATIC',
   [CHAIN_ID.mainnet]: 'Ξ',
   [CHAIN_ID.avalanche]: 'AVAX',
-  [CHAIN_ID['optimism-kovan']]: 'Ξ',
+  [CHAIN_ID['optimism-goerli']]: 'Ξ',
   [CHAIN_ID.mumbai]: 'MATIC',
-  [CHAIN_ID.rinkeby]: 'Ξ',
+  [CHAIN_ID.goerli]: 'Ξ',
   [CHAIN_ID.fuji]: 'AVAX'
 })
 
@@ -156,7 +154,7 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
-  [CHAIN_ID.rinkeby]: [
+  [CHAIN_ID.goerli]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
@@ -174,7 +172,7 @@ const BRIDGE_URLS = Object.freeze({
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
   [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
   [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
-  [CHAIN_ID['optimism-kovan']]: [
+  [CHAIN_ID['optimism-goerli']]: [
     { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
   ]
 })
@@ -225,9 +223,14 @@ const EXCHANGE_URLS = Object.freeze({
 export const getCoinbaseChainKey = (chainId: number) => COINBASE_CHAIN_KEYS[chainId]
 export const COINBASE_CHAIN_KEYS = Object.freeze({
   [CHAIN_ID.mainnet]: 'ethereum',
-  [CHAIN_ID.avalanche]: 'avalanche-c-chain'
+  [CHAIN_ID.avalanche]: 'avalanche-c-chain',
+  // [CHAIN_ID.optimism]: 'optimism',
+  [CHAIN_ID.polygon]: 'polygon'
 })
+export const getCoinbaseChainAssets = (chainId: number) => COINBASE_ASSETS[chainId]
 export const COINBASE_ASSETS = Object.freeze({
   [CHAIN_ID.mainnet]: ['ETH', 'USDC'],
-  [CHAIN_ID.avalanche]: ['AVAX']
+  [CHAIN_ID.avalanche]: ['AVAX'],
+  [CHAIN_ID.polygon]: ['USDC', 'MATIC'],
+  [CHAIN_ID.optimism]: ['USDC', 'ETH']
 })

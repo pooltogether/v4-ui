@@ -39,7 +39,10 @@ const getAllDrawDatas = async (
   prizeDistributionBufferDrawIds.forEach((drawId) => {
     const prizeDistribution = prizeDistributions[drawId]
     const draw = draws[drawId]
-    drawDatas[draw.drawId] = { draw, prizeDistribution }
+
+    if (draw !== undefined) {
+      drawDatas[draw.drawId] = { draw, prizeDistribution }
+    }
   })
 
   // Push any beacon draw ids that are newer than the oldest prize distribution that are missing into the array

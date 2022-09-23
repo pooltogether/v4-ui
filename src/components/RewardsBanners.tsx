@@ -4,10 +4,9 @@ import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import { TokenIcon } from '@pooltogether/react-components'
 import { useTranslation } from 'react-i18next'
-
-import { CHAIN_ID } from '@constants/misc'
 import { useAppEnvString } from '@hooks/useAppEnvString'
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
+import { CHAIN_ID } from '@pooltogether/wallet-connection'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 
@@ -16,11 +15,11 @@ export const RewardsBanners = () => {
 
   const page = location.pathname
 
-  // Only show Optimism Rewards banner if we're on testnets with optimism-kovan having a promotion
+  // Only show Optimism Rewards banner if we're on testnets with optimism-goerli having a promotion
   // or on mainnets with optimism having a promotion
   const appEnv = useAppEnvString()
-  const optimismKovanPromotions = FILTERED_PROMOTION_IDS[CHAIN_ID['optimism-kovan']]
-  if (appEnv === 'testnets' && optimismKovanPromotions.length < 1) {
+  const optimismGoerliPromotions = FILTERED_PROMOTION_IDS[CHAIN_ID['optimism-goerli']]
+  if (appEnv === 'testnets' && optimismGoerliPromotions.length < 1) {
     return null
   }
 
@@ -45,13 +44,10 @@ export const RewardsBanners = () => {
         </div>
 
         <div
-          className={classNames(
-            'flex items-center justify-center w-full font-averta-bold space-x-4',
-            {
-              'xs:w-56': page !== '/account',
-              'xs:w-32': page === '/account'
-            }
-          )}
+          className={classNames('flex items-center justify-center w-full font-bold space-x-4', {
+            'xs:w-56': page !== '/account',
+            'xs:w-32': page === '/account'
+          })}
         >
           <Link href={`https://app.hop.exchange`}>
             <a

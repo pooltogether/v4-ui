@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
@@ -14,7 +14,8 @@ import {
   TokenIcon,
   ButtonTheme,
   ButtonLink,
-  ButtonSize
+  ButtonSize,
+  ExternalLink
 } from '@pooltogether/react-components'
 import { Token, Amount, useToken, useNetworkHexColor } from '@pooltogether/hooks'
 import {
@@ -30,7 +31,8 @@ import {
   displayPercentage,
   numberWithCommas,
   getNetworkNameAliasByChainId,
-  getNetworkNiceNameByChainId
+  getNetworkNiceNameByChainId,
+  sToD
 } from '@pooltogether/utilities'
 import { useSigner } from 'wagmi'
 
@@ -375,7 +377,8 @@ const ClaimModalForm = (props) => {
   const { decimals, symbol } = token
   const tokenSymbol = symbol
 
-  const { value, unit } = getNextRewardIn(promotion)
+  const { value, unit, seconds } = getNextRewardIn(promotion)
+  console.log(promotion)
 
   const amount = getAmountFromBigNumber(usersClaimedPromotionHistory?.rewards, decimals)
 
@@ -437,19 +440,33 @@ const ClaimModalForm = (props) => {
               vapr={vapr}
             />
 
-            <UnitPanel
-              label={t('nextReward', 'Next Reward')}
-              chainId={chainId}
-              icon={<span className='mr-1'>🗓️</span>}
-              value={value}
-              unit={t(unit)}
-            />
+            {promotion.epochDuration >= seconds ? (
+              <UnitPanel
+                label={
+                  promotion.currentEpochId === promotion.numberOfEpochs
+                    ? 'Rewards end in'
+                    : t('nextReward', 'Next Reward')
+                }
+                chainId={chainId}
+                icon={<span className='mr-1'>🗓️</span>}
+                value={value}
+                unit={t(unit)}
+              />
+            ) : (
+              <UnitPanel
+                label={'Rewards start in'}
+                chainId={chainId}
+                icon={<span className='mr-1'>🗓️</span>}
+                value={sToD(seconds - promotion.epochDuration)}
+                unit={t(unit)}
+              />
+            )}
           </div>
         </>
       )}
 
       {amount.amountPretty && (
-        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-averta-bold'>
+        <div className='flex items-center bg-pt-purple-lightest dark:bg-white dark:bg-opacity-10 rounded-lg mt-2 mb-4 py-2 px-4 font-bold'>
           <span className='opacity-40 uppercase text-xxs '>{t('claimed', 'Claimed')}: </span>
           <span className='flex items-center'>
             <>
@@ -529,7 +546,7 @@ const RewardsEndInBanner = (props) => {
 
         {days > 1 && (
           <Link href={{ pathname: '/deposit' }}>
-            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-averta-bold'>
+            <a className='uppercase hover:underline transition ml-2 text-pt-teal text-xs font-bold'>
               {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit')}
             </a>
           </Link>
@@ -659,14 +676,9 @@ export const DelegateOPButton = (props) => {
   const { t } = useTranslation()
 
   return (
-    <ButtonLink
-      href=''
-      size={ButtonSize.md}
-      theme={ButtonTheme.white}
-      className='w-full text-center mt-2'
-    >
+    <ExternalLink href='https://app.optimism.io/delegates' className='w-full text-center mt-2'>
       {t('delegateOp', 'Delegate OP')}
-    </ButtonLink>
+    </ExternalLink>
   )
 }
 
@@ -690,7 +702,7 @@ const UnitPanel = (props) => {
   const { label, amount, icon, unit, value, vapr } = props
 
   return (
-    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-averta-bold'>
+    <div className='flex flex-col dark:bg-actually-black dark:bg-opacity-20 bg-pt-purple-lightest rounded-lg w-full pt-2 pb-3 mb-4 font-bold'>
       <span className='mx-auto flex items-center mt-1'>
         {icon}
 
@@ -718,26 +730,30 @@ const UnitPanel = (props) => {
 const BalanceDisplay = (props) => {
   const { prizePool, claimableAmount, promotion } = props
 
-  let balance = claimableAmount?.amount ? Number(claimableAmount?.amount) : 0
-
   const currentEpochEstimateAccrued = useUsersCurrentEpochEstimateAccrued(prizePool, promotion)
-  if (currentEpochEstimateAccrued) {
-    balance = balance + currentEpochEstimateAccrued
-  }
 
-  const isReady = !isNaN(balance)
+  const balance = useMemo(() => {
+    if (
+      (!claimableAmount && currentEpochEstimateAccrued === null) ||
+      currentEpochEstimateAccrued < 0 ||
+      !claimableAmount
+    ) {
+      return null
+    }
+    return numberWithCommas(Number(claimableAmount.amount) + currentEpochEstimateAccrued)
+  }, [claimableAmount?.amount, currentEpochEstimateAccrued])
+
+  if (!claimableAmount && currentEpochEstimateAccrued === null) {
+    return <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
+  }
 
   return (
     <div
       className={classNames('flex items-center leading-none font-bold mr-1', {
-        'opacity-50': balance <= 0
+        'opacity-50': balance === 0 || !balance
       })}
     >
-      {isReady ? (
-        <>{numberWithCommas(balance)}</>
-      ) : (
-        <ThemedClipSpinner sizeClassName='w-4 h-4' className='opacity-70' />
-      )}
+      {balance || 0}
     </div>
   )
 }
@@ -879,7 +895,7 @@ const SubmitTransactionButton: React.FC<SubmitTransactionButtonProps> = (props) 
       className='mt-2 flex w-full items-center justify-center'
       theme={theme}
     >
-      <span className='font-averta-bold'>
+      <span className='font-bold'>
         {t('claim', 'Claim')} {numberWithCommas(claimableAmount?.amount)} {token.symbol}
       </span>
     </TxButton>

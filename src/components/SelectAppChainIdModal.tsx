@@ -145,7 +145,7 @@ const RewardsLabel = (props) => {
   }
 
   return (
-    <div className='flex items-center uppercase text-xxs font-averta-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
+    <div className='flex items-center uppercase text-xxs font-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
       <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
     </div>
   )

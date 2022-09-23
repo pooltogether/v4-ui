@@ -2,7 +2,6 @@ import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import {
   LanguagePickerDropdown,
-  HidingPageHeaderContainer,
   SettingsContainer,
   SettingsItem,
   TestnetSettingsItem,
@@ -11,7 +10,8 @@ import {
   SocialLinks,
   Modal,
   NetworkIcon,
-  SettingsModal
+  SettingsModal,
+  PageHeaderContainer
 } from '@pooltogether/react-components'
 import {
   NetworkSelectionCurrentlySelected,
@@ -19,26 +19,27 @@ import {
   useWalletChainId
 } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
-
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 import classNames from 'classnames'
 import { getSupportedChains } from '@utils/getSupportedChains'
+import Link from 'next/link'
 
 export const PageHeader = (props) => {
   return (
-    <HidingPageHeaderContainer
+    <PageHeaderContainer
       href='/deposit'
       className='backdrop-filter backdrop-blur-xl w-full sticky top-0'
+      Link={Link}
     >
       <div className='flex flex-row justify-end items-center space-x-4'>
         <NetworkWarning />
         <FullWalletConnectionButtonWrapper />
         <Settings />
       </div>
-    </HidingPageHeaderContainer>
+    </PageHeaderContainer>
   )
 }
 

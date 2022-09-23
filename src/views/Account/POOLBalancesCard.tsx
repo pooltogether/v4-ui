@@ -14,8 +14,8 @@ import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 import { getExchangeUrl } from '@constants/config'
-import { CHAIN_ID, POOL_TOKEN } from '@constants/misc'
-import { useWalletChainId } from '@pooltogether/wallet-connection'
+import { POOL_TOKEN } from '@constants/misc'
+import { CHAIN_ID, useWalletChainId } from '@pooltogether/wallet-connection'
 
 export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

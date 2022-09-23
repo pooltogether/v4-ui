@@ -170,14 +170,14 @@ const NumberDisplay = (props) => {
     <>
       {props.isChecked ? (
         <div
-          className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-teal rounded-full h-10 w-10'
+          className='absolute inset-0 flex justify-center text-lg font-bold border-2 border-pt-teal rounded-full h-10 w-10'
           style={{ paddingTop: 9 }}
         >
           <FeatherIcon icon='check' className={'relative w-5 h-5'} />
         </div>
       ) : (
         <div
-          className='absolute inset-0 flex justify-center text-lg font-averta-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-10'
+          className='absolute inset-0 flex justify-center text-lg font-bold border-2 border-pt-purple-lighter rounded-full h-10 w-10 border-opacity-10'
           style={{ paddingTop: 2 }}
         >
           {props.num}
