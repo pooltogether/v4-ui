@@ -71,7 +71,12 @@ const wagmiClient = createClient({
   autoConnect: true,
   connectors,
   provider: ({ chainId }) => {
-    return getReadProvider(chainId || CHAIN_ID.mainnet)
+    try {
+      return getReadProvider(chainId || CHAIN_ID.mainnet)
+    } catch (e) {
+      console.error(e)
+      return getReadProvider(CHAIN_ID.mainnet)
+    }
   }
 })
 

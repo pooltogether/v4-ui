@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi'
 
 export function CustomErrorBoundary(props) {
   const { children } = props
-  const { connector } = useAccount()
+  const { connector, address } = useAccount()
 
   return (
     <SentryErrorBoundary
@@ -18,7 +18,8 @@ export function CustomErrorBoundary(props) {
       beforeCapture={(scope) => {
         scope.setTag('web3', connector?.name)
         scope.setContext('wallet', {
-          name: connector?.name
+          name: connector?.name,
+          address
         })
       }}
       fallback={({ error, componentStack, resetError }) => <ErrorPage />}
