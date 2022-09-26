@@ -4,7 +4,7 @@
   "description": "Deposit to save & win.",
   "icons": [
     {
-      "src": "/favicon/android-chrome-192x192.png",
+      "src": "/pool-icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     }
