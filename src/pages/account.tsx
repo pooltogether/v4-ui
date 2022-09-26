@@ -9,7 +9,8 @@ import React, { Suspense } from 'react'
 import nextI18NextConfig from '../../next-i18next.config.js'
 
 const Layout = dynamic(() => import('../components/Layout'), {
-  suspense: true
+  suspense: true,
+  ssr: false
 })
 
 export async function getStaticProps({ locale }) {
