@@ -24,7 +24,7 @@ class MyDocument extends Document {
             <title>{title}</title>
 
             <link rel='icon' href='/favicon.png' type='image/x-icon' />
-            <link rel='apple-touch-icon' href='/favicon/appl-touch-icon.png' />
+            <link rel='apple-touch-icon' href='/favicon/apple-touch-icon.png' />
 
             <meta name='theme-color' content='#1e0b43' />
             <meta name='description' content={description} />
