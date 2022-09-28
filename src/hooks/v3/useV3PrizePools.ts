@@ -5,12 +5,11 @@ import PrizeStrategyAbi from '@abis/V3_PrizeStrategy'
 import { POD_ADDRESSES, V3_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { Provider } from '@ethersproject/abstract-provider'
 import { getAddress } from '@ethersproject/address'
-import { useReadProviders } from '@hooks/useReadProviders'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { Amount, Token } from '@pooltogether/hooks'
+import { useReadProviders } from '@pooltogether/wallet-connection'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
-
 import { useV3ChainIds } from './useV3ChainIds'
 
 export interface PodToken extends Token {

@@ -1,7 +1,15 @@
-import React, { useCallback, useRef } from 'react'
-import classNames from 'classnames'
+import { TxButton } from '@components/Input/TxButton'
+import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
+import { PrizeList } from '@components/PrizeList'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useSignerPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSignerPrizeDistributor'
+import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
+import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useToken, Token, useCoingeckoTokenPrices } from '@pooltogether/hooks'
-import { numberWithCommas } from '@pooltogether/utilities'
 import {
   Button,
   ButtonTheme,
@@ -10,31 +18,22 @@ import {
   BottomSheet,
   snapTo90
 } from '@pooltogether/react-components'
+import { numberWithCommas } from '@pooltogether/utilities'
 import { DrawResults, PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
-import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
 import {
   useUsersAddress,
   TransactionStatus,
   Transaction,
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
-import Reward, { RewardElement } from 'react-rewards'
-
-import { TwitterIntentButton } from '@components/TwitterIntentButton'
-import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { PrizeList } from '@components/PrizeList'
-import { useSignerPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSignerPrizeDistributor'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
-import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { useSendTransaction } from '@hooks/useSendTransaction'
-import { DrawData } from '../../../interfaces/v4'
-import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
-import { TxButton } from '@components/Input/TxButton'
+import classNames from 'classnames'
+import { ethers } from 'ethers'
+import { useTranslation } from 'next-i18next'
+import React, { useCallback, useRef } from 'react'
+import Reward, { RewardElement } from 'react-rewards'
+import { DrawData } from '../../../interfaces/v4'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
 const CLAIMING_PER_DRAW_GAS_LIMIT = 300000
@@ -186,9 +185,9 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
-            text={`I just claimed $${numberWithCommas(
-              claimAmountTwitter
-            )} in winnings from my @pooltogether_ deposit! Join me in saving and winning: `}
+            text={t('prizesTweet', {
+              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
+            })}
           />
         </BottomSheet>
       )
@@ -199,13 +198,14 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
     <BottomSheet
       snapPoints={snapTo90}
       label='Claim prizes modal'
+      className='overflow-hidden'
       open={isOpen}
       onDismiss={() => {
         setTxId('')
         closeModal()
       }}
     >
-      <div className='w-full mx-auto flex flex-col max-h-full'>
+      <div className='w-full mx-auto flex flex-col max-h-full '>
         <ModalTitle chainId={prizeDistributor.chainId} title={t('claimPrizes', 'Claim prizes')} />
 
         <div className='flex items-center mx-auto font-bold text-inverse mb-4 text-3xl'>

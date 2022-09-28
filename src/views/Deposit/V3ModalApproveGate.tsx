@@ -1,21 +1,23 @@
-import React from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { TxButton } from '@components/Input/TxButton'
 import { Amount } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   ButtonLink,
   Button,
   ButtonTheme,
   ThemedClipSpinner,
   ButtonRadius
 } from '@pooltogether/react-components'
-
+import {
+  formatBlockExplorerTxUrl,
+  Transaction,
+  TransactionState
+} from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
-import { TxButton } from '@components/Input/TxButton'
+import classNames from 'classnames'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface V3ModalApproveGateProps {
   className?: string

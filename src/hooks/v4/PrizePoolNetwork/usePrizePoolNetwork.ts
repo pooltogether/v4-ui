@@ -1,17 +1,17 @@
-import { RPC_API_KEYS } from '@constants/config'
-import { BaseProvider } from '@ethersproject/providers'
+import { RPC_URLS } from '@constants/config'
 import { getContractListChainIds, PrizePoolNetwork } from '@pooltogether/v4-client-js'
-import { getReadProvider } from '@pooltogether/wallet-connection'
+import { getReadProviders } from '@pooltogether/wallet-connection'
 import { getContractList } from '@utils/v4/getContractList'
 import { atom, useAtom } from 'jotai'
 
+/**
+ * NOTE: This runs before the initRpcUrls function so we are explicitly passing the RPC URLs here.
+ * @returns
+ */
 const initializePrizePoolNetwork = () => {
   const prizePoolNetworkContractList = getContractList()
   const chainIds = getContractListChainIds(prizePoolNetworkContractList.contracts)
-  const readProviders: { [chainId: number]: BaseProvider } = {}
-  chainIds.forEach((chainId) => {
-    readProviders[chainId] = getReadProvider(chainId, RPC_API_KEYS)
-  })
+  const readProviders = getReadProviders(chainIds, RPC_URLS)
   return new PrizePoolNetwork(readProviders, prizePoolNetworkContractList)
 }
 

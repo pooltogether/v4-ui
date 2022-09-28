@@ -32,8 +32,8 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
     const isReady =
       tokenPricesIsFetched && tokenIsFetched && !!totalTwabSupply && depositToken?.decimals
 
-    if (daysRemaining > 0 && isReady && tokenPrices) {
-      const promotionTokenUsd = tokenPrices[promotionTokenAddress].usd
+    if (daysRemaining > 0 && isReady && !!tokenPrices) {
+      const promotionTokenUsd = tokenPrices[promotionTokenAddress]?.usd
       const depositTokenUsd = 1 // assume 1 ptaUSDC equals $1 here
 
       const valuePerDay = promotionTokenValuePerDay(
@@ -44,13 +44,24 @@ export const usePromotionVAPR = (promotion: Promotion): number => {
 
       // Deposit token (typically USDC)
       // Use deposit token decimals and USD value
-      const totalValue = Number(totalTwabSupply.amount) * depositTokenUsd
+      const totalValue =
+        Number(formatUnits(totalTwabSupply.amount.amountUnformatted, depositToken.decimals)) *
+        depositTokenUsd
 
       vapr = (valuePerDay / totalValue) * 365 * 100
     }
 
     return vapr
-  }, [promotion, promotionToken, tokenPrices, totalTwabSupply, promotionTokenDecimals])
+  }, [
+    depositToken.decimals,
+    promotion,
+    promotionTokenAddress,
+    promotionTokenDecimals,
+    tokenIsFetched,
+    tokenPrices,
+    tokenPricesIsFetched,
+    totalTwabSupply
+  ])
 }
 
 // Rewards token (OP, POOL, etc.)

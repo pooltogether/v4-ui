@@ -1,7 +1,7 @@
-import React from 'react'
 import classNames from 'classnames'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useRouter } from 'next/router'
+import React from 'react'
 
 interface PagePaddingProps {
   children?: React.ReactNode

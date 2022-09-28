@@ -1,11 +1,11 @@
-import { atom, useAtom } from 'jotai'
-import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
-import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { DEFAULT_CHAIN_IDS, SUPPORTED_CHAIN_IDS, SUPPORTED_CHAIN_NAMES } from '@constants/config'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { getChainIdByAlias } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
-import { selectedChainIdAtom, setSelectedChainIdWriteAtom } from '../atoms'
+import { atom, useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+import { selectedChainIdAtom, setSelectedChainIdWriteAtom } from '../atoms'
 
 const parseUrlNetwork = () => {
   const url = new URL(window.location.href)

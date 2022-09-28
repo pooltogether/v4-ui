@@ -1,10 +1,9 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
-import { Amount, getRefetchInterval } from '@pooltogether/hooks'
+import { Amount } from '@pooltogether/hooks'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
-
 import { usePrizePools } from './usePrizePools'
 import { getUserPrizePoolTwab, getUsersPrizePoolTwabKey } from './useUsersPrizePoolTwab'
 
@@ -56,7 +55,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
       isFetched,
       refetch
     }
-  }, [queryResults])
+  }, [queryResults, ticketDecimals, usersAddress])
 }
 
 const getTotalTwab = (twabs: Amount[], decimals: string) => {

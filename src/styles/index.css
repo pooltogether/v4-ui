@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: 'Averta';
+    font-weight: 500;
+    src: url('/fonts/averta-regular-webfont2.woff2') format('woff2'),
+      url('/fonts/averta-regular-webfont2.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Averta';
+    font-weight: 600;
+    src: url('/fonts/averta-semibold-webfont.woff2') format('woff2'),
+      url('/fonts/averta-semibold-webfont.woff') format('woff');
+  }
+
+  @font-face {
+    font-family: 'Averta';
+    font-weight: 700;
+    src: url('/fonts/averta-bold-webfont.woff2') format('woff2'),
+      url('/fonts/averta-bold-webfont.woff') format('woff');
+  }
+}

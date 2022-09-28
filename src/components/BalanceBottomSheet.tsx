@@ -1,26 +1,30 @@
-import React, { useMemo, useState } from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import { Amount, Token } from '@pooltogether/hooks'
 import {
-  getNetworkNiceNameByChainId,
-  numberWithCommas,
-  getMaxPrecision
-} from '@pooltogether/utilities'
-import { toast } from 'react-toastify'
-import {
-  BottomSheet,
-  CountUp,
-  ModalTitle,
   Button,
   ButtonTheme,
   ButtonLink,
+  BottomSheet,
+  CountUp,
+  ModalTitle,
   TokenIcon,
-  Tooltip,
-  BlockExplorerLink
+  Tooltip
 } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { addTokenToMetamask } from '@utils/addTokenToMetamask'
+import {
+  getNetworkNiceNameByChainId,
+  numberWithCommas,
+  getMaxPrecision,
+  addUsdcTicketTokenToMetaMask
+} from '@pooltogether/utilities'
+import {
+  BlockExplorerLink,
+  useIsWalletOnChainId,
+  useIsWalletMetamask
+} from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 import { RevokeAllowanceButton } from './RevokeAllowanceButton'
 
 enum DefaultViews {
@@ -43,7 +47,7 @@ export interface View {
   theme?: ButtonTheme
 }
 
-export interface BalanceBottomSheetProps extends MainViewProps, MoreInfoViewProps {
+export interface BalanceBottomSheetProps extends MainViewProps, Omit<MoreInfoViewProps, ''> {
   open: boolean
   onDismiss: () => void
   label?: string
@@ -56,7 +60,7 @@ export const BalanceBottomSheet = (props: BalanceBottomSheetProps) => {
 
   const View = useMemo(
     () => getView(selectedView, props.views, props.moreInfoViews),
-    [selectedView]
+    [props.moreInfoViews, props.views, selectedView]
   )
 
   return (
@@ -104,6 +108,7 @@ export const BalanceBottomSheetBackButton = (props: {
 
 interface MainViewProps {
   chainId: number
+  ticket: Token
   token: Token
   balance: Amount
   balanceUsd: Amount
@@ -122,6 +127,7 @@ const MainView = (props: MainViewProps & { setView: (view: string) => void }) =>
     transactionHash,
     views,
     token,
+    ticket,
     balance,
     balanceUsd,
     setView,
@@ -153,13 +159,13 @@ const MainView = (props: MainViewProps & { setView: (view: string) => void }) =>
             tip={
               <>
                 {numberWithCommas(balance.amount, { precision: getMaxPrecision(balance.amount) })}{' '}
-                {token.symbol}
+                {ticket.symbol}
               </>
             }
           >
-            <TokenIcon chainId={chainId} address={token.address} sizeClassName='w-4 h-4 my-auto' />
+            <TokenIcon chainId={chainId} address={ticket.address} sizeClassName='w-4 h-4 my-auto' />
             <span className='font-bold opacity-50 mx-1'>{numberWithCommas(balance.amount)}</span>
-            <span className='opacity-50'>{token.symbol}</span>
+            <span className='opacity-50'>{ticket.symbol}</span>
           </Tooltip>
         </span>
       </div>
@@ -234,13 +240,13 @@ export interface ContractLink {
 
 interface MoreInfoViewProps {
   chainId: number
+  ticket: Token
   token: Token
   contractLinks: ContractLink[]
   moreInfoViews?: View[]
   delegate?: string
   prizePoolAddress: string
-  isWalletOnProperNetwork: boolean
-  isWalletMetaMask: boolean
+  sendRevokeAllowanceTransaction?: () => Promise<string>
 }
 
 const MoreInfoView = (
@@ -248,18 +254,11 @@ const MoreInfoView = (
     setView: (view: string) => void
   }
 ) => {
-  const {
-    setView,
-    prizePoolAddress,
-    chainId,
-    delegate,
-    token,
-    moreInfoViews,
-    contractLinks,
-    isWalletOnProperNetwork,
-    isWalletMetaMask
-  } = props
+  const { setView, prizePoolAddress, chainId, delegate, token, moreInfoViews, contractLinks } =
+    props
   const { t } = useTranslation()
+  const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
+  const isWalletMetamask = useIsWalletMetamask()
 
   const handleAddTokenToMetaMask = async () => {
     if (!token) {
@@ -279,12 +278,7 @@ const MoreInfoView = (
       return null
     }
 
-    addTokenToMetamask(
-      token.symbol,
-      token.address,
-      Number(token.decimals),
-      'https://pooltogether.com/ptausdc@2x.png'
-    )
+    return addUsdcTicketTokenToMetaMask(token)
   }
 
   return (
@@ -317,7 +311,7 @@ const MoreInfoView = (
           <ViewButton key={view.id} {...view} setView={setView} />
         ))}
 
-        {isWalletMetaMask && (
+        {isWalletMetamask && (
           <Button
             onClick={handleAddTokenToMetaMask}
             className='flex w-full items-center justify-center'

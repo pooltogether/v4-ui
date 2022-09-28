@@ -1,21 +1,24 @@
-import { useTranslation } from 'react-i18next'
-import FeatherIcon from 'feather-icons-react'
-import { BlockExplorerLink, Button, TokenIcon, ViewProps } from '@pooltogether/react-components'
-import { PrizePoolLabelFlat } from '@components/PrizePoolLabel'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { TransparentDiv } from '@components/TransparentDiv'
-import React from 'react'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { toast } from 'react-toastify'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { addTokenToMetamask } from '@utils/addTokenToMetamask'
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { RevokeAllowanceButton } from '@components/RevokeAllowanceButton'
 import { InfoListItem } from '@components/InfoList'
-import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
+import { PrizePoolLabelFlat } from '@components/PrizePoolLabel'
+import { RevokeAllowanceButton } from '@components/RevokeAllowanceButton'
+import { TransparentDiv } from '@components/TransparentDiv'
 import { usePrizePoolTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTwabTotalSupply'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
+import { Button, TokenIcon, ViewProps } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import {
+  BlockExplorerLink,
+  useIsWalletMetamask,
+  useIsWalletOnChainId
+} from '@pooltogether/wallet-connection'
+import { addTokenToMetamask } from '@utils/addTokenToMetamask'
+import FeatherIcon from 'feather-icons-react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 export const PrizePoolInfoView: React.FC<{} & ViewProps> = (props) => {
   const prizePool = useSelectedPrizePool()

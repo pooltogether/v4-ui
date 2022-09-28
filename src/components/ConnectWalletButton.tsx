@@ -1,7 +1,7 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Button, ButtonProps } from '@pooltogether/react-components'
 import { useConnectWallet } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 export const ConnectWalletButton: React.FC<Omit<ButtonProps, 'onClick' | 'type'>> = (props) => {
   const connectWallet = useConnectWallet()

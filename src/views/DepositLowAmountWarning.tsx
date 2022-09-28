@@ -1,8 +1,8 @@
-import React from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
 import { Amount } from '@pooltogether/hooks'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 const MINIMUM_AMOUNTS = {
   [CHAIN_ID.mainnet]: 5000,

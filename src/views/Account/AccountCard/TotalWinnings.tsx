@@ -1,17 +1,13 @@
-import FeatherIcon from 'feather-icons-react'
-import React, { useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
-import { Amount, Token } from '@pooltogether/hooks'
-import { Draw } from '@pooltogether/v4-client-js'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
-import { useAllUsersPositiveClaimedAmountsWithDraws } from '@hooks/v4/PrizeDistributor/useAllUsersPositiveClaimedAmountsWithDraws'
-import { getTimestampString } from '@utils/getTimestampString'
-import classNames from 'classnames'
-import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
+import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
+import { Amount, Token } from '@pooltogether/hooks'
+import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { Trans, useTranslation } from 'next-i18next'
+import React, { useMemo, useState } from 'react'
 
 export const TotalWinningsAmount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -75,7 +71,11 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
   return (
     <BottomSheet open={open} onDismiss={onDismiss} className='flex flex-col space-y-8'>
       <div className='flex items-center mx-auto'>
-        <img src={TrophyIcon} className='mr-2' style={{ width: '38px' }} />
+        <img
+          src={'/pooltogether-trophy--detailed.svg'}
+          className='mr-2'
+          style={{ width: '38px' }}
+        />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
             ${totalClaimedAmount?.amountPretty || '--'}

@@ -1,13 +1,12 @@
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { InfoListItem } from '.'
-import { numberWithCommas } from '@pooltogether/utilities'
-
-import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { Promotion } from '@interfaces/promotions'
 import { TokenIcon } from '@pooltogether/react-components'
+import { numberWithCommas } from '@pooltogether/utilities'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { InfoListItem } from '.'
 
 /**
  *

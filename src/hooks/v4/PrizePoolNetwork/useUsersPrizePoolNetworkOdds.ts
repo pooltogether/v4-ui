@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-
 import { EstimateAction } from '../../../constants/odds'
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
 import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'

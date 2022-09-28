@@ -1,19 +1,13 @@
-import FeatherIcon from 'feather-icons-react'
-import { useState } from 'react'
-import { Delegation, DelegationId } from '@pooltogether/v4-twab-delegator-js'
-import { getNetworkNiceNameByChainId, prettyNumber } from '@pooltogether/utilities'
-import {
-  BlockExplorerLink,
-  NetworkIcon,
-  ButtonLink,
-  TokenIcon,
-  BottomSheet
-} from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { Amount, Token } from '@pooltogether/hooks'
-import { TokenBalance } from '@components/TokenBalance'
-import classNames from 'classnames'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
+import { Amount, Token } from '@pooltogether/hooks'
+import { NetworkIcon, ButtonLink, TokenIcon, BottomSheet } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId, prettyNumber } from '@pooltogether/utilities'
+import { Delegation, DelegationId } from '@pooltogether/v4-twab-delegator-js'
+import { BlockExplorerLink } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { AccountListItem } from '../AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 

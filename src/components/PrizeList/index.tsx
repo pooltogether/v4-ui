@@ -1,16 +1,15 @@
-import classnames from 'classnames'
-import ordinal from 'ordinal'
-import { useTranslation } from 'react-i18next'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { DrawData } from '@interfaces/v4'
 import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
 import { DrawResults, PrizeAwardable } from '@pooltogether/v4-client-js'
-
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { sortByBigNumber } from '@utils/sortByBigNumber'
 import classNames from 'classnames'
-import { DrawData } from '@interfaces/v4'
-import { getTimestampStringWithTime } from '@utils/getTimestampString'
+import classnames from 'classnames'
+import { useTranslation } from 'next-i18next'
+import ordinal from 'ordinal'
 import React from 'react'
 
 interface PrizeListProps

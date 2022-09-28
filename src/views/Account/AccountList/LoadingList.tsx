@@ -1,5 +1,5 @@
-import { AccountList } from '.'
 import { loopXTimes } from '@utils/loopXTimes'
+import { AccountList } from '.'
 
 export const LoadingList = (props: {
   listItems: number

@@ -1,14 +1,13 @@
-import { Amount, Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
-import { displayPercentage } from '@pooltogether/utilities'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import { VAPRTooltip } from '@components/VAPRTooltip'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
-import { StakingBottomSheet } from './StakingBottomSheet'
+import { Amount, Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
+import { displayPercentage } from '@pooltogether/utilities'
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
+import { StakingBottomSheet } from './StakingBottomSheet'
 
 interface StakingCardProps {
   chainId: number

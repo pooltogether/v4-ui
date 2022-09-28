@@ -1,26 +1,36 @@
-import React from 'react'
+import { SquareLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
-import { ButtonLink } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface TwitterIntentButtonProps {
   text: string
   url: string
+  hashTags?: string[]
+  disabled?: boolean
 }
 
 export const TwitterIntentButton = (props: TwitterIntentButtonProps) => {
-  const { url, text } = props
+  const { url, text, disabled, hashTags } = props
   const { t } = useTranslation()
 
   return (
     <ButtonLink
-      href={`http://twitter.com/intent/tweet?text=${text}&url=${url}`}
+      href={`http://twitter.com/intent/tweet?text=${
+        text + ' ' + hashTags?.map((ht) => `%23${ht}`).join(' ')
+      }&url=${url}`}
       target='_blank'
-      className='w-full flex items-center mx-auto mt-4'
+      className={classNames('w-full flex items-center mx-auto mt-4', {
+        'pointer-events-none opacity-70': disabled
+      })}
     >
       <TwitterIconSvg className='w-5 mr-2' /> {t('shareTweet', 'Share Tweet')}
     </ButtonLink>
   )
+}
+
+TwitterIntentButton.defaultProps = {
+  hashTags: ['PoolTogether']
 }
 
 export const TwitterIconSvg = (props) => {

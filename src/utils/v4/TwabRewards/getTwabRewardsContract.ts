@@ -3,7 +3,7 @@ import { TWAB_REWARDS_ADDRESS } from '@constants/promotions'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { contract, MulticallContract } from '@pooltogether/etherplex'
-import { getReadProvider } from '@pooltogether/utilities'
+import { getReadProvider } from '@pooltogether/wallet-connection'
 import { Contract, ethers } from 'ethers'
 
 export const getTwabRewardsContract = (

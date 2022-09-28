@@ -3,8 +3,6 @@ import { Token } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromString } from '@utils/getAmountFromString'
 
-import { useSelectedPrizePool } from './useSelectedPrizePool'
-
 /**
  * @param prizePool
  * @param token

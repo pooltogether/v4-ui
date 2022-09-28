@@ -1,9 +1,8 @@
 import { Token } from '@pooltogether/hooks'
 import { Button, ButtonSize, ButtonTheme } from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-
 import { PrizeBreakdownModal } from './PrizeBreakdownModal'
 
 interface ViewPrizesSheetTriggerProps {
@@ -19,6 +18,7 @@ interface TriggerButtonProps {
   onClick: () => void
   disabled: boolean
   className?: string
+  children: React.ReactNode
 }
 
 export const ViewPrizesSheetCustomTrigger = (props: ViewPrizesSheetTriggerProps) => {

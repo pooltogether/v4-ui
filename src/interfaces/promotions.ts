@@ -48,6 +48,6 @@ export interface Promotion {
 export interface ClaimedPromotion {
   id: string
   promotionId: string
-  epochs: [string]
+  epochs: string[]
   rewards: string
 }

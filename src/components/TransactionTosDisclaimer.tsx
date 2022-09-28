@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 export const TransactionTosDisclaimer: React.FC<{
   buttonTexti18nKey: string

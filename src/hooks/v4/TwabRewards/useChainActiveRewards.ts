@@ -1,17 +1,7 @@
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
-import { Promotion } from '@interfaces/promotions'
 import { getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
-import { UseQueryResult } from 'react-query'
 
-export const useChainActiveRewards = (): {
-  data: {
-    queryResults: UseQueryResult<{ chainId: any; promotions: Array<Promotion> }>
-    chains: { string?: number }
-    activeCount: number
-  }
-  isFetched: boolean
-  isError: boolean
-} => {
+export const useChainActiveRewards = () => {
   const queryResults = useAllChainsFilteredPromotions()
 
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)

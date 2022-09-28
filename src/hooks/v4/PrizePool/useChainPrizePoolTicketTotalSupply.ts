@@ -1,18 +1,10 @@
 import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { usePrizePoolTicketTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTotalSupply'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
-import { useMemo } from 'react'
 
-export const useChainPrizePoolTicketTotalSupply = (chainId) => {
+export const useChainPrizePoolTicketTotalSupply = (chainId: number) => {
   const prizePool = usePrizePoolByChainId(chainId)
   const { data: tokens } = usePrizePoolTokens(prizePool)
   const { data: prizePoolTotalSupply } = usePrizePoolTicketTotalSupply(prizePool)
-  return useMemo(
-    () => ({
-      prizePoolTotalSupply: prizePoolTotalSupply?.amount,
-      decimals: tokens?.ticket.decimals,
-      ticket: tokens?.ticket
-    }),
-    [prizePool, tokens, prizePoolTotalSupply]
-  )
+  return { prizePoolTotalSupply, decimals: tokens?.ticket.decimals, ticket: tokens?.ticket }
 }

@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 export interface SubmitButtonProps {
   connectWallet?: () => void
   theme?: ButtonTheme
+  children?: React.ReactNode
 }
 
 export const SubmitButton: React.FC<SubmitButtonProps> = (props) => {

@@ -5,9 +5,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useQueries, useQuery } from 'react-query'
-
 import { usePrizePools } from './usePrizePools'
-
 
 /**
  * Fetches a users current TWAB

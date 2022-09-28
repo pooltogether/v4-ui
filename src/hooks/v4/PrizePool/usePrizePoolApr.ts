@@ -1,11 +1,9 @@
 import { calculateApr, calculatePercentageOfBigNumber } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
-
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
-
 
 /**
  * @returns

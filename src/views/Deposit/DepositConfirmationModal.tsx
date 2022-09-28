@@ -1,6 +1,22 @@
-import React, { useEffect } from 'react'
-import Link from 'next/link'
-import { Amount, Token, useIsWalletOnNetwork } from '@pooltogether/hooks'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import { AnimatedBorderCard } from '@components/AnimatedCard'
+import { InfoListHeader, ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { TxButton } from '@components/Input/TxButton'
+import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
+import { EstimateAction } from '@constants/odds'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
+import { useTotalExpectedNumberOfPrizes } from '@hooks/v4/PrizePoolNetwork/useTotalExpectedNumberOfPrizes'
+import { Amount, Token } from '@pooltogether/hooks'
 import {
   ModalProps,
   Button,
@@ -8,43 +24,27 @@ import {
   ButtonSize,
   ButtonTheme,
   ModalTitle,
-  BottomSheet,
-  AddTokenToMetamaskButton
+  BottomSheet
 } from '@pooltogether/react-components'
+import { msToS, numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { Trans, useTranslation } from 'react-i18next'
-import { useRouter } from 'next/router'
-import { msToS } from '@pooltogether/utilities'
-import { BigNumber } from 'ethers'
 import {
   Transaction,
-  TransactionState,
   TransactionStatus,
+  useIsWalletMetamask,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
-
-import { TxButton } from '@components/Input/TxButton'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { InfoListHeader, ModalInfoList } from '@components/InfoList'
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
-import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
-import { AnimatedBorderCard } from '@components/AnimatedCard'
-import { ModalDepositGate } from '@views/Deposit/ModalDepositGate'
-import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
-import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
-import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
-import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
-import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { EstimateAction } from '@constants/odds'
 import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
-import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
+import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
+import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
+import { BigNumber } from 'ethers'
+import { Trans, useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
+import { ModalDepositGate } from './ModalDepositGate'
 
 interface DepositConfirmationModalProps extends Omit<ModalProps, 'children'> {
   chainId: number
@@ -165,7 +165,11 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
       <>
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
-        <ModalTransactionSubmitted className='mt-8 w-full' chainId={chainId} tx={depositTx} />
+        <TweetAboutDeposit
+          amountUnformatted={amountToDeposit.amountUnformatted}
+          prizePool={prizePool}
+        />
+        <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />
         <AccountPageButton />
         <AddTicketToWallet />
       </>
@@ -302,18 +306,39 @@ export const AddTicketToWallet = () => {
   if (!isMetaMask || !isWalletOnProperNetwork) return null
 
   return (
-    <AddTokenToMetamaskButton
-      t={t}
-      token={ticket}
-      isMetaMask={isMetaMask}
-      isWalletOnProperNetwork={isWalletOnProperNetwork}
-      className='w-full'
-    >
-      <Button theme={ButtonTheme.tealOutline} className='w-full'>
-        {t('addTicketTokenToMetamask', {
-          token: ticket.symbol
-        })}
-      </Button>
-    </AddTokenToMetamaskButton>
+    <Button theme={ButtonTheme.tealOutline} className='w-full'>
+      {t('addTicketTokenToMetamask', {
+        token: ticket.symbol
+      })}
+    </Button>
+  )
+}
+
+export const TweetAboutDeposit = (props: {
+  amountUnformatted: BigNumber
+  prizePool: PrizePool
+}) => {
+  const { amountUnformatted, prizePool } = props
+  const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
+  const { totalAmountOfPrizes } = useTotalExpectedNumberOfPrizes()
+  const { data: totalSupply, isFetched: isTotalSuppluFetched } =
+    usePrizePoolNetworkTicketTotalSupply()
+  const { t } = useTranslation()
+
+  const isReady = isDecimalsFetched && !!totalAmountOfPrizes && isTotalSuppluFetched
+
+  return (
+    <TwitterIntentButton
+      disabled={!isReady}
+      url='https://app.pooltogether.com'
+      text={t('depositTweet', {
+        amountDeposited: `$${numberWithCommas(amountUnformatted, {
+          decimals,
+          precision: 0
+        })}`,
+        totalAmountDeposited: `$${totalSupply?.totalSupply.amountPretty}`,
+        totalAmountOfPrizes
+      })}
+    />
   )
 }

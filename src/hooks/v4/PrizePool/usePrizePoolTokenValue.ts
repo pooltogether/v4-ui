@@ -1,5 +1,4 @@
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { TokenPrice, useCoingeckoTokenPrices } from '@pooltogether/hooks'
+import { TokenPrice, useCoingeckoTokenPrices, usePrizePoolTokens } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { UseQueryResult } from 'react-query'
 

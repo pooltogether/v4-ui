@@ -1,19 +1,17 @@
-import React from 'react'
-import classNames from 'classnames'
-import Link from 'next/link'
-import FeatherIcon from 'feather-icons-react'
-import { TokenIcon } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import { useAppEnvString } from '@hooks/useAppEnvString'
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
+import { useAppEnvString } from '@hooks/useAppEnvString'
+import { TokenIcon } from '@pooltogether/react-components'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import React from 'react'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 
 export const RewardsBanners = () => {
   const { t } = useTranslation()
-
-  const page = location.pathname
 
   // Only show Optimism Rewards banner if we're on testnets with optimism-goerli having a promotion
   // or on mainnets with optimism having a promotion
@@ -29,53 +27,35 @@ export const RewardsBanners = () => {
   }
 
   return (
-    <div className='px-8 bg-actually-black w-full text-center py-2 z-50 text-white'>
-      <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
-        <div className='my-1 xs:my-0 xs:mr-3'>
-          <span className='flex items-center font-bold'>
-            <TokenIcon
-              chainId={CHAIN_ID.optimism}
-              address={OPTIMISM_OP_ADDRESS}
-              className='mr-1 xs:mr-2'
-              sizeClassName='w-4 h-4'
-            />{' '}
-            {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}!
-          </span>{' '}
-        </div>
-
-        <div
-          className={classNames('flex items-center justify-center w-full font-bold space-x-4', {
-            'xs:w-56': page !== '/account',
-            'xs:w-32': page === '/account'
-          })}
-        >
-          <Link href={`https://app.hop.exchange`}>
-            <a
-              className='flex items-center h-auto xs:h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
-              target='_blank'
-            >
-              {t('bridge')}{' '}
-              <FeatherIcon
-                icon='external-link'
-                className={'relative w-4 h-4 ml-2'}
-                style={{ top: -1 }}
-              />
-            </a>
-          </Link>
-          {page !== '/account' && (
-            <Link href='/account'>
-              <a className='flex items-center h-auto xs:h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
-                {t('account')}{' '}
-                <FeatherIcon
-                  icon='chevron-right'
-                  className={'relative w-4 h-4'}
-                  style={{ top: -1 }}
-                />
-              </a>
-            </Link>
-          )}
-        </div>
+    <div className='mb-6 xs:mb-8 px-4 xs:px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-xl mx-auto xs:rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center'>
+      <div className='flex space-x-2 items-center'>
+        <TokenIcon
+          chainId={CHAIN_ID.optimism}
+          address={OPTIMISM_OP_ADDRESS}
+          sizeClassName='w-4 h-4'
+        />
+        <span className='flex items-center font-bold'>
+          {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}!
+        </span>
       </div>
+
+      <Link href={`https://app.hop.exchange`}>
+        <a
+          className='flex items-center h-auto xs:h-8 uppercase text-pt-purple-darkest opacity-80 dark:text-white dark:text-opacity-80 hover:text-opacity-100 font-bold'
+          target='_blank'
+        >
+          {t('bridge')}{' '}
+          <FeatherIcon
+            icon='external-link'
+            className={'relative w-4 h-4 ml-2'}
+            style={{ top: -1 }}
+          />
+        </a>
+      </Link>
+
+      {/* <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
+        <div className='my-1 xs:my-0 xs:mr-3'> </div>
+      </div> */}
     </div>
   )
 }

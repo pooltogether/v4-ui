@@ -1,7 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-
 import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOdds } from './useAllPrizePoolOdds'
 import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'

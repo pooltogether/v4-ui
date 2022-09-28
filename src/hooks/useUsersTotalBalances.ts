@@ -2,9 +2,9 @@ import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalanc
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
-import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
-import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
+import { useUsersV3POOLPoolBalances } from './v3/useUsersV3POOLPoolBalances'
+import { useAllUsersV4Balances } from './v4/PrizePool/useAllUsersV4Balances'
 
 // NOTE: Assumes v4 balances are USD stable coins
 export const useUsersTotalBalances = (usersAddress: string) => {

@@ -1,19 +1,19 @@
-import React, { useMemo } from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { Token } from '@pooltogether/hooks'
-import { PrizeTier } from '@pooltogether/v4-client-js'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
-import { useTimeUntil } from '@hooks/useTimeUntil'
-import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { Time } from '@components/Time'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
-import { formatUnits } from 'ethers/lib/utils'
-import { BigNumber } from 'ethers'
 import { Dot } from '@components/Dot'
+import { Time } from '@components/Time'
+import { useTimeUntil } from '@hooks/useTimeUntil'
+import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
+import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
+import { Token } from '@pooltogether/hooks'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { PrizeTier } from '@pooltogether/v4-client-js'
+import classNames from 'classnames'
+import { BigNumber } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
+import { useTranslation } from 'next-i18next'
+import React, { useMemo } from 'react'
 
 export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -80,8 +80,8 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   return (
     <h1
       className={classNames(
-        'text-12xl xs:text-14xl xs:-mt-0 font-extrabold  pointer-events-none mx-auto leading-none relative hover:text-gradient-magenta',
-        { 'opacity-50 animate-pulse': !amount }
+        'text-12xl xs:text-14xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
+        { 'opacity-50': !amount }
       )}
     >
       $<CountUp countFrom={0} countTo={amount} decimals={0} />

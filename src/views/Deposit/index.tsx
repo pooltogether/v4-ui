@@ -1,9 +1,8 @@
-import React from 'react'
-
 import { PagePadding } from '@components/Layout/PagePadding'
-import { NetworkCarousel } from './NetworkCarousel'
+import React from 'react'
 import { DepositTrigger } from './DepositTrigger'
 import { Footer } from './Footer'
+import { NetworkCarousel } from './NetworkCarousel'
 
 export const DepositUI = () => {
   return (

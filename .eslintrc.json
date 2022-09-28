@@ -1,12 +1,12 @@
 {
-  "extends": ["next", "prettier"],
+  "extends": ["next"],
   "rules": {
     "react/no-children-prop": "off",
     "react/no-unescaped-entities": "off"
   },
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": ["*.ts", "*.tsx"],
       "rules": {
         "import/order": [
           "error",
@@ -19,7 +19,7 @@
                 "position": "before"
               }
             ],
-            "newlines-between": "always",
+            "newlines-between": "never",
             "alphabetize": {
               "order": "asc",
               "caseInsensitive": true

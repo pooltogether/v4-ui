@@ -1,13 +1,13 @@
-import React from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { Token } from '@pooltogether/hooks'
-import { BigNumber } from 'ethers'
-import { toast } from 'react-toastify'
-import { Button } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
 import { useSendRevokeAllowance } from '@hooks/useSendRevokeAllowance'
+import { Token } from '@pooltogether/hooks'
+import { Button } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
+import { BigNumber } from 'ethers'
+import FeatherIcon from 'feather-icons-react'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
 
 export interface DepositAllowance {
   allowanceUnformatted: BigNumber

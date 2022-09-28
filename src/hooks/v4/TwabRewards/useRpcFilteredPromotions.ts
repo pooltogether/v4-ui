@@ -1,4 +1,3 @@
-import { RPC_API_KEYS } from '@constants/config'
 import { FILTERED_PROMOTION_IDS } from '@constants/promotions'
 import { Provider } from '@ethersproject/providers'
 import { batch } from '@pooltogether/etherplex'
@@ -13,7 +12,7 @@ import { useQueries } from 'react-query'
 export const useRpcFilteredPromotions = (chainIds) => {
   return useQueries(
     chainIds.map((chainId) => {
-      const provider = getReadProvider(chainId, RPC_API_KEYS)
+      const provider = getReadProvider(chainId)
 
       return {
         refetchInterval: sToMs(60),
@@ -52,6 +51,7 @@ export const getPromotion = async (chainId: number, provider: Provider, promotio
 
   const twabRewardsResults = await batch(
     provider,
+    // @ts-ignore
     twabRewardsContract.getCurrentEpochId(promotionId)
   )
 

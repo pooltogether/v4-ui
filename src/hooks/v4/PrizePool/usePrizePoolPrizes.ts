@@ -1,10 +1,8 @@
 import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
 import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
 import { useQuery } from 'react-query'
-
 import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 

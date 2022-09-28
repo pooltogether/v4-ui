@@ -1,6 +1,6 @@
 import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
 import classnames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 interface InfoListProps

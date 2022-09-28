@@ -9,11 +9,7 @@ import { useMemo } from 'react'
 export const usePrizePools = () => {
   const prizePoolNetwork = usePrizePoolNetwork()
   const supportedChainIds = useSupportedChainIds()
-  return useMemo(
-    () =>
-      prizePoolNetwork?.prizePools.filter((prizePool) =>
-        supportedChainIds.includes(prizePool.chainId)
-      ),
-    [prizePoolNetwork, supportedChainIds]
+  return prizePoolNetwork?.prizePools.filter((prizePool) =>
+    supportedChainIds.includes(prizePool.chainId)
   )
 }

@@ -1,6 +1,6 @@
 import { useSendTransaction as _useSendTransaction } from '@pooltogether/wallet-connection'
 import * as Sentry from '@sentry/react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 /**
  * A simple wrapper on useSendTransaction providing a Sentry logger

@@ -1,3 +1,4 @@
+import { ClaimedPromotion } from '@interfaces/promotions'
 import { getRefetchInterval } from '@pooltogether/hooks'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { getTwabRewardsSubgraphClient } from '@utils/v4/TwabRewards/getTwabRewardsSubgraphClient'
@@ -36,7 +37,12 @@ export const getUsersRewardsHistory = async (
   const query = usersRewardsHistoryQuery()
   const variables = { id: usersAddress.toLowerCase() }
 
-  const rewardsHistoryResponse = await client.request(query, variables).catch((e) => {
+  const rewardsHistoryResponse: {
+    account: {
+      claimedPromotions: ClaimedPromotion[]
+      id: string
+    }
+  } = await client.request(query, variables).catch((e) => {
     console.error(e.message)
     throw e
   })

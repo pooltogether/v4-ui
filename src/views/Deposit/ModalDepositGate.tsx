@@ -1,23 +1,23 @@
-import React from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { Token, Amount } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   ButtonLink,
   Button,
   ButtonTheme,
   ButtonSize,
   ThemedClipSpinner
 } from '@pooltogether/react-components'
-
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import {
+  formatBlockExplorerTxUrl,
+  Transaction,
+  TransactionState,
+  TransactionStatus
+} from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { Transaction, TransactionState, TransactionStatus } from '@pooltogether/wallet-connection'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface ModalDepositGateProps {
   token: Token

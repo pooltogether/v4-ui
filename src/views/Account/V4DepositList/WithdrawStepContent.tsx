@@ -1,26 +1,25 @@
-import React from 'react'
-import classnames from 'classnames'
-import { Button, ButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
-import { Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
-import { parseUnits } from '@ethersproject/units'
-import { useTranslation } from 'react-i18next'
-import { ethers } from 'ethers'
-import { User, PrizePool } from '@pooltogether/v4-client-js'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
-
-import { TextInputGroup } from '@components/Input/TextInputGroup'
-import { RectangularInput } from '@components/Input/TextInputs'
-import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
-import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
+import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
-import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
-import { TxButton } from '@components/Input/TxButton'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
+import { MaxAmountTextInputRightLabel } from '@components/Input/MaxAmountTextInputRightLabel'
+import { TextInputGroup } from '@components/Input/TextInputGroup'
+import { RectangularInput } from '@components/Input/TextInputs'
+import { TxButton } from '@components/Input/TxButton'
+import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { parseUnits } from '@ethersproject/units'
+import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { Amount, TokenWithBalance } from '@pooltogether/hooks'
+import { Button, ButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
+import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Transaction } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
-import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import classnames from 'classnames'
+import { ethers } from 'ethers'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { WithdrawalSteps } from './WithdrawView'
 
 const WITHDRAW_QUANTITY_KEY = 'withdrawal-quantity'
@@ -128,7 +127,14 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <SquaredTokenAmountContainer chainId={chainId} amount={amount} token={token} />
 
-      <ErrorsBox errors={isDirty ? errors : null} className='opacity-75' />
+      <ErrorsBox
+        errors={
+          isDirty && !!errors
+            ? Object.values(errors).map((e) => (typeof e.message === 'string' ? e.message : null))
+            : []
+        }
+        className='opacity-75'
+      />
 
       <WithdrawWarning className='mt-2' />
 
@@ -188,6 +194,7 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
         className='w-full'
         theme={ButtonTheme.orangeOutline}
         onClick={sendWithdrawTx}
+        type='button'
         state={tx?.state}
         status={tx?.status}
       >
@@ -201,7 +208,7 @@ const WithdrawLabel = (props) => {
   const { symbol } = props
   const { t } = useTranslation()
   return (
-    <div className='font-inter font-semibold uppercase text-accent-3 opacity-60'>
+    <div className=' font-semibold uppercase text-accent-3 opacity-60'>
       {t('withdrawTicker', { ticker: symbol })}
     </div>
   )
@@ -335,10 +342,7 @@ const UpdatedStats = (props: {
       {/* // TODO: Add back odds from main branch */}
       <FinalTicketBalanceStat amount={amountToWithdraw?.amount} ticket={ticket} />
       <UnderlyingReceivedStat amount={amountToWithdraw?.amount} token={token} />
-      <EstimatedWithdrawalGasItem
-        chainId={prizePool.chainId}
-        amountUnformatted={amountToWithdraw?.amountUnformatted}
-      />
+      <EstimatedWithdrawalGasItem chainId={prizePool.chainId} />
     </ModalInfoList>
   )
 }

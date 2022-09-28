@@ -1,29 +1,29 @@
-import React, { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
 import WalletIllustration from '@assets/images/wallet-illustration.png'
-import { PagePadding } from '@components/Layout/PagePadding'
-import { AccountCard } from '@views/Account/AccountCard'
-import { OddsDisclaimer } from './OddsDisclaimer'
-import { V4DepositList } from './V4DepositList'
-import { V3DepositList } from './V3DepositList'
-import { V3StakingList } from './V3StakingList'
-import classNames from 'classnames'
-import { PastPrizesSidebarCard } from './SidebarCard/PastPrizesSidebarCard'
-import { GovernanceSidebarCard } from './SidebarCard/GovernanceSidebarCard'
-import { DelegationList } from './DelegationList'
-import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
-import { ConnectWalletButton } from '@components/ConnectWalletButton'
-import { ButtonRadius, ButtonSize, ButtonTheme, Tabs } from '@pooltogether/react-components'
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
 import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
-import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
-import { CardTitle } from '@components/Text/CardTitle'
-import Link from 'next/link'
 import { TopPrizePools } from '@components/BrowsePrizePools/TopPrizePools'
-import { OddsOfWinningWithX, OddsSidebarCard } from './SidebarCard/OddsSidebarCard'
+import { ConnectWalletButton } from '@components/ConnectWalletButton'
+import { PagePadding } from '@components/Layout/PagePadding'
+import { CardTitle } from '@components/Text/CardTitle'
+import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { ButtonRadius, ButtonSize, ButtonTheme, Tabs } from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
+import { AccountCard } from '@views/Account/AccountCard'
 import { DepositModal, ViewIds } from '@views/Deposit/DepositTrigger/DepositModal'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
+import React, { useState } from 'react'
+import { DelegationList } from './DelegationList'
+import { OddsDisclaimer } from './OddsDisclaimer'
+import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
+import { GovernanceSidebarCard } from './SidebarCard/GovernanceSidebarCard'
+import { OddsOfWinningWithX, OddsSidebarCard } from './SidebarCard/OddsSidebarCard'
+import { PastPrizesSidebarCard } from './SidebarCard/PastPrizesSidebarCard'
+import { V3DepositList } from './V3DepositList'
+import { V3StakingList } from './V3StakingList'
+import { V4DepositList } from './V4DepositList'
 
 export const AccountUI = (props) => {
   const usersAddress = useUsersAddress()
@@ -69,7 +69,7 @@ const MainContent = (props) => <div {...props} className={props.className} />
  * @param props
  * @returns
  */
-const HeaderContent: React.FC<{ className?: string }> = (props) => {
+const HeaderContent: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
   let { children, className, ...remainingProps } = props
   const isWalletConnected = useIsWalletConnected()
   if (!isWalletConnected) {
@@ -78,7 +78,7 @@ const HeaderContent: React.FC<{ className?: string }> = (props) => {
   return <div {...remainingProps} children={children} className={classNames('w-full', className)} />
 }
 
-const CardContent: React.FC<{ className?: string }> = (props) => {
+const CardContent: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
   let { children, className, ...remainingProps } = props
 
   const isWalletConnected = useIsWalletConnected()
@@ -106,7 +106,7 @@ const CardContent: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const SidebarContent: React.FC<{ className?: string }> = (props) => {
+const SidebarContent: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
   let { children, className, ...remainingProps } = props
 
   return (

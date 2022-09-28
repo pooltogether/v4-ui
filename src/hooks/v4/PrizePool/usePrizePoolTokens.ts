@@ -23,7 +23,7 @@ export const getPrizePoolTokens = async (prizePool: PrizePool) => {
   const cachedData = PRIZE_POOL_TOKENS[prizePool.chainId]?.find(
     (data) => data.prizePoolId === prizePool.id()
   )
-  if (cachedData) return cachedData
+  if (!!cachedData) return cachedData
 
   const ticketDataPromise = prizePool.getTicketData()
   const tokenDataPromise = prizePool.getTokenData()

@@ -19,7 +19,7 @@ export const useUsersChainTwabPercentage = (chainId: number, usersAddress: strin
     () =>
       getUsersChainTwabPercentage(
         chainId,
-        totalTwabSupply?.amountUnformatted,
+        totalTwabSupply.amount.amountUnformatted,
         usersTwabs,
         Number(decimals)
       ),

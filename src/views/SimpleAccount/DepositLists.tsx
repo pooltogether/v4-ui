@@ -12,7 +12,7 @@ import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { BalanceDelegatedToItem } from '@views/Account/V4Deposits/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from '@views/Account/V4Deposits/TwabDelegatorItem'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 /**
  *

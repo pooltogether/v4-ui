@@ -1,16 +1,14 @@
-import React, { useMemo } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { useTranslation } from 'react-i18next'
-import classNames from 'classnames'
-
-import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { TotalWinningsCard } from './TotalWinnings'
-import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
-import WalletIllustration from '@assets/images/wallet-illustration.png'
-import { unionProbabilities } from '@utils/unionProbabilities'
-import { shorten } from '@pooltogether/utilities'
 import { TransparentDiv } from '@components/TransparentDiv'
+import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
+import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { shorten } from '@pooltogether/utilities'
+import { unionProbabilities } from '@utils/unionProbabilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useMemo } from 'react'
+import { TotalWinningsCard } from './TotalWinnings'
 
 export const AccountCard: React.FC<{
   usersAddress: string
@@ -22,7 +20,7 @@ export const AccountCard: React.FC<{
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
       <TransparentDiv className='flex justify-between p-4 rounded-lg'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
-        <img src={WalletIllustration} className='w-16 xs:w-20' />
+        <img src={'/wallet-illustration.png'} style={{ width: '65px', height: '60px' }} />
       </TransparentDiv>
       <div className='flex sm:hidden space-x-2'>
         <DailyOdds usersAddress={usersAddress} />

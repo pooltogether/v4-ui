@@ -1,6 +1,5 @@
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
-
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { useValidDrawIds } from './useValidDrawIds'

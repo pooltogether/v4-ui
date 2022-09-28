@@ -1,23 +1,23 @@
-import { NetworkIcon, ButtonTheme, TokenIcon } from '@pooltogether/react-components'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { useState } from 'react'
-import { Amount, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { BigNumber } from 'ethers'
-
-import { useUsersAddress, useTransaction } from '@pooltogether/wallet-connection'
+import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
 import { CardTitle } from '@components/Text/CardTitle'
-import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
-import { useIsWalletMetamask } from '@hooks/useIsWalletMetamask'
-import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
-import { PodWithdrawView } from '@views/Account/V3DepositList/PodWithdrawView'
+import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
+import { Amount } from '@pooltogether/hooks'
+import { NetworkIcon, TokenIcon, ButtonTheme, ButtonTheme } from '@pooltogether/react-components'
+import {
+  useUsersAddress,
+  useTransaction,
+  useIsWalletOnChainId
+} from '@pooltogether/wallet-connection'
 import { AccountList } from '@views/Account/AccountList'
 import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
-import { TokenBalance } from '@components/TokenBalance'
-import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
+import { PodWithdrawView } from '@views/Account/V3DepositList/PodWithdrawView'
+import { BigNumber } from 'ethers'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import { useMemo, useState } from 'react'
+import { PrizePoolWithdrawView } from './PrizePoolWithdrawView'
 
 // TODO: Funnel isTokenPriceFetched all the way down so users aren't scared if they see $0
 export const V3DepositList = () => {
@@ -109,7 +109,6 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
-  const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
@@ -142,6 +141,25 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
     }
   ]
   const onDismiss = () => setIsOpen(false)
+  const views = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        view: () => (
+          <PrizePoolWithdrawView
+            {...props}
+            prizePool={prizePool}
+            onDismiss={onDismiss}
+            setWithdrawTxId={setTxId}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        label: t('withdraw'),
+        theme: ButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
 
   return (
     <>
@@ -172,30 +190,14 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
             href: `https://v3.pooltogether.com/account`
           }
         ]}
-        views={[
-          {
-            id: 'withdraw',
-            view: () => (
-              <PrizePoolWithdrawView
-                {...props}
-                prizePool={prizePool}
-                onDismiss={onDismiss}
-                setWithdrawTxId={setTxId}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            label: t('withdraw'),
-            theme: ButtonTheme.tealOutline
-          }
-        ]}
+        views={views}
         transactionHash={tx?.response?.hash}
         prizePoolAddress={prizePool.addresses.prizePool}
         token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         contractLinks={contractLinks}
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
-        isWalletMetaMask={isWalletMetaMask}
+        ticket={ticket}
       />
     </>
   )
@@ -209,7 +211,6 @@ const PodDepositItem = (props: DepositItemsProps) => {
   const [txId, setTxId] = useState('')
   const tx = useTransaction(txId)
 
-  const isWalletMetaMask = useIsWalletMetamask()
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
   const contractLinks: ContractLink[] = [
@@ -235,6 +236,26 @@ const PodDepositItem = (props: DepositItemsProps) => {
     }
   ]
   const onDismiss = () => setIsOpen(false)
+
+  const views = useMemo(
+    () => [
+      {
+        id: 'withdraw',
+        view: () => (
+          <PodWithdrawView
+            {...props}
+            prizePool={prizePool}
+            onDismiss={onDismiss}
+            setWithdrawTxId={setTxId}
+            refetchBalances={refetchBalances}
+          />
+        ),
+        label: t('withdraw'),
+        theme: ButtonTheme.tealOutline
+      }
+    ],
+    []
+  )
 
   return (
     <>
@@ -263,30 +284,12 @@ const PodDepositItem = (props: DepositItemsProps) => {
             href: `https://v3.pooltogether.com/account`
           }
         ]}
-        views={[
-          {
-            id: 'withdraw',
-            view: () => (
-              <PodWithdrawView
-                {...props}
-                prizePool={prizePool}
-                onDismiss={onDismiss}
-                setWithdrawTxId={setTxId}
-                refetchBalances={refetchBalances}
-              />
-            ),
-            label: t('withdraw'),
-            theme: ButtonTheme.tealOutline
-          }
-        ]}
+        views={views}
         transactionHash={tx?.response?.hash}
         token={token}
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         contractLinks={contractLinks}
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
-        isWalletMetaMask={isWalletMetaMask}
-        prizePoolAddress={prizePool.addresses.prizePool}
       />
     </>
   )

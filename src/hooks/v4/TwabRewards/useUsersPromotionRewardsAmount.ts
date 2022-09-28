@@ -1,4 +1,3 @@
-import { RPC_API_KEYS } from '@constants/config'
 import { batch } from '@pooltogether/etherplex'
 import { getRefetchInterval } from '@pooltogether/hooks'
 import { getReadProvider } from '@pooltogether/wallet-connection'
@@ -39,24 +38,35 @@ export const getUsersPromotionRewardsAmount = async (
   maxCompletedEpochId: number,
   usersAddress: string
 ) => {
-  const provider = getReadProvider(chainId, RPC_API_KEYS)
+  const provider = getReadProvider(chainId)
   const twabRewardsContract = getTwabRewardsEtherplexContract(chainId)
   const twabRewardsContractAddress = getTwabRewardsContractAddress(chainId)
 
-  const epochIds = [...Array(maxCompletedEpochId).keys()]
+  const epochIds = Array.from(Array(maxCompletedEpochId).keys())
 
   try {
     const twabRewardsResults = await batch(
       provider,
+      // @ts-ignore
       twabRewardsContract.getRewardsAmount(usersAddress, promotionId, epochIds)
     )
 
-    const rewardsAmount = twabRewardsResults[twabRewardsContractAddress].getRewardsAmount[0]
+    const rewardsAmount: string[] = twabRewardsResults[
+      twabRewardsContractAddress
+    ].getRewardsAmount[0]
       .toString()
       .split(',')
 
-    return { rewardsAmount }
+    const rewardsAndEpochs = rewardsAmount.map((reward, index) => ({
+      reward,
+      epochId: epochIds[index]
+    }))
+
+    return { rewardsAmount, rewardsAndEpochs }
   } catch (e) {
-    return { rewardsAmount: [] }
+    return {
+      rewardsAmount: [] as string[],
+      rewardsAndEpochs: [] as { reward: string; epochId: number }[]
+    }
   }
 }

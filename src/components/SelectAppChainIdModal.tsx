@@ -1,20 +1,15 @@
-import React, { useState } from 'react'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
-import { useV4ChainIds } from '@hooks/v4/useV4ChainIds'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { PrizePoolCard } from './PrizePoolCard'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { PrizePoolLabel, PrizePoolLabelFlat } from './PrizePoolLabel'
-import { ExplorePrizePoolsModal } from '@views/Account/V4DepositList/ExplorePrizePoolsModal'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useChainActiveRewards } from '@hooks/v4/TwabRewards/useChainActiveRewards'
+import { BottomSheet, NetworkIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
+import { PrizePoolLabelFlat } from './PrizePoolLabel'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -146,7 +141,7 @@ const RewardsLabel = (props) => {
 
   return (
     <div className='flex items-center uppercase text-xxs font-bold bg-pt-teal dark:bg-pt-teal px-3 py-1 bg-flashy rounded-full text-pt-purple-dark'>
-      <img className='w-4 mr-2 inline-block' src='beach-with-umbrella.png' /> {t('rewards')}!
+      <img className='w-4 mr-2 inline-block' src='/beach-with-umbrella.png' /> {t('rewards')}!
     </div>
   )
 }

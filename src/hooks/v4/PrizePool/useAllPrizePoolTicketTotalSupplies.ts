@@ -1,11 +1,10 @@
 import { useQueries } from 'react-query'
-
+import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
+import { usePrizePools } from './usePrizePools'
 import {
   getPrizePoolTicketTotalSupply,
   getPrizePoolTicketTotalSupplyQueryKey
-} from '../TwabRewards/usePrizePoolTicketTotalSupply'
-import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
-import { usePrizePools } from './usePrizePools'
+} from './usePrizePoolTicketTotalSupply'
 
 export const useAllPrizePoolTicketTotalSupplies = () => {
   const prizePools = usePrizePools()

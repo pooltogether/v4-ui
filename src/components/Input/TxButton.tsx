@@ -1,5 +1,3 @@
-import React, { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Button, ButtonProps } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
@@ -9,6 +7,8 @@ import {
   useIsWalletConnected,
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
+import React, { useMemo } from 'react'
 import { useSwitchNetwork } from 'wagmi'
 
 export interface TxButtonProps extends ButtonProps {
@@ -63,7 +63,20 @@ export const TxButton = (props: TxButtonProps) => {
     } else {
       return [children, _onClick, _type]
     }
-  }, [chainId, state, status, isWalletOnProperNetwork, isWalletConnected, _onClick])
+  }, [
+    isWalletConnected,
+    status,
+    isWalletOnProperNetwork,
+    _connectWallet,
+    t,
+    connectWallet,
+    networkName,
+    switchNetwork,
+    chainId,
+    children,
+    _onClick,
+    _type
+  ])
 
   return (
     <>
