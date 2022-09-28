@@ -3,7 +3,7 @@ import { CardTitle } from '@components/Text/CardTitle'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { Amount } from '@pooltogether/hooks'
-import { NetworkIcon, TokenIcon, ButtonTheme, ButtonTheme } from '@pooltogether/react-components'
+import { NetworkIcon, TokenIcon, ButtonTheme } from '@pooltogether/react-components'
 import {
   useUsersAddress,
   useTransaction,

@@ -1,5 +1,4 @@
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { getExchangeUrl } from '@constants/config'
@@ -12,6 +11,7 @@ import {
   formatBlockExplorerAddressUrl,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
+import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'

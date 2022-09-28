@@ -1,5 +1,4 @@
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -10,8 +9,9 @@ import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegat
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { BalanceDelegatedToItem } from '@views/Account/V4Deposits/BalanceDelegatedToItem'
-import { TwabDelegatorItem } from '@views/Account/V4Deposits/TwabDelegatorItem'
+import { LoadingList } from '@views/Account/AccountList/LoadingList'
+import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
+import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
 import { useTranslation } from 'next-i18next'
 
 /**

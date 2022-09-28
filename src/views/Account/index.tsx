@@ -1,4 +1,3 @@
-import WalletIllustration from '@assets/images/wallet-illustration.png'
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
 import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
 import { TopPrizePools } from '@components/BrowsePrizePools/TopPrizePools'
@@ -122,7 +121,7 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
   return (
     <div className={classNames('text-center leading-none xs:max-w-lg', props.className)}>
       <div className='mx-auto mt-6 mb-2 flex justify-center'>
-        <img src={WalletIllustration} className='w-24 h-24 xs:w-38 xs:h-38 ml-4 xs:ml-8' />
+        <img src={'/wallet-illustration.png'} className='w-24 h-24 xs:w-38 xs:h-38 ml-4 xs:ml-8' />
       </div>
       <div className='font-bold w-2/3 text-2xl sm:text-4xl mx-auto mb-2'>
         Prize accounts for humans

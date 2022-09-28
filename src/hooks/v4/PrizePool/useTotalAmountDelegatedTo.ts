@@ -6,13 +6,6 @@ import { useAllUsersV4Balances } from './useAllUsersV4Balances'
 import { useSelectedPrizePoolTicket } from './useSelectedPrizePoolTicket'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
 
-
-import { useAllUsersTicketDelegates } from './useAllUsersTicketDelegates'
-import { useAllUsersV4Balances } from './useAllUsersV4Balances'
-import { useSelectedPrizePoolTicket } from './useSelectedPrizePoolTicket'
-import { useUsersTotalTwab } from './useUsersTotalTwab'
-
-
 /**
  * Aggregates data to calculate the total amount delegated to a user
  * NOTE: Assumes all prize pool tickets have the same decimals

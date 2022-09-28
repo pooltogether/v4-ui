@@ -6,14 +6,15 @@ import { Navigation } from './Navigation'
 
 interface LayoutProps {
   className?: string
+  backgroundClassName?: string
   children: React.ReactNode
 }
 
 const Layout = (props: LayoutProps) => {
-  const { children, className } = props
+  const { children, className, backgroundClassName } = props
 
   return (
-    <div className={classNames(className, 'min-h-screen minimal-scrollbar')}>
+    <div className={classNames(className, backgroundClassName, 'min-h-screen minimal-scrollbar')}>
       <PageHeader />
       <Navigation />
       <RewardsBanners />
