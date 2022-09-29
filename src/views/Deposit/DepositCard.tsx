@@ -1,4 +1,6 @@
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
+import { getDepositGasLimit } from '@constants/config'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -144,17 +146,42 @@ export const DepositCard = (props: { className?: string }) => {
 
   const sendDepositTx = async () => {
     const name = `${t('deposit')} ${amountToDeposit.amountPretty} ${token.symbol}`
-    const overrides: Overrides = { gasLimit: 750000 }
-    let contractMethod
+    const overrides: Overrides = { gasLimit: getDepositGasLimit(prizePool.chainId) }
     let callTransaction
+
     if (ticketDelegate === ethers.constants.AddressZero) {
-      contractMethod = 'depositToAndDelegate'
+      // Try to estimate gas
+      // TODO: Move this to v4-client-js for sharability.
+      try {
+        const user = await getUser()
+        const prizePoolContract = user.prizePoolContract
+        const gasEstimate = await prizePoolContract.estimateGas.depositToAndDelegate(
+          usersAddress,
+          amountToDeposit.amountUnformatted,
+          usersAddress
+        )
+        overrides.gasLimit = gasEstimate.mul(12).div(10)
+      } catch (e) {
+        console.log('Error estimating gas')
+      }
       callTransaction = async () => {
         const user = await getUser()
         return user.depositAndDelegate(amountToDeposit.amountUnformatted, usersAddress, overrides)
       }
     } else {
-      contractMethod = 'depositTo'
+      // Try to estimate gas
+      // TODO: Move this to v4-client-js for sharability.
+      try {
+        const user = await getUser()
+        const prizePoolContract = user.prizePoolContract
+        const gasEstimate = await prizePoolContract.estimateGas.depositTo(
+          usersAddress,
+          amountToDeposit.amountUnformatted
+        )
+        overrides.gasLimit = gasEstimate.mul(12).div(10)
+      } catch (e) {
+        console.log('Error estimating gas')
+      }
       callTransaction = async () => {
         const user = await getUser()
         return user.deposit(amountToDeposit.amountUnformatted, overrides)

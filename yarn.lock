@@ -2430,18 +2430,18 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/v4-periphery/-/v4-periphery-1.2.6-beta.1.tgz#6d357084d560b02cc3e54f34ee5426ed85569799"
   integrity sha512-tQNEDud+gZd9YpM/5OloUd6qdlM1hn6w6dqsXbFwAkfTvtKjgwIGTgvgzNeeOP4nyxPKh3keKuxlVe0c+NB8OA==
 
-"@pooltogether/v4-pool-data@1.8.2-beta.2":
-  version "1.8.2-beta.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-1.8.2-beta.2.tgz#29babbffb0170837dbe443e8c6ee3428b2e718c7"
-  integrity sha512-bcg0kPcihO0Z7HErI+zRndgJL4uil9PSXegkh1IrLq/7+e6t0c387yaMfllu3w4PPsu4VGxkccZ4YFsnalkntA==
+"@pooltogether/v4-pool-data@1.8.2-beta.3":
+  version "1.8.2-beta.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-pool-data/-/v4-pool-data-1.8.2-beta.3.tgz#718856d105e83a4dec766dbb3c0de1cd36604dc6"
+  integrity sha512-d+As5++EVwM92olt3uypPDAQ5gpy91dtKKjM1CM3IFry0CI/ia5NlRnvyAXFx8Jn/7b3i5dJJEI4VxUo2ZIiYg==
   dependencies:
     "@pooltogether/v4-mainnet" "1.6.1"
-    "@pooltogether/v4-testnet" "1.6.1"
+    "@pooltogether/v4-testnet" "1.7.0"
 
-"@pooltogether/v4-testnet@1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-testnet/-/v4-testnet-1.6.1.tgz#8e5f4ba9c95413f43dea0854d6e39110e7ab15d7"
-  integrity sha512-DsJiEps1oJsKiTsIwPjTDuqZadwLsb/W/CXhq2pm7tOX0a8xvU7CPiP1nRKEqRo8mKgWBeN+q/a8HY5Nmv99qA==
+"@pooltogether/v4-testnet@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-testnet/-/v4-testnet-1.7.0.tgz#4756d96342e79b645a919568a099fb9612d26ad6"
+  integrity sha512-HOCVivBM/0HmiFtB4ZjF6ltW5o/YDskVd/eFx2msJIiKeLe7Ti5KaootgVCEmsPIX4/SEHpl7RrvsWhOzNlwOw==
   dependencies:
     "@chainlink/contracts" "0.4.2"
     "@openzeppelin/contracts" "4.7.3"
