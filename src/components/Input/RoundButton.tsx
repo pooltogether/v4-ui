@@ -1,6 +1,6 @@
 import FeatherIcon from 'feather-icons-react'
 
-export const RoundButton: React.FC<{ onClick: () => void; icon: string; label: string }> = (
+export const RoundButton: React.FC<{ onClick: () => void; icon: string; label?: string }> = (
   props
 ) => (
   <div className='flex flex-col'>
@@ -11,6 +11,6 @@ export const RoundButton: React.FC<{ onClick: () => void; icon: string; label: s
     >
       <FeatherIcon className='mx-auto w-4 h-4 stroke-current stroke-3' icon={props.icon} />
     </button>
-    <div className='text-xxxs mx-auto mt-1'>{props.label}</div>
+    {!!props.label && <div className='text-xxxs mx-auto mt-1'>{props.label}</div>}
   </div>
 )

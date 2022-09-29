@@ -67,13 +67,9 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
   if (vapr <= 0) return null
 
   return (
-    <li className='flex space-x-1 items-center'>
+    <li className='flex space-x-2 items-center'>
       <span>{numberWithCommas(vapr)}% in</span>
-      <TokenIcon
-        chainId={promotion.chainId}
-        address={promotion.token}
-        sizeClassName='w-3 h-3 sm:w-4 sm:h-4'
-      />
+      <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
     </li>
   )
 }

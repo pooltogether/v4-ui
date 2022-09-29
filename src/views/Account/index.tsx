@@ -138,7 +138,7 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
+export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
   const { className } = props
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()

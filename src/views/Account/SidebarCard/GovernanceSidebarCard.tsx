@@ -1,3 +1,4 @@
+import { getExchangeUrl } from '@constants/config'
 import { CHAIN_ID, POOL_TOKEN, PPOOL_TICKET_TOKEN } from '@constants/misc'
 import { useUsersGovernanceBalances } from '@hooks/useUsersGovernanceBalances'
 import { useUsersVotes } from '@hooks/useUsersVotes'
@@ -57,7 +58,15 @@ const GovernanceDescription = () => {
     return (
       <Trans
         i18nKey={'getPoolToControlProtocol'}
-        components={{ a: <ExternalLink iconClassName='w-3 h-3 ml-1 mb-1' /> }}
+        components={{
+          a: (
+            <ExternalLink
+              iconClassName='w-3 h-3 ml-1 mb-1'
+              children={undefined}
+              href={getExchangeUrl(CHAIN_ID.mainnet, POOL_TOKEN[CHAIN_ID.mainnet])}
+            />
+          )
+        }}
       />
     )
   }
@@ -73,7 +82,7 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
   const ppoolBalance = balanceData?.[PPOOL_TICKET_TOKEN[CHAIN_ID.mainnet]]
   const totalVotesAmount =
     isFetched && isBalancesFetched
-      ? getAmountFromBigNumber(votes.amountUnformatted.add(ppoolBalance.amountUnformatted), '18')
+      ? getAmountFromBigNumber(votes?.amountUnformatted.add(ppoolBalance.amountUnformatted), '18')
       : null
 
   return (
@@ -93,7 +102,7 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
           <li className='flex justify-between'>
             <span>On chain</span>
             {isFetched ? (
-              <span className='font-bold'>{votes.amountPretty}</span>
+              <span className='font-bold'>{votes?.amountPretty}</span>
             ) : (
               <ThemedClipSpinner sizeClassName='w-4 h-4' />
             )}

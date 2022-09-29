@@ -1,14 +1,14 @@
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
+import { Amount } from '@pooltogether/hooks'
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { useTransaction } from '@pooltogether/wallet-connection'
 import { useCallback, useState } from 'react'
 import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
 import { WalletConnectionView } from '../../../../components/ModalViews/WalletConnectionView'
-import { DepositView } from './DepositView'
-import { useTransaction } from '@pooltogether/wallet-connection'
-import { Amount } from '@pooltogether/hooks'
 import { DepositReviewView } from './DepositReviewView'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
+import { DepositView } from './DepositView'
 
 export enum ViewIds {
   deposit,
@@ -81,11 +81,11 @@ export const DepositModal: React.FC<{
     <ModalWithViewState
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
-      modalHeightClassName='h-actually-full-screen min-h-1/2 sm:h-auto '
-      maxHeightClassName='sm:max-h-90-screen'
-      widthClassName='w-screen sm:w-full'
-      maxWidthClassName='sm:max-w-screen-sm'
-      roundedClassName='rounded-none sm:rounded-xl'
+      // modalHeightClassName='h-actually-full-screen min-h-1/2 sm:h-auto '
+      // maxHeightClassName='sm:max-h-90-screen'
+      // widthClassName='w-screen sm:w-full'
+      // maxWidthClassName='sm:max-w-screen-sm'
+      // roundedClassName='rounded-none sm:rounded-xl'
       className='h-full'
       isOpen={isOpen}
       closeModal={() => {

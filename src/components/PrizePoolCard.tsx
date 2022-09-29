@@ -1,6 +1,7 @@
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
+import { useChainTwabRewardsPromotions } from '@hooks/v4/TwabRewards/useChainTwabRewardsPromotions'
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import {
   TokenIcon,
@@ -13,20 +14,16 @@ import {
 import { getNetworkNiceNameByChainId, numberWithCommas, shorten } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
-import { useChainTwabRewardsPromotions } from '@hooks/v4/TwabRewards/useChainTwabRewardsPromotions'
+import FeatherIcon from 'feather-icons-react'
 import { PromotionsVapr } from './InfoList/TwabRewardsAprItem'
+import { RoundButton } from './Input/RoundButton'
 
 const SIZE_CLASSNAME = 'w-64'
 const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-white dark:bg-opacity-10'
 const RADIUS_CLASSNAME = 'rounded-xl'
 
-export const PrizePoolCardLoader = () => (
-  <div
-    className={classNames('animate-pulse h-40', SIZE_CLASSNAME, BG_CLASSNAME, RADIUS_CLASSNAME)}
-  />
-)
-
 export const PrizePoolCard: React.FC<{
+  children: React.ReactNode
   prizePool: PrizePool
   onClick?: (prizePool: PrizePool) => void
   className?: string
@@ -45,7 +42,6 @@ export const PrizePoolCard: React.FC<{
     radiusClassName,
     hoverClassName
   } = props
-  const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
 
   return (
     <button
@@ -61,22 +57,18 @@ export const PrizePoolCard: React.FC<{
         }
       )}
     >
-      <div className='flex justify-between mb-2'>
-        {isPrizePoolTokensFetched && (
-          <div className='flex space-x-2'>
-            <TokenIcon
-              address={tokens.token.address}
-              chainId={prizePool.chainId}
-              sizeClassName='w-8 h-8'
-            />
-            <CardLabelLarge>{tokens.token.symbol}</CardLabelLarge>
-          </div>
-        )}
+      <div className='flex justify-between mb-3'>
+        <DepositToken prizePool={prizePool} />
+        <Network prizePool={prizePool} className='text-right' />
       </div>
-      {children}
-      <div className='flex justify-between'>
-        <Network prizePool={prizePool} />
-        <Rewards prizePool={prizePool} className='text-right' />
+      <div className='flex justify-between items-center space-x-2'>
+        <div>
+          {children}
+          <Rewards prizePool={prizePool} />
+        </div>
+        <div className='rounded-full bg-actually-black bg-opacity-5 p-1 flex flex-col justify-center items-center ml-auto mt-auto'>
+          <FeatherIcon icon='chevron-right' className='w-6 h-6' />
+        </div>
       </div>
     </button>
   )
@@ -94,7 +86,7 @@ const CardLabelSmall = (props) => (
 )
 
 const CardLabelMedium = (props) => (
-  <span {...props} className={classNames('text-xs', props.className)} />
+  <span {...props} className={classNames('text-xs font-bold', props.className)} />
 )
 
 const CardLabelLarge = (props) => (
@@ -119,7 +111,29 @@ const YieldSource: React.FC<{ prizePool: PrizePool }> = (props) => {
 }
 
 /**
- * TODO: Eventually we'll need to actually map the prize pools to yield source images. Aave is fine for now.
+ * @param props
+ * @returns
+ */
+const DepositToken: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
+  const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
+
+  return (
+    <div className={classNames('flex flex-col', className)}>
+      <CardLabelSmall>Token</CardLabelSmall>
+      <div className='flex space-x-1 items-center'>
+        <TokenIcon
+          address={tokens.token.address}
+          chainId={prizePool.chainId}
+          sizeClassName='w-5 h-5'
+        />
+        <CardLabelMedium>{tokens.token.symbol}</CardLabelMedium>
+      </div>
+    </div>
+  )
+}
+
+/**
  * @param props
  * @returns
  */
@@ -209,3 +223,9 @@ export const NumberOfPrizes: React.FC<{ prizePool: PrizePool }> = (props) => {
     </div>
   )
 }
+
+export const PrizePoolCardLoader = () => (
+  <div
+    className={classNames('animate-pulse h-40', SIZE_CLASSNAME, BG_CLASSNAME, RADIUS_CLASSNAME)}
+  />
+)
