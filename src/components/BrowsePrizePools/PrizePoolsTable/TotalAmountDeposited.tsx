@@ -8,13 +8,18 @@ export const TotalAmountDeposited = (props: { prizePool: PrizePool; className?: 
   const { data: tokens } = usePrizePoolTokens(props.prizePool)
   return (
     <span className={classNames(props.className)}>
-      <TokenIcon
+      {/* <TokenIcon
         chainId={props.prizePool.chainId}
-        address={tokens?.ticket.address}
+        address={tokens?.token.address}
         className={'mr-1 my-auto'}
-        sizeClassName={'w-4 h-4'}
-      />
-      <TicketTotalSupply prizePool={props.prizePool} /> {tokens?.token.symbol}
+        sizeClassName={'w-5 h-5 sm:w-4 sm:h-4'}
+      /> */}
+      <div className='flex flex-col sm:flex-row sm:space-x-1'>
+        <span>
+          <TicketTotalSupply prizePool={props.prizePool} />
+        </span>
+        <span>{tokens?.token.symbol}</span>
+      </div>
     </span>
   )
 }

@@ -90,7 +90,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
         )}
       >
         <Link href={`/deposit?network=${getNetworkNiceNameByChainId(chainId).toLowerCase()}`}>
-          <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
+          <a className='flex items-center h-8 text-white text-opacity-80 hover:text-opacity-100'>
             {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />
           </a>
         </Link>
@@ -100,7 +100,7 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             href={`https://app.optimism.io/bridge`}
             target='_blank'
             rel='noreferrer'
-            className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
+            className='flex items-center h-8 text-white text-opacity-80 hover:text-opacity-100'
           >
             {t('bridge')}{' '}
             <FeatherIcon

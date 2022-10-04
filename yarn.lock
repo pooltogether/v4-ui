@@ -2260,10 +2260,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^2.0.0-beta.3":
-  version "2.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.0-beta.3.tgz#f6d540a728d05173217455de7eaf530404f56e33"
-  integrity sha512-HwhL4+IrLeuWklFDIFr7GmV8BJLl1MGD4YXfqiBmNLrk2XtjDZVr1RuSzTaAOQGuUlvT83julUvfjSaMGpgdhw==
+"@pooltogether/hooks@^2.0.0-beta.4":
+  version "2.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.0-beta.4.tgz#711dca252f751a39bc4180f1f101bd6aea45fb99"
+  integrity sha512-dt4AJ94y6dEnEa1/QjpMI5K4Ka1Cv2StJL9t6zhv82WdcqbYF+ERUg3ir8boS9jVjcY7oOuFBy682OWQMVBxEA==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
@@ -2299,10 +2299,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@^2.0.0-beta.7":
-  version "2.0.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.0-beta.7.tgz#b4c182323a7f26ef94f7fbf74ba00e47a374488e"
-  integrity sha512-gp8YtXAtcbnHZr1eg0N4g+afZHB8UgjimlJlP89YpHTjnF/dwQHWMf+J1zsh/+DDU1y0zQaQb/NBRc15q6aW0g==
+"@pooltogether/react-components@^2.0.0-beta.8":
+  version "2.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.0-beta.8.tgz#5a721c0d584043cfcefe3bf9e591c4132da04fad"
+  integrity sha512-47rY0sAqcGHE4lTLS5Co9v39XUmc6hy+wojlA7CatUixar7Tpe10RNTIShEnOlgB2PSH30yKOj/WqxSqZdMPDg==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2312,6 +2312,7 @@
     classnames "^2.2.6"
     deep-equal "^2.0.5"
     js-cookie "^2.2.1"
+    next-themes "^0.2.1"
     react-content-loader "^6.0.3"
     react-copy-to-clipboard "^5.0.3"
     react-countup "^6.1.0"
@@ -2331,15 +2332,15 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.6.2.tgz#71a4e6dd56c6f0a03feea95b4f3a1b8eeee04329"
   integrity sha512-vGqf8wqdKbP3Sk0xsF8W6wkRJgyPEGCIyeH1YM3kPjzNn4mCMAc08tGlBtq0CvjkvaNwWgLAMv2/L7Jh//wbbw==
 
-"@pooltogether/v4-client-js@^0.15.2":
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.2.tgz#14c92c1960a78db80046601200d866f4e13e3eb2"
-  integrity sha512-YKn41jSzy1W28NsB6lnFPmbWqudy/2E7ImW4lnQG2EbfIdLd/Ydi0Hq7Sz4uSxpoRJXqoRORAiujY2RX+NkaeA==
+"@pooltogether/v4-client-js@^0.15.3":
+  version "0.15.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.3.tgz#f6ff2e03b8a25c42355b7c358c2c2633e17059c3"
+  integrity sha512-Ryiokefnz1ashIo+SChylTpP8rxDGRkblFzdqZ+wVpZfqeurGL+yGXKe/JlZIAhi3lBC8/SCKI/4TEWldUvW0A==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/etherplex" "^1.1.4"
-    "@pooltogether/utilities" "0.6.2"
+    "@pooltogether/utilities" "^0.6.2"
     "@pooltogether/v4-utils-js" "^0.1.3"
     debug "^4.3.3"
     ethers "^5.4.6"
@@ -2468,10 +2469,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@^1.0.0-beta.2":
-  version "1.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-1.0.0-beta.2.tgz#eb4a62f90e7bcbc3c81bd46f34d8640e75f004b5"
-  integrity sha512-6HIkOjtQthmACxYuQpCKT1oLgcL1FWwFGmZctAdz3UtTu8s6hp8AyOLcf108/IowYpvwoO0TH1HDXWNNFltgOw==
+"@pooltogether/wallet-connection@^1.0.0-beta.3":
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-1.0.0-beta.3.tgz#6dc7725ad7f93138509d66677b1c15e66c05b70a"
+  integrity sha512-YdOwngHPVyTYQq6S+jL06BWL6c5g35AP+orhtWgEq/v7W7E0nDVEIO2lS0DxAWqmbZ+BTHyZrugG9/B4+oyYCg==
   dependencies:
     "@download/blockies" "^1.0.3"
 

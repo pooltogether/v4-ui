@@ -209,7 +209,7 @@ const RewardsHaveMoved = () => (
     <p className='opacity-70 text-xxs xs:text-xs'>
       Claiming rewards has moved!{' '}
       <Link href={'/prizes#rewards'}>
-        <a className='transition-opacity hover:opacity-70 h-fit-content items-center'>
+        <a className='transition-opacity underline hover:opacity-70 h-fit-content items-center'>
           Take me there
           <FeatherIcon
             icon='arrow-up-right'

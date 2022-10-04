@@ -194,7 +194,7 @@ export const PrizePoolsTable: React.FC<{
                   key={`column-${index}`}
                   prizePool={prizePool}
                   className={classNames(
-                    'text-xxs xs:text-sm font-bold',
+                    'text-xxs sm:text-sm font-bold',
                     getHiddenColumnClassNames(index)
                   )}
                 />
