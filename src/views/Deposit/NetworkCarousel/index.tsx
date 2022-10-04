@@ -1,19 +1,17 @@
-import { useSelectedPrizeDistributorToken } from '@hooks/v4/PrizeDistributor/useSelectedPrizeDistributorToken'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { Carousel } from '@pooltogether/react-components'
-import { UpcomingPrize } from './UpcomingPrize'
-import { PrizeBreakdown as PrizeBreakdownTable } from '@components/PrizeBreakdown'
-import { PerDrawPrizeMoneyDistribution } from './PerDrawPrizeMoneyDistribution'
-import { LastDrawWinners } from './LastDrawWinners'
-import FeatherIcon from 'feather-icons-react'
-import { PerDrawPrizeCountDistribution } from './PerDrawPrizeCountDistribution'
-import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
-import classNames from 'classnames'
-import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
 import { NextArrow, PrevArrow } from '@components/Arrows'
+import { Carousel } from '@pooltogether/react-components'
+import { atom, useAtom } from 'jotai'
+import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
+import { PerDrawPrizeCountDistribution } from './PerDrawPrizeCountDistribution'
+import { PerDrawPrizeMoneyDistribution } from './PerDrawPrizeMoneyDistribution'
+import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
+import { UpcomingPrize } from './UpcomingPrize'
+
+export const networkCarouselAutoplayAtom = atom(true)
 
 export const NetworkCarousel = () => {
+  const [autoplay] = useAtom(networkCarouselAutoplayAtom)
+
   return (
     <Carousel
       marginClassName=''
@@ -25,7 +23,9 @@ export const NetworkCarousel = () => {
         slidesToShow: 1,
         slidesToScroll: 1,
         nextArrow: <NextArrow />,
-        prevArrow: <PrevArrow />
+        prevArrow: <PrevArrow />,
+        autoplay,
+        autoplaySpeed: 8000
       }}
     >
       <UpcomingPrize className='mx-auto' />

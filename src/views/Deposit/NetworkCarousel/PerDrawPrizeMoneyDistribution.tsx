@@ -1,3 +1,8 @@
+import { Dot } from '@components/Dot'
+import { PrizePoolBar } from '@components/PrizePoolBar'
+import { PrizePoolTable } from '@components/PrizePoolTable'
+import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
@@ -5,11 +10,6 @@ import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { formatUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
-import { Dot } from '@components/Dot'
-import { PrizePoolBar } from '@components/PrizePoolBar'
-import { PrizePoolTable } from '@components/PrizePoolTable'
-import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 
 export const PerDrawPrizeMoneyDistribution: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -42,7 +42,7 @@ export const PerDrawPrizeMoneyDistribution: React.FC<{ className?: string }> = (
         }
       })
       .sort((a, b) => b.percentage - a.percentage)
-  }, [queryResults])
+  }, [prizePools, queryResults])
 
   return (
     <div className={classNames('max-w-xl px-4 xs:px-2 relative', className)}>

@@ -10,12 +10,22 @@ import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 
-export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?: string }) => {
-  const { prizePool, fontSizeClassName } = props
+export const PrizePoolLabel = (props: {
+  prizePool: PrizePool
+  className?: string
+  fontSizeClassName?: string
+}) => {
+  const { prizePool, className, fontSizeClassName } = props
   const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
 
   return (
-    <div className={classNames('flex space-x-2 items-center', fontSizeClassName)}>
+    <div
+      className={classNames(
+        'flex space-x-1 xs:space-x-2 items-center',
+        className,
+        fontSizeClassName
+      )}
+    >
       {isPrizePoolTokensFetched && (
         <TokenIcon
           address={tokens.token.address}
@@ -25,11 +35,12 @@ export const PrizePoolLabel = (props: { prizePool: PrizePool; fontSizeClassName?
       )}
       <div className='flex flex-col'>
         <div className='font-bold'>{tokens?.token.symbol}</div>
-        <div className='text-xxxs flex space-x-2 items-center font-normal'>
-          <div className='flex space-x-1 items-center'>
+        <div className='text-xxxs flex space-x-1 xs:space-x-2 items-center font-normal'>
+          <div className='-ml-2 xs:ml-0 flex space-x-1 items-center'>
             <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-3 h-3' />
             <span className='opacity-80'>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
           </div>
+          {/* NOTE: Not showing yield source atm */}
           {/* <div className='flex space-x-1 items-center'>
             <YieldSourceIcon yieldSource={YieldSourceKey.aave} sizeClassName='w-3 h-3' />
             <span className='opacity-90'>{getYieldSourceNiceName(YieldSourceKey.aave)}</span>

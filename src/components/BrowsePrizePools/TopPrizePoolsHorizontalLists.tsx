@@ -1,10 +1,15 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
-import classNames from 'classnames'
 import { HorizontalListByOdds } from './PrizePoolHorizontalList/HorizontalListByOdds'
 import { HorizontalListByTvl } from './PrizePoolHorizontalList/HorizontalListByTvl'
 
-export const TopPrizePools: React.FC<{
+/**
+ * Example: marginClassName='mb-12 px-4 sm:px-6 lg:px-12 -mx-4 sm:-mx-6 lg:-mx-12'
+ * @param props
+ * @returns
+ */
+export const TopPrizePoolsHorizontalLists: React.FC<{
   onPrizePoolSelect: (prizePool: PrizePool) => void
+
   marginClassName?: string
 }> = (props) => {
   const { onPrizePoolSelect, marginClassName } = props
@@ -21,7 +26,3 @@ export const TopPrizePools: React.FC<{
     </div>
   )
 }
-
-const ListHeader: React.FC<{ className?: string }> = (props) => (
-  <span {...props} className={classNames(props.className, 'text-sm mb-2 font-bold')} />
-)

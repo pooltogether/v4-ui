@@ -1,21 +1,22 @@
-import React, { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'react-i18next'
-import { useFormState } from 'react-hook-form'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
-import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 import { InfoListItem } from '@components/InfoList'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
-import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
-import { EstimateAction } from '@constants/odds'
-import classNames from 'classnames'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
-import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
-import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
-import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { PrizePoolYieldSourceItem } from '@components/InfoList/PrizePoolYieldSourceItem'
+import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
+import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
+import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
+import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
+import { PrizePoolTitle } from '@components/PrizePoolCard'
+import { EstimateAction } from '@constants/odds'
+import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
+import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
+import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useState } from 'react'
+import { useFormState } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
 export const DepositInfoBox: React.FC<{
   formKey: string
@@ -27,7 +28,6 @@ export const DepositInfoBox: React.FC<{
 
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
-  const { data: depositAllowance } = useUsersDepositAllowance(prizePool)
   const amount = useFormTokenAmount(formKey, tokens?.token)
   const [isAdvanced, setIsAdvanced] = useState(false)
   const { errors } = useFormState()
@@ -47,61 +47,57 @@ export const DepositInfoBox: React.FC<{
 
   return (
     <div
-      className={classNames('relative rounded-lg pl-4 pr-2 py-2', {
+      className={classNames('relative rounded-lg px-3 pt-2 pb-1', {
         [bgClassName]: !isError,
         [errorBgClassName]: isError
       })}
     >
-      <div className={classNames('flex space-x-1 w-full items-center')}>
-        <ul className='w-full'>
-          {isAdvanced && (
-            <>
-              <UpdatedPrizePoolOddsListItemBar
-                prizePool={prizePool}
-                action={EstimateAction.deposit}
-                amount={amount}
-              />
-            </>
-          )}
-          <UpdatedPrizePoolOddsListItem
-            prizePool={prizePool}
-            action={EstimateAction.deposit}
-            amount={amount}
-            nullState={'-'}
-            className='w-full'
-          />
-          <TwabRewardsAprItem />
-          {isAdvanced && (
-            <>
-              <UpdatedPrizePoolNetworkOddsListItem
-                amount={amount}
-                action={EstimateAction.deposit}
-                prizePool={prizePool}
-                nullState={'-'}
-              />
-              <PrizePoolNetworkAPRItem />
-              <PrizePoolYieldSourceItem prizePool={prizePool} />
-            </>
-          )}
+      <PrizePoolTitle prizePool={prizePool} className='mb-3' fontClassName='text-sm' />
+      <ul className='w-full mb-2'>
+        {isAdvanced && (
+          <>
+            <UpdatedPrizePoolOddsListItemBar
+              prizePool={prizePool}
+              action={EstimateAction.deposit}
+              amount={amount}
+            />
+          </>
+        )}
+        <UpdatedPrizePoolOddsListItem
+          prizePool={prizePool}
+          action={EstimateAction.deposit}
+          amount={amount}
+          nullState={'-'}
+          className='w-full'
+        />
+        <TwabRewardsAprItem />
+        {isAdvanced && (
+          <>
+            <UpdatedPrizePoolNetworkOddsListItem
+              amount={amount}
+              action={EstimateAction.deposit}
+              prizePool={prizePool}
+              nullState={'-'}
+            />
+            <PrizePoolNetworkAPRItem />
+            <PrizePoolYieldSourceItem prizePool={prizePool} />
+          </>
+        )}
 
-          {isError && (
-            <div className='mt-2'>
-              <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
-            </div>
-          )}
-        </ul>
+        {isError && (
+          <div className='mt-2'>
+            <InfoListItem label={t('issues', 'Issues')} value={<div>{messages}</div>} />
+          </div>
+        )}
+      </ul>
 
-        <button
-          className='flex justify-center w-7'
-          type='button'
-          onClick={() => setIsAdvanced(!isAdvanced)}
-        >
-          <FeatherIcon
-            icon={isAdvanced ? 'chevron-up' : 'chevron-down'}
-            className='w-6 h-6 opacity-50 hover:opacity-100 transition'
-          />
-        </button>
-      </div>
+      <button
+        className='w-full flex justify-center opacity-70 hover:opacity-100 transition'
+        type='button'
+        onClick={() => setIsAdvanced(!isAdvanced)}
+      >
+        <FeatherIcon icon={isAdvanced ? 'chevron-up' : 'chevron-down'} className='w-7 h-7' />
+      </button>
     </div>
   )
 }

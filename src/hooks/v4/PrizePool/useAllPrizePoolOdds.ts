@@ -1,7 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 import { useQueries } from 'react-query'
-
 import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
 import { getOdds, getOddsKey } from './useOdds'

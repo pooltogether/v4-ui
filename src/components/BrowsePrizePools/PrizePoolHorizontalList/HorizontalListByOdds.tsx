@@ -5,7 +5,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { useState } from 'react'
 import { PrizePoolHorizontalList } from '.'
-import { OddsPerX } from '../../PrizePoolCard'
+import { NetworkOddsForDepositGroup, OddsPerX } from '../../PrizePoolCard'
 
 const AMOUNT_OPTIONS = Object.freeze(['10', '100', '1000', '10000'])
 
@@ -46,7 +46,7 @@ export const HorizontalListByOdds: React.FC<{
         isPartiallyFetched={isPartiallyFetched}
         isFetched={isFetched}
         prizePoolCardContent={({ prizePool }) => (
-          <OddsPerX prizePool={prizePool} amount={amount} decimals='6' />
+          <NetworkOddsForDepositGroup prizePool={prizePool} amount={amount} decimals='6' />
         )}
       />
     </div>

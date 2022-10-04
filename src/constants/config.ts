@@ -1,6 +1,6 @@
-import { ContractType } from '@pooltogether/v4-client-js'
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { ContractType } from '@pooltogether/v4-client-js'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { CHAIN_ID, getChain } from '@pooltogether/wallet-connection'
 import { Chain } from 'wagmi'
@@ -156,6 +156,8 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
   [CHAIN_ID.mainnet]: 'Ξ',
   [CHAIN_ID.avalanche]: 'AVAX',
   [CHAIN_ID['optimism-goerli']]: 'Ξ',
+  [CHAIN_ID.arbitrum]: 'Ξ',
+  [CHAIN_ID['arbitrum-goerli']]: 'Ξ',
   [CHAIN_ID.mumbai]: 'MATIC',
   [CHAIN_ID.goerli]: 'Ξ',
   [CHAIN_ID.fuji]: 'AVAX'
@@ -192,7 +194,9 @@ const BRIDGE_URLS = Object.freeze({
   [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
   [CHAIN_ID['optimism-goerli']]: [
     { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
-  ]
+  ],
+  [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }],
+  [CHAIN_ID['arbitrum-goerli']]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
 })
 
 /**
@@ -232,6 +236,10 @@ const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.fuji]: (tokenAddress: string) => ({
     url: `https://traderjoexyz.com/#/trade`,
     title: 'Trader Joe'
+  }),
+  [CHAIN_ID.arbitrum]: (tokenAddress: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=arbitrum&theme=dark&outputCurrency=${tokenAddress}`,
+    title: 'Trader Joe'
   })
 })
 
@@ -252,3 +260,57 @@ export const COINBASE_ASSETS = Object.freeze({
   [CHAIN_ID.polygon]: ['USDC', 'MATIC'],
   [CHAIN_ID.optimism]: ['USDC', 'ETH']
 })
+
+/**
+ * Subgraphs to query for prizes claimed
+ */
+export const PRIZES_CLAIMED_SUBGRAPH_URIS = {
+  [CHAIN_ID.optimism]: `https://api.thegraph.com/subgraphs/name/pooltogether/optimism-v4-prizes-claimed`,
+  // [CHAIN_ID.arbitrum]: `https://api.thegraph.com/subgraphs/name/pooltogether/arbitrum-v4-prizes-claimed`,
+  [CHAIN_ID.mainnet]: `https://api.thegraph.com/subgraphs/name/pooltogether/mainnet-v4-prizes-claimed`,
+  [CHAIN_ID.polygon]: `https://api.thegraph.com/subgraphs/name/pooltogether/polygon-v4-prizes-claimed`,
+  [CHAIN_ID.avalanche]: `https://api.thegraph.com/subgraphs/name/pooltogether/avalanche-v4-prizes-claimed`,
+  [CHAIN_ID.goerli]: `https://api.thegraph.com/subgraphs/name/pooltogether/goerli-v4-prizes-claimed`,
+  [CHAIN_ID.mumbai]: `https://api.thegraph.com/subgraphs/name/pooltogether/mumbai-v4-prizes-claimed`,
+  [CHAIN_ID.fuji]: `https://api.thegraph.com/subgraphs/name/pooltogether/fuji-v4-prizes-claimed`,
+  [CHAIN_ID[
+    'optimism-goerli'
+  ]]: `https://api.thegraph.com/subgraphs/name/pooltogether/op-goerli-v4-prizes-claimed`,
+  [CHAIN_ID[
+    'arbitrum-goerli'
+  ]]: `https://api.thegraph.com/subgraphs/name/pooltogether/arb-goerli-v4-prizes-claimed`
+}
+
+export const TWAB_REWARDS_SUBGRAPH_URIS = {
+  [CHAIN_ID.optimism]: `https://api.thegraph.com/subgraphs/name/pooltogether/optimism-twab-rewards`,
+  [CHAIN_ID.mainnet]: `https://api.thegraph.com/subgraphs/name/pooltogether/mainnet-twab-rewards`,
+  [CHAIN_ID.polygon]: `https://api.thegraph.com/subgraphs/name/pooltogether/polygon-twab-rewards`,
+  [CHAIN_ID.avalanche]: `https://api.thegraph.com/subgraphs/name/pooltogether/avalanche-twab-rewards`,
+  [CHAIN_ID['optimism-goerli']]:
+    'https://api.thegraph.com/subgraphs/name/pooltogether/optimism-goerli-twab-rewards',
+  [CHAIN_ID.goerli]: 'https://api.thegraph.com/subgraphs/name/pooltogether/goerli-twab-rewards',
+  [CHAIN_ID.mumbai]: 'https://api.thegraph.com/subgraphs/name/pooltogether/mumbai-twab-rewards',
+  [CHAIN_ID.fuji]: 'https://api.thegraph.com/subgraphs/name/pooltogether/fuji-twab-rewards',
+  [CHAIN_ID['arbitrum-goerli']]:
+    'https://api.thegraph.com/subgraphs/name/pooltogether/arbitrum-goerli-twab-rewards'
+}
+
+export const getDepositGasLimit = (chainId: number) => {
+  switch (chainId) {
+    case CHAIN_ID.arbitrum:
+    case CHAIN_ID['arbitrum-goerli']:
+      return 1000000
+    default:
+      return 750000
+  }
+}
+
+export const getWithdrawGasLimit = (chainId: number) => {
+  switch (chainId) {
+    case CHAIN_ID.arbitrum:
+    case CHAIN_ID['arbitrum-goerli']:
+      return 1000000
+    default:
+      return 750000
+  }
+}

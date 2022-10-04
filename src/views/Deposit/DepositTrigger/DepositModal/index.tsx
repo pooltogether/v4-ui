@@ -45,7 +45,7 @@ export const DepositModal: React.FC<{
     {
       id: ViewIds.explore,
       view: ExplorePrizePoolsView,
-      title: 'Select a prize pool',
+      // title: 'Select a prize pool',
       nextViewId: ViewIds.deposit,
       hideNextNavButton: true
     },
@@ -79,13 +79,12 @@ export const DepositModal: React.FC<{
 
   return (
     <ModalWithViewState
+      noAnimation
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
-      // modalHeightClassName='h-actually-full-screen min-h-1/2 sm:h-auto '
-      // maxHeightClassName='sm:max-h-90-screen'
-      // widthClassName='w-screen sm:w-full'
-      // maxWidthClassName='sm:max-w-screen-sm'
-      // roundedClassName='rounded-none sm:rounded-xl'
+      modalHeightClassName='h-actually-full-screen min-h-1/2 xs:h-auto'
+      maxHeightClassName='max-h-screen xs:max-h-90-screen'
+      maxWidthClassName='xs:max-w-screen-xs sm:max-w-screen-sm md:max-w-screen-md'
       className='h-full'
       isOpen={isOpen}
       closeModal={() => {

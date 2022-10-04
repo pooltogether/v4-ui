@@ -21,14 +21,9 @@ export const SidebarCard: React.FC<{
   trigger?: ReactNode
   disabled?: boolean
   className?: string
+  bgClassName?: string
 }> = (props) => (
-  <div
-    className={classNames(
-      'bg-white bg-opacity-0 sm:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 sm:dark:bg-opacity-10',
-      'rounded-lg sm:px-4 sm:py-2 flex flex-col',
-      props.className
-    )}
-  >
+  <div className={classNames('sm:px-4 sm:py-2 flex flex-col', props.className, props.bgClassName)}>
     <CardTitle title={props.title} loading={props.isLoading} className='mb-2 sm:mb-0' />
     <div className='text-xxs dark:text-white text-pt-purple-darkest text-opacity-80 dark:text-opacity-80 font-light'>
       {props.description}
@@ -57,3 +52,8 @@ export const SidebarCard: React.FC<{
     )}
   </div>
 )
+
+SidebarCard.defaultProps = {
+  bgClassName:
+    'bg-white bg-opacity-0 sm:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 sm:dark:bg-opacity-10 rounded-lg'
+}

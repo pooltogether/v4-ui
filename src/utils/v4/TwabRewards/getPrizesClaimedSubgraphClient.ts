@@ -1,19 +1,6 @@
-import { CHAIN_ID } from '@pooltogether/wallet-connection'
+import { PRIZES_CLAIMED_SUBGRAPH_URIS } from '@constants/config'
 import { theGraphCustomFetch } from '@utils/theGraphCustomFetch'
 import { GraphQLClient } from 'graphql-request'
-
-const PRIZES_CLAIMED_SUBGRAPH_URIS = {
-  [CHAIN_ID.optimism]: `https://api.thegraph.com/subgraphs/name/pooltogether/optimism-v4-prizes-claimed`,
-  [CHAIN_ID.mainnet]: `https://api.thegraph.com/subgraphs/name/pooltogether/mainnet-v4-prizes-claimed`,
-  [CHAIN_ID.polygon]: `https://api.thegraph.com/subgraphs/name/pooltogether/polygon-v4-prizes-claimed`,
-  [CHAIN_ID.avalanche]: `https://api.thegraph.com/subgraphs/name/pooltogether/avalanche-v4-prizes-claimed`,
-  [CHAIN_ID.goerli]: `https://api.thegraph.com/subgraphs/name/pooltogether/goerli-v4-prizes-claimed`,
-  [CHAIN_ID.mumbai]: `https://api.thegraph.com/subgraphs/name/pooltogether/mumbai-v4-prizes-claimed`,
-  [CHAIN_ID.fuji]: `https://api.thegraph.com/subgraphs/name/pooltogether/fuji-v4-prizes-claimed`,
-  [CHAIN_ID[
-    'optimism-goerli'
-  ]]: `https://api.thegraph.com/subgraphs/name/pooltogether/op-goerli-v4-prizes-claimed`
-}
 
 export const getPrizesClaimedSubgraphUri = (chainId) => {
   return PRIZES_CLAIMED_SUBGRAPH_URIS[chainId]

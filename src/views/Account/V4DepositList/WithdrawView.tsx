@@ -1,6 +1,7 @@
 import { StyledInput } from '@components/Input'
 import { Label } from '@components/Label'
 import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
+import { getWithdrawGasLimit } from '@constants/config'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
@@ -51,7 +52,21 @@ export const WithdrawView = (props: WithdrawViewProps) => {
 
   const sendWithdrawTx = async () => {
     const tokenSymbol = token.symbol
-    const overrides: Overrides = { gasLimit: 750000 }
+    const overrides: Overrides = { gasLimit: getWithdrawGasLimit(prizePool.chainId) }
+
+    // Try to estimate gas
+    // TODO: Move this to v4-client-js for sharability.
+    try {
+      const user = await getUser()
+      const prizePoolContract = user.prizePoolContract
+      const gasEstimate = await prizePoolContract.estimateGas.withdrawFrom(
+        usersAddress,
+        amountToWithdraw.amountUnformatted
+      )
+      overrides.gasLimit = gasEstimate.mul(12).div(10)
+    } catch (e) {
+      console.log('Error estimating gas')
+    }
 
     const txId = await sendTransaction({
       name: `${t('withdraw')} ${amountToWithdraw?.amountPretty} ${tokenSymbol}`,

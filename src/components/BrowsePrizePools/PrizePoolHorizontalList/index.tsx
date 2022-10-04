@@ -46,7 +46,6 @@ export const PrizePoolHorizontalList: React.FC<{
             key={`${label}-horizontal-pools-list-${prizePool.id()}`}
             prizePool={prizePool}
             onClick={(prizePool) => {
-              console.log('onClick', onPrizePoolSelect, prizePool)
               if (!!onPrizePoolSelect) {
                 onPrizePoolSelect(prizePool)
               } else {
@@ -64,7 +63,6 @@ export const PrizePoolHorizontalList: React.FC<{
         )}
         {!isPartiallyFetched && (
           <>
-            <PrizePoolCardLoader />
             <PrizePoolCardLoader />
           </>
         )}

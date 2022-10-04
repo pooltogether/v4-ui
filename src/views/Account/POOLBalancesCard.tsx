@@ -5,7 +5,7 @@ import { getExchangeUrl } from '@constants/config'
 import { POOL_TOKEN } from '@constants/misc'
 import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
-import { TokenIconWithNetwork, TokenIcon, PoolIcon } from '@pooltogether/react-components'
+import { TokenIconWithNetwork, PoolIcon } from '@pooltogether/react-components'
 import {
   CHAIN_ID,
   formatBlockExplorerAddressUrl,

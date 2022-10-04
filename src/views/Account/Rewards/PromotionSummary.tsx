@@ -1,7 +1,7 @@
 import { SECONDS_PER_DAY } from '@constants/misc'
 import { useToken } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, sToMs, numberWithCommas } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
@@ -84,7 +84,11 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
         </div>
       </div>
 
-      <div className={classNames('flex items-center justify-end w-full font-bold space-x-4 mt-4')}>
+      <div
+        className={classNames(
+          'flex flex-row justify-end sm:flex-col sm:justify-start w-full font-bold space-x-4 sm:space-x-0 mt-4'
+        )}
+      >
         <Link href={`/deposit?network=${getNetworkNiceNameByChainId(chainId).toLowerCase()}`}>
           <a className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'>
             {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />
@@ -97,7 +101,6 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
             target='_blank'
             rel='noreferrer'
             className='flex items-center h-8 uppercase text-white text-opacity-80 hover:text-opacity-100'
-            rel='noreferrer'
           >
             {t('bridge')}{' '}
             <FeatherIcon

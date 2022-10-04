@@ -1,6 +1,5 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
-
 import { useAllPrizePoolExpectedPrizes } from './v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from './v4/PrizePool/usePrizePools'
 

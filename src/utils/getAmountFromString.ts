@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { getMinPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 
 const EMPTY_AMOUNT: Amount = {
@@ -22,7 +22,7 @@ export const getAmountFromString = (amount: string, decimals: string): Amount =>
     return {
       amount,
       amountUnformatted: ethers.utils.parseUnits(amount, decimals),
-      amountPretty: numberWithCommas(amount) as string
+      amountPretty: numberWithCommas(amount, { precision: getMinPrecision(amount) }) as string
     }
   } catch (e) {
     console.error(e.message)

@@ -105,6 +105,7 @@ export const BalanceModal: React.FC<{
 
   return (
     <ModalWithViewState
+      noAnimation
       title={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
       bgClassName='bg-gradient-to-b from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-darker'

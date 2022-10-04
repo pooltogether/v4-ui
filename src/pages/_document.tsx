@@ -24,6 +24,7 @@ class MyDocument extends Document {
             <title>{title}</title>
 
             <link rel='icon' href='/favicon.png' type='image/x-icon' />
+            <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
 
             <meta name='theme-color' content='#1e0b43' />
             <meta name='description' content={description} />
@@ -53,9 +54,8 @@ class MyDocument extends Document {
             />
             <meta property='twitter:url' content={url} />
             <meta property='twitter:creator' content={twitterHandle} />
-
-            <link rel='manifest' href='manifest.json' />
           </>
+          <link rel='manifest' href='/manifest.json' />
         </Head>
         <body className='bg-pt-purple-lightest dark:bg-pt-purple-darkest text-pt-purple-darkest dark:text-white overscroll-y-none'>
           <Meta />

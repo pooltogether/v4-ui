@@ -27,8 +27,6 @@ export const EarnRewardsCard: React.FC<{ className?: string }> = (props) => {
 
   return (
     <div className={classNames(props.className)}>
-      <CardTitle title={t('earnRewards')} loading={!isFetched} className='mb-3' />
-
       {!isFetched && (
         <LoadingList
           listItems={1}

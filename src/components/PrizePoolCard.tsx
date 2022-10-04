@@ -9,18 +9,27 @@ import {
   YieldSourceKey,
   getYieldSourceNiceName,
   NetworkIcon,
-  ThemedClipSpinner
+  ThemedClipSpinner,
+  Button,
+  ButtonSize,
+  ButtonTheme
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, numberWithCommas, shorten } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { PromotionsVapr } from './InfoList/TwabRewardsAprItem'
-import { RoundButton } from './Input/RoundButton'
+import { AveragePrizeValue } from './PrizePool/AveragePrizeValue'
+import { DepositToken } from './PrizePool/DepositToken'
+import { NumberOfPrizes } from './PrizePool/NumberOfPrizes'
+import { TicketTotalSupply } from './PrizePool/TicketTotalSupply'
+import { YieldSource } from './PrizePool/YieldSource'
+import { PrizePoolLabel } from './PrizePoolLabel'
+import { OddsForDeposit } from './PrizePoolNetwork/OddsForDeposit'
 
-const SIZE_CLASSNAME = 'w-64'
-const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-white dark:bg-opacity-10'
-const RADIUS_CLASSNAME = 'rounded-xl'
+const SIZE_CLASSNAME = 'w-full max-w-xl'
+const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10'
+const RADIUS_CLASSNAME = 'rounded-lg'
 
 export const PrizePoolCard: React.FC<{
   children: React.ReactNode
@@ -30,7 +39,9 @@ export const PrizePoolCard: React.FC<{
   sizeClassName?: string
   bgClassName?: string
   radiusClassName?: string
-  hoverClassName?: string
+  bgHoverClassName?: string
+  borderClassName?: string
+  borderHoverClassName?: string
 }> = (props) => {
   const {
     children,
@@ -40,37 +51,53 @@ export const PrizePoolCard: React.FC<{
     sizeClassName,
     bgClassName,
     radiusClassName,
-    hoverClassName
+    bgHoverClassName,
+    borderClassName,
+    borderHoverClassName
   } = props
 
   return (
-    <button
-      onClick={() => onClick(prizePool)}
+    <div
       className={classNames(
-        'px-3 py-4 text-left transition',
+        'px-3 py-2 text-left transition',
         className,
         sizeClassName,
         bgClassName,
         radiusClassName,
+        borderClassName,
         {
-          [hoverClassName]: !!onClick
+          [bgHoverClassName]: !!onClick,
+          [borderHoverClassName]: !!onClick
         }
       )}
     >
-      <div className='flex justify-between mb-3'>
-        <DepositToken prizePool={prizePool} />
-        <Network prizePool={prizePool} className='text-right' />
-      </div>
-      <div className='flex justify-between items-center space-x-2'>
+      <PrizePoolTitle prizePool={prizePool} className='mb-6' />
+      <div className='grid gap-2 grid-cols-2 xs:grid-cols-3 mb-2'>
         <div>
-          {children}
-          <Rewards prizePool={prizePool} />
+          <CardLabelSmall>Total deposited</CardLabelSmall>
+          <TicketTotalSupplyGroup prizePool={prizePool} />
         </div>
-        <div className='rounded-full bg-actually-black bg-opacity-5 p-1 flex flex-col justify-center items-center ml-auto mt-auto'>
-          <FeatherIcon icon='chevron-right' className='w-6 h-6' />
+        <div>
+          <CardLabelSmall>Number of prizes</CardLabelSmall>
+          <NumberOfPrizesGroup prizePool={prizePool} />
         </div>
+        <div>
+          <CardLabelSmall>Average Prize Value</CardLabelSmall>
+          <AveragePrizeValueGroup prizePool={prizePool} />
+        </div>
+        {children}
       </div>
-    </button>
+      <RewardsGroup prizePool={prizePool} className='mb-2' />
+      <Button
+        size={ButtonSize.sm}
+        className='w-full mt-auto space-x-2'
+        theme={ButtonTheme.transparent}
+        onClick={() => onClick(prizePool)}
+      >
+        <div className='font-bold'>Join Prize Pool</div>
+        <FeatherIcon icon='chevron-right' className='w-4 h-4' />
+      </Button>
+    </div>
   )
 }
 
@@ -78,19 +105,66 @@ PrizePoolCard.defaultProps = {
   sizeClassName: SIZE_CLASSNAME,
   bgClassName: BG_CLASSNAME,
   radiusClassName: RADIUS_CLASSNAME,
-  hoverClassName: 'hover:bg-opacity-50 dark:hover:bg-opacity-5'
+  borderClassName: 'border border-transparent'
 }
 
-const CardLabelSmall = (props) => (
-  <span {...props} className={classNames('text-xxs opacity-80', props.className)} />
-)
+export const CardLabelSmall = (props: {
+  isFetched?: boolean
+  className?: string
+  fontClassName?: string
+  children?: React.ReactNode
+}) => <CardLabel {...props} className={classNames(props.fontClassName, props.className)} />
+CardLabelSmall.defaultProps = {
+  fontClassName: 'text-xxs'
+}
 
-const CardLabelMedium = (props) => (
-  <span {...props} className={classNames('text-xs font-bold', props.className)} />
-)
+export const CardLabelMedium = (props: {
+  isFetched?: boolean
+  className?: string
+  fontClassName?: string
+  children?: React.ReactNode
+}) => <CardLabel {...props} className={classNames(props.fontClassName, props.className)} />
+CardLabelMedium.defaultProps = {
+  fontClassName: 'text-xs font-bold'
+}
 
-const CardLabelLarge = (props) => (
-  <span {...props} className={classNames('text-xl font-bold', props.className)} />
+export const CardLabelLarge = (props: {
+  isFetched?: boolean
+  className?: string
+  fontClassName?: string
+  children?: React.ReactNode
+}) => <CardLabel {...props} className={classNames(props.fontClassName, props.className)} />
+CardLabelLarge.defaultProps = {
+  fontClassName: 'text-lg font-bold'
+}
+
+const CardLabel = (
+  props: {
+    isFetched?: boolean
+  } & JSX.IntrinsicElements['div']
+) =>
+  !props.isFetched ? (
+    <ThemedClipSpinner className={classNames(props.className, 'w-3 h-3')} />
+  ) : (
+    <div {...props} />
+  )
+CardLabel.defaultProps = {
+  isFetched: true
+}
+
+export const PrizePoolTitle = (props: {
+  prizePool: PrizePool
+  className?: string
+  fontClassName?: string
+}) => (
+  <div className={classNames('flex justify-between', props.className)}>
+    <DepositTokenGroup prizePool={props.prizePool} mainFontClassName={props.fontClassName} />
+    <NetworkGroup
+      prizePool={props.prizePool}
+      className='text-right'
+      mainFontClassName={props.fontClassName}
+    />
+  </div>
 )
 
 /**
@@ -98,13 +172,20 @@ const CardLabelLarge = (props) => (
  * @param props
  * @returns
  */
-const YieldSource: React.FC<{ prizePool: PrizePool }> = (props) => {
+const YieldSourceGroup: React.FC<{
+  prizePool: PrizePool
+  className?: string
+  mainFontClassName?: string
+}> = (props) => {
+  const { prizePool, className, mainFontClassName } = props
   return (
-    <div className='flex flex-col'>
+    <div className={className}>
       <CardLabelSmall>Yield source</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
         <YieldSourceIcon yieldSource={YieldSourceKey.aave} sizeClassName='w-4 h-4' />
-        <CardLabelMedium>{getYieldSourceNiceName(YieldSourceKey.aave)}</CardLabelMedium>
+        <CardLabelLarge fontClassName={mainFontClassName}>
+          <YieldSource prizePool={prizePool} />
+        </CardLabelLarge>
       </div>
     </div>
   )
@@ -114,20 +195,20 @@ const YieldSource: React.FC<{ prizePool: PrizePool }> = (props) => {
  * @param props
  * @returns
  */
-const DepositToken: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
-  const { prizePool, className } = props
-  const { data: tokens, isFetched: isPrizePoolTokensFetched } = usePrizePoolTokens(prizePool)
+const DepositTokenGroup = (props: {
+  prizePool: PrizePool
+  className?: string
+  mainFontClassName?: string
+}) => {
+  const { prizePool, className, mainFontClassName } = props
 
   return (
-    <div className={classNames('flex flex-col', className)}>
-      <CardLabelSmall>Token</CardLabelSmall>
+    <div className={className}>
+      <CardLabelSmall>Deposit Token</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
-        <TokenIcon
-          address={tokens.token.address}
-          chainId={prizePool.chainId}
-          sizeClassName='w-5 h-5'
-        />
-        <CardLabelMedium>{tokens.token.symbol}</CardLabelMedium>
+        <CardLabelLarge fontClassName={mainFontClassName} className='flex items-center'>
+          <DepositToken showTokenIcon prizePool={prizePool} iconSizeClassName='w-5 h-5' />
+        </CardLabelLarge>
       </div>
     </div>
   )
@@ -137,13 +218,19 @@ const DepositToken: React.FC<{ prizePool: PrizePool; className?: string }> = (pr
  * @param props
  * @returns
  */
-const Network: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
-  const { prizePool, className } = props
+const NetworkGroup = (props: {
+  prizePool: PrizePool
+  className?: string
+  mainFontClassName?: string
+}) => {
+  const { prizePool, className, mainFontClassName } = props
   return (
-    <div className={classNames('flex flex-col', className)}>
+    <div className={className}>
       <CardLabelSmall>Network</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
-        <CardLabelMedium>{getNetworkNiceNameByChainId(prizePool.chainId)}</CardLabelMedium>
+        <CardLabelLarge fontClassName={mainFontClassName}>
+          {getNetworkNiceNameByChainId(prizePool.chainId)}
+        </CardLabelLarge>
         <NetworkIcon chainId={prizePool.chainId} sizeClassName='w-5 h-5' />
       </div>
     </div>
@@ -155,77 +242,88 @@ const Network: React.FC<{ prizePool: PrizePool; className?: string }> = (props) 
  * @param props
  * @returns
  */
-const Rewards: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
   const { prizePool, className } = props
-
   const { data, isFetched } = useChainTwabRewardsPromotions(prizePool.chainId)
 
-  if (!isFetched || !data?.hasActivePromotions) return null
+  if (!isFetched || data?.promotions.length === 0) {
+    return null
+  }
 
   return (
-    <div className={classNames('flex flex-col', className)}>
-      <span className='text-xxs animate-rainbow'>Rewards</span>
-      <div className='flex space-x-1 items-center'>
-        <CardLabelMedium>
-          {data.promotions.map((promotion, index) => (
-            <PromotionsVapr key={`promotion-${promotion.id}`} promotion={promotion} />
-          ))}
-        </CardLabelMedium>
-      </div>
+    <div className={className}>
+      <CardLabelSmall className='animate-rainbow flex items-center'>
+        <span>Bonus Rewards</span>
+        <img className='w-4 h-4 ml-1 inline-block' src='/beach-with-umbrella.png' />
+      </CardLabelSmall>
+      <CardLabelLarge isFetched={isFetched}>
+        {data.promotions.map((promotion) => (
+          <PromotionsVapr key={`promotion-${promotion.id}`} promotion={promotion} />
+        ))}
+      </CardLabelLarge>
     </div>
   )
 }
 
-export const OddsPerX: React.FC<{ prizePool: PrizePool; amount: string; decimals: string }> = (
+export const NetworkOddsForDepositGroup: React.FC<{
+  prizePool: PrizePool
+  amount: string
+  decimals: string
+  className?: string
+}> = (props) => {
+  const { prizePool, amount, decimals, className } = props
+  const { isFetched } = useSpoofedPrizePoolNetworkOdds(amount, decimals, prizePool.id())
+  return (
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <OddsForDeposit prizePool={prizePool} amount={amount} />
+    </CardLabelLarge>
+  )
+}
+
+export const TicketTotalSupplyGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (
   props
 ) => {
-  const { prizePool, amount, decimals } = props
-  const { data, isFetched } = useSpoofedPrizePoolNetworkOdds(amount, decimals, prizePool.id())
+  const { prizePool, className } = props
+  const { isFetched } = usePrizePoolTicketTotalSupply(prizePool)
   return (
-    <div className='flex flex-col'>
-      <CardLabelSmall>
-        Odds to win at least one prize per draw with a ${numberWithCommas(amount, { precision: 0 })}{' '}
-        deposit
-      </CardLabelSmall>
-      {isFetched ? (
-        <CardLabelLarge>1:{numberWithCommas(data.oneOverOdds, { precision: 2 })}</CardLabelLarge>
-      ) : (
-        <ThemedClipSpinner sizeClassName='w-6 h-6' />
-      )}
-    </div>
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <TicketTotalSupply prizePool={prizePool} />
+    </CardLabelLarge>
   )
 }
 
-export const TotalValueLocked: React.FC<{ prizePool: PrizePool }> = (props) => {
-  const { data } = usePrizePoolTicketTotalSupply(props.prizePool)
-  const { data: tokenData } = usePrizePoolTokens(props.prizePool)
+export const AveragePrizeValueGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (
+  props
+) => {
+  const { prizePool, className } = props
+  const { isFetched } = usePrizePoolExpectedPrizes(prizePool)
   return (
-    <div className='flex flex-col'>
-      <CardLabelSmall>Total value locked</CardLabelSmall>
-      <div className='flex items-end space-x-1'>
-        <CardLabelLarge>{data?.amount.amountPretty}</CardLabelLarge>
-        <CardLabelSmall className='mb-1'>{tokenData?.token.symbol}</CardLabelSmall>
-      </div>
-    </div>
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <AveragePrizeValue prizePool={prizePool} />
+    </CardLabelLarge>
   )
 }
 
-export const NumberOfPrizes: React.FC<{ prizePool: PrizePool }> = (props) => {
-  const { data, isFetched } = usePrizePoolExpectedPrizes(props.prizePool)
+export const NumberOfPrizesGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (
+  props
+) => {
+  const { prizePool, className } = props
+  const { isFetched } = usePrizePoolExpectedPrizes(prizePool)
   return (
-    <div className='flex flex-col'>
-      <CardLabelSmall>Expected number of prizes</CardLabelSmall>
-      {isFetched ? (
-        <CardLabelLarge>{Math.round(data?.expectedTotalNumberOfPrizes)}</CardLabelLarge>
-      ) : (
-        <ThemedClipSpinner />
-      )}
-    </div>
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <NumberOfPrizes prizePool={prizePool} />
+    </CardLabelLarge>
   )
 }
 
-export const PrizePoolCardLoader = () => (
+export const PrizePoolCardLoader = (props: { className?: string }) => (
   <div
-    className={classNames('animate-pulse h-40', SIZE_CLASSNAME, BG_CLASSNAME, RADIUS_CLASSNAME)}
+    className={classNames(
+      'animate-pulse h-40',
+      props.className,
+      SIZE_CLASSNAME,
+      BG_CLASSNAME,
+      RADIUS_CLASSNAME
+    )}
   />
 )

@@ -1,11 +1,11 @@
+import { Dot } from '@components/Dot'
+import { PrizePoolBar } from '@components/PrizePoolBar'
+import { PrizePoolTable } from '@components/PrizePoolTable'
+import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
-import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
-import { Dot } from '@components/Dot'
-import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { PrizePoolBar } from '@components/PrizePoolBar'
-import { PrizePoolTable } from '@components/PrizePoolTable'
 
 export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (props) => {
   const { className } = props

@@ -1,13 +1,13 @@
-import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import classNames from 'classnames'
-import { useMemo } from 'react'
-import { ethers } from 'ethers'
-import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { Dot } from '@components/Dot'
-import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { PrizePoolTable } from '@components/PrizePoolTable'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { Amount } from '@pooltogether/hooks'
+import { CountUp, ExternalLink } from '@pooltogether/react-components'
+import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import classNames from 'classnames'
+import { ethers } from 'ethers'
+import { useMemo } from 'react'
 
 export const PerDrawAveragePrizeSize: React.FC<{ className?: string }> = (props) => {
   const { className } = props

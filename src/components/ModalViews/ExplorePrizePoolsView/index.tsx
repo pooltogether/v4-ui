@@ -1,13 +1,10 @@
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
-import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
-import { HorizontalListByOdds } from '@components/BrowsePrizePools/PrizePoolHorizontalList/HorizontalListByOdds'
-import { HorizontalListByTvl } from '@components/BrowsePrizePools/PrizePoolHorizontalList/HorizontalListByTvl'
+import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
+import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { Tabs, ViewProps } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
-
-const horizontalListMarginClassName = 'mb-12 -mx-2 xs:-mx-8 px-2 xs:px-8'
 
 export const ExplorePrizePoolsView: React.FC<
   { onPrizePoolSelect?: (prizePool: PrizePool) => void } & ViewProps
@@ -21,39 +18,24 @@ export const ExplorePrizePoolsView: React.FC<
   }
 
   return (
-    <div className='pb-16'>
-      <BrowsePrizePoolsHeader className='mb-12' />
+    <div className='pb-16 xs:pb-12'>
+      <BrowsePrizePoolsHeader className='mb-8' />
       {/* TODO: Add a list of filtered prize pools by token holdings */}
       <Tabs
-        titleClassName='mb-8 xs:mb-12'
+        titleClassName='mb-8'
+        initialTabId={'all-pools'}
         tabs={[
           {
             id: 'all-pools',
-            view: (
-              <>
-                <BrowsePrizePoolsList onPrizePoolSelect={onPrizePoolSelect} />
-              </>
-            ),
-            title: 'All Pools'
+            view: <PrizePoolsTable onPrizePoolSelect={onPrizePoolSelect} />,
+            title: 'Prize Pools'
           },
           {
             id: 'top-pools',
-            view: (
-              <div className='flex flex-col space-y-8 sm:space-y-16'>
-                <HorizontalListByTvl
-                  onPrizePoolSelect={onPrizePoolSelect}
-                  marginClassName={horizontalListMarginClassName}
-                />
-                <HorizontalListByOdds
-                  onPrizePoolSelect={onPrizePoolSelect}
-                  marginClassName={horizontalListMarginClassName}
-                />
-              </div>
-            ),
-            title: 'Top Pools'
+            view: <RecommendedPrizePools onPrizePoolSelect={onPrizePoolSelect} />,
+            title: 'Recommendations'
           }
         ]}
-        initialTabId={'top-pools'}
       />
     </div>
   )

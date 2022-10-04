@@ -1,11 +1,17 @@
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
-import { BrowsePrizePoolsList } from '@components/BrowsePrizePools/BrowsePrizePoolsList'
-import { TopPrizePools } from '@components/BrowsePrizePools/TopPrizePools'
+import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
+import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { ButtonRadius, ButtonSize, ButtonTheme, Tabs } from '@pooltogether/react-components'
+import {
+  ButtonRadius,
+  ButtonSize,
+  ButtonTheme,
+  ExternalLink,
+  Tabs
+} from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
 import { AccountCard } from '@views/Account/AccountCard'
@@ -25,73 +31,60 @@ import { V3StakingList } from './V3StakingList'
 import { V4DepositList } from './V4DepositList'
 
 export const AccountUI = (props) => {
+  const isWalletConnected = useIsWalletConnected()
   const usersAddress = useUsersAddress()
 
+  if (!isWalletConnected) {
+    return (
+      <PagePadding
+        // className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-screen'
+        widthClassName='max-w-screen-sm'
+        // paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
+      >
+        <NoWalletAccountHeader className='mx-auto mb-20' />
+        <Card>
+          <BrowsePrizePools />
+          <OddsOfWinningWithX bgClassName='bg-transparent' />
+          <FunWalletConnectionPrompt />
+        </Card>
+      </PagePadding>
+    )
+  }
   return (
     <PagePadding
       className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-screen'
       widthClassName='max-w-screen-lg'
       paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
     >
-      <MainContent className='sm:col-span-2 md:col-span-3 space-y-4'>
-        <HeaderContent>
-          <AccountCard usersAddress={usersAddress} />
-        </HeaderContent>
-        <CardContent>
+      <div className='sm:col-span-2 md:col-span-3 space-y-4'>
+        <AccountCard usersAddress={usersAddress} />
+        <Card>
           <V4DepositList />
+          <DelegationList />
           <RewardsHaveMoved />
           <hr className='sm:hidden' />
           <GovernanceSidebarCard usersAddress={usersAddress} className='sm:hidden' />
           <OddsOfWinningWithX className='sm:hidden' />
+          <EarnRewardsCard className='sm:hidden' />
           <hr className='sm:hidden' />
-          <DelegationList />
-          <EarnRewardsCard />
           <V3StakingList />
           <V3DepositList />
-        </CardContent>
+        </Card>
         <OddsDisclaimer className='block mt-6' />
-      </MainContent>
+      </div>
 
       <SidebarContent className=''>
         <PastPrizesSidebarCard usersAddress={usersAddress} />
         <OddsSidebarCard usersAddress={usersAddress} />
         <GovernanceSidebarCard usersAddress={usersAddress} />
+        <EarnRewardsCard />
       </SidebarContent>
     </PagePadding>
   )
 }
 
-const MainContent = (props) => <div {...props} className={props.className} />
-
-/**
- * Handles no wallet state for the account page header
- * @param props
- * @returns
- */
-const HeaderContent: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
+const Card: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
   let { children, className, ...remainingProps } = props
-  const isWalletConnected = useIsWalletConnected()
-  if (!isWalletConnected) {
-    children = <NoWalletAccountHeader className='mx-auto xs:mb-12 md:mb-20' />
-  }
-  return <div {...remainingProps} children={children} className={classNames('w-full', className)} />
-}
-
-const CardContent: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
-  let { children, className, ...remainingProps } = props
-
-  const isWalletConnected = useIsWalletConnected()
-  if (!isWalletConnected) {
-    children = (
-      <>
-        <BrowsePrizePools />
-        <hr className='sm:hidden' />
-        <OddsOfWinningWithX className='sm:hidden' />
-        <hr className='sm:hidden' />
-        <FunWalletConnectionPrompt />
-      </>
-    )
-  }
 
   return (
     <div
@@ -119,21 +112,31 @@ const SidebarContent: React.FC<{ className?: string; children: React.ReactNode }
 
 const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
   return (
-    <div className={classNames('text-center leading-none xs:max-w-lg', props.className)}>
-      <div className='mx-auto mt-6 mb-2 flex justify-center'>
-        <img src={'/wallet-illustration.png'} className='w-24 h-24 xs:w-38 xs:h-38 ml-4 xs:ml-8' />
+    <div className={classNames('text-center leading-none', props.className)}>
+      <div className='mx-auto mt-6 mb-2 sm:mb-4 flex justify-center'>
+        <img
+          src={'/wallet-illustration.png'}
+          className='w-24 h-24 xs:w-38 xs:h-38 sm:w-44 sm:h-44 ml-4 xs:ml-8'
+        />
       </div>
-      <div className='font-bold w-2/3 text-2xl sm:text-4xl mx-auto mb-2'>
-        Prize accounts for humans
+      <div className='font-bold w-2/3 text-2xl sm:text-4xl lg:text-6xl mx-auto mb-2'>
+        Prize savings for humans
       </div>
-      <div className='font-bold mb-8'>
+      <div className='font-bold mb-8 sm:mb-12'>
         Open to all, free forever. No banks, no stress, just prizes.
       </div>
       <ConnectWalletButton
         theme={ButtonTheme.transparent}
         radius={ButtonRadius.full}
-        size={ButtonSize.lg}
+        size={ButtonSize.xl}
+        className='mb-2 xs:mb-4 lg:mb-6 mx-auto w-full xs:w-3/4'
       />
+      <ExternalLink
+        className='opacity-75 text-xxs lg:text-xs'
+        href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
+      >
+        {`What's a wallet?`}
+      </ExternalLink>
     </div>
   )
 }
@@ -156,21 +159,16 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
         tabs={[
           {
             id: 'all',
-            view: <BrowsePrizePoolsList onPrizePoolSelect={onPrizePoolSelect} className='' />,
-            title: 'All Pools'
+            view: <PrizePoolsTable onPrizePoolSelect={onPrizePoolSelect} className='' />,
+            title: 'Prize Pools'
           },
           {
             id: 'top',
-            view: (
-              <TopPrizePools
-                onPrizePoolSelect={onPrizePoolSelect}
-                marginClassName='mb-12 px-4 sm:px-6 lg:px-12 -mx-4 sm:-mx-6 lg:-mx-12'
-              />
-            ),
-            title: 'Top Pools'
+            view: <RecommendedPrizePools onPrizePoolSelect={onPrizePoolSelect} />,
+            title: 'Recommendations'
           }
         ]}
-        initialTabId={'top'}
+        initialTabId={'all'}
       />
       {/* TODO: Make another modal without the browse view */}
       <DepositModal
@@ -190,17 +188,24 @@ export const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (prop
         Whoa there partner, swimsuits required beyond this point!
       </span>
       <ConnectWalletButton
-        className='max-w-lg w-full mx-auto'
+        className='xs:max-w-3/4 w-full mx-auto mb-2 xs:mb-4 lg:mb-6'
         theme={ButtonTheme.pink}
         radius={ButtonRadius.full}
+        // size={ButtonSize.xl}
       />
+      <ExternalLink
+        className='opacity-75 text-xxs lg:text-xs'
+        href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
+      >
+        {`What's a wallet?`}
+      </ExternalLink>
     </div>
   )
 }
 
 const RewardsHaveMoved = () => (
   <div className=''>
-    <CardTitle title='Rewards' className='mb-2' />
+    <CardTitle title={'Bonus Rewards'} className='mb-2' />
     <p className='opacity-70 text-xxs xs:text-xs'>
       Claiming rewards has moved!{' '}
       <Link href={'/prizes#rewards'}>

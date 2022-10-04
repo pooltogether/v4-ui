@@ -4,6 +4,7 @@ import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { Promotion } from '@interfaces/promotions'
 import { TokenIcon } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
+import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { InfoListItem } from '.'
@@ -46,15 +47,20 @@ export const TwabRewardsAprItem: React.FC<{
 
   return (
     <InfoListItem
-      labelClassName={labelClassName}
+      labelClassName={classNames(labelClassName, 'animate-rainbow')}
       valueClassName={valueClassName}
-      label={t('rewardsVapr', 'Rewards vAPR')}
+      label={
+        <div className='inline-flex'>
+          Bonus Rewards
+          <img className='w-4 h-4 ml-1' src='/beach-with-umbrella.png' />
+        </div>
+      }
       labelToolTip={t(
         'rewardsVaprDescription',
         'Rewards vAPR is the variable annual rate of return on your deposit in the form of rewards, based on the total value of deposits on this chain'
       )}
       loading={!isFetched}
-      labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
+      // labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={value}
     />
   )
@@ -68,7 +74,7 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
 
   return (
     <li className='flex space-x-2 items-center'>
-      <span>{numberWithCommas(vapr)}% in</span>
+      <span>{numberWithCommas(vapr)}% VAPR in</span>
       <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
     </li>
   )

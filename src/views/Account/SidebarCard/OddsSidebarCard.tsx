@@ -1,22 +1,21 @@
-import FeatherIcon from 'feather-icons-react'
-import { DetailedHTMLProps, SelectHTMLAttributes, useMemo, useState } from 'react'
-import { SidebarCard } from '.'
+import { TransparentSelect } from '@components/Input/TransparentSelect'
+import { V4_CHAIN_IDS } from '@constants/config'
+import { useAppEnvString } from '@hooks/useAppEnvString'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
+import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
+import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
+import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { ThemedClipSpinner } from '@pooltogether/react-components'
 import {
   getNetworkNiceNameByChainId,
   numberWithCommas,
   unionProbabilities
 } from '@pooltogether/utilities'
-import { NetworkIcon, ThemedClipSpinner } from '@pooltogether/react-components'
-import { usePrizePoolByChainId } from '@hooks/v4/PrizePool/usePrizePoolByChainId'
-import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
-import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
-import { useAppEnvString } from '@hooks/useAppEnvString'
-import { V4_CHAIN_IDS } from '@constants/config'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { TransparentSelect } from '@components/Input/TransparentSelect'
-import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useMemo, useState } from 'react'
+import { SidebarCard } from '.'
 
 export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
@@ -42,8 +41,10 @@ const UserOddsOfWinning: React.FC<{ usersAddress: string }> = (props) => {
 
 const AMOUNT_OPTIONS = Object.freeze(['10', '100', '1000', '10000'])
 
-export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
-  const { className } = props
+export const OddsOfWinningWithX: React.FC<{ className?: string; bgClassName?: string }> = (
+  props
+) => {
+  const { className, bgClassName } = props
   const appEnv = useAppEnvString()
 
   const { chainId: selectedChainId } = useSelectedChainId()
@@ -57,6 +58,7 @@ export const OddsOfWinningWithX: React.FC<{ className?: string }> = (props) => {
     <SidebarCard
       title={'🎲 Winning odds'}
       className={className}
+      bgClassName={bgClassName}
       description={
         <>
           Odds of a deposit of{' '}

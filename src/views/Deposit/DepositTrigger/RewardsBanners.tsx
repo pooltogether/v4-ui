@@ -28,30 +28,19 @@ export const RewardsBanners = () => {
 
   return (
     <div className='mb-6 xs:mb-8 px-4 xs:px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-xl mx-auto xs:rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center'>
-      <div className='flex space-x-2 items-center'>
+      <div className='flex-inline space-x-2 items-center'>
+        <span>📣</span>
+        {/* {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}! */}
+        <span>
+          Deposit on Optimism for $OP <b className='animate-rainbow'>Bonus Rewards</b>!
+        </span>
         <TokenIcon
           chainId={CHAIN_ID.optimism}
           address={OPTIMISM_OP_ADDRESS}
           sizeClassName='w-4 h-4'
         />
-        <span className='flex items-center font-bold'>
-          {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}!
-        </span>
+        <img className='w-4 h-4 inline-block' src='/beach-with-umbrella.png' />
       </div>
-
-      <Link href={`https://app.hop.exchange`}>
-        <a
-          className='flex items-center h-auto xs:h-8 uppercase text-pt-purple-darkest opacity-80 dark:text-white dark:text-opacity-80 hover:text-opacity-100 font-bold'
-          target='_blank'
-        >
-          {t('bridge')}{' '}
-          <FeatherIcon
-            icon='external-link'
-            className={'relative w-4 h-4 ml-2'}
-            style={{ top: -1 }}
-          />
-        </a>
-      </Link>
 
       {/* <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
         <div className='my-1 xs:my-0 xs:mr-3'> </div>
