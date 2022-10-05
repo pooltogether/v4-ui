@@ -205,8 +205,8 @@ const BRIDGE_URLS = Object.freeze({
  * @param tokenAddress
  * @returns
  */
-export const getExchangeUrl = (chainId: number, tokenAddress: string) =>
-  EXCHANGE_URLS[chainId]?.(tokenAddress)?.url || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)?.url
+export const getExchange = (chainId: number, tokenAddress: string) =>
+  EXCHANGE_URLS[chainId]?.(tokenAddress) || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)
 
 const EXCHANGE_URLS = Object.freeze({
   [CHAIN_ID.mainnet]: (tokenAddress: string) => ({

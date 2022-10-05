@@ -1,7 +1,7 @@
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { CardTitle } from '@components/Text/CardTitle'
 import { VotingPromptCard } from '@components/VotingPromptCard'
-import { getExchangeUrl } from '@constants/config'
+import { getExchange } from '@constants/config'
 import { POOL_TOKEN } from '@constants/misc'
 import { useUsersPoolTokenBalances } from '@hooks/useUsersPoolTokenBalances'
 import { Amount, TokenBalances, TokenWithBalance } from '@pooltogether/hooks'
@@ -55,8 +55,8 @@ export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
               rel='noopener noreferrer'
               href={
                 !!walletChainId && !!POOL_TOKEN[walletChainId]
-                  ? getExchangeUrl(walletChainId, POOL_TOKEN[walletChainId])
-                  : getExchangeUrl(CHAIN_ID.mainnet, POOL_TOKEN[CHAIN_ID.mainnet])
+                  ? getExchange(walletChainId, POOL_TOKEN[walletChainId])?.url
+                  : getExchange(CHAIN_ID.mainnet, POOL_TOKEN[CHAIN_ID.mainnet])?.url
               }
             >
               <span>{t('getPool', 'Get POOL')}</span>

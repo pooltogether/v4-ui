@@ -1,14 +1,14 @@
 import { Amount, Token } from '@pooltogether/hooks'
 import { useQueries, UseQueryOptions } from 'react-query'
-import { useAllAvailableDrawIds } from './useAllAvailableDrawIds'
 import { useAllPrizeDistributorTokens } from './useAllPrizeDistributorTokens'
+import { useAllValidDrawIds } from './useAllValidDrawIds'
 import { usePrizeDistributors } from './usePrizeDistributors'
-import { getUserClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
+import { getUsersClaimedAmounts, USERS_CLAIMED_AMOUNTS_QUERY_KEY } from './useUsersClaimedAmounts'
 
 export const useAllUsersClaimedAmounts = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
   const prizeDistributorTokensQueryResults = useAllPrizeDistributorTokens()
-  const drawIdQueryResults = useAllAvailableDrawIds()
+  const drawIdQueryResults = useAllValidDrawIds()
 
   const isAllTokensFetched = prizeDistributorTokensQueryResults.every(
     (queryResult) => queryResult.isFetched
@@ -36,7 +36,12 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
         )
         const drawIds = drawIdQueryResult.data.drawIds
         const prizeDistributorToken = prizeDistributorTokensQueryResult.data.token
-        return getUserClaimedAmounts(usersAddress, prizeDistributor, drawIds, prizeDistributorToken)
+        return getUsersClaimedAmounts(
+          usersAddress,
+          prizeDistributor,
+          drawIds,
+          prizeDistributorToken
+        )
       },
       enabled: isAllTokensFetched && Boolean(usersAddress) && isAllAvailableDrawIdsFetched
     }))

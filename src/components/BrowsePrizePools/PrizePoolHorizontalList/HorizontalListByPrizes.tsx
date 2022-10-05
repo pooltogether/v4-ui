@@ -1,15 +1,7 @@
+import { NumberOfPrizes } from '@components/PrizePool/NumberOfPrizes'
 import { usePrizePoolsByPrizes } from '@hooks/usePrizePoolsByPrizes'
-import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
 import { PrizePoolHorizontalList } from '.'
-import {
-  NumberOfPrizes,
-  PrizePoolCard,
-  PrizePoolCardLoader,
-  TotalValueLocked
-} from '../../PrizePoolCard'
 
 export const HorizontalListByPrizes: React.FC<{
   className?: string
@@ -24,7 +16,7 @@ export const HorizontalListByPrizes: React.FC<{
       label='by-prizes'
       className={className}
       marginClassName={marginClassName}
-      onClick={onClick}
+      onPrizePoolSelect={onClick}
       prizePools={prizePools}
       isPartiallyFetched={isPartiallyFetched}
       isFetched={isFetched}

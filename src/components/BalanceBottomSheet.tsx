@@ -126,7 +126,6 @@ const MainView = (props: MainViewProps & { setView: (view: string) => void }) =>
     chainId,
     transactionHash,
     views,
-    token,
     ticket,
     balance,
     balanceUsd,

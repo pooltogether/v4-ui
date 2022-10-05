@@ -1,6 +1,5 @@
 import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
 import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
 import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
 import { CardTitle } from '@components/Text/CardTitle'
@@ -11,12 +10,7 @@ import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDel
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import {
-  NetworkIcon,
-  SquareButtonSize,
-  SquareButtonTheme,
-  SquareLink
-} from '@pooltogether/react-components'
+import { ButtonLink, ButtonSize, ButtonTheme, NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction, useUsersAddress } from '@pooltogether/wallet-connection'
@@ -27,13 +21,14 @@ import { getAddress } from 'ethers/lib/utils'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSigner } from 'wagmi'
-import { BalanceDelegatedToItem } from './BalanceDelegatedToItem'
-import { DelegateTicketsSection } from './DelegateTicketsSection'
-import { DelegateView } from './DelegateView'
-import { TwabDelegatorItem } from './TwabDelegatorItem'
-import { WithdrawView } from './WithdrawView'
+import { LoadingList } from '../AccountList/LoadingList'
+import { BalanceDelegatedToItem } from '../V4DepositList/BalanceDelegatedToItem'
+import { DelegateTicketsSection } from '../V4DepositList/DelegateTicketsSection'
+import { DelegateView } from '../V4DepositList/DelegateView'
+import { TwabDelegatorItem } from '../V4DepositList/TwabDelegatorItem'
+import { WithdrawView } from '../V4DepositList/WithdrawView'
 
 export const V4Deposits = () => {
   const { t } = useTranslation()
@@ -153,7 +148,7 @@ const DepositItem = (props: DepositItemsProps) => {
           />
         ),
         label: t('withdraw'),
-        theme: SquareButtonTheme.tealOutline
+        theme: ButtonTheme.tealOutline
       }
     ],
     []
@@ -172,7 +167,7 @@ const DepositItem = (props: DepositItemsProps) => {
         ),
         icon: 'gift',
         label: t('delegateDeposit', 'Delegate deposit'),
-        theme: SquareButtonTheme.teal
+        theme: ButtonTheme.teal
       }
     ],
     []
@@ -200,13 +195,9 @@ const DepositItem = (props: DepositItemsProps) => {
         transactionHash={tx?.receipt?.transactionHash}
         internalLinks={
           <Link href={{ pathname: '/deposit', query: router.query }}>
-            <SquareLink
-              size={SquareButtonSize.md}
-              theme={SquareButtonTheme.teal}
-              className='w-full'
-            >
+            <ButtonLink size={ButtonSize.md} theme={ButtonTheme.teal} className='w-full'>
               {t('deposit')}
-            </SquareLink>
+            </ButtonLink>
           </Link>
         }
         views={views}
@@ -217,7 +208,7 @@ const DepositItem = (props: DepositItemsProps) => {
         balance={balances.ticket}
         balanceUsd={balances.ticket}
         contractLinks={contractLinks}
-        isWalletOnProperNetwork={isWalletOnProperNetwork}
+        prizePoolAddress={prizePool.address}
       />
     </>
   )

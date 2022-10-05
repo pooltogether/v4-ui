@@ -68,7 +68,6 @@ const POOLStakingCard = (props: { balances: V3PrizePoolBalances; refetch: () => 
       tokenFaucetRewards={tokenFaucetRewards}
       isTokenFaucetRewardsFetched={isTokenFaucetRewardsFetched}
       isTokenFaucetDataFetched={isTokenFaucetDataFetched}
-      poolEmoji={'🌡️'}
       colorFrom={'#46279A'}
       colorTo={'#9E66FF'}
       depositPrompt={t('poolPoolDepositDescription')}

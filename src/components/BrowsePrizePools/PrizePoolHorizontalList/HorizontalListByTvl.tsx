@@ -1,8 +1,8 @@
+import { TicketTotalSupply } from '@components/PrizePool/TicketTotalSupply'
 import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { PrizePoolHorizontalList } from '.'
-import { TotalValueLocked } from '../../PrizePoolCard'
 
 export const HorizontalListByTvl: React.FC<{
   className?: string
@@ -22,7 +22,7 @@ export const HorizontalListByTvl: React.FC<{
         prizePools={prizePools}
         isPartiallyFetched={isPartiallyFetched}
         isFetched={isFetched}
-        prizePoolCardContent={({ prizePool }) => <TotalValueLocked prizePool={prizePool} />}
+        prizePoolCardContent={({ prizePool }) => <TicketTotalSupply prizePool={prizePool} />}
       />
     </div>
   )

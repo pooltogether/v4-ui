@@ -1,4 +1,4 @@
-import { getExchangeUrl } from '@constants/config'
+import { getExchange } from '@constants/config'
 import { ExternalLink, Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
@@ -15,7 +15,7 @@ export const SwapTokensModal = (props: SwapTokensModalProps) => {
 
   const { t } = useTranslation()
 
-  const { url, title } = getExchangeUrl(chainId, tokenAddress)
+  const { url, title } = getExchange(chainId, tokenAddress)
 
   return (
     <Modal

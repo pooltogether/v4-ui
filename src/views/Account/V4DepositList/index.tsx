@@ -71,7 +71,7 @@ export interface DepositItemsProps {
   balances: UsersPrizePoolBalances
   prizePool: PrizePool
   refetchBalances: () => void
-  onClick: () => void
+  onClick?: () => void
 }
 
 const ExplorePrizePools = () => {

@@ -54,9 +54,9 @@ const ErrorItem: React.FC<{ transaction: Transaction }> = (props) => {
     errorMessages[0].message !== '' &&
     transaction?.state !== TransactionState.pending
   ) {
-    const messages = errorMessages.map((error) => (
-      <span key={error.message} className='text-red font-semibold'>
-        {error.message}
+    const messages = errorMessages.map((error, index) => (
+      <span key={`error-msg-${index}`} className='text-red font-semibold'>
+        {typeof error.message === 'string' ? error.message : null}
       </span>
     ))
 

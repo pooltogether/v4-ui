@@ -1,22 +1,19 @@
-import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getChainColorByChainId } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import React, { useMemo, useState } from 'react'
 
-export const PrizePoolTable: React.FC<{
+export const PrizePoolTable = (props: {
   data: {
     prizePool: PrizePool
     percentage?: number
-    [key: string]: React.ReactNode
   }[]
   headers: {
     [key: string]: React.ReactNode
   }
   className?: string
-}> = (props) => {
+}) => {
   const { data, headers, className } = props
   const columns = useMemo(() => Object.keys(headers).length + 1, [headers])
 
@@ -43,7 +40,6 @@ export const PrizePoolTable: React.FC<{
 }
 
 const PrizePoolRow: React.FC<{
-  [key: string]: React.ReactNode
   prizePool: PrizePool
   columns: number
   percentage?: number
@@ -51,7 +47,7 @@ const PrizePoolRow: React.FC<{
     [key: string]: React.ReactNode
   }
 }> = (props) => {
-  const { prizePool, percentage, columns, headers, ...data } = props
+  const { prizePool, percentage, columns, headers } = props
   const [id] = useState(Math.random())
 
   return (

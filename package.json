@@ -6,8 +6,9 @@
   "scripts": {
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "next dev",
-    "prebuild": "yarn locize:download && yarn lint",
+    "predeploy": "yarn locize:download && yarn lint",
     "build": "next build",
+    "deploy": "yarn build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

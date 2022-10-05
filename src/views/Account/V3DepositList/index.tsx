@@ -290,6 +290,8 @@ const PodDepositItem = (props: DepositItemsProps) => {
         balance={ticket}
         balanceUsd={ticket.balanceUsd}
         contractLinks={contractLinks}
+        ticket={ticket}
+        prizePoolAddress={prizePool.addresses.prizePool}
       />
     </>
   )

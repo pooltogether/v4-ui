@@ -43,6 +43,7 @@ export const SidebarCard: React.FC<{
         <ExternalLink
           href={props.href}
           rel='noopener noreferrer'
+          // @ts-ignore
           theme={'text-gradient-magenta hover:opacity-70 trans text-lg font-bold text-left'}
           className='ml-4 sm:ml-0 mt-4 sm:mt-0'
         >

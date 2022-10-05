@@ -35,15 +35,14 @@ import { useValidDrawDatas } from './useValidDrawDatas'
  */
 export const useUsersUnclaimedDrawDatas = (
   usersAddress: string,
-  prizeDistributor: PrizeDistributor,
-  ticket: Token
+  prizeDistributor: PrizeDistributor
 ) => {
   // Generic data
   const lockedDrawIds = useLockedDrawIds()
   const { isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
   // User specific data
-  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor, ticket)
+  const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
   const { data: normalizedBalancesData, isFetched: isNormalizedBalancesFetched } =
     useUsersNormalizedBalances(usersAddress, prizeDistributor)
   const { data: claimedAmountsData, isFetched: isClaimedAmountsFetched } = useUsersClaimedAmounts(

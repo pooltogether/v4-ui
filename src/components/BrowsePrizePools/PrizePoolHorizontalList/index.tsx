@@ -1,12 +1,8 @@
-import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { addPropsToChildren } from '@utils/addProps'
 import classNames from 'classnames'
-import { cloneElement } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PrizePoolCard, PrizePoolCardLoader, TotalValueLocked } from '../../PrizePoolCard'
+import { PrizePoolCard, PrizePoolCardLoader } from '../../PrizePoolCard'
 
 /**
  * Defaults to setting selected prize pool address globally

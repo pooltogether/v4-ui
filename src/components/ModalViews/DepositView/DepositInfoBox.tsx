@@ -10,7 +10,6 @@ import { EstimateAction } from '@constants/odds'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
-import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
@@ -41,7 +40,7 @@ export const DepositInfoBox: React.FC<{
     transaction?.state !== TransactionState.pending
   const messages = errorMessages?.map((error, index) => (
     <span key={`error-${index}:` + error.message} className='text-pt-red-light'>
-      {error.message}
+      {typeof error.message === 'string' ? error.message : null}
     </span>
   ))
 

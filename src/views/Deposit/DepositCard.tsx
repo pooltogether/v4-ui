@@ -1,9 +1,8 @@
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { getDepositGasLimit } from '@constants/config'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersDepositAllowance } from '@hooks/v4/PrizePool/useUsersDepositAllowance'
 import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
@@ -21,13 +20,12 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { DepositCardBottomLinks } from './DepositCardBottomLinks'
 
 export const DepositCard = (props: { className?: string }) => {
   const { className } = props
 
   const router = useRouter()
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
@@ -240,8 +238,8 @@ export const DepositCard = (props: { className?: string }) => {
         <DepositForm
           form={form}
           prizePool={prizePool}
-          token={token}
-          ticket={ticket}
+          token={usersBalancesData?.balances.token}
+          ticket={usersBalancesData?.balances.ticket}
           isPrizePoolTokensFetched={isPrizePoolTokensFetched}
           approveTx={approveTx}
           depositTx={depositTx}
@@ -249,7 +247,7 @@ export const DepositCard = (props: { className?: string }) => {
           openModal={openModal}
           amountToDeposit={amountToDeposit}
         />
-        <DepositCardBottomLinks />
+        {/* <DepositCardBottomLinks /> */}
       </div>
 
       <DepositConfirmationModal

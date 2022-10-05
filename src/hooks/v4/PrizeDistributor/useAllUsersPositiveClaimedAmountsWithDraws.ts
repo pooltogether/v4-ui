@@ -1,13 +1,13 @@
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
-import { useAllAvailableDraws } from './useAllAvailableDraws'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
+import { useAllValidDraws } from './useAllValidDraws'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
 export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
   const claimedAmountsQueryResults = useAllUsersClaimedAmounts(usersAddress)
-  const availableDrawsQueryResults = useAllAvailableDraws()
+  const availableDrawsQueryResults = useAllValidDraws()
 
   const isClaimedAmountsFetched = claimedAmountsQueryResults.every(
     (queryResult) => queryResult.isFetched

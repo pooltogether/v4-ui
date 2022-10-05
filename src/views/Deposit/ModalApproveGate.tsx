@@ -3,14 +3,16 @@ import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { TxButton } from '@components/Input/TxButton'
 import { Amount } from '@pooltogether/hooks'
 import {
-  formatBlockExplorerTxUrl,
   ButtonLink,
-  Button,
   ButtonTheme,
   ThemedClipSpinner,
   ButtonRadius
 } from '@pooltogether/react-components'
-import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
+import {
+  formatBlockExplorerTxUrl,
+  Transaction,
+  TransactionState
+} from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
 import React from 'react'

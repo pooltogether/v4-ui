@@ -1,4 +1,4 @@
-import { getExchangeUrl } from '@constants/config'
+import { getExchange } from '@constants/config'
 import { POOL_TOKEN, PPOOL_TICKET_TOKEN } from '@constants/misc'
 import { useUsersGovernanceBalances } from '@hooks/useUsersGovernanceBalances'
 import { useUsersVotes } from '@hooks/useUsersVotes'
@@ -63,7 +63,7 @@ const GovernanceDescription = () => {
             <ExternalLink
               iconClassName='w-3 h-3 ml-1 mb-1'
               children={undefined}
-              href={getExchangeUrl(CHAIN_ID.mainnet, POOL_TOKEN[CHAIN_ID.mainnet])}
+              href={getExchange(CHAIN_ID.mainnet, POOL_TOKEN[CHAIN_ID.mainnet])?.url}
             />
           )
         }}
