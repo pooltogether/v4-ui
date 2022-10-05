@@ -1,6 +1,5 @@
 import { Token } from '@pooltogether/hooks'
 import { useQueries, UseQueryOptions } from 'react-query'
-
 import { usePrizeDistributors } from './usePrizeDistributors'
 import {
   getPrizeDistributorToken,

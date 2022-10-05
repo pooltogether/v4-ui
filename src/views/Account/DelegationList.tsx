@@ -1,12 +1,12 @@
 import { CardTitle } from '@components/Text/CardTitle'
-import FeatherIcon from 'feather-icons-react'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
+import { ExternalLink } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
+import FeatherIcon from 'feather-icons-react'
 import { AccountList } from './AccountList'
 import { BalanceDelegatedToItem } from './V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from './V4DepositList/TwabDelegatorItem'
-import { ExternalLink } from '@pooltogether/react-components'
 
 export const DelegationList = () => {
   const usersAddress = useUsersAddress()

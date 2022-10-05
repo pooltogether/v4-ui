@@ -1,10 +1,10 @@
-import FeatherIcon from 'feather-icons-react'
-import { PrizePool } from '@pooltogether/v4-client-js'
-import classNames from 'classnames'
-import React, { useMemo, useState } from 'react'
-import { getChainColorByChainId } from '@pooltogether/wallet-connection'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { NetworkIcon, TokenIcon } from '@pooltogether/react-components'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { getChainColorByChainId } from '@pooltogether/wallet-connection'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useMemo, useState } from 'react'
 
 export const PrizePoolTable: React.FC<{
   data: {

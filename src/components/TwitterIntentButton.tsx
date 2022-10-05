@@ -1,4 +1,4 @@
-import { SquareLink } from '@pooltogether/react-components'
+import { ButtonLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

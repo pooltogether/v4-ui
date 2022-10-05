@@ -1,6 +1,5 @@
 import { useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
-
 import { selectedPrizePoolAddressAtom, setSelectedPrizePoolWriteAtom } from '../atoms'
 
 export const useSelectedPrizePoolAddress = () => {

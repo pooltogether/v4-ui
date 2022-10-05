@@ -1,8 +1,8 @@
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useState } from 'react'
-import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWinnings'
 import { SidebarCard } from '.'
+import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWinnings'
 
 export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props

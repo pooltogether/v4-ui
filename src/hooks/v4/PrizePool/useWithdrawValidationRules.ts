@@ -3,7 +3,6 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
-
 import { usePrizePoolTokens } from './usePrizePoolTokens'
 import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 

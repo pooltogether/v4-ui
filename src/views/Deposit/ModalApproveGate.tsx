@@ -1,6 +1,6 @@
-import React from 'react'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
+import { ModalInfoList } from '@components/InfoList'
+import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { TxButton } from '@components/Input/TxButton'
 import { Amount } from '@pooltogether/hooks'
 import {
   formatBlockExplorerTxUrl,
@@ -10,12 +10,11 @@ import {
   ThemedClipSpinner,
   ButtonRadius
 } from '@pooltogether/react-components'
-
-import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
-import { ModalInfoList } from '@components/InfoList'
-import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
-import { TxButton } from '@components/Input/TxButton'
+import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
+import classNames from 'classnames'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface ModalApproveGateProps {
   className?: string

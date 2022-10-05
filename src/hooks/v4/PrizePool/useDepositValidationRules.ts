@@ -2,7 +2,6 @@ import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'react-i18next'
-
 import { useMinimumDepositAmount } from './useMinimumDepositAmount'
 import { usePrizePoolTokens } from './usePrizePoolTokens'
 import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'

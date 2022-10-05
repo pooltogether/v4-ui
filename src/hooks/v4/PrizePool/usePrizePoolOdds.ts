@@ -2,7 +2,6 @@ import { EstimateAction } from '@constants/odds'
 import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber, ethers } from 'ethers'
-
 import { useOdds } from './useOdds'
 import { usePrizePoolOddsData } from './usePrizePoolOddsData'
 

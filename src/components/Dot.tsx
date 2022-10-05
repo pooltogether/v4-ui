@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import { useState } from 'react'
 
 export const Dot = (props: { className?: string }) => {
   const [id] = useState(Math.random())

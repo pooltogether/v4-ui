@@ -1,22 +1,22 @@
+import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
+import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
+import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
+import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
+import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
+import { Amount } from '@pooltogether/hooks'
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
-import { useCallback, useState } from 'react'
 import {
   getChainNameByChainId,
   TransactionState,
   useTransaction
 } from '@pooltogether/wallet-connection'
-import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
-import { Amount } from '@pooltogether/hooks'
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useCallback, useState } from 'react'
+import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
+import { DepositView } from './DepositView'
 import { MainView } from './MainView'
 import { WithdrawView } from './WithdrawView'
-import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
-import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
-import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
-import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
-import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
-import { DepositView } from './DepositView'
-import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
 
 export enum ViewIds {
   main,

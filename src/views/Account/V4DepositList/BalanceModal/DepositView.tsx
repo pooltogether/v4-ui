@@ -1,9 +1,9 @@
+import { DepositView as DepositViewCore } from '@components/ModalViews/DepositView'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { DepositView as DepositViewCore } from '@components/ModalViews/DepositView'
 import { ViewIds } from '.'
 
 const FORM_KEY = 'depositAmount'

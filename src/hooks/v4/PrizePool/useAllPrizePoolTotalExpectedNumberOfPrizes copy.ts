@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
-
 import { useAllPrizePoolPercentagesofPicks } from './useAllPrizePoolPercentagesofPicks'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'

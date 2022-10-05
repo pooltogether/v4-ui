@@ -1,6 +1,6 @@
+import { ButtonRadius, ButtonTheme } from '@pooltogether/react-components'
 import { FullWalletConnectionButton } from '@pooltogether/wallet-connection'
 import { getSupportedChains } from '@utils/getSupportedChains'
-import { ButtonRadius, ButtonTheme } from '@pooltogether/react-components'
 import { Trans } from 'next-i18next'
 
 /**

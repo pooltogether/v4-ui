@@ -1,9 +1,9 @@
+import { Token, useTokenBalance } from '@pooltogether/hooks'
 import { TokenAmountInputFlat } from '@pooltogether/react-components'
+import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { Token, useTokenBalance } from '@pooltogether/hooks'
 
 export interface TokenAmountInputProps {
   chainId: number

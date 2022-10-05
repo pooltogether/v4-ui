@@ -5,7 +5,6 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { formatUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
-
 import { useChainPrizePoolTicketTotalSupply } from '../PrizePool/useChainPrizePoolTicketTotalSupply'
 import { useUsersPrizePoolTwabBetween } from '../PrizePool/useUsersPrizePoolTwabBetween'
 

@@ -1,7 +1,6 @@
 import { Card } from '@pooltogether/react-components'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-
 import { StaticPrizeVideoBackground } from './StaticPrizeVideoBackground'
 
 export const NoDrawsCard = (props: { className?: string }) => {

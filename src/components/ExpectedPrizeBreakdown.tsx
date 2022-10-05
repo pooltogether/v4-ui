@@ -1,10 +1,10 @@
-import React from 'react'
-import classnames from 'classnames'
-import { Amount, Token } from '@pooltogether/hooks'
-import { useTranslation } from 'react-i18next'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { Amount, Token } from '@pooltogether/hooks'
+import classnames from 'classnames'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const ExpectedPrizeBreakdown: React.FC<{
   className?: string

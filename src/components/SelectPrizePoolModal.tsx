@@ -1,18 +1,17 @@
-import React, { useState } from 'react'
-import FeatherIcon from 'feather-icons-react'
+import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { Token } from '@pooltogether/hooks'
 import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
-
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import classNames from 'classnames'
-import { useTranslation } from 'react-i18next'
-import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { Token } from '@pooltogether/hooks'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { PrizePoolLabel } from './PrizePoolLabel'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 
 interface SelectPrizePoolModalProps {
   className?: string

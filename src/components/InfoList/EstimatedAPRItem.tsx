@@ -1,8 +1,7 @@
-import { useTranslation } from 'react-i18next'
-
-import { InfoListItem } from '.'
 import { usePrizePoolApr } from '@hooks/v4/PrizePool/usePrizePoolApr'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useTranslation } from 'react-i18next'
+import { InfoListItem } from '.'
 
 interface EstimatedAPRItemProps {
   prizePool: PrizePool

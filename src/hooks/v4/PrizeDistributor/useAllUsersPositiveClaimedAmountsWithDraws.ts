@@ -1,6 +1,5 @@
 import { Amount, Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
-
 import { useAllAvailableDraws } from './useAllAvailableDraws'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 import { usePrizeDistributors } from './usePrizeDistributors'

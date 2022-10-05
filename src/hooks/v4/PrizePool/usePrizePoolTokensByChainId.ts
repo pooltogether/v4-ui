@@ -1,5 +1,4 @@
 import { useQueries } from 'react-query'
-
 import { usePrizePoolsByChainId } from './usePrizePoolsByChainId'
 import { getPrizePoolTokens, PRIZE_POOL_TOKENS_QUERY_KEY } from './usePrizePoolTokens'
 

@@ -1,6 +1,5 @@
 import { useSupportedChainIds } from '@hooks/useSupportedChainIds'
 import { useMemo } from 'react'
-
 import { usePrizePoolNetwork } from '../PrizePoolNetwork/usePrizePoolNetwork'
 
 export const usePrizeDistributors = () => {

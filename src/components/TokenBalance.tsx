@@ -1,7 +1,7 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import FeatherIcon from 'feather-icons-react'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import classNames from 'classnames'
+import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'react-i18next'
 
 interface TokenBalanceProps {

@@ -1,7 +1,6 @@
 import { msToS, sToMs } from '@pooltogether/utilities'
 import { atom, useAtom } from 'jotai'
 import { useEffect } from 'react'
-
 import { useDrawLocks } from './useDrawLocks'
 
 export const lockedDrawIdsAtom = atom<number[]>([])

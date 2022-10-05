@@ -1,6 +1,5 @@
 import { BigNumber } from 'ethers'
 import { useQueries } from 'react-query'
-
 import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolExpectedPrizes } from './useAllPrizePoolExpectedPrizes'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'

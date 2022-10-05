@@ -1,5 +1,4 @@
 import { V3_CHAIN_IDS } from '@constants/config'
-
 import { useAppEnvString } from '../useAppEnvString'
 
 export const useV3ChainIds = () => {
