@@ -38,7 +38,7 @@ export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
         <div className='flex items-center'>
           <CardTitle title={t('poolToken', 'POOL Token')} loading={!isFetched} />
         </div>
-        <div className='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-pt-purple dark:to-pt-purple-dark rounded-lg p-4'>
+        <div className='bg-pt-purple-lightest dark:bg-pt-purple-darkest rounded-lg p-4'>
           <div className='flex flex-col xs:flex-row justify-between'>
             <div className='flex flex-col'>
               <div className='flex items-center space-x-2'>
@@ -100,7 +100,7 @@ const POOLBalancesList = (props: {
 
   return (
     <PrizePoolDepositList
-      bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-pt-purple dark:to-pt-purple-dark'
+      bgClassName='bg-pt-purple-lightest dark:bg-pt-purple-darkest'
       className='flex flex-col'
     >
       {chainIds.map((chainId) =>

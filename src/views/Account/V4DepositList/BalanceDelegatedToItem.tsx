@@ -97,7 +97,7 @@ const DelegationsList: React.FC<{
         </span>
       </div>
       <div className='space-x-2 flex items-center '>
-        <TokenIcon chainId={selectedChainId} address={ticket.address} sizeClassName='w-5 h-5' />
+        <TokenIcon chainId={selectedChainId} address={ticket?.address} sizeClassName='w-5 h-5' />
         <span className='capitalize leading-none tracking-wider font-bold'>
           {amount.amountPretty}
         </span>

@@ -1,17 +1,16 @@
-import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.svg'
 import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { Amount, Token } from '@pooltogether/hooks'
 import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 
-export const TotalWinningsAmount: React.FC<{ className?: string }> = (props) => {
-  const { className } = props
-  const usersAddress = useUsersAddress()
+export const TotalWinningsAmount: React.FC<{ usersAddress: string; className?: string }> = (
+  props
+) => {
+  const { usersAddress, className } = props
   const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
@@ -27,8 +26,10 @@ export const TotalWinningsAmount: React.FC<{ className?: string }> = (props) => 
   )
 }
 
-export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
-  const { className } = props
+export const TotalWinningsCard: React.FC<{ usersAddress: string; className?: string }> = (
+  props
+) => {
+  const { usersAddress, className } = props
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
@@ -47,25 +48,29 @@ export const TotalWinningsCard: React.FC<{ className?: string }> = (props) => {
             {t('claimedWinningsExclamation', 'Claimed winnings!')}
           </span>
           <div className='flex'>
-            <TotalWinningsAmount />
+            <TotalWinningsAmount usersAddress={usersAddress} />
             <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
           </div>
         </div>
       </button>
-      <TotalWinningsSheet open={isOpen} onDismiss={() => setIsOpen(false)} />
+      <TotalWinningsSheet
+        usersAddress={usersAddress}
+        open={isOpen}
+        onDismiss={() => setIsOpen(false)}
+      />
     </>
   )
 }
 
 interface TotalWinningsSheetProps {
+  usersAddress: string
   open: boolean
   onDismiss: () => void
 }
 
 export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
-  const { open, onDismiss } = props
+  const { open, onDismiss, usersAddress } = props
   const { t } = useTranslation()
-  const usersAddress = useUsersAddress()
   const { data: totalClaimedAmount } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
@@ -83,16 +88,14 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
           <span className='uppercase opacity-50 font-semibold text-xxs'>{t('totalWinnings')}</span>
         </div>
       </div>
-      <PrizesClaimedList />
+      <PrizesClaimedList usersAddress={usersAddress} />
       <NumberOfPrizesDisclaimer />
     </BottomSheet>
   )
 }
 
-interface PrizesClaimedListProps {}
-
-const PrizesClaimedList = (props: PrizesClaimedListProps) => {
-  const usersAddress = useUsersAddress()
+const PrizesClaimedList = (props: { usersAddress: string }) => {
+  const { usersAddress } = props
   const queryResults = useAllUsersClaimedAmountsGraph(usersAddress)
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
   const { t } = useTranslation()

@@ -12943,7 +12943,7 @@ react-slick@^0.29.0:
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
 
-react-spring-bottom-sheet@^3.4.0:
+react-spring-bottom-sheet@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/react-spring-bottom-sheet/-/react-spring-bottom-sheet-3.4.1.tgz#9a4f90b1c0af17eb4a22a606a5efc5d6e62c7b0c"
   integrity sha512-yDFqiPMm/fjefjnOe6Q9zxccbCl6HMUKsK5bWgfGHJIj4zmXVKio5d4icQvmOLuwpuCA2pwv4J6nGWS6fUZidQ==

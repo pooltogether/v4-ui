@@ -36,16 +36,12 @@ export const AccountUI = (props) => {
 
   if (!isWalletConnected) {
     return (
-      <PagePadding
-        // className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-screen'
-        widthClassName='max-w-screen-sm'
-        // paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
-      >
-        <NoWalletAccountHeader className='mx-auto mb-20' />
+      <PagePadding widthClassName='max-w-screen-md'>
+        <NoWalletAccountHeader className='mx-auto mb-20 max-w-screen-sm' />
         <Card>
           <BrowsePrizePools />
           <OddsOfWinningWithX bgClassName='bg-transparent' />
-          <FunWalletConnectionPrompt />
+          <FunWalletConnectionPrompt className='max-w-screen-sm mx-auto' />
         </Card>
       </PagePadding>
     )

@@ -66,7 +66,7 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   }
 
   return (
-    <PrizePoolDepositList>
+    <PrizePoolDepositList bgClassName='bg-white bg-opacity-80 dark:bg-pt-purple-darkest'>
       {data.balances.map((balances) => (
         <DepositItem
           key={'deposit-balance-' + balances.prizePool.id()}
@@ -95,7 +95,7 @@ const V3DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   }
 
   return (
-    <PrizePoolDepositList>
+    <PrizePoolDepositList bgClassName='bg-white bg-opacity-80 dark:bg-pt-purple-darkest'>
       {data.balances.map((balances) => (
         <DepositItem
           key={'v3-deposit-balance-' + balances.prizePool.addresses.prizePool}

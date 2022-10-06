@@ -26,7 +26,7 @@ export const AccountCard: React.FC<{
         <DailyOdds usersAddress={usersAddress} />
         <WeeklyOdds usersAddress={usersAddress} />
       </div>
-      <TotalWinningsCard className='block sm:hidden' />
+      <TotalWinningsCard usersAddress={usersAddress} className='block sm:hidden' />
     </div>
   )
 }

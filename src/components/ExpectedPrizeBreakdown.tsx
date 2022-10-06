@@ -15,6 +15,8 @@ export const ExpectedPrizeBreakdown: React.FC<{
   const { data: prizeData, isFetched: isPrizesFetched } = usePrizePoolExpectedPrizes(prizePool)
   const { data: tokenData, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
 
+  // console.log({ prizeData })
+
   const isFetched = isPrizesFetched && isTokensFetched
 
   return (

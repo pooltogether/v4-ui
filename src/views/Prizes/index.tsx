@@ -15,6 +15,7 @@ import React from 'react'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import { LoadingCard } from './MultiDrawsCard/LoadingCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
+import { PastDraws } from './PastDraws'
 import { PastDrawsList } from './PastDrawsList'
 
 export const PRIZE_UI_STATES = {
@@ -34,7 +35,7 @@ export const PrizesUI = () => {
 
   if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (
-      <PagePadding className='flex flex-col space-y-4'>
+      <PagePadding className='flex flex-col space-y-4' widthClassName='max-w-screen-xs'>
         <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
         <LoadingCard />
       </PagePadding>
@@ -43,7 +44,7 @@ export const PrizesUI = () => {
 
   if (!usersAddress) {
     return (
-      <PagePadding className='flex flex-col space-y-8'>
+      <PagePadding className='flex flex-col space-y-8' widthClassName='max-w-screen-xs'>
         <div className='flex flex-col space-y-4'>
           <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
           <LockedDrawsCard
@@ -53,22 +54,22 @@ export const PrizesUI = () => {
           />
         </div>
         <EarnRewardsCard />
+        <PastDraws />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
     )
   }
 
   return (
-    <>
-      <PagePadding className='flex flex-col space-y-8'>
-        <div className='flex flex-col space-y-4'>
-          <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-          <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        </div>
-        <RewardsCard />
-        <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
-      </PagePadding>
-    </>
+    <PagePadding className='flex flex-col space-y-8' widthClassName='max-w-screen-xs'>
+      <div className='flex flex-col space-y-4'>
+        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+        <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
+      </div>
+      <RewardsCard />
+      <PastDraws />
+      <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
+    </PagePadding>
   )
 }
 const CheckForPrizesOnNetwork = (props: {

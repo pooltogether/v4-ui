@@ -51,7 +51,7 @@ export const getPrizePoolPrizes = (
     decimals
   )
 
-  const grandPrizeValue = valueOfPrizesByTier.sort((a, b) =>
+  const grandPrizeValue = [...valueOfPrizesByTier].sort((a, b) =>
     b.amountUnformatted.lte(a.amountUnformatted) ? -1 : 1
   )[0]
 
