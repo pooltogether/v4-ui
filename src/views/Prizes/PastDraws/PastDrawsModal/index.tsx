@@ -40,6 +40,13 @@ export const PastDrawsModal = (props: {
         {tokenData?.token.symbol}
       </div>
 
+      {/* Table Header */}
+      <div className='grid grid-cols-2 text-center text-opacity-80 mb-3'>
+        <span>Pooler</span>
+        <span>Prize</span>
+      </div>
+
+      {/* Error message */}
       {!!isError && (
         <div className='text-pt-red-light py-8 text-center w-full'>
           An error occurred fetching winners for draw #
@@ -47,11 +54,12 @@ export const PastDrawsModal = (props: {
         </div>
       )}
 
-      {/* Table */}
-      <div className='grid grid-cols-2 text-center text-opacity-80 mb-3'>
-        <span>Pooler</span>
-        <span>Prize</span>
-      </div>
+      {/* No winners message */}
+      {isFetched && winners?.prizes.length === 0 && (
+        <div className='text-opacity-80 w-full text-center py-8'>No winners 😔</div>
+      )}
+
+      {/* Table content */}
       <ul className='space-y-2'>
         {!isFetched && (
           <>
@@ -62,9 +70,6 @@ export const PastDrawsModal = (props: {
               />
             ))}
           </>
-        )}
-        {isFetched && winners?.prizes.length === 0 && (
-          <div className='text-opacity-80 w-full text-center py-8'>No winners 😔</div>
         )}
         {winners?.prizes.map(({ address, amount, pick, tier }) => (
           <li

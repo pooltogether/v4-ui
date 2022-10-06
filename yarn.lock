@@ -2332,10 +2332,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.6.2.tgz#71a4e6dd56c6f0a03feea95b4f3a1b8eeee04329"
   integrity sha512-vGqf8wqdKbP3Sk0xsF8W6wkRJgyPEGCIyeH1YM3kPjzNn4mCMAc08tGlBtq0CvjkvaNwWgLAMv2/L7Jh//wbbw==
 
-"@pooltogether/v4-client-js@^0.15.3":
-  version "0.15.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.3.tgz#f6ff2e03b8a25c42355b7c358c2c2633e17059c3"
-  integrity sha512-Ryiokefnz1ashIo+SChylTpP8rxDGRkblFzdqZ+wVpZfqeurGL+yGXKe/JlZIAhi3lBC8/SCKI/4TEWldUvW0A==
+"@pooltogether/v4-client-js@^0.15.4":
+  version "0.15.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.4.tgz#3611ccaab8b77ac374cc2d212beba4d0d5c95adb"
+  integrity sha512-LqkHeS70QAKvGo7wCBqmdcI0t1qsibiam3Fm7kONMo90H1zO8CTNpYPXwIdJ8F1vNs+OriGXLSbxRi/hSE/8qQ==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
