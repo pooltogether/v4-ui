@@ -76,11 +76,7 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
   return (
     <BottomSheet open={open} onDismiss={onDismiss} className='flex flex-col space-y-8'>
       <div className='flex items-center mx-auto'>
-        <img
-          src={'/pooltogether-trophy--detailed.svg'}
-          className='mr-2'
-          style={{ width: '38px' }}
-        />
+        <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
             ${totalClaimedAmount?.amountPretty || '--'}

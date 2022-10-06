@@ -51,7 +51,7 @@ export const useAllDrawWinners = (
           queryKey: getQueryKey(prizeDistributor, drawId, dedupe),
           queryFn: () =>
             getDrawWinners(prizeDistributor, drawId, tokenQuery?.data?.token.decimals, dedupe),
-          enabled: !!prizeDistributor && !!drawId && !!tokenQuery?.data?.token.decimals
+          enabled: !!prizeDistributor && !!drawId && !!tokenQuery?.isFetched
         }
       }),
     [data, dedupe, queryResults]
@@ -72,12 +72,12 @@ export const useDrawWinners = (
   drawId: number,
   dedupe: boolean = false
 ) => {
-  const { data } = usePrizeDistributorToken(prizeDistributor)
+  const { data, isFetched } = usePrizeDistributorToken(prizeDistributor)
   return useQuery(
     getQueryKey(prizeDistributor, drawId, dedupe),
     () => getDrawWinners(prizeDistributor, drawId, data?.token.decimals, dedupe),
     {
-      enabled: !!prizeDistributor && !!drawId
+      enabled: !!prizeDistributor && !!drawId && !!isFetched
     }
   )
 }
@@ -103,6 +103,7 @@ const getDrawWinners = async (
 
   try {
     data = await response.json()
+    console.log({ data, decimals })
   } catch (e) {
     try {
       drawId = drawId - 1
