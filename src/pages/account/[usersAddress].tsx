@@ -32,7 +32,9 @@ export default function IndexPage() {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Layout backgroundClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-darkest minimal-scrollbar'>
-        <SimpleAccountUI usersAddress={usersAddress} />
+        <SimpleAccountUI
+          usersAddress={Array.isArray(usersAddress) ? usersAddress[0] : usersAddress}
+        />
       </Layout>
     </Suspense>
   )

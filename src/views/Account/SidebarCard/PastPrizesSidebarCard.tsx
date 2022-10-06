@@ -1,5 +1,4 @@
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useState } from 'react'
 import { SidebarCard } from '.'
 import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWinnings'
@@ -16,13 +15,17 @@ export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props)
       <SidebarCard
         title={'🏆 Claimed prizes'}
         description={'Totalled over the past 8 months'}
-        main={<TotalWinningsAmount />}
+        main={<TotalWinningsAmount usersAddress={usersAddress} />}
         trigger={'See more'}
         showTrigger
         onClick={() => setIsOpen(true)}
         disabled={!isFetched}
       />
-      <TotalWinningsSheet open={isOpen} onDismiss={() => setIsOpen(false)} />
+      <TotalWinningsSheet
+        open={isOpen}
+        onDismiss={() => setIsOpen(false)}
+        usersAddress={usersAddress}
+      />
     </>
   )
 }
