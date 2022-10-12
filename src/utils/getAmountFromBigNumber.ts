@@ -8,7 +8,11 @@ const EMPTY_AMOUNT: Amount = {
   amountPretty: ''
 }
 
-export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: string): Amount => {
+export const getAmountFromBigNumber = (
+  amountUnformatted: BigNumber,
+  decimals: string,
+  precision?: number
+): Amount => {
   try {
     if (!amountUnformatted || amountUnformatted === undefined || !decimals) {
       return EMPTY_AMOUNT
@@ -17,7 +21,7 @@ export const getAmountFromBigNumber = (amountUnformatted: BigNumber, decimals: s
     return {
       amountUnformatted,
       amount,
-      amountPretty: numberWithCommas(amount, { precision: getMinPrecision(amount) }) as string
+      amountPretty: numberWithCommas(amount, { precision }) as string
     }
   } catch (e) {
     return EMPTY_AMOUNT

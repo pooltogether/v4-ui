@@ -43,13 +43,13 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
     <div className={classNames('relative', className)}>
       <Dots />
       <div className='flex flex-col font-bold mx-auto text-center'>
-        <span>Prize Pool Network Total Value Locked</span>
+        <span>Total Deposits</span>
         <span className='text-8xl xs:text-12xl leading-none'>
           $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
         </span>
       </div>
       <div className='opacity-70 mt-2 text-center'>
-        Prize money is distributed to prize pools based on their TVL{' '}
+        All deposits into PoolTogether are earning yield for prizes.{' '}
         <ExternalLink
           underline
           href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'

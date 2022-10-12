@@ -40,7 +40,7 @@
     "@pooltogether/etherplex": "^1.1.4",
     "@pooltogether/hooks": "^2.0.0-beta.4",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "^2.0.0-beta.9",
+    "@pooltogether/react-components": "^2.0.0-beta.10",
     "@pooltogether/utilities": "^0.6.2",
     "@pooltogether/v4-client-js": "^0.15.4",
     "@pooltogether/v4-pool-data": "1.8.2-beta.3",

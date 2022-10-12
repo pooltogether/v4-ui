@@ -42,7 +42,7 @@ export const PastDrawsModal = (props: {
         <b>{winnersInfo?.prizesWon} prizes</b> totalling{' '}
         <b
           className={classNames({
-            'animate-rainbow': !!winnersInfo && !winnersInfo.amount.amountUnformatted.isZero()
+            'text-flashy': !!winnersInfo && !winnersInfo.amount.amountUnformatted.isZero()
           })}
         >
           {winnersInfo?.amount.amountPretty}
@@ -98,7 +98,7 @@ export const PastDrawsModal = (props: {
                 address={tokenData?.token.address}
                 sizeClassName='w-4 h-4'
               />
-              <b className={classNames({ 'animate-rainbow': tier === 0 })}>{amount.amountPretty}</b>
+              <b className={classNames({ 'text-flashy': tier === 0 })}>{amount.amountPretty}</b>
             </div>
           </li>
         ))}

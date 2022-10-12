@@ -161,7 +161,7 @@ const ClaimedPrizeItem = (props: {
       <div className='flex items-center'>
         <TokenIcon className=' mr-2' chainId={chainId} address={token.address} />
         <span className='font-bold mr-1'>{claimedAmount.amountPretty}</span>
-        <span className='text-xxxxs opacity-50'>{token.symbol}</span>
+        <span className='text-xxxs opacity-50'>{token.symbol}</span>
       </div>
       <div className='text-right'>{drawId}</div>
     </li>

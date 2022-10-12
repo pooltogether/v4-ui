@@ -31,7 +31,7 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
       <Dots />
       <AmountOfPrizes />
       <PrizeAmount isFetched={isFetched} prizeTier={prizeTierData?.prizeTier} ticket={ticket} />
-      <p className='uppercase font-semibold text-inverse text-xs xs:text-lg'>to win</p>
+
       <DrawCountdown />
     </div>
   )
@@ -55,7 +55,7 @@ const AmountOfPrizes = (props) => {
   }, [queryResults])
 
   return (
-    <div className='font-semibold text-inverse text-xs xs:text-lg mt-2 mb-1 uppercase'>
+    <div className='font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90'>
       <span
         className={classNames('transition text-gradient-magenta', {
           'text-opacity-100': isFetched,
@@ -78,15 +78,22 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   }
 
   return (
-    <h1
-      className={classNames(
-        'text-12xl xs:text-14xl xs:-mt-0 font-semibold text-pt-gradient pointer-events-none mx-auto leading-none relative',
-        { 'opacity-50': !amount }
-      )}
-    >
-      $<CountUp countFrom={0} countTo={amount} decimals={0} />
-      {!amount && <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />}
-    </h1>
+    <>
+      <h1
+        className={classNames(
+          'text-12xl xs:text-14xl lg:text-15xl xs:-mt-0 font-semibold text-flashy pointer-events-none mx-auto leading-none relative',
+          { 'opacity-50': !amount }
+        )}
+      >
+        $<CountUp countFrom={0} countTo={amount} decimals={0} />
+        {!amount && (
+          <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
+        )}
+      </h1>
+      <p className='font-semibold text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90 text-xxs xs:text-sm '>
+        in prizes to win
+      </p>
+    </>
   )
 }
 
@@ -112,7 +119,8 @@ const DrawCountdown = (props) => {
   return (
     <div className='flex flex-col mx-auto pt-3'>
       <DrawNumberString>
-        <span>{t('joinDrawNumber', 'Join draw #{{number}}', { number: drawId })}</span>
+        {/* <span>{t('joinDrawNumber', 'Join draw #{{number}}', { number: drawId })}</span> */}
+        <span>Time left to join draw #{drawId}</span>
       </DrawNumberString>
       <Time
         seconds={secondsLeft}
@@ -125,7 +133,10 @@ const DrawCountdown = (props) => {
 }
 
 const DrawNumberString = (props) => (
-  <span {...props} className='uppercase font-semibold opacity-50 text-xs xs:text-xs mx-auto' />
+  <span
+    {...props}
+    className={classNames('mb-1 font-semibold opacity-50 text-xs xs:text-xs mx-auto')}
+  />
 )
 
 const LightningBolt = (props: {

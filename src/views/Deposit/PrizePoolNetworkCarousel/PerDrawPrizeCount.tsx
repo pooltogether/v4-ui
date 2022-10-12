@@ -3,15 +3,18 @@ import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
+import { useAllDrawWinners, useAllLatestDrawWinners } from '@hooks/v4/useDrawWinners'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
 
-export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (props) => {
+export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
 
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolExpectedPrizes()
+  const winnersQueryResults = useAllLatestDrawWinners()
+
   const { totalAmountOfPrizes, data } = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     if (!isFetched) {
@@ -28,6 +31,7 @@ export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           prizes: Math.round(data.expectedTotalNumberOfPrizes),
+          averagePrizeValue: `$${data.averagePrizeValue.amountPretty}`,
           percentage: data.expectedTotalNumberOfPrizes / totalAmountOfPrizes
         }
       })
@@ -35,17 +39,38 @@ export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (
     return { totalAmountOfPrizes, data }
   }, [queryResults])
 
+  const numberOfWinnersLastDraw = useMemo(() => {
+    const isFetched = winnersQueryResults.some(({ isFetched }) => isFetched)
+    if (!isFetched) {
+      return 0
+    }
+
+    return winnersQueryResults.reduce(
+      (sum, { data, isFetched }) => (isFetched ? sum + data.prizes.length : sum),
+      0
+    )
+  }, [winnersQueryResults])
+
   return (
     <div className={classNames('relative', className)}>
       <Dots />
-      <div className='flex flex-col font-bold mx-auto text-center'>
-        <span>Estimated number of prizes per draw</span>
-        <span className='text-8xl xs:text-12xl leading-none'>
-          <CountUp countTo={totalAmountOfPrizes} decimals={0} />
-        </span>
+      <div className='grid grid-cols-2 mx-auto font-bold text-center max-w-screen-xs'>
+        <div className='flex flex-col'>
+          <span>Prizes next draw</span>
+          <span className='text-7xl xs:text-12xl leading-none'>
+            <CountUp countTo={totalAmountOfPrizes} decimals={0} />
+          </span>
+        </div>
+        <div className='flex flex-col'>
+          <span>Prizes won last draw</span>
+          <span className='text-7xl xs:text-12xl leading-none text-flashy'>
+            <CountUp countTo={numberOfWinnersLastDraw} decimals={0} />
+          </span>
+        </div>
       </div>
       <div className='opacity-70 mt-2 text-center'>
-        Prize pools determine how they want to split up their prize money allocation.{' '}
+        Some Prize Pools have many small prizes, others have a few big prizes. Choose your own
+        adventure.{' '}
         <ExternalLink
           underline
           href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
@@ -58,7 +83,11 @@ export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (
         className='mt-4'
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
-      <PrizePoolTable headers={{ prizes: 'Estimated prizes' }} data={data} className='mt-2' />
+      <PrizePoolTable
+        headers={{ prizes: 'Estimated prizes', averagePrizeValue: 'Avg Prize Value' }}
+        data={data}
+        className='mt-2'
+      />
     </div>
   )
 }

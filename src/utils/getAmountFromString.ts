@@ -14,7 +14,11 @@ const EMPTY_AMOUNT: Amount = {
  * @param decimals
  * @returns
  */
-export const getAmountFromString = (amount: string, decimals: string): Amount => {
+export const getAmountFromString = (
+  amount: string,
+  decimals: string,
+  precision?: number
+): Amount => {
   try {
     if (!amount || amount === undefined || !decimals || decimals === undefined) {
       return EMPTY_AMOUNT
@@ -22,7 +26,7 @@ export const getAmountFromString = (amount: string, decimals: string): Amount =>
     return {
       amount,
       amountUnformatted: ethers.utils.parseUnits(amount, decimals),
-      amountPretty: numberWithCommas(amount) as string
+      amountPretty: numberWithCommas(amount, { precision }) as string
     }
   } catch (e) {
     console.error(e.message)

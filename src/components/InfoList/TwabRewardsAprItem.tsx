@@ -47,7 +47,7 @@ export const TwabRewardsAprItem: React.FC<{
 
   return (
     <InfoListItem
-      labelClassName={classNames(labelClassName, 'animate-rainbow')}
+      labelClassName={classNames(labelClassName, 'text-flashy')}
       valueClassName={valueClassName}
       label={
         <div className='inline-flex'>

@@ -103,15 +103,15 @@ const HelpView = (props: ViewProps) => {
       <p className='opacity-80 mb-6'>
         When you deposit into a PoolTogether Prize Pool you'll have a <b>{'daily'}</b> chance to win
         some of the{' '}
-        <b className='animate-rainbow'>
+        <b className='text-flashy'>
           <TotalNumberOfPrizes />
         </b>{' '}
         prizes. There's{' '}
-        <b className='animate-rainbow'>
+        <b className='text-flashy'>
           <UpcomingPerDrawPrizeValue />
         </b>{' '}
         to be won and everyone has a chance to win the <b>Grand Prize </b>of{' '}
-        <b className='animate-rainbow'>
+        <b className='text-flashy'>
           <LargestPrizeInNetwork />
         </b>
         .

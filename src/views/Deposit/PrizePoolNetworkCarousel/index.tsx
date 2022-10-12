@@ -3,9 +3,8 @@ import classNames from 'classnames'
 import { atom, useAtom } from 'jotai'
 import { useRef } from 'react'
 import Slider from 'react-slick'
-import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
-import { PerDrawPrizeCountDistribution } from './PerDrawPrizeCountDistribution'
-import { PerDrawPrizeMoneyDistribution } from './PerDrawPrizeMoneyDistribution'
+import { PerDrawPrizeCount } from './PerDrawPrizeCount'
+import { PerDrawPrizeValue } from './PerDrawPrizeValue'
 import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
 import { UpcomingPrize } from './UpcomingPrize'
 
@@ -26,14 +25,14 @@ export const PrizePoolNetworkCarousel = (props: { className?: string }) => {
         speed={500}
         slidesToShow={1}
         slidesToScroll={1}
-        autoplay={true}
+        // autoplay={true}
         autoplaySpeed={8000}
       >
-        <UpcomingPrize className='py-4 xs:pt-10 xs:pb-4 lg:pt-20 lg:pb-12 my-auto mx-auto max-w-screen-sm' />
+        <UpcomingPrize className='py-10 my-auto mx-auto max-w-screen-sm' />
+        <PerDrawPrizeValue className='my-auto mx-auto max-w-screen-sm' />
+        <PerDrawPrizeCount className='my-auto mx-auto max-w-screen-sm' />
         <PrizePoolNetworkTvl className='h-full my-auto mx-auto max-w-screen-sm' />
-        <PerDrawPrizeMoneyDistribution className='my-auto mx-auto max-w-screen-sm' />
-        <PerDrawPrizeCountDistribution className='my-auto mx-auto max-w-screen-sm' />
-        <PerDrawAveragePrizeSize className='my-auto mx-auto max-w-screen-sm' />
+        {/* <PerDrawAveragePrizeSize className='my-auto mx-auto max-w-screen-sm' /> */}
       </Slider>
       <SliderArrows prev={sliderRef?.current?.slickPrev} next={sliderRef?.current?.slickNext} />
     </div>
@@ -43,9 +42,14 @@ export const PrizePoolNetworkCarousel = (props: { className?: string }) => {
 export const SliderArrows = (props: { className?: string; prev: () => void; next: () => void }) => {
   const { className, prev, next } = props
   return (
-    <div className={classNames('flex justify-between mx-auto pt-0.5 xs:pt-0 lg:-mt-1', className)}>
-      <PrevArrow className='text-gradient-magenta' onClick={() => prev?.()} />
-      <NextArrow className='text-gradient-magenta' onClick={() => next?.()} />
+    <div
+      className={classNames(
+        'pointer-events-none z-1 flex justify-between mx-auto pt-0.5 xs:pt-0 lg:-mt-1',
+        className
+      )}
+    >
+      <PrevArrow className='pointer-events-auto text-gradient-magenta' onClick={() => prev?.()} />
+      <NextArrow className='pointer-events-auto text-gradient-magenta' onClick={() => next?.()} />
     </div>
   )
 }

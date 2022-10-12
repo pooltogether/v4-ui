@@ -257,7 +257,7 @@ const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (pr
 
   return (
     <div className={className}>
-      <CardLabelSmall className='animate-rainbow flex items-center'>
+      <CardLabelSmall className='text-flashy flex items-center'>
         <span>Bonus Rewards</span>
         <img className='w-4 h-4 ml-1 inline-block' src='/beach-with-umbrella.png' />
       </CardLabelSmall>
