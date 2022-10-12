@@ -1,15 +1,17 @@
 import { TransparentSelect } from '@components/Input/TransparentSelect'
+import { LoadingListItem } from '@components/List/ListItem'
 import { AveragePrizeValue } from '@components/PrizePool/AveragePrizeValue'
 import { ExpectedTotalPrizeValue } from '@components/PrizePool/ExpectedTotalPrizeValue'
 import { NumberOfPrizes } from '@components/PrizePool/NumberOfPrizes'
-import { PrizePoolLabel } from '@components/PrizePoolLabel'
+import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { usePrizePoolsByAvgPrizeValue } from '@hooks/usePrizePoolsByAvgPrizeValue'
 import { usePrizePoolsByExpectedTotalPrizeValue } from '@hooks/usePrizePoolsByExpectedTotalPrizeValue'
 import { usePrizePoolsByPrizes } from '@hooks/usePrizePoolsByPrizes'
 import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
+import { useQueryParamState } from '@hooks/useQueryParamState'
 import { Button, ButtonSize, ButtonTheme, Tooltip } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { LoadingAccountListItem } from '@views/Account/AccountList/AccountListItem'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
@@ -85,11 +87,12 @@ export const PrizePoolsTable: React.FC<{
   } = usePrizePoolsByExpectedTotalPrizeValue()
   const { prizePools: prizePoolsByPrizes, isFetched: isPrizePoolsByPrizes } =
     usePrizePoolsByPrizes()
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  // const [selectedIndex, setSelectedIndex] = useState(0)
 
   const sortOptions = [
     {
       title: 'Popularity',
+      key: 'popularity',
       description: 'These Prize Pools are the most popular and have the most tokens deposited.',
       prizePools: prizePoolsByTvl,
       isFetched: isPrizePoolsByTvlFetched,
@@ -101,6 +104,7 @@ export const PrizePoolsTable: React.FC<{
     },
     {
       title: 'Daily Prize Value',
+      key: 'daily_prize_value',
       description: 'The more deposits a Prize Pool gets the more prize value it has to give out!',
       prizePools: prizePoolsByExpectedTotalPrizeValue,
       isFetched: isPrizePoolsByExpectedTotalPrizeValueFetched,
@@ -112,6 +116,7 @@ export const PrizePoolsTable: React.FC<{
     },
     {
       title: 'Average Prize Value',
+      key: 'average_prize_value',
       description: "Don't expect to win often, but when you do, it'll be big!",
       prizePools: prizePoolsByAvgPrizeValue,
       isFetched: isPrizePoolsByAvgPrizeValueFetched,
@@ -123,6 +128,7 @@ export const PrizePoolsTable: React.FC<{
     },
     {
       title: 'Number of Prizes',
+      key: 'number_of_prizes',
       description: 'The most prizes are awarded here, but the prizes are smaller.',
       prizePools: prizePoolsByPrizes,
       isFetched: isPrizePoolsByPrizes,
@@ -133,7 +139,20 @@ export const PrizePoolsTable: React.FC<{
       ]
     }
   ]
+
+  const { data, setData } = useQueryParamState(
+    URL_QUERY_KEY.sortBy,
+    sortOptions[0].key,
+    sortOptions.map((option) => option.key)
+  )
+  const selectedIndex = sortOptions.findIndex((opt) => opt.key === data)
   const selectedSort = sortOptions[selectedIndex]
+
+  const onChange = (index: number) => {
+    const selectedOption = sortOptions[index]
+    setData(selectedOption.key)
+    // setSelectedIndex(index)
+  }
 
   return (
     <div>
@@ -146,7 +165,7 @@ export const PrizePoolsTable: React.FC<{
             <TransparentSelect
               name='list'
               id='list'
-              onChange={(event) => setSelectedIndex(Number(event.target.value))}
+              onChange={(event) => onChange(Number(event.target.value))}
               value={selectedIndex}
               paddingClassName='px-4 py-2'
               className='w-full sm:w-auto'
@@ -206,18 +225,17 @@ export const PrizePoolsTable: React.FC<{
                 theme={ButtonTheme.transparent}
                 onClick={() => onPrizePoolSelect(prizePool)}
               >
-                <div className='font-bold hidden sm:block'>Join Prize Pool</div>
-                <div className='font-bold block sm:hidden'>Join</div>
-                <FeatherIcon icon='chevron-right' className='w-6 h-6 sm:w-4 sm:h-4' />
+                <div className='text-xxs xs:text-xs font-bold'>Deposit</div>
+                <FeatherIcon icon='chevron-right' className='w-5 h-5 sm:w-4 sm:h-4' />
               </Button>
             </>
           ))}
         </div>
       ) : (
         <ul className={'space-y-2 w-full'}>
-          <LoadingAccountListItem />
-          <LoadingAccountListItem />
-          <LoadingAccountListItem />
+          <LoadingListItem />
+          <LoadingListItem />
+          <LoadingListItem />
         </ul>
       )}
     </div>

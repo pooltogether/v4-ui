@@ -42,7 +42,7 @@ export const PerDrawAveragePrizeSize: React.FC<{ className?: string }> = (props)
   }, [queryResults])
 
   return (
-    <div className={classNames('max-w-xl px-4 xs:px-2 relative', className)}>
+    <div className={classNames('relative', className)}>
       <Dots />
       <div className='flex flex-col font-bold mx-auto text-center'>
         <span>Per Draw Grand Prize</span>
@@ -52,7 +52,10 @@ export const PerDrawAveragePrizeSize: React.FC<{ className?: string }> = (props)
       </div>
       <div className='opacity-70 mt-2 text-center'>
         All deposits have a chance to win a grand prize.{' '}
-        <ExternalLink href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'>
+        <ExternalLink
+          underline
+          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+        >
           Read more
         </ExternalLink>
       </div>

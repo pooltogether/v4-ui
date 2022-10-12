@@ -4,7 +4,8 @@ export enum FathomEvent {
   'withdrawal' = '3JYMDT8G',
   'prizeClaim' = 'EVLWAG9O',
   'prizeCheck' = 'PWDABZ16',
-  'buyCoinbasePay' = 'CJAJK6TF'
+  'buyCoinbasePay' = 'CJAJK6TF',
+  'coinbaseAppUser' = 'DK7XFLQB'
 }
 
 export const logEvent = (event: FathomEvent, value: number = 1) => {

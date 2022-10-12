@@ -19,7 +19,7 @@ import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 
 export const PastDrawsList = (props: {
   prizeDistributor: PrizeDistributor
@@ -29,6 +29,7 @@ export const PastDrawsList = (props: {
   const { prizePool, prizeDistributor, className } = props
 
   const { t } = useTranslation()
+  const [drawsToShow, setDrawsToShow] = useState(5)
 
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
@@ -77,7 +78,7 @@ export const PastDrawsList = (props: {
         </Card>
       )}
       <ul className='space-y-4'>
-        {drawDatasList.map((drawData) => {
+        {drawDatasList.slice(0, drawsToShow).map((drawData) => {
           const drawId = drawData.draw.drawId
           return (
             <PastPrizeListItem
@@ -93,6 +94,14 @@ export const PastDrawsList = (props: {
           )
         })}
       </ul>
+      {!!drawDatasList && drawDatasList.length > drawsToShow && (
+        <button
+          className='opacity-70 hover:opacity-100 transition-opacity w-full text-center'
+          onClick={() => setDrawsToShow(drawsToShow + 5)}
+        >
+          more
+        </button>
+      )}
     </div>
   )
 }

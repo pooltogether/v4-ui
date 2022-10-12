@@ -21,13 +21,13 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
   return (
     <div className={classNames('w-full flex flex-col', className)}>
       <div className='flex flex-col xs:flex-row justify-between leading-none'>
-        <span className='flex items-start'>
+        <span className='flex flex-col'>
           <MultipleDrawIds {...remainingProps} partialDrawDatas={drawDatas} />
           <MultipleDrawsDate {...remainingProps} partialDrawDatas={drawDatas} />
         </span>
         <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
           <MultiDrawsPrizeTiersTrigger
-            className='mt-2 xs:mt-0 text-white'
+            className='mt-4 xs:mt-0 text-white'
             {...remainingProps}
             drawDatas={drawDatas}
           />

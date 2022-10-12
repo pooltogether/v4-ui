@@ -166,20 +166,9 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
 /**
  * Urls used for quick links to bridges for users
  */
-export const getBridgeUrls = (chainId: number) =>
-  BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
-const BRIDGE_URLS = Object.freeze({
+export const getBridges = (chainId: number) => BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
+export const BRIDGE_URLS = Object.freeze({
   [CHAIN_ID.mainnet]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.goerli]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.mumbai]: [
     { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
@@ -190,13 +179,11 @@ const BRIDGE_URLS = Object.freeze({
     { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
-  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
   [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
   [CHAIN_ID['optimism-goerli']]: [
     { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
   ],
-  [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }],
-  [CHAIN_ID['arbitrum-goerli']]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
+  [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
 })
 
 /**
@@ -205,41 +192,41 @@ const BRIDGE_URLS = Object.freeze({
  * @param tokenAddress
  * @returns
  */
-export const getExchange = (chainId: number, tokenAddress: string) =>
+export const getExchange = (chainId: number, tokenAddress?: string) =>
   EXCHANGE_URLS[chainId]?.(tokenAddress) || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)
 
-const EXCHANGE_URLS = Object.freeze({
-  [CHAIN_ID.mainnet]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=${tokenAddress}`,
+export const EXCHANGE_URLS = Object.freeze({
+  [CHAIN_ID.mainnet]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
     title: 'Uniswap'
   }),
-  [CHAIN_ID.optimism]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=optimism&theme=dark&outputCurrency=${tokenAddress}`,
+  [CHAIN_ID.optimism]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=optimism&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
     title: 'Uniswap'
   }),
-  [CHAIN_ID.rinkeby]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=rinkeby&theme=dark&outputCurrency=${tokenAddress}`,
+
+  [CHAIN_ID.polygon]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=polygon&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
     title: 'Uniswap'
   }),
-  [CHAIN_ID.polygon]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=polygon&theme=dark&outputCurrency=${tokenAddress}`,
-    title: 'Uniswap'
-  }),
-  [CHAIN_ID.mumbai]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=mumbai&theme=dark&outputCurrency=${tokenAddress}`,
-    title: 'Uniswap'
-  }),
-  [CHAIN_ID.avalanche]: (tokenAddress: string) => ({
-    url: `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
+
+  [CHAIN_ID.avalanche]: (tokenAddress?: string) => ({
+    url: `https://traderjoexyz.com/#/trade?${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
     title: 'Trader Joe'
   }),
-  [CHAIN_ID.fuji]: (tokenAddress: string) => ({
-    url: `https://traderjoexyz.com/#/trade`,
-    title: 'Trader Joe'
-  }),
-  [CHAIN_ID.arbitrum]: (tokenAddress: string) => ({
-    url: `https://app.uniswap.org/#/swap?chain=arbitrum&theme=dark&outputCurrency=${tokenAddress}`,
-    title: 'Trader Joe'
+  [CHAIN_ID.arbitrum]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=arbitrum&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Uniswap'
   })
 })
 

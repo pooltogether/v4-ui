@@ -1,7 +1,7 @@
-import { NextArrow, PrevArrow } from '@components/Arrows'
 import { InfoList } from '@components/InfoList'
-import { Carousel } from '@pooltogether/react-components'
-import React from 'react'
+import { SliderArrows } from '@views/Deposit/PrizePoolNetworkCarousel'
+import React, { useRef } from 'react'
+import Slider from 'react-slick'
 
 export interface InfoBoxProps {
   infoListItems: React.ReactNode
@@ -14,26 +14,31 @@ export interface InfoBoxProps {
  */
 export const InfoBox: React.FC<InfoBoxProps> = (props) => {
   const { infoListItems, carouselChildren } = props
+  const sliderRef = useRef<{ slickPrev: () => void; slickNext: () => void }>()
 
   if (!carouselChildren) {
     return <InfoList>{infoListItems}</InfoList>
   }
 
   return (
-    <Carousel
-      className='-mx-2 xs:-mx-8'
-      settings={{
-        arrows: true,
-        dots: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-        // nextArrow: <NextArrow />,
-        // prevArrow: <PrevArrow />
-      }}
-    >
-      {infoListItems && <InfoList>{infoListItems}</InfoList>}
-      {carouselChildren}
-    </Carousel>
+    <div>
+      <Slider
+        ref={sliderRef}
+        className='-mx-2 xs:-mx-8 pb-2'
+        arrows={true}
+        dots={true}
+        speed={500}
+        slidesToShow={1}
+        slidesToScroll={1}
+      >
+        {infoListItems && <InfoList>{infoListItems}</InfoList>}
+        {carouselChildren}
+      </Slider>
+      <SliderArrows
+        prev={sliderRef?.current?.slickPrev}
+        next={sliderRef?.current?.slickNext}
+        className='w-28'
+      />
+    </div>
   )
 }

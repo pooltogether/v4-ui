@@ -6,7 +6,7 @@ import { numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useState } from 'react'
 import { TopPool } from '.'
-import { CardLabelLarge, CardLabelSmall } from '../../PrizePoolCard'
+import { CardLabelLarge, CardLabelSmall } from '../../PrizePool/PrizePoolCard'
 
 const AMOUNT_OPTIONS = Object.freeze(['10', '100', '1000', '10000'])
 
@@ -47,7 +47,7 @@ export const TopPoolByOdds: React.FC<{
         precision: 0
       })} deposit would be maximized here.`}
       prizePool={prizePool}
-      onClick={(prizePool) => {
+      onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {
           onPrizePoolSelect(prizePool)
         } else {

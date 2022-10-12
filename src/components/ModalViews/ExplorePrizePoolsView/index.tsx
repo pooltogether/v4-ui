@@ -1,6 +1,8 @@
 import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
 import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
 import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { useQueryParamState } from '@hooks/useQueryParamState'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { Tabs, ViewProps } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -12,10 +14,15 @@ export const ExplorePrizePoolsView: React.FC<
   const { onPrizePoolSelect: _onPrizePoolSelect } = props
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
-  const onPrizePoolSelect = (prizePool: PrizePool) => {
+  const onPrizePoolSelect = async (prizePool: PrizePool) => {
     setSelectedPrizePoolAddress(prizePool)
     _onPrizePoolSelect?.(prizePool)
   }
+
+  const { data: initialTabId, setData } = useQueryParamState(URL_QUERY_KEY.exploreView, 'all', [
+    'all',
+    'top'
+  ])
 
   return (
     <div className='pb-16 xs:pb-12'>
@@ -23,15 +30,16 @@ export const ExplorePrizePoolsView: React.FC<
       {/* TODO: Add a list of filtered prize pools by token holdings */}
       <Tabs
         titleClassName='mb-8'
-        initialTabId={'all-pools'}
+        initialTabId={initialTabId}
+        onTabSelect={(tab) => setData(tab.id)}
         tabs={[
           {
-            id: 'all-pools',
+            id: 'all',
             view: <PrizePoolsTable onPrizePoolSelect={onPrizePoolSelect} />,
             title: 'Prize Pools'
           },
           {
-            id: 'top-pools',
+            id: 'top',
             view: <RecommendedPrizePools onPrizePoolSelect={onPrizePoolSelect} />,
             title: 'Recommendations'
           }

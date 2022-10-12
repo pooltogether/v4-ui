@@ -1,3 +1,4 @@
+import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
@@ -18,14 +19,13 @@ import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/uti
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { PromotionsVapr } from './InfoList/TwabRewardsAprItem'
-import { AveragePrizeValue } from './PrizePool/AveragePrizeValue'
-import { DepositToken } from './PrizePool/DepositToken'
-import { NumberOfPrizes } from './PrizePool/NumberOfPrizes'
-import { TicketTotalSupply } from './PrizePool/TicketTotalSupply'
-import { YieldSource } from './PrizePool/YieldSource'
-import { PrizePoolLabel } from './PrizePoolLabel'
-import { OddsForDeposit } from './PrizePoolNetwork/OddsForDeposit'
+import { PromotionsVapr } from '../InfoList/TwabRewardsAprItem'
+import { AveragePrizeValue } from './AveragePrizeValue'
+import { DepositToken } from './DepositToken'
+import { NumberOfPrizes } from './NumberOfPrizes'
+import { PrizePoolLabelFlat } from './PrizePoolLabel'
+import { TicketTotalSupply } from './TicketTotalSupply'
+import { YieldSource } from './YieldSource'
 
 const SIZE_CLASSNAME = 'w-full max-w-xl'
 const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10'
@@ -71,7 +71,12 @@ export const PrizePoolCard: React.FC<{
         }
       )}
     >
-      <PrizePoolTitle prizePool={prizePool} className='mb-6' />
+      <div className=' flex-row flex justify-between'>
+        <div>
+          <CardLabelSmall>Prize Pool</CardLabelSmall>
+          <PrizePoolLabelFlat prizePool={prizePool} className='mb-6' />
+        </div>
+      </div>
       <div className='grid gap-2 grid-cols-2 xs:grid-cols-3 mb-2'>
         <div>
           <CardLabelSmall>Total deposited</CardLabelSmall>
@@ -90,11 +95,11 @@ export const PrizePoolCard: React.FC<{
       <RewardsGroup prizePool={prizePool} className='mb-2' />
       <Button
         size={ButtonSize.sm}
-        className='w-full mt-auto space-x-2'
+        className='w-full space-x-2'
         theme={ButtonTheme.transparent}
         onClick={() => onClick(prizePool)}
       >
-        <div className='font-bold'>Join Prize Pool</div>
+        <div className='font-bold'>Deposit</div>
         <FeatherIcon icon='chevron-right' className='w-4 h-4' />
       </Button>
     </div>

@@ -81,8 +81,6 @@ export const RewardsCard = () => {
 
   return (
     <div className='flex flex-col space-y-2' id='rewards'>
-      <CardTitle title={'Bonus Rewards'} loading={!isFetched} />
-
       {!isFetched && (
         <LoadingList
           listItems={1}

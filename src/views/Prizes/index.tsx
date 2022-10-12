@@ -35,39 +35,57 @@ export const PrizesUI = () => {
 
   if (!Boolean(prizeDistributor) || !prizePool || !isPrizePoolTokensFetched) {
     return (
-      <PagePadding className='flex flex-col space-y-4' widthClassName='max-w-screen-xs'>
-        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        <LoadingCard />
+      <PagePadding widthClassName='max-w-5xl'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 sm:mb-16'>
+          <div className='flex flex-col space-y-4 max-w-lg col-span-1 xs:col-span-3 sm:col-span-1'>
+            <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+            <LoadingCard />
+          </div>
+        </div>
       </PagePadding>
     )
   }
 
   if (!usersAddress) {
     return (
-      <PagePadding className='flex flex-col space-y-8' widthClassName='max-w-screen-xs'>
-        <div className='flex flex-col space-y-4'>
-          <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-          <LockedDrawsCard
-            prizeDistributor={prizeDistributor}
-            token={prizePoolTokens?.token}
-            ticket={prizePoolTokens?.ticket}
-          />
+      <PagePadding widthClassName='max-w-5xl'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 sm:mb-16'>
+          <div className='flex flex-col space-y-4 max-w-lg col-span-1 xs:col-span-3 sm:col-span-1'>
+            <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+            <LockedDrawsCard
+              prizeDistributor={prizeDistributor}
+              token={prizePoolTokens?.token}
+              ticket={prizePoolTokens?.ticket}
+            />
+          </div>
+          <div className='flex flex-col space-y-2 col-span-1 xs:col-span-2 sm:col-span-1'>
+            <PastDraws />
+            <div>
+              <CardTitle title={'Bonus Rewards'} className='mb-2' />
+              <EarnRewardsCard />
+            </div>
+          </div>
         </div>
-        <EarnRewardsCard />
-        <PastDraws />
         <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} className='mt-8' />
       </PagePadding>
     )
   }
 
   return (
-    <PagePadding className='flex flex-col space-y-8' widthClassName='max-w-screen-xs'>
-      <div className='flex flex-col space-y-4'>
-        <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-        <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
+    <PagePadding widthClassName='max-w-screen-xs sm:max-w-5xl'>
+      <div className='w-full flex flex-col sm:flex-row mb-10 sm:mb-16 space-y-4 sm:space-y-0 sm:space-x-4'>
+        <div className='w-full max-w-screen-xs space-y-4'>
+          <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
+          <MultiDrawsCard prizePool={prizePool} prizeDistributor={prizeDistributor} />
+        </div>
+        <div className='flex flex-col space-y-2 w-full'>
+          <PastDraws />
+          <div>
+            <CardTitle title={'Bonus Rewards'} className='mb-2' />
+            <RewardsCard />
+          </div>
+        </div>
       </div>
-      <RewardsCard />
-      <PastDraws />
       <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
     </PagePadding>
   )

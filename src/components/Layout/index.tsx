@@ -13,7 +13,13 @@ const Layout = (props: LayoutProps) => {
   const { children, className, backgroundClassName } = props
 
   return (
-    <div className={classNames(className, backgroundClassName, 'min-h-screen minimal-scrollbar')}>
+    <div
+      className={classNames(
+        className,
+        backgroundClassName,
+        'min-h-actually-full-screen minimal-scrollbar'
+      )}
+    >
       <PageHeader />
       <Navigation />
       {/* <AlertBanners /> */}

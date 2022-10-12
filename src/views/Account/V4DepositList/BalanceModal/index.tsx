@@ -1,18 +1,21 @@
 import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
 import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { useQueryParamViewIdState } from '@hooks/useQueryParamViewIdState'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
-import { Amount } from '@pooltogether/hooks'
+import { Amount, QUERY_KEYS } from '@pooltogether/hooks'
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
 import {
   getChainNameByChainId,
   TransactionState,
   useTransaction
 } from '@pooltogether/wallet-connection'
-import { useCallback, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useCallback, useEffect, useState } from 'react'
 import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
 import { DepositView } from './DepositView'
 import { MainView } from './MainView'
@@ -33,7 +36,6 @@ export const BalanceModal: React.FC<{
   closeModal: () => void
 }> = (props) => {
   const { isOpen, closeModal: _closeModal } = props
-  const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.main)
   const [depositAmount, setDepositAmount] = useState<Amount>()
   const [withdrawAmount, setWithdrawAmount] = useState<Amount>()
   const { chainId } = useSelectedChainId()
@@ -42,6 +44,7 @@ export const BalanceModal: React.FC<{
   const [withdrawTransactionId, setWithdrawTransactionId] = useState('')
   const depositTransaction = useTransaction(depositTransactionId)
   const withdrawTransaction = useTransaction(withdrawTransactionId)
+  const [viewId, setViewId] = useState<string | number>(ViewIds.main)
 
   const sendDepositTransaction = useSendDepositTransaction(depositAmount)
   const sendWithdrawTransaction = useSendWithdrawTransaction(withdrawAmount)
@@ -95,11 +98,10 @@ export const BalanceModal: React.FC<{
     }
   ]
 
-  const closeModal = useCallback(() => {
+  const closeModal = useCallback(async () => {
     if (depositTransaction?.state === TransactionState.complete) {
       setDepositTransactionId('')
     }
-    setSelectedViewId(ViewIds.main)
     _closeModal()
   }, [depositTransaction?.state])
 
@@ -117,12 +119,12 @@ export const BalanceModal: React.FC<{
       closeModal={closeModal}
       viewIds={ViewIds}
       views={views}
-      selectedViewId={selectedViewId}
-      setSelectedViewId={setSelectedViewId}
+      selectedViewId={viewId}
+      setSelectedViewId={setViewId}
       // View props
       chainId={chainId}
       // WalletConnectionModalView
-      onWalletConnected={() => setSelectedViewId(ViewIds.main)}
+      onWalletConnected={(viewId) => setViewId(ViewIds.main)}
       // DepositView
       token={tokenData?.token}
       depositTransaction={depositTransaction}

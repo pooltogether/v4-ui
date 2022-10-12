@@ -1,13 +1,10 @@
 import { DEFAULT_CHAIN_IDS, DEFAULT_PRIZE_POOLS } from '@constants/config'
-import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
-import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import { getAppEnv } from '@utils/getAppEnv'
 import { parseUrlNetwork } from '@utils/parseUrlNetwork'
 import { parseUrlPrizePoolAddress } from '@utils/parseUrlPrizePoolAddress'
-import { setQueryParam } from '@utils/setQueryParam'
 import { atom } from 'jotai'
 
 /**
@@ -59,7 +56,7 @@ export const selectedPrizePoolAddressAtom = atom<string>(getInitialSelectedPrize
 /**
  *
  */
-const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }>(
+export const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }>(
   DEFAULT_PRIZE_POOLS[getAppEnv()]
 )
 
@@ -69,12 +66,9 @@ const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }>(
 export const setSelectedChainIdWriteAtom = atom<null, number>(null, (get, set, chainId) => {
   // Set in atom
   set(selectedChainIdAtom, chainId)
-  // Update url query param
-  setQueryParam(URL_QUERY_KEY.network, getNetworkNameAliasByChainId(chainId))
   // Update active prize pool address
   const selectedPrizePoolAddresses = get(selectedPrizePoolAddressesAtom)
   const selectedPrizePoolAddress = selectedPrizePoolAddresses[chainId]
-  setQueryParam(URL_QUERY_KEY.prizePool, selectedPrizePoolAddress)
   set(selectedPrizePoolAddressAtom, selectedPrizePoolAddress)
 })
 
@@ -87,9 +81,7 @@ export const setSelectedPrizePoolWriteAtom = atom<null, PrizePool>(
     // Set in atoms
     set(selectedPrizePoolAddressAtom, address)
     set(selectedChainIdAtom, chainId)
-    // Update url query param
-    setQueryParam(URL_QUERY_KEY.prizePool, address)
-    setQueryParam(URL_QUERY_KEY.network, getNetworkNameAliasByChainId(chainId))
+
     // Update active prize pool addresses
     const selectedPrizePoolAddresses = Object.assign({}, get(selectedPrizePoolAddressesAtom))
     selectedPrizePoolAddresses[chainId] = address

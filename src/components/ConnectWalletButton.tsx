@@ -8,7 +8,6 @@ export const ConnectWalletButton: React.FC<Omit<ButtonProps, 'onClick' | 'type'>
   const connectWallet = useConnectWallet()
   const { status } = useAccount()
   const { t } = useTranslation()
-  console.log(status)
   return (
     <Button {...props} onClick={() => connectWallet()} type='button'>
       {status === 'connecting' ? (

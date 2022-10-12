@@ -3,14 +3,13 @@ import { useAppEnvString } from '@hooks/useAppEnvString'
 import { TokenIcon } from '@pooltogether/react-components'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
-import Link from 'next/link'
 import React from 'react'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 
-export const RewardsBanners = () => {
+export const RewardsBanners = (props: { className?: string }) => {
+  const { className } = props
   const { t } = useTranslation()
 
   // Only show Optimism Rewards banner if we're on testnets with optimism-goerli having a promotion
@@ -27,7 +26,12 @@ export const RewardsBanners = () => {
   }
 
   return (
-    <div className='mb-6 xs:mb-8 px-4 xs:px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-xl mx-auto xs:rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center'>
+    <div
+      className={classNames(
+        'px-2 xs:px-8 bg-actually-black bg-opacity-5 dark:bg-actually-black dark:bg-opacity-50 w-full max-w-screen-xs mx-auto xs:rounded-lg py-2 text-pt-purple-darkest dark:text-white flex space-x-6 justify-center text-center sm:text-left text-xxxs sm:text-xs',
+        className
+      )}
+    >
       <div className='flex-inline space-x-2 items-center'>
         <span>📣</span>
         {/* {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}! */}

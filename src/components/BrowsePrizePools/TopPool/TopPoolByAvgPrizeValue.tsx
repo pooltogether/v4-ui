@@ -19,7 +19,7 @@ export const TopPoolByAvgPrizeValue: React.FC<{
       title={'Largest Prizes'}
       description={"Don't expect to win often, but when you do, it'll be big!"}
       prizePool={prizePool}
-      onClick={(prizePool) => {
+      onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {
           onPrizePoolSelect(prizePool)
         } else {

@@ -1,5 +1,5 @@
 import { InfoListItem } from '@components/InfoList'
-import { PrizePoolLabelFlat } from '@components/PrizePoolLabel'
+import { PrizePoolLabelFlat } from '@components/PrizePool/PrizePoolLabel'
 import { RevokeAllowanceButton } from '@components/RevokeAllowanceButton'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { usePrizePoolTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTwabTotalSupply'

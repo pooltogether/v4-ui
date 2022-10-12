@@ -19,7 +19,7 @@ export const PrizePoolTable = (props: {
 
   return (
     <div className={classNames('', className)}>
-      <div className={`ml-auto text-xxs opacity-80 grid grid-cols-${columns} text-center`}>
+      <div className={`ml-auto text-xxs opacity-80 grid grid-cols-${columns} text-center xs:mb-2`}>
         <div className='' />
         {Object.values(headers).map((header, index) => (
           <div className='' key={`header-${index}`}>
@@ -66,7 +66,7 @@ const PrizePoolLabel: React.FC<{ prizePool: PrizePool; percentage?: number }> = 
   const [id] = useState(Math.random())
 
   return (
-    <div className='flex items-center ml-3 xs:ml-10'>
+    <div className='flex items-center ml-3 xs:ml-10 justify-start xs:justify-center'>
       {/* {!!percentage && (
         <FeatherIcon
           icon={id > 0.5 ? 'triangle' : 'circle'}

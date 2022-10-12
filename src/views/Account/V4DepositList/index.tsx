@@ -1,4 +1,5 @@
-import { PrizePoolLabel } from '@components/PrizePoolLabel'
+import { ListItem } from '@components/List/ListItem'
+import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
@@ -6,11 +7,11 @@ import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBal
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { AccountList } from '@views/Account/AccountList'
-import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { DepositModal } from '@views/Deposit/DepositTrigger/DepositModal'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { AccentTextButton } from '../AccentTextButton'
 import { BalanceModal } from './BalanceModal'
@@ -37,6 +38,7 @@ export const V4DepositList = () => {
 const DepositsList: React.FC = () => {
   const usersAddress = useUsersAddress()
   const [isOpen, setIsOpen] = useState(false)
+  const router = useRouter()
   const { data } = useAllUsersV4Balances(usersAddress)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
@@ -49,11 +51,11 @@ const DepositsList: React.FC = () => {
       <BalanceModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
       <AccountList>
         {data.balances.map(({ prizePool, balances }) => (
-          <AccountListItem
+          <ListItem
             key={'deposit-balance-' + prizePool.id()}
-            onClick={() => {
+            onClick={async () => {
               setSelectedPrizePoolAddress(prizePool)
-              setIsOpen(true)
+              await setIsOpen(true)
             }}
             left={<PrizePoolLabel prizePool={prizePool} />}
             right={

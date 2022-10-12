@@ -1,13 +1,11 @@
+import { ListItem } from '@components/List/ListItem'
 import { VAPRTooltip } from '@components/VAPRTooltip'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
-import { Amount, Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { Amount, Token, TokenWithBalance } from '@pooltogether/hooks'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { displayPercentage } from '@pooltogether/utilities'
-import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AccountListItem } from '../AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 import { StakingBottomSheet } from './StakingBottomSheet'
 
@@ -33,11 +31,7 @@ export const StakingCard = (props: StakingCardProps) => {
 
   return (
     <>
-      <AccountListItem
-        left={<Left {...props} />}
-        right={<Right {...props} />}
-        onClick={openBottomSheet}
-      />
+      <ListItem left={<Left {...props} />} right={<Right {...props} />} onClick={openBottomSheet} />
       <StakingBottomSheet
         chainId={balances.chainId}
         balances={balances}

@@ -4,7 +4,10 @@ import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedP
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { CardTitle } from '@components/Text/CardTitle'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { useQueryParamState } from '@hooks/useQueryParamState'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { QUERY_KEYS } from '@pooltogether/hooks'
 import {
   ButtonRadius,
   ButtonSize,
@@ -14,13 +17,14 @@ import {
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
+import { parseQueryParam } from '@utils/parseQueryParam'
 import { AccountCard } from '@views/Account/AccountCard'
-import { DepositModal, ViewIds } from '@views/Deposit/DepositTrigger/DepositModal'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { DelegationList } from './DelegationList'
+import { DepositModal, ViewIds } from './DepositModal'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
 import { GovernanceSidebarCard } from './SidebarCard/GovernanceSidebarCard'
@@ -48,7 +52,7 @@ export const AccountUI = (props) => {
   }
   return (
     <PagePadding
-      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-screen'
+      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen'
       widthClassName='max-w-screen-lg'
       paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
     >
@@ -79,7 +83,7 @@ export const AccountUI = (props) => {
   )
 }
 
-const Card: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
+export const Card: React.FC<{ className?: string; children: React.ReactNode }> = (props) => {
   let { children, className, ...remainingProps } = props
 
   return (
@@ -142,10 +146,15 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
 
-  const onPrizePoolSelect = (prizePool: PrizePool) => {
+  const onPrizePoolSelect = async (prizePool: PrizePool) => {
     setSelectedPrizePoolAddress(prizePool)
-    setIsOpen(true)
+    await setIsOpen(true)
   }
+
+  const { data: initialTabId, setData } = useQueryParamState(URL_QUERY_KEY.exploreView, 'all', [
+    'all',
+    'top'
+  ])
 
   return (
     <div className={className}>
@@ -166,7 +175,6 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
         ]}
         initialTabId={'all'}
       />
-      {/* TODO: Make another modal without the browse view */}
       <DepositModal
         initialViewId={ViewIds.deposit}
         isOpen={isOpen}

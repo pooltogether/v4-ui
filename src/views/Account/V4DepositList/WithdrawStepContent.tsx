@@ -1,4 +1,5 @@
 import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
+import FeatherIcon from 'feather-icons-react'
 import { DownArrow as DefaultDownArrow } from '@components/DownArrow'
 import { InfoListItem, ModalInfoList } from '@components/InfoList'
 import { EstimatedWithdrawalGasItem } from '@components/InfoList/EstimatedGasItem'
@@ -7,17 +8,28 @@ import { TextInputGroup } from '@components/Input/TextInputGroup'
 import { RectangularInput } from '@components/Input/TextInputs'
 import { TxButton } from '@components/Input/TxButton'
 import { TokenSymbolAndIcon } from '@components/TokenSymbolAndIcon'
+import { TransparentDiv } from '@components/TransparentDiv'
 import { parseUnits } from '@ethersproject/units'
+import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
+import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
 import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
-import { Button, ButtonTheme, Tooltip, ErrorsBox } from '@pooltogether/react-components'
+import {
+  Button,
+  ButtonTheme,
+  Tooltip,
+  ErrorsBox,
+  ButtonLink,
+  ButtonSize
+} from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { Transaction } from '@pooltogether/wallet-connection'
+import { Transaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
 import React from 'react'
 import { FieldValues, UseFormReturn } from 'react-hook-form'
 import { WithdrawalSteps } from './WithdrawView'
@@ -188,6 +200,8 @@ const WithdrawReviewStep = (props: WithdrawReviewStepProps) => {
           ticket={ticket}
         />
       </div>
+
+      <UncheckedPrizesWarning prizePool={prizePool} />
 
       <TxButton
         chainId={prizePool.chainId}
@@ -401,3 +415,24 @@ const UnderlyingReceivedStat = (props) => {
 }
 
 const DownArrow = () => <DefaultDownArrow className='my-2 text-inverse' />
+
+export const UncheckedPrizesWarning = (props: { prizePool: PrizePool }) => {
+  const { prizePool } = props
+  const usersAddress = useUsersAddress()
+  const prizeDistributor = usePrizeDistributorByChainId(prizePool.chainId)
+  const { data, isFetched } = useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
+
+  if (!isFetched || data.hasUserCheckedAllDraws) return null
+
+  return (
+    <TransparentDiv className='rounded-xl p-4 border border-orange'>
+      <div className='text-lg font-bold text-center w-full'>🎁 You have unchecked draws!</div>
+      <div className='text-center mb-4'>Head over to the prizes page to see if you won.</div>
+      <Link href={'/prizes'}>
+        <ButtonLink size={ButtonSize.sm} className='w-1/2 mx-auto'>
+          Check Prizes <FeatherIcon icon='arrow-up-right' className='w-4 h-4' />
+        </ButtonLink>
+      </Link>
+    </TransparentDiv>
+  )
+}

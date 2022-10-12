@@ -1,3 +1,4 @@
+import { ListItem } from '@components/List/ListItem'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { Amount, Token } from '@pooltogether/hooks'
 import { NetworkIcon, ButtonLink, TokenIcon, BottomSheet } from '@pooltogether/react-components'
@@ -8,7 +9,6 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { AccountListItem } from '../AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 
 export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
@@ -24,7 +24,7 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
 
   return (
     <>
-      <AccountListItem
+      <ListItem
         onClick={() => setIsOpen(true)}
         left={'🤝 ' + t('totalDelegations', 'Total amount delegated')}
         right={

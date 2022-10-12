@@ -8,7 +8,7 @@ import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { loopXTimes } from '@utils/loopXTimes'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export const PastDrawsModal = (props: {
   isOpen: boolean
@@ -19,13 +19,17 @@ export const PastDrawsModal = (props: {
   const { data: winners, isError, isFetched } = useLatestDrawWinners(prizeDistributor, true)
   const { data: winnersInfo } = useLatestDrawWinnersInfo(prizeDistributor)
   const { data: tokenData } = usePrizeDistributorToken(prizeDistributor)
-
-  useEffect(() => {
-    console.log(winners?.prizes)
-  }, [winners?.prizes])
+  const [winnersToShow, setWinnersToShow] = useState(5)
 
   return (
-    <Modal label={'Past draws modal'} isOpen={isOpen} closeModal={closeModal}>
+    <Modal
+      label={'Past draws modal'}
+      isOpen={isOpen}
+      closeModal={() => {
+        setWinnersToShow(5)
+        closeModal()
+      }}
+    >
       {/* Title */}
       <div className='text-2xl font-bold flex space-x-2 mb-4'>
         <span>Draw #</span>
@@ -36,7 +40,13 @@ export const PastDrawsModal = (props: {
         <LatestDrawId prizeDistributor={prizeDistributor} /> on{' '}
         {getNetworkNiceNameByChainId(prizeDistributor.chainId)} had{' '}
         <b>{winnersInfo?.prizesWon} prizes</b> totalling{' '}
-        <b className='animate-rainbow'>{winnersInfo?.amount.amountPretty}</b>{' '}
+        <b
+          className={classNames({
+            'animate-rainbow': !!winnersInfo && !winnersInfo.amount.amountUnformatted.isZero()
+          })}
+        >
+          {winnersInfo?.amount.amountPretty}
+        </b>{' '}
         {tokenData?.token.symbol}
       </div>
 
@@ -56,7 +66,7 @@ export const PastDrawsModal = (props: {
 
       {/* No winners message */}
       {isFetched && winners?.prizes.length === 0 && (
-        <div className='text-opacity-80 w-full text-center py-8'>No winners 😔</div>
+        <div className='opacity-80 w-full text-center py-8'>No winners 😔</div>
       )}
 
       {/* Table content */}
@@ -71,7 +81,7 @@ export const PastDrawsModal = (props: {
             ))}
           </>
         )}
-        {winners?.prizes.map(({ address, amount, pick, tier }) => (
+        {winners?.prizes.slice(0, winnersToShow).map(({ address, amount, pick, tier }) => (
           <li
             key={`${prizeDistributor.id()}-${address}-${pick}`}
             className='grid grid-cols-2 text-center'
@@ -92,6 +102,14 @@ export const PastDrawsModal = (props: {
             </div>
           </li>
         ))}
+        {!!winners && winners.prizes.length > winnersToShow && (
+          <button
+            className='opacity-70 hover:opacity-100 transition-opacity w-full text-center'
+            onClick={() => setWinnersToShow(winnersToShow + 5)}
+          >
+            more
+          </button>
+        )}
       </ul>
     </Modal>
   )

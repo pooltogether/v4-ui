@@ -54,8 +54,8 @@ export const BuyTokensModal: React.FC<{ chainId: number } & Omit<ModalProps, 'ch
   )
 }
 
-const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
-  const { chainId } = props
+export const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> = (props) => {
+  const { chainId, className } = props
   const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
@@ -109,9 +109,13 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   return (
     <a
       id='cbpay-button-container'
-      className={classNames('flex text-xl items-center space-x-2 transition hover:opacity-90', {
-        'opacity-50 pointer-events-none': disabled
-      })}
+      className={classNames(
+        className,
+        'flex text-xl items-center space-x-2 transition hover:opacity-90',
+        {
+          'opacity-50 pointer-events-none': disabled
+        }
+      )}
       onClick={handleClick}
     >
       <img src={'/buy-with-coinbase-pay.png'} />
@@ -119,7 +123,7 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number }> = (props) => {
   )
 }
 
-const TemporaryWarningForNoOnRamp: React.FC<{ chainId: number }> = (props) => {
+export const TemporaryWarningForNoOnRamp: React.FC<{ chainId: number }> = (props) => {
   const { chainId } = props
   const usersAddress = useUsersAddress()
   const chainKey = getCoinbaseChainKey(chainId)

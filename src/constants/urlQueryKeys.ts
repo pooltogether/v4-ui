@@ -1,5 +1,10 @@
 export const URL_QUERY_KEY = Object.freeze({
-  prizePool: 'prizePool',
+  prizePool: 'prize_pool',
   network: 'network',
-  tab: 'tab'
+  tab: 'tab',
+  depositModal: 'deposit',
+  balanceModal: 'balance',
+  browseModal: 'browse',
+  exploreView: 'explore_view',
+  sortBy: 'sort_by'
 })

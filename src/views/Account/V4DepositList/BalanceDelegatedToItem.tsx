@@ -1,3 +1,4 @@
+import { ListItem } from '@components/List/ListItem'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
@@ -6,7 +7,6 @@ import { BottomSheet, NetworkIcon, TokenIcon } from '@pooltogether/react-compone
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { AccountListItem } from '../AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 
 // TODO: Bottom sheet for this showing breakdown
@@ -22,7 +22,7 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
 
   return (
     <>
-      <AccountListItem
+      <ListItem
         onClick={() => setIsOpen(true)}
         left={
           <span className='flex items-center font-bold space-x-2 text-left'>

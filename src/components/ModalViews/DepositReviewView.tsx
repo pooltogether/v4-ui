@@ -110,14 +110,14 @@ const DepositReviewViewContent: React.FC<{ depositAmount: Amount }> = (props) =>
               prizePool={prizePool}
               action={EstimateAction.deposit}
               amount={depositAmount}
-              nullState={'-'}
+              nullState={'0'}
               className='w-full'
             />
             <UpdatedPrizePoolNetworkOddsListItem
               amount={depositAmount}
               action={EstimateAction.deposit}
               prizePool={prizePool}
-              nullState={'-'}
+              nullState={'0'}
             />
             <TwabRewardsAprItem />
             <PrizePoolNetworkAPRItem />

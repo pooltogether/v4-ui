@@ -227,7 +227,7 @@ export const DepositInfoBox: React.FC<{
             amount={amountToDeposit}
             labelClassName={labelClassName}
             valueClassName={valueClassName}
-            nullState={'-'}
+            nullState={'0'}
             className='w-full'
           />
           <TwabRewardsAprItem labelClassName={labelClassName} valueClassName={valueClassName} />
@@ -239,7 +239,7 @@ export const DepositInfoBox: React.FC<{
                 prizePool={prizePool}
                 labelClassName={labelClassName}
                 valueClassName={valueClassName}
-                nullState={'-'}
+                nullState={'0'}
               />
               <PrizePoolNetworkAPRItem
                 labelClassName={labelClassName}

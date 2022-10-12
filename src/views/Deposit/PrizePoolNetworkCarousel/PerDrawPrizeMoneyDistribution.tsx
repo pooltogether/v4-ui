@@ -45,7 +45,7 @@ export const PerDrawPrizeMoneyDistribution: React.FC<{ className?: string }> = (
   }, [prizePools, queryResults])
 
   return (
-    <div className={classNames('max-w-xl px-4 xs:px-2 relative', className)}>
+    <div className={classNames('relative', className)}>
       <Dots />
       <div className='flex flex-col font-bold mx-auto text-center'>
         <span>Target USD awarded per draw</span>
@@ -56,7 +56,10 @@ export const PerDrawPrizeMoneyDistribution: React.FC<{ className?: string }> = (
       </div>
       <div className='opacity-70 mt-2 text-center'>
         The per draw prize money gets split between all of the prize pools.{' '}
-        <ExternalLink href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'>
+        <ExternalLink
+          underline
+          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+        >
           Read more
         </ExternalLink>
       </div>

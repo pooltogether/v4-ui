@@ -5,7 +5,8 @@ import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
-import { PrizePoolTitle } from '@components/PrizePoolCard'
+import { PrizePoolTitle } from '@components/PrizePool/PrizePoolCard'
+import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { EstimateAction } from '@constants/odds'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -51,7 +52,7 @@ export const DepositInfoBox: React.FC<{
         [errorBgClassName]: isError
       })}
     >
-      <PrizePoolTitle prizePool={prizePool} className='mb-3' fontClassName='text-sm' />
+      <PrizePoolLabel prizePool={prizePool} className='mb-3' fontClassName='text-sm' />
       <ul className='w-full mb-2'>
         {isAdvanced && (
           <>
@@ -66,7 +67,7 @@ export const DepositInfoBox: React.FC<{
           prizePool={prizePool}
           action={EstimateAction.deposit}
           amount={amount}
-          nullState={'-'}
+          nullState={'0'}
           className='w-full'
         />
         <TwabRewardsAprItem />
@@ -76,7 +77,7 @@ export const DepositInfoBox: React.FC<{
               amount={amount}
               action={EstimateAction.deposit}
               prizePool={prizePool}
-              nullState={'-'}
+              nullState={'0'}
             />
             <PrizePoolNetworkAPRItem />
             <PrizePoolYieldSourceItem prizePool={prizePool} />

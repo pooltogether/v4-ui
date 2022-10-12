@@ -36,7 +36,7 @@ export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (
   }, [queryResults])
 
   return (
-    <div className={classNames('max-w-xl px-4 xs:px-2 relative', className)}>
+    <div className={classNames('relative', className)}>
       <Dots />
       <div className='flex flex-col font-bold mx-auto text-center'>
         <span>Estimated number of prizes per draw</span>
@@ -46,7 +46,10 @@ export const PerDrawPrizeCountDistribution: React.FC<{ className?: string }> = (
       </div>
       <div className='opacity-70 mt-2 text-center'>
         Prize pools determine how they want to split up their prize money allocation.{' '}
-        <ExternalLink href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'>
+        <ExternalLink
+          underline
+          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+        >
           Read more
         </ExternalLink>
       </div>

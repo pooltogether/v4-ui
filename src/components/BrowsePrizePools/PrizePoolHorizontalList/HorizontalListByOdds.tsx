@@ -5,7 +5,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { useState } from 'react'
 import { PrizePoolHorizontalList } from '.'
-import { NetworkOddsForDepositGroup } from '../../PrizePoolCard'
+import { NetworkOddsForDepositGroup } from '../../PrizePool/PrizePoolCard'
 
 const AMOUNT_OPTIONS = Object.freeze(['10', '100', '1000', '10000'])
 

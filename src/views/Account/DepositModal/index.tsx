@@ -1,3 +1,4 @@
+import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { Amount } from '@pooltogether/hooks'
@@ -5,14 +6,11 @@ import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
 import { useCallback, useState } from 'react'
-import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
-import { WalletConnectionView } from '../../../../components/ModalViews/WalletConnectionView'
 import { DepositReviewView } from './DepositReviewView'
 import { DepositView } from './DepositView'
 
 export enum ViewIds {
   deposit,
-  explore,
   reviewTransaction,
   bridgeTokens,
   swapTokens,
@@ -43,18 +41,9 @@ export const DepositModal: React.FC<{
 
   const views: ModalWithViewStateView[] = [
     {
-      id: ViewIds.explore,
-      view: ExplorePrizePoolsView,
-      // title: 'Select a prize pool',
-      nextViewId: ViewIds.deposit,
-      hideNextNavButton: true
-    },
-    {
       id: ViewIds.deposit,
       view: DepositView,
       title: 'Deposit in a Prize Pool',
-      previousViewId: ViewIds.explore,
-      onCloseViewId: ViewIds.explore,
       maxWidthClassName: 'max-w-screen-xs'
     },
     {
@@ -71,7 +60,7 @@ export const DepositModal: React.FC<{
       previousViewId: ViewIds.deposit,
       title: 'Connect a wallet',
       bgClassName: 'bg-new-modal',
-      onCloseViewId: ViewIds.explore
+      onCloseViewId: ViewIds.deposit
     }
   ]
 

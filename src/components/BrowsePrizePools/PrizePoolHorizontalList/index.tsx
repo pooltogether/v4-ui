@@ -2,7 +2,7 @@ import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { PrizePoolCard, PrizePoolCardLoader } from '../../PrizePoolCard'
+import { PrizePoolCard, PrizePoolCardLoader } from '../../PrizePool/PrizePoolCard'
 
 /**
  * Defaults to setting selected prize pool address globally
@@ -41,7 +41,7 @@ export const PrizePoolHorizontalList: React.FC<{
           <PrizePoolCard
             key={`${label}-horizontal-pools-list-${prizePool.id()}`}
             prizePool={prizePool}
-            onClick={(prizePool) => {
+            onClick={async (prizePool) => {
               if (!!onPrizePoolSelect) {
                 onPrizePoolSelect(prizePool)
               } else {

@@ -8,7 +8,7 @@ const navLinks = [
   {
     i18nKey: 'deposit',
     href: '/deposit',
-    regex: /^\/deposit/
+    regex: /^(\/deposit|\/$)/
   },
   {
     i18nKey: 'prizes',

@@ -19,7 +19,7 @@ export const TopPoolByPrizes: React.FC<{
       title={'Most Prizes'}
       description={'The most prizes are awarded here, but the prizes are smaller.'}
       prizePool={prizePool}
-      onClick={(prizePool) => {
+      onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {
           onPrizePoolSelect(prizePool)
         } else {

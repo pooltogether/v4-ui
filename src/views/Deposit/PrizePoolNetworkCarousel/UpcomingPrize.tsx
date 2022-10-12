@@ -26,7 +26,7 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
 
   return (
-    <div className={classNames('flex flex-col text-center relative max-w-xl pt-20 ', className)}>
+    <div className={classNames('flex flex-col text-center relative', className)}>
       <LightningBolts />
       <Dots />
       <AmountOfPrizes />

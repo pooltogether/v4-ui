@@ -1,10 +1,9 @@
+import { ListItem } from '@components/List/ListItem'
 import { LatestDrawId } from '@components/PrizeDistributor/LatestDrawId'
+import { PrizeDistributorLabel } from '@components/PrizeDistributor/PrizeDistributorLabel'
 import { CardTitle } from '@components/Text/CardTitle'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
-import { NetworkIcon } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
-import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 import { useState } from 'react'
 import { PastDrawsModal } from './PastDrawsModal'
 
@@ -16,16 +15,11 @@ export const PastDraws = () => {
   return (
     <div>
       <CardTitle title={'Last Draw'} className='mb-2' />
-      <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1 mb-4'>
+      <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
         {prizeDistributors?.map((prizeDistributor) => (
-          <AccountListItem
+          <ListItem
             key={`pd-past-draw-winners-${prizeDistributor.id()}`}
-            left={
-              <div className='flex items-center space-x-2 '>
-                <NetworkIcon chainId={prizeDistributor.chainId} />
-                <span>{getNetworkNiceNameByChainId(prizeDistributor.chainId)}</span>
-              </div>
-            }
+            left={<PrizeDistributorLabel prizeDistributor={prizeDistributor} />}
             onClick={() => {
               setIsOpen(true)
               setPrizeDistributor(prizeDistributor)

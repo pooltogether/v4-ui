@@ -1,8 +1,8 @@
 import { PagePadding } from '@components/Layout/PagePadding'
 import React from 'react'
 import { DepositTrigger } from './DepositTrigger'
-import { Footer } from './Footer'
-import { NetworkCarousel } from './NetworkCarousel'
+import { RewardsBanners } from './DepositTrigger/RewardsBanners'
+import { PrizePoolNetworkCarousel } from './PrizePoolNetworkCarousel'
 
 export const DepositUI = () => {
   return (
@@ -10,15 +10,18 @@ export const DepositUI = () => {
       paddingClassName=''
       widthClassName=''
       marginClassName=''
-      className='absolute inset-0'
+      className='h-actually-full-screen -mt-12 sm:-mt-16 flex flex-col justify-center space-y-4 sm:space-y-8 lg:space-y-12'
+      style={{ minHeight: '600px' }}
     >
-      <div className='mx-auto h-full flex flex-col'>
-        <div className='h-full flex flex-col justify-evenly sm:justify-center pt-11 sm:pt-16 space-y-12 xs:space-y-20 md:space-y-28'>
-          <NetworkCarousel />
-          <DepositTrigger />
-        </div>
-        <Footer />
-      </div>
+      {/* <div className='h-full flex flex-col justify-evenly sm:justify-center'> */}
+      <RewardsBanners />
+      <PrizePoolNetworkCarousel
+      // className='mt-4 sm:mt-8 lg:mt-12'
+      />
+      <DepositTrigger
+      // className='mt-4 sm:mt-8 lg:mt-12'
+      />
+      {/* </div> */}
     </PagePadding>
   )
 }

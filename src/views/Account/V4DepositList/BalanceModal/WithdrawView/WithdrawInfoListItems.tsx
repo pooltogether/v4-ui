@@ -25,7 +25,7 @@ export const WithdrawInfoListItems: React.FC<{
         prizePool={prizePool}
         action={EstimateAction.withdraw}
         amount={withdrawAmount}
-        nullState={'-'}
+        nullState={'0'}
         className='w-full'
       />
       <TwabRewardsAprItem />
@@ -33,7 +33,7 @@ export const WithdrawInfoListItems: React.FC<{
         amount={withdrawAmount}
         action={EstimateAction.withdraw}
         prizePool={prizePool}
-        nullState={'-'}
+        nullState={'0'}
       />
       <PrizePoolNetworkAPRItem />
     </>
@@ -44,8 +44,6 @@ const ErrorItem: React.FC<{ transaction: Transaction }> = (props) => {
   const { transaction } = props
   const { errors } = useFormState()
   const { t } = useTranslation()
-
-  console.log('errors', { errors, transaction })
 
   const errorMessages = errors ? Object.values(errors) : null
   if (

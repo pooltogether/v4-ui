@@ -5,7 +5,12 @@ import { getChainIdByAlias } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import { atom, useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
-import { selectedChainIdAtom, setSelectedChainIdWriteAtom } from '../atoms'
+import {
+  selectedChainIdAtom,
+  selectedPrizePoolAddressesAtom,
+  setSelectedChainIdWriteAtom
+} from '../atoms'
+import { useQueryParamState } from './useQueryParamState'
 
 const parseUrlNetwork = () => {
   const url = new URL(window.location.href)
@@ -55,5 +60,8 @@ export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
 export const useSelectedChainId = () => {
   const [chainId] = useAtom(selectedChainIdAtom)
   const setSelectedChainId = useUpdateAtom(setSelectedChainIdWriteAtom)
-  return { chainId, setSelectedChainId }
+  return {
+    chainId,
+    setSelectedChainId
+  }
 }

@@ -19,7 +19,7 @@ export const TopPoolByTvl: React.FC<{
       title={'Most Popular'}
       description={"By depositing here you're joining the largest Prize Pool on PoolTogether."}
       prizePool={prizePool}
-      onClick={(prizePool) => {
+      onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {
           onPrizePoolSelect(prizePool)
         } else {

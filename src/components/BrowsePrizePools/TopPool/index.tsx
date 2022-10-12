@@ -1,6 +1,6 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
-import { PrizePoolCard, PrizePoolCardLoader } from '../../PrizePoolCard'
+import { PrizePoolCard, PrizePoolCardLoader } from '../../PrizePool/PrizePoolCard'
 
 const AMOUNT_OPTIONS = Object.freeze(['10', '100', '1000', '10000'])
 

@@ -20,7 +20,7 @@ export const Arrow: React.FC<
   return (
     <button {...buttonProps} className={classNames('z-1', className)}>
       <FeatherIcon
-        className={classNames('w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8  text-inverse', iconClassName)}
+        className={classNames('w-5 h-5 xs:w-6 xs:h-6 lg:w-8 lg:h-8', iconClassName)}
         icon={icon}
       />
     </button>

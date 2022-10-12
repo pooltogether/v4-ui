@@ -13,6 +13,7 @@ import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { Tooltip } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
 import { Transaction, useUsersAddress } from '@pooltogether/wallet-connection'
+import { UncheckedPrizesWarning } from '@views/Account/V4DepositList/WithdrawStepContent'
 import { ethers } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
@@ -79,6 +80,7 @@ const WithdrawReviewViewContent: React.FC<{ withdrawAmount: Amount }> = (props) 
         amountFrom={withdrawAmount}
         amountTo={withdrawAmount}
       />
+      <UncheckedPrizesWarning prizePool={prizePool} />
 
       <ModalInfoList>
         {/* // TODO: Add back odds */}

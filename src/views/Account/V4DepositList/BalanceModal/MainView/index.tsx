@@ -3,36 +3,44 @@ import { ExpectedPrizeBreakdown } from '@components/ExpectedPrizeBreakdown'
 import { RoundButton } from '@components/Input/RoundButton'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { Carousel, ViewProps } from '@pooltogether/react-components'
+import { SliderArrows } from '@views/Deposit/PrizePoolNetworkCarousel'
 import { useRouter } from 'next/router'
+import { useRef } from 'react'
+import Slider from 'react-slick'
 import { ViewIds } from '..'
 import { BalanceHeader } from './BalanceHeader'
 
 export const MainView: React.FC<{} & ViewProps> = (props) => {
   const { setSelectedViewId } = props
+  const sliderRef = useRef<{ slickPrev: () => void; slickNext: () => void }>()
 
   return (
-    <div className='flex flex-col h-full justify-between space-y-8'>
-      <Carousel
-        className='-mx-2 xs:-mx-8'
-        settings={{
-          arrows: true,
-          dots: true,
-          speed: 500,
-          slidesToShow: 1,
-          slidesToScroll: 1
-          // nextArrow: <NextArrow />,
-          // prevArrow: <PrevArrow />
-        }}
-      >
-        <BalanceHeader key='balance-header' />
-        <TransparentDiv
-          key='expected-prize-breakdown'
-          className='px-4 py-2 overflow-y-auto rounded-lg minimal-scrollbar max-h-48'
+    <div className='flex flex-col h-full justify-between'>
+      <div>
+        <Slider
+          ref={sliderRef}
+          className='-mx-2 xs:-mx-8 pb-2'
+          arrows={true}
+          dots={true}
+          speed={500}
+          slidesToShow={1}
+          slidesToScroll={1}
         >
-          <ExpectedPrizeBreakdown className='mx-auto' />
-        </TransparentDiv>
-      </Carousel>
-      <div className='flex justify-evenly'>
+          <BalanceHeader key='balance-header' />
+          <TransparentDiv
+            key='expected-prize-breakdown'
+            className='px-4 py-2 overflow-y-auto rounded-lg minimal-scrollbar max-h-48'
+          >
+            <ExpectedPrizeBreakdown className='mx-auto' />
+          </TransparentDiv>
+        </Slider>
+        <SliderArrows
+          prev={sliderRef?.current?.slickPrev}
+          next={sliderRef?.current?.slickNext}
+          className='w-28'
+        />
+      </div>
+      <div className='flex justify-evenly mt-8'>
         <RoundButton
           onClick={() => setSelectedViewId(ViewIds.deposit)}
           icon={'arrow-down'}

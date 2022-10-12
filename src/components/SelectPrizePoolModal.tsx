@@ -11,7 +11,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PrizePoolLabel } from './PrizePoolLabel'
+import { PrizePoolLabel } from './PrizePool/PrizePoolLabel'
 
 interface SelectPrizePoolModalProps {
   className?: string

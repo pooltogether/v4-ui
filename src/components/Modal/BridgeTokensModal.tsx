@@ -1,4 +1,4 @@
-import { getBridgeUrls } from '@constants/config'
+import { getBridges } from '@constants/config'
 import { ExternalLink, Modal, ModalProps, ModalTitle } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
@@ -14,7 +14,7 @@ export const BridgeTokensModal = (props: BridgeTokensModalProps) => {
   const { chainId } = props
 
   const { t } = useTranslation()
-  const links = getBridgeUrls(chainId)
+  const links = getBridges(chainId)
   const networkName = getNetworkNiceNameByChainId(chainId)
 
   return (

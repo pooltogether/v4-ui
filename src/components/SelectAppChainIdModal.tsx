@@ -1,4 +1,3 @@
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -9,7 +8,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { PrizePoolLabelFlat } from './PrizePoolLabel'
+import { PrizePoolLabelFlat } from './PrizePool/PrizePoolLabel'
 
 interface SelectAppChainIdModalProps {
   className?: string
@@ -61,9 +60,9 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
             return (
               <button
                 key={prizePool.id()}
-                onClick={() => {
-                  setIsOpen(false)
+                onClick={async () => {
                   setSelectedPrizePoolAddress(prizePool)
+                  setIsOpen(false)
                 }}
                 className={classNames('rounded-lg p-2 w-full border', {
                   'border-transparent hover:border-pt-teal': !isSelected,

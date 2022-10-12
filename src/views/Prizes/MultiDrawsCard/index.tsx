@@ -161,7 +161,7 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
   return (
     <PrizeAnimationCard targetVideoClip={targetVideoClip} onTargetReached={onTargetReached}>
       <MultipleDrawDetails drawDatas={drawDatas} token={token} ticket={ticket} />
-      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-4'>
+      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-1'>
         <MultiDrawsClaimButton
           {...props}
           hasCheckedAnimationFinished={hasCheckedAnimationFinished}
@@ -260,7 +260,7 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
   return (
     <PrizeAnimationCard targetVideoClip={VideoClip.prize}>
       <MultipleDrawDetails drawDatas={winningDrawData} token={token} ticket={ticket} />
-      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-4'>
+      <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-1'>
         <Button
           theme={ButtonTheme.rainbow}
           size={ButtonSize.md}

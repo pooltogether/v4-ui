@@ -1,5 +1,7 @@
+import { ListItem } from '@components/List/ListItem'
 import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { CardTitle } from '@components/Text/CardTitle'
+import { TokenBalance } from '@components/TokenBalance'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { getExchange } from '@constants/config'
 import { POOL_TOKEN } from '@constants/misc'
@@ -15,6 +17,7 @@ import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { AccountListItemTokenBalance } from './AccountList/AccountListItemTokenBalance'
 
 export const POOLBalancesCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
@@ -99,10 +102,7 @@ const POOLBalancesList = (props: {
   const chainIds = Object.keys(data.balances).map(Number)
 
   return (
-    <PrizePoolDepositList
-      bgClassName='bg-pt-purple-lightest dark:bg-pt-purple-darkest'
-      className='flex flex-col'
-    >
+    <ul className='flex flex-col space-y-2'>
       {chainIds.map((chainId) =>
         Object.values(data.balances[chainId]).map((token) => (
           <POOLTokenBalanceItem
@@ -112,7 +112,7 @@ const POOLBalancesList = (props: {
           />
         ))
       )}
-    </PrizePoolDepositList>
+    </ul>
   )
 }
 
@@ -122,12 +122,9 @@ const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithBalance 
   if (!token.hasBalance) return null
 
   return (
-    <a
-      href={formatBlockExplorerAddressUrl(token.address, chainId)}
-      target='_blank'
-      rel='noopener noreferrer'
-    >
-      <li className='font-semibold transition bg-white bg-opacity-70 dark:bg-actually-black dark:bg-opacity-10 rounded-lg px-4 py-2 w-full flex justify-between items-center'>
+    <ListItem
+      externalHref={formatBlockExplorerAddressUrl(token.address, chainId)}
+      left={
         <div className='flex space-x-3 items-center'>
           <TokenIconWithNetwork chainId={chainId} address={token.address} />
           <div className='flex flex-col xs:flex-row xs:items-center items-start xs:space-x-2'>
@@ -135,13 +132,14 @@ const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithBalance 
             <span className='text-xxs opacity-80'>{token.name}</span>
           </div>
         </div>
-
+      }
+      right={
         <div className='flex items-center space-x-2'>
-          <PoolIcon />
-          <span>{token.amountPretty}</span>
-          <FeatherIcon icon='external-link' className='w-4 h-4 opacity-50' />
+          <AccountListItemTokenBalance chainId={chainId} token={token} />
+          {/* <PoolIcon />
+          <span>{token.amountPretty}</span> */}
         </div>
-      </li>
-    </a>
+      }
+    />
   )
 }

@@ -1,4 +1,5 @@
 import { BalanceBottomSheet, ContractLink } from '@components/BalanceBottomSheet'
+import { ListItem } from '@components/List/ListItem'
 import { CardTitle } from '@components/Text/CardTitle'
 import { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
@@ -10,7 +11,6 @@ import {
   useIsWalletOnChainId
 } from '@pooltogether/wallet-connection'
 import { AccountList } from '@views/Account/AccountList'
-import { AccountListItem } from '@views/Account/AccountList/AccountListItem'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 import { PodWithdrawView } from '@views/Account/V3DepositList/PodWithdrawView'
 import { BigNumber } from 'ethers'
@@ -163,7 +163,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
 
   return (
     <>
-      <AccountListItem
+      <ListItem
         onClick={() => {
           setIsOpen(true)
         }}
@@ -259,7 +259,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
 
   return (
     <>
-      <AccountListItem
+      <ListItem
         onClick={() => setIsOpen(true)}
         left={
           <UnderlyingTokenLabel
