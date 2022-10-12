@@ -76,6 +76,6 @@ export const ListItem: React.FC<{
 
 ListItem.defaultProps = {
   bgClassName:
-    'bg-white bg-opacity-0 hover:bg-opacity-10 dark:bg-actually-black dark:bg-opacity-0 dark:hover:bg-opacity-10',
+    'bg-white bg-opacity-0 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 dark:hover:bg-opacity-25',
   radiusClassName: 'rounded-lg'
 }

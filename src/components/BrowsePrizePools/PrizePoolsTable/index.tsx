@@ -171,7 +171,7 @@ export const PrizePoolsTable: React.FC<{
               className='w-full sm:w-auto'
             >
               {sortOptions.map((sortOption, index) => (
-                <option key={index} value={index}>
+                <option key={`so-${sortOption.key}-${index}`} value={index}>
                   {sortOption.title}
                 </option>
               ))}

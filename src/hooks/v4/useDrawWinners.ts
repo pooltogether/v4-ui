@@ -103,7 +103,6 @@ const getDrawWinners = async (
 
   try {
     data = await response.json()
-    console.log({ data, decimals })
   } catch (e) {
     try {
       drawId = drawId - 1

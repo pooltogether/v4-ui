@@ -22,10 +22,6 @@ export const calculateApr = async (
 
   const totalYearlyPrizesUnformatted = dailyPrizeAmountUnformatted.mul(365)
   const totalTotalSupply = Number(totalSupply.amount)
-  console.log({
-    totalYearlyPrizesUnformatted: totalYearlyPrizesUnformatted.toString(),
-    totalTotalSupply
-  })
   // TODO: Make this big number maths
   const totalYearlyPrizes = totalYearlyPrizesUnformatted.div(10 ** Number(decimals)).toNumber()
   return ((totalYearlyPrizes / totalTotalSupply) * 100).toFixed(2)

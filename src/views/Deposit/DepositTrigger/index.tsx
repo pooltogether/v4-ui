@@ -1,6 +1,7 @@
 import { Button, ButtonTheme, ButtonRadius } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useAtom } from 'jotai'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizePoolNetworkCarouselAutoplayAtom } from '../PrizePoolNetworkCarousel'

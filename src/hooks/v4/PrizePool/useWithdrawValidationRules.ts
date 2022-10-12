@@ -31,8 +31,6 @@ export const useWithdrawValidationRules = (prizePool: PrizePool) => {
       const quantityUnformatted = safeParseUnits(v, decimals)
       if (!quantityUnformatted) return false
 
-      console.log({ quantityUnformatted, str: quantityUnformatted.toString(), tokenBalance })
-
       if (quantityUnformatted.isZero()) return false
       if (quantityUnformatted.lt(ethers.constants.Zero)) return false
 

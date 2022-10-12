@@ -4,6 +4,7 @@ import { Amount } from '@pooltogether/hooks'
 import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
+import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
 import { WalletConnectionView } from '../../../../components/ModalViews/WalletConnectionView'
@@ -31,6 +32,7 @@ export const DepositModal: React.FC<{
   const { chainId } = useSelectedChainId()
   const [depositTransactionId, setDepositTransactionId] = useState('')
   const depositTransaction = useTransaction(depositTransactionId)
+  const router = useRouter()
 
   /**
    * Submit the transaction to deposit and store the transaction id in state
@@ -81,6 +83,7 @@ export const DepositModal: React.FC<{
 
   return (
     <ModalWithViewState
+      router={router}
       noAnimation
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'

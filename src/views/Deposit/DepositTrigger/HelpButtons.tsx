@@ -18,9 +18,11 @@ import {
   ModalWithViewState,
   ViewProps
 } from '@pooltogether/react-components'
-import { CHAIN_ID, getChainNameByChainId } from '@pooltogether/wallet-connection'
+import { CHAIN_ID, getChainNameByChainId, useWalletChainId } from '@pooltogether/wallet-connection'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 
 enum ViewIds {
@@ -32,10 +34,10 @@ enum ViewIds {
 }
 
 export const HelpButtons = () => {
-  const prizePool = useSelectedPrizePool()
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [selectedViewId, setSelectedViewId] = useState<string | number>(ViewIds.help)
+  const router = useRouter()
 
   const views = [
     {
@@ -69,6 +71,7 @@ export const HelpButtons = () => {
         }}
       />
       <ModalWithViewState
+        router={router}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
         label={'Help modal'}
@@ -85,6 +88,9 @@ const HelpView = (props: ViewProps) => {
   const { setSelectedViewId } = props
   return (
     <>
+      <Link href='/account'>
+        <a>account</a>
+      </Link>
       <h4>What is PoolTogether?</h4>
       <p className='opacity-80 mb-6'>
         PoolTogether is a crypto-powered savings protocol based on{' '}
@@ -183,7 +189,10 @@ const GetTokensView = () => {
 }
 
 const BuyTokens = () => {
-  const [chainId, setChainId] = useState(CHAIN_ID.polygon)
+  const walletChainId = useWalletChainId()
+  const [chainId, setChainId] = useState(
+    !!walletChainId && COINBASE_CHAINS.includes(walletChainId) ? walletChainId : COINBASE_CHAINS[0]
+  )
 
   return (
     <div>
@@ -216,7 +225,12 @@ const BuyTokens = () => {
 }
 
 const SwapTokens = () => {
-  const [chainId, setChainId] = useState(CHAIN_ID.polygon)
+  const walletChainId = useWalletChainId()
+  const [chainId, setChainId] = useState(
+    !!walletChainId && SWAP_TOKENS_CHAINS.includes(walletChainId)
+      ? walletChainId
+      : SWAP_TOKENS_CHAINS[0]
+  )
 
   const { url, title } = getExchange(chainId)
 
@@ -262,7 +276,12 @@ const SwapTokens = () => {
 }
 
 const BridgeTokens = () => {
-  const [chainId, setChainId] = useState(CHAIN_ID.polygon)
+  const walletChainId = useWalletChainId()
+  const [chainId, setChainId] = useState(
+    !!walletChainId && BRIDGE_TOKENS_CHAINS.includes(walletChainId)
+      ? walletChainId
+      : BRIDGE_TOKENS_CHAINS[0]
+  )
 
   return (
     <div>
@@ -290,7 +309,7 @@ const BridgeTokens = () => {
           onChange={(event) => setChainId(Number(event.target.value))}
           value={chainId}
         >
-          {SWAP_TOKENS_CHAINS.map((chainId) => (
+          {BRIDGE_TOKENS_CHAINS.map((chainId) => (
             <option key={`swap-opt-${chainId}`} value={chainId}>
               {getChainNameByChainId(chainId)}
             </option>
