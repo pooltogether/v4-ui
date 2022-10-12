@@ -105,5 +105,5 @@ export const DepositModal: React.FC<{
 }
 
 DepositModal.defaultProps = {
-  initialViewId: ViewIds.explore
+  initialViewId: ViewIds.deposit
 }

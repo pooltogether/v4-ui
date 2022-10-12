@@ -1,8 +1,6 @@
 import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
 import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
-import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
-import { useQueryParamViewIdState } from '@hooks/useQueryParamViewIdState'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'

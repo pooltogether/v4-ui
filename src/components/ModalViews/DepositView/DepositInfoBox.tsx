@@ -52,7 +52,7 @@ export const DepositInfoBox: React.FC<{
         [errorBgClassName]: isError
       })}
     >
-      <PrizePoolLabel prizePool={prizePool} className='mb-3' fontClassName='text-sm' />
+      <PrizePoolLabel prizePool={prizePool} className='mb-3' />
       <ul className='w-full mb-2'>
         {isAdvanced && (
           <>

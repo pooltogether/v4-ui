@@ -1,7 +1,5 @@
 import { ListItem } from '@components/List/ListItem'
-import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
 import { CardTitle } from '@components/Text/CardTitle'
-import { TokenBalance } from '@components/TokenBalance'
 import { VotingPromptCard } from '@components/VotingPromptCard'
 import { getExchange } from '@constants/config'
 import { POOL_TOKEN } from '@constants/misc'
