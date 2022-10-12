@@ -10,8 +10,8 @@ export const DepositUI = () => {
       paddingClassName=''
       widthClassName=''
       marginClassName=''
-      className='h-actually-full-screen -mt-12 xs:-mt-8 sm:-mt-2 flex flex-col justify-center space-y-4 sm:space-y-8 lg:space-y-12'
-      style={{ minHeight: '600px' }}
+      className='h-actually-full-screen -mt-12 sm:-mt-16 flex flex-col justify-center space-y-4 sm:space-y-8 lg:space-y-12'
+      style={{ minHeight: '620px' }}
     >
       {/* <div className='h-full flex flex-col justify-evenly sm:justify-center'> */}
       <RewardsBanners />

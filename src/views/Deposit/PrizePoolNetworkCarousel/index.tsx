@@ -25,7 +25,7 @@ export const PrizePoolNetworkCarousel = (props: { className?: string }) => {
         speed={500}
         slidesToShow={1}
         slidesToScroll={1}
-        // autoplay={true}
+        autoplay={true}
         autoplaySpeed={8000}
       >
         <UpcomingPrize className='py-10 my-auto mx-auto max-w-screen-sm' />
