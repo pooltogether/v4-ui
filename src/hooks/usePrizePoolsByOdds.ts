@@ -1,6 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
+import { getAmount } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { useMemo } from 'react'
 import { useAllPrizePoolOdds } from './v4/PrizePool/useAllPrizePoolOdds'
 import { usePrizePools } from './v4/PrizePool/usePrizePools'
@@ -10,7 +10,7 @@ export const usePrizePoolsByOdds = (amount: string, decimals: string) => {
 
   const queryResults = useAllPrizePoolOdds(
     _prizePools.reduce((twabs, prizePool) => {
-      twabs[prizePool.id()] = getAmountFromString(amount, decimals)
+      twabs[prizePool.id()] = getAmount(amount, decimals)
       return twabs
     }, {} as { [prizePoolId: string]: Amount })
   )

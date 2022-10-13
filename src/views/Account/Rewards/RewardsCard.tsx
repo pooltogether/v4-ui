@@ -33,6 +33,7 @@ import {
   getNetworkNiceNameByChainId,
   sToD
 } from '@pooltogether/utilities'
+import { getAmount } from '@pooltogether/utilities'
 import {
   useSendTransaction,
   useUsersAddress,
@@ -42,7 +43,6 @@ import {
   Transaction,
   getChainColorByChainId
 } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
@@ -435,7 +435,7 @@ const ClaimModalForm = (props: {
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
 
-  const amount = getAmountFromString(usersClaimedPromotionHistory?.rewards, decimals)
+  const amount = getAmount(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
 

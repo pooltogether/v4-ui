@@ -1,8 +1,8 @@
 import { CardTitle } from '@components/Text/CardTitle'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
@@ -27,7 +27,7 @@ export const V3StakingList = () => {
       : BigNumber.from(0)
 
     const totalBalanceUsdScaled = v3POOLPoolTotalBalanceUsdScaled.add(v3LPPoolTotalBalanceUsdScaled)
-    const amount = getAmountFromBigNumber(totalBalanceUsdScaled, '2')
+    const amount = getAmountFromUnformatted(totalBalanceUsdScaled, '2')
     return {
       amount,
       isFetched: isV3POOLPoolFetched && isV3LPPoolFetched
@@ -38,11 +38,7 @@ export const V3StakingList = () => {
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle
-        title={'V3 ' + t('staking')}
-        secondary={`$${amount.amountPretty}`}
-        loading={!isFetched}
-      />
+      <CardTitle title={t('staking')} secondary={`$${amount.amountPretty}`} loading={!isFetched} />
       <POOLStakingCards />
       <LPStakingCards />
     </div>

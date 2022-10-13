@@ -6,7 +6,7 @@ import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/Update
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
 import { PrizePoolTitle } from '@components/PrizePool/PrizePoolCard'
-import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
+import { PrizePoolLabel, PrizePoolLabelFlat } from '@components/PrizePool/PrizePoolLabel'
 import { EstimateAction } from '@constants/odds'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -52,7 +52,7 @@ export const DepositInfoBox: React.FC<{
         [errorBgClassName]: isError
       })}
     >
-      <PrizePoolLabel prizePool={prizePool} className='mb-3' />
+      <PrizePoolLabelFlat prizePool={prizePool} className='mb-3' />
       <ul className='w-full mb-2'>
         {isAdvanced && (
           <>

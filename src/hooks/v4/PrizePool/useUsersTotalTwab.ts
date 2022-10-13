@@ -1,6 +1,6 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { Amount } from '@pooltogether/hooks'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
@@ -64,5 +64,5 @@ const getTotalTwab = (twabs: Amount[], decimals: string) => {
     if (!twab || twab.amountUnformatted.isZero()) return
     total = total.add(twab.amountUnformatted)
   })
-  return getAmountFromBigNumber(total, decimals)
+  return getAmountFromUnformatted(total, decimals)
 }

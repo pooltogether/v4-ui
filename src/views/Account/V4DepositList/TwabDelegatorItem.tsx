@@ -14,11 +14,12 @@ import { AccountListItemTokenBalance } from '../AccountList/AccountListItemToken
 export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
   const { delegator } = props
 
-  const { data, isFetched } = useAllTwabDelegations(delegator)
+  const { data, isFetched, isError } = useAllTwabDelegations(delegator)
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
-  if (!isFetched || data.totalTokenWithUsdBalance.amountUnformatted.isZero()) return null
+  if (!isFetched || !!isError || data?.totalTokenWithUsdBalance.amountUnformatted.isZero())
+    return null
 
   const { delegations, totalTokenWithUsdBalance } = data
 

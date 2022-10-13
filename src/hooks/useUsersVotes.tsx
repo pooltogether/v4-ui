@@ -1,7 +1,7 @@
 import GovernanceTokenAbi from '@abis/GovernanceToken'
 import { POOL_TOKEN } from '@constants/misc'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { CHAIN_ID, getReadProvider } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { Contract } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -18,5 +18,5 @@ const getUsersVotes = async (usersAddress: string) => {
     getReadProvider(CHAIN_ID.mainnet)
   )
   const votes = await poolContract.getCurrentVotes(usersAddress)
-  return getAmountFromBigNumber(votes, '18')
+  return getAmountFromUnformatted(votes, '18')
 }

@@ -9,8 +9,8 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
+import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { DepositInfoBox } from './DepositInfoBox'
 
 /**
@@ -49,7 +49,7 @@ export const DepositView: React.FC<
       connectWallet={connectWallet}
       useValidationRules={useValidationRules}
       handleSubmit={(values: TokenAmountFormValues) => {
-        setDepositAmount(getAmountFromString(values[formKey], tokens?.token.decimals))
+        setDepositAmount(getAmount(values[formKey], tokens?.token.decimals))
         onSubmit?.()
       }}
       carouselChildren={[

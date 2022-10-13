@@ -1,18 +1,18 @@
 import { AnimatePresence, motion, MotionStyle, useReducedMotion } from 'framer-motion'
 
 export const FadeInDiv = (props: {
-  key: string
+  id: string
   children: React.ReactNode
   style?: MotionStyle
   className?: string
 }) => {
-  const { key, className, style, children } = props
+  const { id, className, style, children } = props
   const shouldReduceMotion = useReducedMotion()
 
   return (
     <AnimatePresence>
       <motion.div
-        key={key}
+        key={id}
         transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
         initial={{
           opacity: 0

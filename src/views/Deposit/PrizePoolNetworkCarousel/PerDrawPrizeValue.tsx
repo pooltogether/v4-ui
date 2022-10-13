@@ -37,24 +37,11 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
     return queryResults
       .filter(({ isFetched }) => isFetched)
       .map(({ data }) => {
-        const prizes = [
-          // @ts-ignore
-          ...new Set(
-            data.valueOfPrizesByTier
-              .filter(
-                (p) =>
-                  !p.amountUnformatted.isZero() &&
-                  !p.amountUnformatted.eq(grandPrizeData.grandPrizeValue.amountUnformatted)
-              )
-              .map((p) => `$${p.amountPretty}`)
-          )
-        ].join(', ')
-
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           percentage: data.percentageOfPicks,
           totalValueOfPrizes: `${Math.round(data.percentageOfPicks * 100)}%`,
-          prizes
+          prizes: data.smallPrizeValueList.join(', ')
         }
       })
       .sort((a, b) => b.percentage - a.percentage)
@@ -65,7 +52,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       <Dots />
       <div className='grid grid-cols-2 mx-auto font-bold text-center max-w-screen-xs'>
         <div className='flex flex-col'>
-          <span>Total Prize Value</span>
+          <span>Daily Prize Value</span>
           <span className='text-7xl xs:text-12xl leading-none'>
             $
             <CountUp countTo={amount} decimals={0} />
@@ -86,7 +73,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
         </span>
       </div> */}
       <div className='opacity-70 mt-2 text-center'>
-        Total Prize Value is split between all Prize Pools. Every deposit has a chance to win the
+        Daily Prize Value is split between all Prize Pools. Every deposit has a chance to win the
         Grand Prize.{' '}
         <ExternalLink
           underline

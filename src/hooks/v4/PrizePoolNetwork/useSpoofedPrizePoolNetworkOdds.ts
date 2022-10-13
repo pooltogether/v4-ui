@@ -1,6 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { getAmountFromString } from '@utils/getAmountFromString'
+import { getAmount, getAmountFromUnformatted } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useAllPrizePoolOdds } from '../PrizePool/useAllPrizePoolOdds'
@@ -23,9 +22,9 @@ export const useSpoofedPrizePoolNetworkOdds = (
     !!amount && !!decimals && !!prizePoolId
       ? prizePools.reduce((twabs, prizePool) => {
           if (prizePool.id() === prizePoolId) {
-            twabs[prizePool.id()] = getAmountFromString(amount, decimals)
+            twabs[prizePool.id()] = getAmountFromUnformatted(amount, decimals)
           } else {
-            twabs[prizePool.id()] = getAmountFromBigNumber(ethers.constants.Zero, '0')
+            twabs[prizePool.id()] = getAmount(ethers.constants.Zero, '0')
           }
 
           return twabs

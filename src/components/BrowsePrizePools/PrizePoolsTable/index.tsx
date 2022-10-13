@@ -4,6 +4,8 @@ import { AveragePrizeValue } from '@components/PrizePool/AveragePrizeValue'
 import { ExpectedTotalPrizeValue } from '@components/PrizePool/ExpectedTotalPrizeValue'
 import { NumberOfPrizes } from '@components/PrizePool/NumberOfPrizes'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
+import { Prizes } from '@components/PrizePool/Prizes'
+import { SmallPrizes } from '@components/PrizePool/SmallPrizes'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { usePrizePoolsByAvgPrizeValue } from '@hooks/usePrizePoolsByAvgPrizeValue'
 import { usePrizePoolsByExpectedTotalPrizeValue } from '@hooks/usePrizePoolsByExpectedTotalPrizeValue'
@@ -19,9 +21,10 @@ import { TotalAmountDeposited } from './TotalAmountDeposited'
 
 enum Metrics {
   TVL,
+  PRIZES,
   NUM_PRIZES,
-  AVG_PRIZE_VALUE,
-  TOTAL_PRIZE_VALUE
+  AVG_PRIZE_VALUE
+  // TOTAL_PRIZE_VALUE
 }
 
 const Columns: {
@@ -44,12 +47,22 @@ const Columns: {
       </div>
     )
   },
-  [Metrics.TOTAL_PRIZE_VALUE]: {
-    headerI18nKey: 'Daily Prize Value',
-    tooltipI18nKey: 'The expected total value of all of the prizes awarded each day.',
+  // [Metrics.TOTAL_PRIZE_VALUE]: {
+  //   headerI18nKey: 'Daily Prize Value',
+  //   tooltipI18nKey: 'The expected total value of all of the prizes awarded each day.',
+  //   view: (props: { prizePool: PrizePool; className?: string }) => (
+  //     <div className={classNames(props.className)}>
+  //       <ExpectedTotalPrizeValue prizePool={props.prizePool} />
+  //     </div>
+  //   )
+  // },
+  [Metrics.PRIZES]: {
+    headerI18nKey: 'Prizes',
+    tooltipI18nKey:
+      'The potential prizes that can be won! All deposits have a chance to win the Grand Prize.',
     view: (props: { prizePool: PrizePool; className?: string }) => (
       <div className={classNames(props.className)}>
-        <ExpectedTotalPrizeValue prizePool={props.prizePool} />
+        <Prizes prizePool={props.prizePool} />
       </div>
     )
   },
@@ -96,47 +109,32 @@ export const PrizePoolsTable: React.FC<{
       description: 'These Prize Pools are the most popular and have the most tokens deposited.',
       prizePools: prizePoolsByTvl,
       isFetched: isPrizePoolsByTvlFetched,
-      columns: [
-        Columns[Metrics.TVL],
-        Columns[Metrics.TOTAL_PRIZE_VALUE],
-        Columns[Metrics.NUM_PRIZES]
-      ]
+      columns: [Columns[Metrics.TVL], Columns[Metrics.PRIZES], Columns[Metrics.NUM_PRIZES]]
     },
     {
-      title: 'Daily Prize Value',
-      key: 'daily_prize_value',
-      description: 'The more deposits a Prize Pool gets the more prize value it has to give out!',
+      title: 'Prizes',
+      key: 'prizes',
+      description: 'The more deposits a Prize Pool gets the more prizes it has to give out!',
       prizePools: prizePoolsByExpectedTotalPrizeValue,
       isFetched: isPrizePoolsByExpectedTotalPrizeValueFetched,
-      columns: [
-        Columns[Metrics.TOTAL_PRIZE_VALUE],
-        Columns[Metrics.NUM_PRIZES],
-        Columns[Metrics.AVG_PRIZE_VALUE]
-      ]
+      columns: [Columns[Metrics.PRIZES], Columns[Metrics.NUM_PRIZES], Columns[Metrics.TVL]]
     },
-    {
-      title: 'Average Prize Value',
-      key: 'average_prize_value',
-      description: "Don't expect to win often, but when you do, it'll be big!",
-      prizePools: prizePoolsByAvgPrizeValue,
-      isFetched: isPrizePoolsByAvgPrizeValueFetched,
-      columns: [
-        Columns[Metrics.AVG_PRIZE_VALUE],
-        Columns[Metrics.NUM_PRIZES],
-        Columns[Metrics.TOTAL_PRIZE_VALUE]
-      ]
-    },
+    // {
+    //   title: 'Average Prize Value',
+    //   key: 'average_prize_value',
+    //   description: "Don't expect to win often, but when you do, it'll be big!",
+    //   prizePools: prizePoolsByAvgPrizeValue,
+    //   isFetched: isPrizePoolsByAvgPrizeValueFetched,
+    //   columns: [Columns[Metrics.PRIZES], Columns[Metrics.NUM_PRIZES], Columns[Metrics.TVL]]
+    // },
     {
       title: 'Number of Prizes',
       key: 'number_of_prizes',
-      description: 'The most prizes are awarded here, but the prizes are smaller.',
+      description:
+        "Some Prize Pools offer many small prizes. Don't expect to win often, but when you do, it'll be big!",
       prizePools: prizePoolsByPrizes,
       isFetched: isPrizePoolsByPrizes,
-      columns: [
-        Columns[Metrics.NUM_PRIZES],
-        Columns[Metrics.AVG_PRIZE_VALUE],
-        Columns[Metrics.TOTAL_PRIZE_VALUE]
-      ]
+      columns: [Columns[Metrics.PRIZES], Columns[Metrics.NUM_PRIZES], Columns[Metrics.TVL]]
     }
   ]
 
@@ -213,7 +211,7 @@ export const PrizePoolsTable: React.FC<{
                   key={`column-${index}`}
                   prizePool={prizePool}
                   className={classNames(
-                    'text-xxs sm:text-sm font-bold',
+                    'text-xxs sm:text-sm font-bold text-center',
                     getHiddenColumnClassNames(index)
                   )}
                 />

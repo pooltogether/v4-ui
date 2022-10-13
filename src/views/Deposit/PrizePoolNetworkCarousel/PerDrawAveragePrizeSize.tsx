@@ -4,7 +4,7 @@ import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePo
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { Amount } from '@pooltogether/hooks'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmount } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'

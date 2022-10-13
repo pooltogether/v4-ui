@@ -22,8 +22,11 @@ import FeatherIcon from 'feather-icons-react'
 import { PromotionsVapr } from '../InfoList/TwabRewardsAprItem'
 import { AveragePrizeValue } from './AveragePrizeValue'
 import { DepositToken } from './DepositToken'
+import { GrandPrize } from './GrandPrize'
 import { NumberOfPrizes } from './NumberOfPrizes'
 import { PrizePoolLabelFlat } from './PrizePoolLabel'
+import { Prizes } from './Prizes'
+import { SmallPrizes } from './SmallPrizes'
 import { TicketTotalSupply } from './TicketTotalSupply'
 import { YieldSource } from './YieldSource'
 
@@ -71,10 +74,14 @@ export const PrizePoolCard: React.FC<{
         }
       )}
     >
-      <div className=' flex-row flex justify-between'>
-        <div>
+      <div className='grid grid-cols-3 mb-6'>
+        <div className='col-span-2'>
           <CardLabelSmall>Prize Pool</CardLabelSmall>
-          <PrizePoolLabelFlat prizePool={prizePool} className='mb-6' />
+          <PrizePoolLabelFlat prizePool={prizePool} />
+        </div>
+        <div>
+          <CardLabelSmall>Grand Prize</CardLabelSmall>
+          <GrandPrizeGroup prizePool={prizePool} className='text-flashy' />
         </div>
       </div>
       <div className='grid gap-2 grid-cols-2 xs:grid-cols-3 mb-2'>
@@ -87,8 +94,8 @@ export const PrizePoolCard: React.FC<{
           <NumberOfPrizesGroup prizePool={prizePool} />
         </div>
         <div>
-          <CardLabelSmall>Average Prize Value</CardLabelSmall>
-          <AveragePrizeValueGroup prizePool={prizePool} />
+          <CardLabelSmall>Small Prizes</CardLabelSmall>
+          <SmallPrizesGroup prizePool={prizePool} />
         </div>
         {children}
       </div>
@@ -305,6 +312,26 @@ export const AveragePrizeValueGroup: React.FC<{ prizePool: PrizePool; className?
   return (
     <CardLabelLarge isFetched={isFetched} className={className}>
       <AveragePrizeValue prizePool={prizePool} />
+    </CardLabelLarge>
+  )
+}
+
+export const SmallPrizesGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
+  const { isFetched } = usePrizePoolExpectedPrizes(prizePool)
+  return (
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <SmallPrizes prizePool={prizePool} />
+    </CardLabelLarge>
+  )
+}
+
+export const GrandPrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
+  const { isFetched } = usePrizePoolExpectedPrizes(prizePool)
+  return (
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <GrandPrize prizePool={prizePool} />
     </CardLabelLarge>
   )
 }

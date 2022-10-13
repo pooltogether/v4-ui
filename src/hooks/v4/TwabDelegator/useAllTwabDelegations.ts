@@ -1,3 +1,4 @@
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import {
   Delegation,
   DelegationId,
@@ -5,7 +6,6 @@ import {
   TWAB_DELEGATOR_ADDRESS
 } from '@pooltogether/v4-twab-delegator-js'
 import { getReadProvider } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
@@ -38,7 +38,7 @@ const getAllTwabDelegations = async (chainIds: number[], delegator: string) => {
     (sum, data) => sum.add(data.totalAmount.amountUnformatted),
     BigNumber.from(0)
   )
-  const totalAmount = getAmountFromBigNumber(totalAmountUnformatted, ticket.decimals)
+  const totalAmount = getAmountFromUnformatted(totalAmountUnformatted, ticket.decimals)
   const totalTokenWithUsdBalance = makeStablecoinTokenWithUsdBalance(totalAmountUnformatted, ticket)
   return {
     ticket,
@@ -64,7 +64,7 @@ const getDelegations = async (chainId: number, delegator: string) => {
     (sum, delegation) => sum.add(delegation.balance),
     BigNumber.from(0)
   )
-  const totalAmount = getAmountFromBigNumber(totalAmountUnformatted, ticket.decimals)
+  const totalAmount = getAmountFromUnformatted(totalAmountUnformatted, ticket.decimals)
 
   return {
     chainId,

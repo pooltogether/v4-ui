@@ -1,6 +1,6 @@
 import { useRefetchInterval } from '@pooltogether/hooks'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
 import { usePrizePoolTicketDecimals } from '../PrizePool/usePrizePoolTicketDecimals'
 
@@ -29,6 +29,6 @@ export const getPrizePoolTicketTotalSupply = async (prizePool: PrizePool, decima
   const amountUnformatted = await prizePool?.getTicketTotalSupply()
   return {
     prizePoolId: prizePool.id(),
-    amount: getAmountFromBigNumber(amountUnformatted, decimals)
+    amount: getAmountFromUnformatted(amountUnformatted, decimals)
   }
 }

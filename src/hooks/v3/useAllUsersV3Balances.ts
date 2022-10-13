@@ -11,11 +11,10 @@ import {
   TokenPrice
 } from '@pooltogether/hooks'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { useReadProviders } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQueries } from 'react-query'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
-
 
 export interface V3PrizePoolBalances {
   chainId: number
@@ -165,11 +164,11 @@ const makeTokenWithUsdBalance = (
   etherplexBalanceOfResults
 ): TokenWithUsdBalance => {
   const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
-  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
   const balanceUsdUnformatted = usdPerToken
     ? amountMultByUsd(balanceUnformatted, usdPerToken)
     : BigNumber.from(0)
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,
@@ -195,7 +194,7 @@ const makePodStablecoinTokenWithUsdBalance = (
   etherplexBalanceOfResults
 ): TokenWithUsdBalance => {
   const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
-  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
   const balanceUsdUnformatted = usdPerToken
     ? amountMultByUsd(
         balanceUnformatted
@@ -206,7 +205,7 @@ const makePodStablecoinTokenWithUsdBalance = (
         usdPerToken
       )
     : BigNumber.from(0)
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,

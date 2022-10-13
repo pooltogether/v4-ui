@@ -47,12 +47,12 @@ export const PastDrawsModal = (props: {
         >
           {winnersInfo?.amount.amountPretty}
         </b>{' '}
-        {tokenData?.token.symbol}
+        {tokenData?.token.symbol}. Select a winner to view their PoolTogether balance.
       </div>
 
       {/* Table Header */}
       <div className='grid grid-cols-2 text-center text-opacity-80 mb-3'>
-        <span>Pooler</span>
+        <span>Winner</span>
         <span>Prize</span>
       </div>
 

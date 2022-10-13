@@ -1,8 +1,8 @@
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { Token, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -58,7 +58,7 @@ export const getUsersPrizePoolBalances = async (
  * @param balances
  */
 const makeTokenWithUsdBalance = (token: Token, balanceUnformatted: BigNumber) => {
-  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balance.amount)
   return {
     ...token,

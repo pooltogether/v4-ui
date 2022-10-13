@@ -1,4 +1,4 @@
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
@@ -26,7 +26,7 @@ export const useUsersTotalClaimedAmount = (usersAddress: string) => {
     }, BigNumber.from(0))
     return acc.add(totalClaimedForPrizePool)
   }, BigNumber.from(0))
-  const totalClaimedAmount = getAmountFromBigNumber(totalClaimedAmountUnformatted, decimals)
+  const totalClaimedAmount = getAmountFromUnformatted(totalClaimedAmountUnformatted, decimals)
   return {
     data: totalClaimedAmount,
     isFetched: true

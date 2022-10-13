@@ -18,8 +18,8 @@ import {
   ButtonTheme
 } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
@@ -170,14 +170,14 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
   } = form
 
   const amount = watch(WITHDRAW_QUANTITY_KEY)
-  const amountToReceive = getAmountFromString(
+  const amountToReceive = getAmount(
     String(Number(amount) * Number(pricePerShare.amount)),
     token.decimals
   )
 
   const onSubmit = (data) => {
     const amount = data[WITHDRAW_QUANTITY_KEY]
-    setAmountToWithdraw(getAmountFromString(amount, token.decimals))
+    setAmountToWithdraw(getAmount(amount, token.decimals))
     setCurrentStep(WithdrawalSteps.review)
   }
 

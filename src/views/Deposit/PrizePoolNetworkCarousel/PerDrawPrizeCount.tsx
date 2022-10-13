@@ -30,12 +30,12 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          prizes: Math.round(data.expectedTotalNumberOfPrizes),
-          averagePrizeValue: `$${data.averagePrizeValue.amountPretty}`,
+          numberOfPrizes: Math.round(data.expectedTotalNumberOfPrizes),
+          prizes: data.valueOfPrizesFormattedList.join(', '),
           percentage: data.expectedTotalNumberOfPrizes / totalAmountOfPrizes
         }
       })
-      .sort((a, b) => b.prizes - a.prizes)
+      .sort((a, b) => b.numberOfPrizes - a.numberOfPrizes)
     return { totalAmountOfPrizes, data }
   }, [queryResults])
 
@@ -69,8 +69,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
         </div>
       </div>
       <div className='opacity-70 mt-2 text-center'>
-        Some Prize Pools have many small prizes, others have a few big prizes. Choose your own
-        adventure.{' '}
+        Some Prize Pools have many small prizes, others have a few big prizes.{' '}
         <ExternalLink
           underline
           href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
@@ -83,11 +82,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
         className='mt-4'
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
-      <PrizePoolTable
-        headers={{ prizes: 'Estimated prizes', averagePrizeValue: 'Avg Prize Value' }}
-        data={data}
-        className='mt-2'
-      />
+      <PrizePoolTable headers={{ prizes: 'Prizes' }} data={data} className='mt-2' />
     </div>
   )
 }

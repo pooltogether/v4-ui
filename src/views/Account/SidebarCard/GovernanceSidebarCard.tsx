@@ -4,8 +4,8 @@ import { useUsersGovernanceBalances } from '@hooks/useUsersGovernanceBalances'
 import { useUsersVotes } from '@hooks/useUsersVotes'
 import { useAllProposalsByStatus } from '@pooltogether/hooks'
 import { ExternalLink, ThemedClipSpinner } from '@pooltogether/react-components'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { Trans, useTranslation } from 'react-i18next'
 import { SidebarCard } from '.'
 
@@ -48,7 +48,7 @@ const GovernanceDescription = () => {
   const poolBalance = balanceData?.[POOL_TOKEN[CHAIN_ID.mainnet]]
   const ppoolBalance = balanceData?.[PPOOL_TICKET_TOKEN[CHAIN_ID.mainnet]]
   const totalVotesAmount = isBalancesFetched
-    ? getAmountFromBigNumber(
+    ? getAmountFromUnformatted(
         poolBalance.amountUnformatted.add(ppoolBalance.amountUnformatted),
         '18'
       )
@@ -82,7 +82,7 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
   const ppoolBalance = balanceData?.[PPOOL_TICKET_TOKEN[CHAIN_ID.mainnet]]
   const totalVotesAmount =
     isFetched && isBalancesFetched
-      ? getAmountFromBigNumber(votes?.amountUnformatted.add(ppoolBalance.amountUnformatted), '18')
+      ? getAmountFromUnformatted(votes?.amountUnformatted.add(ppoolBalance.amountUnformatted), '18')
       : null
 
   return (

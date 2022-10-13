@@ -7,10 +7,9 @@ import { useSelectedPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSelec
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount } from '@pooltogether/hooks'
 import { NetworkIcon, PoolIcon } from '@pooltogether/react-components'
+import { getAmount, getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
@@ -56,7 +55,7 @@ export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
     return {
       isFetched,
       isPartiallyFetched,
-      totalAmountWon: getAmountFromBigNumber(totalAmountWon, decimals),
+      totalAmountWon: getAmountFromUnformatted(totalAmountWon, decimals),
       totalPrizesWon: totalPrizesWon
     }
   }, [queryResults, prizeDistributorTokenData])
@@ -136,7 +135,7 @@ const getLastDrawStats = async (prizeDistributor: PrizeDistributor, _drawId: num
 
   return {
     prizesWon: data.meta.prizeLength,
-    amount: getAmountFromString(data.meta.amountsTotal, '0'),
+    amount: getAmount(data.meta.amountsTotal, '0'),
     drawId
   }
 }

@@ -7,11 +7,8 @@ import { LargestPrizeInNetwork } from '@components/PrizePoolNetwork/LargestPrize
 import { TotalNumberOfPrizes } from '@components/PrizePoolNetwork/TotalNumberOfPrizes'
 import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
 import { BRIDGE_URLS, EXCHANGE_URLS, getBridges, getExchange } from '@constants/config'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { usePrizePoolTokens } from '@pooltogether/hooks'
 import {
   ButtonLink,
-  ButtonSize,
   ButtonTheme,
   ExternalLink,
   LinkTheme,
@@ -88,9 +85,6 @@ const HelpView = (props: ViewProps) => {
   const { setSelectedViewId } = props
   return (
     <>
-      <Link href='/account'>
-        <a>account</a>
-      </Link>
       <h4>What is PoolTogether?</h4>
       <p className='opacity-80 mb-6'>
         PoolTogether is a crypto-powered savings protocol based on{' '}

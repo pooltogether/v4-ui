@@ -1,4 +1,4 @@
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { useQuery } from 'react-query'
 import { useAllUsersTicketDelegates } from './useAllUsersTicketDelegates'
@@ -64,11 +64,11 @@ export const useTotalAmountDelegatedTo = (usersAddress: string) => {
         }
         delegatedAmountPerChain.push({
           chainId: prizePool.chainId,
-          amount: getAmountFromBigNumber(delegatedAmount, ticket.decimals)
+          amount: getAmountFromUnformatted(delegatedAmount, ticket.decimals)
         })
       })
 
-      const delegatedAmount = getAmountFromBigNumber(
+      const delegatedAmount = getAmountFromUnformatted(
         totalAmountDelegatedToUserUnformatted,
         ticket.decimals
       )

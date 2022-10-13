@@ -4,6 +4,21 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import React, { useMemo, useState } from 'react'
 
+const getColSpan = (columns: number, index: number) => {
+  if (columns < 3 && index === 0) {
+    return `col-span-2 xs:col-span-1`
+  }
+  return `col-span-1`
+}
+
+const getGridCols = (columns: number) => {
+  if (columns >= 3) {
+    return `grid-cols-${columns}`
+  } else {
+    return `grid-cols-3 xs:grid-cols-${columns}`
+  }
+}
+
 export const PrizePoolTable = (props: {
   data: {
     prizePool: PrizePool
@@ -19,10 +34,15 @@ export const PrizePoolTable = (props: {
 
   return (
     <div className={classNames('', className)}>
-      <div className={`ml-auto text-xxs opacity-80 grid grid-cols-${columns} text-center xs:mb-2`}>
+      <div
+        className={classNames(
+          'ml-auto text-xxs opacity-80 grid text-center xs:mb-2',
+          getGridCols(columns)
+        )}
+      >
         <div className='' />
         {Object.values(headers).map((header, index) => (
-          <div className='' key={`header-${index}`}>
+          <div className={getColSpan(columns, index)} key={`header-${index}`}>
             {header}
           </div>
         ))}
@@ -51,10 +71,12 @@ const PrizePoolRow: React.FC<{
   const [id] = useState(Math.random())
 
   return (
-    <div className={classNames(`grid grid-cols-${columns} text-center`)}>
+    <div className={classNames('grid text-center', getGridCols(columns))}>
       <PrizePoolLabel prizePool={prizePool} percentage={percentage} />
       {Object.keys(headers).map((header, index) => (
-        <div key={`row-item-${index}-${prizePool.id()}`}>{props[header]}</div>
+        <div key={`row-item-${index}-${prizePool.id()}`} className={getColSpan(columns, index)}>
+          {props[header]}
+        </div>
       ))}
     </div>
   )

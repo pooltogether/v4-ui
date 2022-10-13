@@ -1,4 +1,4 @@
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmountsGraph } from './useAllUsersClaimedAmountsGraph'
@@ -34,7 +34,7 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
     BigNumber.from(0)
   )
 
-  const totalClaimedAmount = getAmountFromBigNumber(totalClaimedAmountUnformatted, decimals)
+  const totalClaimedAmount = getAmountFromUnformatted(totalClaimedAmountUnformatted, decimals)
 
   return {
     data: totalClaimedAmount,

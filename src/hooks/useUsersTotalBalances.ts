@@ -1,5 +1,5 @@
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 import { useUsersV3LPPoolBalances } from './v3/useUsersV3LPPoolBalances'
@@ -47,9 +47,9 @@ export const useUsersTotalBalances = (usersAddress: string) => {
       .add(v3TotalBalanceUsdScaled)
       .add(v3POOLPoolTotalBalanceUsdScaled)
       .add(v3LPPoolTotalBalanceUsdScaled)
-    const totalBalanceUsd = getAmountFromBigNumber(totalBalanceUsdScaled, '2')
-    const totalV4BalanceUsd = getAmountFromBigNumber(v4TotalBalanceUsdScaled, '2')
-    const totalV3BalanceUsd = getAmountFromBigNumber(v3TotalBalanceUsdScaled, '2')
+    const totalBalanceUsd = getAmountFromUnformatted(totalBalanceUsdScaled, '2')
+    const totalV4BalanceUsd = getAmountFromUnformatted(v4TotalBalanceUsdScaled, '2')
+    const totalV3BalanceUsd = getAmountFromUnformatted(v3TotalBalanceUsdScaled, '2')
 
     // Fallback in case there is no token price data
     const totalV4Balance = isV4Fetched

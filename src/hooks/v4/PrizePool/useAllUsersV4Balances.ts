@@ -1,6 +1,6 @@
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
@@ -50,7 +50,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
     const totalValueUsdScaled = totalDelegationValueUsdScaled
       ? totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
       : BigNumber.from(0)
-    const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+    const totalValueUsd = getAmountFromUnformatted(totalValueUsdScaled, '2')
     const refetch = () => {
       queryResults.map((queryResult) => queryResult.refetch())
       refetchDelegations()

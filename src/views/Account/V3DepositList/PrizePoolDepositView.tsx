@@ -10,6 +10,7 @@ import { useUsersV3PrizePoolBalance } from '@hooks/v3/useUsersV3PrizePoolBalance
 import { V3PrizePool } from '@hooks/v3/useV3PrizePools'
 import { Amount, TokenWithBalance, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonTheme, ModalTitle } from '@pooltogether/react-components'
+import { getAmount } from '@pooltogether/utilities'
 import {
   Transaction,
   TransactionState,
@@ -20,7 +21,6 @@ import {
   useUsersAddress
 } from '@pooltogether/wallet-connection'
 import { useIsWalletOnChainId } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { buildApproveTx } from '@utils/transactions/buildApproveTx'
 import { buildDepositTx } from '@utils/transactions/buildV3DepositTx'
 import { AccountPageButton } from '@views/Deposit/DepositConfirmationModal'
@@ -99,7 +99,7 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
   }
 
   const quantity = watch(DEPOSIT_QUANTITY_KEY)
-  const amountToDeposit = getAmountFromString(quantity, token.decimals)
+  const amountToDeposit = getAmount(quantity, token.decimals)
 
   switch (depositView) {
     case DepositViews.depositForm:

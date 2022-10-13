@@ -7,8 +7,8 @@ import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrize
 import { useWithdrawValidationRules } from '@hooks/v4/PrizePool/useWithdrawValidationRules'
 import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
+import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { ViewIds } from '..'
 import { WithdrawInfoListItems } from './WithdrawInfoListItems'
 
@@ -48,7 +48,7 @@ export const WithdrawView: React.FC<
       }
       useValidationRules={useValidationRules}
       handleSubmit={(values: TokenAmountFormValues) => {
-        setWithdrawAmount(getAmountFromString(values[FORM_KEY], tokens?.token.decimals))
+        setWithdrawAmount(getAmount(values[FORM_KEY], tokens?.token.decimals))
         setSelectedViewId(ViewIds.withdrawReview)
       }}
       chainId={prizePool.chainId}

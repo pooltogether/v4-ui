@@ -18,8 +18,8 @@ import {
   ModalTitle
 } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
+import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import classnames from 'classnames'
 import { BigNumber, ethers } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
@@ -156,7 +156,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
   const onSubmit = (data) => {
     const amount = data[WITHDRAW_QUANTITY_KEY]
-    setAmountToWithdraw(getAmountFromString(amount, token.decimals))
+    setAmountToWithdraw(getAmount(amount, token.decimals))
     setCurrentStep(WithdrawalSteps.review)
   }
 
@@ -166,11 +166,7 @@ const WithdrawInputStep = (props: WithdrawInputStepProps) => {
 
       <DownArrow />
 
-      <AmountToReceive
-        chainId={chainId}
-        amount={getAmountFromString(amount, token.decimals)}
-        token={token}
-      />
+      <AmountToReceive chainId={chainId} amount={getAmount(amount, token.decimals)} token={token} />
 
       <ErrorsBox
         errors={

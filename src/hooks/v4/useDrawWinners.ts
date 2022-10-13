@@ -1,4 +1,4 @@
-import { getAmountFromBigNumber } from '@pooltogether/hooks'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
@@ -135,5 +135,5 @@ const formatPrize = (
   decimals: string
 ) => ({
   ...prize,
-  amount: getAmountFromBigNumber(BigNumber.from(prize.amount), decimals)
+  amount: getAmountFromUnformatted(BigNumber.from(prize.amount), decimals)
 })

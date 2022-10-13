@@ -16,6 +16,7 @@ import { DrawData } from '@interfaces/v4'
 import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import {
   Draw,
   PrizeAwardable,
@@ -32,7 +33,6 @@ import {
   useUsersAddress,
   BlockExplorerLink
 } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { loopXTimes } from '@utils/loopXTimes'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
@@ -478,7 +478,7 @@ const getPrizesWon = async (
       })
     })
 
-    const amount = getAmountFromBigNumber(totalWon, '6')
+    const amount = getAmountFromUnformatted(totalWon, '6')
 
     return {
       prizesWon,

@@ -5,12 +5,12 @@ import { usePodExitFee } from '@hooks/v3/usePodExitFee'
 import { Amount } from '@pooltogether/hooks'
 import { ModalTitle } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import {
   useIsWalletOnChainId,
   useSendTransaction,
   useTransaction
 } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { Contract } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -88,7 +88,7 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
   const setStateForWithdrawal = (amount: Amount) => {
     setAmountToWithdraw(amount)
     setAmountToReceive(
-      getAmountFromBigNumber(
+      getAmountFromUnformatted(
         amount.amountUnformatted
           .mul(parseUnits('1', ticket.decimals))
           .mul(pricePerShare.amountUnformatted)

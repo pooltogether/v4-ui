@@ -1,7 +1,7 @@
 import { POOL_TOKEN, PPOOL_TICKET_TOKEN } from '@constants/misc'
 import { useTokenBalances } from '@pooltogether/hooks'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
 
@@ -50,7 +50,7 @@ export const useUsersPoolTokenBalances = (usersAddress: string) => {
     const decimals =
       ethereumBalances?.[POOL_TOKEN[CHAIN_ID.mainnet]].decimals ||
       polygonBalances?.[POOL_TOKEN[CHAIN_ID.polygon]].decimals
-    const total = getAmountFromBigNumber(totalUnformatted, decimals)
+    const total = getAmountFromUnformatted(totalUnformatted, decimals)
     return {
       data: {
         balances: {

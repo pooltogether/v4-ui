@@ -51,7 +51,8 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
       <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='xs:max-w-md'>
         <h6 className='text-center uppercase text-sm mb-3'>Choose a Prize Pool</h6>
         <p className='max-w-sm mx-auto text-xs mb-12 text-center'>
-          Every prize pool has a different way of distributing prizes!
+          Every prize pool has a different way of distributing prizes! Every deposit has a chance to
+          win the Grand Prize.
         </p>
 
         <ul className='space-y-2 mx-auto'>
@@ -64,10 +65,14 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
                   setSelectedPrizePoolAddress(prizePool)
                   setIsOpen(false)
                 }}
-                className={classNames('rounded-lg p-2 w-full border', {
-                  'border-transparent hover:border-pt-teal': !isSelected,
-                  'border-pt-purple-light hover:border-pt-teal': isSelected
-                })}
+                className={classNames(
+                  'bg-pt-purple-lighter dark:bg-pt-purple-darker rounded-lg p-4 flex items-center w-full transition-colors',
+                  'border  hover:border-highlight-1',
+                  {
+                    'border-default': isSelected,
+                    'border-transparent': !isSelected
+                  }
+                )}
               >
                 <PrizePoolLabelFlat prizePool={prizePool} />
               </button>

@@ -7,8 +7,8 @@ import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import { getTokenFaucetAddressTokenFaucetAddress } from './StakingBottomSheet'
@@ -107,7 +107,7 @@ const makeTokenWithUsdBalance = (token: TokenWithBalance, usd: number): TokenWit
     ? amountMultByUsd(token.amountUnformatted, usd)
     : BigNumber.from(0)
 
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals)
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,

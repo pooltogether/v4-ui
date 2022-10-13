@@ -36,7 +36,7 @@ export const RewardsBanners = (props: { className?: string }) => {
         <span>📣</span>
         {/* {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}! */}
         <span>
-          Deposit on Optimism for $OP <b className='text-flashy'>Bonus Rewards</b>!
+          Deposit on Optimism for <b>OP</b> <b className='text-flashy'>Bonus Rewards</b>!
         </span>
         <TokenIcon
           chainId={CHAIN_ID.optimism}

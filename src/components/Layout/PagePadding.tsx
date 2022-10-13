@@ -18,7 +18,7 @@ export const PagePadding = (props: PagePaddingProps) => {
   const router = useRouter()
   return (
     <FadeInDiv
-      key={`page-padding-animation-wrapper-${router.pathname}`}
+      id={`page-padding-animation-wrapper-${router.pathname}`}
       className={classNames(paddingClassName, widthClassName, marginClassName, className)}
       style={style}
     >

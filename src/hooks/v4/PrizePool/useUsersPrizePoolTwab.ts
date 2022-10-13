@@ -1,8 +1,8 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { sToMs } from '@pooltogether/utilities'
 import { msToS } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { ethers } from 'ethers'
 import { useQueries, useQuery } from 'react-query'
 import { usePrizePools } from './usePrizePools'
@@ -45,14 +45,14 @@ export const getUserPrizePoolTwab = async (
       prizePoolId: prizePool.id(),
       chainId: prizePool.chainId,
       usersAddress,
-      twab: getAmountFromBigNumber(ethers.constants.Zero, decimals)
+      twab: getAmountFromUnformatted(ethers.constants.Zero, decimals)
     }
   }
 
   const timestamp = Math.round(msToS(Date.now()))
   const twabUnformatted = await prizePool.getUsersTicketTwabAt(usersAddress, timestamp)
 
-  const twab = getAmountFromBigNumber(twabUnformatted, decimals)
+  const twab = getAmountFromUnformatted(twabUnformatted, decimals)
 
   return {
     prizePoolId: prizePool.id(),
