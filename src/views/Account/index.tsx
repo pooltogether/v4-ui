@@ -2,6 +2,7 @@ import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrize
 import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
 import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
+import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { CardTitle } from '@components/Text/CardTitle'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
@@ -40,7 +41,11 @@ export const AccountUI = (props) => {
 
   if (!isWalletConnected) {
     return (
-      <PagePadding widthClassName='max-w-screen-md'>
+      <PagePadding
+        className={classNames(NEGATIVE_HEADER_MARGIN, 'min-h-actually-full-screen')}
+        widthClassName='max-w-screen-md'
+        paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
+      >
         <NoWalletAccountHeader className='mx-auto mb-20 max-w-screen-sm' />
         <Card>
           <BrowsePrizePools />
@@ -52,9 +57,12 @@ export const AccountUI = (props) => {
   }
   return (
     <PagePadding
-      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen'
+      className={classNames(
+        'grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen',
+        NEGATIVE_HEADER_MARGIN
+      )}
       widthClassName='max-w-screen-lg'
-      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
+      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
     >
       <div className='sm:col-span-2 md:col-span-3 space-y-4'>
         <AccountCard usersAddress={usersAddress} />

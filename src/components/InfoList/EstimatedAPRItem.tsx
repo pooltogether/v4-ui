@@ -23,6 +23,7 @@ export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
       labelClassName={labelClassName}
       valueClassName={valueClassName}
       label={t('estimatedAverageApr', 'Estimated average APR')}
+      tooltipId='estimatedAverageApr'
       labelToolTip={t(
         'estimatedAverageAprTooltip',
         'Estimated average APR is a rough estimate based on the current TVL and daily prizes'

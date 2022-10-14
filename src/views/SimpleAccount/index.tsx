@@ -1,3 +1,4 @@
+import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { Card } from '@views/Account'
 import { AccountCard } from '@views/Account/AccountCard'
@@ -6,6 +7,7 @@ import { POOLBalancesCard } from '@views/Account/POOLBalancesCard'
 import { GovernanceSidebarCard } from '@views/Account/SidebarCard/GovernanceSidebarCard'
 import { OddsSidebarCard } from '@views/Account/SidebarCard/OddsSidebarCard'
 import { PastPrizesSidebarCard } from '@views/Account/SidebarCard/PastPrizesSidebarCard'
+import classNames from 'classnames'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { SimpleV4DepositList, SimpleV3DepositList } from './DepositLists'
@@ -15,9 +17,12 @@ export const SimpleAccountUI = (props: { usersAddress: string }) => {
 
   return (
     <PagePadding
-      className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen'
+      className={classNames(
+        'grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen',
+        NEGATIVE_HEADER_MARGIN
+      )}
       widthClassName='max-w-screen-lg'
-      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-2 pt-8'
+      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
     >
       <div className='sm:col-span-2 md:col-span-3 space-y-4'>
         <AccountCard usersAddress={usersAddress} showAddress />

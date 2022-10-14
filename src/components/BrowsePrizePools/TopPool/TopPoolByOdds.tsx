@@ -25,7 +25,7 @@ export const TopPoolByOdds: React.FC<{
     <TopPool
       className={className}
       isFetched={isFetched}
-      title={'Best odds'}
+      title={'Best chances to win'}
       secondaryTitle={
         <div className='flex items-center space-x-1 text-xs'>
           <span>per</span>
@@ -56,7 +56,7 @@ export const TopPoolByOdds: React.FC<{
       }}
     >
       <div>
-        <CardLabelSmall>Odds to win</CardLabelSmall>
+        <CardLabelSmall>Daily chances to win</CardLabelSmall>
         <CardLabelLarge>
           <OddsForDeposit prizePool={prizePool} amount={amount} />
         </CardLabelLarge>

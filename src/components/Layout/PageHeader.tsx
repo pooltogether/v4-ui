@@ -24,6 +24,8 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
+export const NEGATIVE_HEADER_MARGIN = '-mt-12 sm:-mt-16'
+
 export const PageHeader = (props) => (
   <PageHeaderContainer
     logo={

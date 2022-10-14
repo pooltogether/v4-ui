@@ -1,4 +1,3 @@
-import { Amount } from '@pooltogether/hooks'
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
 import { parseUnits } from 'ethers/lib/utils'

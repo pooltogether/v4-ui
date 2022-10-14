@@ -3,6 +3,11 @@ import { BigNumber } from 'ethers'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 
+/**
+ * NOTE: Legacy hook.  Use useUsersTotalClaimedAmountGraph instead. This reads from chain data which uses a buffer that will get overwritten.
+ * @param usersAddress
+ * @returns
+ */
 export const useUsersTotalClaimedAmount = (usersAddress: string) => {
   const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
   const claimedAmountsQueryResults = useAllUsersClaimedAmounts(usersAddress)

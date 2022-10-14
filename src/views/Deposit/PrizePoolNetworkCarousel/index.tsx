@@ -3,6 +3,7 @@ import classNames from 'classnames'
 import { atom, useAtom } from 'jotai'
 import { useRef } from 'react'
 import Slider from 'react-slick'
+import { PerDrawAveragePrizeSize } from './PerDrawAveragePrizeSize'
 import { PerDrawPrizeCount } from './PerDrawPrizeCount'
 import { PerDrawPrizeValue } from './PerDrawPrizeValue'
 import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
@@ -32,7 +33,6 @@ export const PrizePoolNetworkCarousel = (props: { className?: string }) => {
         <PerDrawPrizeValue className='my-auto mx-auto max-w-screen-sm' />
         <PerDrawPrizeCount className='my-auto mx-auto max-w-screen-sm' />
         <PrizePoolNetworkTvl className='h-full my-auto mx-auto max-w-screen-sm' />
-        {/* <PerDrawAveragePrizeSize className='my-auto mx-auto max-w-screen-sm' /> */}
       </Slider>
       <SliderArrows prev={sliderRef?.current?.slickPrev} next={sliderRef?.current?.slickNext} />
     </div>
@@ -56,3 +56,26 @@ export const SliderArrows = (props: { className?: string; prev: () => void; next
 SliderArrows.defaultProps = {
   className: 'w-40'
 }
+
+export const CarouselHeader = (props: { headers: { title: string; stat: React.ReactNode }[] }) => (
+  <div
+    className={`grid grid-cols-${props.headers.length} mx-auto font-bold text-center max-w-screen-xs`}
+  >
+    {props.headers.map(({ title, stat }, index) => (
+      <div key={`header-${title}`} className='flex flex-col'>
+        <span>{title}</span>
+        <span className='text-7xl xs:text-12xl leading-none'>{stat}</span>
+      </div>
+    ))}
+  </div>
+)
+
+export const CarouselDescription = (props: JSX.IntrinsicElements['div']) => (
+  <div
+    {...props}
+    className={classNames(
+      'text-xxxs xs:text-xs lg:text-sm opacity-70 mt-2 text-center max-w-screen-xs lg:max-w-screen-sm mx-auto leading-tight',
+      props.className
+    )}
+  />
+)

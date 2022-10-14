@@ -1,4 +1,5 @@
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SidebarCard } from '.'
 import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWinnings'
@@ -6,7 +7,8 @@ import { TotalWinningsAmount, TotalWinningsSheet } from '../AccountCard/TotalWin
 export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const [isOpen, setIsOpen] = useState(false)
-  const { isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
+  const { isFetched, data } = useUsersTotalClaimedAmountGraph(usersAddress)
+  const { t } = useTranslation()
 
   if (!usersAddress) return null
 
@@ -14,7 +16,12 @@ export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props)
     <>
       <SidebarCard
         title={'🏆 Claimed prizes'}
-        description={'Totalled over the past 8 months'}
+        isLoading={!isFetched}
+        description={
+          isFetched && !data?.totalClaimedAmount.amountUnformatted.isZero()
+            ? `You've claimed ${data.totalClaimedPrizes} prizes`
+            : t('noPrizesYet')
+        }
         main={<TotalWinningsAmount usersAddress={usersAddress} />}
         trigger={'See more'}
         showTrigger

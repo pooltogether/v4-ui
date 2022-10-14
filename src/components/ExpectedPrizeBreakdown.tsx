@@ -15,8 +15,6 @@ export const ExpectedPrizeBreakdown: React.FC<{
   const { data: prizeData, isFetched: isPrizesFetched } = usePrizePoolExpectedPrizes(prizePool)
   const { data: tokenData, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
 
-  // console.log({ prizeData })
-
   const isFetched = isPrizesFetched && isTokensFetched
 
   return (
@@ -24,7 +22,7 @@ export const ExpectedPrizeBreakdown: React.FC<{
       <span className='mb-2 font-bold'>Prize Breakdown for next draw</span>
       <div className='grid grid-cols-2 mb-2'>
         <PrizeTableHeader>Prize Value</PrizeTableHeader>
-        <PrizeTableHeader>Expected Prizes</PrizeTableHeader>
+        <PrizeTableHeader>Prizes (Projected)</PrizeTableHeader>
       </div>
       <ul className='flex flex-col space-y-3'>
         {!isFetched ? (

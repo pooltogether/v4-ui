@@ -11,15 +11,19 @@ export const TotalWinningsAmount: React.FC<{ usersAddress: string; className?: s
   props
 ) => {
   const { usersAddress, className } = props
-  const { data: totalClaimedAmount, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
+  const { data, isFetched } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
-    <span className={className}>
+    <span
+      className={classNames(className, {
+        'opacity-80': isFetched && data.totalClaimedAmount.amountUnformatted.isZero()
+      })}
+    >
       {!isFetched ? (
         <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
       ) : (
         <>
-          $<CountUp countTo={isFetched ? Number(totalClaimedAmount.amount) : 0} />
+          $<CountUp countTo={isFetched ? Number(data?.totalClaimedAmount.amount) : 0} />
         </>
       )}
     </span>
@@ -71,7 +75,7 @@ interface TotalWinningsSheetProps {
 export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
   const { open, onDismiss, usersAddress } = props
   const { t } = useTranslation()
-  const { data: totalClaimedAmount } = useUsersTotalClaimedAmountGraph(usersAddress)
+  const { data } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
     <BottomSheet open={open} onDismiss={onDismiss} className='flex flex-col space-y-8'>
@@ -79,13 +83,12 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
         <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
-            ${totalClaimedAmount?.amountPretty || '--'}
+            ${data?.totalClaimedAmount?.amountPretty || '--'}
           </span>
-          <span className='uppercase opacity-50 font-semibold text-xxs'>{t('totalWinnings')}</span>
+          <span className='opacity-80 font-semibold text-xxs'>{t('totalWinnings')}</span>
         </div>
       </div>
       <PrizesClaimedList usersAddress={usersAddress} />
-      <NumberOfPrizesDisclaimer />
     </BottomSheet>
   )
 }
@@ -179,23 +182,5 @@ const EmptyState = () => {
       <span className='font-bold opacity-70'>{t('noPrizesYet', 'No prizes... Yet.')}</span>
       <span className='text-9xl'>🤞</span>
     </div>
-  )
-}
-
-const NumberOfPrizesDisclaimer = () => {
-  return (
-    <span className='text-xxs text-center opacity-50 px-6'>
-      <Trans
-        i18nKey='claimedPrizesDisclaimer'
-        components={{
-          a: (
-            <a
-              className='underline text-xxs hover:opacity-100'
-              href='https://dev.pooltogether.com/protocol/contracts/v4-core/DrawBuffer'
-            ></a>
-          )
-        }}
-      />
-    </span>
   )
 }

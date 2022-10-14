@@ -70,7 +70,6 @@ export const getOdds = (
     action,
     actionAmountUnformatted
   )
-
   return {
     prizePoolId: prizePool.id(),
     odds,

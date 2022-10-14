@@ -7,6 +7,7 @@ import { useAllDrawWinners, useAllLatestDrawWinners } from '@hooks/v4/useDrawWin
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
+import { CarouselDescription, CarouselHeader } from '.'
 
 export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -54,21 +55,27 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   return (
     <div className={classNames('relative', className)}>
       <Dots />
-      <div className='grid grid-cols-2 mx-auto font-bold text-center max-w-screen-xs'>
-        <div className='flex flex-col'>
-          <span>Prizes next draw</span>
-          <span className='text-7xl xs:text-12xl leading-none'>
-            <CountUp countTo={totalAmountOfPrizes} decimals={0} />
-          </span>
-        </div>
-        <div className='flex flex-col'>
-          <span>Prizes won last draw</span>
-          <span className='text-7xl xs:text-12xl leading-none text-flashy'>
-            <CountUp countTo={numberOfWinnersLastDraw} decimals={0} />
-          </span>
-        </div>
-      </div>
-      <div className='opacity-70 mt-2 text-center'>
+      <CarouselHeader
+        headers={[
+          {
+            title: 'Prizes next draw',
+            stat: (
+              <>
+                <CountUp countTo={totalAmountOfPrizes} decimals={0} />
+              </>
+            )
+          },
+          {
+            title: 'Prizes won last draw',
+            stat: (
+              <span className='text-flashy'>
+                <CountUp countTo={numberOfWinnersLastDraw} decimals={0} />
+              </span>
+            )
+          }
+        ]}
+      />
+      <CarouselDescription>
         Some Prize Pools have many small prizes, others have a few big prizes.{' '}
         <ExternalLink
           underline
@@ -76,7 +83,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
         >
           Read more
         </ExternalLink>
-      </div>
+      </CarouselDescription>
       <PrizePoolBar
         data={data}
         className='mt-4'

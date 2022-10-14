@@ -50,6 +50,7 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
         'winningOddsDescription',
         'Your estimated odds of winning at least one prize in this prize pool'
       )}
+      tooltipId='winningOdds'
       loading={!isFetched}
       value={value}
       labelClassName={labelClassName}

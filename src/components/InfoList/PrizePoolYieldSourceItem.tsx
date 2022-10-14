@@ -28,6 +28,7 @@ export const PrizePoolYieldSourceItem: React.FC<{
         'yieldSourceDescription',
         'All deposits into this prize pool are deposited directly into the yield source to earn money for prizes.'
       )}
+      tooltipId='yieldSourceDescription'
       // loading={!isFetched}
       // labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={<YieldSourceLabel prizePool={prizePool} />}

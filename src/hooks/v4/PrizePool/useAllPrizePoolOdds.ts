@@ -5,7 +5,6 @@ import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
 import { getOdds, getOddsKey } from './useOdds'
 import { usePrizePools } from './usePrizePools'
-import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

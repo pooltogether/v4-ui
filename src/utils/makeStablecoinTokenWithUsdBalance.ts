@@ -12,7 +12,6 @@ export const makeStablecoinTokenWithUsdBalance = (
   amountUnformatted: BigNumber,
   token: Token
 ): TokenWithUsdBalance => {
-  console.log({ amountUnformatted, token }, getAmountFromUnformatted)
   const amount = getAmountFromUnformatted(amountUnformatted, token.decimals)
   const usdPerToken = 1
   const balanceUsd = getAmount(amount.amount, '2')

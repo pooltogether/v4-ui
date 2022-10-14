@@ -47,11 +47,11 @@ export const TwabRewardsAprItem: React.FC<{
 
   return (
     <InfoListItem
-      labelClassName={classNames(labelClassName, 'text-flashy')}
+      labelClassName={classNames(labelClassName)}
       valueClassName={valueClassName}
       label={
-        <div className='inline-flex'>
-          Bonus Rewards
+        <div className='inline-flex space-x-1 items-center'>
+          <span className='text-flashy'>Bonus Rewards</span>
           <img className='w-4 h-4 ml-1' src='/beach-with-umbrella.png' />
         </div>
       }
@@ -59,6 +59,7 @@ export const TwabRewardsAprItem: React.FC<{
         'rewardsVaprDescription',
         'Rewards vAPR is the variable annual rate of return on your deposit in the form of rewards, based on the total value of deposits on this chain'
       )}
+      tooltipId='rewardsVaprDescription'
       loading={!isFetched}
       // labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={value}
@@ -73,9 +74,12 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
   if (vapr <= 0) return null
 
   return (
-    <li className='flex space-x-2 items-center'>
-      <span>{numberWithCommas(vapr)}% VAPR in</span>
-      <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
+    <li className='flex items-center'>
+      <span>
+        {numberWithCommas(vapr)}%{' '}
+        <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />{' '}
+        VAPR
+      </span>
     </li>
   )
 }

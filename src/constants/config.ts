@@ -169,20 +169,20 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
 export const getBridges = (chainId: number) => BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
 export const BRIDGE_URLS = Object.freeze({
   [CHAIN_ID.mainnet]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
+    { url: 'https://bridge.avax.network/', title: 'Avalanche bridge' },
+    { url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }
+    // { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.polygon]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
+    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' }
+    // { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
   [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
-  [CHAIN_ID['optimism-goerli']]: [
-    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
-  ],
   [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
 })
 

@@ -1,4 +1,6 @@
+import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
+import classNames from 'classnames'
 import React from 'react'
 import { DepositTrigger } from './DepositTrigger'
 import { RewardsBanners } from './DepositTrigger/RewardsBanners'
@@ -10,7 +12,10 @@ export const DepositUI = () => {
       paddingClassName=''
       widthClassName=''
       marginClassName=''
-      className='h-actually-full-screen -mt-12 sm:-mt-16 pt-12 xs:pt-0 flex flex-col xs:justify-center space-y-4 sm:space-y-8 lg:space-y-12'
+      className={classNames(
+        NEGATIVE_HEADER_MARGIN,
+        'h-actually-full-screen pt-12 xs:pt-0 flex flex-col xs:justify-center space-y-4 sm:space-y-8 lg:space-y-12'
+      )}
       style={{ minHeight: '620px' }}
     >
       {/* <div className='h-full flex flex-col justify-evenly sm:justify-center'> */}

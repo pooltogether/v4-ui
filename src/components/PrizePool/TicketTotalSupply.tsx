@@ -1,6 +1,7 @@
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
+import { getAmount } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
@@ -15,7 +16,7 @@ export const TicketTotalSupply = (props: {
   iconClassName?: string
 }) => {
   const { prizePool, showToken, showTokenIcon, iconSizeClassName, iconClassName } = props
-  const { data } = usePrizePoolTicketTotalSupply(prizePool)
+  const { data, isFetched } = usePrizePoolTicketTotalSupply(prizePool)
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
   return (
@@ -30,7 +31,11 @@ export const TicketTotalSupply = (props: {
           />
         </>
       )}
-      {data?.amount.amountPretty}
+      {isFetched &&
+        getAmount(data?.amount.amount, data?.amount.decimals, {
+          compactDisplay: 'long',
+          notation: 'compact'
+        }).amountPretty}
       {showToken && <> {tokens?.ticket.symbol}</>}
     </>
   )

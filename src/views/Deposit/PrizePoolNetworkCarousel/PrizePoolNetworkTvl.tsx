@@ -9,6 +9,7 @@ import { divideBigNumbers } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { parseEther } from 'ethers/lib/utils'
 import { useMemo } from 'react'
+import { CarouselDescription, CarouselHeader } from '.'
 
 export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -42,13 +43,19 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
   return (
     <div className={classNames('relative', className)}>
       <Dots />
-      <div className='flex flex-col font-bold mx-auto text-center'>
-        <span>Total Deposits</span>
-        <span className='text-8xl xs:text-12xl leading-none'>
-          $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
-        </span>
-      </div>
-      <div className='opacity-70 mt-2 text-center'>
+      <CarouselHeader
+        headers={[
+          {
+            title: 'Total Deposits',
+            stat: (
+              <>
+                $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
+              </>
+            )
+          }
+        ]}
+      />
+      <CarouselDescription>
         All deposits into PoolTogether are earning yield for prizes.{' '}
         <ExternalLink
           underline
@@ -56,7 +63,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         >
           Read more
         </ExternalLink>
-      </div>
+      </CarouselDescription>
       <PrizePoolBar
         data={data}
         className='mt-4'

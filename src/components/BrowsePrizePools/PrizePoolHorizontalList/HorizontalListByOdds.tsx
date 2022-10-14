@@ -21,7 +21,7 @@ export const HorizontalListByOdds: React.FC<{
   return (
     <div className={classNames(className, 'space-y-2')}>
       <div className='flex justify-between'>
-        <span className='font-bold text-lg'>Best odds</span>
+        <span className='font-bold text-lg'>Best chances to win</span>
         <div className='flex items-center space-x-1'>
           <span>per</span>
           <TransparentSelect

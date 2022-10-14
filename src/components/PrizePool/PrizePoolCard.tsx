@@ -1,21 +1,18 @@
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
 import { useChainTwabRewardsPromotions } from '@hooks/v4/TwabRewards/useChainTwabRewardsPromotions'
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import {
-  TokenIcon,
   YieldSourceIcon,
   YieldSourceKey,
-  getYieldSourceNiceName,
   NetworkIcon,
   ThemedClipSpinner,
   Button,
   ButtonSize,
   ButtonTheme
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, numberWithCommas } from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
@@ -25,7 +22,6 @@ import { DepositToken } from './DepositToken'
 import { GrandPrize } from './GrandPrize'
 import { NumberOfPrizes } from './NumberOfPrizes'
 import { PrizePoolLabelFlat } from './PrizePoolLabel'
-import { Prizes } from './Prizes'
 import { SmallPrizes } from './SmallPrizes'
 import { TicketTotalSupply } from './TicketTotalSupply'
 import { YieldSource } from './YieldSource'
@@ -74,32 +70,37 @@ export const PrizePoolCard: React.FC<{
         }
       )}
     >
-      <div className='grid grid-cols-3 mb-6'>
-        <div className='col-span-2'>
-          <CardLabelSmall>Prize Pool</CardLabelSmall>
-          <PrizePoolLabelFlat prizePool={prizePool} />
+      <div className='grid grid-cols-3 mb-4'>
+        <div className='col-span-2 grid gap-2 grid-cols-1 sm:grid-cols-2'>
+          <div className='sm:col-span-2'>
+            <CardLabelSmall>Prize Pool</CardLabelSmall>
+            <PrizePoolLabelFlat prizePool={prizePool} />
+          </div>
+          <div>
+            <CardLabelSmall>Total deposited</CardLabelSmall>
+            <TicketTotalSupplyGroup prizePool={prizePool} />
+          </div>
+          {/* <div>
+            <CardLabelSmall>Number of prizes</CardLabelSmall>
+            <NumberOfPrizesGroup prizePool={prizePool} />
+          </div> */}
+
+          <RewardsGroup prizePool={prizePool} className='' />
+          {children}
         </div>
-        <div>
-          <CardLabelSmall>Grand Prize</CardLabelSmall>
-          <GrandPrizeGroup prizePool={prizePool} className='text-flashy' />
+
+        <div className='col-span-1 flex flex-col space-y-2'>
+          <div>
+            <CardLabelSmall>Grand Prize</CardLabelSmall>
+            <GrandPrizeGroup prizePool={prizePool} className='text-flashy' />
+          </div>
+          <div>
+            <CardLabelSmall>Small Prizes</CardLabelSmall>
+            <SmallPrizesGroup prizePool={prizePool} />
+          </div>
         </div>
       </div>
-      <div className='grid gap-2 grid-cols-2 xs:grid-cols-3 mb-2'>
-        <div>
-          <CardLabelSmall>Total deposited</CardLabelSmall>
-          <TicketTotalSupplyGroup prizePool={prizePool} />
-        </div>
-        <div>
-          <CardLabelSmall>Number of prizes</CardLabelSmall>
-          <NumberOfPrizesGroup prizePool={prizePool} />
-        </div>
-        <div>
-          <CardLabelSmall>Small Prizes</CardLabelSmall>
-          <SmallPrizesGroup prizePool={prizePool} />
-        </div>
-        {children}
-      </div>
-      <RewardsGroup prizePool={prizePool} className='mb-2' />
+
       <Button
         size={ButtonSize.sm}
         className='w-full space-x-2'
@@ -266,7 +267,6 @@ const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (pr
     <div className={className}>
       <CardLabelSmall className='text-flashy flex items-center'>
         <span>Bonus Rewards</span>
-        <img className='w-4 h-4 ml-1 inline-block' src='/beach-with-umbrella.png' />
       </CardLabelSmall>
       <CardLabelLarge isFetched={isFetched}>
         {data.promotions.map((promotion) => (

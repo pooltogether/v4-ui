@@ -1,5 +1,6 @@
 import { Dot } from '@components/Dot'
 import { PrizePoolBar } from '@components/PrizePoolBar'
+import { MinimumDeposit } from '@components/PrizePoolNetwork/MinimumDeposit'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
@@ -11,6 +12,7 @@ import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { formatUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
+import { CarouselDescription, CarouselHeader } from '.'
 
 export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
   const { className } = props
@@ -50,38 +52,36 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
   return (
     <div className={classNames('relative', className)}>
       <Dots />
-      <div className='grid grid-cols-2 mx-auto font-bold text-center max-w-screen-xs'>
-        <div className='flex flex-col'>
-          <span>Daily Prize Value</span>
-          <span className='text-7xl xs:text-12xl leading-none'>
-            $
-            <CountUp countTo={amount} decimals={0} />
-          </span>
-        </div>
-        <div className='flex flex-col'>
-          <span>Grand Prize Value</span>
-          <span className='text-7xl xs:text-12xl leading-none text-flashy'>
-            $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
-          </span>
-        </div>
-      </div>
-      {/* <div className='flex flex-col font-bold mx-auto text-center'>
-        <span>USD Awarded Daily</span>
-        <span className='text-8xl xs:text-12xl leading-none'>
-          $
-          <CountUp countTo={amount} decimals={0} />
-        </span>
-      </div> */}
-      <div className='opacity-70 mt-2 text-center'>
-        Daily Prize Value is split between all Prize Pools. Every deposit has a chance to win the
-        Grand Prize.{' '}
+      <CarouselHeader
+        headers={[
+          {
+            title: 'Daily Prize Value',
+            stat: (
+              <>
+                $<CountUp countTo={amount} decimals={0} />
+              </>
+            )
+          },
+          {
+            title: 'Grand Prize Value',
+            stat: (
+              <span className='text-flashy'>
+                $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
+              </span>
+            )
+          }
+        ]}
+      />
+      <CarouselDescription>
+        Daily Prize Value is split between all Prize Pools. Every <MinimumDeposit /> has an equal
+        chance to win the Grand Prize.{' '}
         <ExternalLink
           underline
           href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
         >
           Read more
         </ExternalLink>
-      </div>
+      </CarouselDescription>
       <PrizePoolBar
         data={data}
         className='mt-4'
