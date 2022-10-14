@@ -1,6 +1,4 @@
-import { Token } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
-import classNames from 'classnames'
 
 interface LPTokenIconProps {
   className?: string
