@@ -1,10 +1,8 @@
-import { NextArrow, PrevArrow } from '@components/Arrows'
 import { ExpectedPrizeBreakdown } from '@components/ExpectedPrizeBreakdown'
 import { RoundButton } from '@components/Input/RoundButton'
 import { TransparentDiv } from '@components/TransparentDiv'
-import { Carousel, ViewProps } from '@pooltogether/react-components'
+import { ViewProps } from '@pooltogether/react-components'
 import { SliderArrows } from '@views/Deposit/PrizePoolNetworkCarousel'
-import { useRouter } from 'next/router'
 import { useRef } from 'react'
 import Slider from 'react-slick'
 import { ViewIds } from '..'
@@ -50,6 +48,11 @@ export const MainView: React.FC<{} & ViewProps> = (props) => {
           onClick={() => setSelectedViewId(ViewIds.withdraw)}
           icon={'arrow-up'}
           label={'Withdraw'}
+        />
+        <RoundButton
+          onClick={() => setSelectedViewId(ViewIds.delegate)}
+          icon={'gift'}
+          label={'Share'}
         />
         <RoundButton
           onClick={() => setSelectedViewId(ViewIds.moreInfo)}

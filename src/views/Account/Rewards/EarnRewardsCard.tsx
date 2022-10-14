@@ -112,26 +112,9 @@ const PromotionCard = (props) => {
       style={{ backgroundColor: backgroundColor, minHeight: 100 }}
     >
       <div className='flex items-center justify-between font-bold'>
-        <div className='flex items-center mb-2'>
-          {!tokenDataIsFetched ? (
-            <ThemedClipSpinner />
-          ) : (
-            <Trans
-              i18nKey='earnTokenSymbol'
-              defaults='<TokenIcon /> Earn {{tokenSymbol}}'
-              values={{ tokenSymbol: tokenData?.symbol }}
-              components={{
-                TokenIcon: (
-                  <TokenIcon
-                    sizeClassName='w-4 h-4'
-                    className='mr-1'
-                    chainId={chainId}
-                    address={promotion.token}
-                  />
-                )
-              }}
-            />
-          )}
+        <div className='flex items-center mb-2 space-x-2'>
+          <span>📣</span>
+          {!tokenDataIsFetched ? <ThemedClipSpinner /> : <span>Bonus Rewards</span>}
         </div>
         <div className='relative' style={{ top: -4 }}>
           <NetworkIcon chainId={chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />

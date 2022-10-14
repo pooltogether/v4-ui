@@ -3,7 +3,6 @@ import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDel
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { ExternalLink } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import FeatherIcon from 'feather-icons-react'
 import { AccountList } from './AccountList'
 import { BalanceDelegatedToItem } from './V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from './V4DepositList/TwabDelegatorItem'
@@ -27,7 +26,7 @@ export const DelegationList = () => {
           delegatedToData.delegatedAmount.amountUnformatted.isZero() && (
             <p className='opacity-70 text-xs'>
               Delegations let you share chances to win!{' '}
-              <ExternalLink href='https://tools.pooltogether.com/delegate'>
+              <ExternalLink underline href='https://tools.pooltogether.com/delegate'>
                 Check it out
               </ExternalLink>
             </p>

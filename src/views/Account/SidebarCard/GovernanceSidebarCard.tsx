@@ -18,7 +18,7 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
   props
 ) => {
   const { className, usersAddress } = props
-  const { data, isFetched, isError } = useAllProposalsByStatus()
+  const { data, isFetched } = useAllProposalsByStatus()
 
   const { t } = useTranslation()
 
@@ -26,7 +26,7 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
     <>
       <SidebarCard
         className={className}
-        title={'🗳 Join governance'}
+        title={'🗳 Governance'}
         description={<GovernanceDescription />}
         main={<UsersVotes usersAddress={usersAddress} />}
         href={'https://vote.pooltogether.com/proposals?view=active'}

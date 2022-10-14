@@ -15,6 +15,7 @@ import {
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
+import { DelegateView } from '../DelegateView'
 import { DepositView } from './DepositView'
 import { MainView } from './MainView'
 import { WithdrawView } from './WithdrawView'
@@ -26,6 +27,7 @@ export enum ViewIds {
   withdraw,
   withdrawReview,
   moreInfo,
+  delegate,
   walletConnection
 }
 
@@ -84,6 +86,12 @@ export const BalanceModal: React.FC<{
       id: ViewIds.moreInfo,
       view: PrizePoolInfoView,
       title: 'More info',
+      previousViewId: ViewIds.main
+    },
+    {
+      id: ViewIds.delegate,
+      view: DelegateView,
+      title: '',
       previousViewId: ViewIds.main
     },
     {

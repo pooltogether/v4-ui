@@ -2,6 +2,7 @@ import { InfoList } from '@components/InfoList'
 import { TxReceiptItem } from '@components/InfoList/TxReceiptItem'
 import { TxButton } from '@components/Input/TxButton'
 import { useSendTransaction } from '@hooks/useSendTransaction'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import {
@@ -28,19 +29,16 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { FieldValues, useForm, UseFormRegister } from 'react-hook-form'
-import { DepositItemsProps } from '.'
 
 const DELEGATE_ADDRESS_KEY = 'delegate'
-
-interface DelegateViewProps extends DepositItemsProps {}
 
 enum DelegateViews {
   read = 'read',
   write = 'write'
 }
 
-export const DelegateView = (props: DelegateViewProps) => {
-  const { prizePool } = props
+export const DelegateView = (props) => {
+  const prizePool = useSelectedPrizePool()
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data: delegateData, isFetched, refetch } = useUsersTicketDelegate(usersAddress, prizePool)

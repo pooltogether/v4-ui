@@ -53,7 +53,7 @@ const Columns: {
   }
 })
 
-const tableGrid = 'grid gap-x-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4'
+const tableGrid = 'grid gap-x-2 grid-cols-3 sm:grid-cols-4'
 const getHiddenColumnClassNames = (column: string, columns: string[]) => {
   const index = columns.indexOf(column)
   return classNames('items-center', {

@@ -8,12 +8,13 @@ import { CardTitle } from '@components/Text/CardTitle'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { QUERY_KEYS } from '@pooltogether/hooks'
 import {
   ButtonRadius,
   ButtonSize,
   ButtonTheme,
   ExternalLink,
+  SocialIcon,
+  SocialKey,
   Tabs
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -86,6 +87,7 @@ export const AccountUI = (props) => {
         <OddsSidebarCard usersAddress={usersAddress} />
         <GovernanceSidebarCard usersAddress={usersAddress} />
         <EarnRewardsCard />
+        <SocialLinks />
       </SidebarContent>
     </PagePadding>
   )
@@ -232,3 +234,22 @@ const RewardsHaveMoved = () => (
     </p>
   </div>
 )
+
+const SocialLinks = () => {
+  return (
+    <div className='flex justify-evenly items-center dark:opacity-50' style={{ color: '#BBB2CE' }}>
+      <a href={'https://pooltogether.com/discord'}>
+        <SocialIcon social={SocialKey.discord} className='w-6 h-6' />
+      </a>
+      <a href={'https://twitter.com/PoolTogether_'}>
+        <SocialIcon social={SocialKey.twitter} className='w-6 h-6' />
+      </a>
+      <a href={'https://twitter.com/PoolTogether_'}>
+        <SocialIcon social={SocialKey.github} className='w-6 h-6' />
+      </a>
+      <a href={'https://docs.pooltogether.com/welcome/getting-started'}>
+        <FeatherIcon icon='info' className='w-6 h-6' />
+      </a>
+    </div>
+  )
+}
