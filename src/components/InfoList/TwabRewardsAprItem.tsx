@@ -75,11 +75,11 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
 
   return (
     <li className='flex items-center'>
-      <span>
-        {numberWithCommas(vapr)}%{' '}
-        <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />{' '}
-        VAPR
-      </span>
+      <div className='inline-flex items-center space-x-1'>
+        <span>{numberWithCommas(vapr)}%</span>
+        <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
+        <span>VAPR</span>
+      </div>
     </li>
   )
 }

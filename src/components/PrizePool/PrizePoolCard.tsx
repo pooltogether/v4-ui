@@ -12,7 +12,10 @@ import {
   ButtonSize,
   ButtonTheme
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  formatCurrencyNumberForDisplay,
+  getNetworkNiceNameByChainId
+} from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
@@ -22,6 +25,7 @@ import { DepositToken } from './DepositToken'
 import { GrandPrize } from './GrandPrize'
 import { NumberOfPrizes } from './NumberOfPrizes'
 import { PrizePoolLabelFlat } from './PrizePoolLabel'
+import { Prizes } from './Prizes'
 import { SmallPrizes } from './SmallPrizes'
 import { TicketTotalSupply } from './TicketTotalSupply'
 import { YieldSource } from './YieldSource'
@@ -71,8 +75,8 @@ export const PrizePoolCard: React.FC<{
       )}
     >
       <div className='grid grid-cols-3 mb-4'>
-        <div className='col-span-2 grid gap-2 grid-cols-1 sm:grid-cols-2'>
-          <div className='sm:col-span-2'>
+        <div className='col-span-2 grid gap-2 grid-cols-1 md:grid-cols-2'>
+          <div className='md:col-span-2'>
             <CardLabelSmall>Prize Pool</CardLabelSmall>
             <PrizePoolLabelFlat prizePool={prizePool} />
           </div>
@@ -89,15 +93,9 @@ export const PrizePoolCard: React.FC<{
           {children}
         </div>
 
-        <div className='col-span-1 flex flex-col space-y-2'>
-          <div>
-            <CardLabelSmall>Grand Prize</CardLabelSmall>
-            <GrandPrizeGroup prizePool={prizePool} className='text-flashy' />
-          </div>
-          <div>
-            <CardLabelSmall>Small Prizes</CardLabelSmall>
-            <SmallPrizesGroup prizePool={prizePool} />
-          </div>
+        <div className='col-span-1 flex flex-col'>
+          <CardLabelSmall>Prizes</CardLabelSmall>
+          <PrizeGroup prizePool={prizePool} />
         </div>
       </div>
 
@@ -312,6 +310,24 @@ export const AveragePrizeValueGroup: React.FC<{ prizePool: PrizePool; className?
   return (
     <CardLabelLarge isFetched={isFetched} className={className}>
       <AveragePrizeValue prizePool={prizePool} />
+    </CardLabelLarge>
+  )
+}
+
+export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
+  const { prizePool, className } = props
+  const { data, isFetched } = usePrizePoolExpectedPrizes(prizePool)
+
+  return (
+    <CardLabelLarge isFetched={isFetched} className={className}>
+      <div className='flex flex-col'>
+        <span className='text-flashy'>
+          {formatCurrencyNumberForDisplay(data?.grandPrizeValue.amount, 'usd')}
+        </span>
+        {data?.smallPrizeValueList.map((smallPrizeValue, index) => (
+          <span key={`prize-${prizePool.id()}-${index}`}>{smallPrizeValue}</span>
+        ))}
+      </div>
     </CardLabelLarge>
   )
 }

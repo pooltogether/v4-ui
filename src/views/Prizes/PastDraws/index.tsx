@@ -14,7 +14,7 @@ export const PastDraws = () => {
 
   return (
     <div>
-      <CardTitle title={'Last Draw'} className='mb-2' />
+      <CardTitle title={'Winners'} className='mb-2' />
       <ul className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4 flex flex-col space-y-1'>
         {prizeDistributors?.map((prizeDistributor) => (
           <ListItem

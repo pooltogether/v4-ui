@@ -7,9 +7,7 @@ export const PrizeDistributorLabel = (props: { prizeDistributor: PrizeDistributo
   return (
     <div className='flex items-center space-x-2'>
       <NetworkIcon chainId={prizeDistributor.chainId} />
-      <span className='block xs:hidden sm:block'>
-        {getNetworkNiceNameByChainId(prizeDistributor.chainId)}
-      </span>
+      <span className=''>{getNetworkNiceNameByChainId(prizeDistributor.chainId)}</span>
     </div>
   )
 }

@@ -8,8 +8,15 @@ import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { loopXTimes } from '@utils/loopXTimes'
 import classNames from 'classnames'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
+const DEFAULT_ROWS_TO_SHOW = 10
+
+/**
+ * NOTE: This shows the winners of the latest draw. It does not account for the timelock.
+ * @param props
+ * @returns
+ */
 export const PastDrawsModal = (props: {
   isOpen: boolean
   closeModal: () => void
@@ -19,14 +26,14 @@ export const PastDrawsModal = (props: {
   const { data: winners, isError, isFetched } = useLatestDrawWinners(prizeDistributor, true)
   const { data: winnersInfo } = useLatestDrawWinnersInfo(prizeDistributor)
   const { data: tokenData } = usePrizeDistributorToken(prizeDistributor)
-  const [winnersToShow, setWinnersToShow] = useState(5)
+  const [winnersToShow, setWinnersToShow] = useState(DEFAULT_ROWS_TO_SHOW)
 
   return (
     <Modal
       label={'Past draws modal'}
       isOpen={isOpen}
       closeModal={() => {
-        setWinnersToShow(5)
+        setWinnersToShow(DEFAULT_ROWS_TO_SHOW)
         closeModal()
       }}
     >
@@ -73,7 +80,7 @@ export const PastDrawsModal = (props: {
       <ul className='space-y-2'>
         {!isFetched && (
           <>
-            {loopXTimes(5, (i) => (
+            {loopXTimes(DEFAULT_ROWS_TO_SHOW, (i) => (
               <li
                 key={`loading-list-${i}`}
                 className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10'
@@ -105,7 +112,7 @@ export const PastDrawsModal = (props: {
         {!!winners && winners.prizes.length > winnersToShow && (
           <button
             className='opacity-70 hover:opacity-100 transition-opacity w-full text-center'
-            onClick={() => setWinnersToShow(winnersToShow + 5)}
+            onClick={() => setWinnersToShow(winnersToShow + DEFAULT_ROWS_TO_SHOW)}
           >
             more
           </button>
