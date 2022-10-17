@@ -322,7 +322,7 @@ export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> 
     <CardLabelLarge isFetched={isFetched} className={className}>
       <div className='flex flex-col'>
         <span className='text-flashy'>
-          {formatCurrencyNumberForDisplay(data?.grandPrizeValue.amount, 'usd')}
+          {isFetched && formatCurrencyNumberForDisplay(data?.grandPrizeValue.amount, 'usd')}
         </span>
         {data?.smallPrizeValueList.map((smallPrizeValue, index) => (
           <span key={`prize-${prizePool.id()}-${index}`}>{smallPrizeValue}</span>
