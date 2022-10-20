@@ -66,10 +66,14 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
       </CarouselDescription>
       <PrizePoolBar
         data={data}
-        className='mt-4'
+        className='mt-4 sm:mt-8'
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
-      <PrizePoolTable headers={{ tvl: 'TVL' }} data={data} className='mt-2' />
+      <PrizePoolTable
+        headers={{ tvl: 'TVL' }}
+        data={data}
+        className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
+      />
     </div>
   )
 }

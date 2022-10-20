@@ -49,7 +49,11 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
         </div> */}
         <FeatherIcon icon='chevron-down' className='' />
       </button>
-      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='xs:max-w-md'>
+      <BottomSheet
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        maxWidthClassName='xs:max-w-md'
+      >
         <h6 className='text-center uppercase text-sm mb-3'>Choose a Prize Pool</h6>
         <p className='max-w-sm mx-auto text-xs mb-12 text-center'>
           Every prize pool has a different way of distributing prizes! Every <MinimumDeposit /> has
@@ -88,10 +92,10 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
 const NetworkItem = (props: {
   chainId: number
   isSelected: boolean
-  onDismiss: () => void
+  closeModal: () => void
   setSelectedChainId: (chainId: number) => void
 }) => {
-  const { chainId, isSelected, setSelectedChainId, onDismiss } = props
+  const { chainId, isSelected, setSelectedChainId, closeModal } = props
 
   const { data: activeChainRewards } = useChainActiveRewards()
 
@@ -105,7 +109,7 @@ const NetworkItem = (props: {
       <button
         onClick={() => {
           setSelectedChainId(chainId)
-          onDismiss()
+          closeModal()
         }}
         className={classNames(
           'bg-pt-purple-lighter dark:bg-pt-purple-darker rounded-lg px-4 p-2 flex items-center justify-between w-full transition-colors',

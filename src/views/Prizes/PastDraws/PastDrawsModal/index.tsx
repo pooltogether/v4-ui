@@ -80,7 +80,7 @@ export const PastDrawsModal = (props: {
       <ul className='space-y-2'>
         {!isFetched && (
           <>
-            {loopXTimes(DEFAULT_ROWS_TO_SHOW, (i) => (
+            {loopXTimes(5, (i) => (
               <li
                 key={`loading-list-${i}`}
                 className='rounded-lg bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 animate-pulse w-full h-10'

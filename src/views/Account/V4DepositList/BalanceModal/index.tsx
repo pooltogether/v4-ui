@@ -57,49 +57,44 @@ export const BalanceModal: React.FC<{
     {
       id: ViewIds.deposit,
       view: DepositView,
-      title: 'Deposit',
-      previousViewId: ViewIds.main,
-      bgClassName: 'bg-pt-purple-lightest dark:bg-gradient-purple'
+      header: 'Deposit',
+      previousViewId: ViewIds.main
     },
     {
       id: ViewIds.depositReview,
       view: DepositReviewView,
-      title: 'Deposit review',
-      previousViewId: ViewIds.deposit,
-      bgClassName: 'bg-pt-purple-lightest dark:bg-gradient-purple'
+      header: 'Deposit review',
+      previousViewId: ViewIds.deposit
     },
     {
       id: ViewIds.withdraw,
       view: WithdrawView,
-      title: 'Withdraw',
-      previousViewId: ViewIds.main,
-      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
+      header: 'Withdraw',
+      previousViewId: ViewIds.main
     },
     {
       id: ViewIds.withdrawReview,
       view: WithdrawReviewView,
-      title: 'Withdraw review',
-      previousViewId: ViewIds.withdraw,
-      bgClassName: 'bg-pt-purple-lighter dark:bg-pt-purple-darker'
+      header: 'Withdraw review',
+      previousViewId: ViewIds.withdraw
     },
     {
       id: ViewIds.moreInfo,
       view: PrizePoolInfoView,
-      title: 'More info',
+      header: 'More info',
       previousViewId: ViewIds.main
     },
     {
       id: ViewIds.delegate,
       view: DelegateView,
-      title: '',
+      header: '',
       previousViewId: ViewIds.main
     },
     {
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
-      title: 'Connect a wallet',
-      bgClassName: 'bg-new-modal',
+      header: 'Connect a wallet',
       onCloseViewId: ViewIds.main
     }
   ]
@@ -114,9 +109,8 @@ export const BalanceModal: React.FC<{
   return (
     <ModalWithViewState
       noAnimation
-      title={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
+      header={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
-      bgClassName='bg-gradient-to-b from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-darker'
       modalHeightClassName='h-actually-full-screen xs:h-auto min-h-1/2'
       widthClassName='w-screen xs:w-full'
       roundedClassName='rounded-none xs:rounded-xl'

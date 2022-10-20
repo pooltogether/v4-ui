@@ -5,16 +5,14 @@ import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
-import { PrizePoolTitle } from '@components/PrizePool/PrizePoolCard'
-import { PrizePoolLabel, PrizePoolLabelFlat } from '@components/PrizePool/PrizePoolLabel'
+import { PrizePoolLabelFlat } from '@components/PrizePool/PrizePoolLabel'
 import { EstimateAction } from '@constants/odds'
 import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
-import FeatherIcon from 'feather-icons-react'
-import React, { useState } from 'react'
+import React from 'react'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -29,7 +27,6 @@ export const DepositInfoBox: React.FC<{
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
   const amount = useFormTokenAmount(formKey, tokens?.token)
-  const [isAdvanced, setIsAdvanced] = useState(false)
   const { errors } = useFormState()
 
   const { t } = useTranslation()
@@ -54,15 +51,11 @@ export const DepositInfoBox: React.FC<{
     >
       <PrizePoolLabelFlat prizePool={prizePool} className='mb-3' />
       <ul className='w-full mb-2'>
-        {isAdvanced && (
-          <>
-            <UpdatedPrizePoolOddsListItemBar
-              prizePool={prizePool}
-              action={EstimateAction.deposit}
-              amount={amount}
-            />
-          </>
-        )}
+        <UpdatedPrizePoolOddsListItemBar
+          prizePool={prizePool}
+          action={EstimateAction.deposit}
+          amount={amount}
+        />
         <UpdatedPrizePoolOddsListItem
           prizePool={prizePool}
           action={EstimateAction.deposit}
@@ -71,18 +64,14 @@ export const DepositInfoBox: React.FC<{
           className='w-full'
         />
         <TwabRewardsAprItem />
-        {isAdvanced && (
-          <>
-            <UpdatedPrizePoolNetworkOddsListItem
-              amount={amount}
-              action={EstimateAction.deposit}
-              prizePool={prizePool}
-              nullState={'0'}
-            />
-            <PrizePoolNetworkAPRItem />
-            <PrizePoolYieldSourceItem prizePool={prizePool} />
-          </>
-        )}
+        <UpdatedPrizePoolNetworkOddsListItem
+          amount={amount}
+          action={EstimateAction.deposit}
+          prizePool={prizePool}
+          nullState={'0'}
+        />
+        <PrizePoolNetworkAPRItem />
+        <PrizePoolYieldSourceItem prizePool={prizePool} />
 
         {isError && (
           <div className='mt-2'>
@@ -90,14 +79,6 @@ export const DepositInfoBox: React.FC<{
           </div>
         )}
       </ul>
-
-      <button
-        className='w-full flex justify-center opacity-70 hover:opacity-100 transition'
-        type='button'
-        onClick={() => setIsAdvanced(!isAdvanced)}
-      >
-        <FeatherIcon icon={isAdvanced ? 'chevron-up' : 'chevron-down'} className='w-7 h-7' />
-      </button>
     </div>
   )
 }

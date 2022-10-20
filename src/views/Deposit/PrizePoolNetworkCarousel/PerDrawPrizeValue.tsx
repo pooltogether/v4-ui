@@ -43,7 +43,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           percentage: data.percentageOfPicks,
           totalValueOfPrizes: `${Math.round(data.percentageOfPicks * 100)}%`,
-          prizes: data.smallPrizeValueList.join(', ')
+          prizes: data.valueOfPrizesFormattedList.join(', ')
         }
       })
       .sort((a, b) => b.percentage - a.percentage)
@@ -57,16 +57,8 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
           {
             title: 'Daily Prize Value',
             stat: (
-              <>
-                $<CountUp countTo={amount} decimals={0} />
-              </>
-            )
-          },
-          {
-            title: 'Grand Prize Value',
-            stat: (
               <span className='text-flashy'>
-                $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
+                $<CountUp countTo={amount} decimals={0} />
               </span>
             )
           }
@@ -84,10 +76,14 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       </CarouselDescription>
       <PrizePoolBar
         data={data}
-        className='mt-4'
+        className='mt-4 sm:mt-8'
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
-      <PrizePoolTable headers={{ prizes: 'Small Prizes' }} data={data} className='mt-2' />
+      <PrizePoolTable
+        headers={{ prizes: 'Prizes' }}
+        data={data}
+        className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
+      />
     </div>
   )
 }

@@ -39,7 +39,7 @@ export const BalanceDelegatedToItem: React.FC<{ usersAddress: string }> = (props
       <BalanceDelegatedToSheet
         delegatedAmountPerChain={data.delegatedAmountPerChain}
         isOpen={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        closeModal={() => setIsOpen(false)}
       />
     </>
   )
@@ -51,16 +51,16 @@ const BalanceDelegatedToSheet: React.FC<{
     amount: Amount
   }[]
   isOpen: boolean
-  onDismiss: () => void
+  closeModal: () => void
 }> = (props) => {
-  const { isOpen, onDismiss, delegatedAmountPerChain } = props
+  const { isOpen, closeModal, delegatedAmountPerChain } = props
   const { t } = useTranslation()
 
   return (
     <BottomSheet
       label='balance-delegated-to-sheet'
-      open={isOpen}
-      onDismiss={onDismiss}
+      isOpen={isOpen}
+      closeModal={closeModal}
       className='flex flex-col'
     >
       <div className='mx-auto text-2xl font-bold text-inverse mb-2'>Delegations to you</div>

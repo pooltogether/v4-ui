@@ -59,8 +59,8 @@ export const TotalWinningsCard: React.FC<{ usersAddress: string; className?: str
       </button>
       <TotalWinningsSheet
         usersAddress={usersAddress}
-        open={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
       />
     </>
   )
@@ -68,17 +68,17 @@ export const TotalWinningsCard: React.FC<{ usersAddress: string; className?: str
 
 interface TotalWinningsSheetProps {
   usersAddress: string
-  open: boolean
-  onDismiss: () => void
+  isOpen: boolean
+  closeModal: () => void
 }
 
 export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
-  const { open, onDismiss, usersAddress } = props
+  const { isOpen, closeModal, usersAddress } = props
   const { t } = useTranslation()
   const { data } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
-    <BottomSheet open={open} onDismiss={onDismiss} className='flex flex-col space-y-8'>
+    <BottomSheet isOpen={isOpen} closeModal={closeModal} className='flex flex-col space-y-8'>
       <div className='flex items-center mx-auto'>
         <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>

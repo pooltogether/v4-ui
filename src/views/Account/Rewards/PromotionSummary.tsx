@@ -20,6 +20,7 @@ interface PromotionSummaryProps {
   numberOfEpochs: number
   networkName: string
   className?: string
+  onDepositClick: () => void
 }
 
 const getPromotionDurationInDays = (numberOfEpochs, epochDuration) => {
@@ -28,7 +29,15 @@ const getPromotionDurationInDays = (numberOfEpochs, epochDuration) => {
 }
 
 export const PromotionSummary = (props: PromotionSummaryProps) => {
-  const { chainId, numberOfEpochs, epochDuration, tokensPerEpoch, token, networkName } = props
+  const {
+    chainId,
+    onDepositClick,
+    numberOfEpochs,
+    epochDuration,
+    tokensPerEpoch,
+    token,
+    networkName
+  } = props
 
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
   const { t } = useTranslation()
@@ -89,11 +98,12 @@ export const PromotionSummary = (props: PromotionSummaryProps) => {
           'flex flex-row justify-end sm:flex-col sm:justify-start w-full font-bold space-x-4 sm:space-x-0 mt-4'
         )}
       >
-        <Link href={`/deposit?network=${getNetworkNiceNameByChainId(chainId).toLowerCase()}`}>
-          <a className='flex items-center h-8 text-white text-opacity-80 hover:text-opacity-100'>
-            {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />
-          </a>
-        </Link>
+        <button
+          onClick={onDepositClick}
+          className='flex font-bold transition items-center h-8 text-white text-opacity-80 hover:text-opacity-100'
+        >
+          {t('deposit')} <FeatherIcon icon='chevron-right' className={'relative w-4 h-4'} />
+        </button>
 
         {chainId === CHAIN_ID.optimism && (
           <a

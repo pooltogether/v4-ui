@@ -298,7 +298,7 @@ const PromotionRow = (props: {
           <ClaimModal
             {...props}
             isOpen={isOpen}
-            setIsOpen={setIsOpen}
+            setIsisOpen={setIsOpen}
             claimableAmount={claimableAmount}
             claimableUsd={claimableUsd}
             estimateAmount={estimateAmount}
@@ -345,7 +345,7 @@ const ClaimModal = (props: {
     setModalState(ClaimModalState.RECEIPT)
   }
 
-  const onDismiss = () => {
+  const closeModal = () => {
     setFormView()
     setIsOpen(false)
   }
@@ -373,7 +373,7 @@ const ClaimModal = (props: {
     content = (
       <ClaimModalReceipt
         {...props}
-        onDismiss={onDismiss}
+        closeModal={closeModal}
         transactionPending={transactionPending}
         tx={transaction}
         setFormView={setFormView}
@@ -384,8 +384,8 @@ const ClaimModal = (props: {
   return (
     <BottomSheet
       className='flex flex-col'
-      open={isOpen}
-      onDismiss={onDismiss}
+      isOpen={isOpen}
+      closeModal={closeModal}
       label='Claim modal'
       snapPoints={snapTo90}
     >
@@ -656,10 +656,11 @@ const ClaimModalReceipt = (props: {
   }
   tx: Transaction
   transactionPending: boolean
-  onDismiss: () => void
+  closeModal: () => void
   setFormView: () => void
 }) => {
-  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending, onDismiss } = props
+  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending, closeModal } =
+    props
   const { t } = useTranslation()
 
   const [cachedClaimableUsd] = useState(claimableUsd)
@@ -679,16 +680,10 @@ const ClaimModalReceipt = (props: {
     <>
       <div className='flex flex-grow flex-col justify-between'>
         <div>
-          <BottomSheetTitle
-            title={
-              <>
-                <div className='flex flex-col items-center justify-center max-w-xs mx-auto leading-tight'>
-                  <PrizeWLaurels className='flex justify-center mx-auto my-4 w-16 xs:w-32' />
-                  {t('rewardsClaimSubmitted', 'Rewards claim submitted, confirming transaction.')}
-                </div>
-              </>
-            }
-          />
+          <div className='flex flex-col items-center justify-center max-w-xs mx-auto leading-tight text-sm xs:text-lg sm:text-xl mb-4 font-bold text-inverse text-center'>
+            <PrizeWLaurels className='flex justify-center mx-auto my-4 w-16 xs:w-32' />
+            {t('rewardsClaimSubmitted', 'Rewards claim submitted, confirming transaction.')}
+          </div>
 
           <div className='flex items-center justify-center w-full bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl p-6 my-4 xs:my-8 xs:text-xl font-bold'>
             <span className='mx-auto flex items-center mt-1'>
@@ -709,7 +704,7 @@ const ClaimModalReceipt = (props: {
         {isOPToken && <OPTokenCTAs />}
 
         <div className='space-y-4'>
-          {!isOPToken && <AccountPageButton onDismiss={onDismiss} />}
+          {!isOPToken && <AccountPageButton closeModal={closeModal} />}
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
@@ -750,8 +745,8 @@ export const DelegateOPButton = (props) => {
   )
 }
 
-export const AccountPageButton = (props: { onDismiss: () => void }) => {
-  const { onDismiss } = props
+export const AccountPageButton = (props: { closeModal: () => void }) => {
+  const { closeModal } = props
   const { t } = useTranslation()
 
   return (
@@ -759,7 +754,7 @@ export const AccountPageButton = (props: { onDismiss: () => void }) => {
       size={ButtonSize.md}
       theme={ButtonTheme.tealOutline}
       className='w-full text-center'
-      onClick={onDismiss}
+      onClick={closeModal}
     >
       {t('viewAccount', 'View account')}
     </ButtonLink>

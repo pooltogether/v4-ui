@@ -30,11 +30,11 @@ export enum WithdrawalSteps {
 interface WithdrawViewProps extends DepositItemsProps {
   usersAddress: string
   setWithdrawTxId: (txId: string) => void
-  onDismiss: () => void
+  closeModal: () => void
 }
 
 export const WithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, usersAddress, balances, setWithdrawTxId, onDismiss, refetchBalances } = props
+  const { prizePool, usersAddress, balances, setWithdrawTxId, closeModal, refetchBalances } = props
   const { t } = useTranslation()
   const { token } = balances
 

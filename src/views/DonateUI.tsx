@@ -52,7 +52,7 @@ export const DonateUI = () => {
   useSetPolygonOnMount()
 
   return (
-    <PagePadding className='px-2 xs:px-12 lg:px-40 pb-20'>
+    <PagePadding>
       <Title />
       <div className='mb-4 space-y-4 sm:space-y-0 grid grid-cols-3 gap-4'>
         <InfoCard className='col-span-3 sm:col-span-2' />

@@ -27,7 +27,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = (props) => {
       radius={ButtonRadius.full}
       theme={theme}
     >
-      {children || t('reviewTransaction', 'Review transaction')}
+      {children || t('review', 'Review')}
     </TxButton>
   )
 }

@@ -1,26 +1,34 @@
+import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
-import {
-  PayWithCoinbaseButton,
-  TemporaryWarningForNoOnRamp
-} from '@components/Modal/BuyTokensModal'
 import { LargestPrizeInNetwork } from '@components/PrizePoolNetwork/LargestPrizeInNetwork'
 import { TotalNumberOfPrizes } from '@components/PrizePoolNetwork/TotalNumberOfPrizes'
 import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
+import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
 import { BRIDGE_URLS, EXCHANGE_URLS, getBridges, getExchange } from '@constants/config'
+import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
+import { useQueryParamState } from '@hooks/useQueryParamState'
 import {
+  BottomSheetWithViewState,
   ButtonLink,
   ButtonTheme,
   ExternalLink,
   LinkTheme,
-  ModalWithViewState,
+  Tabs,
   ViewProps
 } from '@pooltogether/react-components'
-import { CHAIN_ID, getChainNameByChainId, useWalletChainId } from '@pooltogether/wallet-connection'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  CHAIN_ID,
+  useUsersAddress,
+  getChainNameByChainId,
+  useWalletChainId
+} from '@pooltogether/wallet-connection'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
+import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 enum ViewIds {
   help,
@@ -67,7 +75,8 @@ export const HelpButtons = () => {
           setIsOpen(true)
         }}
       />
-      <ModalWithViewState
+      <BottomSheetWithViewState
+        header='PoolTogether FAQ'
         router={router}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
@@ -153,6 +162,12 @@ const SWAP_TOKENS_CHAINS = Object.keys(EXCHANGE_URLS).map(Number)
 const BRIDGE_TOKENS_CHAINS = Object.keys(BRIDGE_URLS).map(Number)
 
 const GetTokensView = () => {
+  const { data: initialTabId, setData } = useQueryParamState(URL_QUERY_KEY.getTokens, 'buy', [
+    'buy',
+    'swap',
+    'bridge'
+  ])
+
   return (
     <>
       <p className='mb-6'>
@@ -173,11 +188,46 @@ const GetTokensView = () => {
         and some tokens to deposit and save! Check out the options below to see which way of getting
         tokens suites you best.
       </p>
-      <div className='space-y-6 xs:space-y-10 sm:space-y-12'>
-        <BuyTokens />
-        <SwapTokens />
-        <BridgeTokens />
-      </div>
+      <Tabs
+        titleClassName='mb-8'
+        initialTabId={initialTabId}
+        onTabSelect={(tab) => setData(tab.id)}
+        tabs={[
+          {
+            id: 'buy',
+            view: <BuyTokens />,
+            title: (
+              <div className='flex space-x-2 items-center'>
+                <span>Buy</span>
+                <FeatherIcon icon={'dollar-sign'} className='relative w-5 h-5 inline-block' />
+              </div>
+            )
+          },
+          {
+            id: 'swap',
+            view: <SwapTokens />,
+            title: (
+              <div className='flex space-x-2 items-center'>
+                <span>Swap</span>
+                <FeatherIcon icon={'refresh-cw'} className='relative w-5 h-5 inline-block' />
+              </div>
+            )
+          },
+          {
+            id: 'bridge',
+            view: <BridgeTokens />,
+            title: (
+              <div className='flex space-x-2 items-center'>
+                <span>Bridge</span>
+                <div className='-space-x-3'>
+                  <FeatherIcon icon={'arrow-left'} className='relative w-5 h-5 inline-block' />
+                  <FeatherIcon icon={'arrow-right'} className='relative w-5 h-5 inline-block' />
+                </div>
+              </div>
+            )
+          }
+        ]}
+      />
     </>
   )
 }
@@ -190,10 +240,6 @@ const BuyTokens = () => {
 
   return (
     <div>
-      <div className='flex space-x-2 items-center mb-2'>
-        <h4>Buy Tokens</h4>
-        <FeatherIcon icon={'dollar-sign'} className='relative w-5 h-5 inline-block' />
-      </div>
       <p className='opacity-80 mb-1'>
         Purchase tokens on an exchange and withdraw them to your personal wallet.{' '}
       </p>
@@ -230,10 +276,6 @@ const SwapTokens = () => {
 
   return (
     <div>
-      <div className='flex items-center space-x-2'>
-        <h4>Swap Tokens</h4>
-        <FeatherIcon icon={'refresh-cw'} className='relative w-5 h-5 inline-block' />
-      </div>
       <p className='opacity-80 mb-1'>
         Trade tokens you already have for others on a centralized exchange or swap using a
         decentralized exchange.
@@ -279,13 +321,6 @@ const BridgeTokens = () => {
 
   return (
     <div>
-      <div className='flex space-x-2 items-center'>
-        <h4>Bridge Tokens</h4>
-        <div className='-space-x-3'>
-          <FeatherIcon icon={'arrow-left'} className='relative w-5 h-5 inline-block' />
-          <FeatherIcon icon={'arrow-right'} className='relative w-5 h-5 inline-block' />
-        </div>
-      </div>
       <p className='opacity-80 mb-1'>
         <ExternalLink
           href='https://ethereum.org/en/developers/docs/bridges/'
@@ -342,3 +377,101 @@ const ModalTrigger: React.FC<{
     <span>{props.label}</span>
   </button>
 )
+
+const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> = (props) => {
+  const { chainId, className } = props
+  const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
+  const usersAddress = useUsersAddress()
+  const { t } = useTranslation()
+  const chainKey = getCoinbaseChainKey(chainId)
+  const supportedCoinbaseChainIds = Object.keys(COINBASE_CHAIN_KEYS).map(Number)
+
+  useEffect(() => {
+    initOnRamp(
+      {
+        appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
+        widgetParameters: {
+          destinationWallets: !!chainKey
+            ? [
+                {
+                  address: usersAddress,
+                  blockchains: [chainKey],
+                  assets: getCoinbaseChainAssets(chainId)
+                }
+              ]
+            : supportedCoinbaseChainIds.map((chainId) => ({
+                address: usersAddress,
+                blockchains: [getCoinbaseChainKey(chainId)],
+                assets: getCoinbaseChainAssets(chainId)
+              }))
+        },
+        experienceLoggedIn: 'popup',
+        experienceLoggedOut: 'popup',
+        closeOnExit: true,
+        closeOnSuccess: true,
+        onSuccess: () => {
+          logEvent(FathomEvent.buyCoinbasePay)
+        }
+      },
+      (_, instance) => {
+        setOnRampInstance(instance)
+      }
+    )
+
+    return () => {
+      onRampInstance?.destroy()
+      setOnRampInstance(undefined)
+    }
+  }, [])
+
+  const handleClick = () => {
+    onRampInstance?.open()
+  }
+
+  const disabled = !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID || !onRampInstance
+
+  return (
+    <a
+      id='cbpay-button-container'
+      className={classNames(
+        className,
+        'flex text-xl items-center space-x-2 transition hover:opacity-90',
+        {
+          'opacity-50 pointer-events-none': disabled
+        }
+      )}
+      onClick={handleClick}
+    >
+      <img src={'/buy-with-coinbase-pay.png'} />
+    </a>
+  )
+}
+
+export const TemporaryWarningForNoOnRamp: React.FC<{ chainId: number }> = (props) => {
+  const { chainId } = props
+  const usersAddress = useUsersAddress()
+  const chainKey = getCoinbaseChainKey(chainId)
+  const { t } = useTranslation()
+
+  if (!chainKey) {
+    return (
+      <div className='text-xxxs xs:text-xxs text-pt-red-light mt-4 xs:mt-6'>
+        {t('coinbasePayWarning', {
+          networkName: getNetworkNiceNameByChainId(chainId),
+          supportedNetworks: `${getNetworkNiceNameByChainId(
+            CHAIN_ID.mainnet
+          )}, ${getNetworkNiceNameByChainId(CHAIN_ID.avalanche)}, ${getNetworkNiceNameByChainId(
+            CHAIN_ID.polygon
+          )} `
+        })}
+      </div>
+    )
+  } else if (!usersAddress) {
+    return (
+      <div className='text-xxxs xs:text-xxs text-pt-red-light mt-4 xs:mt-6'>
+        {t('connectAWalletToProceed', 'Connect a wallet to proceed.')}
+      </div>
+    )
+  }
+  return null
+}

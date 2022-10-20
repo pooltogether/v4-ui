@@ -27,11 +27,11 @@ export enum WithdrawalSteps {
 
 interface WithdrawViewProps extends DepositItemsProps {
   setWithdrawTxId: (txId: string) => void
-  onDismiss: () => void
+  closeModal: () => void
 }
 
 export const PodWithdrawView = (props: WithdrawViewProps) => {
-  const { prizePool, refetchBalances, setWithdrawTxId, onDismiss, ticket, token, pricePerShare } =
+  const { prizePool, refetchBalances, setWithdrawTxId, closeModal, ticket, token, pricePerShare } =
     props
 
   const chainId = prizePool.chainId
@@ -128,7 +128,7 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
         withdrawTx={tx}
         setWithdrawTxId={setWithdrawTxId}
         sendWithdrawTx={sendWithdrawTx}
-        onDismiss={onDismiss}
+        closeModal={closeModal}
         exitFee={podExitFee?.exitFee.amountUnformatted}
         isExitFeeFetched={isExitFeeFetched}
         isExitFeeFetching={isExitFeeFetching}

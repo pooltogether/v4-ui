@@ -47,14 +47,16 @@ export const PrizePoolTable = (props: {
           </div>
         ))}
       </div>
-      {data?.map((data) => (
-        <PrizePoolRow
-          key={'ppr-' + data.prizePool.id()}
-          {...data}
-          headers={headers}
-          columns={columns}
-        />
-      ))}
+      <ul className='space-y-0 sm:space-y-0.5'>
+        {data?.map((data) => (
+          <PrizePoolRow
+            key={'ppr-' + data.prizePool.id()}
+            {...data}
+            headers={headers}
+            columns={columns}
+          />
+        ))}
+      </ul>
     </div>
   )
 }
@@ -71,14 +73,17 @@ const PrizePoolRow: React.FC<{
   const [id] = useState(Math.random())
 
   return (
-    <div className={classNames('grid text-center', getGridCols(columns))}>
+    <li className={classNames('grid', getGridCols(columns))}>
       <PrizePoolLabel prizePool={prizePool} percentage={percentage} />
       {Object.keys(headers).map((header, index) => (
-        <div key={`row-item-${index}-${prizePool.id()}`} className={getColSpan(columns, index)}>
+        <div
+          key={`row-item-${index}-${prizePool.id()}`}
+          className={classNames(getColSpan(columns, index), 'text-center')}
+        >
           {props[header]}
         </div>
       ))}
-    </div>
+    </li>
   )
 }
 
@@ -88,35 +93,11 @@ const PrizePoolLabel: React.FC<{ prizePool: PrizePool; percentage?: number }> = 
   const [id] = useState(Math.random())
 
   return (
-    <div className='flex items-center ml-3 xs:ml-10 justify-start xs:justify-center'>
-      {/* {!!percentage && (
-        <FeatherIcon
-          icon={id > 0.5 ? 'triangle' : 'circle'}
-          style={{
-            color: getChainColorByChainId(prizePool.chainId),
-            scale: `${Math.max(percentage + 0.2, 0.4)}`,
-            rotate: `${id * 100}deg`
-          }}
-          className='fill-current mr-3'
-        />
-      )} */}
-      {/* <TokenIcon
-        chainId={prizePool.chainId}
-        address={data?.token.address}
-        sizeClassName='w-4 h-4'
-        className='-mr-1'
-      /> */}
+    <div className='flex items-center ml-3 xs:ml-10 justify-start'>
       <NetworkIcon
         chainId={prizePool.chainId}
-        sizeClassName='w-4 h-4'
+        sizeClassName='w-4 h-4 sm:w-5 sm:h-5'
         className='mr-2'
-        style={
-          percentage
-            ? {
-                scale: `${Math.min(percentage + 0.7, 1.5)}`
-              }
-            : undefined
-        }
       />
       <span>{getNetworkNiceNameByChainId(prizePool.chainId)}</span>
     </div>

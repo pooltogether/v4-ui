@@ -31,7 +31,7 @@ interface TokenFaucetClaimViewProps {
   tokenFaucetAddress: string
   prizePool: V3PrizePool
   underlyingToken: TokenWithUsdBalance
-  onDismiss: () => void
+  closeModal: () => void
   setExternalClaimTxId: (txId: string) => void
   refetch: () => void
 }
@@ -42,7 +42,7 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
     tokenFaucetAddress,
     prizePool,
     underlyingToken,
-    onDismiss,
+    closeModal,
     setExternalClaimTxId,
     refetch
   } = props
@@ -96,7 +96,7 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
     (claimTx.status === TransactionStatus.pendingBlockchainConfirmation ||
       claimTx.state === TransactionState.complete)
   ) {
-    return <ClaimClaimingView chainId={chainId} claimTx={claimTx} onDismiss={onDismiss} />
+    return <ClaimClaimingView chainId={chainId} claimTx={claimTx} closeModal={closeModal} />
   }
 
   if (!isWalletOnProperNetwork) {
@@ -126,11 +126,11 @@ export const TokenFaucetClaimView = (props: TokenFaucetClaimViewProps) => {
 interface ClaimClaimingViewProps {
   claimTx: Transaction
   chainId: number
-  onDismiss: () => void
+  closeModal: () => void
 }
 
 const ClaimClaimingView = (props: ClaimClaimingViewProps) => {
-  const { chainId, onDismiss, claimTx } = props
+  const { chainId, closeModal, claimTx } = props
   const { t } = useTranslation()
 
   return (

@@ -45,6 +45,7 @@ export const DepositView: React.FC<
   return (
     <TokenAmountInputFormView
       {...remainingProps}
+      submitButtonContent='Review Deposit'
       formKey={formKey}
       connectWallet={connectWallet}
       useValidationRules={useValidationRules}

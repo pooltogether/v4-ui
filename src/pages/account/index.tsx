@@ -20,7 +20,7 @@ export async function getStaticProps({ locale }) {
 export default function IndexPage(props) {
   return (
     <Suspense fallback={<LoadingScreen />}>
-      <Layout backgroundClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple-darkest minimal-scrollbar'>
+      <Layout>
         <AccountUI />
       </Layout>
     </Suspense>

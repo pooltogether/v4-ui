@@ -12,8 +12,6 @@ import { DepositView } from './DepositView'
 export enum ViewIds {
   deposit,
   reviewTransaction,
-  bridgeTokens,
-  swapTokens,
   help,
   walletConnection
 }
@@ -59,7 +57,6 @@ export const DepositModal: React.FC<{
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
       title: 'Connect a wallet',
-      bgClassName: 'bg-new-modal',
       onCloseViewId: ViewIds.deposit
     }
   ]
@@ -72,7 +69,6 @@ export const DepositModal: React.FC<{
     <ModalWithViewState
       noAnimation
       label='deposit-modal'
-      bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
       modalHeightClassName='h-actually-full-screen min-h-1/2 xs:h-auto'
       maxHeightClassName='max-h-actually-full-screen xs:max-h-90-screen'
       maxWidthClassName='xs:max-w-screen-xs sm:max-w-screen-sm md:max-w-screen-md'

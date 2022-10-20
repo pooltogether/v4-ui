@@ -35,6 +35,8 @@ import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { VideoClip } from './PrizeVideoBackground'
 
 interface MultiDrawsCardProps {
+  checkedState: CheckedState
+  setCheckedState: (state: CheckedState) => void
   prizeDistributor: PrizeDistributor
   prizePool: PrizePool
 }
@@ -99,17 +101,16 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
 
 //////////////////// Draw claim ////////////////////
 
-// TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
 export enum CheckedState {
   unchecked,
   checking,
   checked
 }
 
+// TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
-  const { drawDatas, ticket, token } = props
+  const { drawDatas, ticket, token, checkedState, setCheckedState } = props
   const [targetVideoClip, setTargetVideoClip] = useState<VideoClip>(VideoClip.rest)
-  const [checkedState, setCheckedState] = useState<CheckedState>(CheckedState.unchecked)
   const [winningDrawResults, setWinningDrawResults] = useState<{ [drawId: number]: DrawResults }>(
     null
   )

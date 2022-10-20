@@ -42,7 +42,11 @@ export const SelectPrizePoolModal = (props: SelectPrizePoolModalProps) => {
         <PrizePoolLabel prizePool={selectedPrizePool} />
         <FeatherIcon icon='chevron-down' />
       </button>
-      <BottomSheet open={isOpen} onDismiss={() => setIsOpen(false)} maxWidthClassName='xs:max-w-md'>
+      <BottomSheet
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+        maxWidthClassName='xs:max-w-md'
+      >
         <h6 className='text-center uppercase text-sm mb-3'>
           {t('chooseAPrizePool', 'Choose a Prize Pool')}
         </h6>
@@ -60,7 +64,7 @@ export const SelectPrizePoolModal = (props: SelectPrizePoolModalProps) => {
                 prizePool.chainId === selectedChainId &&
                 prizePool.address === selectedPrizePoolAddress
               }
-              onDismiss={() => setIsOpen(false)}
+              closeModal={() => setIsOpen(false)}
               setSelectedChainId={setSelectedChainId}
               setSelectedPrizePoolAddress={setSelectedPrizePoolAddress}
             />
@@ -74,11 +78,11 @@ export const SelectPrizePoolModal = (props: SelectPrizePoolModalProps) => {
 const NetworkItem = (props: {
   prizePool: PrizePool
   isSelected: boolean
-  onDismiss: () => void
+  closeModal: () => void
   setSelectedChainId: (chainId: number) => void
   setSelectedPrizePoolAddress: (prizePool: PrizePool) => void
 }) => {
-  const { prizePool, isSelected, setSelectedChainId, setSelectedPrizePoolAddress, onDismiss } =
+  const { prizePool, isSelected, setSelectedChainId, setSelectedPrizePoolAddress, closeModal } =
     props
   const { chainId } = prizePool
   const { data: tokens } = usePrizePoolTokens(prizePool)
@@ -88,7 +92,7 @@ const NetworkItem = (props: {
         onClick={() => {
           setSelectedPrizePoolAddress(prizePool)
           setSelectedChainId(chainId)
-          onDismiss()
+          closeModal()
         }}
         className={classNames(
           'bg-pt-purple-lighter dark:bg-pt-purple-darker rounded-lg p-4 flex items-center w-full transition-colors',

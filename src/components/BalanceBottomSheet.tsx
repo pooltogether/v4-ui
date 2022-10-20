@@ -48,14 +48,14 @@ export interface View {
 }
 
 export interface BalanceBottomSheetProps extends MainViewProps, Omit<MoreInfoViewProps, ''> {
-  open: boolean
-  onDismiss: () => void
+  isOpen: boolean
+  closeModal: () => void
   label?: string
   className?: string
 }
 
 export const BalanceBottomSheet = (props: BalanceBottomSheetProps) => {
-  const { open, onDismiss, className, label, ...viewProps } = props
+  const { isOpen, closeModal, className, label, ...viewProps } = props
   const [selectedView, setSelectedView] = useState<string>(DefaultViews.main)
 
   const View = useMemo(
@@ -66,9 +66,9 @@ export const BalanceBottomSheet = (props: BalanceBottomSheetProps) => {
   return (
     <BottomSheet
       label={label}
-      open={open}
-      onDismiss={() => {
-        onDismiss()
+      isOpen={isOpen}
+      closeModal={() => {
+        closeModal()
         setSelectedView(DefaultViews.main)
       }}
       className={classNames(className, 'text-inverse dark:text-white')}

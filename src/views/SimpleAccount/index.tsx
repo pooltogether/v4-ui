@@ -16,14 +16,7 @@ export const SimpleAccountUI = (props: { usersAddress: string }) => {
   const { usersAddress } = props
 
   return (
-    <PagePadding
-      className={classNames(
-        'grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen',
-        NEGATIVE_HEADER_MARGIN
-      )}
-      widthClassName='max-w-screen-lg'
-      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
-    >
+    <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4'>
       <div className='sm:col-span-2 md:col-span-3 space-y-4'>
         <AccountCard usersAddress={usersAddress} showAddress />
         <Card>

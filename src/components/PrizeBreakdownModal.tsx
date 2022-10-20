@@ -13,8 +13,8 @@ export const PrizeBreakdownModal = (
   return (
     <BottomSheet
       className='flex flex-col'
-      open={props.isOpen}
-      onDismiss={props.closeModal}
+      isOpen={props.isOpen}
+      closeModal={props.closeModal}
       label='Prize breakdown modal'
     >
       <PrizeWLaurels className='mx-auto' />

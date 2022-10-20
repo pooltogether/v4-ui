@@ -19,7 +19,7 @@ export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props)
         isLoading={!isFetched}
         description={
           isFetched && !data?.totalClaimedAmount.amountUnformatted.isZero()
-            ? `You've claimed ${data.totalClaimedPrizes} prizes`
+            ? `${data.totalClaimedPrizes} prize claims`
             : t('noPrizesYet')
         }
         main={<TotalWinningsAmount usersAddress={usersAddress} />}
@@ -29,8 +29,8 @@ export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props)
         disabled={!isFetched}
       />
       <TotalWinningsSheet
-        open={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
         usersAddress={usersAddress}
       />
     </>

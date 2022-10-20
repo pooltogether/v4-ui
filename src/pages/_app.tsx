@@ -11,7 +11,6 @@ import '@styles/gradients.css'
 import '@styles/tsunami.css'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-spring-bottom-sheet/dist/style.css'
-import '@styles/bottomSheet.css'
 
 const App = (props: AppProps) => {
   return <AppContainer {...props} />

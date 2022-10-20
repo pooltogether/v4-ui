@@ -49,7 +49,7 @@ interface WithdrawStepContentProps {
   setCurrentStep: (step: WithdrawalSteps) => void
   setAmountToWithdraw: (amount: Amount) => void
   refetchBalances: () => void
-  onDismiss: () => void
+  closeModal: () => void
 }
 
 export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
@@ -72,7 +72,7 @@ export const WithdrawStepContent = (props: WithdrawStepContentProps) => {
     setCurrentStep,
     setAmountToWithdraw,
     refetchBalances,
-    onDismiss
+    closeModal
   } = props
 
   const { t } = useTranslation()

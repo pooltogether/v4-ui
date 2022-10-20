@@ -13,10 +13,6 @@ export const BrowsePrizePoolsHeader: React.FC<{ className?: string }> = (props) 
       </div>
       <div className='opacity-80'>
         When you deposit into a PoolTogether Prize Pool you'll have a <b>{'daily'}</b> chance to win
-        some of the{' '}
-        <b className='text-flashy'>
-          <TotalNumberOfPrizes />
-        </b>{' '}
         prizes. There's{' '}
         <b className='text-flashy'>
           <UpcomingPerDrawPrizeValue />

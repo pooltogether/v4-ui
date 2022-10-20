@@ -126,7 +126,7 @@ const OddsOfWinning: React.FC<{
         <span>Daily</span>
         {isFetched && !!oneOverOdds && !isNaN(oneOverOdds) ? (
           <span className='font-bold'>
-            {oneOverOdds === Infinity ? '0 😔' : `1:${oneOverOdds.toFixed(2)}`}
+            {oneOverOdds === Infinity ? '0 😔' : `1 in ${oneOverOdds.toFixed(2)}`}
           </span>
         ) : (
           <ThemedClipSpinner sizeClassName='w-4 h-4' />
@@ -136,7 +136,7 @@ const OddsOfWinning: React.FC<{
         <span>Weekly</span>
         {isFetched && !!weeklyOneOverOdds && !isNaN(weeklyOneOverOdds) ? (
           <span className='font-bold'>
-            {weeklyOneOverOdds === Infinity ? '0 😭' : `1:${weeklyOneOverOdds.toFixed(2)}`}
+            {weeklyOneOverOdds === Infinity ? '0 😭' : `1 in ${weeklyOneOverOdds.toFixed(2)}`}
           </span>
         ) : (
           <ThemedClipSpinner sizeClassName='w-4 h-4' />

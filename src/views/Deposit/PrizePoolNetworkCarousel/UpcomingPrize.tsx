@@ -97,7 +97,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   )
 }
 
-const DrawCountdown = (props) => {
+export const DrawCountdown = (props) => {
   const { t } = useTranslation()
   const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
   const { secondsLeft } = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
@@ -205,7 +205,7 @@ const LightningBolts = () => (
     <LightningBolt
       flip
       color='teal'
-      scale={1.2}
+      scale={1.1}
       rotate={5}
       className='top-20 xs:top-28 sm:top-32 right-0 xs:right-2 lg:-right-8 w-10 h-10 xs:w-12 xs:h-12'
     />

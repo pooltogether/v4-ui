@@ -2,8 +2,8 @@ import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrize
 import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
 import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
-import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
+import { DepositModal, ViewIds } from '@components/Modal/DepositModal'
 import { CardTitle } from '@components/Text/CardTitle'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
@@ -19,16 +19,15 @@ import {
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-connection'
-import { parseQueryParam } from '@utils/parseQueryParam'
 import { AccountCard } from '@views/Account/AccountCard'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { DelegationList } from './DelegationList'
-import { DepositModal, ViewIds } from './DepositModal'
 import { OddsDisclaimer } from './OddsDisclaimer'
 import { EarnRewardsCard } from './Rewards/EarnRewardsCard'
+import { RewardsCard } from './Rewards/RewardsCard'
 import { GovernanceSidebarCard } from './SidebarCard/GovernanceSidebarCard'
 import { OddsOfWinningWithX, OddsSidebarCard } from './SidebarCard/OddsSidebarCard'
 import { PastPrizesSidebarCard } from './SidebarCard/PastPrizesSidebarCard'
@@ -42,13 +41,9 @@ export const AccountUI = (props) => {
 
   if (!isWalletConnected) {
     return (
-      <PagePadding
-        className={classNames(NEGATIVE_HEADER_MARGIN, 'min-h-actually-full-screen')}
-        widthClassName='max-w-screen-md'
-        paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
-      >
+      <PagePadding>
         <NoWalletAccountHeader className='mx-auto mb-20 max-w-screen-sm' />
-        <Card>
+        <Card className='max-w-screen-md mx-auto'>
           <BrowsePrizePools />
           <OddsOfWinningWithX bgClassName='bg-transparent' />
           <FunWalletConnectionPrompt className='max-w-screen-sm mx-auto' />
@@ -57,20 +52,13 @@ export const AccountUI = (props) => {
     )
   }
   return (
-    <PagePadding
-      className={classNames(
-        'grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 min-h-actually-full-screen',
-        NEGATIVE_HEADER_MARGIN
-      )}
-      widthClassName='max-w-screen-lg'
-      paddingClassName='px-2 xs:px-4 sm:px-8 lg:px-12 pb-20 pt-14 sm:pt-20'
-    >
+    <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4'>
       <div className='sm:col-span-2 md:col-span-3 space-y-4'>
         <AccountCard usersAddress={usersAddress} />
         <Card>
           <V4DepositList />
           <DelegationList />
-          <RewardsHaveMoved />
+          <Rewards />
           <hr className='sm:hidden' />
           <GovernanceSidebarCard usersAddress={usersAddress} className='sm:hidden' />
           <OddsOfWinningWithX className='sm:hidden' />
@@ -101,7 +89,7 @@ export const Card: React.FC<{ className?: string; children: React.ReactNode }> =
       {...props}
       children={children}
       className={classNames(
-        'w-full bg-white bg-opacity-80 dark:bg-pt-purple-darkest py-10 lg:py-12 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12',
+        'w-full bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-40 py-10 lg:py-12 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12',
         className
       )}
     />
@@ -185,11 +173,7 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
         ]}
         initialTabId={'all'}
       />
-      <DepositModal
-        initialViewId={ViewIds.deposit}
-        isOpen={isOpen}
-        closeModal={() => setIsOpen(false)}
-      />
+      <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </div>
   )
 }
@@ -217,10 +201,11 @@ export const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (prop
   )
 }
 
-const RewardsHaveMoved = () => (
+const Rewards = () => (
   <div className=''>
     <CardTitle title={'Bonus Rewards'} className='mb-2' />
-    <p className='opacity-70 text-xxs xs:text-xs'>
+    <RewardsCard />
+    {/* <p className='opacity-70 text-xxs xs:text-xs'>
       Claiming rewards has moved!{' '}
       <Link href={'/prizes#rewards'}>
         <a className='transition-opacity underline hover:opacity-70 h-fit-content items-center'>
@@ -231,7 +216,7 @@ const RewardsHaveMoved = () => (
           />
         </a>
       </Link>
-    </p>
+    </p> */}
   </div>
 )
 
@@ -244,7 +229,7 @@ const SocialLinks = () => {
       <a href={'https://twitter.com/PoolTogether_'}>
         <SocialIcon social={SocialKey.twitter} className='w-6 h-6' />
       </a>
-      <a href={'https://twitter.com/PoolTogether_'}>
+      <a href={'https://github.com/pooltogether'}>
         <SocialIcon social={SocialKey.github} className='w-6 h-6' />
       </a>
       <a href={'https://docs.pooltogether.com/welcome/getting-started'}>

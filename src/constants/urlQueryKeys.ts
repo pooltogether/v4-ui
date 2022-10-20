@@ -6,5 +6,7 @@ export const URL_QUERY_KEY = Object.freeze({
   balanceModal: 'balance',
   browseModal: 'browse',
   exploreView: 'explore_view',
-  sortBy: 'sort_by'
+  sortBy: 'sort_by',
+  prizeView: 'prize_view',
+  getTokens: 'get_tokens_tab'
 })

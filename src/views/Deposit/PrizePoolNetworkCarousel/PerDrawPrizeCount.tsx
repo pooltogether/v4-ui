@@ -3,7 +3,8 @@ import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { useAllDrawWinners, useAllLatestDrawWinners } from '@hooks/v4/useDrawWinners'
+import { useAllLatestDrawWinners } from '@hooks/v4/useDrawWinners'
+import { useAllLatestDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useMemo } from 'react'
@@ -13,44 +14,31 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
 
   const prizePools = usePrizePools()
-  const queryResults = useAllPrizePoolExpectedPrizes()
-  const winnersQueryResults = useAllLatestDrawWinners()
+  const queryResults = useAllLatestDrawWinnersInfo()
 
-  const { totalAmountOfPrizes, data } = useMemo(() => {
+  const { data, totalNumberOfPrizes } = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     if (!isFetched) {
-      return { data: [], totalAmountOfPrizes: 0 }
+      return { data: [], totalNumberOfPrizes: 0 }
     }
-    const totalAmountOfPrizes = Math.round(
-      queryResults
-        .filter(({ isFetched }) => isFetched)
-        .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
-    )
+
+    const totalNumberOfPrizes = queryResults
+      .filter(({ isFetched }) => isFetched)
+      .reduce((total, { data }) => total + data.prizesWon, 0)
+
     const data = queryResults
       .filter(({ isFetched }) => isFetched)
       .map(({ data }) => {
         return {
-          prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          numberOfPrizes: Math.round(data.expectedTotalNumberOfPrizes),
-          prizes: data.valueOfPrizesFormattedList.join(', '),
-          percentage: data.expectedTotalNumberOfPrizes / totalAmountOfPrizes
+          prizePool: prizePools.find((prizePool) => prizePool.chainId === data.chainId),
+          numberOfPrizes: Math.round(data.prizesWon),
+          prizes: data.prizesWon,
+          percentage: data.prizesWon / totalNumberOfPrizes
         }
       })
       .sort((a, b) => b.numberOfPrizes - a.numberOfPrizes)
-    return { totalAmountOfPrizes, data }
-  }, [queryResults])
-
-  const numberOfWinnersLastDraw = useMemo(() => {
-    const isFetched = winnersQueryResults.some(({ isFetched }) => isFetched)
-    if (!isFetched) {
-      return 0
-    }
-
-    return winnersQueryResults.reduce(
-      (sum, { data, isFetched }) => (isFetched ? sum + data.prizes.length : sum),
-      0
-    )
-  }, [winnersQueryResults])
+    return { data, totalNumberOfPrizes }
+  }, [prizePools, queryResults])
 
   return (
     <div className={classNames('relative', className)}>
@@ -58,18 +46,10 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
       <CarouselHeader
         headers={[
           {
-            title: 'Prizes next draw',
-            stat: (
-              <>
-                <CountUp countTo={totalAmountOfPrizes} decimals={0} />
-              </>
-            )
-          },
-          {
             title: 'Prizes won last draw',
             stat: (
               <span className='text-flashy'>
-                <CountUp countTo={numberOfWinnersLastDraw} decimals={0} />
+                <CountUp countTo={totalNumberOfPrizes} decimals={0} />
               </span>
             )
           }
@@ -86,10 +66,14 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
       </CarouselDescription>
       <PrizePoolBar
         data={data}
-        className='mt-4'
+        className='mt-4 sm:mt-8'
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
-      <PrizePoolTable headers={{ prizes: 'Prizes' }} data={data} className='mt-2' />
+      <PrizePoolTable
+        headers={{ prizes: 'Prizes won last draw' }}
+        data={data}
+        className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
+      />
     </div>
   )
 }

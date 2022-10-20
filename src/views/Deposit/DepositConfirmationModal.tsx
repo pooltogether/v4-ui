@@ -101,8 +101,8 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
 
   const bottomSheetProps = {
     label: t('confirmDepositModal', 'Confirm deposit - modal'),
-    open: isOpen,
-    onDismiss: closeModal,
+    isOpen,
+    closeModal,
     className: 'flex flex-col space-y-1 xs:space-y-2'
   }
 

@@ -44,13 +44,13 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
     prizePool.addresses.prizePool
   )
 
-  const onDismiss = () => setIsOpen(false)
+  const closeModal = () => setIsOpen(false)
 
   const depositView = (
     <PrizePoolDepositView
       chainId={chainId}
       prizePool={prizePool}
-      onDismiss={() => setIsOpen(false)}
+      closeModal={closeModal}
       setExternalDepositTxId={setDepositTxId}
       setExternalApproveTxId={setApproveTxId}
       refetch={refetch}
@@ -64,7 +64,7 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       tokenFaucetAddress={tokenFaucetAddress}
       prizePool={prizePool}
       underlyingToken={token}
-      onDismiss={() => setIsOpen(false)}
+      closeModal={closeModal}
       setExternalClaimTxId={setClaimTxId}
       refetch={refetch}
     />
@@ -73,7 +73,7 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
   const withdrawView = (
     <PrizePoolWithdrawView
       setWithdrawTxId={setWithdrawTxId}
-      onDismiss={onDismiss}
+      closeModal={closeModal}
       refetchBalances={refetch}
       chainId={chainId}
       ticket={ticket}
@@ -135,8 +135,8 @@ export const StakingBottomSheet = (props: StakingBalanceBottomSheetProps) => {
       views={views}
       title={`${t('manage')}: ${prizePool.tokens.token.symbol}`}
       contractLinks={contractLinks}
-      open={isOpen}
-      onDismiss={onDismiss}
+      isOpen={isOpen}
+      closeModal={closeModal}
       transactionHash={
         withdrawTx?.response?.hash ||
         depositTx?.response?.hash ||

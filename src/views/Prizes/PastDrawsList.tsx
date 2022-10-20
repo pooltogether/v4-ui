@@ -55,7 +55,6 @@ export const PastDrawsList = (props: {
   ) {
     return (
       <div className='flex flex-col space-x-2'>
-        <CardTitle title={t('pastDraws', 'Past draws')} />
         <ul className='space-y-4'>
           <LoadingRow />
           <LoadingRow />
@@ -69,7 +68,6 @@ export const PastDrawsList = (props: {
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle title={t('pastDraws', 'Past draws')} />
       {drawDatasList.length === 0 && (
         <Card>
           <div className='opacity-70 text-center w-full'>
@@ -99,7 +97,7 @@ export const PastDrawsList = (props: {
           className='opacity-70 hover:opacity-100 transition-opacity w-full text-center'
           onClick={() => setDrawsToShow(drawsToShow + 5)}
         >
-          more
+          Show more
         </button>
       )}
     </div>
@@ -270,15 +268,16 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
     const thereIsMinutes = thereIsHours || minutes > 0
     return (
       <div
-        className={classNames('text-inverse flex leading-tight', messageHeightClassName, className)}
+        className={classNames(
+          'text-inverse flex leading-tight items-center',
+          messageHeightClassName,
+          className
+        )}
       >
-        <FeatherIcon icon='lock' className='w-4 h-4 my-auto mr-2' />
-        <span>
-          {t('drawNumber', 'Draw #{{number}}', { number: draw.drawId })}{' '}
-          {t('unlocksIn', 'unlocks in')}
+        <FeatherIcon icon='lock' className='w-4 h-4' />
+        <span className='ml-1'>
           <CountdownString
             weeks={0}
-            className='ml-1'
             {...drawLockCountdown}
             hideHours={thereIsWeeks}
             hideMinutes={thereIsDays}

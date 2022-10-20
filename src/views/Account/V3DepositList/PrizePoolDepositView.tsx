@@ -39,7 +39,7 @@ export interface DepositViewProps {
   prizePool: V3PrizePool
   setExternalDepositTxId: (number) => void
   setExternalApproveTxId: (number) => void
-  onDismiss: () => void
+  closeModal: () => void
   refetch: () => void
 }
 
@@ -49,8 +49,14 @@ export enum DepositViews {
 }
 
 export const PrizePoolDepositView = (props: DepositViewProps) => {
-  const { chainId, prizePool, onDismiss, setExternalDepositTxId, setExternalApproveTxId, refetch } =
-    props
+  const {
+    chainId,
+    prizePool,
+    closeModal,
+    setExternalDepositTxId,
+    setExternalApproveTxId,
+    refetch
+  } = props
 
   const usersAddress = useUsersAddress()
   const { data: prizePoolBalance, refetch: refetchPrizePoolBalances } = useUsersV3PrizePoolBalance(
@@ -127,7 +133,7 @@ export const PrizePoolDepositView = (props: DepositViewProps) => {
           depositAllowanceUnformatted={depositAllowanceUnformatted}
           approveTx={approveTx}
           depositTx={depositTx}
-          onDismiss={onDismiss}
+          closeModal={closeModal}
           setApproveTxId={setApproveTxId}
           setDepositTxId={setDepositTxId}
           refetch={() => {
@@ -205,7 +211,7 @@ export interface DepositReviewViewProps {
   depositAllowanceUnformatted: BigNumber
   approveTx: Transaction
   depositTx: Transaction
-  onDismiss: () => void
+  closeModal: () => void
   setApproveTxId: (txId: string) => void
   setDepositTxId: (txId: string) => void
   refetch: () => void
@@ -221,7 +227,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
     depositAllowanceUnformatted,
     approveTx,
     depositTx,
-    onDismiss,
+    closeModal,
     setApproveTxId,
     setDepositTxId,
     refetch
@@ -314,7 +320,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
             'Something went wrong while processing your transaction.'
           )}
         </p>
-        <Button theme={ButtonTheme.tealOutline} className='w-full' onClick={onDismiss}>
+        <Button theme={ButtonTheme.tealOutline} className='w-full' onClick={closeModal}>
           {t('tryAgain', 'Try again')}
         </Button>
       </>

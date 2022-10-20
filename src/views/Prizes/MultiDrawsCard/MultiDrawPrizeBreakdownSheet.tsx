@@ -36,8 +36,8 @@ export const MultiDrawPrizeBreakdownSheet = (
 
   return (
     <BottomSheet
-      open={props.isOpen}
-      onDismiss={props.closeModal}
+      isOpen={props.isOpen}
+      closeModal={props.closeModal}
       label='Prize breakdown modal'
       className='flex flex-col'
     >

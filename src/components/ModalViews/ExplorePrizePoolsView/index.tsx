@@ -19,7 +19,7 @@ export const ExplorePrizePoolsView: React.FC<
     _onPrizePoolSelect?.(prizePool)
   }
 
-  const { data: initialTabId, setData } = useQueryParamState(URL_QUERY_KEY.exploreView, 'all', [
+  const { data: initialTabId, setData } = useQueryParamState(URL_QUERY_KEY.exploreView, 'top', [
     'all',
     'top'
   ])

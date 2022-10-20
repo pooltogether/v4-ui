@@ -140,8 +140,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
         <BottomSheet
           snapPoints={snapTo90}
           label='Error depositing modal'
-          open={isOpen}
-          onDismiss={() => {
+          isOpen={isOpen}
+          closeModal={() => {
             setTxId('')
             closeModal()
           }}
@@ -175,8 +175,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       return (
         <BottomSheet
           label='Claim prizes modal'
-          open={isOpen}
-          onDismiss={() => {
+          isOpen={isOpen}
+          closeModal={() => {
             setTxId('')
             closeModal()
           }}
@@ -199,8 +199,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       snapPoints={snapTo90}
       label='Claim prizes modal'
       className='overflow-hidden'
-      open={isOpen}
-      onDismiss={() => {
+      isOpen={isOpen}
+      closeModal={() => {
         setTxId('')
         closeModal()
       }}

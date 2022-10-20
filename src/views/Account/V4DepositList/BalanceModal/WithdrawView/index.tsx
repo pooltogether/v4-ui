@@ -38,6 +38,7 @@ export const WithdrawView: React.FC<
   return (
     <TokenAmountInputFormView
       {...remainingProps}
+      submitButtonContent='Review Withdrawal'
       formKey={FORM_KEY}
       previous={previous}
       next={next}

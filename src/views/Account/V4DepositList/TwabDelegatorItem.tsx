@@ -38,7 +38,7 @@ export const TwabDelegatorItem: React.FC<{ delegator: string }> = (props) => {
       <DepositDelegationsSheet
         delegations={delegations}
         isOpen={isOpen}
-        onDismiss={() => setIsOpen(false)}
+        closeModal={() => setIsOpen(false)}
       />
     </>
   )
@@ -57,15 +57,15 @@ const DepositDelegationsSheet: React.FC<{
     totalAmount: Amount
   }[]
   isOpen: boolean
-  onDismiss: () => void
+  closeModal: () => void
 }> = (props) => {
-  const { isOpen, onDismiss, delegations } = props
+  const { isOpen, closeModal, delegations } = props
 
   return (
     <BottomSheet
       label='deposit-delegation-sheet'
-      open={isOpen}
-      onDismiss={onDismiss}
+      isOpen={isOpen}
+      closeModal={closeModal}
       className='flex flex-col space-y-4'
     >
       <div className='mx-auto text-2xl font-bold text-inverse'>Deposit Delegations</div>

@@ -140,7 +140,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
       address: prizePool.addresses.sponsorship
     }
   ]
-  const onDismiss = () => setIsOpen(false)
+  const closeModal = () => setIsOpen(false)
   const views = useMemo(
     () => [
       {
@@ -149,7 +149,7 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
           <PrizePoolWithdrawView
             {...props}
             prizePool={prizePool}
-            onDismiss={onDismiss}
+            closeModal={closeModal}
             setWithdrawTxId={setTxId}
             refetchBalances={refetchBalances}
           />
@@ -180,8 +180,8 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
         title={`V3 ${t('prizePoolTicker', { ticker: token.symbol })}`}
-        open={isOpen}
-        onDismiss={onDismiss}
+        isOpen={isOpen}
+        closeModal={closeModal}
         chainId={chainId}
         externalLinks={[
           {
@@ -235,7 +235,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
       address: prizePool.addresses.token
     }
   ]
-  const onDismiss = () => setIsOpen(false)
+  const closeModal = () => setIsOpen(false)
 
   const views = useMemo(
     () => [
@@ -245,7 +245,7 @@ const PodDepositItem = (props: DepositItemsProps) => {
           <PodWithdrawView
             {...props}
             prizePool={prizePool}
-            onDismiss={onDismiss}
+            closeModal={closeModal}
             setWithdrawTxId={setTxId}
             refetchBalances={refetchBalances}
           />
@@ -274,8 +274,8 @@ const PodDepositItem = (props: DepositItemsProps) => {
       <BalanceBottomSheet
         banner={<DeprecatedBanner />}
         title={`V3 ${t('podTicker', { ticker: token.symbol })}`}
-        open={isOpen}
-        onDismiss={onDismiss}
+        isOpen={isOpen}
+        closeModal={closeModal}
         chainId={chainId}
         externalLinks={[
           {
