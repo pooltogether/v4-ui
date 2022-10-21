@@ -1,6 +1,5 @@
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { TxButton } from '@components/Input/TxButton'
-import { CardTitle } from '@components/Text/CardTitle'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { VAPRTooltip } from '@components/VAPRTooltip'
@@ -16,7 +15,6 @@ import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
 import { Token, Amount, useTokenBalance, TokenWithAllBalances } from '@pooltogether/hooks'
 import {
   BottomSheet,
-  BottomSheetTitle,
   snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
@@ -298,7 +296,7 @@ const PromotionRow = (props: {
           <ClaimModal
             {...props}
             isOpen={isOpen}
-            setIsisOpen={setIsOpen}
+            setIsOpen={setIsOpen}
             claimableAmount={claimableAmount}
             claimableUsd={claimableUsd}
             estimateAmount={estimateAmount}

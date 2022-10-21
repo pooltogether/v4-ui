@@ -82,7 +82,7 @@ export const StakingCard = (props: StakingCardProps) => {
         chainId={balances.chainId}
         balances={balances}
         isOpen={isOpen}
-        setIsisOpen={setIsOpen}
+        setIsOpen={setIsOpen}
         refetch={refetch}
       />
     </>

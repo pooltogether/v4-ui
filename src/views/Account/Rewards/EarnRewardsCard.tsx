@@ -69,20 +69,22 @@ export const EarnRewardsCard: React.FC<{ className?: string }> = (props) => {
           >
             {queryResults.map((queryResult) => {
               const { data } = queryResult || {}
-              const { chainId } = data || {}
 
               if (!data?.promotions || data.promotions.length === 0) {
                 return null
               }
 
-              return (
-                <ChainPromotions
-                  key={`chain-promotions-${chainId}`}
-                  queryResult={queryResult}
+              const { chainId, promotions } = data || {}
+
+              return promotions.map((promotion) => (
+                <PromotionCard
                   moreThanOnePromotion={moreThanOnePromotion}
                   openDepositModal={openDepositModal}
+                  key={`pcard-${chainId}-${promotion.id}`}
+                  promotion={promotion}
+                  chainId={chainId}
                 />
-              )
+              ))
             })}
           </div>
         </div>
@@ -90,33 +92,6 @@ export const EarnRewardsCard: React.FC<{ className?: string }> = (props) => {
       <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>
   )
-}
-
-const ChainPromotions = (props: {
-  queryResult: UseQueryResult<
-    {
-      chainId: number
-      promotions: Promotion[]
-      hasActivePromotions: boolean
-    },
-    unknown
-  >
-  moreThanOnePromotion: boolean
-  openDepositModal: (prizePool: PrizePool) => void
-}) => {
-  const { queryResult } = props
-
-  const { data } = queryResult
-  const { chainId, promotions } = data || {}
-
-  return promotions.map((promotion) => (
-    <PromotionCard
-      {...props}
-      key={`pcard-${chainId}-${promotion.id}`}
-      promotion={promotion}
-      chainId={chainId}
-    />
-  ))
 }
 
 const PromotionCard = (props: {
