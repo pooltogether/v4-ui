@@ -2299,10 +2299,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@^2.0.0-beta.12":
-  version "2.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.0-beta.12.tgz#35ca6024ed780e26b20fd279bf57d49d0756a03b"
-  integrity sha512-ntq+DTpSFIcbtP7Zr41ZZP2F4ZMkx7abOGY3BEsUM1UmukQo4JrEzKsJmItLrypddVvM1TzosY1QiQruiXgQjw==
+"@pooltogether/react-components@^2.0.0-beta.13":
+  version "2.0.0-beta.13"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.0-beta.13.tgz#7da40f6a6487ab4caf81254b566fe80a8e8df70d"
+  integrity sha512-XxcnNuKjaoTklI0VaN3JdABu2GKfhQGfKhiLXb8F7ZBg/3KbOF0mLTenzuel6EZB+hiQYn30mugqX98xOMPcBw==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
@@ -2474,10 +2474,10 @@
     ethers "^5.5.1"
     lodash "^4.17.21"
 
-"@pooltogether/wallet-connection@^1.0.0-beta.3":
-  version "1.0.0-beta.3"
-  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-1.0.0-beta.3.tgz#6dc7725ad7f93138509d66677b1c15e66c05b70a"
-  integrity sha512-YdOwngHPVyTYQq6S+jL06BWL6c5g35AP+orhtWgEq/v7W7E0nDVEIO2lS0DxAWqmbZ+BTHyZrugG9/B4+oyYCg==
+"@pooltogether/wallet-connection@^1.0.0-beta.4":
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@pooltogether/wallet-connection/-/wallet-connection-1.0.0-beta.4.tgz#468d2b2cceb3cfd9e7c304231bebb48ce3787c15"
+  integrity sha512-G7T1gTQEkgp1b7ba8MBuQAiNwky+h5GffIcbknXHs/hUpb24komaL1ryY8BnTQ5A5nyBuCJWzIwTyZ4VmY4hJg==
   dependencies:
     "@download/blockies" "^1.0.3"
 

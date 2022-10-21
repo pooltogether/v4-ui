@@ -1,13 +1,13 @@
-import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
-import { Time } from '@components/Time'
-import { TransparentDiv } from '@components/TransparentDiv'
-import { useTimeUntil } from '@hooks/useTimeUntil'
 import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
-import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDraws'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState, usePrizePageState } from '@hooks/v4/usePrizePageState'
-import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
+import {
+  ThemedClipSpinner,
+  TimeDisplay,
+  Tooltip,
+  useCountdown
+} from '@pooltogether/react-components'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
@@ -100,7 +100,7 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   const drawLock = drawLocks?.[firstLockDrawId]
-  const { secondsLeft } = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
+  const { seconds, minutes, hours, days } = useCountdown(drawLock?.endTimeSeconds.toNumber())
 
   if (!isDrawLocksFetched) return null
   if (!lockedPartialDrawDatasList) return null
@@ -113,13 +113,7 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
     )
   }
 
-  return (
-    <Time
-      seconds={secondsLeft}
-      backgroundColorClassName={'bg-pt-purple-lighter bg-opacity-20'}
-      unitsColorClassName={'text-pt-purple-lighter text-opacity-40'}
-    />
-  )
+  return <TimeDisplay hideDays seconds={seconds} minutes={minutes} hours={hours} days={days} />
 }
 
 const NoDraws = () => {

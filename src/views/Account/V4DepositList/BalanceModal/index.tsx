@@ -6,7 +6,11 @@ import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrize
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
 import { Amount, QUERY_KEYS } from '@pooltogether/hooks'
-import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
+import {
+  BottomSheetWithViewState,
+  ModalWithViewState,
+  ModalWithViewStateView
+} from '@pooltogether/react-components'
 import {
   getChainNameByChainId,
   TransactionState,
@@ -107,8 +111,7 @@ export const BalanceModal: React.FC<{
   }, [depositTransaction?.state])
 
   return (
-    <ModalWithViewState
-      noAnimation
+    <BottomSheetWithViewState
       header={`${tokenData?.token.symbol} deposits on ${getChainNameByChainId(chainId)}`}
       label='balance-modal'
       modalHeightClassName='h-actually-full-screen xs:h-auto min-h-1/2'

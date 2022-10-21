@@ -4,7 +4,6 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-
 export interface TokenAmountInputProps {
   chainId: number
   token: Token
@@ -31,7 +30,8 @@ export const TokenAmountInput = (props: TokenAmountInputProps) => {
   return (
     <TokenAmountInputFlat
       className={className}
-      widthClassName={widthClassName}
+      inputClassName=''
+      widthClassName=''
       form={form}
       inputKey={formKey}
       token={token}

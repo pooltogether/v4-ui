@@ -4,6 +4,7 @@ import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedP
 import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { DepositModal, ViewIds } from '@components/Modal/DepositModal'
+import { PoolTogetherExplainerWithStats } from '@components/PoolTogetherExplainerWithStats'
 import { CardTitle } from '@components/Text/CardTitle'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
@@ -22,7 +23,6 @@ import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-conn
 import { AccountCard } from '@views/Account/AccountCard'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import Link from 'next/link'
 import { useState } from 'react'
 import { DelegationList } from './DelegationList'
 import { OddsDisclaimer } from './OddsDisclaimer'
@@ -156,7 +156,14 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
 
   return (
     <div className={className}>
-      <BrowsePrizePoolsHeader className='mb-12' />
+      <div className='mb-12'>
+        <div className='flex flex-col space-y-2 mb-2'>
+          <div className='font-bold text-xl'>Explore Prize Pools</div>
+          <div className='opacity-80'>
+            <PoolTogetherExplainerWithStats />
+          </div>
+        </div>
+      </div>
       <Tabs
         titleClassName='mb-8'
         tabs={[

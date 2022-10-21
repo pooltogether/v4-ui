@@ -1,22 +1,22 @@
-import { Time } from '@components/Time'
-import { useTimeUntil } from '@hooks/useTimeUntil'
 import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDraws'
 import { Token } from '@pooltogether/hooks'
-import { Card, ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
+import {
+  ThemedClipSpinner,
+  TimeDisplay,
+  Tooltip,
+  useCountdown
+} from '@pooltogether/react-components'
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { DrawData } from '../../../interfaces/v4'
-import { LoadingCard } from './LoadingCard'
-import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { PrizeAnimationCard } from './PrizeAnimationCard'
-import { PrizeVideoBackground, VideoClip } from './PrizeVideoBackground'
 
 export const LockedDrawsCard: React.FC<{
   prizeDistributor: PrizeDistributor
@@ -131,7 +131,7 @@ const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: stri
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
   const drawLock = drawLocks?.[firstLockDrawId]
-  const { secondsLeft } = useTimeUntil(drawLock?.endTimeSeconds.toNumber())
+  const { seconds, minutes, hours, days } = useCountdown(drawLock?.endTimeSeconds.toNumber())
 
   if (!isDrawLocksFetched) {
     return <div className='bg-new-modal animate-pulse' />
@@ -139,11 +139,7 @@ const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: stri
 
   return (
     <div className={classNames(className)}>
-      <Time
-        seconds={secondsLeft}
-        backgroundColorClassName={'bg-pt-purple-lighter bg-opacity-20'}
-        unitsColorClassName={'text-pt-purple-lighter text-opacity-40'}
-      />
+      <TimeDisplay hideDays seconds={seconds} minutes={minutes} hours={hours} days={days} />
     </div>
   )
 }

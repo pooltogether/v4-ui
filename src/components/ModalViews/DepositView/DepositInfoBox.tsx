@@ -1,6 +1,7 @@
 import { InfoListItem } from '@components/InfoList'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { PrizePoolYieldSourceItem } from '@components/InfoList/PrizePoolYieldSourceItem'
+import { TicketBalanceListItem } from '@components/InfoList/TicketBalanceListItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
@@ -51,6 +52,7 @@ export const DepositInfoBox: React.FC<{
     >
       <PrizePoolLabelFlat prizePool={prizePool} className='mb-3' />
       <ul className='w-full mb-2'>
+        <TicketBalanceListItem prizePool={prizePool} />
         <UpdatedPrizePoolOddsListItemBar
           prizePool={prizePool}
           action={EstimateAction.deposit}

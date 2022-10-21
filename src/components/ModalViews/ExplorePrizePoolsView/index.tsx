@@ -1,4 +1,3 @@
-import { BrowsePrizePoolsHeader } from '@components/BrowsePrizePools/BrowsePrizePoolsHeader'
 import { PrizePoolsTable } from '@components/BrowsePrizePools/PrizePoolsTable'
 import { RecommendedPrizePools } from '@components/BrowsePrizePools/RecommendedPrizePools'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
@@ -7,7 +6,13 @@ import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { Tabs, ViewProps } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
+import { ExplorePrizePoolsHeader } from './ExplorePrizePoolsHeader'
 
+/**
+ * TODO: Add a list of filtered prize pools by token holdings
+ * @param props
+ * @returns
+ */
 export const ExplorePrizePoolsView: React.FC<
   { onPrizePoolSelect?: (prizePool: PrizePool) => void } & ViewProps
 > = (props) => {
@@ -26,8 +31,7 @@ export const ExplorePrizePoolsView: React.FC<
 
   return (
     <div className='pb-16 xs:pb-12'>
-      <BrowsePrizePoolsHeader className='mb-8' />
-      {/* TODO: Add a list of filtered prize pools by token holdings */}
+      <ExplorePrizePoolsHeader />
       <Tabs
         titleClassName='mb-8'
         initialTabId={initialTabId}

@@ -10,6 +10,11 @@ import classNames from 'classnames'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
+/**
+ * Sorted by the total number of prizes won last draw in the prize pool
+ * @param props
+ * @returns
+ */
 export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
 

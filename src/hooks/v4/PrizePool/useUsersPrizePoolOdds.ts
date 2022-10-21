@@ -16,9 +16,6 @@ export const useUsersPrizePoolOdds = (
   action: EstimateAction = EstimateAction.none,
   actionAmountUnformatted: BigNumber = ethers.constants.Zero
 ) => {
-  const { data: twabData, isFetched: isTwabDataFetched } = useUsersPrizePoolTwab(
-    usersAddress,
-    prizePool
-  )
+  const { data: twabData } = useUsersPrizePoolTwab(usersAddress, prizePool)
   return usePrizePoolOdds(twabData?.twab, prizePool, action, actionAmountUnformatted)
 }

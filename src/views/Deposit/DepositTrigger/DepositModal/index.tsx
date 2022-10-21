@@ -1,7 +1,11 @@
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { Amount } from '@pooltogether/hooks'
-import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
+import {
+  BottomSheetWithViewState,
+  ModalWithViewStateView,
+  snapToFull
+} from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
 import { useRouter } from 'next/router'
@@ -47,14 +51,14 @@ export const DepositModal: React.FC<{
     {
       id: ViewIds.explore,
       view: ExplorePrizePoolsView,
-      // title: 'Select a prize pool',
+      header: 'Explore Prize Pools',
       nextViewId: ViewIds.deposit,
       hideNextNavButton: true
     },
     {
       id: ViewIds.deposit,
       view: DepositView,
-      title: 'Deposit in a Prize Pool',
+      header: 'Deposit in a Prize Pool',
       previousViewId: ViewIds.explore,
       onCloseViewId: ViewIds.explore,
       maxWidthClassName: 'max-w-screen-xs'
@@ -62,7 +66,7 @@ export const DepositModal: React.FC<{
     {
       id: ViewIds.reviewTransaction,
       view: DepositReviewView,
-      title: 'Deposit review',
+      header: 'Deposit review',
       previousViewId: ViewIds.deposit,
       onCloseViewId: ViewIds.deposit,
       maxWidthClassName: 'max-w-screen-xs'
@@ -71,7 +75,7 @@ export const DepositModal: React.FC<{
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
-      title: 'Connect a wallet',
+      header: 'Connect a wallet',
       bgClassName: 'bg-new-modal',
       onCloseViewId: ViewIds.explore
     }
@@ -82,9 +86,9 @@ export const DepositModal: React.FC<{
   }
 
   return (
-    <ModalWithViewState
+    <BottomSheetWithViewState
+      snapPoints={snapToFull}
       router={router}
-      noAnimation
       label='deposit-modal'
       bgClassName='bg-gradient-to-br from-pt-purple-lightest to-pt-purple-lighter dark:from-gradient-purple dark:to-pt-purple'
       modalHeightClassName='h-actually-full-screen min-h-1/2 xs:h-auto'

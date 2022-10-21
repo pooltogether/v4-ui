@@ -5,12 +5,21 @@ import { useAllPrizePoolTicketTotalSupplies } from '@hooks/v4/PrizePool/useAllPr
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import { divideBigNumbers } from '@pooltogether/utilities'
+import {
+  divideBigNumbers,
+  formatCurrencyNumberForDisplay,
+  formatNumberForDisplay
+} from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { parseEther } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
+/**
+ * Sorted by the TVL of the prize pool
+ * @param props
+ * @returns
+ */
 export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => {
   const { className } = props
 
@@ -29,7 +38,10 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          tvl: `$${data.amount.amountPretty}`,
+          tvl: formatCurrencyNumberForDisplay(data?.amount.amount, 'usd', {
+            // notation: 'compact'
+            maximumFractionDigits: 0
+          }),
           amount: data.amount,
           percentage: divideBigNumbers(
             parseEther(data.amount.amount),

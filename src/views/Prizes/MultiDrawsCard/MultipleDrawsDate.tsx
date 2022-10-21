@@ -1,12 +1,14 @@
 import { Draw } from '@pooltogether/v4-client-js'
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { sortDrawsByDrawIdAsc } from '@utils/sortByDrawId'
+import classNames from 'classnames'
 
 export const MultipleDrawsDate = (props: {
   partialDrawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
+  fontClassName?: string
 }) => {
-  const { partialDrawDatas } = props
+  const { partialDrawDatas, fontClassName, className } = props
   const drawList = Object.values(partialDrawDatas)
     .filter((drawData) => Boolean(drawData.draw))
     .map((drawData) => drawData.draw)
@@ -18,7 +20,7 @@ export const MultipleDrawsDate = (props: {
     return null
   } else if (drawList.length === 1) {
     return (
-      <span className={props.className}>
+      <span className={classNames(className, fontClassName)}>
         {getTimestampStringWithTime(
           firstDraw.beaconPeriodStartedAt.toNumber() + firstDraw.beaconPeriodSeconds
         )}
@@ -27,7 +29,7 @@ export const MultipleDrawsDate = (props: {
   }
 
   return (
-    <span className={props.className}>
+    <span className={classNames(className, fontClassName)}>
       {getTimestampStringWithTime(
         firstDraw.beaconPeriodStartedAt.toNumber() + firstDraw.beaconPeriodSeconds,
         {
@@ -48,5 +50,6 @@ export const MultipleDrawsDate = (props: {
 }
 
 MultipleDrawsDate.defaultProps = {
-  className: 'uppercase font-bold text-white opacity-70 text-xs leading-none'
+  className: 'uppercase font-bold text-xs leading-none',
+  fontClassName: 'text-pt-purple-darkest text-opacity-90 dark:text-white dark:text-opacity-90'
 }

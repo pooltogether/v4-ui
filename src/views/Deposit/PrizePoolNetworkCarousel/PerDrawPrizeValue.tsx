@@ -14,6 +14,11 @@ import { formatUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
+/**
+ * Sorted by percentage of picks distributed to the prize pool
+ * @param props
+ * @returns
+ */
 export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
   const { className } = props
   const prizePool = useSelectedPrizePool()

@@ -1,21 +1,16 @@
 import { PagePadding } from '@components/Layout/PagePadding'
-import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
 import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { CardTitle } from '@components/Text/CardTitle'
-import { TransparentDiv } from '@components/TransparentDiv'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
-import { useTimeUntil } from '@hooks/useTimeUntil'
 import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizePageState } from '@hooks/v4/usePrizePageState'
 import { Tabs } from '@pooltogether/react-components'
 import { PrizeDistributor, PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { DrawCountdown } from '@views/Deposit/PrizePoolNetworkCarousel/UpcomingPrize'
 import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -96,7 +91,7 @@ export const PrizesUI = () => {
             },
             {
               id: 'history',
-              view: <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />,
+              view: <PastDrawsList />,
               title: 'Draw History'
             }
           ]}

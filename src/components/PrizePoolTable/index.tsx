@@ -70,7 +70,6 @@ const PrizePoolRow: React.FC<{
   }
 }> = (props) => {
   const { prizePool, percentage, columns, headers } = props
-  const [id] = useState(Math.random())
 
   return (
     <li className={classNames('grid', getGridCols(columns))}>
@@ -88,9 +87,7 @@ const PrizePoolRow: React.FC<{
 }
 
 const PrizePoolLabel: React.FC<{ prizePool: PrizePool; percentage?: number }> = (props) => {
-  const { prizePool, percentage } = props
-  // const { data } = usePrizePoolTokens(prizePool)
-  const [id] = useState(Math.random())
+  const { prizePool } = props
 
   return (
     <div className='flex items-center ml-3 xs:ml-10 justify-start'>

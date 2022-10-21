@@ -166,7 +166,7 @@ export const DepositConfirmationModal = (props: DepositConfirmationModalProps) =
         <ModalTitle chainId={chainId} title={t('depositSubmitted', 'Deposit submitted')} />
         {prizePool && <CheckBackForPrizesBox />}
         <TweetAboutDeposit
-          amountUnformatted={amountToDeposit.amountUnformatted}
+          amountUnformatted={amountToDeposit?.amountUnformatted}
           prizePool={prizePool}
         />
         <TransactionReceiptButton className='mt-8 w-full' chainId={chainId} tx={depositTx} />

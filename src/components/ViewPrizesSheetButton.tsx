@@ -30,7 +30,7 @@ export const ViewPrizesSheetCustomTrigger = (props: ViewPrizesSheetTriggerProps)
   return (
     <>
       <Button className={props.className} onClick={() => setIsOpen(true)} disabled={!prizeTier}>
-        {children || label || t('viewPrizeTiers', 'View prize tiers')}
+        {children || label || t('viewPrizes')}
       </Button>
 
       <PrizeBreakdownModal

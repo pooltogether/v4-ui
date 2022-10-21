@@ -24,7 +24,7 @@ export const Arrow: React.FC<
 > = (props) => {
   const { icon, iconClassName, arrowSizeClassName, className, ...buttonProps } = props
   return (
-    <button {...buttonProps} className={classNames('z-1', className)}>
+    <button {...buttonProps} type='button' className={classNames('z-1', className)}>
       <FeatherIcon className={classNames(arrowSizeClassName, iconClassName)} icon={icon} />
     </button>
   )

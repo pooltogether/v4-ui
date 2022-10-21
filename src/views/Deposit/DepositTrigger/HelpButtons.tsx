@@ -48,12 +48,12 @@ export const HelpButtons = () => {
     {
       id: ViewIds.help,
       view: HelpView,
-      title: 'PoolTogether FAQ'
+      header: 'PoolTogether FAQ'
     },
     {
       id: ViewIds.getTokens,
       view: GetTokensView,
-      title: 'Get Tokens'
+      header: 'Get Tokens'
     }
   ]
 
@@ -76,7 +76,6 @@ export const HelpButtons = () => {
         }}
       />
       <BottomSheetWithViewState
-        header='PoolTogether FAQ'
         router={router}
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}

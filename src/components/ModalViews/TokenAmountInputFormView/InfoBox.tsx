@@ -16,6 +16,9 @@ export const InfoBox: React.FC<InfoBoxProps> = (props) => {
   const { infoListItems, carouselChildren } = props
   const sliderRef = useRef<{ slickPrev: () => void; slickNext: () => void }>()
 
+  const prev = () => sliderRef?.current?.slickPrev()
+  const next = () => sliderRef?.current?.slickNext()
+
   if (!carouselChildren) {
     return <InfoList>{infoListItems}</InfoList>
   }
@@ -34,11 +37,7 @@ export const InfoBox: React.FC<InfoBoxProps> = (props) => {
         {infoListItems && <InfoList>{infoListItems}</InfoList>}
         {carouselChildren}
       </Slider>
-      <SliderArrows
-        prev={sliderRef?.current?.slickPrev}
-        next={sliderRef?.current?.slickNext}
-        className='w-28'
-      />
+      <SliderArrows prev={prev} next={next} style={{ width: '84px' }} />
     </div>
   )
 }

@@ -1,13 +1,16 @@
 import { Dot } from '@components/Dot'
-import { Time } from '@components/Time'
-import { useTimeUntil } from '@hooks/useTimeUntil'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { Token } from '@pooltogether/hooks'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import {
+  ThemedClipSpinner,
+  CountUp,
+  useCountdown,
+  TimeDisplay
+} from '@pooltogether/react-components'
 import { PrizeTier } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
@@ -99,13 +102,15 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
 
 export const DrawCountdown = (props) => {
   const { t } = useTranslation()
-  const { data: drawBeaconPeriod } = useDrawBeaconPeriod()
-  const { secondsLeft } = useTimeUntil(drawBeaconPeriod?.endsAtSeconds.toNumber())
+  const { data: drawBeaconPeriod, isFetched } = useDrawBeaconPeriod()
+  const { seconds, minutes, hours, days } = useCountdown(drawBeaconPeriod?.endsAtSeconds.toNumber())
   const drawId = drawBeaconPeriod?.drawId
 
-  if (secondsLeft < 60) {
+  if (!isFetched || (minutes === null && hours === null && days === null && seconds === null)) {
+    return <div className='h-28' />
+  } else if (minutes <= 0 && hours <= 0 && days <= 0 && seconds < 60) {
     return (
-      <div className='flex flex-col mx-auto pt-3'>
+      <div className='flex flex-col mx-auto pt-3 h-28'>
         <DrawNumberString>
           <span>{t('drawNumber', 'Draw #{{number}}', { number: drawId })}</span>
         </DrawNumberString>
@@ -117,13 +122,17 @@ export const DrawCountdown = (props) => {
   }
 
   return (
-    <div className='flex flex-col mx-auto pt-3'>
+    <div className='flex flex-col mx-auto pt-3 h-28'>
       <DrawNumberString>
         {/* <span>{t('joinDrawNumber', 'Join draw #{{number}}', { number: drawId })}</span> */}
         <span>Time left to join draw #{drawId}</span>
       </DrawNumberString>
-      <Time
-        seconds={secondsLeft}
+      <TimeDisplay
+        hideDays
+        seconds={seconds}
+        minutes={minutes}
+        hours={hours}
+        days={days}
         className='mx-auto justify-center items-center text-center'
         timeClassName='text-sm xs:text-lg mx-auto w-6 xs:w-8'
         colonYOffset={-12}

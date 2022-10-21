@@ -2,7 +2,11 @@ import { WalletConnectionView } from '@components/ModalViews/WalletConnectionVie
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { Amount } from '@pooltogether/hooks'
-import { ModalWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
+import {
+  BottomSheetWithViewState,
+  ModalWithViewStateView,
+  snapToFull
+} from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
 import { useCallback, useState } from 'react'
@@ -41,22 +45,20 @@ export const DepositModal: React.FC<{
     {
       id: ViewIds.deposit,
       view: DepositView,
-      title: 'Deposit in a Prize Pool',
-      maxWidthClassName: 'max-w-screen-xs'
+      header: 'Deposit in a Prize Pool'
     },
     {
       id: ViewIds.reviewTransaction,
       view: DepositReviewView,
-      title: 'Deposit review',
+      header: 'Deposit review',
       previousViewId: ViewIds.deposit,
-      onCloseViewId: ViewIds.deposit,
-      maxWidthClassName: 'max-w-screen-xs'
+      onCloseViewId: ViewIds.deposit
     },
     {
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
-      title: 'Connect a wallet',
+      header: 'Connect a wallet',
       onCloseViewId: ViewIds.deposit
     }
   ]
@@ -66,12 +68,12 @@ export const DepositModal: React.FC<{
   }
 
   return (
-    <ModalWithViewState
-      noAnimation
+    <BottomSheetWithViewState
+      snapPoints={snapToFull}
       label='deposit-modal'
       modalHeightClassName='h-actually-full-screen min-h-1/2 xs:h-auto'
       maxHeightClassName='max-h-actually-full-screen xs:max-h-90-screen'
-      maxWidthClassName='xs:max-w-screen-xs sm:max-w-screen-sm md:max-w-screen-md'
+      maxWidthClassName='max-w-screen-xs'
       className='h-full'
       isOpen={isOpen}
       closeModal={() => {

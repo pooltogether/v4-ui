@@ -70,6 +70,7 @@ export const getOdds = (
     action,
     actionAmountUnformatted
   )
+  // TODO: Get odds per prize tier. Get oneOverOdds per prize tier.
   return {
     prizePoolId: prizePool.id(),
     odds,
