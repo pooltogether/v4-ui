@@ -1,13 +1,11 @@
 import { Button, ButtonTheme, ButtonRadius } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useAtom } from 'jotai'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PrizePoolNetworkCarouselAutoplayAtom } from '../PrizePoolNetworkCarousel'
 import { DepositModal } from './DepositModal'
 import { HelpButtons } from './HelpButtons'
-import { RewardsBanners } from './RewardsBanners'
 
 export const DepositTrigger = (props: { className?: string }) => {
   const { className } = props
@@ -28,7 +26,6 @@ export const DepositTrigger = (props: { className?: string }) => {
           }}
         >
           {t('depositToWin', 'Deposit to win')}
-          {/* {t('getStarted', 'Get started')} */}
         </Button>
         <HelpButtons />
       </div>

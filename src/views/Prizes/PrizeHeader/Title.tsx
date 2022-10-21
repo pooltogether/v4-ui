@@ -1,4 +1,3 @@
-import { LatestDrawId } from '@components/PrizeDistributor/LatestDrawId'
 import { NextDrawId } from '@components/PrizePoolNetwork/NextDrawId'
 import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
@@ -12,7 +11,7 @@ import {
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 
 export const Title = (props: {
   className?: string
@@ -58,16 +57,12 @@ const Loading = () => {
   return <LoadingDots />
 }
 
-const DrawsToCheck = (props: { usersAddress: string; prizeDistributor: PrizeDistributor }) => {
-  return (
-    <>
-      <b className='text-flashy'>
-        <TotalPrizes {...props} />
-      </b>{' '}
-      in prizes!
-    </>
-  )
-}
+const DrawsToCheck = (props: { usersAddress: string; prizeDistributor: PrizeDistributor }) => (
+  <Trans
+    i18nKey='amountInPrizes'
+    components={{ b: <b className='text-flashy' />, amount: <TotalPrizes {...props} /> }}
+  />
+)
 
 const TotalPrizes = (props: { usersAddress: string; prizeDistributor: PrizeDistributor }) => {
   const { usersAddress, prizeDistributor } = props
@@ -98,24 +93,22 @@ const TotalPrizes = (props: { usersAddress: string; prizeDistributor: PrizeDistr
   )
 }
 
-const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
-  return (
-    <>
-      <b className='text-flashy'>
-        <UpcomingPerDrawPrizeValue />
-      </b>{' '}
-      in prizes unlocking soon!
-    </>
-  )
-}
+const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => (
+  <Trans
+    i18nKey='amountInPrizesUnlockingSoon'
+    components={{ b: <b className='text-flashy' />, amount: <UpcomingPerDrawPrizeValue /> }}
+  />
+)
 
 const NoDraws = (props: { prizeDistributor: PrizeDistributor }) => {
-  const { prizeDistributor } = props
   const { t } = useTranslation()
 
   return (
-    <>
-      Deposit now for Draw #<NextDrawId />
-    </>
+    <div className='flex flex-col'>
+      <span>
+        <Trans i18nKey='drawId' components={{ id: <NextDrawId /> }} />
+      </span>
+      <span>{t('closingSoon')}</span>
+    </div>
   )
 }

@@ -7,10 +7,10 @@ import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
-import { usePrizePoolNetworkGrandPrize } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkGrandPrize'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { formatUnits } from 'ethers/lib/utils'
+import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
@@ -24,10 +24,9 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
   const prizePool = useSelectedPrizePool()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
   const { data: prizeTierData } = useUpcomingPrizeTier(prizePool)
-
+  const { t } = useTranslation()
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolExpectedPrizes()
-  const { data: grandPrizeData, isFetched: isGrandPrizeFetched } = usePrizePoolNetworkGrandPrize()
 
   const amount = useMemo(() => {
     if (!prizePoolTokens || !prizeTierData) {
@@ -38,7 +37,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
 
   const data = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
-    if (!isFetched || !isGrandPrizeFetched) {
+    if (!isFetched) {
       return null
     }
     return queryResults
@@ -52,7 +51,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
         }
       })
       .sort((a, b) => b.percentage - a.percentage)
-  }, [prizePools, queryResults, isGrandPrizeFetched])
+  }, [prizePools, queryResults])
 
   return (
     <div className={classNames('relative', className)}>
@@ -60,7 +59,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       <CarouselHeader
         headers={[
           {
-            title: 'Daily Prize Value',
+            title: t('dailyPrizeValue'),
             stat: (
               <span className='text-flashy'>
                 $<CountUp countTo={amount} decimals={0} />
@@ -70,14 +69,19 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
         ]}
       />
       <CarouselDescription>
-        Daily Prize Value is split between all Prize Pools. Every <MinimumDeposit /> has an equal
-        chance to win the Grand Prize.{' '}
-        <ExternalLink
-          underline
-          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
-        >
-          Read more
-        </ExternalLink>
+        <Trans
+          i18nKey='dailyPrizeValueExplainer'
+          components={{
+            amount: <MinimumDeposit />,
+            a: (
+              <ExternalLink
+                children={undefined}
+                underline
+                href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+              />
+            )
+          }}
+        />
       </CarouselDescription>
       <PrizePoolBar
         data={data}
@@ -85,7 +89,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
       <PrizePoolTable
-        headers={{ prizes: 'Prizes' }}
+        headers={{ prizes: t('prizes') }}
         data={data}
         className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
       />

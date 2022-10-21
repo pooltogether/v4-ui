@@ -7,7 +7,7 @@ import { TokenIcon } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 const OPTIMISM_OP_ADDRESS = '0x4200000000000000000000000000000000000042'
@@ -55,9 +55,11 @@ export const RewardsBanners = (props: { className?: string }) => {
       >
         <div className='flex-inline space-x-2 items-center'>
           <span>📣</span>
-          {/* {t('optimismRewardsNowAvailable', 'Optimism rewards now available')}! */}
           <span>
-            Deposit on Optimism for <b>OP</b> <b className='text-flashy'>Bonus Rewards</b>!
+            <Trans
+              i18nKey='optimismRewardsNowAvailable'
+              components={{ style: <b className='text-flashy' /> }}
+            />
           </span>
           <TokenIcon
             chainId={CHAIN_ID.optimism}
@@ -66,10 +68,6 @@ export const RewardsBanners = (props: { className?: string }) => {
           />
           <img className='w-4 h-4 inline-block' src='/beach-with-umbrella.png' />
         </div>
-
-        {/* <div className='text-xxs xs:text-xs flex flex-col xs:flex-row mx-auto items-center justify-center'>
-        <div className='my-1 xs:my-0 xs:mr-3'> </div>
-      </div> */}
       </button>
       <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>

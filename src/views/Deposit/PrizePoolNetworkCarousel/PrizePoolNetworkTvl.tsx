@@ -5,13 +5,10 @@ import { useAllPrizePoolTicketTotalSupplies } from '@hooks/v4/PrizePool/useAllPr
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import {
-  divideBigNumbers,
-  formatCurrencyNumberForDisplay,
-  formatNumberForDisplay
-} from '@pooltogether/utilities'
+import { divideBigNumbers, formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { parseEther } from 'ethers/lib/utils'
+import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
@@ -22,7 +19,7 @@ import { CarouselDescription, CarouselHeader } from '.'
  */
 export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => {
   const { className } = props
-
+  const { t } = useTranslation()
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolTicketTotalSupplies()
   const { data: tvl } = usePrizePoolNetworkTicketTotalSupply()
@@ -39,7 +36,6 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           tvl: formatCurrencyNumberForDisplay(data?.amount.amount, 'usd', {
-            // notation: 'compact'
             maximumFractionDigits: 0
           }),
           amount: data.amount,
@@ -58,7 +54,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
       <CarouselHeader
         headers={[
           {
-            title: 'Total Deposits',
+            title: t('totalDeposits'),
             stat: (
               <>
                 $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
@@ -68,13 +64,18 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         ]}
       />
       <CarouselDescription>
-        All deposits into PoolTogether are earning yield for prizes.{' '}
-        <ExternalLink
-          underline
-          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
-        >
-          Read more
-        </ExternalLink>
+        <Trans
+          i18nKey='totalDepositsExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                underline
+                href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+              />
+            )
+          }}
+        />
       </CarouselDescription>
       <PrizePoolBar
         data={data}

@@ -26,7 +26,7 @@ import {
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 
@@ -53,7 +53,7 @@ export const HelpButtons = () => {
     {
       id: ViewIds.getTokens,
       view: GetTokensView,
-      header: 'Get Tokens'
+      header: t('getTokens')
     }
   ]
 
@@ -61,7 +61,7 @@ export const HelpButtons = () => {
     <div className='grid grid-cols-2 space-x-6 mx-auto'>
       <ModalTrigger
         icon={'dollar-sign'}
-        label={'Get tokens'}
+        label={t('getTokens')}
         onClick={() => {
           setSelectedViewId(ViewIds.getTokens)
           setIsOpen(true)
@@ -91,66 +91,81 @@ export const HelpButtons = () => {
 
 const HelpView = (props: ViewProps) => {
   const { setSelectedViewId } = props
+  const { t } = useTranslation()
   return (
     <>
-      <h4>What is PoolTogether?</h4>
+      <h4>{t('whatIsPoolTogether')}</h4>
       <p className='opacity-80 mb-6'>
-        PoolTogether is a crypto-powered savings protocol based on{' '}
-        <ExternalLink theme={LinkTheme.accent} href='https://en.wikipedia.org/wiki/Premium_Bond'>
-          Premium Bonds
-        </ExternalLink>
-        .
+        <Trans
+          i18nKey='ptExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href='https://en.wikipedia.org/wiki/Premium_Bond'
+              />
+            )
+          }}
+        />
       </p>
-      <h4>How do I win?</h4>
+      <h4>{t('howDoIWin')}</h4>
       <p className='opacity-80 mb-6'>
-        When you deposit into a PoolTogether Prize Pool you'll have a <b>{'daily'}</b> chance to win
-        some of the{' '}
-        <b className='text-flashy'>
-          <TotalNumberOfPrizes />
-        </b>{' '}
-        prizes. There's{' '}
-        <b className='text-flashy'>
-          <UpcomingPerDrawPrizeValue />
-        </b>{' '}
-        to be won and everyone has a chance to win the <b>Grand Prize </b>of{' '}
-        <b className='text-flashy'>
-          <LargestPrizeInNetwork />
-        </b>
-        .
+        <Trans
+          i18nKey={'howDoIWinExplainer'}
+          components={{
+            prizeFrequency: t('daily'),
+            numberOfPrizes: <TotalNumberOfPrizes />,
+            perDrawPrizeValue: <UpcomingPerDrawPrizeValue />,
+            grandPrizeValue: <LargestPrizeInNetwork />,
+            style: <b className='text-flashy' />,
+            b: <b />
+          }}
+        />
       </p>
-      <h4>How do I deposit?</h4>
+      <h4>{t('howDoIDeposit')}</h4>
       <p className='opacity-80 mb-6'>
-        To deposit into PoolTogether you'll need a{' '}
-        <ExternalLink
-          theme={LinkTheme.accent}
-          href={'https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'}
-        >
-          wallet
-        </ExternalLink>{' '}
-        and some{' '}
-        <button
-          className='text-pt-teal hover:text-white '
-          onClick={() => setSelectedViewId(ViewIds.getTokens)}
-        >
-          <span>tokens</span>
-          {/* <FeatherIcon icon='chevron-right' className='w-4 h-4 inline-block' /> */}
-        </button>
-        .
+        <Trans
+          i18nKey='howDoIDepositExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href={'https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'}
+              />
+            ),
+            button: (
+              <button
+                className='text-pt-teal hover:text-white '
+                onClick={() => setSelectedViewId(ViewIds.getTokens)}
+              />
+            )
+          }}
+        />
       </p>
 
-      <h4>Still have questions?</h4>
+      <h4>{t('stillHaveQuestions')}</h4>
       <p className='opacity-80'>
-        Check out our{' '}
-        <ExternalLink
-          theme={LinkTheme.accent}
-          href={'https://docs.pooltogether.com/welcome/getting-started'}
-        >
-          user guide
-        </ExternalLink>{' '}
-        or chat with us on{' '}
-        <ExternalLink theme={LinkTheme.accent} href={'https://pooltogether.com/discord'}>
-          Discord
-        </ExternalLink>
+        <Trans
+          i18nKey='stillHaveQuestionsExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href={'https://docs.pooltogether.com/welcome/getting-started'}
+              />
+            ),
+            discordLink: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href={'https://pooltogether.com/discord'}
+              />
+            )
+          }}
+        />
       </p>
     </>
   )
@@ -167,25 +182,30 @@ const GetTokensView = () => {
     'bridge'
   ])
 
+  const { t } = useTranslation()
+
   return (
     <>
       <p className='mb-6'>
-        To deposit into PoolTogether you will need some{' '}
-        <ExternalLink
-          theme={LinkTheme.accent}
-          href='https://ethereum.org/en/developers/docs/standards/tokens/erc-20/#introduction'
-        >
-          tokens
-        </ExternalLink>{' '}
-        to pay{' '}
-        <ExternalLink
-          theme={LinkTheme.accent}
-          href='https://ethereum.org/en/developers/docs/gas/#what-is-gas'
-        >
-          gas fees
-        </ExternalLink>{' '}
-        and some tokens to deposit and save! Check out the options below to see which way of getting
-        tokens suites you best.
+        <Trans
+          i18nKey={'getTokensExplainer'}
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href='https://ethereum.org/en/developers/docs/standards/tokens/erc-20/#introduction'
+              />
+            ),
+            a2: (
+              <ExternalLink
+                children={undefined}
+                theme={LinkTheme.accent}
+                href='https://ethereum.org/en/developers/docs/gas/#what-is-gas'
+              />
+            )
+          }}
+        />
       </p>
       <Tabs
         titleClassName='mb-8'
@@ -197,7 +217,7 @@ const GetTokensView = () => {
             view: <BuyTokens />,
             title: (
               <div className='flex space-x-2 items-center'>
-                <span>Buy</span>
+                <span>{t('buy')}</span>
                 <FeatherIcon icon={'dollar-sign'} className='relative w-5 h-5 inline-block' />
               </div>
             )
@@ -207,7 +227,7 @@ const GetTokensView = () => {
             view: <SwapTokens />,
             title: (
               <div className='flex space-x-2 items-center'>
-                <span>Swap</span>
+                <span>{t('swap')}</span>
                 <FeatherIcon icon={'refresh-cw'} className='relative w-5 h-5 inline-block' />
               </div>
             )
@@ -236,14 +256,13 @@ const BuyTokens = () => {
   const [chainId, setChainId] = useState(
     !!walletChainId && COINBASE_CHAINS.includes(walletChainId) ? walletChainId : COINBASE_CHAINS[0]
   )
+  const { t } = useTranslation()
 
   return (
     <div>
-      <p className='opacity-80 mb-1'>
-        Purchase tokens on an exchange and withdraw them to your personal wallet.{' '}
-      </p>
+      <p className='opacity-80 mb-1'>{t('buyTokensExplainer')}</p>
       <p className='opacity-80 mb-4'>
-        Buy tokens on{' '}
+        {t('buyTokensOn')}{' '}
         <TransparentSelect
           name='cbChain'
           id='cbChain'
@@ -270,17 +289,15 @@ const SwapTokens = () => {
       ? walletChainId
       : SWAP_TOKENS_CHAINS[0]
   )
+  const { t } = useTranslation()
 
   const { url, title } = getExchange(chainId)
 
   return (
     <div>
-      <p className='opacity-80 mb-1'>
-        Trade tokens you already have for others on a centralized exchange or swap using a
-        decentralized exchange.
-      </p>
+      <p className='opacity-80 mb-1'>{t('swapTokensExplainer')}</p>
       <p className='opacity-80 mb-4'>
-        Swap on{' '}
+        {t('swapOn')}{' '}
         <TransparentSelect
           name='cbChain'
           id='cbChain'
@@ -303,7 +320,7 @@ const SwapTokens = () => {
         target='_blank'
         rel='noopener noreferrer'
       >
-        <span className='text-sm'>Swap with {title}</span>
+        <span className='text-sm'>{t('swapWithExchange', { exchange: title })}</span>
         <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
       </ButtonLink>
     </div>
@@ -312,6 +329,7 @@ const SwapTokens = () => {
 
 const BridgeTokens = () => {
   const walletChainId = useWalletChainId()
+  const { t } = useTranslation()
   const [chainId, setChainId] = useState(
     !!walletChainId && BRIDGE_TOKENS_CHAINS.includes(walletChainId)
       ? walletChainId
@@ -321,16 +339,21 @@ const BridgeTokens = () => {
   return (
     <div>
       <p className='opacity-80 mb-1'>
-        <ExternalLink
-          href='https://ethereum.org/en/developers/docs/bridges/'
-          theme={LinkTheme.accent}
-        >
-          Move tokens
-        </ExternalLink>{' '}
-        you already have from one blockchain to another.
+        <Trans
+          i18nKey='bridgeExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                href='https://ethereum.org/en/developers/docs/bridges/'
+                theme={LinkTheme.accent}
+                children={undefined}
+              />
+            )
+          }}
+        />
       </p>
       <p className='opacity-80 mb-4'>
-        Bridge from{' '}
+        {t('bridgeFrom')}{' '}
         <TransparentSelect
           name='cbChain'
           id='cbChain'
@@ -354,7 +377,7 @@ const BridgeTokens = () => {
             target='_blank'
             rel='noopener noreferrer'
           >
-            <span className='text-sm'>Bridge with {title}</span>
+            <span className='text-sm'>{t('bridgeWith', { bridge: title })}</span>
             <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
           </ButtonLink>
         ))}

@@ -15,7 +15,7 @@ import { PrizeTier } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 
 export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
@@ -59,21 +59,27 @@ const AmountOfPrizes = (props) => {
 
   return (
     <div className='font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90'>
-      <span
-        className={classNames('transition text-gradient-magenta', {
-          'text-opacity-100': isFetched,
-          'opacity-50 animate-pulse': !isFetched
-        })}
-      >
-        <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} /> Prizes.
-      </span>{' '}
-      Every. Week.
+      <Trans
+        i18nKey={'prizesEveryWeek'}
+        components={{
+          style: (
+            <span
+              className={classNames('transition text-gradient-magenta', {
+                'text-opacity-100': isFetched,
+                'opacity-50 animate-pulse': !isFetched
+              })}
+            />
+          ),
+          amount: <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} />
+        }}
+      />
     </div>
   )
 }
 
 const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTier }) => {
   const { isFetched, ticket, prizeTier } = props
+  const { t } = useTranslation()
 
   let amount = 0
   if (isFetched) {
@@ -94,7 +100,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
         )}
       </h1>
       <p className='font-semibold text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90 text-xxs xs:text-sm '>
-        in prizes to win
+        {t('inPrizesToWin')}
       </p>
     </>
   )
@@ -124,8 +130,7 @@ export const DrawCountdown = (props) => {
   return (
     <div className='flex flex-col mx-auto pt-3 h-28'>
       <DrawNumberString>
-        {/* <span>{t('joinDrawNumber', 'Join draw #{{number}}', { number: drawId })}</span> */}
-        <span>Time left to join draw #{drawId}</span>
+        <span>{t('timeLeftToJoinDraw', { drawId })}</span>
       </DrawNumberString>
       <TimeDisplay
         hideDays

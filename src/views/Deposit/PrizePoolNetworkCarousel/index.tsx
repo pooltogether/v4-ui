@@ -73,7 +73,7 @@ export const CarouselHeader = (props: { headers: { title: string; stat: React.Re
   >
     {props.headers.map(({ title, stat }, index) => (
       <div key={`header-${title}`} className='flex flex-col'>
-        <span>{title}</span>
+        <span className='capitalize'>{title}</span>
         <span className='text-7xl xs:text-12xl leading-none'>{stat}</span>
       </div>
     ))}

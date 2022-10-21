@@ -1,4 +1,3 @@
-import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { CheckedState, PrizePageState } from '@hooks/v4/usePrizePageState'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'

@@ -7,6 +7,7 @@ import { useAllLatestDrawWinners } from '@hooks/v4/useDrawWinners'
 import { useAllLatestDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
+import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
 
@@ -17,7 +18,7 @@ import { CarouselDescription, CarouselHeader } from '.'
  */
 export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
-
+  const { t } = useTranslation()
   const prizePools = usePrizePools()
   const queryResults = useAllLatestDrawWinnersInfo()
 
@@ -51,7 +52,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
       <CarouselHeader
         headers={[
           {
-            title: 'Prizes won last draw',
+            title: t('prizesWonLastDraw'),
             stat: (
               <span className='text-flashy'>
                 <CountUp countTo={totalNumberOfPrizes} decimals={0} />
@@ -61,13 +62,18 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
         ]}
       />
       <CarouselDescription>
-        Some Prize Pools have many small prizes, others have a few big prizes.{' '}
-        <ExternalLink
-          underline
-          href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
-        >
-          Read more
-        </ExternalLink>
+        <Trans
+          i18nKey='prizesWonLastDrawExplainer'
+          components={{
+            a: (
+              <ExternalLink
+                children={undefined}
+                underline
+                href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+              />
+            )
+          }}
+        />
       </CarouselDescription>
       <PrizePoolBar
         data={data}
@@ -75,7 +81,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
         borderClassName='border-white dark:border-pt-purple-darkest'
       />
       <PrizePoolTable
-        headers={{ prizes: 'Prizes won last draw' }}
+        headers={{ prizes: t('prizesWonLastDraw') }}
         data={data}
         className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
       />

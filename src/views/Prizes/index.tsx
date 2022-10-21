@@ -29,6 +29,7 @@ export const PRIZE_UI_STATES = {
 
 export const PrizesUI = () => {
   useLockedDrawIdsWatcher()
+  const { t } = useTranslation()
   const prizeDistributor = usePrizeDistributorBySelectedChainId()
   const prizePool = useSelectedPrizePool()
   const usersAddress = useUsersAddress()
@@ -87,33 +88,20 @@ export const PrizesUI = () => {
             {
               id: 'last_draw',
               view: <PastDraws />,
-              title: 'Last Draw'
+              title: t('lastDraw')
             },
             {
               id: 'history',
               view: <PastDrawsList />,
-              title: 'Draw History'
+              title: t('drawHistory')
             }
           ]}
         />
       </div>
     </PagePadding>
   )
-
-  // return (
-  //   <PagePadding>
-  //     <div className='w-full flex flex-col sm:flex-row sm:justify-evenly mb-10 sm:mb-16 space-y-4 sm:space-y-0 sm:space-x-4'>
-  //       <div className='w-full max-w-screen-xs space-y-4'>
-  //         <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
-  //       </div>
-  //       <div className='flex flex-col max-w-screen-xs space-y-2 w-full'>
-  //         <PastDraws />
-  //       </div>
-  //     </div>
-  //     <PastDrawsList prizeDistributor={prizeDistributor} prizePool={prizePool} />
-  //   </PagePadding>
-  // )
 }
+
 const CheckForPrizesOnNetwork = (props: {
   className?: string
   prizePool: PrizePool
@@ -125,7 +113,7 @@ const CheckForPrizesOnNetwork = (props: {
     <div
       className={classNames('font-semibold flex flex-col space-y-2 text-xs xs:text-sm', className)}
     >
-      <CardTitle title='Prizes for Prize Pool' />
+      <CardTitle title={t('prizesForPrizePool')} />
       <SelectAppChainIdModal className='network-dropdown' />
     </div>
   )
