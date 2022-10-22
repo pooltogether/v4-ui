@@ -1,11 +1,9 @@
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { LoadingListItem } from '@components/List/ListItem'
-import { NumberOfPrizes } from '@components/PrizePool/NumberOfPrizes'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { Prizes } from '@components/PrizePool/Prizes'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { usePrizePoolsByAvgPrizeValue } from '@hooks/usePrizePoolsByAvgPrizeValue'
-import { usePrizePoolsByExpectedTotalPrizeValue } from '@hooks/usePrizePoolsByExpectedTotalPrizeValue'
 import { usePrizePoolsByPrizes } from '@hooks/usePrizePoolsByPrizes'
 import { usePrizePoolsByTvl } from '@hooks/usePrizePoolsByTvl'
 import { useQueryParamState } from '@hooks/useQueryParamState'
@@ -13,6 +11,7 @@ import { Button, ButtonSize, ButtonTheme, Tooltip } from '@pooltogether/react-co
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { TotalAmountDeposited } from './TotalAmountDeposited'
 
 enum Metrics {
@@ -20,38 +19,6 @@ enum Metrics {
   PRIZES = 'PRIZES',
   NUM_PRIZES = 'NUM_PRIZES'
 }
-
-const Columns: {
-  [metric: number]: {
-    headerI18nKey: string
-    tooltipI18nKey?: string
-    view: (props: { prizePool: PrizePool; className: string }) => JSX.Element
-  }
-} = Object.freeze({
-  [Metrics.TVL]: {
-    headerI18nKey: 'Total Amount Deposited',
-    view: TotalAmountDeposited
-  },
-  // [Metrics.NUM_PRIZES]: {
-  //   headerI18nKey: 'Number of Prizes (Projected)',
-  //   tooltipI18nKey: 'The expected number of prizes awarded each day.',
-  //   view: (props: { prizePool: PrizePool; className?: string }) => (
-  //     <div className={classNames(props.className)}>
-  //       <NumberOfPrizes prizePool={props.prizePool} />
-  //     </div>
-  //   )
-  // },
-  [Metrics.PRIZES]: {
-    headerI18nKey: 'Prizes',
-    tooltipI18nKey:
-      'The potential prizes that can be won! All deposits have a chance to win the Grand Prize.',
-    view: (props: { prizePool: PrizePool; className?: string }) => (
-      <div className={classNames(props.className)}>
-        <Prizes prizePool={props.prizePool} />
-      </div>
-    )
-  }
-})
 
 const tableGrid = 'grid gap-x-2 grid-cols-3 sm:grid-cols-4'
 const getHiddenColumnClassNames = (column: string, columns: string[]) => {
@@ -74,29 +41,60 @@ export const PrizePoolsTable: React.FC<{
     usePrizePoolsByAvgPrizeValue()
   const { prizePools: prizePoolsByPrizes, isFetched: isPrizePoolsByPrizes } =
     usePrizePoolsByPrizes()
+  const { t } = useTranslation()
+
+  const Columns: {
+    [metric: number]: {
+      header: string
+      tooltip?: string
+      view: (props: { prizePool: PrizePool; className: string }) => JSX.Element
+    }
+  } = Object.freeze({
+    [Metrics.TVL]: {
+      header: t('totalAmountDeposited'),
+      view: TotalAmountDeposited
+    },
+    // [Metrics.NUM_PRIZES]: {
+    //   header: 'Number of Prizes (Projected)',
+    //   tooltip: 'The expected number of prizes awarded each day.',
+    //   view: (props: { prizePool: PrizePool; className?: string }) => (
+    //     <div className={classNames(props.className)}>
+    //       <NumberOfPrizes prizePool={props.prizePool} />
+    //     </div>
+    //   )
+    // },
+    [Metrics.PRIZES]: {
+      header: t('prizes'),
+      tooltip: t('prizeTablePrizeToolTip'),
+      view: (props: { prizePool: PrizePool; className?: string }) => (
+        <div className={classNames(props.className)}>
+          <Prizes prizePool={props.prizePool} />
+        </div>
+      )
+    }
+  })
 
   const sortOptions = [
     {
-      title: 'Popularity',
-      key: 'popularity',
-      description: 'These Prize Pools are the most popular and have the most tokens deposited.',
+      title: t('mostDeposits'),
+      key: 'deposits',
+      description: t('mostPopularDescription'),
       prizePools: prizePoolsByTvl,
       isFetched: isPrizePoolsByTvlFetched,
       columnPriority: [Metrics.TVL, Metrics.PRIZES]
     },
     {
-      title: 'Average Prize Size',
+      title: t('averagePrizeSize'),
       key: 'avg_prize',
-      description:
-        "Some Prize Pools have many small prizes. Others have fewer, but larger prizes. It's up to you!",
+      description: t('prizesWonLastDrawExplainer2'),
       prizePools: prizePoolsByAvgPrizeValue,
       isFetched: isPrizePoolsByAvgPrizeValueFetched,
       columnPriority: [Metrics.PRIZES, Metrics.TVL]
     },
     {
-      title: 'Chances to Win',
+      title: t('bestChanceToWin'),
       key: 'best_chances',
-      description: "More prizes means more chances to win every day. It's that simple",
+      description: t('bestChanceToWinDescription2'),
       prizePools: prizePoolsByPrizes,
       isFetched: isPrizePoolsByPrizes,
       columnPriority: [Metrics.PRIZES, Metrics.TVL]
@@ -114,7 +112,6 @@ export const PrizePoolsTable: React.FC<{
   const onChange = (index: number) => {
     const selectedOption = sortOptions[index]
     setData(selectedOption.key)
-    // setSelectedIndex(index)
   }
 
   return (
@@ -123,7 +120,9 @@ export const PrizePoolsTable: React.FC<{
       <div className='flex flex-col-reverse w-full sm:flex-row mb-8'>
         <div className='opacity-80 sm:max-w-lg mt-3 sm:mt-0'>{selectedSort.description}</div>
         <div className='ml-auto flex w-full sm:w-auto'>
-          <div className='sm:text-lg font-semibold mr-2 whitespace-nowrap my-auto'>Sort by</div>
+          <div className='sm:text-lg font-semibold mr-2 whitespace-nowrap my-auto'>
+            {t('sortBy')}
+          </div>
           <div className='my-auto w-full'>
             <TransparentSelect
               name='list'
@@ -145,7 +144,7 @@ export const PrizePoolsTable: React.FC<{
 
       {/* Column Header */}
       <div className={classNames(tableGrid, 'text-xxs mb-2')}>
-        <span className='opacity-80'>Prize Pool</span>
+        <span className='opacity-80'>{t('prizePool')}</span>
         {Object.keys(Columns).map((columnKey, index) => (
           <div
             key={`column-header-${index}`}
@@ -153,12 +152,12 @@ export const PrizePoolsTable: React.FC<{
               getHiddenColumnClassNames(columnKey, selectedSort.columnPriority)
             )}
           >
-            <span className='opacity-80 flex'>{Columns[columnKey].headerI18nKey}</span>
-            {!!Columns[columnKey].tooltipI18nKey && (
+            <span className='opacity-80 flex'>{Columns[columnKey].header}</span>
+            {!!Columns[columnKey].tooltip && (
               <Tooltip
                 id={`header-${index}`}
                 iconClassName='ml-1 opacity-80'
-                tip={Columns[columnKey].tooltipI18nKey}
+                tip={Columns[columnKey].tooltip}
               />
             )}
           </div>
@@ -194,7 +193,7 @@ export const PrizePoolsTable: React.FC<{
                 onClick={() => onPrizePoolSelect(prizePool)}
                 key={`pp-join-${prizePool.id()}`}
               >
-                <div className='text-xxs xs:text-xs font-bold'>Deposit</div>
+                <div className='text-xxs xs:text-xs font-bold'>{t('deposit')}</div>
                 <FeatherIcon icon='chevron-right' className='w-5 h-5 sm:w-4 sm:h-4' />
               </Button>
             </>

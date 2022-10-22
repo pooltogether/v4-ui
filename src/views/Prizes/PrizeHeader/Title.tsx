@@ -4,10 +4,7 @@ import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDis
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState } from '@hooks/v4/usePrizePageState'
 import { LoadingDots } from '@pooltogether/react-components'
-import {
-  formatNumberForDisplay,
-  formatUnformattedBigNumberForDisplay
-} from '@pooltogether/utilities'
+import { formatUnformattedBigNumberForDisplay } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { ethers } from 'ethers'

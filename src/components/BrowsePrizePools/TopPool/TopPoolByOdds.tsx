@@ -2,8 +2,9 @@ import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolsByOdds } from '@hooks/usePrizePoolsByOdds'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { numberWithCommas } from '@pooltogether/utilities'
+import { formatCurrencyNumberForDisplay, numberWithCommas } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { TopPool } from '.'
 import { CardLabelLarge, CardLabelSmall } from '../../PrizePool/PrizePoolCard'
@@ -19,13 +20,14 @@ export const TopPoolByOdds: React.FC<{
   const [amount, setAmount] = useState('1000')
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
   const { isFetched, prizePools } = usePrizePoolsByOdds(amount, '6')
+  const { t } = useTranslation()
   const prizePool = prizePools?.[0]
 
   return (
     <TopPool
       className={className}
       isFetched={isFetched}
-      title={'Best chances to win'}
+      title={t('bestChanceToWin')}
       secondaryTitle={
         <div className='flex items-center space-x-1 text-xs'>
           <span>per</span>
@@ -43,9 +45,9 @@ export const TopPoolByOdds: React.FC<{
           </TransparentSelect>
         </div>
       }
-      description={`Your odds to win at least one prize per day with a $${numberWithCommas(amount, {
-        precision: 0
-      })} deposit would be maximized here.`}
+      description={t('bestChanceToWinDescription', {
+        amount: formatCurrencyNumberForDisplay(amount, 'usd')
+      })}
       prizePool={prizePool}
       onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {
@@ -56,7 +58,7 @@ export const TopPoolByOdds: React.FC<{
       }}
     >
       <div>
-        <CardLabelSmall>Daily chances to win</CardLabelSmall>
+        <CardLabelSmall>{t('frequencyChanceToWin', { frequency: t('daily') })}</CardLabelSmall>
         <CardLabelLarge>
           <OddsForDeposit prizePool={prizePool} amount={amount} />
         </CardLabelLarge>

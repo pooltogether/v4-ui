@@ -6,6 +6,7 @@ import { ValueOfPrizesWonLastDraw } from '@components/PrizePoolNetwork/ValueOfPr
 import { CardTitle } from '@components/Text/CardTitle'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { Trans } from 'next-i18next'
 import { useState } from 'react'
 import { PastDrawsModal } from './PastDrawsModal'
 
@@ -23,14 +24,14 @@ export const PastDraws = () => {
             className='w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 mr-2'
           />
           <div className='text-lg xs:text-xl sm:text-2xl lg:text-3xl'>
-            <b>
-              <ValueOfPrizesWonLastDraw />
-            </b>{' '}
-            won across{' '}
-            <b>
-              <NumberOfPrizesWonLastDraw />
-            </b>{' '}
-            prizes!
+            <Trans
+              i18nKey='amountWonAcrossPrizes'
+              components={{
+                b: <b />,
+                valueOfPrizesWon: <ValueOfPrizesWonLastDraw />,
+                numberOfPrizesWon: <NumberOfPrizesWonLastDraw />
+              }}
+            />
           </div>
         </div>
         <ul className='flex flex-col space-y-1'>
@@ -44,7 +45,10 @@ export const PastDraws = () => {
               }}
               right={
                 <b>
-                  Draw #<LatestDrawId prizeDistributor={prizeDistributor} />
+                  <Trans
+                    i18nKey='drawId'
+                    components={{ id: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+                  />
                 </b>
               }
             />

@@ -16,6 +16,7 @@ import {
   TransactionState,
   useTransaction
 } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
@@ -49,6 +50,7 @@ export const BalanceModal: React.FC<{
   const depositTransaction = useTransaction(depositTransactionId)
   const withdrawTransaction = useTransaction(withdrawTransactionId)
   const [viewId, setViewId] = useState<string | number>(ViewIds.main)
+  const { t } = useTranslation()
 
   const sendDepositTransaction = useSendDepositTransaction(depositAmount)
   const sendWithdrawTransaction = useSendWithdrawTransaction(withdrawAmount)
@@ -61,31 +63,31 @@ export const BalanceModal: React.FC<{
     {
       id: ViewIds.deposit,
       view: DepositView,
-      header: 'Deposit',
+      header: t('deposit'),
       previousViewId: ViewIds.main
     },
     {
       id: ViewIds.depositReview,
       view: DepositReviewView,
-      header: 'Deposit review',
+      header: t('depositReview'),
       previousViewId: ViewIds.deposit
     },
     {
       id: ViewIds.withdraw,
       view: WithdrawView,
-      header: 'Withdraw',
+      header: t('withdraw'),
       previousViewId: ViewIds.main
     },
     {
       id: ViewIds.withdrawReview,
       view: WithdrawReviewView,
-      header: 'Withdraw review',
+      header: t('withdrawReview'),
       previousViewId: ViewIds.withdraw
     },
     {
       id: ViewIds.moreInfo,
       view: PrizePoolInfoView,
-      header: 'More info',
+      header: t('moreInfo'),
       previousViewId: ViewIds.main
     },
     {
@@ -98,7 +100,7 @@ export const BalanceModal: React.FC<{
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
-      header: 'Connect a wallet',
+      header: t('connectAWallet'),
       onCloseViewId: ViewIds.main
     }
   ]

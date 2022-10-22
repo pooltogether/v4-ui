@@ -25,6 +25,7 @@ interface PrizeBreakdownProps {
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   const { prizeTier, className, ticket, isFetched } = props
+  const { t } = useTranslation()
 
   const { numberOfPrizesByTier, totalNumberOfPrizes, valueOfPrizesByTier } = useMemo(() => {
     const numberOfPrizesByTier = getPrizeTierNumberOfPrizes(prizeTier)
@@ -40,8 +41,8 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   return (
     <div className={classnames('flex flex-col max-w-md text-center', className)}>
       <div className={classNames('grid grid-cols-2')}>
-        <PrizeTableHeader>{'Prize Value'}</PrizeTableHeader>
-        <PrizeTableHeader>{'Percent of Prizes'}</PrizeTableHeader>
+        <PrizeTableHeader>{t('prizeValue')}</PrizeTableHeader>
+        <PrizeTableHeader>{t('percentOfPrizes')}</PrizeTableHeader>
       </div>
 
       {!isFetched ? (

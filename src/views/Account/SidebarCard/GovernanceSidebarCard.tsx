@@ -26,7 +26,7 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
     <>
       <SidebarCard
         className={className}
-        title={'🗳 Governance'}
+        title={'🗳 ' + t('governance')}
         description={<GovernanceDescription />}
         main={<UsersVotes usersAddress={usersAddress} />}
         href={'https://vote.pooltogether.com/proposals?view=active'}
@@ -53,6 +53,7 @@ const GovernanceDescription = () => {
         '18'
       )
     : null
+  const { t } = useTranslation()
 
   if (isBalancesFetched && totalVotesAmount.amountUnformatted.isZero()) {
     return (
@@ -71,7 +72,7 @@ const GovernanceDescription = () => {
     )
   }
 
-  return <>PoolTogether is in your hands</>
+  return <>{t('pooltogetherIsInYourHands')}</>
 }
 
 const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
@@ -84,14 +85,15 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
     isFetched && isBalancesFetched
       ? getAmountFromUnformatted(votes?.amountUnformatted.add(ppoolBalance.amountUnformatted), '18')
       : null
+  const { t } = useTranslation()
 
   return (
     <div>
       {totalVotesAmount ? (
         totalVotesAmount.amountUnformatted.isZero() ? (
-          <span>No votes</span>
+          <span>{t('noVotes')}</span>
         ) : (
-          <span>{`${totalVotesAmount.amountPretty} Votes`}</span>
+          <span>{t('numberOfVotes', { numberOfVotes: totalVotesAmount.amountPretty })}</span>
         )
       ) : !!usersAddress ? (
         <ThemedClipSpinner sizeClassName='w-4 h-4' />
@@ -100,7 +102,7 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
       {!!usersAddress && (
         <ul className='font-normal text-xs'>
           <li className='flex justify-between'>
-            <span>On chain</span>
+            <span>{t('onChain')}</span>
             {isFetched ? (
               <span className='font-bold'>{votes?.amountPretty}</span>
             ) : (
@@ -108,7 +110,7 @@ const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {
             )}
           </li>
           <li className='flex justify-between'>
-            <span>Off chain</span>
+            <span>{t('offChain')}</span>
             {isBalancesFetched ? (
               <span className='font-bold'>{ppoolBalance.amountPretty}</span>
             ) : (

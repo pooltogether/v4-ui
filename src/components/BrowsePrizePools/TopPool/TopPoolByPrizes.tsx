@@ -1,6 +1,7 @@
 import { usePrizePoolsByPrizes } from '@hooks/usePrizePoolsByPrizes'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { useTranslation } from 'next-i18next'
 import { TopPool } from '.'
 
 export const TopPoolByPrizes: React.FC<{
@@ -11,13 +12,14 @@ export const TopPoolByPrizes: React.FC<{
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
   const { isFetched, prizePools } = usePrizePoolsByPrizes()
   const prizePool = prizePools?.[0]
+  const { t } = useTranslation()
 
   return (
     <TopPool
       className={className}
       isFetched={isFetched}
-      title={'Most Prizes'}
-      description={'The most prizes are awarded here, but the prizes are smaller.'}
+      title={t('mostPrizes')}
+      description={t('mostPrizesDescription')}
       prizePool={prizePool}
       onClick={async (prizePool) => {
         if (!!onPrizePoolSelect) {

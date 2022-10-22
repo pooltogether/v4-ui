@@ -8,6 +8,7 @@ import {
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
@@ -47,18 +48,20 @@ export const DepositModal: React.FC<{
     [_sendDepositTransaction]
   )
 
+  const { t } = useTranslation()
+
   const views: ModalWithViewStateView[] = [
     {
       id: ViewIds.explore,
       view: ExplorePrizePoolsView,
-      header: 'Explore Prize Pools',
+      header: t('explorePrizePools'),
       nextViewId: ViewIds.deposit,
       hideNextNavButton: true
     },
     {
       id: ViewIds.deposit,
       view: DepositView,
-      header: 'Deposit in a Prize Pool',
+      header: t('depositIntoAPrizePool'),
       previousViewId: ViewIds.explore,
       onCloseViewId: ViewIds.explore,
       maxWidthClassName: 'max-w-screen-xs'
@@ -66,7 +69,7 @@ export const DepositModal: React.FC<{
     {
       id: ViewIds.reviewTransaction,
       view: DepositReviewView,
-      header: 'Deposit review',
+      header: t('depositReview'),
       previousViewId: ViewIds.deposit,
       onCloseViewId: ViewIds.deposit,
       maxWidthClassName: 'max-w-screen-xs'
@@ -75,7 +78,7 @@ export const DepositModal: React.FC<{
       id: ViewIds.walletConnection,
       view: WalletConnectionView,
       previousViewId: ViewIds.deposit,
-      header: 'Connect a wallet',
+      header: t('connectAWallet'),
       bgClassName: 'bg-new-modal',
       onCloseViewId: ViewIds.explore
     }

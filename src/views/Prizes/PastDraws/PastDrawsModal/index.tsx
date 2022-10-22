@@ -7,6 +7,7 @@ import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { loopXTimes } from '@utils/loopXTimes'
 import classNames from 'classnames'
+import { Trans, useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -23,6 +24,7 @@ export const PastDrawsModal = (props: {
   prizeDistributor: PrizeDistributor
 }) => {
   const { isOpen, closeModal, prizeDistributor } = props
+  const { t } = useTranslation()
   const { data: winners, isError, isFetched } = useLatestDrawWinners(prizeDistributor, true)
   const { data: winnersInfo } = useLatestDrawWinnersInfo(prizeDistributor)
   const { data: tokenData } = usePrizeDistributorToken(prizeDistributor)
@@ -39,28 +41,38 @@ export const PastDrawsModal = (props: {
     >
       {/* Title */}
       <div className='text-2xl font-bold flex space-x-2 mb-4'>
-        <span>Draw #</span>
-        <LatestDrawId prizeDistributor={prizeDistributor} />{' '}
+        <Trans
+          i18nKey='drawId'
+          components={{ id: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+        />
       </div>
       <div className='mb-8'>
-        Draw #
-        <LatestDrawId prizeDistributor={prizeDistributor} /> on{' '}
-        {getNetworkNiceNameByChainId(prizeDistributor.chainId)} had{' '}
-        <b>{winnersInfo?.prizesWon} prizes</b> totalling{' '}
-        <b
-          className={classNames({
-            'text-flashy': !!winnersInfo && !winnersInfo.amount.amountUnformatted.isZero()
-          })}
-        >
-          {winnersInfo?.amount.amountPretty}
-        </b>{' '}
-        {tokenData?.token.symbol}. Select a winner to view their PoolTogether balance.
+        <Trans
+          i18nKey='pastDrawModalDescription'
+          components={{
+            drawId: <LatestDrawId prizeDistributor={prizeDistributor} />,
+            b: <b />,
+            flashy: (
+              <b
+                className={classNames({
+                  'text-flashy': !!winnersInfo && !winnersInfo.amount.amountUnformatted.isZero()
+                })}
+              />
+            )
+          }}
+          values={{
+            network: getNetworkNiceNameByChainId(prizeDistributor.chainId),
+            numberOfPrizes: winnersInfo?.prizesWon,
+            valueOfPrize: winnersInfo?.amount.amountPretty,
+            ticker: tokenData?.token.symbol
+          }}
+        />
       </div>
 
       {/* Table Header */}
       <div className='grid grid-cols-2 text-center text-opacity-80 mb-3'>
-        <span>Winner</span>
-        <span>Prize</span>
+        <span>{t('winner')}</span>
+        <span>{t('prizes')}</span>
       </div>
 
       {/* Error message */}
@@ -73,7 +85,7 @@ export const PastDrawsModal = (props: {
 
       {/* No winners message */}
       {isFetched && winners?.prizes.length === 0 && (
-        <div className='opacity-80 w-full text-center py-8'>No winners 😔</div>
+        <div className='opacity-80 w-full text-center py-8'>{t('noWinners')} 😔</div>
       )}
 
       {/* Table content */}
@@ -114,7 +126,7 @@ export const PastDrawsModal = (props: {
             className='opacity-70 hover:opacity-100 transition-opacity w-full text-center'
             onClick={() => setWinnersToShow(winnersToShow + DEFAULT_ROWS_TO_SHOW)}
           >
-            more
+            {t('showMore')}
           </button>
         )}
       </ul>

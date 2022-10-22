@@ -14,11 +14,13 @@ import {
   unionProbabilities
 } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { Trans, useTranslation } from 'next-i18next'
 import { useMemo, useState } from 'react'
 import { SidebarCard } from '.'
 
 export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
+  const { t } = useTranslation()
 
   if (!usersAddress) {
     return <OddsOfWinningWithX />
@@ -26,8 +28,8 @@ export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
 
   return (
     <SidebarCard
-      title={'🎲 Winning odds'}
-      description={'Odds of winning at least one prize*'}
+      title={'🎲 ' + t('winningChance')}
+      description={t('chanceOfWinningOnePrize')}
       main={<UserOddsOfWinning usersAddress={usersAddress} />}
     />
   )
@@ -46,6 +48,7 @@ export const OddsOfWinningWithX: React.FC<{ className?: string; bgClassName?: st
 ) => {
   const { className, bgClassName } = props
   const appEnv = useAppEnvString()
+  const { t } = useTranslation()
 
   const { chainId: selectedChainId } = useSelectedChainId()
   const [chainId, setChainId] = useState(selectedChainId)
@@ -56,38 +59,44 @@ export const OddsOfWinningWithX: React.FC<{ className?: string; bgClassName?: st
 
   return (
     <SidebarCard
-      title={'🎲 Winning odds'}
+      title={'🎲 ' + t('winningChance')}
       className={className}
       bgClassName={bgClassName}
       description={
         <>
-          Odds of a deposit of{' '}
-          <TransparentSelect
-            name='amount'
-            id='amount'
-            onChange={(event) => setAmount(event.target.value)}
-            value={amount}
-          >
-            {AMOUNT_OPTIONS.map((amount) => (
-              <option key={amount} value={amount}>
-                ${numberWithCommas(amount, { precision: 0 })}
-              </option>
-            ))}
-          </TransparentSelect>{' '}
-          winning at least one prize in the{' '}
-          <TransparentSelect
-            name='chainId'
-            id='chainId'
-            onChange={(event) => setChainId(Number(event.target.value))}
-            value={chainId}
-          >
-            {V4_CHAIN_IDS[appEnv].map((chainId) => (
-              <option key={chainId} value={chainId}>
-                {getNetworkNiceNameByChainId(chainId)}
-              </option>
-            ))}
-          </TransparentSelect>{' '}
-          prize pool
+          <Trans
+            i18nKey='chanceOfDepositInPrizePool'
+            components={{
+              depositSize: (
+                <TransparentSelect
+                  name='amount'
+                  id='amount'
+                  onChange={(event) => setAmount(event.target.value)}
+                  value={amount}
+                >
+                  {AMOUNT_OPTIONS.map((amount) => (
+                    <option key={amount} value={amount}>
+                      ${numberWithCommas(amount, { precision: 0 })}
+                    </option>
+                  ))}
+                </TransparentSelect>
+              ),
+              network: (
+                <TransparentSelect
+                  name='chainId'
+                  id='chainId'
+                  onChange={(event) => setChainId(Number(event.target.value))}
+                  value={chainId}
+                >
+                  {V4_CHAIN_IDS[appEnv].map((chainId) => (
+                    <option key={chainId} value={chainId}>
+                      {getNetworkNiceNameByChainId(chainId)}
+                    </option>
+                  ))}
+                </TransparentSelect>
+              )
+            }}
+          />
         </>
       }
       main={
@@ -111,6 +120,7 @@ const OddsOfWinning: React.FC<{
   prizePool?: PrizePool
 }> = (props) => {
   const { odds, oneOverOdds, isFetched, prizePool } = props
+  const { t } = useTranslation()
 
   const weeklyOneOverOdds = useMemo(() => {
     if (!isFetched) return null
@@ -123,7 +133,7 @@ const OddsOfWinning: React.FC<{
   return (
     <ul className='font-normal text-xs'>
       <li className='flex justify-between'>
-        <span>Daily</span>
+        <span>{t('daily')}</span>
         {isFetched && !!oneOverOdds && !isNaN(oneOverOdds) ? (
           <span className='font-bold'>
             {oneOverOdds === Infinity ? '0 😔' : `1 in ${oneOverOdds.toFixed(2)}`}
@@ -133,7 +143,7 @@ const OddsOfWinning: React.FC<{
         )}
       </li>
       <li className='flex justify-between'>
-        <span>Weekly</span>
+        <span>{t('weekly')}</span>
         {isFetched && !!weeklyOneOverOdds && !isNaN(weeklyOneOverOdds) ? (
           <span className='font-bold'>
             {weeklyOneOverOdds === Infinity ? '0 😭' : `1 in ${weeklyOneOverOdds.toFixed(2)}`}
@@ -150,10 +160,11 @@ const OddsOfWinning: React.FC<{
 const AveragePrizeValue: React.FC<{ prizePool: PrizePool }> = (props) => {
   const { prizePool } = props
   const { data, isFetched: isPrizeFetched } = usePrizePoolPrizes(prizePool)
+  const { t } = useTranslation()
 
   return (
     <li className='flex justify-between'>
-      <span>Average Prize Value</span>
+      <span>{t('averagePrizeValue')}</span>
       {isPrizeFetched ? (
         <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
       ) : (

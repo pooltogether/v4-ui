@@ -22,6 +22,7 @@ import { useIsWalletConnected, useUsersAddress } from '@pooltogether/wallet-conn
 import { AccountCard } from '@views/Account/AccountCard'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { DelegationList } from './DelegationList'
 import { OddsDisclaimer } from './OddsDisclaimer'
@@ -108,6 +109,7 @@ const SidebarContent: React.FC<{ className?: string; children: React.ReactNode }
 }
 
 const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
+  const { t } = useTranslation()
   return (
     <div className={classNames('text-center leading-none', props.className)}>
       <div className='mx-auto mt-6 mb-2 sm:mb-4 flex justify-center'>
@@ -117,11 +119,9 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
         />
       </div>
       <div className='font-bold w-2/3 text-2xl sm:text-4xl lg:text-6xl mx-auto mb-2'>
-        Prize savings for humans
+        {t('prizeSavingsForHumans')}
       </div>
-      <div className='font-bold mb-8 sm:mb-12'>
-        Open to all, free forever. No banks, no stress, just prizes.
-      </div>
+      <div className='font-bold mb-8 sm:mb-12'>{t('openToAllFreeForever')}</div>
       <ConnectWalletButton
         theme={ButtonTheme.transparent}
         radius={ButtonRadius.full}
@@ -132,7 +132,7 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
         className='opacity-75 text-xxs lg:text-xs'
         href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
       >
-        {`What's a wallet?`}
+        {t('whatsAWallet')}
       </ExternalLink>
     </div>
   )
@@ -142,6 +142,7 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
   const { className } = props
   const [isOpen, setIsOpen] = useState(false)
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
+  const { t } = useTranslation()
 
   const onPrizePoolSelect = async (prizePool: PrizePool) => {
     setSelectedPrizePoolAddress(prizePool)
@@ -157,7 +158,7 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
     <div className={className}>
       <div className='mb-12'>
         <div className='flex flex-col space-y-2 mb-2'>
-          <div className='font-bold text-xl'>Explore Prize Pools</div>
+          <div className='font-bold text-xl'>{t('explorePrizePools')}</div>
           <div className='opacity-80'>
             <PoolTogetherExplainerWithStats />
           </div>
@@ -169,12 +170,12 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
           {
             id: 'all',
             view: <PrizePoolsTable onPrizePoolSelect={onPrizePoolSelect} className='' />,
-            title: 'Prize Pools'
+            title: t('prizePools')
           },
           {
             id: 'top',
             view: <RecommendedPrizePools onPrizePoolSelect={onPrizePoolSelect} />,
-            title: 'Recommendations'
+            title: t('recommendations')
           }
         ]}
         initialTabId={'all'}
@@ -185,46 +186,37 @@ export const BrowsePrizePools: React.FC<{ className?: string }> = (props) => {
 }
 
 export const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (props) => {
+  const { t } = useTranslation()
   return (
     <div className={classNames('flex flex-col text-center pt-28', props.className)}>
       <span className='text-9xl filter grayscale'>🩲</span>
       <span className='text-lg opacity-70 leading-tight mb-6 max-w-xs mx-auto'>
-        Whoa there partner, swimsuits required beyond this point!
+        {t('whoaPartner')}
       </span>
       <ConnectWalletButton
         className='xs:max-w-3/4 w-full mx-auto mb-2 xs:mb-4 lg:mb-6'
         theme={ButtonTheme.pink}
         radius={ButtonRadius.full}
-        // size={ButtonSize.xl}
       />
       <ExternalLink
         className='opacity-75 text-xxs lg:text-xs'
         href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
       >
-        {`What's a wallet?`}
+        {t('whatsAWallet')}
       </ExternalLink>
     </div>
   )
 }
 
-const Rewards = () => (
-  <div className=''>
-    <CardTitle title={'Bonus Rewards'} className='mb-2' />
-    <RewardsCard />
-    {/* <p className='opacity-70 text-xxs xs:text-xs'>
-      Claiming rewards has moved!{' '}
-      <Link href={'/prizes#rewards'}>
-        <a className='transition-opacity underline hover:opacity-70 h-fit-content items-center'>
-          Take me there
-          <FeatherIcon
-            icon='arrow-up-right'
-            className='w-3 h-3 xs:w-4 xs:h-4 ml-1 mb-1 inline-block'
-          />
-        </a>
-      </Link>
-    </p> */}
-  </div>
-)
+const Rewards = () => {
+  const { t } = useTranslation()
+  return (
+    <div className=''>
+      <CardTitle title={t('bonusRewards')} className='mb-2' />
+      <RewardsCard />
+    </div>
+  )
+}
 
 const SocialLinks = () => {
   return (

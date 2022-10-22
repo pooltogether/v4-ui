@@ -78,11 +78,11 @@ export interface DepositItemsProps {
 
 const ExplorePrizePools = () => {
   const [isOpen, setIsOpen] = useState(false)
-
+  const { t } = useTranslation()
   return (
     <>
       <AccentTextButton className='ml-4 mt-8' onClick={() => setIsOpen(true)}>
-        Explore Prize Pools
+        {t('explorePrizePools')}
       </AccentTextButton>
       <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </>

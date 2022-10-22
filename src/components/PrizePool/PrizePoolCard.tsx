@@ -19,6 +19,7 @@ import {
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { useTranslation } from 'next-i18next'
 import { PromotionsVapr } from '../InfoList/TwabRewardsAprItem'
 import { AveragePrizeValue } from './AveragePrizeValue'
 import { DepositToken } from './DepositToken'
@@ -57,6 +58,7 @@ export const PrizePoolCard: React.FC<{
     borderClassName,
     borderHoverClassName
   } = props
+  const { t } = useTranslation()
 
   return (
     <div
@@ -76,11 +78,11 @@ export const PrizePoolCard: React.FC<{
       <div className='grid grid-cols-3 mb-4'>
         <div className='col-span-2 grid gap-2 grid-cols-1 md:grid-cols-2'>
           <div className='md:col-span-2'>
-            <CardLabelSmall>Prize Pool</CardLabelSmall>
+            <CardLabelSmall>{t('prizePool')}</CardLabelSmall>
             <PrizePoolLabelFlat prizePool={prizePool} />
           </div>
           <div>
-            <CardLabelSmall>Total deposited</CardLabelSmall>
+            <CardLabelSmall>{t('totalDeposited')}</CardLabelSmall>
             <TicketTotalSupplyGroup prizePool={prizePool} />
           </div>
           {/* <div>
@@ -93,7 +95,7 @@ export const PrizePoolCard: React.FC<{
         </div>
 
         <div className='col-span-1 flex flex-col'>
-          <CardLabelSmall>Prizes</CardLabelSmall>
+          <CardLabelSmall>{t('prizes')}</CardLabelSmall>
           <PrizeGroup prizePool={prizePool} />
         </div>
       </div>
@@ -104,7 +106,7 @@ export const PrizePoolCard: React.FC<{
         theme={ButtonTheme.transparent}
         onClick={() => onClick(prizePool)}
       >
-        <div className='font-bold'>Deposit</div>
+        <div className='font-bold'>{t('deposit')}</div>
         <FeatherIcon icon='chevron-right' className='w-4 h-4' />
       </Button>
     </div>
@@ -211,10 +213,10 @@ const DepositTokenGroup = (props: {
   mainFontClassName?: string
 }) => {
   const { prizePool, className, mainFontClassName } = props
-
+  const { t } = useTranslation()
   return (
     <div className={className}>
-      <CardLabelSmall>Deposit Token</CardLabelSmall>
+      <CardLabelSmall>{t('depositToken')}</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
         <CardLabelLarge fontClassName={mainFontClassName} className='flex items-center'>
           <DepositToken showTokenIcon prizePool={prizePool} iconSizeClassName='w-5 h-5' />
@@ -234,9 +236,11 @@ const NetworkGroup = (props: {
   mainFontClassName?: string
 }) => {
   const { prizePool, className, mainFontClassName } = props
+  const { t } = useTranslation()
+
   return (
     <div className={className}>
-      <CardLabelSmall>Network</CardLabelSmall>
+      <CardLabelSmall>{t('network')}</CardLabelSmall>
       <div className='flex space-x-1 items-center'>
         <CardLabelLarge fontClassName={mainFontClassName}>
           {getNetworkNiceNameByChainId(prizePool.chainId)}
@@ -255,6 +259,7 @@ const NetworkGroup = (props: {
 const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (props) => {
   const { prizePool, className } = props
   const { data, isFetched } = useChainTwabRewardsPromotions(prizePool.chainId)
+  const { t } = useTranslation()
 
   if (!isFetched || data?.promotions.length === 0) {
     return null
@@ -263,7 +268,7 @@ const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (pr
   return (
     <div className={className}>
       <CardLabelSmall className='text-flashy flex items-center'>
-        <span>Bonus Rewards</span>
+        <span>{t('bonusRewards')}</span>
       </CardLabelSmall>
       <CardLabelLarge isFetched={isFetched}>
         {data.promotions.map((promotion) => (

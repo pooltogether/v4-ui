@@ -6,6 +6,7 @@ import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { Tabs, ViewProps } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
+import { useTranslation } from 'next-i18next'
 import { ExplorePrizePoolsHeader } from './ExplorePrizePoolsHeader'
 
 /**
@@ -18,6 +19,7 @@ export const ExplorePrizePoolsView: React.FC<
 > = (props) => {
   const { onPrizePoolSelect: _onPrizePoolSelect } = props
   const { setSelectedPrizePoolAddress } = useSelectedPrizePoolAddress()
+  const { t } = useTranslation()
 
   const onPrizePoolSelect = async (prizePool: PrizePool) => {
     setSelectedPrizePoolAddress(prizePool)
@@ -40,19 +42,15 @@ export const ExplorePrizePoolsView: React.FC<
           {
             id: 'all',
             view: <PrizePoolsTable onPrizePoolSelect={onPrizePoolSelect} />,
-            title: 'Prize Pools'
+            title: t('prizePools')
           },
           {
             id: 'top',
             view: <RecommendedPrizePools onPrizePoolSelect={onPrizePoolSelect} />,
-            title: 'Recommendations'
+            title: t('recommendations')
           }
         ]}
       />
     </div>
   )
 }
-
-const Title = (props) => (
-  <span {...props} className={classNames(props.className, 'font-bold text-lg')} />
-)
