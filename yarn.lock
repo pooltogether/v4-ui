@@ -2260,10 +2260,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^2.0.0-beta.5":
-  version "2.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.0-beta.5.tgz#54bb7c16054b7851a04f2c36008127f7fe45aab1"
-  integrity sha512-zUg1U3rTuNnPxPXZaN5pCYL+cgSIn0KTqxHtW9erISInQR1WZMbtkZ8Gfr2XXWVWUdOpyCwY1Wouu6h5WePjng==
+"@pooltogether/hooks@^2.0.0-beta.6":
+  version "2.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.0-beta.6.tgz#55900a4bacb3a8159f451ec8b405a3731bfe65df"
+  integrity sha512-blLDcfTJE8Md5I8YvqsVx44C4pIvoYu5W0/vIBoxGFHlbtPqihLz4vI50elgaFylPRfQheK4vpFwiXkF6PHLrQ==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
