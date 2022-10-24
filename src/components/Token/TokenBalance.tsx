@@ -10,7 +10,7 @@ export const TokenBalance = (props: {
 }) => {
   const { chainId, token, showTokenIcon, iconClassName, iconSizeClassName } = props
   if (!!token?.balanceUsd) {
-    return <>${token.balanceUsd.amountPretty}</>
+    return <>{token.balanceUsd.amountPretty}</>
   } else {
     return (
       <>

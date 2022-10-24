@@ -107,7 +107,10 @@ const makeTokenWithUsdBalance = (token: TokenWithBalance, usd: number): TokenWit
     ? amountMultByUsd(token.amountUnformatted, usd)
     : BigNumber.from(0)
 
-  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals, {
+    style: 'currency',
+    currency: 'USD'
+  })
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,

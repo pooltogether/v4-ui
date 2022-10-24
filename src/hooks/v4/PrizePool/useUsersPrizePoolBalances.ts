@@ -59,12 +59,16 @@ export const getUsersPrizePoolBalances = async (
  */
 const makeTokenWithUsdBalance = (token: Token, balanceUnformatted: BigNumber) => {
   const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUnformatted, token.decimals, {
+    style: 'currency',
+    currency: 'USD'
+  })
   const balanceUsdScaled = toScaledUsdBigNumber(balance.amount)
   return {
     ...token,
     ...balance,
     hasBalance: !balanceUnformatted.isZero(),
-    balanceUsd: balance,
+    balanceUsd,
     usdPerToken: 1,
     balanceUsdScaled
   }

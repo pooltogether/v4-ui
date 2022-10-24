@@ -78,8 +78,10 @@ export const PastDrawsModal = (props: {
       {/* Error message */}
       {!!isError && (
         <div className='text-pt-red-light py-8 text-center w-full'>
-          An error occurred fetching winners for draw #
-          <LatestDrawId prizeDistributor={prizeDistributor} />
+          <Trans
+            i18nkey='anErrorOccurredFetchingWinners'
+            components={{ drawId: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+          />
         </div>
       )}
 

@@ -19,7 +19,7 @@ export const AccountListItemTokenBalance = (props: AccountListItemTokenBalancePr
     (token as TokenWithUsdBalance).balanceUsdScaled &&
     !(token as TokenWithUsdBalance).balanceUsdScaled.isZero()
   ) {
-    balanceToDisplay = `$${(token as TokenWithUsdBalance).balanceUsd.amountPretty}`
+    balanceToDisplay = (token as TokenWithUsdBalance).balanceUsd.amountPretty
   }
 
   return (

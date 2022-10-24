@@ -51,7 +51,7 @@ export const PrizePoolsTable: React.FC<{
     }
   } = Object.freeze({
     [Metrics.TVL]: {
-      header: t('totalAmountDeposited'),
+      header: t('totalDeposited'),
       view: TotalAmountDeposited
     },
     // [Metrics.NUM_PRIZES]: {

@@ -75,8 +75,8 @@ const WithdrawReviewViewContent: React.FC<{ withdrawAmount: Amount }> = (props) 
       <AmountBeingSwapped
         title={t('withdrawTicker', { ticker: tokenData.token.symbol })}
         chainId={chainId}
-        from={tokenData.token}
-        to={tokenData.ticket}
+        from={tokenData.ticket}
+        to={tokenData.token}
         amountFrom={withdrawAmount}
         amountTo={withdrawAmount}
       />
