@@ -66,12 +66,6 @@ export const DepositInfoBox: React.FC<{
           className='w-full'
         />
         <TwabRewardsAprItem />
-        <UpdatedPrizePoolNetworkOddsListItem
-          amount={amount}
-          action={EstimateAction.deposit}
-          prizePool={prizePool}
-          nullState={'0'}
-        />
         <PrizePoolNetworkAPRItem />
         <PrizePoolYieldSourceItem prizePool={prizePool} />
 

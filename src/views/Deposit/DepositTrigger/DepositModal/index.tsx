@@ -80,7 +80,8 @@ export const DepositModal: React.FC<{
       previousViewId: ViewIds.deposit,
       header: t('connectAWallet'),
       bgClassName: 'bg-new-modal',
-      onCloseViewId: ViewIds.explore
+      onCloseViewId: ViewIds.explore,
+      maxWidthClassName: 'max-w-screen-xs'
     }
   ]
 
@@ -117,7 +118,7 @@ export const DepositModal: React.FC<{
       depositTransaction={depositTransaction}
       depositAmount={depositAmount}
       setDepositAmount={setDepositAmount}
-      // ReviewView
+      // reviewView
       sendDepositTransaction={sendDepositTransaction}
       clearDepositTransaction={() => setDepositTransactionId('')}
       connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}

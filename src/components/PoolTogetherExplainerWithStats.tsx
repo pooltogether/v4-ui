@@ -17,8 +17,7 @@ export const PoolTogetherExplainerWithStats = () => {
           style: <b className='text-flashy' />,
           b: <b />
         }}
-      />{' '}
-      I know it sounds crazy, but it's true.
+      />
     </>
   )
 }

@@ -4,24 +4,38 @@ import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import {
   ReviewTransactionView,
   ReviewTransactionViewProps
 } from '@components/ModalViews/ReviewTransactionView'
+import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { EstimateAction } from '@constants/odds'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
+import { useSelectedPrizePoolTicket } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicket'
+import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
+import { useTotalExpectedNumberOfPrizes } from '@hooks/v4/PrizePoolNetwork/useTotalExpectedNumberOfPrizes'
 import { Amount } from '@pooltogether/hooks'
-import { msToS } from '@pooltogether/utilities'
-import { Transaction } from '@pooltogether/wallet-connection'
+import { ButtonLink, ButtonSize, ButtonTheme, Button } from '@pooltogether/react-components'
+import { msToS, numberWithCommas } from '@pooltogether/utilities'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { Transaction, useIsWalletMetamask, useWalletChainId } from '@pooltogether/wallet-connection'
 import { addDays } from '@utils/date'
 import { getTimestampString } from '@utils/getTimestampString'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
+import { BigNumber } from 'ethers'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
 
+/**
+ * Generic deposit review
+ * @param props
+ * @returns
+ */
 export const DepositReviewView: React.FC<
   {
     reviewView?: React.ReactNode
@@ -63,6 +77,12 @@ export const DepositReviewView: React.FC<
       successView={
         <div className='flex flex-col space-y-4'>
           <CheckBackForPrizesBox />
+          <TweetAboutDeposit
+            amountUnformatted={depositAmount?.amountUnformatted}
+            prizePool={prizePool}
+          />
+          <AccountPageButton />
+          <AddTicketToWallet />
           {successView}
         </div>
       }
@@ -113,12 +133,6 @@ const DepositReviewViewContent: React.FC<{ depositAmount: Amount }> = (props) =>
               nullState={'0'}
               className='w-full'
             />
-            <UpdatedPrizePoolNetworkOddsListItem
-              amount={depositAmount}
-              action={EstimateAction.deposit}
-              prizePool={prizePool}
-              nullState={'0'}
-            />
             <TwabRewardsAprItem />
             <PrizePoolNetworkAPRItem />
           </>
@@ -148,5 +162,69 @@ const CheckBackForPrizesBox = () => {
         {t('learnMore', 'Learn more')}
       </a>
     </AnimatedBorderCard>
+  )
+}
+
+export const AccountPageButton = () => {
+  const { t } = useTranslation()
+  const router = useRouter()
+  return (
+    <Link href={{ pathname: '/account', query: router.query }}>
+      <ButtonLink
+        size={ButtonSize.md}
+        theme={ButtonTheme.tealOutline}
+        className='w-full text-center'
+      >
+        {t('viewAccount', 'View account')}
+      </ButtonLink>
+    </Link>
+  )
+}
+
+export const AddTicketToWallet = () => {
+  const { chainId: selectedChainId } = useSelectedChainId()
+  const { data: ticket } = useSelectedPrizePoolTicket()
+  const { t } = useTranslation()
+  const isMetaMask = useIsWalletMetamask()
+  const walletChainId = useWalletChainId()
+  const isWalletOnProperNetwork = selectedChainId === walletChainId
+
+  if (!isMetaMask || !isWalletOnProperNetwork) return null
+
+  return (
+    <Button theme={ButtonTheme.tealOutline} className='w-full'>
+      {t('addTicketTokenToMetamask', {
+        token: ticket.symbol
+      })}
+    </Button>
+  )
+}
+
+export const TweetAboutDeposit = (props: {
+  amountUnformatted: BigNumber
+  prizePool: PrizePool
+}) => {
+  const { amountUnformatted, prizePool } = props
+  const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
+  const { totalAmountOfPrizes } = useTotalExpectedNumberOfPrizes()
+  const { data: totalSupply, isFetched: isTotalSuppluFetched } =
+    usePrizePoolNetworkTicketTotalSupply()
+  const { t } = useTranslation()
+
+  const isReady = isDecimalsFetched && !!totalAmountOfPrizes && isTotalSuppluFetched
+
+  return (
+    <TwitterIntentButton
+      disabled={!isReady}
+      url='https://app.pooltogether.com'
+      text={t('depositTweet', {
+        amountDeposited: `$${numberWithCommas(amountUnformatted, {
+          decimals,
+          precision: 0
+        })}`,
+        totalAmountDeposited: `$${totalSupply?.totalSupply.amountPretty}`,
+        totalAmountOfPrizes
+      })}
+    />
   )
 }

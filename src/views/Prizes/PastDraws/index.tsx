@@ -1,9 +1,8 @@
 import { ListItem } from '@components/List/ListItem'
-import { LatestDrawId } from '@components/PrizeDistributor/LatestDrawId'
+import { LatestUnlockedDrawId } from '@components/PrizeDistributor/LatestUnlockedDrawId'
 import { PrizeDistributorLabel } from '@components/PrizeDistributor/PrizeDistributorLabel'
-import { NumberOfPrizesWonLastDraw } from '@components/PrizePoolNetwork/NumberOfPrizesWonLastDraw'
-import { ValueOfPrizesWonLastDraw } from '@components/PrizePoolNetwork/ValueOfPrizesWonLastDraw'
-import { CardTitle } from '@components/Text/CardTitle'
+import { NumberOfPrizesWonLastUnlockedDraw } from '@components/PrizePoolNetwork/NumberOfPrizesWonLastUnlockedDraw'
+import { ValueOfPrizesWonLastUnlockedDraw } from '@components/PrizePoolNetwork/ValueOfPrizesWonLastUnlockedDraw'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { Trans } from 'next-i18next'
@@ -28,8 +27,8 @@ export const PastDraws = () => {
               i18nKey='amountWonAcrossPrizes'
               components={{
                 b: <b />,
-                valueOfPrizesWon: <ValueOfPrizesWonLastDraw />,
-                numberOfPrizesWon: <NumberOfPrizesWonLastDraw />
+                valueOfPrizesWon: <ValueOfPrizesWonLastUnlockedDraw />,
+                numberOfPrizesWon: <NumberOfPrizesWonLastUnlockedDraw />
               }}
             />
           </div>
@@ -47,7 +46,9 @@ export const PastDraws = () => {
                 <b>
                   <Trans
                     i18nKey='drawId'
-                    components={{ id: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+                    components={{
+                      id: <LatestUnlockedDrawId prizeDistributor={prizeDistributor} />
+                    }}
                   />
                 </b>
               }

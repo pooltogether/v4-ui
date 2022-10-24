@@ -1,8 +1,6 @@
 import { InfoListItem } from '@components/InfoList'
-import { EstimatedAPRItem } from '@components/InfoList/EstimatedAPRItem'
 import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { EstimateAction } from '@constants/odds'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -29,12 +27,6 @@ export const WithdrawInfoListItems: React.FC<{
         className='w-full'
       />
       <TwabRewardsAprItem />
-      <UpdatedPrizePoolNetworkOddsListItem
-        amount={withdrawAmount}
-        action={EstimateAction.withdraw}
-        prizePool={prizePool}
-        nullState={'0'}
-      />
       <PrizePoolNetworkAPRItem />
     </>
   )

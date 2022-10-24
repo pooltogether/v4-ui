@@ -2,7 +2,11 @@ import { ListItem } from '@components/List/ListItem'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { Amount, Token } from '@pooltogether/hooks'
 import { NetworkIcon, ButtonLink, TokenIcon, BottomSheet } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId, prettyNumber } from '@pooltogether/utilities'
+import {
+  formatUnformattedBigNumberForDisplay,
+  getNetworkNiceNameByChainId,
+  prettyNumber
+} from '@pooltogether/utilities'
 import { Delegation, DelegationId } from '@pooltogether/v4-twab-delegator-js'
 import { BlockExplorerLink } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
@@ -148,7 +152,7 @@ const DelegationItem: React.FC<{
         <BlockExplorerLink address={delegation.delegatee} chainId={chainId} shorten />
       </span>
       <span className={classNames('col-span-2', { 'opacity-50': delegation.balance.isZero() })}>
-        {prettyNumber(delegation.balance, ticket.decimals)}
+        {formatUnformattedBigNumberForDisplay(delegation.balance, ticket.decimals)}
       </span>
     </li>
   )

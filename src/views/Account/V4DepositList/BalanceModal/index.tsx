@@ -5,20 +5,15 @@ import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { useSendWithdrawTransaction } from '@hooks/v4/PrizePool/useSendWithdrawTransaction'
-import { Amount, QUERY_KEYS } from '@pooltogether/hooks'
-import {
-  BottomSheetWithViewState,
-  ModalWithViewState,
-  ModalWithViewStateView
-} from '@pooltogether/react-components'
+import { Amount } from '@pooltogether/hooks'
+import { BottomSheetWithViewState, ModalWithViewStateView } from '@pooltogether/react-components'
 import {
   getChainNameByChainId,
   TransactionState,
   useTransaction
 } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
 import { DelegateView } from '../DelegateView'
 import { DepositView } from './DepositView'
@@ -64,37 +59,43 @@ export const BalanceModal: React.FC<{
       id: ViewIds.deposit,
       view: DepositView,
       header: t('deposit'),
-      previousViewId: ViewIds.main
+      previousViewId: ViewIds.main,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.depositReview,
       view: DepositReviewView,
       header: t('depositReview'),
-      previousViewId: ViewIds.deposit
+      previousViewId: ViewIds.deposit,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.withdraw,
       view: WithdrawView,
       header: t('withdraw'),
-      previousViewId: ViewIds.main
+      previousViewId: ViewIds.main,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.withdrawReview,
       view: WithdrawReviewView,
       header: t('withdrawReview'),
-      previousViewId: ViewIds.withdraw
+      previousViewId: ViewIds.withdraw,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.moreInfo,
       view: PrizePoolInfoView,
       header: t('moreInfo'),
-      previousViewId: ViewIds.main
+      previousViewId: ViewIds.main,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.delegate,
       view: DelegateView,
       header: '',
-      previousViewId: ViewIds.main
+      previousViewId: ViewIds.main,
+      onCloseViewId: ViewIds.main
     },
     {
       id: ViewIds.walletConnection,
@@ -141,7 +142,7 @@ export const BalanceModal: React.FC<{
       // WithdrawView
       withdrawTransaction={withdrawTransaction}
       setWithdrawAmount={setWithdrawAmount}
-      clearWithdrawTransaction={() => setDepositTransactionId('')}
+      clearWithdrawTransaction={() => setWithdrawTransactionId('')}
       // WithdrawReviewView
       withdrawAmount={withdrawAmount}
       sendWithdrawTransaction={() => setWithdrawTransactionId(sendWithdrawTransaction())}

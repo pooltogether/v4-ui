@@ -1,7 +1,7 @@
-import { LatestDrawId } from '@components/PrizeDistributor/LatestDrawId'
+import { LatestUnlockedDrawId } from '@components/PrizeDistributor/LatestUnlockedDrawId'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
-import { useLatestDrawWinners } from '@hooks/v4/useDrawWinners'
-import { useLatestDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
+import { useLatestUnlockedDrawWinners } from '@hooks/v4/useDrawWinners'
+import { useLatestUnlockedDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
 import { LinkIcon, Modal, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
@@ -25,8 +25,8 @@ export const PastDrawsModal = (props: {
 }) => {
   const { isOpen, closeModal, prizeDistributor } = props
   const { t } = useTranslation()
-  const { data: winners, isError, isFetched } = useLatestDrawWinners(prizeDistributor, true)
-  const { data: winnersInfo } = useLatestDrawWinnersInfo(prizeDistributor)
+  const { data: winners, isError, isFetched } = useLatestUnlockedDrawWinners(prizeDistributor, true)
+  const { data: winnersInfo } = useLatestUnlockedDrawWinnersInfo(prizeDistributor)
   const { data: tokenData } = usePrizeDistributorToken(prizeDistributor)
   const [winnersToShow, setWinnersToShow] = useState(DEFAULT_ROWS_TO_SHOW)
 
@@ -43,14 +43,14 @@ export const PastDrawsModal = (props: {
       <div className='text-2xl font-bold flex space-x-2 mb-4'>
         <Trans
           i18nKey='drawId'
-          components={{ id: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+          components={{ id: <LatestUnlockedDrawId prizeDistributor={prizeDistributor} /> }}
         />
       </div>
       <div className='mb-8'>
         <Trans
           i18nKey='pastDrawModalDescription'
           components={{
-            drawId: <LatestDrawId prizeDistributor={prizeDistributor} />,
+            drawId: <LatestUnlockedDrawId prizeDistributor={prizeDistributor} />,
             b: <b />,
             flashy: (
               <b
@@ -63,7 +63,7 @@ export const PastDrawsModal = (props: {
           values={{
             network: getNetworkNiceNameByChainId(prizeDistributor.chainId),
             numberOfPrizes: winnersInfo?.prizesWon,
-            valueOfPrize: winnersInfo?.amount.amountPretty,
+            valueOfPrizes: winnersInfo?.amount.amountPretty,
             ticker: tokenData?.token.symbol
           }}
         />
@@ -80,7 +80,7 @@ export const PastDrawsModal = (props: {
         <div className='text-pt-red-light py-8 text-center w-full'>
           <Trans
             i18nkey='anErrorOccurredFetchingWinners'
-            components={{ drawId: <LatestDrawId prizeDistributor={prizeDistributor} /> }}
+            components={{ drawId: <LatestUnlockedDrawId prizeDistributor={prizeDistributor} /> }}
           />
         </div>
       )}

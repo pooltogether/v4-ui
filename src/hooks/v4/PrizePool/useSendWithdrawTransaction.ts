@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
-import { useUsersPrizePoolBalances } from './useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
 
 export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
@@ -20,7 +20,10 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
   const { data: tokenData } = useSelectedPrizePoolTokens()
 
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
 
   return useCallback(() => {
     const name = `${t('withdraw')} ${withdrawAmount.amountPretty} ${tokenData.token.symbol}`
@@ -35,7 +38,10 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
       callTransaction,
       callbacks: {
         onConfirmedByUser: () => logEvent(FathomEvent.withdrawal),
-        onSuccess: () => {},
+        onSuccess: () => {
+          refetchUsersTotalTwab()
+          refetchUsersBalances()
+        },
         refetch: () => {
           refetchUsersTotalTwab()
           refetchUsersBalances()

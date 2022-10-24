@@ -84,7 +84,8 @@ const TotalPrizes = (props: { usersAddress: string; prizeDistributor: PrizeDistr
     <>
       {formatUnformattedBigNumberForDisplay(totalAmountUnformatted, tokenData?.token.decimals, {
         style: 'currency',
-        currency: 'usd'
+        currency: 'usd',
+        maximumFractionDigits: 0
       })}
     </>
   )

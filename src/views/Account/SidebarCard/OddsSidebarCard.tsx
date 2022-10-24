@@ -28,7 +28,7 @@ export const OddsSidebarCard: React.FC<{ usersAddress: string }> = (props) => {
 
   return (
     <SidebarCard
-      title={'🎲 ' + t('winningChance')}
+      title={'🧮 ' + t('winningChance')}
       description={t('chanceOfWinningOnePrize')}
       main={<UserOddsOfWinning usersAddress={usersAddress} />}
     />
@@ -59,7 +59,7 @@ export const OddsOfWinningWithX: React.FC<{ className?: string; bgClassName?: st
 
   return (
     <SidebarCard
-      title={'🎲 ' + t('winningChance')}
+      title={'🧮 ' + t('winningChance')}
       className={className}
       bgClassName={bgClassName}
       description={

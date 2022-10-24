@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
-import { useUsersPrizePoolBalances } from './useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 import { useUsersTicketDelegate } from './useUsersTicketDelegate'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
 
@@ -24,7 +24,10 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
     prizePool
   )
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
 
   return useCallback(() => {
     const name = `${t('deposit')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
@@ -49,6 +52,8 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
         onConfirmedByUser: () => logEvent(FathomEvent.deposit),
         onSuccess: () => {
           refetchTicketDelegate()
+          refetchUsersTotalTwab()
+          refetchUsersBalances()
         },
         refetch: () => {
           refetchUsersTotalTwab()

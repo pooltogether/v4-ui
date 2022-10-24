@@ -8,7 +8,7 @@ import {
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { Amount, TokenWithBalance } from '@pooltogether/hooks'
 import { Tooltip } from '@pooltogether/react-components'
 import { getMaxPrecision, numberWithCommas } from '@pooltogether/utilities'
@@ -68,7 +68,7 @@ const WithdrawReviewViewContent: React.FC<{ withdrawAmount: Amount }> = (props) 
   const prizePool = useSelectedPrizePool()
   const { data: tokenData } = usePrizePoolTokens(prizePool)
   const usersAddress = useUsersAddress()
-  const { data: balances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data: balances } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
 
   return (
     <div className='flex flex-col space-y-8'>

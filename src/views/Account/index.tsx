@@ -13,6 +13,7 @@ import {
   ButtonSize,
   ButtonTheme,
   ExternalLink,
+  LinkTheme,
   SocialIcon,
   SocialKey,
   Tabs

@@ -1,9 +1,15 @@
 import { PoolTogetherExplainerWithStats } from '@components/PoolTogetherExplainerWithStats'
+import { ExternalLink, LinkTheme } from '@pooltogether/react-components'
+import { useTranslation } from 'next-i18next'
 
 export const ExplorePrizePoolsHeader = () => {
+  const { t } = useTranslation()
   return (
     <div className='mb-8 sm:mb-12 opacity-80'>
-      <PoolTogetherExplainerWithStats />
+      <PoolTogetherExplainerWithStats />{' '}
+      <ExternalLink underline href={'https://docs.pooltogether.com/welcome/faq'}>
+        {t('learnMore')}
+      </ExternalLink>
     </div>
   )
 

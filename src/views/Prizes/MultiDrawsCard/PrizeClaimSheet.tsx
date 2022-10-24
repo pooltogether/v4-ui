@@ -7,7 +7,7 @@ import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { useSignerPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSignerPrizeDistributor'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useToken, Token, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import {
@@ -85,7 +85,10 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {

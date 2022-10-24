@@ -5,6 +5,11 @@ import { useMemo } from 'react'
 import { useQueries, useQuery } from 'react-query'
 import { useAllPrizeDistributorTokens } from './PrizeDistributor/useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './PrizeDistributor/useAllValidDrawIds'
+import {
+  getLatestUnlockedDrawId,
+  useLatestUnlockedDrawId
+} from './PrizeDistributor/useLatestUnlockedDrawId'
+import { useLockedDrawIds } from './PrizeDistributor/useLockedDrawIds'
 import { usePrizeDistributors } from './PrizeDistributor/usePrizeDistributors'
 import { usePrizeDistributorToken } from './PrizeDistributor/usePrizeDistributorToken'
 import { useValidDrawIds } from './PrizeDistributor/useValidDrawIds'
@@ -35,6 +40,34 @@ export const useAllLatestDrawWinnersInfo = () => {
   return useAllDrawWinnersInfo(data)
 }
 
+export const useAllLatestUnlockedDrawWinnersInfo = () => {
+  const prizeDistributors = usePrizeDistributors()
+  const drawIdQueries = useAllValidDrawIds()
+  const lockedDrawIds = useLockedDrawIds()
+  const data = useMemo(
+    () =>
+      prizeDistributors.map((prizeDistributor) => {
+        const drawIds = drawIdQueries.find(
+          (query) => query.isFetched && query.data?.prizeDistributorId === prizeDistributor.id()
+        )?.data.drawIds
+
+        if (!drawIds || !lockedDrawIds) {
+          return {
+            prizeDistributor,
+            drawId: undefined
+          }
+        }
+
+        return {
+          prizeDistributor,
+          drawId: getLatestUnlockedDrawId(drawIds, lockedDrawIds)
+        }
+      }),
+    [prizeDistributors, drawIdQueries, lockedDrawIds]
+  )
+  return useAllDrawWinnersInfo(data)
+}
+
 export const useAllDrawWinnersInfo = (
   data: { prizeDistributor: PrizeDistributor; drawId: number }[]
 ) => {
@@ -59,6 +92,11 @@ export const useAllDrawWinnersInfo = (
 export const useLatestDrawWinnersInfo = (prizeDistributor: PrizeDistributor) => {
   const { data } = useValidDrawIds(prizeDistributor)
   return useDrawWinnersInfo(prizeDistributor, data?.drawIds[data?.drawIds.length - 1])
+}
+
+export const useLatestUnlockedDrawWinnersInfo = (prizeDistributor: PrizeDistributor) => {
+  const { drawId } = useLatestUnlockedDrawId(prizeDistributor)
+  return useDrawWinnersInfo(prizeDistributor, drawId)
 }
 
 export const useDrawWinnersInfo = (prizeDistributor: PrizeDistributor, drawId: number) => {

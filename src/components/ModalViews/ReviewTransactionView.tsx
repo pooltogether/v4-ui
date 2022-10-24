@@ -1,6 +1,6 @@
 import { TxButton } from '@components/Input/TxButton'
-import { ModalTransactionSubmitted } from '@components/Modal/ModalTransactionSubmitted'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
+import { TransactionTosDisclaimer } from '@components/TransactionTosDisclaimer'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -8,6 +8,7 @@ import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
 import {
   Transaction,
+  TransactionState,
   TransactionStatus,
   useApproveErc20,
   useTransaction,
@@ -27,9 +28,11 @@ export interface ReviewTransactionViewProps extends ViewProps {
   isFetched?: boolean
   successView?: React.ReactNode
   reviewView?: React.ReactNode
+  footerContent?: React.ReactNode
   spenderAddress?: string
   tokenAddress?: string
   amount?: Amount
+  buttonTexti18nKey?: string
 }
 
 /**
@@ -46,10 +49,12 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     isFetched,
     successView,
     reviewView,
+    footerContent,
     transaction,
     amount,
     spenderAddress,
     tokenAddress,
+    buttonTexti18nKey,
     setApproveTransactionId: _setApproveTransactionId
   } = props
   const { chainId } = useSelectedChainId()
@@ -111,7 +116,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           )}
         </p>
         {transaction && (
-          <ModalTransactionSubmitted className='w-full mb-2' chainId={chainId} tx={transaction} />
+          <TransactionReceiptButton className='w-full mb-2' chainId={chainId} tx={transaction} />
         )}
         <Button
           theme={ButtonTheme.tealOutline}
@@ -132,7 +137,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     return (
       <>
         {!!successView && <div className='mb-4'>{successView}</div>}
-        <ModalTransactionSubmitted className='w-full' chainId={chainId} tx={transaction} />
+        <TransactionReceiptButton className='w-full' chainId={chainId} tx={transaction} />
       </>
     )
   }
@@ -140,7 +145,6 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   return (
     <>
       {!!reviewView && <div className='mb-4'>{reviewView}</div>}
-
       <TxButton
         className='w-full'
         chainId={chainId}
@@ -150,8 +154,15 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
         radius={ButtonRadius.full}
         connectWallet={connectWallet}
       >
-        {t('confirmTransaction', 'Confirm transaction')}
+        {t(buttonTexti18nKey)}
       </TxButton>
+      <div className='mt-4'>
+        <TransactionTosDisclaimer buttonTexti18nKey={buttonTexti18nKey} />
+      </div>
     </>
   )
+}
+
+ReviewTransactionView.defaultProps = {
+  buttonTexti18nKey: 'confirmTransaction'
 }

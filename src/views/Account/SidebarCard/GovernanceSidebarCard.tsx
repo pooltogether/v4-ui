@@ -72,7 +72,7 @@ const GovernanceDescription = () => {
     )
   }
 
-  return <>{t('pooltogetherIsInYourHands')}</>
+  return <>{t('poolGovernsTheProtocol')}</>
 }
 
 const UsersVotes: React.FC<{ usersAddress: string }> = (props) => {

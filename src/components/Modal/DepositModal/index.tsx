@@ -94,7 +94,7 @@ export const DepositModal: React.FC<{
       depositTransaction={depositTransaction}
       depositAmount={depositAmount}
       setDepositAmount={setDepositAmount}
-      // ReviewView
+      // reviewView
       sendDepositTransaction={sendDepositTransaction}
       clearDepositTransaction={() => setDepositTransactionId('')}
       connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}

@@ -1,47 +1,39 @@
-import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { TokenWithBalance, useUsersPrizePoolBalances } from '@pooltogether/hooks'
 import { toScaledUsdBigNumber } from '@pooltogether/utilities'
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { useQuery } from 'react-query'
-import { useUsersPrizePoolBalances } from './useUsersPrizePoolBalances'
-
-export interface UsersPrizePoolBalances {
-  ticket: TokenWithUsdBalance
-  token: TokenWithUsdBalance
-}
+import { useMemo } from 'react'
 
 export const USERS_PRIZE_POOL_BALANCES_QUERY_KEY = 'useUsersPrizePoolBalancesWithFiat'
 
 /**
- * NOTE: Assumes tickets and tokens are stablecoins
+ * NOTE: Assumes tickets and tokens are stablecoins.
+ * Fetches users ticket and token balances and converts them to USD.
  * @param usersAddress
  * @param prizePool
  * @returns
  */
 export const useUsersPrizePoolBalancesWithFiat = (usersAddress: string, prizePool: PrizePool) => {
-  const { data: balances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data, ...queryResults } = useUsersPrizePoolBalances(usersAddress, prizePool)
 
-  return useQuery(
-    [USERS_PRIZE_POOL_BALANCES_QUERY_KEY, prizePool.id(), usersAddress],
-    async () => getUsersPrizePoolBalances(prizePool, usersAddress, balances?.balances),
-    {
-      enabled: !!balances && !!usersAddress
+  return useMemo(() => {
+    if (!data) return { ...queryResults, data: undefined }
+
+    return {
+      ...queryResults,
+      data: getUsersPrizePoolBalances(prizePool, usersAddress, data.balances)
     }
-  )
+  }, [data, queryResults?.isFetched, queryResults?.isFetching])
 }
 
-export const getUsersPrizePoolBalances = async (
+export const getUsersPrizePoolBalances = (
   prizePool: PrizePool,
   usersAddress: string,
   balances: {
     ticket: TokenWithBalance
     token: TokenWithBalance
   }
-): Promise<{
-  prizePool: PrizePool
-  usersAddress: string
-  balances: UsersPrizePoolBalances
-}> => {
+) => {
   return {
     prizePool,
     usersAddress,
@@ -59,12 +51,16 @@ export const getUsersPrizePoolBalances = async (
  */
 const makeTokenWithUsdBalance = (token: TokenWithBalance) => {
   const balance = getAmountFromUnformatted(token.amountUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(token.amountUnformatted, token.decimals, {
+    style: 'currency',
+    currency: 'usd'
+  })
   const balanceUsdScaled = toScaledUsdBigNumber(balance.amount)
   return {
     ...token,
     ...balance,
     hasBalance: !token.amountUnformatted.isZero(),
-    balanceUsd: balance,
+    balanceUsd,
     usdPerToken: 1,
     balanceUsdScaled
   }

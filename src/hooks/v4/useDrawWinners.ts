@@ -5,6 +5,11 @@ import { useMemo } from 'react'
 import { useQueries, useQuery } from 'react-query'
 import { useAllPrizeDistributorTokens } from './PrizeDistributor/useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './PrizeDistributor/useAllValidDrawIds'
+import {
+  getLatestUnlockedDrawId,
+  useLatestUnlockedDrawId
+} from './PrizeDistributor/useLatestUnlockedDrawId'
+import { useLockedDrawIds } from './PrizeDistributor/useLockedDrawIds'
 import { usePrizeDistributors } from './PrizeDistributor/usePrizeDistributors'
 import { usePrizeDistributorToken } from './PrizeDistributor/usePrizeDistributorToken'
 import { useValidDrawIds } from './PrizeDistributor/useValidDrawIds'
@@ -29,6 +34,28 @@ export const useAllLatestDrawWinners = (dedupe: boolean = false) => {
         return {
           prizeDistributor,
           drawId: drawIds?.[drawIds.length - 1]
+        }
+      }),
+    [prizeDistributors, drawIdQueries]
+  )
+  return useAllDrawWinners(data, dedupe)
+}
+
+export const useAllLatestUnlockedDrawWinners = (dedupe: boolean = false) => {
+  const prizeDistributors = usePrizeDistributors()
+  const drawIdQueries = useAllValidDrawIds()
+  const lockedDrawIds = useLockedDrawIds()
+
+  const data = useMemo(
+    () =>
+      prizeDistributors.map((prizeDistributor) => {
+        const drawIds = drawIdQueries.find(
+          (query) => query.isFetched && query.data?.prizeDistributorId === prizeDistributor.id()
+        )?.data.drawIds
+
+        return {
+          prizeDistributor,
+          drawId: getLatestUnlockedDrawId(drawIds, lockedDrawIds)
         }
       }),
     [prizeDistributors, drawIdQueries]
@@ -65,6 +92,14 @@ export const useLatestDrawWinners = (
 ) => {
   const { data } = useValidDrawIds(prizeDistributor)
   return useDrawWinners(prizeDistributor, data?.drawIds[data?.drawIds.length - 1], dedupe)
+}
+
+export const useLatestUnlockedDrawWinners = (
+  prizeDistributor: PrizeDistributor,
+  dedupe: boolean = false
+) => {
+  const { drawId } = useLatestUnlockedDrawId(prizeDistributor)
+  return useDrawWinners(prizeDistributor, drawId, dedupe)
 }
 
 export const useDrawWinners = (

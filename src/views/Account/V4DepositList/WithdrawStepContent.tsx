@@ -11,8 +11,7 @@ import { TransparentDiv } from '@components/TransparentDiv'
 import { parseUnits } from '@ethersproject/units'
 import { useHasUserCheckedAllDraws } from '@hooks/v4/PrizeDistributor/useHasUserCheckedAllDraws'
 import { usePrizeDistributorByChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorByChainId'
-import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
-import { Amount, TokenWithBalance } from '@pooltogether/hooks'
+import { Amount, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import {
   Button,
   ButtonTheme,
@@ -40,7 +39,10 @@ interface WithdrawStepContentProps {
   form: UseFormReturn<FieldValues, object>
   currentStep: WithdrawalSteps
   prizePool: PrizePool
-  usersBalances: UsersPrizePoolBalances
+  usersBalances: {
+    ticket: TokenWithUsdBalance
+    token: TokenWithUsdBalance
+  }
   withdrawTx: Transaction
   amountToWithdraw: Amount
   sendWithdrawTx: () => Promise<void>

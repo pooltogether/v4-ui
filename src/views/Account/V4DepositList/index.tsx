@@ -3,7 +3,7 @@ import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
-import { UsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
+import { TokenWithUsdBalance } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { AccountList } from '@views/Account/AccountList'
@@ -70,7 +70,10 @@ const DepositsList: React.FC = () => {
 }
 
 export interface DepositItemsProps {
-  balances: UsersPrizePoolBalances
+  balances: {
+    ticket: TokenWithUsdBalance
+    token: TokenWithUsdBalance
+  }
   prizePool: PrizePool
   refetchBalances: () => void
   onClick?: () => void
