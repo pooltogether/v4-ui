@@ -3,6 +3,7 @@ import { LatestUnlockedDrawId } from '@components/PrizeDistributor/LatestUnlocke
 import { PrizeDistributorLabel } from '@components/PrizeDistributor/PrizeDistributorLabel'
 import { NumberOfPrizesWonLastUnlockedDraw } from '@components/PrizePoolNetwork/NumberOfPrizesWonLastUnlockedDraw'
 import { ValueOfPrizesWonLastUnlockedDraw } from '@components/PrizePoolNetwork/ValueOfPrizesWonLastUnlockedDraw'
+import { TransparentDiv } from '@components/TransparentDiv'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { Trans } from 'next-i18next'
@@ -16,7 +17,7 @@ export const PastDraws = () => {
 
   return (
     <>
-      <div className='bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-xl w-full p-4'>
+      <TransparentDiv className='p-4 sm:px-6 lg:px-12 rounded-xl'>
         <div className='flex  items-center mb-4'>
           <img
             src='/trophy.svg'
@@ -55,7 +56,7 @@ export const PastDraws = () => {
             />
           ))}
         </ul>
-      </div>
+      </TransparentDiv>
       <PastDrawsModal
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}

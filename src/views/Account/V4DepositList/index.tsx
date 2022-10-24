@@ -84,7 +84,7 @@ const ExplorePrizePools = () => {
   const { t } = useTranslation()
   return (
     <>
-      <AccentTextButton className='ml-4 mt-8' onClick={() => setIsOpen(true)}>
+      <AccentTextButton className='mt-8' onClick={() => setIsOpen(true)}>
         {t('explorePrizePools')}
       </AccentTextButton>
       <DepositModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />

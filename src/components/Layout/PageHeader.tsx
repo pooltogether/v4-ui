@@ -28,6 +28,7 @@ export const NEGATIVE_HEADER_MARGIN = '-mt-12 sm:-mt-16'
 
 export const PageHeader = (props) => (
   <PageHeaderContainer
+    maxWidthClassName='max-w-screen-md'
     logo={
       <Link href='/deposit'>
         <a>

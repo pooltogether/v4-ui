@@ -53,8 +53,8 @@ export const AccountUI = (props) => {
     )
   }
   return (
-    <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4'>
-      <div className='sm:col-span-2 md:col-span-3 space-y-4'>
+    <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3'>
+      <div className='sm:col-span-2 space-y-4'>
         <AccountCard usersAddress={usersAddress} />
         <Card>
           <V4DepositList />
@@ -90,7 +90,7 @@ export const Card: React.FC<{ className?: string; children: React.ReactNode }> =
       {...props}
       children={children}
       className={classNames(
-        'w-full bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-40 py-10 lg:py-12 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12',
+        'w-full bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-40 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12 py-10 lg:py-12',
         className
       )}
     />
@@ -122,7 +122,7 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
       <div className='font-bold w-2/3 text-2xl sm:text-4xl lg:text-6xl mx-auto mb-2'>
         {t('prizeSavingsForHumans')}
       </div>
-      <div className='font-bold mb-8 sm:mb-12'>{t('openToAllFreeForever')}</div>
+      <div className='font-bold mb-8 sm:mb-12 px-2'>{t('openToAllFreeForever')}</div>
       <ConnectWalletButton
         theme={ButtonTheme.transparent}
         radius={ButtonRadius.full}

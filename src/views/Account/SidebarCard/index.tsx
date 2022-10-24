@@ -30,11 +30,7 @@ export const SidebarCard: React.FC<{
     </div>
     <div className='font-bold text-xl'>{props.main}</div>
     {props.showTrigger && (
-      <AccentTextButton
-        onClick={props.onClick}
-        disabled={props.disabled}
-        className='ml-4 sm:ml-0 mt-4 sm:mt-0'
-      >
+      <AccentTextButton onClick={props.onClick} disabled={props.disabled} className='mt-4 sm:mt-0'>
         {props.trigger}
       </AccentTextButton>
     )}
@@ -45,7 +41,7 @@ export const SidebarCard: React.FC<{
           rel='noopener noreferrer'
           // @ts-ignore
           theme={'text-gradient-magenta hover:opacity-70 trans text-lg font-bold text-left'}
-          className='ml-4 sm:ml-0 mt-4 sm:mt-0'
+          className='mt-4 sm:mt-0'
         >
           {props.link}
         </ExternalLink>

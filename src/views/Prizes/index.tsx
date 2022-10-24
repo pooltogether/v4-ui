@@ -60,7 +60,7 @@ export const PrizesUI = () => {
           checkedState={checkedState}
         />
         <div className='w-full'>
-          <div className='max-w-screen-xs space-y-4 mx-auto'>
+          <div className='max-w-screen-xs space-y-4 ml-auto'>
             <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
             {!usersAddress ? (
               <LockedDrawsCard
@@ -79,9 +79,9 @@ export const PrizesUI = () => {
           </div>
         </div>
       </div>
-      <div className='max-w-screen-xs sm:max-w-screen-sm mx-auto'>
+      <div className='max-w-screen-xs sm:max-w-screen-md mx-auto'>
         <Tabs
-          titleClassName='mb-8'
+          titleClassName='mb-8 px-2 sm:px-6'
           initialTabId={initialTabId}
           onTabSelect={(tab) => setData(tab.id)}
           tabs={[
@@ -113,7 +113,7 @@ const CheckForPrizesOnNetwork = (props: {
     <div
       className={classNames('font-semibold flex flex-col space-y-2 text-xs xs:text-sm', className)}
     >
-      <CardTitle title={t('prizesForPrizePool')} />
+      <CardTitle title={t('prizesForPrizePool')} className='px-2 sm:px-0' />
       <SelectAppChainIdModal className='network-dropdown' />
     </div>
   )

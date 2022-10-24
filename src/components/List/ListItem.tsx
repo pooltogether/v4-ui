@@ -16,17 +16,32 @@ export const ListItem: React.FC<{
   left: React.ReactNode
   right: React.ReactNode
   bottom?: React.ReactNode
+  className?: string
   bgClassName?: string
+  paddingClassName?: string
+  marginClassName?: string
   radiusClassName?: string
+  customClassName?: string
   onClick?: () => void
   internalHref?: string
   externalHref?: string
 }> = (props) => {
-  const { onClick, bgClassName, radiusClassName, left, right, bottom, internalHref, externalHref } =
-    props
+  const {
+    onClick,
+    className,
+    bgClassName,
+    paddingClassName,
+    marginClassName,
+    radiusClassName,
+    left,
+    right,
+    bottom,
+    internalHref,
+    externalHref
+  } = props
 
   let Container = (props) => (
-    <div {...props} className='py-1 px-2 w-full flex justify-between items-center' />
+    <div {...props} className={classNames(className, paddingClassName, marginClassName)} />
   )
   let icon
   if (!!onClick) {
@@ -35,7 +50,7 @@ export const ListItem: React.FC<{
       <button
         {...props}
         onClick={onClick}
-        className='py-1 px-2 w-full flex justify-between items-center'
+        className={classNames(className, paddingClassName, marginClassName)}
       />
     )
     icon = 'chevron-right'
@@ -43,7 +58,7 @@ export const ListItem: React.FC<{
     // eslint-disable-next-line react/display-name
     Container = (props) => (
       <Link href={internalHref}>
-        <a {...props} className='py-1 px-2 w-full flex justify-between items-center' />
+        <a {...props} className={classNames(className, paddingClassName, marginClassName)} />
       </Link>
     )
     icon = 'external-link'
@@ -54,7 +69,7 @@ export const ListItem: React.FC<{
         {...props}
         href={externalHref}
         rel='noreferrer noopener'
-        className='py-1 px-2 w-full flex justify-between items-center'
+        className={classNames(className, paddingClassName, marginClassName)}
       />
     )
     icon = 'arrow-up-right'
@@ -75,7 +90,10 @@ export const ListItem: React.FC<{
 }
 
 ListItem.defaultProps = {
+  className: 'w-full flex justify-between items-center',
   bgClassName:
     'bg-white bg-opacity-0 hover:bg-opacity-100 dark:bg-actually-black dark:bg-opacity-0 dark:hover:bg-opacity-25',
-  radiusClassName: 'rounded-lg'
+  radiusClassName: 'rounded-lg',
+  paddingClassName: 'py-1 px-2 sm:px-3',
+  marginClassName: ''
 }

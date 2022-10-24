@@ -2,7 +2,7 @@ import { LatestUnlockedDrawId } from '@components/PrizeDistributor/LatestUnlocke
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 import { useLatestUnlockedDrawWinners } from '@hooks/v4/useDrawWinners'
 import { useLatestUnlockedDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
-import { LinkIcon, Modal, TokenIcon } from '@pooltogether/react-components'
+import { BottomSheet, LinkIcon, TokenIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId, shorten } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { loopXTimes } from '@utils/loopXTimes'
@@ -31,7 +31,7 @@ export const PastDrawsModal = (props: {
   const [winnersToShow, setWinnersToShow] = useState(DEFAULT_ROWS_TO_SHOW)
 
   return (
-    <Modal
+    <BottomSheet
       label={'Past draws modal'}
       isOpen={isOpen}
       closeModal={() => {
@@ -132,6 +132,6 @@ export const PastDrawsModal = (props: {
           </button>
         )}
       </ul>
-    </Modal>
+    </BottomSheet>
   )
 }

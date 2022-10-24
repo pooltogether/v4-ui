@@ -21,7 +21,7 @@ export const BalanceHeader = () => {
   const { data: prizePoolExpectedPrizes } = usePrizePoolExpectedPrizes(prizePool)
 
   return (
-    <TransparentDiv className='flex flex-col mt-5 rounded-xl px-2 xs:px-8 pb-2 xs:pb-2'>
+    <TransparentDiv className='flex flex-col mt-5 rounded-xl px-4 sm:px-6 lg:px-12 pb-2 xs:pb-2'>
       <TokenIcon
         address={tokenData?.token.address}
         chainId={chainId}

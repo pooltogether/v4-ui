@@ -32,7 +32,7 @@ export const SelectAppChainIdModal = (props: SelectAppChainIdModalProps) => {
         onClick={() => setIsOpen(true)}
         className={classNames(
           className,
-          'bg-tertiary rounded-lg py-2 px-3 flex justify-between items-center text-left',
+          'bg-tertiary rounded-lg py-2 px-4 flex justify-between items-center text-left',
           'border border-transparent hover:border-highlight-1'
         )}
       >

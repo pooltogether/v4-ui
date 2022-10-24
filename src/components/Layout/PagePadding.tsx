@@ -30,8 +30,8 @@ export const PagePadding = (props: PagePaddingProps) => {
 }
 
 PagePadding.defaultProps = {
-  pxClassName: 'px-2 xs:px-4 sm:px-8 ',
+  pxClassName: 'px-2 sm:px-8',
   pyClassName: 'pb-20 pt-2 xs:pt-4 sm:pt-8',
-  widthClassName: 'max-w-screen-lg',
+  widthClassName: 'max-w-screen-md',
   marginClassName: 'mx-auto'
 }

@@ -18,20 +18,5 @@ export const DepositReviewView: React.FC<
   const { t } = useTranslation()
   const router = useRouter()
 
-  return (
-    <DepositReviewViewCore
-      {...props}
-      successView={
-        <Link href={{ pathname: '/account', query: router.query }}>
-          <ButtonLink
-            size={ButtonSize.md}
-            theme={ButtonTheme.tealOutline}
-            className='w-full text-center'
-          >
-            {t('viewAccount', 'View account')}
-          </ButtonLink>
-        </Link>
-      }
-    />
-  )
+  return <DepositReviewViewCore {...props} />
 }

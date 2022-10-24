@@ -136,7 +136,7 @@ const PastPrizeListItem = (props: PastPrizeListItemProps) => {
             <button
               onClick={onClick}
               className={classNames(
-                'flex flex-row justify-between w-full bg-white dark:bg-pt-purple-dark dark:bg-opacity-50 rounded-lg p-4',
+                'flex flex-row justify-between w-full bg-white dark:bg-pt-purple-dark dark:bg-opacity-50 rounded-lg py-4 px-4 sm:px-6 lg:px-12',
                 'hover:shadow-lg hover:bg-opacity-100'
               )}
             >
