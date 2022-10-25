@@ -133,7 +133,7 @@ const TokenIconOrLoading = (props: { chainId: number; token: Token; isFetched: b
     {props.isFetched ? (
       <TokenIcon
         chainId={props.chainId}
-        address={props.token.address}
+        address={props.token?.address}
         sizeClassName='hidden xs:block w-4 h-4 xs:w-6 xs:h-6'
       />
     ) : (
