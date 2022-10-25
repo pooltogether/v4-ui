@@ -51,6 +51,7 @@ const Settings = () => {
   const chains = getSupportedChains()
   const walletChainId = useWalletChainId()
   const [currentLang, setCurrentLang] = useState(i18next.language)
+  const router = useRouter()
 
   return (
     <>
@@ -69,8 +70,12 @@ const Settings = () => {
         langs={SUPPORTED_LANGUAGES}
         currentLang={currentLang}
         changeLang={(newLang) => {
+          console.log('changeLang', newLang, i18next)
           setCurrentLang(newLang)
           i18next.changeLanguage(newLang)
+          router.push({ pathname: router.pathname, query: router.query }, router.asPath, {
+            locale: newLang
+          })
         }}
       />
     </>

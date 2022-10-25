@@ -272,16 +272,20 @@ const ExtraDetailsSection = (props: { className?: string } & PastPrizeListItemPr
       )}
 
       {/* Eligibility */}
-      {userWasNotEligible ? (
-        <span className='opacity-70'>{t('notEligible', 'Not eligible')}</span>
-      ) : prizeClaimed ? (
-        <div className='flex flex-row space-x-1 items-center'>
-          <span className=''>{t('claimed', 'Claimed')}</span>
-          <span className='font-bold'>{claimedAmount?.amountPretty}</span>
-          <span className='font-bold'>{ticket.symbol}</span>
-        </div>
-      ) : (
-        <span className='opacity-70'>{t('eligibleToWin', 'Eligible to win')}</span>
+      {!!usersAddress && (
+        <>
+          {userWasNotEligible ? (
+            <span className='opacity-70'>{t('notEligible', 'Not eligible')}</span>
+          ) : prizeClaimed ? (
+            <div className='flex flex-row space-x-1 items-center'>
+              <span className=''>{t('claimed', 'Claimed')}</span>
+              <span className='font-bold'>{claimedAmount?.amountPretty}</span>
+              <span className='font-bold'>{ticket.symbol}</span>
+            </div>
+          ) : (
+            <span className='opacity-70'>{t('eligibleToWin', 'Eligible to win')}</span>
+          )}
+        </>
       )}
     </div>
   )
