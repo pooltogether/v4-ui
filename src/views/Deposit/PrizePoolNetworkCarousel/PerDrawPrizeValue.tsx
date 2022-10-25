@@ -77,7 +77,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
               <ExternalLink
                 children={undefined}
                 underline
-                href='https://docs.pooltogether.com/welcome/faq#where-does-the-prize-money-come-from'
+                href='https://docs.pooltogether.com/welcome/faq#how-many-prizes-are-awarded'
               />
             )
           }}
