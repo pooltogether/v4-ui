@@ -1,10 +1,10 @@
-import { useSelectedChainId } from '@hooks/useSelectedChainId'
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useAllChainsFilteredPromotions } from '@hooks/v4/TwabRewards/useAllChainsFilteredPromotions'
 import { usePromotionVAPR } from '@hooks/v4/TwabRewards/usePromotionVAPR'
 import { Promotion } from '@interfaces/promotions'
 import { TokenIcon } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
+import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { InfoListItem } from '.'
@@ -22,7 +22,7 @@ export const TwabRewardsAprItem: React.FC<{
 
   const { t } = useTranslation()
 
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
 
   const promotionsQueryResults = useAllChainsFilteredPromotions()
   const isFetched = promotionsQueryResults.every((queryResult) => queryResult.isFetched)
@@ -47,15 +47,21 @@ export const TwabRewardsAprItem: React.FC<{
 
   return (
     <InfoListItem
-      labelClassName={labelClassName}
+      labelClassName={classNames(labelClassName)}
       valueClassName={valueClassName}
-      label={t('rewardsVapr', 'Rewards vAPR')}
+      label={
+        <div className='inline-flex space-x-1 items-center'>
+          <span className='text-flashy'>Bonus Rewards</span>
+          <img className='w-4 h-4 ml-1' src='/beach-with-umbrella.png' />
+        </div>
+      }
       labelToolTip={t(
         'rewardsVaprDescription',
         'Rewards vAPR is the variable annual rate of return on your deposit in the form of rewards, based on the total value of deposits on this chain'
       )}
+      tooltipId='rewardsVaprDescription'
       loading={!isFetched}
-      labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
+      // labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={value}
     />
   )
@@ -68,13 +74,12 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
   if (vapr <= 0) return null
 
   return (
-    <li className='flex space-x-1 items-center'>
-      <span>{numberWithCommas(vapr)}% in</span>
-      <TokenIcon
-        chainId={promotion.chainId}
-        address={promotion.token}
-        sizeClassName='w-3 h-3 sm:w-4 sm:h-4'
-      />
+    <li className='flex items-center'>
+      <div className='inline-flex items-center space-x-1'>
+        <span>{numberWithCommas(vapr)}%</span>
+        <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
+        <span>VAPR</span>
+      </div>
     </li>
   )
 }

@@ -1,10 +1,9 @@
 import { POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
-
 
 /**
  * Returns a users POOL Pool balances.
@@ -55,7 +54,7 @@ export const useUsersV3POOLPoolBalances = (usersAddress: string) => {
       })
     })
 
-    const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+    const totalValueUsd = getAmountFromUnformatted(totalValueUsdScaled, '2')
 
     return {
       isFetching: false,

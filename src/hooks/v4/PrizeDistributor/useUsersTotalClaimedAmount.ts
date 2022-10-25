@@ -1,8 +1,13 @@
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
 
+/**
+ * NOTE: Legacy hook.  Use useUsersTotalClaimedAmountGraph instead. This reads from chain data which uses a buffer that will get overwritten.
+ * @param usersAddress
+ * @returns
+ */
 export const useUsersTotalClaimedAmount = (usersAddress: string) => {
   const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()
   const claimedAmountsQueryResults = useAllUsersClaimedAmounts(usersAddress)
@@ -26,7 +31,7 @@ export const useUsersTotalClaimedAmount = (usersAddress: string) => {
     }, BigNumber.from(0))
     return acc.add(totalClaimedForPrizePool)
   }, BigNumber.from(0))
-  const totalClaimedAmount = getAmountFromBigNumber(totalClaimedAmountUnformatted, decimals)
+  const totalClaimedAmount = getAmountFromUnformatted(totalClaimedAmountUnformatted, decimals)
   return {
     data: totalClaimedAmount,
     isFetched: true

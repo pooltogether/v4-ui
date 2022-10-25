@@ -44,6 +44,7 @@ export const UpdatedPrizePoolNetworkOddsListItem = (props: {
 
   return (
     <InfoListItem
+      tooltipId='networkWinningOdds'
       label={t('networkWinningOdds', 'Network winning odds')}
       labelToolTip={t(
         'networkWinningOddsDescription',

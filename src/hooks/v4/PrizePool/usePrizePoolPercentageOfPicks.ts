@@ -50,6 +50,7 @@ export const getPrizePoolPercentageOfPicks = (
   const prizePoolTvlNormalized = parseEther(prizePoolTvl)
   const prizePoolNetworkTvlNormalized = parseEther(prizePoolNetworkTvl)
   return {
+    chainId: prizePool.chainId,
     prizePoolId: prizePool.id(),
     percentage: prizePoolTvlNormalized.isZero()
       ? 0

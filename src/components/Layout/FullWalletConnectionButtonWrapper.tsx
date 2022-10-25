@@ -1,5 +1,6 @@
+import { ButtonRadius, ButtonTheme } from '@pooltogether/react-components'
 import { FullWalletConnectionButton } from '@pooltogether/wallet-connection'
-import { getSupportedChains } from '@utils/getSupportedChains'
+import { getV4SupportedChains } from '@utils/getV4SupportedChains'
 import { Trans } from 'next-i18next'
 
 /**
@@ -7,36 +8,36 @@ import { Trans } from 'next-i18next'
  * @param props
  * @returns
  */
-export const FullWalletConnectionButtonWrapper = (props) => {
-  const chains = getSupportedChains()
+export const FullWalletConnectionButtonWrapper = (props) => (
+  <FullWalletConnectionButton
+    {...props}
+    chains={getV4SupportedChains()}
+    theme={ButtonTheme.transparent}
+    radius={ButtonRadius.full}
+    TosDisclaimer={<TosDisclaimer />}
+  />
+)
 
-  return (
-    <FullWalletConnectionButton
-      {...props}
-      chains={chains}
-      TosDisclaimer={
-        <Trans
-          i18nKey='connectWalletTermsAndDisclaimerBlurb'
-          components={{
-            termsLink: (
-              <a
-                className='text-pt-teal transition hover:opacity-70 underline'
-                href='https://pooltogether.com/terms/'
-                target='_blank'
-                rel='noreferrer'
-              />
-            ),
-            disclaimerLink: (
-              <a
-                className='text-pt-teal transition hover:opacity-70 underline'
-                href='https://pooltogether.com/protocol-disclaimer/'
-                target='_blank'
-                rel='noreferrer'
-              />
-            )
-          }}
+export const TosDisclaimer = () => (
+  <Trans
+    i18nKey='connectWalletTermsAndDisclaimerBlurb'
+    components={{
+      termsLink: (
+        <a
+          className='text-pt-teal transition hover:opacity-70 underline'
+          href='https://pooltogether.com/terms/'
+          target='_blank'
+          rel='noreferrer'
         />
-      }
-    />
-  )
-}
+      ),
+      disclaimerLink: (
+        <a
+          className='text-pt-teal transition hover:opacity-70 underline'
+          href='https://pooltogether.com/protocol-disclaimer/'
+          target='_blank'
+          rel='noreferrer'
+        />
+      )
+    }}
+  />
+)

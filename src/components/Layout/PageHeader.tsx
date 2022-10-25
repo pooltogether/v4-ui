@@ -1,34 +1,34 @@
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
+import { SUPPORTED_LANGUAGES } from '@constants/languages'
 import {
   LanguagePickerDropdown,
-  PageHeaderContainer,
-  SettingsContainer,
   SettingsItem,
-  TestnetSettingsItem,
-  FeatureRequestSettingsItem,
-  ThemeSettingsItem,
-  SocialLinks,
   Modal,
   NetworkIcon,
-  HeaderLogo
+  HeaderLogo,
+  PageHeaderContainer,
+  SettingsModal
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import {
+  NetworkSelectionCurrentlySelected,
+  NetworkSelectionList,
+  useWalletChainId
+} from '@pooltogether/wallet-connection'
+import { getSupportedChains } from '@utils/getSupportedChains'
+import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import nextI18NextConfig from '../../../next-i18next.config.js'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
-export enum ContentPaneState {
-  deposit = 'deposit',
-  prizes = 'prizes',
-  account = 'account'
-}
+export const NEGATIVE_HEADER_MARGIN = '-mt-12 sm:-mt-16'
 
 export const PageHeader = (props) => (
   <PageHeaderContainer
+    maxWidthClassName='max-w-screen-md'
     logo={
       <Link href='/deposit'>
         <a>
@@ -46,23 +46,48 @@ export const PageHeader = (props) => (
 )
 
 const Settings = () => {
-  const { t } = useTranslation()
+  const { t, i18n: i18next } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+  const chains = getSupportedChains()
+  const walletChainId = useWalletChainId()
+  const [currentLang, setCurrentLang] = useState(i18next.language)
 
   return (
-    <SettingsContainer t={t} className='ml-1 my-auto' sizeClassName='w-6 h-6 overflow-hidden'>
-      <div className='flex flex-col justify-between h-full sm:h-auto'>
-        <div>
-          <LanguagePicker />
-          <ThemeSettingsItem t={t} />
-          <TestnetSettingsItem t={t} />
-          <FeatureRequestSettingsItem t={t} />
-          <ClearLocalStorageSettingsItem />
-        </div>
-        <div className='sm:pt-24 pb-4 sm:pb-0'>
-          <SocialLinks t={t} />
-        </div>
-      </div>
-    </SettingsContainer>
+    <>
+      <button onClick={() => setIsOpen(true)}>
+        <FeatherIcon
+          icon='menu'
+          className={classNames('w-6 h-6 text-gradient-magenta hover:text-inverse transition')}
+        />
+      </button>
+      <SettingsModal
+        t={t}
+        isOpen={isOpen}
+        walletChainId={walletChainId}
+        closeModal={() => setIsOpen(false)}
+        networkView={() => <NetworkView />}
+        langs={SUPPORTED_LANGUAGES}
+        currentLang={currentLang}
+        changeLang={(newLang) => {
+          setCurrentLang(newLang)
+          i18next.changeLanguage(newLang)
+        }}
+      />
+    </>
+  )
+}
+
+const NetworkView = () => {
+  const chains = getSupportedChains()
+  const { t } = useTranslation()
+  return (
+    <>
+      <p className='mb-3 text-center'>
+        Selecting a network will prompt you to switch to the network selected in your wallet.
+      </p>
+      <NetworkSelectionList chains={chains} />
+      <NetworkSelectionCurrentlySelected t={t} />
+    </>
   )
 }
 

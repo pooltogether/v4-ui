@@ -1,5 +1,5 @@
 import { LP_PRIZE_POOL_METADATA } from '@constants/v3'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useAllUsersV3Balances, V3PrizePoolBalances } from './useAllUsersV3Balances'
@@ -50,7 +50,7 @@ export const useUsersV3LPPoolBalances = (usersAddress: string) => {
       })
     })
 
-    const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+    const totalValueUsd = getAmountFromUnformatted(totalValueUsdScaled, '2')
 
     return {
       isFetching: false,

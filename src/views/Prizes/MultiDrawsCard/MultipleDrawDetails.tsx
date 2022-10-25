@@ -21,13 +21,21 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
   return (
     <div className={classNames('w-full flex flex-col', className)}>
       <div className='flex flex-col xs:flex-row justify-between leading-none'>
-        <span className='flex items-start'>
-          <MultipleDrawIds {...remainingProps} partialDrawDatas={drawDatas} />
-          <MultipleDrawsDate {...remainingProps} partialDrawDatas={drawDatas} />
+        <span className='flex flex-col'>
+          <MultipleDrawIds
+            {...remainingProps}
+            partialDrawDatas={drawDatas}
+            fontClassName='text-white text-opacity-70'
+          />
+          <MultipleDrawsDate
+            {...remainingProps}
+            partialDrawDatas={drawDatas}
+            fontClassName='text-white text-opacity-90'
+          />
         </span>
         <span className='flex xs:flex-col flex-col-reverse items-start xs:items-end '>
           <MultiDrawsPrizeTiersTrigger
-            className='mt-2 xs:mt-0 text-white'
+            className='mt-4 xs:mt-0 text-white'
             {...remainingProps}
             drawDatas={drawDatas}
           />
@@ -75,18 +83,24 @@ TotalPrizes.defaultProps = {
 export const MultipleDrawIds = (props: {
   partialDrawDatas: { [drawId: number]: { draw: Draw } }
   className?: string
+  fontClassName?: string
 }) => {
   const { t } = useTranslation()
-  const { partialDrawDatas, className } = props
+  const { partialDrawDatas, className, fontClassName } = props
   const drawIds = Object.keys(partialDrawDatas)
   if (drawIds.length === 0) {
     return null
   } else if (drawIds.length === 1) {
-    return <span className={className}>#{drawIds[0]}</span>
+    return <span className={classNames(className, fontClassName)}>#{drawIds[0]}</span>
   }
-  return <span className={className}>{t('multipleDraws', 'Multiple draws')}</span>
+  return (
+    <span className={classNames(className, fontClassName)}>
+      {t('multipleDraws', 'Multiple draws')}
+    </span>
+  )
 }
 
 MultipleDrawIds.defaultProps = {
-  className: 'uppercase font-bold text-white mr-2 opacity-50 text-xs leading-none'
+  className: 'uppercase mr-2 font-bold text-xs leading-none',
+  fontClassName: 'text-pt-purple-darkest text-opacity-70 dark:text-white dark:text-opacity-70'
 }

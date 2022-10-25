@@ -81,7 +81,7 @@ export const PrizeVideoBackground: React.FC<{
     const ref = getRef(videoClip, videoState)
     setActiveVideoClip(videoClip)
     setActiveVideoState(videoState)
-    ref.current.play()
+    ref.current?.play()
   }
 
   const playNext = useCallback(
@@ -106,7 +106,7 @@ export const PrizeVideoBackground: React.FC<{
       if (targetVideoClip !== videoClip || videoState !== VideoState.loop) {
         playNext(videoClip, videoState)
       } else {
-        getRef(videoClip, videoState).current.play()
+        getRef(videoClip, videoState).current?.play()
       }
     },
     [activeVideoClip, activeVideoState, targetVideoClip]
@@ -240,7 +240,7 @@ const VideoWrapper = React.forwardRef<
   useEffect(() => {
     if (videoClip === VideoClip.rest && videoState === VideoState.loop) {
       if (typeof ref !== 'function' && !!ref.current) {
-        const promise = ref.current.play()
+        const promise = ref.current?.play()
         if (promise !== undefined) {
           promise.catch((e) => {
             console.error(e)

@@ -1,10 +1,9 @@
-import { Amount } from '@pooltogether/hooks'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
-import { usePrizePoolPrizes } from './usePrizePoolPrizes'
+import { PrizeData, usePrizePoolPrizes } from './usePrizePoolPrizes'
 
 /**
  * Fetches prize data and scales it according to the expected number of picks a prize pool will receive
@@ -39,21 +38,7 @@ export const getPrizePoolExpectedPrizesKey = (
   decimals
 ]
 
-export const getPrizePoolExpectedPrizes = (
-  prizeData: {
-    chainId: number
-    prizePoolId: string
-    prizeTier: PrizeTier
-    numberOfPrizesByTier: number[]
-    totalNumberOfPrizes: number
-    valueOfPrizesByTier: Amount[]
-    totalValueOfPrizes: Amount
-    averagePrizeValue: Amount
-    grandPrizeValue: Amount
-    decimals: string
-  },
-  percentageOfPicks: number
-) => {
+export const getPrizePoolExpectedPrizes = (prizeData: PrizeData, percentageOfPicks: number) => {
   const expectedNumberOfPrizesByTier = prizeData.numberOfPrizesByTier.map(
     (numberOfPrizes) => numberOfPrizes * percentageOfPicks
   )
@@ -61,7 +46,7 @@ export const getPrizePoolExpectedPrizes = (
     (total, numberOfPrizes) => total + numberOfPrizes,
     0
   )
-  const expectedTotalValueOfPrizes = getAmountFromBigNumber(
+  const expectedTotalValueOfPrizes = getAmountFromUnformatted(
     prizeData.prizeTier.prize
       .mul(parseUnits(percentageOfPicks.toString(), 8))
       .div(parseUnits('1', 8)),

@@ -1,5 +1,6 @@
 import { APP_ENVIRONMENTS } from '@pooltogether/hooks'
 import { getNetworkNameAliasByChainId } from '@pooltogether/utilities'
+import { ContractType } from '@pooltogether/v4-client-js'
 import { testnet, mainnet } from '@pooltogether/v4-pool-data'
 import { CHAIN_ID, getChain } from '@pooltogether/wallet-connection'
 import { Chain } from 'wagmi'
@@ -36,12 +37,67 @@ export const RPC_URLS = {
 // NOTE: Should be empty. Add a chain id to hide it in app.
 export const CHAIN_IDS_TO_BLOCK = Object.freeze([])
 
+// Pull prize pool addresses from the contract list
+export const V4_PRIZE_POOLS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: mainnet.contracts.reduce<{ [chainId: number]: string[] }>(
+    (prizePoolsByChainId, contract) => {
+      if (contract.type === ContractType.YieldSourcePrizePool) {
+        if (!prizePoolsByChainId[contract.chainId]) {
+          prizePoolsByChainId[contract.chainId] = []
+        }
+        prizePoolsByChainId[contract.chainId].push(contract.address.toLowerCase())
+      }
+      return prizePoolsByChainId
+    },
+    {}
+  ),
+  [APP_ENVIRONMENTS.testnets]: testnet.contracts.reduce<{ [chainId: number]: string[] }>(
+    (prizePoolsByChainId, contract) => {
+      if (contract.type === ContractType.YieldSourcePrizePool) {
+        if (!prizePoolsByChainId[contract.chainId]) {
+          prizePoolsByChainId[contract.chainId] = []
+        }
+        prizePoolsByChainId[contract.chainId].push(contract.address.toLowerCase())
+      }
+      return prizePoolsByChainId
+    },
+    {}
+  )
+})
+
+// Pull chain ids from the contract list
 export const V4_CHAIN_IDS = Object.freeze({
   [APP_ENVIRONMENTS.mainnets]: Array.from(new Set(mainnet.contracts.map((c) => c.chainId))).filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
   ),
   [APP_ENVIRONMENTS.testnets]: Array.from(new Set(testnet.contracts.map((c) => c.chainId))).filter(
     (chainId) => !CHAIN_IDS_TO_BLOCK.includes(chainId)
+  )
+})
+
+// Set default addresses for all of the chain ids provided
+export const DEFAULT_PRIZE_POOLS = Object.freeze({
+  [APP_ENVIRONMENTS.mainnets]: Object.freeze(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.mainnets].reduce<{ [chainId: number]: string }>(
+      (defaultPrizePools, chainId) => {
+        defaultPrizePools[chainId] = mainnet.contracts.find(
+          (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
+        ).address
+        return defaultPrizePools
+      },
+      {} // Add overrides here and check if set above before setting the first address in the list
+    )
+  ),
+  [APP_ENVIRONMENTS.testnets]: Object.freeze(
+    V4_CHAIN_IDS[APP_ENVIRONMENTS.testnets].reduce<{ [chainId: number]: string }>(
+      (defaultPrizePools, chainId) => {
+        defaultPrizePools[chainId] = testnet.contracts.find(
+          (c) => chainId === c.chainId && c.type === ContractType.YieldSourcePrizePool
+        ).address
+        return defaultPrizePools
+      },
+      {} // Add overrides here and check if set above before setting the first address in the list
+    )
   )
 })
 
@@ -110,37 +166,24 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
 /**
  * Urls used for quick links to bridges for users
  */
-export const getBridgeUrls = (chainId: number) =>
-  BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
-const BRIDGE_URLS = Object.freeze({
+export const getBridges = (chainId: number) => BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
+export const BRIDGE_URLS = Object.freeze({
   [CHAIN_ID.mainnet]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.goerli]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
-  ],
-  [CHAIN_ID.mumbai]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
+    { url: 'https://bridge.avax.network/', title: 'Avalanche bridge' },
+    { url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }
+    // { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.polygon]: [
-    { url: 'https://zapper.fi/bridge', title: 'Zapper' },
-    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
-    { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
+    { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' }
+    // { url: 'https://zapper.fi/bridge', title: 'Zapper' },
+    // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
-  [CHAIN_ID.fuji]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
   [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
-  [CHAIN_ID['optimism-goerli']]: [
-    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }
-  ],
-  [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }],
-  [CHAIN_ID['arbitrum-goerli']]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
+  [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
 })
 
 /**
@@ -149,24 +192,42 @@ const BRIDGE_URLS = Object.freeze({
  * @param tokenAddress
  * @returns
  */
-export const getExchangeUrl = (chainId: number, tokenAddress: string) =>
+export const getExchange = (chainId: number, tokenAddress?: string) =>
   EXCHANGE_URLS[chainId]?.(tokenAddress) || EXCHANGE_URLS[CHAIN_ID.mainnet](tokenAddress)
-const EXCHANGE_URLS = Object.freeze({
-  [CHAIN_ID.mainnet]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.optimism]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=optimism&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.goerli]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=goerli&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.polygon]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=polygon&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.mumbai]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=mumbai&theme=dark&outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.avalanche]: (tokenAddress: string) =>
-    `https://traderjoexyz.com/#/trade?outputCurrency=${tokenAddress}`,
-  [CHAIN_ID.fuji]: (tokenAddress: string) => `https://traderjoexyz.com/#/trade`,
-  [CHAIN_ID.arbitrum]: (tokenAddress: string) =>
-    `https://app.uniswap.org/#/swap?chain=arbitrum&theme=dark&outputCurrency=${tokenAddress}`
+
+export const EXCHANGE_URLS = Object.freeze({
+  [CHAIN_ID.mainnet]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=mainnet&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Uniswap'
+  }),
+  [CHAIN_ID.optimism]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=optimism&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Uniswap'
+  }),
+
+  [CHAIN_ID.polygon]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=polygon&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Uniswap'
+  }),
+
+  [CHAIN_ID.avalanche]: (tokenAddress?: string) => ({
+    url: `https://traderjoexyz.com/#/trade?${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Trader Joe'
+  }),
+  [CHAIN_ID.arbitrum]: (tokenAddress?: string) => ({
+    url: `https://app.uniswap.org/#/swap?chain=arbitrum&theme=dark${
+      !!tokenAddress ? `&outputCurrency=${tokenAddress}` : ''
+    }`,
+    title: 'Uniswap'
+  })
 })
 
 /**

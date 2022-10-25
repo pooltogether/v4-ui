@@ -1,6 +1,6 @@
 import { useMinimumDepositAmount } from '@hooks/v4/PrizePool/useMinimumDepositAmount'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { TokenAmountInput } from '@pooltogether/react-components'
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -28,7 +28,7 @@ export const DepositAmountInput = (props: DepositAmountInputProps) => {
   const chainId = prizePool.chainId
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data: usersBalancesData } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
   const token = prizePoolTokens?.token
   const balance = usersBalancesData?.balances.token
   const validate = useDepositValidationRules(prizePool)
@@ -70,11 +70,11 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: usersBalancesData } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { data: usersBalancesData } = useUsersPrizePoolBalancesWithFiat(usersAddress, prizePool)
 
   const token = prizePoolTokens?.token
   const decimals = token?.decimals
-  const minimumDepositAmount = useMinimumDepositAmount(prizePool, token)
+  const minimumDepositAmount = useMinimumDepositAmount(prizePool)
   const usersBalances = usersBalancesData?.balances
   const tokenBalance = usersBalances?.token
   const ticketBalance = usersBalances?.ticket
@@ -91,10 +91,7 @@ const useDepositValidationRules = (prizePool: PrizePool) => {
         if (!tokenBalance) return false
         if (!ticketBalance) return false
         if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
-          return t(
-            'insufficientFundsGetTokensBelow',
-            'Insufficient funds. Get or swap tokens below.'
-          )
+          return t('insufficientFunds', 'Insufficient funds')
         if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
           return t(
             'minimumDepositOfAmountRequired',

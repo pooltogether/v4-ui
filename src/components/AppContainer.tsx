@@ -1,4 +1,5 @@
 import { RPC_URLS } from '@constants/config'
+import { useActualFullScreen } from '@hooks/useActualFullScreen'
 import { useAllPrizePoolTokens } from '@hooks/v4/PrizePool/useAllPrizePoolTokens'
 import { useInitCookieOptions } from '@pooltogether/hooks'
 import { LoadingScreen, useScreenSize, ScreenSize } from '@pooltogether/react-components'
@@ -9,6 +10,7 @@ import {
   useUpdateStoredPendingTransactions
 } from '@pooltogether/wallet-connection'
 import { getSupportedChains } from '@utils/getSupportedChains'
+import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
@@ -105,6 +107,10 @@ export const AppContainer: React.FC<AppProps> = (props) => {
         router.events.off('routeChangeComplete', onRouteChangeComplete)
       }
     }
+    // Add count if user is coming from a Coinbase app
+    if (navigator?.userAgent === 'CoinbaseRetail') {
+      logEvent(FathomEvent.coinbaseAppUser)
+    }
   }, [])
 
   return (
@@ -136,6 +142,7 @@ const Content: React.FC<AppProps> = (props) => {
 
 const useInitialLoad = () => {
   const { i18n } = useTranslation()
+  useActualFullScreen()
   useUpdateStoredPendingTransactions()
   useInitCookieOptions(process.env.NEXT_PUBLIC_DOMAIN_NAME)
   const { status } = useAccount()

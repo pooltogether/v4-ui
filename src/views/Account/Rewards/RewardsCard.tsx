@@ -1,7 +1,5 @@
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { TxButton } from '@components/Input/TxButton'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
-import { CardTitle } from '@components/Text/CardTitle'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
 import { TwitterIntentButton } from '@components/TwitterIntentButton'
 import { VAPRTooltip } from '@components/VAPRTooltip'
@@ -14,17 +12,16 @@ import { useUsersPromotionAmountEstimate } from '@hooks/v4/TwabRewards/useUsersP
 import { useUsersPromotionRewardsAmount } from '@hooks/v4/TwabRewards/useUsersPromotionRewardsAmount'
 import { useUsersRewardsHistory } from '@hooks/v4/TwabRewards/useUsersRewardsHistory'
 import { ClaimedPromotion, Promotion } from '@interfaces/promotions'
-import { Token, Amount, useToken, useTokenBalance, TokenWithAllBalances } from '@pooltogether/hooks'
+import { Token, Amount, useTokenBalance, TokenWithAllBalances } from '@pooltogether/hooks'
 import {
   BottomSheet,
-  BottomSheetTitle,
   snapTo90,
   ThemedClipSpinner,
   NetworkIcon,
   TokenIcon,
-  SquareButtonTheme,
-  SquareLink,
-  SquareButtonSize,
+  ButtonTheme,
+  ButtonLink,
+  ButtonSize,
   ExternalLink
 } from '@pooltogether/react-components'
 import {
@@ -34,6 +31,7 @@ import {
   getNetworkNiceNameByChainId,
   sToD
 } from '@pooltogether/utilities'
+import { getAmount } from '@pooltogether/utilities'
 import {
   useSendTransaction,
   useUsersAddress,
@@ -43,8 +41,6 @@ import {
   Transaction,
   getChainColorByChainId
 } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { loopXTimes } from '@utils/loopXTimes'
 import { getTwabRewardsContract } from '@utils/v4/TwabRewards/getTwabRewardsContract'
 import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
@@ -57,6 +53,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { UseQueryResult } from 'react-query'
 import { useSigner } from 'wagmi'
+import { LoadingList } from '../AccountList/LoadingList'
 
 enum ClaimModalState {
   'FORM',
@@ -81,9 +78,7 @@ export const RewardsCard = () => {
   }
 
   return (
-    <div className='flex flex-col space-y-2'>
-      <CardTitle title={t('rewards')} loading={!isFetched} />
-
+    <div className='flex flex-col space-y-2' id='rewards'>
       {!isFetched && (
         <LoadingList
           listItems={1}
@@ -251,7 +246,7 @@ const PromotionRow = (props: {
             }}
             left={
               <div className='flex items-center font-bold'>
-                <img className='w-5 mr-2 hidden xs:block' src='/beach-with-umbrella.png' />{' '}
+                <img className='w-5 h-5 mr-2 hidden xs:block' src='/beach-with-umbrella.png' />{' '}
                 {token.symbol}{' '}
               </div>
             }
@@ -348,7 +343,7 @@ const ClaimModal = (props: {
     setModalState(ClaimModalState.RECEIPT)
   }
 
-  const onDismiss = () => {
+  const closeModal = () => {
     setFormView()
     setIsOpen(false)
   }
@@ -376,7 +371,7 @@ const ClaimModal = (props: {
     content = (
       <ClaimModalReceipt
         {...props}
-        onDismiss={onDismiss}
+        closeModal={closeModal}
         transactionPending={transactionPending}
         tx={transaction}
         setFormView={setFormView}
@@ -387,8 +382,8 @@ const ClaimModal = (props: {
   return (
     <BottomSheet
       className='flex flex-col'
-      open={isOpen}
-      onDismiss={onDismiss}
+      isOpen={isOpen}
+      closeModal={closeModal}
       label='Claim modal'
       snapPoints={snapTo90}
     >
@@ -438,7 +433,7 @@ const ClaimModalForm = (props: {
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
 
-  const amount = getAmountFromString(usersClaimedPromotionHistory?.rewards, decimals)
+  const amount = getAmount(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
 
@@ -470,13 +465,13 @@ const ClaimModalForm = (props: {
               />
             </div>
 
-            <SquareLink
+            <ButtonLink
               href='/deposit'
-              theme={SquareButtonTheme.rainbow}
+              theme={ButtonTheme.rainbow}
               className='mt-4 mb-8 flex w-full items-center justify-center'
             >
-              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit', 'Deposit')}
-            </SquareLink>
+              {userIsEarning ? t('depositMore', 'Deposit more') : t('deposit')}
+            </ButtonLink>
           </div>
         </>
       )}
@@ -659,10 +654,11 @@ const ClaimModalReceipt = (props: {
   }
   tx: Transaction
   transactionPending: boolean
-  onDismiss: () => void
+  closeModal: () => void
   setFormView: () => void
 }) => {
-  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending, onDismiss } = props
+  const { chainId, token, claimableUsd, claimableAmount, tx, transactionPending, closeModal } =
+    props
   const { t } = useTranslation()
 
   const [cachedClaimableUsd] = useState(claimableUsd)
@@ -682,16 +678,10 @@ const ClaimModalReceipt = (props: {
     <>
       <div className='flex flex-grow flex-col justify-between'>
         <div>
-          <BottomSheetTitle
-            title={
-              <>
-                <div className='flex flex-col items-center justify-center max-w-xs mx-auto leading-tight'>
-                  <PrizeWLaurels className='flex justify-center mx-auto my-4 w-16 xs:w-32' />
-                  {t('rewardsClaimSubmitted', 'Rewards claim submitted, confirming transaction.')}
-                </div>
-              </>
-            }
-          />
+          <div className='flex flex-col items-center justify-center max-w-xs mx-auto leading-tight text-sm xs:text-lg sm:text-xl mb-4 font-bold text-inverse text-center'>
+            <PrizeWLaurels className='flex justify-center mx-auto my-4 w-16 xs:w-32' />
+            {t('rewardsClaimSubmitted', 'Rewards claim submitted, confirming transaction.')}
+          </div>
 
           <div className='flex items-center justify-center w-full bg-white dark:bg-actually-black dark:bg-opacity-10 rounded-xl p-6 my-4 xs:my-8 xs:text-xl font-bold'>
             <span className='mx-auto flex items-center mt-1'>
@@ -712,7 +702,7 @@ const ClaimModalReceipt = (props: {
         {isOPToken && <OPTokenCTAs />}
 
         <div className='space-y-4'>
-          {!isOPToken && <AccountPageButton onDismiss={onDismiss} />}
+          {!isOPToken && <AccountPageButton closeModal={closeModal} />}
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
             url='https://app.pooltogether.com'
@@ -753,19 +743,19 @@ export const DelegateOPButton = (props) => {
   )
 }
 
-export const AccountPageButton = (props: { onDismiss: () => void }) => {
-  const { onDismiss } = props
+export const AccountPageButton = (props: { closeModal: () => void }) => {
+  const { closeModal } = props
   const { t } = useTranslation()
 
   return (
-    <SquareLink
-      size={SquareButtonSize.md}
-      theme={SquareButtonTheme.tealOutline}
+    <ButtonLink
+      size={ButtonSize.md}
+      theme={ButtonTheme.tealOutline}
       className='w-full text-center'
-      onClick={onDismiss}
+      onClick={closeModal}
     >
       {t('viewAccount', 'View account')}
-    </SquareLink>
+    </ButtonLink>
   )
 }
 
@@ -982,8 +972,7 @@ const SubmitTransactionButton = (props: {
   const disabled =
     !signer || transactionPending || !claimableAmount || Number(claimableAmount?.amount) === 0
 
-  const theme =
-    isWalletOnProperNetwork && !disabled ? SquareButtonTheme.rainbow : SquareButtonTheme.teal
+  const theme = isWalletOnProperNetwork && !disabled ? ButtonTheme.rainbow : ButtonTheme.teal
 
   return (
     <TxButton

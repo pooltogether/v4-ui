@@ -62,7 +62,9 @@ const getAllFilteredPromotions = async (chainId: number, graphQueryResults, rpcQ
     promotions.push(promotion)
   }
 
-  return { chainId, promotions }
+  const hasActivePromotions = promotions?.some((promotion) => !promotion.isComplete)
+
+  return { chainId, promotions, hasActivePromotions }
 }
 
 const combinePromotionData = (chainId: number, promotion, promotionRpcData): Promotion => {

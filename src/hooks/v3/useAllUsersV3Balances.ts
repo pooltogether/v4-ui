@@ -11,11 +11,10 @@ import {
   TokenPrice
 } from '@pooltogether/hooks'
 import { amountMultByUsd, toScaledUsdBigNumber } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { useReadProviders } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQueries } from 'react-query'
 import { PodToken, useV3PrizePools, V3PrizePool } from './useV3PrizePools'
-
 
 export interface V3PrizePoolBalances {
   chainId: number
@@ -44,7 +43,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
     chainIds.map((chainId) => ({
       queryKey: ['useAllUsersV3Balances', usersAddress, chainId, tokenPrices],
       queryFn: async () =>
-        getUsersV3BalancesByChainId(
+        getUserV3BalancesByChainId(
           chainId,
           usersAddress,
           providers[chainId],
@@ -64,7 +63,7 @@ export const useAllUsersV3Balances = (usersAddress: string) => {
  * @param prizePools
  * @returns
  */
-const getUsersV3BalancesByChainId = async (
+const getUserV3BalancesByChainId = async (
   chainId: number,
   usersAddress: string,
   provider: Provider,
@@ -165,11 +164,14 @@ const makeTokenWithUsdBalance = (
   etherplexBalanceOfResults
 ): TokenWithUsdBalance => {
   const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
-  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
   const balanceUsdUnformatted = usdPerToken
     ? amountMultByUsd(balanceUnformatted, usdPerToken)
     : BigNumber.from(0)
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals, {
+    style: 'currency',
+    currency: 'USD'
+  })
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,
@@ -195,7 +197,7 @@ const makePodStablecoinTokenWithUsdBalance = (
   etherplexBalanceOfResults
 ): TokenWithUsdBalance => {
   const balanceUnformatted = etherplexBalanceOfResults[token.address].balanceOf[0]
-  const balance = getAmountFromBigNumber(balanceUnformatted, token.decimals)
+  const balance = getAmountFromUnformatted(balanceUnformatted, token.decimals)
   const balanceUsdUnformatted = usdPerToken
     ? amountMultByUsd(
         balanceUnformatted
@@ -206,7 +208,10 @@ const makePodStablecoinTokenWithUsdBalance = (
         usdPerToken
       )
     : BigNumber.from(0)
-  const balanceUsd = getAmountFromBigNumber(balanceUsdUnformatted, token.decimals)
+  const balanceUsd = getAmountFromUnformatted(balanceUsdUnformatted, token.decimals, {
+    style: 'currency',
+    currency: 'USD'
+  })
   const balanceUsdScaled = toScaledUsdBigNumber(balanceUsd.amount)
   return {
     ...token,

@@ -1,11 +1,13 @@
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
+import { TxButton } from '@components/Input/TxButton'
 import { Amount } from '@pooltogether/hooks'
 import {
-  SquareLink,
-  SquareButton,
-  SquareButtonTheme,
-  ThemedClipSpinner
+  ButtonLink,
+  Button,
+  ButtonTheme,
+  ThemedClipSpinner,
+  ButtonRadius
 } from '@pooltogether/react-components'
 import {
   formatBlockExplorerTxUrl,
@@ -23,10 +25,16 @@ interface V3ModalApproveGateProps {
   chainId: number
   approveTx: Transaction
   sendApproveTx: () => void
+  connectWallet?: () => void
 }
 
+/**
+ * TODO: Make max approval optional
+ * @param props
+ * @returns
+ */
 export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
-  const { className, chainId, approveTx, sendApproveTx, amountToDeposit } = props
+  const { className, chainId, approveTx, sendApproveTx, connectWallet, amountToDeposit } = props
 
   const { t } = useTranslation()
 
@@ -44,14 +52,15 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
             )}
           </p>
         </div>
-        <SquareLink
+        <ButtonLink
           href={blockExplorerUrl}
           className='w-full mt-6'
-          theme={SquareButtonTheme.tealOutline}
+          theme={ButtonTheme.tealOutline}
           target='_blank'
+          rel='noreferrer'
         >
           {t('viewReceipt', 'View receipt')}
-        </SquareLink>
+        </ButtonLink>
       </div>
     )
   }
@@ -70,9 +79,9 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
           {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
           <a
             target='_blank'
+            rel='noreferrer'
             className='underline'
             href='https://docs.pooltogether.com/pooltogether/using-pooltogether'
-            rel='noreferrer'
           >
             {t('howToDeposit', 'How to deposit')}
           </a>
@@ -85,9 +94,17 @@ export const V3ModalApproveGate = (props: V3ModalApproveGateProps) => {
       <div className='mb-6'>
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />
       </div>
-      <SquareButton className='w-full' onClick={sendApproveTx}>
+      <TxButton
+        className='w-full'
+        radius={ButtonRadius.full}
+        chainId={chainId}
+        onClick={sendApproveTx}
+        state={approveTx?.state}
+        status={approveTx?.status}
+        connectWallet={connectWallet}
+      >
         {t('confirmApproval', 'Confirm approval')}
-      </SquareButton>
+      </TxButton>
     </div>
   )
 }

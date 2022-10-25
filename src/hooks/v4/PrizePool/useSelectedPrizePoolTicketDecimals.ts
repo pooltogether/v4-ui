@@ -1,4 +1,4 @@
-import { usePrizePoolBySelectedChainId } from '@hooks/v4/PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
 
 /**
@@ -6,6 +6,6 @@ import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
  * @returns
  */
 export const useSelectedPrizePoolTicketDecimals = () => {
-  const prizePool = usePrizePoolBySelectedChainId()
+  const prizePool = useSelectedPrizePool()
   return usePrizePoolTicketDecimals(prizePool)
 }

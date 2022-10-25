@@ -1,34 +1,37 @@
 import classNames from 'classnames'
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { MotionStyle } from 'framer-motion'
+import { useRouter } from 'next/router'
 import React from 'react'
+import { FadeInDiv } from './FadeInDiv'
 
 interface PagePaddingProps {
   children?: React.ReactNode
   className?: string
+  pxClassName?: string
+  pyClassName?: string
+  widthClassName?: string
+  marginClassName?: string
+  style?: MotionStyle
 }
 
 export const PagePadding = (props: PagePaddingProps) => {
-  const { className, children } = props
-
-  const shouldReduceMotion = useReducedMotion()
-
+  const { className, style, children, pxClassName, pyClassName, widthClassName, marginClassName } =
+    props
+  const router = useRouter()
   return (
-    <AnimatePresence>
-      <motion.div
-        children={children}
-        id='modal-animation-wrapper'
-        transition={{ duration: shouldReduceMotion ? 0 : 0.1, ease: 'easeIn' }}
-        initial={{
-          opacity: 0
-        }}
-        exit={{
-          opacity: 0
-        }}
-        animate={{
-          opacity: 1
-        }}
-        className={classNames('max-w-xl mx-auto px-2 pb-20', className)}
-      />
-    </AnimatePresence>
+    <FadeInDiv
+      id={`page-padding-animation-wrapper-${router.pathname}`}
+      className={classNames(pxClassName, pyClassName, widthClassName, marginClassName, className)}
+      style={style}
+    >
+      {children}
+    </FadeInDiv>
   )
+}
+
+PagePadding.defaultProps = {
+  pxClassName: 'px-2 sm:px-8',
+  pyClassName: 'pb-20 pt-2 xs:pt-4 sm:pt-8',
+  widthClassName: 'max-w-screen-md',
+  marginClassName: 'mx-auto'
 }

@@ -11,7 +11,6 @@ import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { V3PrizePool } from './useV3PrizePools'
 
-
 export const useTokenFaucetData = (
   chainId: number,
   tokenFaucetAddress: string,

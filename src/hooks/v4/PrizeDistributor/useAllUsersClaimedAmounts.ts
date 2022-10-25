@@ -13,7 +13,9 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
   const isAllTokensFetched = prizeDistributorTokensQueryResults.every(
     (queryResult) => queryResult.isFetched
   )
-  const isAllValidDrawIdsFetched = drawIdQueryResults.every((queryResult) => queryResult.isFetched)
+  const isAllAvailableDrawIdsFetched = drawIdQueryResults.every(
+    (queryResult) => queryResult.isFetched
+  )
 
   return useQueries<
     UseQueryOptions<{
@@ -41,7 +43,7 @@ export const useAllUsersClaimedAmounts = (usersAddress: string) => {
           prizeDistributorToken
         )
       },
-      enabled: isAllTokensFetched && Boolean(usersAddress) && isAllValidDrawIdsFetched
+      enabled: isAllTokensFetched && Boolean(usersAddress) && isAllAvailableDrawIdsFetched
     }))
   )
 }

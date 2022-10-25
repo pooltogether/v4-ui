@@ -1,11 +1,11 @@
+import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber, ethers } from 'ethers'
 import { useQuery } from 'react-query'
 import { EstimateAction } from '../../../constants/odds'
 import { usePrizePoolTicketTwabTotalSupply } from '../PrizePool/usePrizePoolTicketTwabTotalSupply'
-import { usePrizePoolTokens } from '../PrizePool/usePrizePoolTokens'
-import { usePrizePoolTotalNumberOfPrizes } from '../PrizePool/usePrizePoolTotalNumberOfPrizes'
+import { usePrizePoolExpectedPrizes } from './usePrizePoolExpectedPrizes'
 
 export const getPrizePoolOddsDataKey = (
   prizePool: PrizePool,
@@ -31,7 +31,7 @@ export const usePrizePoolOddsData = (
   const { data: ticketTwabTotalSupply, isFetched: isTicketTotalSupplyFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
   const { data: numberOfPrizesData, isFetched: isTotalNumberOfPrizesFetched } =
-    usePrizePoolTotalNumberOfPrizes(prizePool)
+    usePrizePoolExpectedPrizes(prizePool)
 
   const isFetched = isTokenDataFetched && isTicketTotalSupplyFetched && isTotalNumberOfPrizesFetched
 
@@ -39,7 +39,7 @@ export const usePrizePoolOddsData = (
     getPrizePoolOddsDataKey(
       prizePool,
       ticketTwabTotalSupply?.amount.amount,
-      numberOfPrizesData?.numberOfPrizes,
+      numberOfPrizesData?.expectedTotalNumberOfPrizes,
       action,
       changeAmountUnformatted?.toString()
     ),
@@ -48,7 +48,7 @@ export const usePrizePoolOddsData = (
         prizePool,
         tokenData?.ticket.decimals,
         ticketTwabTotalSupply?.amount,
-        numberOfPrizesData?.numberOfPrizes
+        numberOfPrizesData?.expectedTotalNumberOfPrizes
       ),
     { enabled: isFetched }
   )

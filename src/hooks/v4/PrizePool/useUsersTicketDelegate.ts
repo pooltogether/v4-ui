@@ -2,7 +2,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
 
 export const getUsersTicketDelegateQueryKey = (prizePool: PrizePool, usersAddress: string) => [
-  'getUsersTicketDelegate',
+  'getUserTicketDelegate',
   prizePool?.id(),
   usersAddress
 ]

@@ -19,13 +19,7 @@ const nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
   async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/deposit',
-        permanent: false,
-      }
-    ]
+    return []
   },
   webpack(config, options) {
     config.resolve.alias = {

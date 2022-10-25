@@ -9,7 +9,7 @@ export const VotingPromptCard = (props: { className?: string; persist?: boolean 
   const { data, isFetched, error } = useAllProposalsByStatus()
   if (error || !isFetched) return null
 
-  const activeProposalsCount = 0 //data.active.length
+  const activeProposalsCount = data.active.length
   const noProposals = activeProposalsCount === 0
   if (noProposals && !persist) return null
 

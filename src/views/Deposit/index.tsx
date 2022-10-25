@@ -1,18 +1,22 @@
+import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
-import { TwitterIntentButton } from '@components/TwitterIntentButton'
-import { VotingPromptCard } from '@components/VotingPromptCard'
-import { OddsDisclaimer } from '@views/Account/OddsDisclaimer'
-import { DepositCard } from '@views/Deposit/DepositCard'
+import classNames from 'classnames'
 import React from 'react'
-import { UpcomingPrizeCard } from './UpcomingPrizeCard'
+import { DepositTrigger } from './DepositTrigger'
+import { RewardsBanners } from './DepositTrigger/RewardsBanners'
+import { PrizePoolNetworkCarousel } from './PrizePoolNetworkCarousel'
 
 export const DepositUI = () => {
   return (
-    <PagePadding className='flex flex-col space-y-6'>
-      <UpcomingPrizeCard className='mt-4' />
-      <DepositCard />
-      <VotingPromptCard />
-      <OddsDisclaimer />
+    <PagePadding
+      pxClassName=''
+      widthClassName=''
+      className={classNames('flex flex-col space-y-2 xs:space-y-4 sm:space-y-8 lg:space-y-12')}
+      style={{ minHeight: '620px' }}
+    >
+      <RewardsBanners />
+      <PrizePoolNetworkCarousel />
+      <DepositTrigger />
     </PagePadding>
   )
 }

@@ -1,9 +1,9 @@
 import { BigNumber } from 'ethers'
 import { useQueries } from 'react-query'
 import { EstimateAction } from '../../../constants/odds'
+import { useAllPrizePoolExpectedPrizes } from './useAllPrizePoolExpectedPrizes'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
-import { useAllPrizePoolTotalNumberOfPrizes } from './useAllPrizePoolTotalNumberOfPrizes'
 import { getPrizePoolOddsData, getPrizePoolOddsDataKey } from './usePrizePoolOddsData'
 import { usePrizePools } from './usePrizePools'
 
@@ -17,7 +17,7 @@ export const useAllPrizePoolOddsData = (
 ) => {
   const prizePools = usePrizePools()
   const allTwabQueryResults = useAllPrizePoolTicketTwabTotalSupplies()
-  const allNumberOfPrizesQueryResults = useAllPrizePoolTotalNumberOfPrizes()
+  const allNumberOfPrizesQueryResults = useAllPrizePoolExpectedPrizes()
   const allPrizePoolTokensQueryResults = useAllPrizePoolTokens()
 
   const isTwabFetched = allTwabQueryResults.every(({ isFetched }) => isFetched)
@@ -46,7 +46,7 @@ export const useAllPrizePoolOddsData = (
             queryKey: getPrizePoolOddsDataKey(
               prizePool,
               twabQueryResult?.data?.amount.amount,
-              numberOfPrizesQueryResult?.data?.numberOfPrizes,
+              numberOfPrizesQueryResult?.data?.expectedTotalNumberOfPrizes,
               action,
               actionAmountUnformatted?.toString()
             ),
@@ -55,7 +55,7 @@ export const useAllPrizePoolOddsData = (
                 prizePool,
                 tokensQueryResult?.data?.ticket.decimals,
                 twabQueryResult?.data?.amount,
-                numberOfPrizesQueryResult?.data?.numberOfPrizes
+                numberOfPrizesQueryResult?.data?.expectedTotalNumberOfPrizes
               ),
             enabled
           }

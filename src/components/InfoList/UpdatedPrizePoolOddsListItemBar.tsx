@@ -1,4 +1,3 @@
-
 import { EstimateAction } from '@constants/odds'
 import { useUsersPrizePoolOdds } from '@hooks/v4/PrizePool/useUsersPrizePoolOdds'
 import { Amount } from '@pooltogether/hooks'
@@ -35,11 +34,10 @@ export const UpdatedPrizePoolOddsListItemBar: React.FC<{
     >
       <div
         className={classNames('h-full odds--progress-bar rounded-l-full', {
-          'bg-pt-purple-light dark:bg-pt-purple-bright': width < 20 && width > 0,
-          'bg-blue': width < 30 && width > 20,
+          'bg-gradient-purple': width < 20 && width > 0,
+          'bg-gradient-magenta': width < 30 && width > 20,
           'bg-pt-teal': width < 40 && width > 30,
-          'bg-orange': width < 47 && width > 40,
-          'bg-pink': width < 55 && width > 47,
+          'bg-gradient-cyan': width < 55 && width > 40,
           'seamless-gradient-wrapper': width > 55
         })}
         style={{ width: `${width}%` }}

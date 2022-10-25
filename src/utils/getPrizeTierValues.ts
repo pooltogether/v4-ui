@@ -1,5 +1,5 @@
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { calculate, PrizeTier } from '@pooltogether/v4-utils-js'
-import { getAmountFromBigNumber } from './getAmountFromBigNumber'
 
 /**
  * Computes an Amount for every tier
@@ -9,7 +9,7 @@ import { getAmountFromBigNumber } from './getAmountFromBigNumber'
  */
 export const getPrizeTierValues = (prizeTier: PrizeTier, decimals: string) =>
   prizeTier.tiers.map((tier, index) =>
-    getAmountFromBigNumber(
+    getAmountFromUnformatted(
       calculate.calculatePrizeForTierPercentage(
         index,
         tier,

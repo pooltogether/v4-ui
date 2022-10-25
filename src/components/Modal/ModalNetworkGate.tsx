@@ -1,4 +1,4 @@
-import { SquareButton } from '@pooltogether/react-components'
+import { Button } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -54,8 +54,8 @@ const NetworkSwitchButton = (props: NetworkSwitchButtonProps) => {
   const { switchNetwork } = useSwitchNetwork({ onSuccess })
 
   return (
-    <SquareButton onClick={() => switchNetwork(chainId)}>
+    <Button onClick={() => switchNetwork(chainId)}>
       {t('switchToNetwork', { network: networkName })}
-    </SquareButton>
+    </Button>
   )
 }

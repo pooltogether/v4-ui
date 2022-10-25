@@ -8,7 +8,7 @@ const navLinks = [
   {
     i18nKey: 'deposit',
     href: '/deposit',
-    regex: /^\/deposit/
+    regex: /^(\/deposit|\/$)/
   },
   {
     i18nKey: 'prizes',
@@ -36,7 +36,7 @@ export const Navigation: React.FC<{ className?: string }> = (props) => {
           t={t}
           Link={Link}
           pathname={router.pathname}
-          selectedClassName='bg-pt-teal'
+          selectedClassName='bg-gradient-magenta'
         />
       ))}
     </NavigationContainer>
