@@ -133,9 +133,9 @@ const POOLTokenBalanceItem = (props: { chainId: number; token: TokenWithBalance 
       }
       right={
         <div className='flex items-center space-x-2'>
-          <AccountListItemTokenBalance chainId={chainId} token={token} />
-          {/* <PoolIcon />
-          <span>{token.amountPretty}</span> */}
+          {/* <AccountListItemTokenBalance chainId={chainId} token={token} /> */}
+          <PoolIcon />
+          <span>{token.amountPretty}</span>
         </div>
       }
     />
