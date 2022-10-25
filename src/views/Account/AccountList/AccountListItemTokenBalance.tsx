@@ -1,32 +1,29 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
-import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-
-interface AccountListItemTokenBalanceProps {
-  chainId: number
-  token: TokenWithUsdBalance | TokenWithBalance
-  error?: boolean
-}
 
 /**
  * TODO: Assuems stablecoins
  * @param props
  * @returns
  */
-export const AccountListItemTokenBalance = (props: AccountListItemTokenBalanceProps) => {
+export const AccountListItemTokenBalance = (props: {
+  chainId: number
+  token: TokenWithUsdBalance | TokenWithBalance
+  error?: boolean
+}) => {
   const { chainId, token, error } = props
   const { t } = useTranslation()
 
-  // let balanceToDisplay = token?.amountPretty
-  // if (
-  //   !!token &&
-  //   (token as TokenWithUsdBalance).balanceUsdScaled &&
-  //   !(token as TokenWithUsdBalance).balanceUsdScaled.isZero()
-  // ) {
-  //   balanceToDisplay = (token as TokenWithUsdBalance).balanceUsd.amountPretty
-  // }
+  let balanceToDisplay = token?.amountPretty
+  if (
+    !!token &&
+    !!(token as TokenWithUsdBalance).balanceUsd.amountPretty &&
+    !(token as TokenWithUsdBalance).balanceUsd.amountUnformatted.isZero()
+  ) {
+    balanceToDisplay = (token as TokenWithUsdBalance).balanceUsd.amountPretty
+  }
 
   return (
     <div className='flex items-center'>
@@ -38,11 +35,7 @@ export const AccountListItemTokenBalance = (props: AccountListItemTokenBalancePr
               'opacity-50': !token.hasBalance
             })}
           >
-            {!!token.amount ? (
-              formatCurrencyNumberForDisplay(token.amount, 'usd')
-            ) : (
-              <ThemedClipSpinner />
-            )}
+            {!!token ? balanceToDisplay : <ThemedClipSpinner />}
           </span>
         </>
       ) : error ? (

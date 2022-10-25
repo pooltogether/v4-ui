@@ -1,13 +1,23 @@
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { toScaledUsdBigNumber } from '@pooltogether/utilities'
+import {
+  formatCurrencyNumberForDisplay,
+  getAmount,
+  toScaledUsdBigNumber
+} from '@pooltogether/utilities'
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
+import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useAllUsersPrizePoolBalances } from '../PrizePoolNetwork/useAllUsersPrizePoolBalances'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
 import { usePrizePools } from './usePrizePools'
 
+/**
+ * TODO: Properly add fiat conversions
+ * @param usersAddress
+ * @returns
+ */
 export const useAllUsersV4Balances = (usersAddress: string) => {
   const prizePools = usePrizePools()
   const queryResults = useAllUsersPrizePoolBalances(usersAddress, prizePools)
@@ -24,7 +34,30 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       queryResults.every((queryResult) => queryResult.isFetched) && isDelegationsFetched
     const isFetching =
       queryResults.some((queryResult) => queryResult.isFetching) || isDelegationsFetching
-    const data = queryResults.map((queryResult) => queryResult.data).filter(Boolean)
+    const data = queryResults
+      .map((queryResult) => queryResult.data)
+      .filter(Boolean)
+      .map((data) => {
+        const ticket = {
+          ...data.balances.ticket,
+          balanceUsd: getAmount(data.balances.ticket.amount, data.balances.ticket.decimals, {
+            style: 'currency',
+            currency: 'USD'
+          })
+        }
+        const token = {
+          ...data.balances.ticket,
+          balanceUsd: getAmount(data.balances.token.amount, data.balances.token.decimals, {
+            style: 'currency',
+            currency: 'USD'
+          })
+        }
+        data.balances.ticket
+        data.balances.token
+        data.balances.ticket = ticket
+        data.balances.token = token
+        return data
+      })
     const totalTicketValueUsdScaled = getTotalValueUsdScaled(data)
     const totalDelegationValueUsdScaled = isDelegationsFetched
       ? delegationData?.totalTokenWithUsdBalance.balanceUsdScaled
@@ -37,6 +70,7 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       queryResults.map((queryResult) => queryResult.refetch())
       refetchDelegations()
     }
+
     return {
       isFetched,
       isFetching,
