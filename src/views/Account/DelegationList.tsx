@@ -3,6 +3,7 @@ import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDel
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
 import { ExternalLink } from '@pooltogether/react-components'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { Trans, useTranslation } from 'next-i18next'
 import { AccountList } from './AccountList'
 import { BalanceDelegatedToItem } from './V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from './V4DepositList/TwabDelegatorItem'
@@ -13,10 +14,11 @@ export const DelegationList = () => {
     useTotalAmountDelegatedTo(usersAddress)
   const { data: delegationData, isFetched: isDelegationsFetched } =
     useAllTwabDelegations(usersAddress)
+  const { t } = useTranslation()
 
   return (
     <div>
-      <CardTitle title='Delegations' className='mb-2' />
+      <CardTitle title={t('delegations')} className='mb-2' />
       <AccountList>
         <BalanceDelegatedToItem usersAddress={usersAddress} />
         <TwabDelegatorItem delegator={usersAddress} />
@@ -25,10 +27,18 @@ export const DelegationList = () => {
           delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero() &&
           delegatedToData.delegatedAmount.amountUnformatted.isZero() && (
             <p className='opacity-70 text-xs'>
-              Delegations let you share chances to win!{' '}
-              <ExternalLink underline href='https://tools.pooltogether.com/delegate'>
-                Check it out
-              </ExternalLink>
+              <Trans
+                i18nKey='delegationsLetYouShare'
+                components={{
+                  a: (
+                    <ExternalLink
+                      underline
+                      href='https://tools.pooltogether.com/delegate'
+                      children={undefined}
+                    />
+                  )
+                }}
+              />
             </p>
           )}
       </AccountList>

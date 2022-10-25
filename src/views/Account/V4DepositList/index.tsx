@@ -26,7 +26,7 @@ export const V4DepositList = () => {
     <div id='deposits'>
       <CardTitle
         className='mb-2'
-        title={'Savings'}
+        title={t('savings')}
         secondary={`$${data?.totalValueUsd.amountPretty}`}
       />
       <DepositsList />

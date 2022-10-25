@@ -51,7 +51,7 @@ export const TwabRewardsAprItem: React.FC<{
       valueClassName={valueClassName}
       label={
         <div className='inline-flex space-x-1 items-center'>
-          <span className='text-flashy'>Bonus Rewards</span>
+          <span className='text-flashy'>{t('bonusRewards')}</span>
           <img className='w-4 h-4 ml-1' src='/beach-with-umbrella.png' />
         </div>
       }

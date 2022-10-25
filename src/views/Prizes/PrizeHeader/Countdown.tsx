@@ -56,8 +56,11 @@ const DrawsToCheck = (props: { usersAddress: string; prizeDistributor: PrizeDist
   const { usersAddress, prizeDistributor } = props
   const { data: unclaimedDrawDatasData, isFetched: isUnclaimedDrawDataFetched } =
     useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
+  const { t } = useTranslation()
   const numberOfDraws = Object.keys(unclaimedDrawDatasData[usersAddress]).length
-  return <div className='text-3xl font-bold'>{numberOfDraws} draws to check!</div>
+  return (
+    <div className='text-3xl font-bold'>{t('numOfDrawsToCheck', { amount: numberOfDraws })}</div>
+  )
 }
 
 const PropagatingDraws = (props: { prizeDistributor: PrizeDistributor }) => {

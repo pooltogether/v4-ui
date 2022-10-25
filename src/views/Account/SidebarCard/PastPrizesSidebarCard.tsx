@@ -15,15 +15,15 @@ export const PastPrizesSidebarCard: React.FC<{ usersAddress: string }> = (props)
   return (
     <>
       <SidebarCard
-        title={'🏆 Claimed prizes'}
+        title={'🏆 ' + t('claimedPrizes')}
         isLoading={!isFetched}
         description={
           isFetched && !data?.totalClaimedAmount.amountUnformatted.isZero()
-            ? `${data.totalClaimedPrizes} prize claims`
+            ? t('numOfClaims', { amount: data.totalClaimedPrizes })
             : t('noPrizesYet')
         }
         main={<TotalWinningsAmount usersAddress={usersAddress} />}
-        trigger={'See more'}
+        trigger={t('seeMore')}
         showTrigger
         onClick={() => setIsOpen(true)}
         disabled={!isFetched}

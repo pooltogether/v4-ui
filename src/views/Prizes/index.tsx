@@ -60,7 +60,7 @@ export const PrizesUI = () => {
           checkedState={checkedState}
         />
         <div className='w-full'>
-          <div className='max-w-screen-xs space-y-4 ml-auto'>
+          <div className='max-w-screen-xs space-y-4 mx-auto sm:ml-auto'>
             <CheckForPrizesOnNetwork prizePool={prizePool} prizeDistributor={prizeDistributor} />
             {!usersAddress ? (
               <LockedDrawsCard

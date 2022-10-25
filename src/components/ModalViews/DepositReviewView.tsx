@@ -20,7 +20,12 @@ import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork
 import { useTotalExpectedNumberOfPrizes } from '@hooks/v4/PrizePoolNetwork/useTotalExpectedNumberOfPrizes'
 import { Amount } from '@pooltogether/hooks'
 import { ButtonLink, ButtonSize, ButtonTheme, Button } from '@pooltogether/react-components'
-import { msToS, numberWithCommas } from '@pooltogether/utilities'
+import {
+  formatCurrencyNumberForDisplay,
+  formatUnformattedBigNumberForDisplay,
+  msToS,
+  numberWithCommas
+} from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { Transaction, useIsWalletMetamask, useWalletChainId } from '@pooltogether/wallet-connection'
 import { addDays } from '@utils/date'
@@ -218,11 +223,14 @@ export const TweetAboutDeposit = (props: {
       disabled={!isReady}
       url='https://app.pooltogether.com'
       text={t('depositTweet', {
-        amountDeposited: `$${numberWithCommas(amountUnformatted, {
-          decimals,
-          precision: 0
-        })}`,
-        totalAmountDeposited: `$${totalSupply?.totalSupply.amountPretty}`,
+        amountDeposited: formatUnformattedBigNumberForDisplay(amountUnformatted, decimals, {
+          style: 'currency',
+          currency: 'USD'
+        }),
+        totalAmountDeposited: formatCurrencyNumberForDisplay(
+          totalSupply?.totalSupply.amount,
+          'usd'
+        ),
         totalAmountOfPrizes
       })}
     />

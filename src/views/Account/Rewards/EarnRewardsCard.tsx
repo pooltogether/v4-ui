@@ -109,6 +109,7 @@ const PromotionCard = (props: {
   const backgroundColor = getChainColorByChainId(chainId)
   const networkName = capitalizeFirstLetter(getNetworkNameAliasByChainId(chainId))
   const { data: tokenData, isFetched: tokenDataIsFetched } = useToken(chainId, token)
+  const { t } = useTranslation()
 
   const daysRemaining = getPromotionDaysRemaining(promotion)
 
@@ -127,7 +128,7 @@ const PromotionCard = (props: {
       <div className='flex items-center justify-between font-bold'>
         <div className='flex items-center mb-2 space-x-2'>
           <span>📣</span>
-          {!tokenDataIsFetched ? <ThemedClipSpinner /> : <span>Bonus Rewards</span>}
+          {!tokenDataIsFetched ? <ThemedClipSpinner /> : <span>{t('bonusRewards')}</span>}
         </div>
         <div className='relative' style={{ top: -4 }}>
           <NetworkIcon chainId={chainId} sizeClassName='w-5 h-5 xs:w-6 xs:h-6' />
