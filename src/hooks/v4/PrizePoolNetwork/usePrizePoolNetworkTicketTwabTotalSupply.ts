@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { parseEther } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
 import { useAllPrizePoolTicketTwabTotalSupplies } from '../PrizePool/useAllPrizePoolTicketTwabTotalSupplies'
@@ -30,7 +30,7 @@ export const usePrizePoolNetworkTicketTwabTotalSupply = () => {
       })
 
       return {
-        totalSupply: getAmountFromBigNumber(networkTotalSupplyNormalized, '18'),
+        totalSupply: getAmountFromUnformatted(networkTotalSupplyNormalized, '18'),
         decimals: '18'
       }
     },

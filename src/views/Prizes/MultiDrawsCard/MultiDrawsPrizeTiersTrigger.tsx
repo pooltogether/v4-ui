@@ -1,5 +1,4 @@
 import { Token } from '@pooltogether/hooks'
-import { SquareButton, SquareButtonSize, SquareButtonTheme } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
@@ -27,7 +26,7 @@ export const MultiDrawsPrizeTiersTrigger = (props: {
         className={classNames(className, textClassName, 'flex items-center')}
         onClick={() => setIsOpen(true)}
       >
-        {label || t('viewPrizeTiers', 'View prize tiers')}
+        {label || t('viewPrizes', 'View prizes')}
         <FeatherIcon icon='chevron-right' className='w-4 h-4 ml-1' />
       </button>
 

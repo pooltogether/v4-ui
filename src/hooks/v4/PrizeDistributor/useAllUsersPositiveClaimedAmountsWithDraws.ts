@@ -7,14 +7,16 @@ import { usePrizeDistributors } from './usePrizeDistributors'
 export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string) => {
   const prizeDistributors = usePrizeDistributors()
   const claimedAmountsQueryResults = useAllUsersClaimedAmounts(usersAddress)
-  const validDrawsQueryResults = useAllValidDraws()
+  const availableDrawsQueryResults = useAllValidDraws()
 
   const isClaimedAmountsFetched = claimedAmountsQueryResults.every(
     (queryResult) => queryResult.isFetched
   )
-  const isValidDrawsFetched = validDrawsQueryResults.every((queryResult) => queryResult.isFetched)
+  const isAvailableDrawsFetched = availableDrawsQueryResults.every(
+    (queryResult) => queryResult.isFetched
+  )
 
-  if (!isClaimedAmountsFetched || !isValidDrawsFetched) {
+  if (!isClaimedAmountsFetched || !isAvailableDrawsFetched) {
     return {
       data: null,
       isFetched: false
@@ -34,7 +36,7 @@ export const useAllUsersPositiveClaimedAmountsWithDraws = (usersAddress: string)
     const chainId = prizeDistributor.chainId
     const prizeDistributorId = prizeDistributor.id()
 
-    const drawQueryResult = validDrawsQueryResults.find(
+    const drawQueryResult = availableDrawsQueryResults.find(
       (queryResult) => queryResult.data.prizeDistributorId === prizeDistributorId
     )
     const claimedAmountsQueryResult = claimedAmountsQueryResults.find(

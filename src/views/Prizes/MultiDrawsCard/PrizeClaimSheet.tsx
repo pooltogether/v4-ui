@@ -7,13 +7,13 @@ import { useSelectedChainId } from '@hooks/useSelectedChainId'
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { useSignerPrizeDistributor } from '@hooks/v4/PrizeDistributor/useSignerPrizeDistributor'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
-import { useUsersPrizePoolBalances } from '@hooks/v4/PrizePool/useUsersPrizePoolBalances'
+import { useUsersPrizePoolBalancesWithFiat } from '@hooks/v4/PrizePool/useUsersPrizePoolBalancesWithFiat'
 import { useUsersTotalTwab } from '@hooks/v4/PrizePool/useUsersTotalTwab'
 import { useToken, Token, useCoingeckoTokenPrices } from '@pooltogether/hooks'
 import {
-  SquareButton,
-  SquareButtonTheme,
-  SquareLink,
+  Button,
+  ButtonTheme,
+  ButtonLink,
   ModalTitle,
   BottomSheet,
   snapTo90
@@ -85,7 +85,10 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
   const usersAddress = useUsersAddress()
   const { refetch: refetchClaimedAmounts } = useUsersClaimedAmounts(usersAddress, prizeDistributor)
   const { refetch: refetchUsersTotalTwab } = useUsersTotalTwab(usersAddress)
-  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalances(usersAddress, prizePool)
+  const { refetch: refetchUsersBalances } = useUsersPrizePoolBalancesWithFiat(
+    usersAddress,
+    prizePool
+  )
 
   const signerPrizeDistributor = useSignerPrizeDistributor(prizeDistributor)
   const sendClaimTx = useCallback(async () => {
@@ -140,8 +143,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
         <BottomSheet
           snapPoints={snapTo90}
           label='Error depositing modal'
-          open={isOpen}
-          onDismiss={() => {
+          isOpen={isOpen}
+          closeModal={() => {
             setTxId('')
             closeModal()
           }}
@@ -156,8 +159,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
               )}
             </p>
           </div>
-          <SquareButton
-            theme={SquareButtonTheme.tealOutline}
+          <Button
+            theme={ButtonTheme.tealOutline}
             className='w-full'
             onClick={() => {
               setTxId('')
@@ -165,7 +168,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             }}
           >
             {t('tryAgain', 'Try again')}
-          </SquareButton>
+          </Button>
         </BottomSheet>
       )
     } else if (
@@ -175,8 +178,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       return (
         <BottomSheet
           label='Claim prizes modal'
-          open={isOpen}
-          onDismiss={() => {
+          isOpen={isOpen}
+          closeModal={() => {
             setTxId('')
             closeModal()
           }}
@@ -199,8 +202,8 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
       snapPoints={snapTo90}
       label='Claim prizes modal'
       className='overflow-hidden'
-      open={isOpen}
-      onDismiss={() => {
+      isOpen={isOpen}
+      closeModal={() => {
         setTxId('')
         closeModal()
       }}
@@ -255,7 +258,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             rewardRef.current.rewardMe()
             sendClaimTx()
           }}
-          theme={isWalletOnProperNetwork ? SquareButtonTheme.rainbow : SquareButtonTheme.teal}
+          theme={isWalletOnProperNetwork ? ButtonTheme.rainbow : ButtonTheme.teal}
           state={claimTx?.state}
           status={claimTx?.status}
           disabled={drawIdsToClaim.length === 0}

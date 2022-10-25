@@ -2,8 +2,8 @@ import { formatUnits } from '@ethersproject/units'
 import { useUsersChainTwabPercentage } from '@hooks/v4/TwabRewards/useUsersChainTwabPercentage'
 import { Promotion } from '@interfaces/promotions'
 import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
+import { getAmount } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { useQuery } from 'react-query'
 
 /**
@@ -59,7 +59,7 @@ export const getUsersPromotionAmountEstimate = async (
 
   const estimate = usersChainTwabPercentage * parseFloat(tokensPerEpochFormatted) * remainingEpochs
 
-  const amount = getAmountFromString(estimate.toString(), decimals)
+  const amount = getAmount(estimate.toString(), decimals)
 
   let usd
   if (tokenPrices?.[address]) {

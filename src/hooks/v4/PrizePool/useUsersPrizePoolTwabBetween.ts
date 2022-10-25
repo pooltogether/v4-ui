@@ -1,9 +1,8 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { sToMs } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
-
 
 /**
  * Fetches a users TWAB between a set of two timestamps
@@ -61,7 +60,7 @@ export const getUserPrizePoolTwabBetween = async (
     endTimestamp
   )
 
-  const twab = getAmountFromBigNumber(twabUnformatted, decimals)
+  const twab = getAmountFromUnformatted(twabUnformatted, decimals)
 
   return {
     prizePoolId: prizePool.id(),

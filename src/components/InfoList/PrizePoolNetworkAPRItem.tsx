@@ -24,6 +24,7 @@ export const PrizePoolNetworkAPRItem: React.FC<{
         'networkAprDescription',
         'Estimated Prize Pool Network APR is a rough estimate based on the current TVL of the entire Prize Pool Network and daily prizes for all prize pools'
       )}
+      tooltipId='networkAprDescription'
       loading={!isFetched}
       labelLink='https://docs.pooltogether.com/welcome/faq#what-is-the-prize-apr'
       value={`${numberWithCommas(apr)}%`}

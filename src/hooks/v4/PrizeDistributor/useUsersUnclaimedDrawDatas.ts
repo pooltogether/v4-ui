@@ -1,4 +1,4 @@
-import { Amount } from '@pooltogether/hooks'
+import { Amount, Token } from '@pooltogether/hooks'
 import { msToS } from '@pooltogether/utilities'
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
@@ -10,7 +10,6 @@ import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { useValidDrawDatas } from './useValidDrawDatas'
-
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.

@@ -1,7 +1,5 @@
-import { PrizePoolDepositList } from '@components/PrizePoolDepositList'
-import { LoadingList } from '@components/PrizePoolDepositList/LoadingList'
-import { PrizePoolDepositBalance } from '@components/PrizePoolDepositList/PrizePoolDepositBalance'
-import { PrizePoolDepositListItem } from '@components/PrizePoolDepositList/PrizePoolDepositListItem'
+import { ListItem } from '@components/List/ListItem'
+import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
@@ -10,8 +8,12 @@ import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegat
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { NetworkIcon } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
-import { BalanceDelegatedToItem } from '@views/Account/V4Deposits/BalanceDelegatedToItem'
-import { TwabDelegatorItem } from '@views/Account/V4Deposits/TwabDelegatorItem'
+import { PrizePool } from '@pooltogether/v4-client-js'
+import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
+import { LoadingList } from '@views/Account/AccountList/LoadingList'
+import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
+import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
+import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 
 /**
@@ -66,10 +68,11 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   }
 
   return (
-    <PrizePoolDepositList>
+    <ul className='space-y-2'>
       {data.balances.map((balances) => (
-        <DepositItem
+        <V4DepositItem
           key={'deposit-balance-' + balances.prizePool.id()}
+          prizePool={balances?.prizePool}
           usersAddress={usersAddress}
           token={balances.balances.ticket}
           chainId={balances.prizePool.chainId}
@@ -81,7 +84,7 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
       <Divider usersAddress={usersAddress} />
       <BalanceDelegatedToItem usersAddress={usersAddress} />
       <TwabDelegatorItem delegator={usersAddress} />
-    </PrizePoolDepositList>
+    </ul>
   )
 }
 
@@ -95,9 +98,9 @@ const V3DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   }
 
   return (
-    <PrizePoolDepositList>
+    <ul className='space-y-2'>
       {data.balances.map((balances) => (
-        <DepositItem
+        <V3DepositItem
           key={'v3-deposit-balance-' + balances.prizePool.addresses.prizePool}
           usersAddress={usersAddress}
           token={balances.ticket}
@@ -107,11 +110,27 @@ const V3DepositsList: React.FC<{ usersAddress: string }> = (props) => {
       {data.balances.length === 0 && (
         <div className='text-center opacity-50 text-xxs'>{t('noDeposits', 'No deposits')}</div>
       )}
-    </PrizePoolDepositList>
+    </ul>
   )
 }
 
-const DepositItem: React.FC<{
+const V4DepositItem: React.FC<{
+  prizePool: PrizePool
+  usersAddress: string
+  token: TokenWithUsdBalance | TokenWithBalance
+  chainId: number
+}> = (props) => {
+  const { token, prizePool, chainId } = props
+
+  return (
+    <ListItem
+      left={<PrizePoolLabel prizePool={prizePool} />}
+      right={<DepositBalance chainId={chainId} token={token} />}
+    />
+  )
+}
+
+const V3DepositItem: React.FC<{
   usersAddress: string
   token: TokenWithUsdBalance | TokenWithBalance
   chainId: number
@@ -119,7 +138,7 @@ const DepositItem: React.FC<{
   const { token, chainId } = props
 
   return (
-    <PrizePoolDepositListItem
+    <ListItem
       left={<NetworkLabel chainId={chainId} />}
       right={<DepositBalance chainId={chainId} token={token} />}
     />
@@ -138,7 +157,7 @@ const DepositBalance: React.FC<{
   chainId: number
 }> = (props) => {
   const { token, chainId } = props
-  return <PrizePoolDepositBalance hideIcon chainId={chainId} token={token} />
+  return <AccountListItemTokenBalance chainId={chainId} token={token} />
 }
 
 const Divider: React.FC<{ usersAddress: string }> = (props) => {

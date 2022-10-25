@@ -3,19 +3,19 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import { useQuery } from 'react-query'
 
-export interface PrizePoolTokens {
-  prizePoolId: string
-  token: Token
-  ticket: Token
-}
-
 export const PRIZE_POOL_TOKENS_QUERY_KEY = 'prizePoolTokens'
 
 export const usePrizePoolTokens = (prizePool: PrizePool) => {
   return useQuery(
-    [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool?.id()],
+    [PRIZE_POOL_TOKENS_QUERY_KEY, prizePool.id()],
     async () => getPrizePoolTokens(prizePool),
-    { initialData: PRIZE_POOL_TOKENS[prizePool?.id()] }
+    {
+      initialData: PRIZE_POOL_TOKENS[prizePool.id()] as {
+        prizePoolId: string
+        ticket: Token
+        token: Token
+      }
+    }
   )
 }
 
@@ -54,7 +54,9 @@ export const getPrizePoolTokens = async (prizePool: PrizePool) => {
   }
 }
 
-const PRIZE_POOL_TOKENS = Object.freeze({
+const PRIZE_POOL_TOKENS = Object.freeze<{
+  [chainId: number]: { prizePoolId: string; ticket: Token; token: Token }[]
+}>({
   [CHAIN_ID.mainnet]: [
     {
       prizePoolId: '0xd89a09084555a7D0ABe7B111b1f78DFEdDd638Be-1',

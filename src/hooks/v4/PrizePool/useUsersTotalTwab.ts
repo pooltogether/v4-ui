@@ -1,9 +1,11 @@
 import { useSelectedPrizePoolTicketDecimals } from '@hooks/v4/PrizePool/useSelectedPrizePoolTicketDecimals'
 import { Amount } from '@pooltogether/hooks'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
-import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
+import { useQueries } from 'react-query'
+import { usePrizePools } from './usePrizePools'
+import { getUserPrizePoolTwab, getUsersPrizePoolTwabKey } from './useUsersPrizePoolTwab'
 
 /**
  * Fetches the users current TWAB across all chains and combines
@@ -13,13 +15,21 @@ import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
  */
 export const useUsersTotalTwab = (usersAddress: string) => {
   // NOTE: Assumes all prize pool tickets have the same decimals
+  const prizePools = usePrizePools()
   const { data: ticketDecimals, isFetched: isTicketDecimalsFetched } =
     useSelectedPrizePoolTicketDecimals()
 
-  const queryResults = useAllUsersPrizePoolTwabs(usersAddress)
-  const queryKey = queryResults
-    .map((qr) => qr.data?.prizePoolId + qr.data?.usersAddress + qr.data?.twab.amount)
-    .join('-')
+  const queryResults = useQueries(
+    prizePools.map((prizePool) => {
+      // const refetchInterval = getRefetchInterval(prizePool.chainId)
+      return {
+        // refetchInterval: refetchInterval,
+        queryKey: getUsersPrizePoolTwabKey(usersAddress, prizePool),
+        queryFn: async () => getUserPrizePoolTwab(prizePool, usersAddress, ticketDecimals),
+        enabled: Boolean(usersAddress) && isTicketDecimalsFetched
+      }
+    })
+  )
 
   return useMemo(() => {
     const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
@@ -45,7 +55,7 @@ export const useUsersTotalTwab = (usersAddress: string) => {
       isFetched,
       refetch
     }
-  }, [queryKey])
+  }, [queryResults, ticketDecimals, usersAddress])
 }
 
 const getTotalTwab = (twabs: Amount[], decimals: string) => {
@@ -54,5 +64,5 @@ const getTotalTwab = (twabs: Amount[], decimals: string) => {
     if (!twab || twab.amountUnformatted.isZero()) return
     total = total.add(twab.amountUnformatted)
   })
-  return getAmountFromBigNumber(total, decimals)
+  return getAmountFromUnformatted(total, decimals)
 }

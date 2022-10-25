@@ -1,5 +1,6 @@
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
+import { useMemo } from 'react'
 import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmountsGraph } from './useAllUsersClaimedAmountsGraph'
 
@@ -12,32 +13,39 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
 
   const isError = claimedAmountsQueryResults.some((result) => result.isError)
 
-  if (!isClaimedAmountsFetched || !isDecimalsFetched || isError) {
-    return {
-      data: null,
-      isFetched: false
-    }
-  }
-
-  const totalClaimedAmountUnformatted = claimedAmountsQueryResults.reduce(
-    (accumulator, queryResult) => {
-      const totalClaimed = queryResult.data.totalClaimed
-
-      if (Boolean(totalClaimed)) {
-        const totalClaimedUnformatted = BigNumber.from(queryResult.data.totalClaimed)
-
-        return accumulator.add(totalClaimedUnformatted)
-      } else {
-        return accumulator
+  return useMemo(() => {
+    if (!isClaimedAmountsFetched || !isDecimalsFetched || isError) {
+      return {
+        data: null,
+        isFetched: false
       }
-    },
-    BigNumber.from(0)
-  )
+    }
 
-  const totalClaimedAmount = getAmountFromBigNumber(totalClaimedAmountUnformatted, decimals)
+    const { totalClaimedAmountUnformatted, totalClaimedPrizes } = claimedAmountsQueryResults.reduce(
+      (accumulator, queryResult) => {
+        const totalClaimed = queryResult.data.totalClaimed
 
-  return {
-    data: totalClaimedAmount,
-    isFetched: true
-  }
+        if (Boolean(totalClaimed)) {
+          const totalClaimedUnformatted = BigNumber.from(queryResult.data.totalClaimed)
+
+          return {
+            totalClaimedAmountUnformatted:
+              accumulator.totalClaimedAmountUnformatted.add(totalClaimedUnformatted),
+            totalClaimedPrizes:
+              accumulator.totalClaimedPrizes + Object.keys(queryResult.data.claimedAmounts).length
+          }
+        } else {
+          return accumulator
+        }
+      },
+      { totalClaimedAmountUnformatted: BigNumber.from(0), totalClaimedPrizes: 0 }
+    )
+
+    const totalClaimedAmount = getAmountFromUnformatted(totalClaimedAmountUnformatted, decimals)
+
+    return {
+      data: { totalClaimedAmount, totalClaimedPrizes },
+      isFetched: true
+    }
+  }, [claimedAmountsQueryResults, decimals, isClaimedAmountsFetched, isDecimalsFetched, isError])
 }

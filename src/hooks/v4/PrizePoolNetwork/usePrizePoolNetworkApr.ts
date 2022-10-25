@@ -2,7 +2,7 @@ import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { calculateApr } from '@pooltogether/utilities'
 import { formatUnits, parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
-import { usePrizePoolBySelectedChainId } from '../PrizePool/usePrizePoolBySelectedChainId'
+import { useSelectedPrizePool } from '../PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '../PrizePool/useUpcomingPrizeTier'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkTicketTwabTotalSupply'
 
@@ -12,13 +12,13 @@ import { usePrizePoolNetworkTicketTwabTotalSupply } from './usePrizePoolNetworkT
  * @returns
  */
 export const usePrizePoolNetworkApr = () => {
-  const prizePool = usePrizePoolBySelectedChainId()
-  const { data: prizeTierData, isFetched: isPrizeConfigFetched } = useUpcomingPrizeTier(prizePool)
+  const prizePool = useSelectedPrizePool()
+  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
   const { data: tokenData, isFetched: isTokenDataFetched } = usePrizePoolTokens(prizePool)
   const { data: totalSupplyData, isFetched: isTotalSupplyFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
   const enabled =
-    isPrizeConfigFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isTokenDataFetched
+    isPrizeTierFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isTokenDataFetched
   return useQuery(
     ['usePrizePoolNetworkApr', prizeTierData?.prizeTier.prize.toString(), totalSupplyData],
     () => {

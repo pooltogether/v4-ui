@@ -9,8 +9,8 @@ import { InfoListItem } from '.'
 
 export const UpdatedPrizePoolOddsListItem: React.FC<{
   prizePool: PrizePool
-  amount: Amount
-  action: EstimateAction
+  amount?: Amount
+  action?: EstimateAction
   nullState?: React.ReactNode
   className?: string
   labelClassName?: string
@@ -45,11 +45,12 @@ export const UpdatedPrizePoolOddsListItem: React.FC<{
   return (
     <InfoListItem
       className={className}
-      label={t('winningOdds', 'Winning odds') + '*'}
+      label={t('winningChance', 'Winning chance')}
       labelToolTip={t(
         'winningOddsDescription',
         'Your estimated odds of winning at least one prize in this prize pool'
       )}
+      tooltipId='winningOdds'
       loading={!isFetched}
       value={value}
       labelClassName={labelClassName}

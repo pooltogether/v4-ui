@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { StakingBottomSheet } from './StakingBottomSheet'
+import { StakingBottomSheet } from '../V3StakingList/StakingBottomSheet'
 
 interface StakingCardProps {
   chainId: number

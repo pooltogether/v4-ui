@@ -7,8 +7,8 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { getAddress } from '@ethersproject/address'
 import { batch, Context, contract } from '@pooltogether/etherplex'
 import { Amount, Token } from '@pooltogether/hooks'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { useReadProviders } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { useQuery } from 'react-query'
 import { useV3ChainIds } from './useV3ChainIds'
 
@@ -41,7 +41,6 @@ export interface V3PrizePool {
 export const useV3PrizePools = () => {
   const chainIds = useV3ChainIds()
   const providers = useReadProviders(chainIds)
-
   return useQuery(['useV3PrizePools', chainIds], () => getV3PrizePools(chainIds, providers))
 }
 
@@ -236,7 +235,7 @@ const makePodToken = (tokenAddress: string, etherplexTokenResponse): PodToken =>
     symbol: etherplexTokenResponse.symbol[0],
     name: etherplexTokenResponse.name[0],
     decimals: etherplexTokenResponse.decimals[0],
-    pricePerShare: getAmountFromBigNumber(
+    pricePerShare: getAmountFromUnformatted(
       etherplexTokenResponse.getPricePerShare[0],
       etherplexTokenResponse.decimals[0]
     )

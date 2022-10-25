@@ -16,6 +16,7 @@ import { DrawData } from '@interfaces/v4'
 import { Amount, Token, usePrizePoolTokens } from '@pooltogether/hooks'
 import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { msToS, numberWithCommas } from '@pooltogether/utilities'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import {
   Draw,
   PrizeAwardable,
@@ -32,7 +33,6 @@ import {
   useUsersAddress,
   BlockExplorerLink
 } from '@pooltogether/wallet-connection'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
 import { loopXTimes } from '@utils/loopXTimes'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
@@ -52,7 +52,7 @@ export const DonateUI = () => {
   useSetPolygonOnMount()
 
   return (
-    <PagePadding className='px-2 xs:px-12 lg:px-40 pb-20'>
+    <PagePadding>
       <Title />
       <div className='mb-4 space-y-4 sm:space-y-0 grid grid-cols-3 gap-4'>
         <InfoCard className='col-span-3 sm:col-span-2' />
@@ -66,7 +66,7 @@ export const DonateUI = () => {
 }
 
 const Title = () => (
-  <div className='flex flex-col items-center justify-center mt-4 sm:mt-10 mb-4 sm:mb-12 px-8'>
+  <div className='flex flex-col items-center justify-center mb-4 sm:mb-12 px-8'>
     <div className='flex'>
       <span className='text-4xl sm:text-9xl'>🤝</span>
       <span className='text-4xl sm:text-9xl'>🇺🇦</span>
@@ -478,7 +478,7 @@ const getPrizesWon = async (
       })
     })
 
-    const amount = getAmountFromBigNumber(totalWon, '6')
+    const amount = getAmountFromUnformatted(totalWon, '6')
 
     return {
       prizesWon,

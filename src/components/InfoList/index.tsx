@@ -1,6 +1,7 @@
 import { ThemedClipSpinner, Tooltip } from '@pooltogether/react-components'
 import classnames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import { AsyncStringStorage } from 'jotai/utils/atomWithStorage'
 import { DetailedHTMLProps, HTMLAttributes } from 'react'
 
 interface InfoListProps
@@ -37,7 +38,7 @@ export const InfoList = (props: InfoListProps) => {
 }
 
 InfoList.defaultProps = {
-  bgClassName: 'bg-tertiary',
+  bgClassName: 'bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10',
   paddingClassName: 'px-4 py-2'
 }
 
@@ -45,6 +46,7 @@ export interface InfoListItemProps {
   label: React.ReactNode
   value: React.ReactNode
   loading?: boolean
+  tooltipId?: string
   labelToolTip?: React.ReactNode
   labelLink?: string
   dimValue?: boolean
@@ -57,6 +59,7 @@ export interface InfoListItemProps {
 export const InfoListItem = (props: InfoListItemProps) => {
   const {
     label,
+    tooltipId,
     value,
     loading,
     labelToolTip,
@@ -71,10 +74,10 @@ export const InfoListItem = (props: InfoListItemProps) => {
   return (
     <li className={classnames('flex justify-between', className, fontSizeClassName)}>
       <div className={classnames('flex space-x-1 items-center', labelClassName)}>
-        <span className='capitalize'>{label}</span>
+        <div>{label}</div>
         {labelToolTip && (
           <Tooltip
-            id={`info-item-${label}`}
+            id={`info-item-${tooltipId}`}
             tip={labelToolTip}
             iconSizeClassName='w-3 h-3 xs:w-4 xs:h-4'
           />

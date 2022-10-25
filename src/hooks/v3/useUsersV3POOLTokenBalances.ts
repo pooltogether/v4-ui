@@ -1,6 +1,6 @@
 import { POOL_PRIZE_POOL_ADDRESSES } from '@constants/v3'
 import { TokenWithUsdBalance } from '@pooltogether/hooks'
-import { getAmountFromBigNumber } from '@utils/getAmountFromBigNumber'
+import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useAllUsersV3Balances } from './useAllUsersV3Balances'
@@ -60,7 +60,7 @@ export const useUsersV3POOLTokenBalances = (usersAddress: string) => {
         }
       })
     })
-    const totalValueUsd = getAmountFromBigNumber(totalValueUsdScaled, '2')
+    const totalValueUsd = getAmountFromUnformatted(totalValueUsdScaled, '2')
 
     return {
       isFetching: false,

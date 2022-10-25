@@ -1,8 +1,8 @@
 import { formatUnits } from '@ethersproject/units'
 import { TokenWithAllBalances, useCoingeckoTokenPrices, TokenPrice } from '@pooltogether/hooks'
 import { getRefetchInterval } from '@pooltogether/hooks'
+import { getAmount } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
-import { getAmountFromString } from '@utils/getAmountFromString'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 
@@ -57,7 +57,7 @@ export const getUsersPromotionAmountClaimable = async (
   })
 
   const claimableFormatted = formatUnits(claimableUnformatted, decimals)
-  const amount = getAmountFromString(claimableFormatted, decimals)
+  const amount = getAmount(claimableFormatted, decimals)
 
   let usd: number
   if (tokenPrices?.[address]) {
