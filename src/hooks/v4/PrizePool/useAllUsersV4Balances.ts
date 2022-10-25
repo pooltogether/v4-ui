@@ -52,8 +52,6 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
             currency: 'USD'
           })
         }
-        data.balances.ticket
-        data.balances.token
         data.balances.ticket = ticket
         data.balances.token = token
         return data
