@@ -1,4 +1,4 @@
-import { CBPayInstanceType, initOnRamp } from '@coinbase/cbpay-js'
+import { generateOnRampURL } from '@coinbase/cbpay-js'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { LargestPrizeInNetwork } from '@components/PrizePoolNetwork/LargestPrizeInNetwork'
 import { TotalNumberOfPrizes } from '@components/PrizePoolNetwork/TotalNumberOfPrizes'
@@ -24,12 +24,11 @@ import {
   getChainNameByChainId,
   useWalletChainId
 } from '@pooltogether/wallet-connection'
-import { FathomEvent, logEvent } from '@utils/services/fathom'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 enum ViewIds {
   help,
@@ -404,89 +403,44 @@ const ModalTrigger: React.FC<{
 // TODO: Refetch users token balances on successful purchase
 const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> = (props) => {
   const { chainId, className } = props
-  const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
   const usersAddress = useUsersAddress()
   const { t } = useTranslation()
   const chainKey = getCoinbaseChainKey(chainId)
   const supportedCoinbaseChainIds = Object.keys(COINBASE_CHAIN_KEYS).map(Number)
 
-  useEffect(() => {
-    console.log('init onramp')
-    initOnRamp(
-      {
+  const url = useMemo(
+    () =>
+      generateOnRampURL({
         appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
-        target: '#cbpay-button-container',
-        widgetParameters: {
-          destinationWallets: !!chainKey
-            ? [
-                {
-                  address: usersAddress,
-                  blockchains: [chainKey],
-                  assets: getCoinbaseChainAssets(chainId)
-                }
-              ]
-            : supportedCoinbaseChainIds.map((chainId) => ({
+        destinationWallets: !!chainKey
+          ? [
+              {
                 address: usersAddress,
-                blockchains: [getCoinbaseChainKey(chainId)],
+                blockchains: [chainKey],
                 assets: getCoinbaseChainAssets(chainId)
-              }))
-        },
-        experienceLoggedIn: 'popup',
-        experienceLoggedOut: 'popup',
-        closeOnExit: true,
-        closeOnSuccess: true,
-        onSuccess: () => {
-          logEvent(FathomEvent.buyCoinbasePay)
-        }
-      },
-      (_, instance) => {
-        console.log({ instance })
-        setOnRampInstance(instance)
-      }
-    )
-
-    return () => {
-      console.log('destroying onramp')
-      onRampInstance?.destroy()
-      setOnRampInstance(undefined)
-    }
-  }, [])
-
-  console.log({ onRampInstance })
-
-  const handleClick = () => {
-    onRampInstance?.open()
-  }
-
-  const disabled = !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID || !onRampInstance
-
-  return (
-    <Button
-      id='cbpay-button-container'
-      onClick={handleClick}
-      disabled={disabled}
-      className='space-x-1 w-full'
-      theme={ButtonTheme.blue}
-    >
-      <span className='text-sm'>Buy with Coinbase Pay</span>
-      <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
-    </Button>
+              }
+            ]
+          : supportedCoinbaseChainIds.map((chainId) => ({
+              address: usersAddress,
+              blockchains: [getCoinbaseChainKey(chainId)],
+              assets: getCoinbaseChainAssets(chainId)
+            }))
+      }),
+    [chainId, chainKey, supportedCoinbaseChainIds, usersAddress]
   )
 
   return (
-    <a
+    <ButtonLink
       id='cbpay-button-container'
-      className={classNames(
-        className,
-        'flex text-xl items-center space-x-2 transition hover:opacity-90',
-        {
-          'opacity-50 pointer-events-none': disabled
-        }
-      )}
-      onClick={handleClick}
+      href={url}
+      className={classNames('space-x-1 w-full', className)}
+      theme={ButtonTheme.blue}
+      target='_blank'
+      rel='noopener'
     >
-      <img src={'/buy-with-coinbase-pay.png'} />
-    </a>
+      <span className='text-sm'>{t('buyWithCoinbasePay')}</span>
+      <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
+    </ButtonLink>
   )
 }
 
