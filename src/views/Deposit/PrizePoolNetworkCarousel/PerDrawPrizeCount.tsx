@@ -29,11 +29,11 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
     }
 
     const totalNumberOfPrizes = queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .reduce((total, { data }) => total + data.prizesWon, 0)
 
     const data = queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.chainId === data.chainId),

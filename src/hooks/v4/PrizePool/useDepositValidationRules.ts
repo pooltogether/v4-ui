@@ -1,6 +1,7 @@
 import { getMaxPrecision, safeParseUnits } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMinimumDepositAmount } from './useMinimumDepositAmount'
 import { usePrizePoolTokens } from './usePrizePoolTokens'
@@ -24,30 +25,33 @@ export const useDepositValidationRules = (prizePool: PrizePool) => {
   const tokenBalance = usersBalances?.token
   const ticketBalance = usersBalances?.ticket
 
-  return {
-    isValid: (v: string) => {
-      const isNotANumber = isNaN(Number(v))
-      if (isNotANumber) return 'NaN'
-      if (!minimumDepositAmount) return `Doesn't meet minimum deposit`
+  return useMemo(
+    () => ({
+      isValid: (v: string) => {
+        const isNotANumber = isNaN(Number(v))
+        if (isNotANumber) return 'NaN'
+        if (!minimumDepositAmount) return `Doesn't meet minimum deposit`
 
-      const quantityUnformatted = safeParseUnits(v, decimals)
+        const quantityUnformatted = safeParseUnits(v, decimals)
 
-      if (!!usersAddress) {
-        if (!tokenBalance) return 'No token balance fetched'
-        if (!ticketBalance) return 'No ticket balance fetched'
-        if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
-          return t('insufficientFunds', 'Insufficient funds.')
-        if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
-          return t(
-            'minimumDepositOfAmountRequired',
-            `Minimum deposit of {{amount}} {{token}} required`,
-            { amount: minimumDepositAmount.amountPretty, token: token.symbol }
-          )
+        if (!!usersAddress) {
+          if (!tokenBalance) return 'No token balance fetched'
+          if (!ticketBalance) return 'No ticket balance fetched'
+          if (quantityUnformatted && tokenBalance.amountUnformatted.lt(quantityUnformatted))
+            return t('insufficientFunds', 'Insufficient funds.')
+          if (quantityUnformatted && minimumDepositAmount.amountUnformatted.gt(quantityUnformatted))
+            return t(
+              'minimumDepositOfAmountRequired',
+              `Minimum deposit of {{amount}} {{token}} required`,
+              { amount: minimumDepositAmount.amountPretty, token: token.symbol }
+            )
+        }
+
+        if (getMaxPrecision(v) > Number(decimals)) return 'getMaxPrecision'
+        if (quantityUnformatted && quantityUnformatted.isZero()) return 'isZero'
+        return true
       }
-
-      if (getMaxPrecision(v) > Number(decimals)) return 'getMaxPrecision'
-      if (quantityUnformatted && quantityUnformatted.isZero()) return 'isZero'
-      return true
-    }
-  }
+    }),
+    [token, decimals, minimumDepositAmount, usersBalances, tokenBalance, ticketBalance]
+  )
 }

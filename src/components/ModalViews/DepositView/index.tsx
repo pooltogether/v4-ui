@@ -10,6 +10,7 @@ import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
 import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'react-i18next'
 import { DepositInfoBox } from './DepositInfoBox'
 
 /**
@@ -38,13 +39,14 @@ export const DepositView: React.FC<
   } = props
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
+  const { t } = useTranslation()
 
   const useValidationRules = () => useDepositValidationRules(prizePool)
 
   return (
     <TokenAmountInputFormView
       {...remainingProps}
-      submitButtonContent='Review Deposit'
+      submitButtonContent={t('reviewDeposit')}
       formKey={formKey}
       connectWallet={connectWallet}
       useValidationRules={useValidationRules}
