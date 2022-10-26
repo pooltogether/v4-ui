@@ -9,6 +9,7 @@ import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
 import {
   BottomSheetWithViewState,
+  Button,
   ButtonLink,
   ButtonTheme,
   ExternalLink,
@@ -208,7 +209,7 @@ const GetTokensView = () => {
         />
       </p>
       <Tabs
-        titleClassName='mb-8'
+        titleClassName='mb-4'
         initialTabId={initialTabId}
         onTabSelect={(tab) => setData(tab.id)}
         tabs={[
@@ -260,7 +261,7 @@ const BuyTokens = () => {
 
   return (
     <div>
-      <p className='opacity-80 mb-1'>{t('buyTokensExplainer')}</p>
+      <p className='opacity-80 mb-8'>{t('buyTokensExplainer')}</p>
       <p className='opacity-80 mb-4'>
         {t('buyTokensOn')}{' '}
         <TransparentSelect
@@ -276,7 +277,7 @@ const BuyTokens = () => {
           ))}
         </TransparentSelect>{' '}
       </p>
-      <PayWithCoinbaseButton className='w-full xs:w-3/4' chainId={chainId} />
+      <PayWithCoinbaseButton className='w-full' chainId={chainId} />
       <TemporaryWarningForNoOnRamp chainId={chainId} />
     </div>
   )
@@ -295,7 +296,7 @@ const SwapTokens = () => {
 
   return (
     <div>
-      <p className='opacity-80 mb-1'>{t('swapTokensExplainer')}</p>
+      <p className='opacity-80 mb-8'>{t('swapTokensExplainer')}</p>
       <p className='opacity-80 mb-4'>
         {t('swapOn')}{' '}
         <TransparentSelect
@@ -313,7 +314,7 @@ const SwapTokens = () => {
       </p>
       <ButtonLink
         // size={ButtonSize.sm}
-        className='space-x-1 w-full xs:w-3/4'
+        className='space-x-1 w-full'
         theme={ButtonTheme.teal}
         key={`${chainId}-${title}`}
         href={url}
@@ -338,7 +339,7 @@ const BridgeTokens = () => {
 
   return (
     <div>
-      <p className='opacity-80 mb-1'>
+      <p className='opacity-80 mb-8'>
         <Trans
           i18nKey='bridgeExplainer'
           components={{
@@ -370,7 +371,7 @@ const BridgeTokens = () => {
       <div className='flex flex-col space-y-2'>
         {getBridges(chainId).map(({ title, url }) => (
           <ButtonLink
-            className='space-x-1 w-full xs:w-3/4'
+            className='space-x-1 w-full'
             theme={ButtonTheme.teal}
             key={`${chainId}-${title}`}
             href={url}
@@ -400,6 +401,7 @@ const ModalTrigger: React.FC<{
   </button>
 )
 
+// TODO: Refetch users token balances on successful purchase
 const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> = (props) => {
   const { chainId, className } = props
   const [onRampInstance, setOnRampInstance] = useState<CBPayInstanceType | undefined>()
@@ -409,9 +411,11 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> =
   const supportedCoinbaseChainIds = Object.keys(COINBASE_CHAIN_KEYS).map(Number)
 
   useEffect(() => {
+    console.log('init onramp')
     initOnRamp(
       {
         appId: process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID,
+        target: '#cbpay-button-container',
         widgetParameters: {
           destinationWallets: !!chainKey
             ? [
@@ -436,21 +440,38 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> =
         }
       },
       (_, instance) => {
+        console.log({ instance })
         setOnRampInstance(instance)
       }
     )
 
     return () => {
+      console.log('destroying onramp')
       onRampInstance?.destroy()
       setOnRampInstance(undefined)
     }
   }, [])
+
+  console.log({ onRampInstance })
 
   const handleClick = () => {
     onRampInstance?.open()
   }
 
   const disabled = !process.env.NEXT_PUBLIC_COINBASE_PAY_APP_ID || !onRampInstance
+
+  return (
+    <Button
+      id='cbpay-button-container'
+      onClick={handleClick}
+      disabled={disabled}
+      className='space-x-1 w-full'
+      theme={ButtonTheme.blue}
+    >
+      <span className='text-sm'>Buy with Coinbase Pay</span>
+      <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
+    </Button>
+  )
 
   return (
     <a

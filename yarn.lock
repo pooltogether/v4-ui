@@ -1068,7 +1068,7 @@
   dependencies:
     "@eth-optimism/contracts" "^0.5.21"
 
-"@coinbase/cbpay-js@^1.0.2":
+"@coinbase/cbpay-js@1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@coinbase/cbpay-js/-/cbpay-js-1.6.0.tgz#23f4456ba57f3e6ba1583e21376e9a2337fd1aaa"
   integrity sha512-jt1BUaMLbA2/xfHc2YC/Uq+rYD0LIpU5s70ms8VpxImNGiMLUEgUZnAzjk1aIqWiTpQWRmwqyq+WvKTb0Yv05Q==
@@ -2299,10 +2299,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.1.tgz#dbc82576f5551a97c92a7752f371348bfc4126b1"
-  integrity sha512-+MTZmgT8btOwPvO1gGrDORN7rEBWSzI2PJxTHsiwxKHArY+2fEw5LnldDALE1IW8frHBmMyOD5SzxUKt01tECA==
+"@pooltogether/react-components@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.2.tgz#dffe84a725cba54c064818713ed577647e775ae8"
+  integrity sha512-TPMYvRlVyQ9HBl0m5ygPItJ+nyCsDtLZI6J/rlYnjKQ4yZ6xIb3XFUZLx0IeJXUmfw8BBRDlO2tWFO/jHwoZgg==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"
