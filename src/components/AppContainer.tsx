@@ -6,6 +6,7 @@ import { LoadingScreen, useScreenSize, ScreenSize } from '@pooltogether/react-co
 import {
   CHAIN_ID,
   getReadProvider,
+  getRpcUrls,
   initRpcUrls,
   useUpdateStoredPendingTransactions
 } from '@pooltogether/wallet-connection'
@@ -48,7 +49,13 @@ initSentry()
 initRpcUrls(RPC_URLS)
 
 // Initialize WAGMI wallet connectors
-const chains = getSupportedChains()
+const chains = getSupportedChains().map((chain) => {
+  if (!!RPC_URLS[chain.id]) {
+    chain.rpcUrls.default = RPC_URLS[chain.id]
+  }
+  return chain
+})
+
 const connectors = () => {
   return [
     new MetaMaskConnector({ chains, options: {} }),
