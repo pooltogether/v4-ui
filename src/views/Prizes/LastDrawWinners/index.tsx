@@ -8,9 +8,9 @@ import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistrib
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { Trans } from 'next-i18next'
 import { useState } from 'react'
-import { PastDrawsModal } from './PastDrawsModal'
+import { LastDrawWinnersModal } from './LastDrawWinnersModal'
 
-export const PastDraws = () => {
+export const LastDrawWinners = () => {
   const prizeDistributors = usePrizeDistributors()
   const [prizeDistributor, setPrizeDistributor] = useState<PrizeDistributor>(prizeDistributors[0])
   const [isOpen, setIsOpen] = useState(false)
@@ -57,7 +57,7 @@ export const PastDraws = () => {
           ))}
         </ul>
       </TransparentDiv>
-      <PastDrawsModal
+      <LastDrawWinnersModal
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
         prizeDistributor={prizeDistributor}

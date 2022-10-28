@@ -1,10 +1,8 @@
 import { Dot } from '@components/Dot'
 import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
-import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { useAllLatestDrawWinners } from '@hooks/v4/useDrawWinners'
-import { useAllLatestDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
+import { useAllLatestUnlockedDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'next-i18next'
@@ -20,7 +18,7 @@ export const PerDrawPrizeCount: React.FC<{ className?: string }> = (props) => {
   const { className } = props
   const { t } = useTranslation()
   const prizePools = usePrizePools()
-  const queryResults = useAllLatestDrawWinnersInfo()
+  const queryResults = useAllLatestUnlockedDrawWinnersInfo()
 
   const { data, totalNumberOfPrizes } = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
