@@ -84,7 +84,11 @@ export const MultiDrawPrizeBreakdownSheet = (
         />
       </p>
 
-      <PrizeBreakdown className='w-full mx-auto' prizeTier={prizeDistribution} ticket={ticket} />
+      <PrizeBreakdown
+        className='w-full mx-auto'
+        prizeTier={prizeDistribution}
+        decimals={ticket?.decimals}
+      />
     </BottomSheet>
   )
 }

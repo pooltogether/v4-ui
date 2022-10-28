@@ -43,7 +43,7 @@ export const PrizeBreakdownModal = (
       <PrizeBreakdown
         className='mx-auto w-full'
         prizeTier={props.prizeTier}
-        ticket={props.ticket}
+        decimals={props.ticket.decimals}
       />
     </BottomSheet>
   )
