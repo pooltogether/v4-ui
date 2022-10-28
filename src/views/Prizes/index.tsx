@@ -14,10 +14,10 @@ import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { HistoricDraws } from './HistoricDraws'
+import { LastDrawWinners } from './LastDrawWinners'
 import { MultiDrawsCard } from './MultiDrawsCard'
 import { LockedDrawsCard } from './MultiDrawsCard/LockedDrawsCard'
-import { PastDraws } from './PastDraws'
-import { PastDrawsList } from './PastDrawsList'
 import { PrizeHeader } from './PrizeHeader'
 
 export const PRIZE_UI_STATES = {
@@ -87,12 +87,12 @@ export const PrizesUI = () => {
           tabs={[
             {
               id: 'last_draw',
-              view: <PastDraws />,
+              view: <LastDrawWinners />,
               title: t('lastDraw')
             },
             {
               id: 'history',
-              view: <PastDrawsList />,
+              view: <HistoricDraws />,
               title: t('drawHistory')
             }
           ]}

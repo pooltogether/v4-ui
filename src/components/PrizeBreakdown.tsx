@@ -1,14 +1,8 @@
-import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
-import { Amount, Token } from '@pooltogether/hooks'
-import {
-  formatCurrencyNumberForDisplay,
-  formatNumberForDisplay,
-  formatUnformattedBigNumberForDisplay
-} from '@pooltogether/utilities'
-import { calculate, PrizeTier } from '@pooltogether/v4-client-js'
+import { Amount } from '@pooltogether/hooks'
+import { formatCurrencyNumberForDisplay, formatNumberForDisplay } from '@pooltogether/utilities'
+import { PrizeTier } from '@pooltogether/v4-client-js'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
-import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
 import classnames from 'classnames'
 import { useTranslation } from 'next-i18next'
@@ -17,26 +11,26 @@ import { LoadingPrizeRow, PrizeTableHeader } from './ModalViews/DepositView/Expe
 
 interface PrizeBreakdownProps {
   prizeTier: PrizeTier
-  ticket: Token
+  decimals: string
   className?: string
   isFetched?: boolean
 }
 
 // TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
-  const { prizeTier, className, ticket, isFetched } = props
+  const { prizeTier, className, decimals, isFetched } = props
   const { t } = useTranslation()
 
   const { numberOfPrizesByTier, totalNumberOfPrizes, valueOfPrizesByTier } = useMemo(() => {
     const numberOfPrizesByTier = getPrizeTierNumberOfPrizes(prizeTier)
     const totalNumberOfPrizes = numberOfPrizesByTier.reduce((a, b) => a + b, 0)
-    const valueOfPrizesByTier = getPrizeTierValues(prizeTier, ticket?.decimals)
+    const valueOfPrizesByTier = getPrizeTierValues(prizeTier, decimals)
     return {
       numberOfPrizesByTier,
       totalNumberOfPrizes,
       valueOfPrizesByTier
     }
-  }, [prizeTier, ticket?.decimals])
+  }, [prizeTier, decimals])
 
   return (
     <div className={classnames('flex flex-col max-w-md text-center', className)}>
@@ -57,11 +51,9 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
             <PrizeBreakdownTableRow
               key={`distribution_row_${i}`}
               index={i}
-              prizeTier={prizeTier}
               valueOfPrize={valueOfPrizesByTier[i]}
               numberOfPrizes={numberOfPrizesByTier[i]}
               totalNumberOfPrizes={totalNumberOfPrizes}
-              ticket={ticket}
             />
           ))}
         </ul>
@@ -76,14 +68,12 @@ PrizeBreakdown.defaultProps = {
 
 // Calculate prize w draw settings
 const PrizeBreakdownTableRow = (props: {
-  prizeTier: PrizeTier
   index: number
-  ticket: Token
   valueOfPrize: Amount
   totalNumberOfPrizes: number
   numberOfPrizes: number
 }) => {
-  const { index, prizeTier, ticket, numberOfPrizes, valueOfPrize, totalNumberOfPrizes } = props
+  const { index, numberOfPrizes, valueOfPrize, totalNumberOfPrizes } = props
 
   if (numberOfPrizes === 0) return null
 
