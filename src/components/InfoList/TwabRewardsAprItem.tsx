@@ -78,7 +78,7 @@ export const PromotionsVapr: React.FC<{ promotion: Promotion }> = (props) => {
       <div className='inline-flex items-center space-x-1'>
         <span>{numberWithCommas(vapr)}%</span>
         <TokenIcon chainId={promotion.chainId} address={promotion.token} sizeClassName='w-4 h-4' />
-        <span>VAPR</span>
+        <span>vAPR</span>
       </div>
     </li>
   )
