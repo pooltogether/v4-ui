@@ -46,7 +46,7 @@ export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) =
   const { usersAddress } = props
   const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress)
   const { t } = useTranslation()
-  if(!isFetched || data.balances.length > 0) {
+  if (!isFetched || data.balances.length > 0) {
     return (
       <div>
         <CardTitle
@@ -54,7 +54,11 @@ export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) =
           title={`V3 ${t('deposits')}`}
           secondary={`$${data?.totalValueUsd.amountPretty || '0.00'}`}
         />
-        {isFetched ? <V3DepositsList usersAddress={usersAddress} balances={data.balances} /> : <LoadingList />}
+        {isFetched ? (
+          <V3DepositsList usersAddress={usersAddress} balances={data.balances} />
+        ) : (
+          <LoadingList />
+        )}
       </div>
     )
   }
@@ -90,12 +94,14 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   )
 }
 
-const V3DepositsList: React.FC<{ usersAddress: string, balances: V3PrizePoolBalances[] }> = (props) => {
+const V3DepositsList: React.FC<{ usersAddress: string; balances: V3PrizePoolBalances[] }> = (
+  props
+) => {
   const { usersAddress, balances } = props
 
   return (
     <ul className='space-y-2'>
-      {balances.map(balance => (
+      {balances.map((balance) => (
         <V3DepositItem
           key={'v3-deposit-balance-' + balance.prizePool.addresses.prizePool}
           usersAddress={usersAddress}
