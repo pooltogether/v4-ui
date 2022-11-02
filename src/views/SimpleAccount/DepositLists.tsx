@@ -1,6 +1,7 @@
 import { ListItem } from '@components/List/ListItem'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
+import type { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
@@ -13,11 +14,10 @@ import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountL
 import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
-import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 
 /**
- *
+ * Displays V4 deposits.
  * @param props
  * @returns
  */
@@ -38,24 +38,26 @@ export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) =
 }
 
 /**
- *
+ * Displays V3 deposits (hidden after loading if empty).
  * @param props
  * @returns
  */
 export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
-  const { data } = useUsersV3PrizePoolBalances(usersAddress, false)
+  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress)
   const { t } = useTranslation()
-  return (
-    <div>
-      <CardTitle
-        className='mb-2'
-        title={`V3 ${t('deposits')}`}
-        secondary={`$${data?.totalValueUsd.amountPretty || '0.00'}`}
-      />
-      <V3DepositsList usersAddress={usersAddress} />
-    </div>
-  )
+  if(!isFetched || data.balances.length > 0) {
+    return (
+      <div>
+        <CardTitle
+          className='mb-2'
+          title={`V3 ${t('deposits')}`}
+          secondary={`$${data?.totalValueUsd.amountPretty || '0.00'}`}
+        />
+        {isFetched ? <V3DepositsList usersAddress={usersAddress} balances={data.balances} /> : <LoadingList />}
+      </div>
+    )
+  }
 }
 
 const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
@@ -88,28 +90,19 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   )
 }
 
-const V3DepositsList: React.FC<{ usersAddress: string }> = (props) => {
-  const { usersAddress } = props
-  const { t } = useTranslation()
-  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress)
-
-  if (!isFetched) {
-    return <LoadingList />
-  }
+const V3DepositsList: React.FC<{ usersAddress: string, balances: V3PrizePoolBalances[] }> = (props) => {
+  const { usersAddress, balances } = props
 
   return (
     <ul className='space-y-2'>
-      {data.balances.map((balances) => (
+      {balances.map(balance => (
         <V3DepositItem
-          key={'v3-deposit-balance-' + balances.prizePool.addresses.prizePool}
+          key={'v3-deposit-balance-' + balance.prizePool.addresses.prizePool}
           usersAddress={usersAddress}
-          token={balances.ticket}
-          chainId={balances.prizePool.chainId}
+          token={balance.ticket}
+          chainId={balance.prizePool.chainId}
         />
       ))}
-      {data.balances.length === 0 && (
-        <div className='text-center opacity-50 text-xxs'>{t('noDeposits', 'No deposits')}</div>
-      )}
     </ul>
   )
 }
