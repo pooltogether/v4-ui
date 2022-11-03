@@ -72,13 +72,7 @@ export const getPrizePoolPrizes = (
   )
 
   const valueOfPrizesFormattedList: string[] = dedupeArray(
-    valueOfPrizesByTier
-      .filter((p) => !p.amountUnformatted.isZero())
-      .map((p) =>
-        formatCurrencyNumberForDisplay(p.amount, 'usd', {
-          maximumFractionDigits: 0
-        })
-      )
+    valueOfPrizesByTier.filter((p) => !p.amountUnformatted.isZero()).map((p) => p.amount)
   )
 
   const grandPrizeValue = [...valueOfPrizesByTier].sort((a, b) =>
@@ -92,11 +86,7 @@ export const getPrizePoolPrizes = (
           !p.amountUnformatted.isZero() &&
           !p.amountUnformatted.eq(grandPrizeValue.amountUnformatted)
       )
-      .map((p) =>
-        formatCurrencyNumberForDisplay(p.amount, 'usd', {
-          maximumFractionDigits: 0
-        })
-      )
+      .map((p) => p.amount)
   )
 
   return {

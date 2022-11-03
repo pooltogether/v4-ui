@@ -1,4 +1,5 @@
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
+import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
@@ -9,5 +10,11 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 export const Prizes = (props: { prizePool: PrizePool }) => {
   const { prizePool } = props
   const { data, isFetched } = usePrizePoolExpectedPrizes(prizePool)
-  return isFetched ? <>{data?.valueOfPrizesFormattedList.join(', ')}</> : null
+  return isFetched ? (
+    <>
+      {data?.valueOfPrizesFormattedList
+        .map((v) => formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true }))
+        .join(', ')}
+    </>
+  ) : null
 }

@@ -8,6 +8,7 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
+import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { formatUnits } from 'ethers/lib/utils'
 import { Trans, useTranslation } from 'next-i18next'
@@ -47,7 +48,9 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           percentage: data.percentageOfPicks,
           totalValueOfPrizes: `${Math.round(data.percentageOfPicks * 100)}%`,
-          prizes: data.valueOfPrizesFormattedList.join(', ')
+          prizes: data.valueOfPrizesFormattedList
+            .map((v) => formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true }))
+            .join(', ')
         }
       })
       .sort((a, b) => b.percentage - a.percentage)

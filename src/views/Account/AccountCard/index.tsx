@@ -8,6 +8,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { AccountCardImage } from './AccountCardImage'
 import { TotalWinningsCard } from './TotalWinnings'
 
 export const AccountCard: React.FC<{
@@ -20,7 +21,7 @@ export const AccountCard: React.FC<{
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
       <TransparentDiv className='flex justify-between p-4 rounded-lg'>
         <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
-        <img src={'/wallet-illustration.png'} style={{ width: '65px', height: '60px' }} />
+        <AccountCardImage usersAddress={usersAddress} />
       </TransparentDiv>
       <div className='flex sm:hidden space-x-2'>
         <DailyOdds usersAddress={usersAddress} />
