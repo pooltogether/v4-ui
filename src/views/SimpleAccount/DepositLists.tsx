@@ -6,8 +6,8 @@ import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalanc
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { NetworkIcon } from '@pooltogether/react-components'
+import { Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { NetworkIcon, TokenIconWithNetwork } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
@@ -44,7 +44,7 @@ export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) =
  */
 export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
-  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress)
+  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress, false)
   const { t } = useTranslation()
   if (!isFetched || data.balances.length === 0) return null
   return (
@@ -133,16 +133,16 @@ const V3DepositItem: React.FC<{
 
   return (
     <ListItem
-      left={<NetworkLabel chainId={chainId} />}
+      left={<V3PrizePoolLabel token={token} chainId={chainId} />}
       right={<DepositBalance chainId={chainId} token={token} />}
     />
   )
 }
 
-const NetworkLabel: React.FC<{ chainId: number }> = (props) => (
-  <div className='flex'>
-    <NetworkIcon chainId={props.chainId} className='mr-2 my-auto' />
-    <span className='font-bold'>{getNetworkNiceNameByChainId(props.chainId)}</span>
+const V3PrizePoolLabel: React.FC<{ token: Token; chainId: number }> = (props) => (
+  <div className='flex space-x-3'>
+    <TokenIconWithNetwork chainId={props.chainId} address={props.token.address} />
+    <span className='font-bold'>{props.token.symbol}</span>
   </div>
 )
 
