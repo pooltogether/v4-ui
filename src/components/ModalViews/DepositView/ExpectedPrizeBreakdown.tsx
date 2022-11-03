@@ -10,7 +10,7 @@ import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrize
 import { useUsersPrizePoolTwab } from '@hooks/v4/PrizePool/useUsersPrizePoolTwab'
 import { Amount, Token } from '@pooltogether/hooks'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
-import { formatNumberForDisplay } from '@pooltogether/utilities'
+import { formatCurrencyNumberForDisplay, formatNumberForDisplay } from '@pooltogether/utilities'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import classnames from 'classnames'
 import React from 'react'
@@ -90,7 +90,11 @@ const PrizeBreakdownTableRow: React.FC<{
 
   return (
     <>
-      <PrizeTableCell index={index}>${prizeValue.amountPretty}</PrizeTableCell>
+      <PrizeTableCell index={index}>
+        {formatCurrencyNumberForDisplay(prizeValue.amount, 'usd', {
+          hideZeroes: true
+        })}
+      </PrizeTableCell>
       <PrizeTableCell index={index}>
         <OddsForTier
           expectedNumberOfPrizes={expectedNumberOfPrizes}

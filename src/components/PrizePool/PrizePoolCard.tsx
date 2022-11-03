@@ -334,7 +334,7 @@ export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> 
               hideZeroes: true
             })}
         </span>
-        {data?.smallPrizeValueList.map((smallPrizeValue, index) => (
+        {data?.uniqueSmallPrizeValueList.map((smallPrizeValue, index) => (
           <span key={`prize-${prizePool.id()}-${index}`}>
             {formatCurrencyNumberForDisplay(smallPrizeValue, 'usd', { hideZeroes: true })}
           </span>

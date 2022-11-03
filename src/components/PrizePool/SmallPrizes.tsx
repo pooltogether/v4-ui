@@ -12,7 +12,7 @@ export const SmallPrizes = (props: { prizePool: PrizePool }) => {
   const { data, isFetched } = usePrizePoolExpectedPrizes(prizePool)
   return isFetched ? (
     <>
-      {data?.smallPrizeValueList
+      {data?.uniqueSmallPrizeValueList
         .map((v) => formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true }))
         .join(', ')}
     </>

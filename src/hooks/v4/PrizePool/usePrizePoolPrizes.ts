@@ -34,8 +34,8 @@ export interface PrizeData {
   numberOfPrizesByTier: number[]
   totalNumberOfPrizes: number
   valueOfPrizesByTier: Amount[]
-  valueOfPrizesFormattedList: string[]
-  smallPrizeValueList: string[]
+  uniqueValueOfPrizesFormattedList: string[]
+  uniqueSmallPrizeValueList: string[]
   totalValueOfPrizes: Amount
   averagePrizeValue: Amount
   grandPrizeValue: Amount
@@ -71,23 +71,31 @@ export const getPrizePoolPrizes = (
     decimals
   )
 
-  const valueOfPrizesFormattedList: string[] = dedupeArray(
-    valueOfPrizesByTier.filter((p) => !p.amountUnformatted.isZero()).map((p) => p.amount)
-  )
-
-  const grandPrizeValue = [...valueOfPrizesByTier].sort((a, b) =>
-    b.amountUnformatted.lte(a.amountUnformatted) ? -1 : 1
-  )[0]
-
-  const smallPrizeValueList = dedupeArray(
+  const uniqueValueOfPrizesFormattedList = dedupeArray(
     valueOfPrizesByTier
+      .filter((p) => !p.amountUnformatted.isZero())
       .filter(
-        (p) =>
-          !p.amountUnformatted.isZero() &&
-          !p.amountUnformatted.eq(grandPrizeValue.amountUnformatted)
+        (p, i) =>
+          valueOfPrizesByTier.findIndex(
+            (p2) => Math.round(Number(p2.amount) * 100) === Math.round(Number(p.amount) * 100)
+          ) === i
       )
       .map((p) => p.amount)
   )
+
+  const sortedPrizeValues = [...valueOfPrizesByTier]
+    .filter((p) => !p.amountUnformatted.isZero())
+    .sort((a, b) => (b.amountUnformatted.lte(a.amountUnformatted) ? -1 : 1))
+  const grandPrizeValue = sortedPrizeValues[0]
+  const uniqueSmallPrizeValueList = sortedPrizeValues
+    .filter(
+      (p, i) =>
+        sortedPrizeValues.findIndex(
+          (p2) => Math.round(Number(p2.amount) * 100) === Math.round(Number(p.amount) * 100)
+        ) === i
+    )
+    .slice(1)
+    .map((p) => p.amount)
 
   return {
     chainId: prizePool.chainId,
@@ -96,8 +104,8 @@ export const getPrizePoolPrizes = (
     numberOfPrizesByTier,
     totalNumberOfPrizes,
     valueOfPrizesByTier,
-    valueOfPrizesFormattedList,
-    smallPrizeValueList,
+    uniqueValueOfPrizesFormattedList,
+    uniqueSmallPrizeValueList,
     totalValueOfPrizes,
     averagePrizeValue,
     grandPrizeValue,
