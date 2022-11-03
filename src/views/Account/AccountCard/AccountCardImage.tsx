@@ -12,7 +12,8 @@ const NFTS = Object.freeze([
   '0x5663e3E096f1743e77B8F71b5DE0CF9Dfd058523', // Judge
   '0xBCC664B1E6848caba2Eb2f3dE6e21F81b9276dD8', // PFer
   '0xBd888022fF34D2FAa7eA653c6938EC5a33DA124B' // OG PFer
-  // '0x92B971d307ebFc7331C23429E204A5E4adF7a833' // Club Pooly's (It's a video :())
+  // '0x92B971d307ebFc7331C23429E204A5E4adF7a833' // Club Pooly's (It's a video)
+  // '0x495f947276749Ce646f68AC8c248420045cb7b5e' // We Like The Poolys (Different interface)
 ])
 
 const ERC721 = [
@@ -69,7 +70,7 @@ export const AccountCardImage = (props: { usersAddress: string }) => {
   if (
     !isFetched ||
     !usersAddress ||
-    (isFetched && (data.ownedNfts.length === 0 || data.ownedNfts.length === 1))
+    (isFetched && (data?.ownedNfts.length === 0 || data?.ownedNfts.length === 1))
   ) {
     return (
       <img
