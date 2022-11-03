@@ -1,8 +1,5 @@
-import { AmountInPrizes } from '@components/AmountInPrizes'
 import { ListItem } from '@components/List/ListItem'
 import { AmountWonInDraw } from '@components/PrizeDistributor/AmountWonInDraw'
-import { TransparentDiv } from '@components/TransparentDiv'
-import { ViewPrizesSheetCustomTrigger } from '@components/ViewPrizesSheetButton'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
 import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
