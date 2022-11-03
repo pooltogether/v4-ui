@@ -1,23 +1,23 @@
 import { ListItem } from '@components/List/ListItem'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
+import type { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
-import { NetworkIcon } from '@pooltogether/react-components'
+import { Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import { NetworkIcon, TokenIconWithNetwork } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
-import classNames from 'classnames'
 import { useTranslation } from 'next-i18next'
 
 /**
- *
+ * Displays V4 deposits.
  * @param props
  * @returns
  */
@@ -38,14 +38,15 @@ export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) =
 }
 
 /**
- *
+ * Displays V3 deposits (hidden after loading if empty).
  * @param props
  * @returns
  */
 export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
-  const { data } = useUsersV3PrizePoolBalances(usersAddress, false)
+  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress, false)
   const { t } = useTranslation()
+  if (!isFetched || data.balances.length === 0) return null
   return (
     <div>
       <CardTitle
@@ -53,7 +54,7 @@ export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) =
         title={`V3 ${t('deposits')}`}
         secondary={`$${data?.totalValueUsd.amountPretty || '0.00'}`}
       />
-      <V3DepositsList usersAddress={usersAddress} />
+      <V3DepositsList usersAddress={usersAddress} balances={data.balances} />
     </div>
   )
 }
@@ -88,28 +89,21 @@ const V4DepositsList: React.FC<{ usersAddress: string }> = (props) => {
   )
 }
 
-const V3DepositsList: React.FC<{ usersAddress: string }> = (props) => {
-  const { usersAddress } = props
-  const { t } = useTranslation()
-  const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress)
-
-  if (!isFetched) {
-    return <LoadingList />
-  }
+const V3DepositsList: React.FC<{ usersAddress: string; balances: V3PrizePoolBalances[] }> = (
+  props
+) => {
+  const { usersAddress, balances } = props
 
   return (
     <ul className='space-y-2'>
-      {data.balances.map((balances) => (
+      {balances.map((balancesList) => (
         <V3DepositItem
-          key={'v3-deposit-balance-' + balances.prizePool.addresses.prizePool}
+          key={'v3-deposit-balance-' + balancesList.prizePool.addresses.prizePool}
           usersAddress={usersAddress}
-          token={balances.ticket}
-          chainId={balances.prizePool.chainId}
+          token={balancesList.ticket}
+          chainId={balancesList.prizePool.chainId}
         />
       ))}
-      {data.balances.length === 0 && (
-        <div className='text-center opacity-50 text-xxs'>{t('noDeposits', 'No deposits')}</div>
-      )}
     </ul>
   )
 }
@@ -139,16 +133,16 @@ const V3DepositItem: React.FC<{
 
   return (
     <ListItem
-      left={<NetworkLabel chainId={chainId} />}
+      left={<V3PrizePoolLabel token={token} chainId={chainId} />}
       right={<DepositBalance chainId={chainId} token={token} />}
     />
   )
 }
 
-const NetworkLabel: React.FC<{ chainId: number }> = (props) => (
-  <div className='flex'>
-    <NetworkIcon chainId={props.chainId} className='mr-2 my-auto' />
-    <span className='font-bold'>{getNetworkNiceNameByChainId(props.chainId)}</span>
+const V3PrizePoolLabel: React.FC<{ token: Token; chainId: number }> = (props) => (
+  <div className='flex space-x-3'>
+    <TokenIconWithNetwork chainId={props.chainId} address={props.token.address} />
+    <span className='font-bold'>{props.token.symbol}</span>
   </div>
 )
 

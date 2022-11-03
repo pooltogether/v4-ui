@@ -48,7 +48,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           percentage: data.percentageOfPicks,
           totalValueOfPrizes: `${Math.round(data.percentageOfPicks * 100)}%`,
-          prizes: data.valueOfPrizesFormattedList
+          prizes: data.uniqueValueOfPrizesFormattedList
             .map((v) => formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true }))
             .join(', ')
         }
