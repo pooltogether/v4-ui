@@ -154,12 +154,15 @@ const CardLabel = (
   props: {
     isFetched?: boolean
   } & JSX.IntrinsicElements['div']
-) =>
-  !props.isFetched ? (
+) => {
+  const { isFetched, ...remainingProps } = props
+  return !isFetched ? (
     <ThemedClipSpinner className={classNames(props.className, 'w-3 h-3')} />
   ) : (
-    <div {...props} />
+    <div {...remainingProps} />
   )
+}
+
 CardLabel.defaultProps = {
   isFetched: true
 }
@@ -328,11 +331,13 @@ export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> 
         <span className='text-flashy'>
           {isFetched &&
             formatCurrencyNumberForDisplay(data?.grandPrizeValue.amount, 'usd', {
-              maximumFractionDigits: 0
+              hideZeroes: true
             })}
         </span>
         {data?.smallPrizeValueList.map((smallPrizeValue, index) => (
-          <span key={`prize-${prizePool.id()}-${index}`}>{smallPrizeValue}</span>
+          <span key={`prize-${prizePool.id()}-${index}`}>
+            {formatCurrencyNumberForDisplay(smallPrizeValue, 'usd', { hideZeroes: true })}
+          </span>
         ))}
       </div>
     </CardLabelLarge>
