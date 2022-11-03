@@ -13,7 +13,6 @@ import {
   ButtonSize,
   ButtonTheme,
   ExternalLink,
-  LinkTheme,
   SocialIcon,
   SocialKey,
   Tabs
@@ -87,7 +86,7 @@ export const Card: React.FC<{ className?: string; children: React.ReactNode }> =
 
   return (
     <div
-      {...props}
+      {...remainingProps}
       children={children}
       className={classNames(
         'w-full bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-40 rounded-xl space-y-12 sm:space-y-16 px-4 sm:px-6 lg:px-12 py-10 lg:py-12',

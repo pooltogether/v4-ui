@@ -1,4 +1,3 @@
-import { NEGATIVE_HEADER_MARGIN } from '@components/Layout/PageHeader'
 import { PagePadding } from '@components/Layout/PagePadding'
 import { Card } from '@views/Account'
 import { AccountCard } from '@views/Account/AccountCard'
@@ -7,8 +6,6 @@ import { POOLBalancesCard } from '@views/Account/POOLBalancesCard'
 import { GovernanceSidebarCard } from '@views/Account/SidebarCard/GovernanceSidebarCard'
 import { OddsSidebarCard } from '@views/Account/SidebarCard/OddsSidebarCard'
 import { PastPrizesSidebarCard } from '@views/Account/SidebarCard/PastPrizesSidebarCard'
-import classNames from 'classnames'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { SimpleV4DepositList, SimpleV3DepositList } from './DepositLists'
 
