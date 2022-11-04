@@ -14,10 +14,8 @@ export default function IndexPage() {
   const { usersAddress } = router.query
 
   useEffect(() => {
-    if (router.isReady) {
-      if (Array.isArray(usersAddress) || !isAddress(usersAddress)) {
-        router.replace(`/`)
-      }
+    if (router.isReady && (Array.isArray(usersAddress) || !isAddress(usersAddress))) {
+      router.replace(`/`)
     }
   }, [usersAddress, router])
 
