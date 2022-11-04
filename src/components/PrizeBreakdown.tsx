@@ -17,7 +17,6 @@ interface PrizeBreakdownProps {
   isFetched?: boolean
 }
 
-// TODO: Convert values into nice ones
 export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
   const { prizeTier, className, decimals, isFetched } = props
   const { t } = useTranslation()
@@ -48,8 +47,10 @@ export const PrizeBreakdown = (props: PrizeBreakdownProps) => {
     }[] = []
 
     allPrizes.forEach((prize) => {
-      const existingPrizeIndex = rows.findIndex((row) =>
-        row.valueOfPrize.amountUnformatted.eq(prize.valueOfPrize.amountUnformatted)
+      const existingPrizeIndex = rows.findIndex(
+        (row) =>
+          Math.round(Number(row.valueOfPrize.amount) * 100) ===
+          Math.round(Number(prize.valueOfPrize.amount) * 100)
       )
 
       if (existingPrizeIndex === -1) {
