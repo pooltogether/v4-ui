@@ -71,17 +71,15 @@ export const getPrizePoolPrizes = (
     decimals
   )
 
-  const uniqueValueOfPrizesFormattedList = dedupeArray(
-    valueOfPrizesByTier
-      .filter((p) => !p.amountUnformatted.isZero())
-      .filter(
-        (p, i) =>
-          valueOfPrizesByTier.findIndex(
-            (p2) => Math.round(Number(p2.amount) * 100) === Math.round(Number(p.amount) * 100)
-          ) === i
-      )
-      .map((p) => p.amount)
-  )
+  const nonZeroValues = valueOfPrizesByTier.filter((p) => !p.amountUnformatted.isZero())
+  const uniqueValueOfPrizesFormattedList = nonZeroValues
+    .filter(
+      (p, i) =>
+        nonZeroValues.findIndex(
+          (p2) => Math.round(Number(p2.amount) * 100) === Math.round(Number(p.amount) * 100)
+        ) === i
+    )
+    .map((p) => p.amount)
 
   const sortedPrizeValues = [...valueOfPrizesByTier]
     .filter((p) => !p.amountUnformatted.isZero())
