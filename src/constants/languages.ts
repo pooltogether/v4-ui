@@ -31,6 +31,10 @@ export const SUPPORTED_LANGUAGES = Object.freeze({
     name: 'Portuguese',
     nativeName: 'Português'
   },
+  ru: {
+    name: 'Russian',
+    nativeName: 'Русский'
+  },
   tr: {
     name: 'Turkish',
     nativeName: 'Türkçe'
