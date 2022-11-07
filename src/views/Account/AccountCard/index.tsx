@@ -3,7 +3,7 @@ import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { useAllUsersPrizePoolTwabs } from '@hooks/v4/PrizePool/useUsersPrizePoolTwab'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
-import { shorten } from '@pooltogether/utilities'
+import { shorten, formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
@@ -88,7 +88,7 @@ const TotalBalance: React.FC<{
         activeBalance &&
         isFullyFetched &&
         Number(activeBalance.amount) !== balancesData.totalV4Balance && (
-          <ActiveBalance value={Number(activeBalance.amount)} />
+          <ActiveBalance value={activeBalance.amount} />
         )}
     </a>
   )
@@ -115,13 +115,12 @@ export const TotalBalanceAmount: React.FC<{ usersAddress: string }> = (props) =>
   return <CountUp countTo={Number(balancesData?.totalV4Balance)} />
 }
 
-export const ActiveBalance: React.FC<{ value: number }> = (props) => {
+export const ActiveBalance: React.FC<{ value: string }> = (props) => {
   const { value } = props
   const { t } = useTranslation()
   return (
     <span className='font-semibold text-xs'>
-      {t('active')}:&nbsp;$
-      <CountUp countTo={value} />
+      {t('active')}:&nbsp;{formatCurrencyNumberForDisplay(value, 'usd', { hideZeroes: true })}
     </span>
   )
 }
