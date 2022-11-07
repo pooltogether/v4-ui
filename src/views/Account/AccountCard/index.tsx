@@ -2,7 +2,7 @@ import { TransparentDiv } from '@components/TransparentDiv'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
 import { useAllUsersPrizePoolTwabs } from '@hooks/v4/PrizePool/useUsersPrizePoolTwab'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { ThemedClipSpinner, CountUp, Tooltip } from '@pooltogether/react-components'
 import { shorten, formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import classNames from 'classnames'
@@ -119,8 +119,16 @@ export const ActiveBalance: React.FC<{ value: string }> = (props) => {
   const { value } = props
   const { t } = useTranslation()
   return (
-    <span className='font-semibold text-xs'>
-      {t('active')}:&nbsp;{formatCurrencyNumberForDisplay(value, 'usd', { hideZeroes: true })}
+    <span className='flex items-center gap-1 font-semibold text-xs'>
+      <span className='opacity-80'>{t('active')}:</span>
+      <span className='opacity-80'>
+        {formatCurrencyNumberForDisplay(value, 'usd', { hideZeroes: true })}
+      </span>
+      <Tooltip
+        id={`activeBalanceTooltip`}
+        iconClassName='opacity-80'
+        tip={t('activeBalanceTooltip')}
+      />
     </span>
   )
 }
