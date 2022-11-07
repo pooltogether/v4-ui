@@ -12,12 +12,16 @@ export const DepositView: React.FC<
   {
     depositAmount: Amount
     setDepositAmount: (amount: Amount) => void
+    formAmount: string
+    setFormAmount: (amount: string) => void
     depositTransaction?: Transaction
   } & ViewProps
 > = (props) => {
   const {
     depositAmount,
     setDepositAmount,
+    formAmount,
+    setFormAmount,
     depositTransaction,
     setSelectedViewId,
     ...remainingProps
@@ -34,8 +38,9 @@ export const DepositView: React.FC<
       onSubmit={() => setSelectedViewId(ViewIds.depositReview)}
       chainId={prizePool.chainId}
       token={tokens?.token}
-      defaultValue={depositAmount?.amount}
+      defaultValue={formAmount}
       setDepositAmount={setDepositAmount}
+      setFormAmount={setFormAmount}
     />
   )
 }
