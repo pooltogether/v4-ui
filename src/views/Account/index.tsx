@@ -54,7 +54,7 @@ export const AccountUI = (props) => {
   return (
     <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3'>
       <div className='sm:col-span-2 space-y-4'>
-        <AccountCard usersAddress={usersAddress} />
+        <AccountCard usersAddress={usersAddress} showActive />
         <Card>
           <V4DepositList />
           <DelegationList />

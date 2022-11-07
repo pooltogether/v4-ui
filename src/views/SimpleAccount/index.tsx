@@ -15,7 +15,7 @@ export const SimpleAccountUI = (props: { usersAddress: string }) => {
   return (
     <PagePadding className='grid gap-4 grid-cols-1 sm:grid-cols-3'>
       <div className='sm:col-span-2 space-y-4'>
-        <AccountCard usersAddress={usersAddress} showAddress />
+        <AccountCard usersAddress={usersAddress} showAddress showActive />
         <Card>
           <SimpleV4DepositList usersAddress={usersAddress} />
           <SimpleV3DepositList usersAddress={usersAddress} />

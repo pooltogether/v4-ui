@@ -1,6 +1,7 @@
 import { TransparentDiv } from '@components/TransparentDiv'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
+import { useAllUsersPrizePoolTwabs } from '@hooks/v4/PrizePool/useUsersPrizePoolTwab'
 import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
 import { shorten } from '@pooltogether/utilities'
 import { unionProbabilities } from '@utils/unionProbabilities'
@@ -15,12 +16,17 @@ export const AccountCard: React.FC<{
   usersAddress: string
   className?: string
   showAddress?: boolean
+  showActive?: boolean
 }> = (props) => {
-  const { showAddress, usersAddress, className } = props
+  const { showAddress, showActive, usersAddress, className } = props
   return (
     <div className={classNames('flex flex-col rounded-lg space-y-2', className)}>
       <TransparentDiv className='flex justify-between p-4 rounded-lg'>
-        <TotalBalance showAddress={showAddress} usersAddress={usersAddress} />
+        <TotalBalance
+          showAddress={showAddress}
+          usersAddress={usersAddress}
+          showActive={showActive}
+        />
         <AccountCardImage usersAddress={usersAddress} />
       </TransparentDiv>
       <div className='flex sm:hidden space-x-2'>
@@ -35,11 +41,33 @@ export const AccountCard: React.FC<{
 const TotalBalance: React.FC<{
   usersAddress: string
   showAddress?: boolean
+  showActive?: boolean
   className?: string
 }> = (props) => {
-  const { showAddress, usersAddress, className } = props
+  const { showAddress, showActive, usersAddress, className } = props
   const { t } = useTranslation()
-  const { isStillFetching } = useUsersTotalBalances(usersAddress)
+  const {
+    data: balancesData,
+    isStillFetching,
+    isFullyFetched
+  } = useUsersTotalBalances(usersAddress)
+
+  // Querying user's total TWAB (active balance)
+  const allUsersPrizePoolTwabsQueryResults = showActive && useAllUsersPrizePoolTwabs(usersAddress)
+  const activeBalance = useMemo(() => {
+    const isPrizePoolTwabsFetched = allUsersPrizePoolTwabsQueryResults.every(
+      ({ isFetched }) => isFetched
+    )
+    if (!isPrizePoolTwabsFetched) {
+      return null
+    }
+    return allUsersPrizePoolTwabsQueryResults.reduce((acc, qr) => {
+      acc['amount'] = qr.data.twab.amount
+      acc['amountPretty'] = qr.data.twab.amountPretty
+      return acc
+    }, {} as { amount: string; amountPretty: string })
+  }, [allUsersPrizePoolTwabsQueryResults])
+
   return (
     <a href='#deposits' className={className}>
       {showAddress && (
@@ -55,6 +83,13 @@ const TotalBalance: React.FC<{
           <FeatherIcon icon='chevron-right' className='w-6 h-6 opacity-50 my-auto ml-1' />
         )}
       </span>
+
+      {showActive &&
+        activeBalance &&
+        isFullyFetched &&
+        Number(activeBalance.amount) !== balancesData.totalV4Balance && (
+          <ActiveBalance value={Number(activeBalance.amount)} />
+        )}
     </a>
   )
 }
@@ -78,6 +113,17 @@ export const TotalBalanceAmount: React.FC<{ usersAddress: string }> = (props) =>
   }
 
   return <CountUp countTo={Number(balancesData?.totalV4Balance)} />
+}
+
+export const ActiveBalance: React.FC<{ value: number }> = (props) => {
+  const { value } = props
+  const { t } = useTranslation()
+  return (
+    <span className='font-semibold text-xs'>
+      {t('active')}:&nbsp;$
+      <CountUp countTo={value} />
+    </span>
+  )
 }
 
 const DailyOdds: React.FC<{ usersAddress: string }> = (props) => (
