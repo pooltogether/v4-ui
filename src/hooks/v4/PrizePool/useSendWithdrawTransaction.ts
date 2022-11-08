@@ -1,5 +1,5 @@
 import { useSendTransaction } from '@hooks/useSendTransaction'
-import { Amount } from '@pooltogether/hooks'
+import { Amount, useTokenBalance } from '@pooltogether/hooks'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { Overrides } from 'ethers'
@@ -24,6 +24,11 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
     usersAddress,
     prizePool
   )
+  const { refetch: refreshTicketBalance } = useTokenBalance(
+    prizePool.chainId,
+    usersAddress,
+    tokenData.ticket.address
+  )
 
   return useCallback(() => {
     const name = `${t('withdraw')} ${withdrawAmount.amountPretty} ${tokenData.token.symbol}`
@@ -41,10 +46,12 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
         onSuccess: () => {
           refetchUsersTotalTwab()
           refetchUsersBalances()
+          refreshTicketBalance()
         },
         refetch: () => {
           refetchUsersTotalTwab()
           refetchUsersBalances()
+          refreshTicketBalance()
         }
       }
     })
