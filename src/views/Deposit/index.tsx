@@ -25,6 +25,7 @@ export const DepositUI = () => {
 
 const NewUiBanner = () => {
   const { t } = useTranslation()
+
   return (
     <a
       href='https://medium.com/pooltogether/more-op-and-new-prizes-209301d01348'

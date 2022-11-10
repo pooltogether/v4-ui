@@ -1,5 +1,5 @@
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
-import { calculate, PrizeTier } from '@pooltogether/v4-utils-js'
+import { calculate, PrizeTierConfig } from '@pooltogether/v4-utils-js'
 
 /**
  * Computes an Amount for every tier
@@ -7,7 +7,7 @@ import { calculate, PrizeTier } from '@pooltogether/v4-utils-js'
  * @param decimals
  * @returns
  */
-export const getPrizeTierValues = (prizeTier: PrizeTier, decimals: string) =>
+export const getPrizeTierValues = (prizeTier: PrizeTierConfig, decimals: string) =>
   prizeTier.tiers.map((tier, index) =>
     getAmountFromUnformatted(
       calculate.calculatePrizeForTierPercentage(

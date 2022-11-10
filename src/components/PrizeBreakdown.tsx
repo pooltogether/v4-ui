@@ -1,6 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { formatCurrencyNumberForDisplay, formatNumberForDisplay } from '@pooltogether/utilities'
-import { PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizeTierConfig } from '@pooltogether/v4-client-js'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
 import classNames from 'classnames'
@@ -11,7 +11,7 @@ import React, { useMemo } from 'react'
 import { LoadingPrizeRow, PrizeTableHeader } from './ModalViews/DepositView/ExpectedPrizeBreakdown'
 
 interface PrizeBreakdownProps {
-  prizeTier: PrizeTier
+  prizeTier: PrizeTierConfig
   decimals: string
   className?: string
   isFetched?: boolean

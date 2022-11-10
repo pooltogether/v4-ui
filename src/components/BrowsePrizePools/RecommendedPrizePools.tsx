@@ -1,8 +1,8 @@
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { TopPoolByAvgPrizeValue } from './TopPool/TopPoolByAvgPrizeValue'
-import { TopPoolByOdds } from './TopPool/TopPoolByOdds'
 import { TopPoolByGas } from './TopPool/TopPoolByGas'
+import { TopPoolByOdds } from './TopPool/TopPoolByOdds'
 import { TopPoolByTvl } from './TopPool/TopPoolByTvl'
 
 export const RecommendedPrizePools = (props: {
