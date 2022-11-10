@@ -7,7 +7,7 @@
     "reinstall": "rm -rf .next out ./node_modules && yarn cache clean && yarn",
     "dev": "next dev",
     "build": "next build",
-    "predeploy": "yarn locize:download && yarn lint",
+    "predeploy": "yarn locize:download",
     "deploy": "yarn build",
     "start": "next start",
     "lint": "next lint",

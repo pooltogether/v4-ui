@@ -2,6 +2,11 @@ name: CI
 on: [push]
 env:
   INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
+  NEXT_PUBLIC_LOCIZE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_LOCIZE_PROJECT_ID }}
+  LOCIZE_PROJECTID: ${{ secrets.NEXT_PUBLIC_LOCIZE_PROJECT_ID }}
+  NEXT_PUBLIC_LOCIZE_VERSION: ${{ secrets.NEXT_PUBLIC_LOCIZE_VERSION }}
+  LOCIZE_VERSION: ${{ secrets.NEXT_PUBLIC_LOCIZE_PROJECT_ID }}
+  NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
 jobs:
   build:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
