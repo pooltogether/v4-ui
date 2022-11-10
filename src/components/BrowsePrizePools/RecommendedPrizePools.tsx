@@ -2,7 +2,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { TopPoolByAvgPrizeValue } from './TopPool/TopPoolByAvgPrizeValue'
 import { TopPoolByOdds } from './TopPool/TopPoolByOdds'
-import { TopPoolByPrizes } from './TopPool/TopPoolByPrizes'
+import { TopPoolByGas } from './TopPool/TopPoolByGas'
 import { TopPoolByTvl } from './TopPool/TopPoolByTvl'
 
 export const RecommendedPrizePools = (props: {
@@ -29,7 +29,7 @@ export const RecommendedPrizePools = (props: {
         onPrizePoolSelect={onPrizePoolSelect}
         className='flex flex-col justify-between h-full'
       />
-      <TopPoolByPrizes
+      <TopPoolByGas
         onPrizePoolSelect={onPrizePoolSelect}
         className='flex flex-col justify-between h-full'
       />
