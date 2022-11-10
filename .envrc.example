@@ -34,11 +34,7 @@ export NEXT_PUBLIC_CELO_TESTNET_RPC_URL=
 
 # Optional
 # Sentry DSN
-export NEXT_PUBLIC_SENTRY_DSN=
-export NEXT_PUBLIC_SENTRY_ENV=
-export SENTRY_REPO_NAME=pooltogether/v4-ui
-export SENTRY_PROJECT=v4-ui
-export SENTRY_ORG=pooltogether
+export NEXT_PUBLIC_SENTRY_DSN='https://6e3f43eb41db42cab09a14279960286e@o302107.ingest.sentry.io/6008235'
 
 # Optional
 # Locize Dev API key for writing values.

@@ -43,7 +43,7 @@ const queryClient = new QueryClient({
 })
 
 // Initialize Sentry error logging
-initSentry()
+// initSentry()
 
 // Initialize global RPC URLs for external packages
 initRpcUrls(RPC_URLS)
