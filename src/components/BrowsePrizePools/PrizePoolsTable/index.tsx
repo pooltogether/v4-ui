@@ -133,7 +133,11 @@ export const PrizePoolsTable: React.FC<{
               className='w-full sm:w-auto'
             >
               {sortOptions.map((sortOption, index) => (
-                <option key={`so-${sortOption.key}-${index}`} value={index}>
+                <option
+                  key={`so-${sortOption.key}-${index}`}
+                  value={index}
+                  className='dark:bg-pt-purple'
+                >
                   {sortOption.title}
                 </option>
               ))}
