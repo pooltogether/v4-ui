@@ -15,7 +15,7 @@ export const ExplorePrizePoolsHeader = () => {
         size={ButtonSize.sm}
         theme={ButtonTheme.transparent}
       >
-        How does this work?
+        {t('howDoesThisWork')}
       </Button>
     )
   }
@@ -34,7 +34,7 @@ export const ExplorePrizePoolsHeader = () => {
         size={ButtonSize.sm}
         theme={ButtonTheme.transparent}
       >
-        Dismiss
+        {t('dismiss')}
       </Button>
     </div>
   )
