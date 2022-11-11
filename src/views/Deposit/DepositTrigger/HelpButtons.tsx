@@ -270,7 +270,7 @@ const BuyTokens = () => {
           value={chainId}
         >
           {COINBASE_CHAINS.map((chainId) => (
-            <option key={`cb-opt-${chainId}`} value={chainId}>
+            <option key={`cb-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
@@ -305,7 +305,7 @@ const SwapTokens = () => {
           value={chainId}
         >
           {SWAP_TOKENS_CHAINS.map((chainId) => (
-            <option key={`swap-opt-${chainId}`} value={chainId}>
+            <option key={`swap-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
@@ -361,7 +361,7 @@ const BridgeTokens = () => {
           value={chainId}
         >
           {BRIDGE_TOKENS_CHAINS.map((chainId) => (
-            <option key={`swap-opt-${chainId}`} value={chainId}>
+            <option key={`swap-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
