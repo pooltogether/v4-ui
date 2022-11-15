@@ -37,6 +37,7 @@ export const BalanceModal: React.FC<{
 }> = (props) => {
   const { isOpen, closeModal: _closeModal } = props
   const [depositAmount, setDepositAmount] = useState<Amount>()
+  const [formAmount, setFormAmount] = useState<string>()
   const [withdrawAmount, setWithdrawAmount] = useState<Amount>()
   const { chainId } = useSelectedChainId()
   const { data: tokenData } = useSelectedPrizePoolTokens()
@@ -135,6 +136,8 @@ export const BalanceModal: React.FC<{
       token={tokenData?.token}
       depositTransaction={depositTransaction}
       setDepositAmount={setDepositAmount}
+      formAmount={formAmount}
+      setFormAmount={setFormAmount}
       clearDepositTransaction={() => setDepositTransactionId('')}
       // DepositReviewView
       depositAmount={depositAmount}

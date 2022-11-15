@@ -11,7 +11,7 @@ import {
   useCountdown,
   TimeDisplay
 } from '@pooltogether/react-components'
-import { PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizeTierConfig } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
@@ -77,7 +77,7 @@ const AmountOfPrizes = (props) => {
   )
 }
 
-const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTier }) => {
+const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: PrizeTierConfig }) => {
   const { isFetched, ticket, prizeTier } = props
   const { t } = useTranslation()
 

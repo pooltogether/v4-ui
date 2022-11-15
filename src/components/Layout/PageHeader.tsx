@@ -96,27 +96,6 @@ const NetworkView = () => {
   )
 }
 
-const LanguagePicker = () => {
-  const { i18n: i18next, t } = useTranslation()
-  const router = useRouter()
-
-  return (
-    <SettingsItem label={t('language')}>
-      <LanguagePickerDropdown
-        locales={['en', 'es', 'de', 'fa', 'fil', 'fr', 'hi', 'it', 'ko', 'pt', 'tr', 'zh', 'sk']}
-        className='dark:text-white'
-        currentLang={i18next.language}
-        onValueSet={(newLocale) => {
-          i18next.changeLanguage(newLocale)
-          router.push({ pathname: router.pathname, query: router.query }, router.asPath, {
-            locale: newLocale
-          })
-        }}
-      />
-    </SettingsItem>
-  )
-}
-
 const ClearLocalStorageSettingsItem = () => {
   const { t } = useTranslation()
   return (

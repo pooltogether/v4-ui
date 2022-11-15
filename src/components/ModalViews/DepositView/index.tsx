@@ -21,7 +21,9 @@ import { DepositInfoBox } from './DepositInfoBox'
 export const DepositView: React.FC<
   {
     depositAmount: Amount
+    defaultValue: string
     setDepositAmount: (amount: Amount) => void
+    setFormAmount: (amount: string) => void
     transaction?: Transaction
     formKey: string
     connectWallet?: () => void
@@ -30,7 +32,9 @@ export const DepositView: React.FC<
 > = (props) => {
   const {
     depositAmount,
+    defaultValue,
     setDepositAmount,
+    setFormAmount,
     transaction,
     formKey,
     connectWallet,
@@ -50,6 +54,9 @@ export const DepositView: React.FC<
       formKey={formKey}
       connectWallet={connectWallet}
       useValidationRules={useValidationRules}
+      handleChange={(values: TokenAmountFormValues) => {
+        setFormAmount(values[formKey].toString())
+      }}
       handleSubmit={(values: TokenAmountFormValues) => {
         setDepositAmount(getAmount(values[formKey], tokens?.token.decimals))
         onSubmit?.()
@@ -67,7 +74,7 @@ export const DepositView: React.FC<
       ]}
       chainId={prizePool.chainId}
       token={tokens?.token}
-      defaultValue={depositAmount?.amount}
+      defaultValue={defaultValue}
     />
   )
 }

@@ -25,9 +25,10 @@ export const DepositUI = () => {
 
 const NewUiBanner = () => {
   const { t } = useTranslation()
+
   return (
     <a
-      href='https://medium.com/pooltogether/a-new-look-e2b6dfac9a93'
+      href='https://medium.com/pooltogether/more-op-and-new-prizes-209301d01348'
       rel='noopener noreferrer'
       target='_blank'
       className={classNames(
@@ -35,7 +36,7 @@ const NewUiBanner = () => {
       )}
     >
       <span>
-        📣 {t('newDesign')} <b className='text-flashy'>{t('readMore')}</b>
+        📣 {t('depositAlertBanner')} <b className='text-flashy'>{t('readMore')}</b>
         <FeatherIcon
           icon='arrow-up-right'
           className='ml-1 mb-0.5 w-2 h-2 xs:w-3 xs:h-3 inline-block'

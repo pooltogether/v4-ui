@@ -191,6 +191,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
             text={t('prizesTweet', {
               amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
             })}
+            hashTags={['PoolTogether', 'NoLossNovember']}
           />
         </BottomSheet>
       )

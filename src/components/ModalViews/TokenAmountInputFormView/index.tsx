@@ -19,10 +19,10 @@ export interface TokenAmountInputFormViewProps
   formKey: string
   submitButtonContent?: React.ReactNode
   defaultValue?: string
+  handleChange?: (values: TokenAmountFormValues) => void
   handleSubmit: (values: TokenAmountFormValues) => void
 }
 
-// TODO: Add amount to query params so an input amount persists after connecting a wallet
 export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> = (props) => {
   const {
     chainId,
@@ -34,6 +34,7 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
     connectWallet,
     submitButtonContent,
     children,
+    handleChange,
     handleSubmit: _handleSubmit,
     defaultValue
   } = props
@@ -53,6 +54,7 @@ export const TokenAmountInputFormView: React.FC<TokenAmountInputFormViewProps> =
   return (
     <FormProvider {...methods}>
       <form
+        onChange={() => handleChange && handleChange(methods.getValues())}
         onSubmit={methods.handleSubmit(_handleSubmit)}
         className='flex w-full h-full flex-col space-y-6'
       >

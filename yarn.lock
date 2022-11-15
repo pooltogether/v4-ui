@@ -2337,16 +2337,16 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.6.4.tgz#cd453241b36313732aa45d893bd27aef5aea0493"
   integrity sha512-c4luiQ+x8SWZQzFmhzWZGopiFcY8rPcDhA3dKZaLlaJcpfa5gME0+QiF5Qr3hOyQLteKKNCRHg3ZFjeUNjumbQ==
 
-"@pooltogether/v4-client-js@^0.15.4":
-  version "0.15.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.4.tgz#3611ccaab8b77ac374cc2d212beba4d0d5c95adb"
-  integrity sha512-LqkHeS70QAKvGo7wCBqmdcI0t1qsibiam3Fm7kONMo90H1zO8CTNpYPXwIdJ8F1vNs+OriGXLSbxRi/hSE/8qQ==
+"@pooltogether/v4-client-js@^0.15.5":
+  version "0.15.5"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-0.15.5.tgz#21ca19b8f8e177c2c8adb8a458653b7c0143ebeb"
+  integrity sha512-nN7RvzU7/w9tCg2nWQOE7nUKlxKNlweKToJbUVb4Qwxb6MOsWKjSj20Cr0uRpArKEFDjq9JHPScqu6+asf7Pyg==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
     "@pooltogether/etherplex" "^1.1.4"
     "@pooltogether/utilities" "^0.6.2"
-    "@pooltogether/v4-utils-js" "^0.1.3"
+    "@pooltogether/v4-utils-js" "0.1.5"
     debug "^4.3.3"
     ethers "^5.4.6"
 
@@ -2455,10 +2455,10 @@
     "@openzeppelin/contracts" "4.5.0"
     "@pooltogether/v4-core" "1.2.0"
 
-"@pooltogether/v4-utils-js@0.1.4", "@pooltogether/v4-utils-js@^0.1.3":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-utils-js/-/v4-utils-js-0.1.4.tgz#39d6b7ea31e3179a9636d1cab02a31a8dcee1c6c"
-  integrity sha512-AOgkUGlKdJVv73wMGZe7oZb2sYtfMgUzBhH7r61+YPyehhQzORJpwwiVMwb9xLbcoTD5b2y880gPSlUoTi/tdg==
+"@pooltogether/v4-utils-js@0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-utils-js/-/v4-utils-js-0.1.5.tgz#c13d1536019205addb86e670590c2294c94b89c8"
+  integrity sha512-prKWYzogS723ZVnpWIqsy5gjRNBx26V5tiPxysxWhEOlBT2POHvMMN14XaKx/b/E26pfEvC1AL/Q2bo5GQDqvA==
   dependencies:
     "@ethersproject/abi" "^5.5.0"
     "@ethersproject/address" "^5.5.0"

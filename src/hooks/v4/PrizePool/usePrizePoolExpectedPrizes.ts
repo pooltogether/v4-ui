@@ -1,5 +1,5 @@
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
-import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizePool, PrizeTierConfig } from '@pooltogether/v4-client-js'
 import { parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
 import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
@@ -27,7 +27,7 @@ export const usePrizePoolExpectedPrizes = (prizePool: PrizePool) => {
 }
 
 export const getPrizePoolExpectedPrizesKey = (
-  prizeTier: PrizeTier,
+  prizeTier: PrizeTierConfig,
   percentage: number,
   decimals: string
 ) => [

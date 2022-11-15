@@ -34,6 +34,7 @@ export const DepositModal: React.FC<{
   const { isOpen, initialViewId, closeModal } = props
   const [selectedViewId, setSelectedViewId] = useState<string | number>(initialViewId)
   const [depositAmount, setDepositAmount] = useState<Amount>()
+  const [formAmount, setFormAmount] = useState<string>()
   const { chainId } = useSelectedChainId()
   const [depositTransactionId, setDepositTransactionId] = useState('')
   const depositTransaction = useTransaction(depositTransactionId)
@@ -118,6 +119,8 @@ export const DepositModal: React.FC<{
       depositTransaction={depositTransaction}
       depositAmount={depositAmount}
       setDepositAmount={setDepositAmount}
+      formAmount={formAmount}
+      setFormAmount={setFormAmount}
       // reviewView
       sendDepositTransaction={sendDepositTransaction}
       clearDepositTransaction={() => setDepositTransactionId('')}

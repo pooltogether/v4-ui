@@ -4,7 +4,7 @@ import {
   formatCurrencyNumberForDisplay,
   getAmountFromUnformatted
 } from '@pooltogether/utilities'
-import { PrizePool, PrizeTier } from '@pooltogether/v4-client-js'
+import { PrizePool, PrizeTierConfig } from '@pooltogether/v4-client-js'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
 import { useQuery } from 'react-query'
@@ -30,7 +30,7 @@ export const usePrizePoolPrizes = (prizePool: PrizePool) => {
 export interface PrizeData {
   chainId: number
   prizePoolId: string
-  prizeTier: PrizeTier
+  prizeTier: PrizeTierConfig
   numberOfPrizesByTier: number[]
   totalNumberOfPrizes: number
   valueOfPrizesByTier: Amount[]
@@ -44,7 +44,7 @@ export interface PrizeData {
 
 export const getPrizePoolPrizesKey = (
   prizePool: PrizePool,
-  prizeTier: PrizeTier,
+  prizeTier: PrizeTierConfig,
   decimals: string
 ) => [
   'usePrizePoolPrizes',
@@ -56,7 +56,7 @@ export const getPrizePoolPrizesKey = (
 
 export const getPrizePoolPrizes = (
   prizePool: PrizePool,
-  prizeTier: PrizeTier,
+  prizeTier: PrizeTierConfig,
   decimals: string
 ): PrizeData => {
   const numberOfPrizesByTier = getPrizeTierNumberOfPrizes(prizeTier)
