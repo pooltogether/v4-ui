@@ -233,7 +233,7 @@ export const TweetAboutDeposit = (props: {
         ),
         totalAmountOfPrizes
       })}
-      hashTags={['PoolTogether', 'NoLossNovember']}
+      hashTags={['PoolTogether']}
     />
   )
 }

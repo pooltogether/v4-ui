@@ -709,7 +709,7 @@ const ClaimModalReceipt = (props: {
             text={t('rewardsTweet', {
               amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
             })}
-            hashTags={['PoolTogether', 'NoLossNovember']}
+            hashTags={['PoolTogether']}
           />
         </div>
       </div>
