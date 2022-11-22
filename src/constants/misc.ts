@@ -36,3 +36,7 @@ export const PPOOL_TICKET_TOKEN = Object.freeze({
   [CHAIN_ID.mainnet]: '0x27d22a7648e955e510a40bdb058333e9190d12d4',
   [CHAIN_ID.polygon]: '0xd80eaa761ccfdc8698999d73c96cec39fbb1fc48'
 })
+
+export const WETH_TOKEN = Object.freeze({
+  [CHAIN_ID.mainnet]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+})
