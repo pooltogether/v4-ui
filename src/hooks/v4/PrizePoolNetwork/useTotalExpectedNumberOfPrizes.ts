@@ -12,11 +12,11 @@ export const useTotalExpectedNumberOfPrizes = () => {
     }
     const totalAmountOfPrizes = Math.round(
       queryResults
-        .filter(({ isFetched }) => isFetched)
+        .filter(({ isFetched, isError }) => isFetched && !isError)
         .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
     )
     const data = queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),

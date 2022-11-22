@@ -84,7 +84,7 @@ export const AccountCardImage = (props: { usersAddress: string }) => {
   return (
     <button
       onClick={() =>
-        setPfpIndex({ ...pfpIndex, [usersAddress]: (usersPfpIndex + 1) % data.ownedNfts.length })
+        setPfpIndex({ ...pfpIndex, [usersAddress]: (usersPfpIndex + 1) % data?.ownedNfts.length })
       }
       className='hover:opacity-80 transition-opacity'
     >

@@ -11,7 +11,7 @@ export const usePrizePoolsByPrizes = () => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     let prizePools: PrizePool[] = []
     const sortedPrizePoolIds = queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => data)
       .sort((a, b) => b.expectedTotalNumberOfPrizes - a.expectedTotalNumberOfPrizes)
       .map(({ prizePoolId }) => prizePoolId)

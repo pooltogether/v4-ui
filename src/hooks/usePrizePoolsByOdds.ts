@@ -20,7 +20,7 @@ export const usePrizePoolsByOdds = (amount: string, decimals: string) => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     let prizePools: PrizePool[] = []
     const sortedPrizePoolIds = queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => data)
       .sort((a, b) => b.odds - a.odds)
       .map(({ prizePoolId }) => prizePoolId)
