@@ -10,10 +10,16 @@ import { TwabDelegatorItem } from './V4DepositList/TwabDelegatorItem'
 
 export const DelegationList = () => {
   const usersAddress = useUsersAddress()
-  const { data: delegatedToData, isFetched: isAmountDelegatedToFetched } =
-    useTotalAmountDelegatedTo(usersAddress)
-  const { data: delegationData, isFetched: isDelegationsFetched } =
-    useAllTwabDelegations(usersAddress)
+  const {
+    data: delegatedToData,
+    isFetched: isAmountDelegatedToFetched,
+    isError: isDelegatedToError
+  } = useTotalAmountDelegatedTo(usersAddress)
+  const {
+    data: delegationData,
+    isFetched: isDelegationsFetched,
+    isError: isDelegationsError
+  } = useAllTwabDelegations(usersAddress)
   const { t } = useTranslation()
 
   return (
@@ -24,6 +30,8 @@ export const DelegationList = () => {
         <TwabDelegatorItem delegator={usersAddress} />
         {isDelegationsFetched &&
           isAmountDelegatedToFetched &&
+          !isDelegationsError &&
+          !isDelegatedToError &&
           delegationData.totalTokenWithUsdBalance.amountUnformatted.isZero() &&
           delegatedToData.delegatedAmount.amountUnformatted.isZero() && (
             <p className='opacity-70 text-xs'>

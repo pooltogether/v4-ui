@@ -31,7 +31,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
     }
 
     return queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),

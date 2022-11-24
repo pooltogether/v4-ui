@@ -16,7 +16,7 @@ export const TicketTotalSupply = (props: {
   iconClassName?: string
 }) => {
   const { prizePool, showToken, showTokenIcon, iconSizeClassName, iconClassName } = props
-  const { data, isFetched } = usePrizePoolTicketTotalSupply(prizePool)
+  const { data, isFetched, isError } = usePrizePoolTicketTotalSupply(prizePool)
   const { data: tokens } = usePrizePoolTokens(prizePool)
 
   return (
@@ -32,6 +32,7 @@ export const TicketTotalSupply = (props: {
         </>
       )}
       {isFetched &&
+        !isError &&
         formatCurrencyNumberForDisplay(data?.amount.amount, 'usd', {
           notation: 'compact'
         })}

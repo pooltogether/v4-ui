@@ -21,7 +21,10 @@ export const useUsersPrizePoolNetworkOdds = (
 ) => {
   const queryResults = useAllUsersPrizePoolOdds(usersAddress, actions)
   const allOddsData = useMemo(
-    () => queryResults.filter(({ isFetched }) => isFetched).map(({ data }) => data),
+    () =>
+      queryResults
+        .filter(({ isFetched, isError }) => isFetched && !isError)
+        .map(({ data }) => data),
     [queryResults]
   )
   return usePrizePoolNetworkOdds(allOddsData, actions)

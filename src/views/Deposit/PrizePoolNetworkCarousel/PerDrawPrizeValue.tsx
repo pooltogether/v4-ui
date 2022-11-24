@@ -42,7 +42,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       return null
     }
     return queryResults
-      .filter(({ isFetched }) => isFetched)
+      .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),

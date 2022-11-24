@@ -32,7 +32,10 @@ export const useSpoofedPrizePoolNetworkOdds = (
       : {}
   )
   const allOddsData = useMemo(
-    () => queryResults.filter(({ isFetched }) => isFetched).map(({ data }) => data),
+    () =>
+      queryResults
+        .filter(({ isFetched, isError }) => isFetched && !isError)
+        .map(({ data }) => data),
     [queryResults]
   )
   return usePrizePoolNetworkOdds(allOddsData)

@@ -159,13 +159,13 @@ const OddsOfWinning: React.FC<{
 
 const AveragePrizeValue: React.FC<{ prizePool: PrizePool }> = (props) => {
   const { prizePool } = props
-  const { data, isFetched: isPrizeFetched } = usePrizePoolPrizes(prizePool)
+  const { data, isFetched: isPrizeFetched, isError } = usePrizePoolPrizes(prizePool)
   const { t } = useTranslation()
 
   return (
     <li className='flex justify-between'>
       <span>{t('averagePrizeValue')}</span>
-      {isPrizeFetched ? (
+      {isPrizeFetched && !isError ? (
         <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' />

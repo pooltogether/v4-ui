@@ -33,6 +33,7 @@ import { ethers } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useRef } from 'react'
 import Reward, { RewardElement } from 'react-rewards'
+import { LensterPostButton } from '../../../components/LensterPostButton'
 import { DrawData } from '../../../interfaces/v4'
 
 const CLAIMING_BASE_GAS_LIMIT = 200000
@@ -187,7 +188,14 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           <ModalTitle chainId={chainId} title={t('claimSubmitted', 'Claim submitted')} />
           <ModalTransactionSubmitted className='mt-8' chainId={chainId} tx={claimTx} />
           <TwitterIntentButton
-            url='https://app.pooltogether.com'
+            url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=twitter&utm_content=prize-claim'
+            text={t('prizesTweet', {
+              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
+            })}
+            hashTags={['PoolTogether']}
+          />
+          <LensterPostButton
+            url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=prize-claim'
             text={t('prizesTweet', {
               amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
             })}

@@ -35,6 +35,7 @@ import { BigNumber } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
+import { LensterPostButton } from '../LensterPostButton'
 
 /**
  * Generic deposit review
@@ -82,7 +83,7 @@ export const DepositReviewView: React.FC<
       successView={
         <div className='flex flex-col space-y-4'>
           <CheckBackForPrizesBox />
-          <TweetAboutDeposit
+          <PostAboutDeposit
             amountUnformatted={depositAmount?.amountUnformatted}
             prizePool={prizePool}
           />
@@ -205,10 +206,7 @@ export const AddTicketToWallet = () => {
   )
 }
 
-export const TweetAboutDeposit = (props: {
-  amountUnformatted: BigNumber
-  prizePool: PrizePool
-}) => {
+export const PostAboutDeposit = (props: { amountUnformatted: BigNumber; prizePool: PrizePool }) => {
   const { amountUnformatted, prizePool } = props
   const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
   const { totalAmountOfPrizes } = useTotalExpectedNumberOfPrizes()
@@ -217,23 +215,40 @@ export const TweetAboutDeposit = (props: {
   const { t } = useTranslation()
 
   const isReady = isDecimalsFetched && !!totalAmountOfPrizes && isTotalSuppluFetched
-
   return (
-    <TwitterIntentButton
-      disabled={!isReady}
-      url='https://app.pooltogether.com'
-      text={t('depositTweet', {
-        amountDeposited: formatUnformattedBigNumberForDisplay(amountUnformatted, decimals, {
-          style: 'currency',
-          currency: 'USD'
-        }),
-        totalAmountDeposited: formatCurrencyNumberForDisplay(
-          totalSupply?.totalSupply.amount,
-          'usd'
-        ),
-        totalAmountOfPrizes
-      })}
-      hashTags={['PoolTogether']}
-    />
+    <>
+      <TwitterIntentButton
+        disabled={!isReady}
+        url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=twitter&utm_content=deposit'
+        text={t('depositTweet', {
+          amountDeposited: formatUnformattedBigNumberForDisplay(amountUnformatted, decimals, {
+            style: 'currency',
+            currency: 'USD'
+          }),
+          totalAmountDeposited: formatCurrencyNumberForDisplay(
+            totalSupply?.totalSupply.amount,
+            'usd'
+          ),
+          totalAmountOfPrizes
+        })}
+        hashTags={['PoolTogether']}
+      />
+      <LensterPostButton
+        disabled={!isReady}
+        url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=deposit'
+        text={t('depositTweet', {
+          amountDeposited: formatUnformattedBigNumberForDisplay(amountUnformatted, decimals, {
+            style: 'currency',
+            currency: 'USD'
+          }),
+          totalAmountDeposited: formatCurrencyNumberForDisplay(
+            totalSupply?.totalSupply.amount,
+            'usd'
+          ),
+          totalAmountOfPrizes
+        })}
+        hashTags={['PoolTogether']}
+      />
+    </>
   )
 }

@@ -51,7 +51,7 @@ const AmountOfPrizes = (props) => {
       isFetched,
       amountOfPrizes: Math.round(
         queryResults
-          .filter(({ isFetched }) => isFetched)
+          .filter(({ isFetched, isError }) => isFetched && !isError)
           .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
       )
     }
