@@ -53,6 +53,7 @@ import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { UseQueryResult } from 'react-query'
 import { useSigner } from 'wagmi'
+import { LensterPostButton } from '../../../components/LensterPostButton'
 import { LoadingList } from '../AccountList/LoadingList'
 
 enum ClaimModalState {
@@ -705,7 +706,14 @@ const ClaimModalReceipt = (props: {
           {!isOPToken && <AccountPageButton closeModal={closeModal} />}
           <TransactionReceiptButton className='w-full' chainId={chainId} tx={tx} />
           <TwitterIntentButton
-            url='https://app.pooltogether.com'
+            url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=twitter&utm_content=rewards-claim'
+            text={t('rewardsTweet', {
+              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
+            })}
+            hashTags={['PoolTogether']}
+          />
+          <LensterPostButton
+            url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=rewards-claim'
             text={t('rewardsTweet', {
               amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
             })}

@@ -17,6 +17,9 @@ export const TopPoolByGas: React.FC<{
   // Once there are more pools per chain this will have to be refactored.
   const prizePool = usePrizePool(CHAIN_ID.polygon, '0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60')
 
+  // Testnets
+  if (!prizePool) return null
+
   return (
     <TopPool
       className={className}

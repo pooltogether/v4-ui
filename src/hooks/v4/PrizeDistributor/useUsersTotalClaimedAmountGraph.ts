@@ -17,7 +17,8 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
     if (!isClaimedAmountsFetched || !isDecimalsFetched || isError) {
       return {
         data: null,
-        isFetched: false
+        isFetched: false,
+        isError
       }
     }
 
@@ -45,7 +46,8 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
 
     return {
       data: { totalClaimedAmount, totalClaimedPrizes },
-      isFetched: true
+      isFetched: true,
+      isError
     }
   }, [claimedAmountsQueryResults, decimals, isClaimedAmountsFetched, isDecimalsFetched, isError])
 }

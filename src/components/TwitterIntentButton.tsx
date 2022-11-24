@@ -18,7 +18,7 @@ export const TwitterIntentButton = (props: TwitterIntentButtonProps) => {
     <ButtonLink
       href={`http://twitter.com/intent/tweet?text=${
         text + ' ' + hashTags?.map((ht) => `%23${ht}`).join(' ')
-      }&url=${url}`}
+      }&url=${encodeURIComponent(url)}`}
       target='_blank'
       className={classNames('w-full flex items-center mx-auto mt-4', {
         'pointer-events-none opacity-70': disabled
