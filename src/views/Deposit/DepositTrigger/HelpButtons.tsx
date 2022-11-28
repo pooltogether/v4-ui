@@ -277,6 +277,13 @@ const BuyTokens = () => {
         </TransparentSelect>{' '}
       </p>
       <PayWithCoinbaseButton className='w-full' chainId={chainId} />
+      <ExternalLink
+        className='text-xxs mt-2'
+        // theme={LinkTheme.accent}
+        href='https://docs.pooltogether.com/pooltogether/guides/using-coinbase-pay'
+      >
+        {t('userGuide')}
+      </ExternalLink>
       <TemporaryWarningForNoOnRamp chainId={chainId} />
     </div>
   )
