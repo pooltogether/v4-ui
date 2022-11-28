@@ -31,7 +31,7 @@ export const HorizontalListByOdds: React.FC<{
             value={amount}
           >
             {AMOUNT_OPTIONS.map((amount) => (
-              <option key={amount} value={amount}>
+              <option key={amount} value={amount} className='dark:bg-pt-purple'>
                 ${numberWithCommas(amount, { precision: 0 })}
               </option>
             ))}
