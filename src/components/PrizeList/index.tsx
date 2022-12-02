@@ -3,6 +3,7 @@ import { DrawData } from '@interfaces/v4'
 import { Token } from '@pooltogether/hooks'
 import { Switch } from '@pooltogether/react-components'
 import { DrawResults, PrizeAwardable } from '@pooltogether/v4-client-js'
+import { calculatePrizeForTierPercentage } from '@pooltogether/v4-utils-js'
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import { sortByBigNumber } from '@utils/sortByBigNumber'
@@ -85,28 +86,30 @@ interface PrizeRowProps {
 const PrizeRow = (props: PrizeRowProps) => {
   const { chainId, prize, ticket, drawData } = props
   const { prizeDistribution } = drawData
-  const { tiers } = prizeDistribution
+  const { tiers, bitRangeSize, prize: drawPrizeTotalValue } = prizeDistribution
   const { amount: amountUnformatted, tierIndex: _tierIndex } = prize
 
   const { t } = useTranslation()
 
-  const filteredTiers = tiers.filter((tierValue) => tierValue > 0)
-  const tierIndex = filteredTiers.indexOf(tiers[_tierIndex])
-
+  const prizeValues = tiers.map((tierPercentage, index) =>
+    calculatePrizeForTierPercentage(index, tierPercentage, bitRangeSize, drawPrizeTotalValue)
+  )
+  const largestPrizeValue = prizeValues.reduce((a, b) => (a.gt(b) ? a : b), prizeValues[0])
+  const isGrandPrize = largestPrizeValue.eq(amountUnformatted)
   const { amountPretty } = roundPrizeAmount(amountUnformatted, ticket.decimals)
 
   return (
     <li
       className={classnames('flex flex-row text-center rounded-lg text-xxs', {
-        'bg-light-purple-10': tierIndex !== 0,
-        'pool-gradient-3 ': tierIndex === 0
+        'bg-light-purple-10': !isGrandPrize,
+        'pool-gradient-3 ': isGrandPrize
       })}
     >
       <div
         className={classnames(
           'flex rounded-lg flex-row w-full justify-between space-x-2 py-2 px-4 sm:px-6',
           {
-            'bg-actually-black bg-opacity-60': tierIndex === 0
+            'bg-actually-black bg-opacity-60': isGrandPrize
           }
         )}
       >
@@ -114,7 +117,7 @@ const PrizeRow = (props: PrizeRowProps) => {
           <span className='mr-2'>{amountPretty}</span>{' '}
           <TokenSymbolAndIcon chainId={chainId} token={ticket} />
         </span>
-        <span>{`${ordinal(tierIndex + 1)} ${t('tier', 'Tier')} 🏆`}</span>
+        <span>{`${ordinal(_tierIndex + 1)} ${t('tier', 'Tier')} 🏆`}</span>
       </div>
     </li>
   )
