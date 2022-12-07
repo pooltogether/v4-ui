@@ -43,19 +43,23 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
 
 const GovernanceDescription = () => {
   const usersAddress = useUsersAddress()
-  const { data: balanceData, isFetched: isBalancesFetched } =
-    useUsersGovernanceBalances(usersAddress)
+  const {
+    data: balanceData,
+    isFetched: isBalancesFetched,
+    isError
+  } = useUsersGovernanceBalances(usersAddress)
   const poolBalance = balanceData?.[POOL_TOKEN[CHAIN_ID.mainnet]]
   const ppoolBalance = balanceData?.[PPOOL_TICKET_TOKEN[CHAIN_ID.mainnet]]
-  const totalVotesAmount = isBalancesFetched
-    ? getAmountFromUnformatted(
-        poolBalance.amountUnformatted.add(ppoolBalance.amountUnformatted),
-        '18'
-      )
-    : null
+  const totalVotesAmount =
+    isBalancesFetched && !isError
+      ? getAmountFromUnformatted(
+          poolBalance.amountUnformatted.add(ppoolBalance.amountUnformatted),
+          '18'
+        )
+      : null
   const { t } = useTranslation()
 
-  if (isBalancesFetched && totalVotesAmount.amountUnformatted.isZero()) {
+  if (isBalancesFetched && !isError && totalVotesAmount.amountUnformatted.isZero()) {
     return (
       <Trans
         i18nKey={'getPoolToControlProtocol'}

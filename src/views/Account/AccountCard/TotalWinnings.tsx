@@ -13,8 +13,6 @@ export const TotalWinningsAmount: React.FC<{ usersAddress: string; className?: s
   const { usersAddress, className } = props
   const { data, isFetched, isError } = useUsersTotalClaimedAmountGraph(usersAddress)
 
-  console.log({ isFetched, isError, data })
-
   return (
     <span
       className={classNames(className, {
