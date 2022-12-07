@@ -236,7 +236,7 @@ export const PostAboutDeposit = (props: { amountUnformatted: BigNumber; prizePoo
       <LensterPostButton
         disabled={!isReady}
         url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=deposit'
-        text={t('depositTweet', {
+        text={t('depositLensPost', {
           amountDeposited: formatUnformattedBigNumberForDisplay(amountUnformatted, decimals, {
             style: 'currency',
             currency: 'USD'

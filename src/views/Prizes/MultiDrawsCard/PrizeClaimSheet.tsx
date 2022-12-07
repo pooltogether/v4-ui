@@ -196,7 +196,7 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           />
           <LensterPostButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=prize-claim'
-            text={t('prizesTweet', {
+            text={t('prizesLensPost', {
               amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
             })}
             hashTags={['PoolTogether']}

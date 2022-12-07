@@ -714,7 +714,7 @@ const ClaimModalReceipt = (props: {
           />
           <LensterPostButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=rewards-claim'
-            text={t('rewardsTweet', {
+            text={t('rewardsLensPost', {
               amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
             })}
             hashTags={['PoolTogether']}
