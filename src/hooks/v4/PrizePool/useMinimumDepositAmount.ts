@@ -8,8 +8,8 @@ import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
  * @returns
  */
 export const useMinimumDepositAmount = (prizePool: PrizePool) => {
-  const { data, isFetched } = useUpcomingPrizeTier(prizePool)
+  const { data, isFetched, isError } = useUpcomingPrizeTier(prizePool)
   const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
-  if (!isDecimalsFetched || !isFetched) return null
+  if (!isDecimalsFetched || !isFetched || isError) return null
   return getAmount(Math.pow(2, data.prizeTier.bitRangeSize).toString(), decimals)
 }

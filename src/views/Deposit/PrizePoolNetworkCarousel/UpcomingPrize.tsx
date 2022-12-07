@@ -23,10 +23,14 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   const prizePool = useSelectedPrizePool()
   const { data: prizePoolTokens, isFetched: isPrizePoolTokensFetched } =
     usePrizePoolTokens(prizePool)
-  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
+  const {
+    data: prizeTierData,
+    isFetched: isPrizeTierFetched,
+    isError
+  } = useUpcomingPrizeTier(prizePool)
 
   const ticket = prizePoolTokens?.ticket
-  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched
+  const isFetched = isPrizePoolTokensFetched && isPrizeTierFetched && !isError
 
   return (
     <div className={classNames('flex flex-col text-center relative', className)}>

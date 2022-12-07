@@ -270,13 +270,20 @@ const BuyTokens = () => {
           value={chainId}
         >
           {COINBASE_CHAINS.map((chainId) => (
-            <option key={`cb-opt-${chainId}`} value={chainId}>
+            <option key={`cb-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
         </TransparentSelect>{' '}
       </p>
       <PayWithCoinbaseButton className='w-full' chainId={chainId} />
+      <ExternalLink
+        className='text-xxs mt-2'
+        // theme={LinkTheme.accent}
+        href='https://docs.pooltogether.com/pooltogether/guides/using-coinbase-pay'
+      >
+        {t('userGuide')}
+      </ExternalLink>
       <TemporaryWarningForNoOnRamp chainId={chainId} />
     </div>
   )
@@ -305,7 +312,7 @@ const SwapTokens = () => {
           value={chainId}
         >
           {SWAP_TOKENS_CHAINS.map((chainId) => (
-            <option key={`swap-opt-${chainId}`} value={chainId}>
+            <option key={`swap-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
@@ -361,7 +368,7 @@ const BridgeTokens = () => {
           value={chainId}
         >
           {BRIDGE_TOKENS_CHAINS.map((chainId) => (
-            <option key={`swap-opt-${chainId}`} value={chainId}>
+            <option key={`swap-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}

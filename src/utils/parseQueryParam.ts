@@ -14,8 +14,6 @@ export const parseQueryParam = (
   const queryParams = new URLSearchParams(url.search)
   const value = queryParams.get(key)
 
-  console.log('parseQueryParam', { key, value })
-
   if (
     !!value ||
     typeof value !== 'string' ||

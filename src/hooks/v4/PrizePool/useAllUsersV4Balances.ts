@@ -25,13 +25,16 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
   const {
     data: delegationData,
     isFetched: isDelegationsFetched,
+    isError: isDelegationsError,
     isFetching: isDelegationsFetching,
     refetch: refetchDelegations
   } = useAllTwabDelegations(usersAddress)
 
   return useMemo(() => {
     const isFetched =
-      queryResults.every((queryResult) => queryResult.isFetched) && isDelegationsFetched
+      queryResults.every((queryResult) => queryResult.isFetched && !queryResult.isError) &&
+      isDelegationsFetched &&
+      !isDelegationsError
     const isFetching =
       queryResults.some((queryResult) => queryResult.isFetching) || isDelegationsFetching
     const data = queryResults
@@ -57,9 +60,10 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
         return data
       })
     const totalTicketValueUsdScaled = getTotalValueUsdScaled(data)
-    const totalDelegationValueUsdScaled = isDelegationsFetched
-      ? delegationData?.totalTokenWithUsdBalance.balanceUsdScaled
-      : BigNumber.from(0)
+    const totalDelegationValueUsdScaled =
+      isDelegationsFetched && !isDelegationsError
+        ? delegationData?.totalTokenWithUsdBalance.balanceUsdScaled
+        : BigNumber.from(0)
     const totalValueUsdScaled = totalDelegationValueUsdScaled
       ? totalTicketValueUsdScaled.add(totalDelegationValueUsdScaled)
       : BigNumber.from(0)
@@ -74,7 +78,8 @@ export const useAllUsersV4Balances = (usersAddress: string) => {
       isFetching,
       refetch,
       data: {
-        delegations: isDelegationsFetched ? delegationData?.delegations : null,
+        delegations:
+          isDelegationsFetched && !isDelegationsError ? delegationData?.delegations : null,
         balances: data,
         totalValueUsd,
         totalValueUsdScaled

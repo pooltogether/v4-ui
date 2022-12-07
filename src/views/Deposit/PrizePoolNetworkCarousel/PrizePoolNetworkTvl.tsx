@@ -36,7 +36,8 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
           tvl: formatCurrencyNumberForDisplay(data?.amount.amount || 0, 'usd', {
-            maximumFractionDigits: 0
+            maximumFractionDigits: 0,
+            minimumFractionDigits: 0
           }),
           amount: data.amount,
           percentage: divideBigNumbers(
