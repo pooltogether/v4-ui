@@ -48,8 +48,8 @@ export const getPrizePoolExpectedPrizes = (prizeData: PrizeData, percentageOfPic
   )
   const expectedTotalValueOfPrizes = getAmountFromUnformatted(
     prizeData.prizeTier.prize
-      .mul(parseUnits(percentageOfPicks.toString(), 8))
-      .div(parseUnits('1', 8)),
+      .mul(parseUnits(percentageOfPicks.toString(), 9))
+      .div(parseUnits('1', 9)),
     prizeData.decimals
   )
   return {
