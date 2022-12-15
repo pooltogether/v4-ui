@@ -1,5 +1,7 @@
+import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
+import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import { getPrizePoolPrizes, getPrizePoolPrizesKey } from './usePrizePoolPrizes'
@@ -7,18 +9,23 @@ import { usePrizePools } from './usePrizePools'
 
 /**
  * Prize details across all prize pools
+ * NOTE: Assumes 1 PrizeDistributor per chain
  * @returns
  */
 export const useAllPrizePoolPrizes = () => {
   const prizePools = usePrizePools()
+  const prizeDistributors = usePrizeDistributors()
   const allPrizeTiersQueryResults = useAllUpcomingPrizeTiers()
   const allPrizePoolTokensQueryResults = useAllPrizePoolTokens()
 
   const queries = useMemo(
     () =>
       prizePools.map((prizePool) => {
+        const prizeDistributor = prizeDistributors.find(
+          (prizeDistributor) => prizeDistributor.chainId === prizePool.chainId
+        )
         const prizeTierQueryResult = allPrizeTiersQueryResults.find(
-          (queryResult) => queryResult.data?.prizePoolId === prizePool.id()
+          (queryResult) => queryResult.data?.prizeDistributorId === prizeDistributor.id()
         )
         const tokensQueryResult = allPrizePoolTokensQueryResults.find(
           (queryResult) => queryResult.data?.prizePoolId === prizePool.id()
