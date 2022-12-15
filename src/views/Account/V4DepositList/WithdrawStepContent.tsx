@@ -27,6 +27,7 @@ import { Transaction, useUsersAddress } from '@pooltogether/wallet-connection'
 import classnames from 'classnames'
 import { ethers } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
+import { t } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import React from 'react'
@@ -423,16 +424,17 @@ export const UncheckedPrizesWarning = (props: { prizePool: PrizePool }) => {
   const usersAddress = useUsersAddress()
   const prizeDistributor = usePrizeDistributorByChainId(prizePool.chainId)
   const { data, isFetched } = useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
+  const { t } = useTranslation()
 
   if (!isFetched || data.hasUserCheckedAllDraws) return null
 
   return (
     <TransparentDiv className='rounded-xl p-4 border border-orange'>
-      <div className='text-lg font-bold text-center w-full'>🎁 You have unchecked draws!</div>
-      <div className='text-center mb-4'>Head over to the prizes page to see if you won.</div>
+      <div className='text-lg font-bold text-center w-full'>🎁 {t('youHaveUncheckedDraws')}</div>
+      <div className='text-center mb-4'>{t('goToPrizesPageToCheck')}</div>
       <Link href={'/prizes'}>
         <ButtonLink size={ButtonSize.sm} className='w-1/2 mx-auto'>
-          Check Prizes <FeatherIcon icon='arrow-up-right' className='w-4 h-4' />
+          {t('checkForPrizes')} <FeatherIcon icon='arrow-up-right' className='w-4 h-4' />
         </ButtonLink>
       </Link>
     </TransparentDiv>

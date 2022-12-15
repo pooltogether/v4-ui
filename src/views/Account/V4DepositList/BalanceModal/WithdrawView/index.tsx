@@ -9,6 +9,7 @@ import { Amount } from '@pooltogether/hooks'
 import { ViewProps } from '@pooltogether/react-components'
 import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
+import { useTranslation } from 'next-i18next'
 import { ViewIds } from '..'
 import { WithdrawInfoListItems } from './WithdrawInfoListItems'
 
@@ -34,11 +35,12 @@ export const WithdrawView: React.FC<
   const prizePool = useSelectedPrizePool()
   const { data: tokens } = useSelectedPrizePoolTokens()
   const useValidationRules = () => useWithdrawValidationRules(prizePool)
+  const { t } = useTranslation()
 
   return (
     <TokenAmountInputFormView
       {...remainingProps}
-      submitButtonContent='Review Withdrawal'
+      submitButtonContent={t('reviewWithdrawal')}
       formKey={FORM_KEY}
       previous={previous}
       next={next}
