@@ -104,7 +104,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
         )}
       </h1>
       <p className='font-semibold text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90 text-xxs xs:text-sm '>
-        {t('inPrizesToWin')}
+        {t('onAverageInPrizesToWin')}
       </p>
     </>
   )
