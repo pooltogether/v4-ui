@@ -67,27 +67,29 @@ const AmountOfPrizes = () => {
   let amountString:
     | 'lotsOfPrizesEveryWeek'
     | 'hundredsOfPrizesEveryWeek'
-    | 'thousandsOfPrizesEveryWeek' = 'thousandsOfPrizesEveryWeek'
+    | 'thousandsOfPrizesEveryWeek' = 'lotsOfPrizesEveryWeek'
   if (isFetched) {
     if (weeklyAmountOfPrizes > 1000) {
       amountString = 'thousandsOfPrizesEveryWeek'
     } else if (weeklyAmountOfPrizes > 100) {
       amountString = 'hundredsOfPrizesEveryWeek'
-    } else {
-      amountString = 'lotsOfPrizesEveryWeek'
     }
   }
 
   return (
-    <div className='font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90'>
+    <div
+      className={classNames(
+        'font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90',
+        { 'opacity-0': !isFetched }
+      )}
+    >
       <Trans
         i18nKey={amountString}
         components={{
           style: (
             <span
               className={classNames('transition text-gradient-magenta', {
-                'text-opacity-100': isFetched,
-                'opacity-50 animate-pulse': !isFetched
+                'text-opacity-100': isFetched
               })}
             />
           )
