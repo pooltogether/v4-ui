@@ -5,12 +5,8 @@ import { useQuery } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
-export interface DrawLock {
-  endTimeSeconds: BigNumber
-}
-
 /**
- * Fetches all of the locked draws, returns the latest ending time for each draw id and an amount of time until the next time we need to refetch
+ * Fetches all of the locked draws, returns the latest ending time for each draw id, an amount of time until the next time we need to refetch and the chain ids that it is locked on.
  * @returns
  */
 export const useDrawLocks = () => {
@@ -33,29 +29,23 @@ export const useDrawLocks = () => {
 
 const getDrawLocks = async (
   prizeDistributors: PrizeDistributor[]
-): Promise<{
-  [drawId: number]: DrawLock
-}> => {
+): Promise<
+  {
+    drawId: number
+    endTimeSeconds: BigNumber
+    prizeDistributorId: string
+  }[]
+> => {
   const lockedDraws = await Promise.all(
-    prizeDistributors.map((prizeDistributor) => prizeDistributor.getTimelockDrawId())
+    prizeDistributors.map(async (prizeDistributor) => {
+      const result = await prizeDistributor.getTimelockDrawId()
+      return {
+        prizeDistributorId: prizeDistributor.id(),
+        endTimeSeconds: result.endTimeSeconds.add(1),
+        drawId: result.drawId
+      }
+    })
   )
 
-  const drawLocks: {
-    [drawId: number]: DrawLock
-  } = {}
-
-  lockedDraws.forEach((lockedDraw) => {
-    const drawLockForDrawId = drawLocks[lockedDraw.drawId]
-    if (!drawLockForDrawId) {
-      drawLocks[lockedDraw.drawId] = {
-        endTimeSeconds: lockedDraw.endTimeSeconds.add(1)
-      }
-    } else if (drawLockForDrawId.endTimeSeconds.lt(lockedDraw.endTimeSeconds)) {
-      drawLocks[lockedDraw.drawId] = {
-        endTimeSeconds: lockedDraw.endTimeSeconds.add(1)
-      }
-    }
-  })
-
-  return drawLocks
+  return lockedDraws
 }

@@ -62,7 +62,7 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       <CarouselHeader
         headers={[
           {
-            title: t('dailyPrizeValue'),
+            title: t('averageDailyPrizeValue'),
             stat: (
               <span className='text-flashy'>
                 $<CountUp countTo={amount} decimals={0} />

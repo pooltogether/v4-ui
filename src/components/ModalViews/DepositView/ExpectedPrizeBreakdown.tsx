@@ -32,7 +32,7 @@ export const ExpectedPrizeBreakdown: React.FC<{
 
   return (
     <TransparentDiv className='flex flex-col max-w-md text-center px-4 py-2 overflow-y-auto rounded-lg minimal-scrollbar max-h-56'>
-      <span className='mb-2 font-bold'>Prize Breakdown</span>
+      <span className='mb-2 font-bold'>{t('yourPrizeBreakdown')}</span>
       <div className='grid grid-cols-2 mb-2'>
         <PrizeTableHeader>Prize Value</PrizeTableHeader>
         <PrizeTableHeader>Chance to win</PrizeTableHeader>

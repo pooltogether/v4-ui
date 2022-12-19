@@ -44,8 +44,9 @@ export const UpcomingPrize: React.FC<{ className?: string }> = (props) => {
   )
 }
 
-const AmountOfPrizes = (props) => {
+const AmountOfPrizes = () => {
   const queryResults = useAllPrizePoolExpectedPrizes()
+
   const { isFetched, amountOfPrizes } = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     if (!isFetched) {
@@ -61,20 +62,37 @@ const AmountOfPrizes = (props) => {
     }
   }, [queryResults])
 
+  const weeklyAmountOfPrizes = amountOfPrizes * 7
+
+  let amountString:
+    | 'lotsOfPrizesEveryWeek'
+    | 'hundredsOfPrizesEveryWeek'
+    | 'thousandsOfPrizesEveryWeek' = 'lotsOfPrizesEveryWeek'
+  if (isFetched) {
+    if (weeklyAmountOfPrizes > 1000) {
+      amountString = 'thousandsOfPrizesEveryWeek'
+    } else if (weeklyAmountOfPrizes > 100) {
+      amountString = 'hundredsOfPrizesEveryWeek'
+    }
+  }
+
   return (
-    <div className='font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90'>
+    <div
+      className={classNames(
+        'font-semibold text-xs xs:text-lg mt-2 mb-1 text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90',
+        { 'opacity-0': !isFetched }
+      )}
+    >
       <Trans
-        i18nKey={'prizesEveryWeek'}
+        i18nKey={amountString}
         components={{
           style: (
             <span
               className={classNames('transition text-gradient-magenta', {
-                'text-opacity-100': isFetched,
-                'opacity-50 animate-pulse': !isFetched
+                'text-opacity-100': isFetched
               })}
             />
-          ),
-          amount: <CountUp countFrom={0} countTo={amountOfPrizes * 7} decimals={0} />
+          )
         }}
       />
     </div>
@@ -104,7 +122,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
         )}
       </h1>
       <p className='font-semibold text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90 text-xxs xs:text-sm '>
-        {t('inPrizesToWin')}
+        {t('onAverageInPrizesToWin')}
       </p>
     </>
   )

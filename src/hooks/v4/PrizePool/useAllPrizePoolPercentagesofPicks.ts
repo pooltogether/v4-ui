@@ -1,47 +1,59 @@
 import { useQueries } from 'react-query'
+import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
 import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
+import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import {
-  getPrizePoolPercentageOfPicks,
-  getPrizePoolPercentageOfPicksKey
+  calculatePrizePoolPercentageOfPicks,
+  calculatePrizePoolPercentageOfPicksKey
 } from './usePrizePoolPercentageOfPicks'
 import { usePrizePools } from './usePrizePools'
 
+/**
+ * NOTE: Assumes 1 PrizeDistributor per chain
+ * @returns
+ */
 export const useAllPrizePoolPercentagesofPicks = () => {
   const prizePools = usePrizePools()
+  const prizeDistributors = usePrizeDistributors()
   const allPrizePoolTicketTwabTotalSupplies = useAllPrizePoolTicketTwabTotalSupplies()
   const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
+  const allUpcomingPrizeTiers = useAllUpcomingPrizeTiers()
 
+  const isPrizeTierFetched = allUpcomingPrizeTiers.every(({ isFetched }) => isFetched)
   const isTwabsFetched = allPrizePoolTicketTwabTotalSupplies.every(({ isFetched }) => isFetched)
 
   return useQueries(
-    isTwabsFetched
+    isTwabsFetched && isPrizeTierFetched && isPrizePoolNetworkTvlFetched
       ? prizePools.map((prizePool) => {
           const prizePoolTicketTwabQueryResult = allPrizePoolTicketTwabTotalSupplies.find(
             (queryResult) => queryResult.data?.prizePoolId === prizePool.id()
           )
+          const prizeDistributor = prizeDistributors.find(
+            (prizeDistributor) => prizeDistributor.chainId === prizePool.chainId
+          )
+          const prizeTierQueryResult = allUpcomingPrizeTiers.find(
+            ({ data }) => data.prizeDistributorId === prizeDistributor.id()
+          )
 
-          const isTicketTwabFetched = prizePoolTicketTwabQueryResult?.isFetched
           const prizePoolTvl = prizePoolTicketTwabQueryResult?.data?.amount
 
-          const enabled =
-            !!isTicketTwabFetched && !!isPrizePoolNetworkTvlFetched && !!isTwabsFetched
-
           return {
-            queryKey: getPrizePoolPercentageOfPicksKey(
+            queryKey: calculatePrizePoolPercentageOfPicksKey(
               prizePool,
               prizePoolTvl,
-              prizePoolNetworkTvlData?.totalSupply
+              prizePoolNetworkTvlData?.totalSupply,
+              prizeTierQueryResult?.data.prizeTier
             ),
             queryFn: async () => {
-              return await getPrizePoolPercentageOfPicks(
+              return await calculatePrizePoolPercentageOfPicks(
                 prizePool,
-                prizePoolTvl?.amount,
-                prizePoolNetworkTvlData?.totalSupply.amount
+                prizePoolTvl,
+                prizePoolNetworkTvlData?.totalSupply,
+                prizeTierQueryResult?.data.prizeTier
               )
-            },
-            enabled
+            }
           }
         })
       : []

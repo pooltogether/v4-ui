@@ -1,7 +1,7 @@
 import { ListItem } from '@components/List/ListItem'
 import { AmountWonInDraw } from '@components/PrizeDistributor/AmountWonInDraw'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
-import { DrawLock, useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
+import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
@@ -99,7 +99,11 @@ export const HistoricDraws = (props: { className?: string }) => {
                 token={prizePoolTokens.token}
                 ticket={prizePoolTokens.ticket}
                 drawData={drawData}
-                drawLock={drawLocks[drawData.draw.drawId]}
+                drawLock={drawLocks.find(
+                  (drawLock) =>
+                    drawLock.drawId === drawData.draw.drawId &&
+                    drawLock.prizeDistributorId === prizeDistributor.id()
+                )}
                 claimedAmount={claimedAmountsData?.claimedAmounts[drawData.draw.drawId]}
                 normalizedBalance={normalizedBalancesData?.normalizedBalances[drawData.draw.drawId]}
               />
@@ -152,7 +156,11 @@ const HistoricDrawLeft = (props: {
   drawData: { draw: Draw; prizeDistribution?: PrizeDistribution }
   claimedAmount: Amount
   normalizedBalance: BigNumber
-  drawLock?: DrawLock
+  drawLock?: {
+    drawId: number
+    endTimeSeconds: BigNumber
+    prizeDistributorId: string
+  }
 }) => {
   const { ticket, drawData, drawLock, normalizedBalance, claimedAmount } = props
   const { draw, prizeDistribution } = drawData
@@ -227,7 +235,11 @@ const BottomSection = (props: {
   ticket: Token
   claimedAmount: Amount
   normalizedBalance: BigNumber
-  drawLock?: DrawLock
+  drawLock?: {
+    drawId: number
+    endTimeSeconds: BigNumber
+    prizeDistributorId: string
+  }
   drawData: { draw: Draw; prizeDistribution?: PrizeDistribution }
 }) => {
   const { drawData, claimedAmount, className, ticket, drawLock, normalizedBalance } = props
