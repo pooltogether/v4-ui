@@ -20,6 +20,7 @@ export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; classNa
   const { data: prizeData, isFetched: isPrizesFetched } = usePrizePoolPrizes(prizePool)
   const { data: ticketSupply, isFetched: isTicketSupplyFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
+  const { t } = useTranslation()
 
   const isFetched = isPrizesFetched && isTicketSupplyFetched
 
@@ -45,8 +46,6 @@ export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; classNa
     }
   }, [isFetched, prizeTier, ticketSupply, prizeData])
 
-  // TODO: localization
-
   return (
     <TransparentDiv
       className={classNames(
@@ -54,10 +53,11 @@ export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; classNa
         className
       )}
     >
-      <span className='mb-2 font-bold'>Estimated Prize Frequency Breakdown</span>
+      <span className='font-bold'>{t('estimatedPrizeFrequencyBreakdown')}</span>
+      <span className='mb-2 text-xxxs opacity-60'>{t('prizeFrequencyBreakdownDescription')}</span>
       <div className='grid grid-cols-2 mb-2'>
-        <PrizeTableHeader>Prize Value</PrizeTableHeader>
-        <PrizeTableHeader>Award Time</PrizeTableHeader>
+        <PrizeTableHeader>{t('prizeValue')}</PrizeTableHeader>
+        <PrizeTableHeader>{t('awardTime')}</PrizeTableHeader>
       </div>
 
       {!isFetched ? (
