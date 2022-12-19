@@ -1,9 +1,7 @@
 import { TransparentDiv } from '@components/TransparentDiv'
-import { useFormTokenAmount } from '@hooks/useFormTokenAmount'
 import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
 import { usePrizePoolTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTwabTotalSupply'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useSelectedPrizePoolTokens } from '@hooks/v4/PrizePool/useSelectedPrizePoolTokens'
 import { Amount } from '@pooltogether/hooks'
 import {
   formatCurrencyNumberForDisplay,
@@ -16,18 +14,12 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LoadingPrizeRow, PrizeTableCell, PrizeTableHeader } from './ExpectedPrizeBreakdown'
 
-export const PrizeFrequencyBreakdown = (props: {
-  formKey: string
-  prizeTier: PrizeTierV2
-  className?: string
-}) => {
-  const { formKey, prizeTier, className } = props
+export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; className?: string }) => {
+  const { prizeTier, className } = props
   const prizePool = useSelectedPrizePool()
   const { data: prizeData, isFetched: isPrizesFetched } = usePrizePoolPrizes(prizePool)
   const { data: ticketSupply, isFetched: isTicketSupplyFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
-  const { data: tokens } = useSelectedPrizePoolTokens()
-  const amountToDeposit = useFormTokenAmount(formKey, tokens?.token)
 
   const isFetched = isPrizesFetched && isTicketSupplyFetched
 
@@ -62,10 +54,10 @@ export const PrizeFrequencyBreakdown = (props: {
         className
       )}
     >
-      <span className='mb-2 font-bold'>Prize Frequency Breakdown</span>
+      <span className='mb-2 font-bold'>Estimated Prize Frequency Breakdown</span>
       <div className='grid grid-cols-2 mb-2'>
         <PrizeTableHeader>Prize Value</PrizeTableHeader>
-        <PrizeTableHeader>Estimated Award Time</PrizeTableHeader>
+        <PrizeTableHeader>Award Time</PrizeTableHeader>
       </div>
 
       {!isFetched ? (
@@ -82,7 +74,6 @@ export const PrizeFrequencyBreakdown = (props: {
               index={i}
               prizeValue={prizeData.valueOfPrizesByTier[i]}
               prizeChance={prizeChances[i]}
-              amountToDeposit={amountToDeposit}
             />
           ))}
         </ul>
@@ -95,9 +86,8 @@ const PrizeFrequencyBreakdownTableRow = (props: {
   index: number
   prizeValue: Amount
   prizeChance: number
-  amountToDeposit: Amount
 }) => {
-  const { index, prizeValue, prizeChance, amountToDeposit } = props
+  const { index, prizeValue, prizeChance } = props
 
   // This assumes there is one draw every day:
   const prizeFrequency = formatDailyCountToFrequency(prizeChance)
@@ -112,40 +102,35 @@ const PrizeFrequencyBreakdownTableRow = (props: {
         })}
       </PrizeTableCell>
       <PrizeTableCell index={index}>
-        <PrettyFrequencyForTier prizeFrequency={prizeFrequency} amountToDeposit={amountToDeposit} />
+        <PrettyFrequencyForTier frequency={prizeFrequency.frequency} unit={prizeFrequency.unit} />
       </PrizeTableCell>
     </>
   )
 }
 
-const PrettyFrequencyForTier = (props: {
-  prizeFrequency: { frequency: number; unit: TimeUnit }
-  amountToDeposit: Amount
-}) => {
-  const { prizeFrequency, amountToDeposit } = props
+const PrettyFrequencyForTier = (props: { frequency: number; unit: TimeUnit }) => {
+  const { frequency, unit } = props
   const { t } = useTranslation()
 
-  // TODO: take into account user deposit and show odds specifically for their deposit size
-
   const prettyFrequencyString = useMemo(() => {
-    if (prizeFrequency.frequency !== 0) {
-      if (prizeFrequency.unit === 'day') {
-        if (prizeFrequency.frequency <= 1.5) {
+    if (frequency !== 0) {
+      if (unit === 'day') {
+        if (frequency <= 1.5) {
           return t('daily')
         } else {
-          return t('everyNDays', { n: prizeFrequency.frequency.toFixed(0) })
+          return t('everyNDays', { n: frequency.toFixed(0) })
         }
-      } else if (prizeFrequency.unit === 'week') {
-        return t('everyNWeeks', { n: prizeFrequency.frequency.toFixed(0) })
-      } else if (prizeFrequency.unit === 'month') {
-        return t('everyNMonths', { n: prizeFrequency.frequency.toFixed(0) })
+      } else if (unit === 'week') {
+        return t('everyNWeeks', { n: frequency.toFixed(0) })
+      } else if (unit === 'month') {
+        return t('everyNMonths', { n: frequency.toFixed(0) })
       } else {
-        return t('everyNYears', { n: prizeFrequency.frequency.toFixed(0) })
+        return t('everyNYears', { n: frequency.toFixed(0) })
       }
     } else {
       return t('never')
     }
-  }, [prizeFrequency])
+  }, [frequency, unit])
 
   return <>{prettyFrequencyString}</>
 }

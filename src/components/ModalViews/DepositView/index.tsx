@@ -68,11 +68,7 @@ export const DepositView: React.FC<
     prizeTierData.prizeTier.dpr !== undefined
   ) {
     carouselChildren.push(
-      <PrizeFrequencyBreakdown
-        key='prize-freq-breakdown'
-        formKey={formKey}
-        prizeTier={prizeTierData.prizeTier}
-      />
+      <PrizeFrequencyBreakdown key='prize-freq-breakdown' prizeTier={prizeTierData.prizeTier} />
     )
   }
 
