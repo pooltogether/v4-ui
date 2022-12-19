@@ -1,6 +1,5 @@
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { PrizeBreakdown } from '@components/PrizeBreakdown'
-import { DrawLock } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 import { useDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
 import { BottomSheet, ExternalLink, LinkTheme, Tabs } from '@pooltogether/react-components'
@@ -8,6 +7,7 @@ import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { getTimestampStringWithTime } from '@utils/getTimestampString'
 import classNames from 'classnames'
+import { BigNumber } from 'ethers'
 import { Trans, useTranslation } from 'next-i18next'
 import { PastDrawWinnersTable } from '../PastDrawWinnersTable'
 
@@ -25,7 +25,11 @@ export const HistoricDrawsModal = (props: {
     draw: Draw
     prizeDistribution?: PrizeDistribution
   }
-  drawLock?: DrawLock
+  drawLock?: {
+    drawId: number
+    endTimeSeconds: BigNumber
+    prizeDistributorId: string
+  }
 }) => {
   const { isOpen, drawId, closeModal, prizeDistributor, drawData, drawLock } = props
   const { t } = useTranslation()
