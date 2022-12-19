@@ -1,4 +1,5 @@
 import { PagePadding } from '@components/Layout/PagePadding'
+import { useAllProposalsByStatus } from '@pooltogether/hooks'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
@@ -15,20 +16,24 @@ export const DepositUI = () => {
       className={classNames('flex flex-col space-y-2 xs:space-y-4 sm:space-y-8 lg:space-y-12')}
       style={{ minHeight: '620px' }}
     >
-      {/* TODO: Uncomment next week <RewardsBanners /> */}
-      <NewUiBanner />
+      <ActiveProposalsBanner />
       <PrizePoolNetworkCarousel />
       <DepositTrigger />
     </PagePadding>
   )
 }
 
-const NewUiBanner = () => {
+const ActiveProposalsBanner = () => {
   const { t } = useTranslation()
+  const { data, isFetched, error } = useAllProposalsByStatus()
+  if (error || !isFetched) return null
+  const activeProposalsCount = data.active.length
+  const noProposals = activeProposalsCount === 0
+  if (noProposals) return null
 
   return (
     <a
-      href='https://medium.com/pooltogether/more-op-and-new-prizes-209301d01348'
+      href='https://vote.pooltogether.com'
       rel='noopener noreferrer'
       target='_blank'
       className={classNames(
@@ -36,12 +41,13 @@ const NewUiBanner = () => {
       )}
     >
       <span>
-        📣 {t('depositAlertBanner')} <b className='text-flashy'>{t('readMore')}</b>
+        📣 {t('activeProposalsCount', { count: activeProposalsCount })}{' '}
+        <b className='text-flashy'>{t('voteNow')}</b>
         <FeatherIcon
           icon='arrow-up-right'
           className='ml-1 mb-0.5 w-2 h-2 xs:w-3 xs:h-3 inline-block'
         />{' '}
-        📣
+        🗳
       </span>
     </a>
   )
