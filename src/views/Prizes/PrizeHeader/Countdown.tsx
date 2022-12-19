@@ -102,7 +102,10 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
 
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  const drawLock = drawLocks?.[firstLockDrawId]
+  const drawLock = drawLocks?.find(
+    (drawLock) =>
+      drawLock.drawId === firstLockDrawId && drawLock.prizeDistributorId === prizeDistributor.id()
+  )
   const { seconds, minutes, hours, days } = useCountdown(drawLock?.endTimeSeconds.toNumber())
 
   if (!isDrawLocksFetched) return null

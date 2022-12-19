@@ -1,4 +1,4 @@
-import { msToS, sToMs } from '@pooltogether/utilities'
+import { dedupeArray, msToS, sToMs } from '@pooltogether/utilities'
 import { atom, useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { useDrawLocks } from './useDrawLocks'
@@ -19,7 +19,7 @@ export const useLockedDrawIdsWatcher = () => {
   const [, removeLockedDrawId] = useAtom(removeLockedDrawIdAtom)
 
   useEffect(() => {
-    const drawIds = drawLocks && Object.keys(drawLocks).map(Number)
+    const drawIds = drawLocks && dedupeArray(drawLocks.map(({ drawId }) => drawId))
     if (!drawLocks || drawIds.length === 0) {
       setLockedDrawIds([])
       return
@@ -29,7 +29,10 @@ export const useLockedDrawIdsWatcher = () => {
     const timeouts: NodeJS.Timeout[] = []
 
     drawIds.forEach((drawId) => {
-      const drawLock = drawLocks[drawId]
+      // NOTE: There's multiples of the same drawId, so we need to find the one with the earliest endTimeSeconds
+      const drawLock = drawLocks
+        .filter((dl) => dl.drawId === drawId)
+        .sort((a, b) => a.endTimeSeconds.sub(b.endTimeSeconds).toNumber())[0]
       const endTimeSeconds = drawLock.endTimeSeconds.toNumber()
       const currentTimeSeconds = Math.round(msToS(Date.now()))
       if (endTimeSeconds > currentTimeSeconds) {
