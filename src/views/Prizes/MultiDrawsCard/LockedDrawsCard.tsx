@@ -56,6 +56,7 @@ export const LockedDrawsCardContent: React.FC<{
       <LockedDrawsHeader partialDrawDatas={lockedPartialDrawDatas} />
       <div className='flex flex-col-reverse justify-between h-full xs:flex-row'>
         <LockedDrawsCountdown
+          prizeDistributor={prizeDistributor}
           firstLockDrawId={lockedPartialDrawDatasList[0].draw.drawId}
           className='mx-auto xs:mx-0'
         />
@@ -126,11 +127,18 @@ const LockedDrawDetails = (props: {
   )
 }
 
-const LockedDrawsCountdown = (props: { firstLockDrawId: number; className?: string }) => {
-  const { className, firstLockDrawId } = props
+const LockedDrawsCountdown = (props: {
+  prizeDistributor: PrizeDistributor
+  firstLockDrawId: number
+  className?: string
+}) => {
+  const { className, prizeDistributor, firstLockDrawId } = props
   const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
 
-  const drawLock = drawLocks?.[firstLockDrawId]
+  const drawLock = drawLocks?.find(
+    (drawLock) =>
+      drawLock.drawId === firstLockDrawId && drawLock.prizeDistributorId === prizeDistributor.id()
+  )
   const { seconds, minutes, hours, days } = useCountdown(drawLock?.endTimeSeconds.toNumber())
 
   if (!isDrawLocksFetched) {
