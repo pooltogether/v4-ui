@@ -1,6 +1,5 @@
 import { TransparentDiv } from '@components/TransparentDiv'
-import { usePrizePoolPrizes } from '@hooks/v4/PrizePool/usePrizePoolPrizes'
-import { usePrizePoolTicketTwabTotalSupply } from '@hooks/v4/PrizePool/usePrizePoolTicketTwabTotalSupply'
+import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount } from '@pooltogether/hooks'
 import {
@@ -8,43 +7,16 @@ import {
   formatDailyCountToFrequency
 } from '@pooltogether/utilities'
 import { TimeUnit } from '@pooltogether/utilities/dist/types'
-import { PrizeTierV2 } from '@pooltogether/v4-utils-js'
 import classNames from 'classnames'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LoadingPrizeRow, PrizeTableCell, PrizeTableHeader } from './ExpectedPrizeBreakdown'
 
-export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; className?: string }) => {
-  const { prizeTier, className } = props
+export const PrizeFrequencyBreakdown = (props: { className?: string }) => {
+  const { className } = props
   const prizePool = useSelectedPrizePool()
-  const { data: prizeData, isFetched: isPrizesFetched } = usePrizePoolPrizes(prizePool)
-  const { data: ticketSupply, isFetched: isTicketSupplyFetched } =
-    usePrizePoolTicketTwabTotalSupply(prizePool)
+  const { data: prizeData, isFetched } = usePrizePoolExpectedPrizes(prizePool)
   const { t } = useTranslation()
-
-  const isFetched = isPrizesFetched && isTicketSupplyFetched
-
-  const calculateDprMultiplier = (
-    rawDpr: number,
-    ticketSupplyAmount: string,
-    totalPrizeAmount: string
-  ) => {
-    const dpr = rawDpr / 10 ** 9
-    const tvl = parseFloat(ticketSupplyAmount)
-    const prizes = parseFloat(totalPrizeAmount)
-    return (dpr * tvl) / prizes
-  }
-
-  const prizeChances = useMemo(() => {
-    if (isFetched) {
-      const dprMultiplier = calculateDprMultiplier(
-        prizeTier.dpr,
-        ticketSupply.amount.amount,
-        prizeData.totalValueOfPrizes.amount
-      )
-      return prizeData.numberOfPrizesByTier.map((numPrizes) => numPrizes * dprMultiplier)
-    }
-  }, [isFetched, prizeTier, ticketSupply, prizeData])
 
   return (
     <TransparentDiv
@@ -73,7 +45,7 @@ export const PrizeFrequencyBreakdown = (props: { prizeTier: PrizeTierV2; classNa
               key={`prize_freq_row_${i}`}
               index={i}
               prizeValue={prizeData.valueOfPrizesByTier[i]}
-              prizeChance={prizeChances[i]}
+              prizeChance={prizeData.expectedNumberOfPrizesByTier[i]}
             />
           ))}
         </ul>
