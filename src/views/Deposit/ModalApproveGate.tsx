@@ -43,17 +43,24 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     spenderAddress,
     tokenAddress
   )
+  const [isInfiniteApproval, setIsInfiniteApproval] = useState(true)
   const [approveTransactionId, setApproveTransactionId] = useState('')
   const approveTransaction = useTransaction(approveTransactionId)
-  const _sendApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
+  const _sendInfiniteApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
     callbacks: { onSuccess: () => refetchTokenAllowance() }
   })
-  const [isInfiniteApproval, setIsInfiniteApproval] = useState(true)
+  const _sendApproveTx = useApproveErc20(
+    tokenAddress,
+    spenderAddress,
+    {
+      callbacks: { onSuccess: () => refetchTokenAllowance() }
+    },
+    amountToDeposit.amountUnformatted
+  )
   const { t } = useTranslation()
 
-  // TODO: send non-infinite approval if `isInfiniteApproval` is false
   const sendApproveTx = async () => {
-    const transactionId = await _sendApproveTx()
+    const transactionId = await (isInfiniteApproval ? _sendInfiniteApproveTx() : _sendApproveTx())
     setApproveTransactionId(transactionId)
   }
 
