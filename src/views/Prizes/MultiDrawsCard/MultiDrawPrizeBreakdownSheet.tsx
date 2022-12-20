@@ -4,7 +4,7 @@ import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/Upcoming
 import { ShowMoreTextButton } from '@components/ShowMoreTextButton'
 import { Token } from '@pooltogether/hooks'
 import { ModalProps, BottomSheet, ExternalLink, LinkTheme } from '@pooltogether/react-components'
-import { PerDrawPrizeValue } from '@views/Deposit/PrizePoolNetworkCarousel/PerDrawPrizeValue'
+import { PerDrawPrizeValue } from '@views/Deposit/PrizePoolNetworkCarousel/PerDrawGrandPrizeValue'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'

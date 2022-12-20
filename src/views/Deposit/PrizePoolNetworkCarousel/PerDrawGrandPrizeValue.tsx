@@ -1,40 +1,26 @@
 import { Dot } from '@components/Dot'
-import { PrizePoolBar } from '@components/PrizePoolBar'
-import { MinimumDeposit } from '@components/PrizePoolNetwork/MinimumDeposit'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
-import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
-import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { CountUp, ExternalLink } from '@pooltogether/react-components'
 import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import classNames from 'classnames'
-import { formatUnits } from 'ethers/lib/utils'
 import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
 import { CarouselDescription, CarouselHeader } from '.'
+import { usePrizePoolNetworkGrandPrize } from '../../../hooks/v4/PrizePoolNetwork/usePrizePoolNetworkGrandPrize'
 
 /**
- * Sorted by percentage of picks distributed to the prize pool
+ * Sorted by Grand Prize Value
  * @param props
  * @returns
  */
-export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
+export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) => {
   const { className } = props
-  const prizePool = useSelectedPrizePool()
-  const { data: prizePoolTokens } = usePrizePoolTokens(prizePool)
-  const { data: prizeTierData } = useUpcomingPrizeTier(prizePool)
   const { t } = useTranslation()
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolExpectedPrizes()
-
-  const amount = useMemo(() => {
-    if (!prizePoolTokens || !prizeTierData) {
-      return null
-    }
-    return formatUnits(prizeTierData.prizeTier.prize, prizePoolTokens.token.decimals)
-  }, [prizePoolTokens, prizeTierData])
+  const { data: grandPrizeData } = usePrizePoolNetworkGrandPrize()
 
   const data = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
@@ -44,16 +30,27 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
     return queryResults
       .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
+        const formattedPrizes = data.uniqueValueOfPrizesFormattedList.map((v) =>
+          formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true })
+        )
+        const prizes = (
+          <div className='flex justify-center space-x-2'>
+            <b>{formattedPrizes[0]}</b>
+            {formattedPrizes.slice(1).map((p) => (
+              <span key={`prize-${p}-${data.prizePoolId}`}>{p}</span>
+            ))}
+          </div>
+        )
+
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          percentage: data.percentageOfPicks,
-          totalValueOfPrizes: `${Math.round(data.percentageOfPicks * 100)}%`,
-          prizes: data.uniqueValueOfPrizesFormattedList
-            .map((v) => formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true }))
-            .join(', ')
+          grandPrizeValue: data.grandPrizeValue,
+          prizes
         }
       })
-      .sort((a, b) => b.percentage - a.percentage)
+      .sort((a, b) =>
+        b.grandPrizeValue.amountUnformatted.sub(a.grandPrizeValue.amountUnformatted).toNumber()
+      )
   }, [prizePools, queryResults])
 
   return (
@@ -62,20 +59,19 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
       <CarouselHeader
         headers={[
           {
-            title: t('averageDailyPrizeValue'),
+            title: t('largestGrandPrize'),
             stat: (
               <span className='text-flashy'>
-                $<CountUp countTo={amount} decimals={0} />
+                $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
               </span>
             )
           }
         ]}
       />
-      <CarouselDescription>
+      <CarouselDescription className='mb-4'>
         <Trans
-          i18nKey='dailyPrizeValueExplainer'
+          i18nKey='grandPrizeExplainer'
           components={{
-            amount: <MinimumDeposit />,
             a: (
               <ExternalLink
                 children={undefined}
@@ -86,13 +82,8 @@ export const PerDrawPrizeValue: React.FC<{ className?: string }> = (props) => {
           }}
         />
       </CarouselDescription>
-      <PrizePoolBar
-        data={data}
-        className='mt-4 sm:mt-8'
-        borderClassName='border-white dark:border-pt-purple-darkest'
-      />
       <PrizePoolTable
-        headers={{ prizes: t('prizes') }}
+        headers={{ prizes: t('potentialPrizes') }}
         data={data}
         className='mt-2 sm:mt-4 max-w-screen-xs mx-auto'
       />
