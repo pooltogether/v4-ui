@@ -91,7 +91,6 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     )
   }
 
-  // TODO: redo explanations now that users can opt out of infinite approvals
   return (
     <div className={classNames(className, 'flex flex-col')}>
       <div className='mx-4 text-inverse opacity-60'>
@@ -101,7 +100,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
             `PoolTogether's Prize Pool contracts require you to send an approval transaction before depositing.`
           )}
         </p>
-        <p className='mb-4'>{t('thisIsOncePerNetwork', 'This is necessary once per network.')}</p>
+        <p className='mb-4'>{t('thisIsOncePerNetworkIfInfinite')}</p>
         <p className='mb-10'>
           {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
           <a
@@ -137,7 +136,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           large
           id='infinite-approval-toggle'
           name='infinite-approval-toggle'
-          label={'Infinite approval'}
+          label={t('infiniteApproval')}
           checked={isInfiniteApproval}
           handleClick={() => {
             setIsInfiniteApproval(!isInfiniteApproval)
