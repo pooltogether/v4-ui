@@ -1,5 +1,6 @@
 import { Dot } from '@components/Dot'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
+import { useExpectedUpcomingDailyPrizeValue } from '@hooks/v4/PrizePool/useExpectedUpcomingDailyPrizeValue'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
@@ -65,9 +66,9 @@ const AmountOfPrizes = () => {
   const weeklyAmountOfPrizes = amountOfPrizes * 7
 
   let amountString:
-    | 'lotsOfPrizesEveryWeek'
+    | 'dozensOfPrizesEveryWeek'
     | 'hundredsOfPrizesEveryWeek'
-    | 'thousandsOfPrizesEveryWeek' = 'lotsOfPrizesEveryWeek'
+    | 'thousandsOfPrizesEveryWeek' = 'dozensOfPrizesEveryWeek'
   if (isFetched) {
     if (weeklyAmountOfPrizes > 1000) {
       amountString = 'thousandsOfPrizesEveryWeek'
@@ -103,9 +104,13 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
   const { isFetched, ticket, prizeTier } = props
   const { t } = useTranslation()
 
+  const prizeValue = useExpectedUpcomingDailyPrizeValue()
+
   let amount = 0
   if (isFetched) {
-    amount = Number(formatUnits(prizeTier.prize.mul(BigNumber.from(7)), ticket.decimals))
+    amount = Number(
+      formatUnits(prizeValue.amountUnformatted.mul(BigNumber.from(7)), ticket.decimals)
+    )
   }
 
   return (
@@ -122,7 +127,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
         )}
       </h1>
       <p className='font-semibold text-pt-purple-darkest dark:text-pt-purple-lightest text-opacity-80 dark:text-opacity-90 text-xxs xs:text-sm '>
-        {t('onAverageInPrizesToWin')}
+        {t('awardedWeeklyOnAverage')}
       </p>
     </>
   )

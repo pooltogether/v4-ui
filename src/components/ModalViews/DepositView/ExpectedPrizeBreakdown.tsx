@@ -137,7 +137,7 @@ const OddsForTier = (props: { expectedNumberOfPrizes: number; amountToDeposit: A
   )
 }
 
-const PrizeTableCell = (props: { index: number } & JSX.IntrinsicElements['div']) => (
+export const PrizeTableCell = (props: { index: number } & JSX.IntrinsicElements['div']) => (
   <div
     {...props}
     className={classnames(props.className, 'text-sm xs:text-lg leading-none w-full', {

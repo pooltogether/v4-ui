@@ -17,15 +17,25 @@ export const useAllPrizePoolPercentagesofPicks = () => {
   const prizePools = usePrizePools()
   const prizeDistributors = usePrizeDistributors()
   const allPrizePoolTicketTwabTotalSupplies = useAllPrizePoolTicketTwabTotalSupplies()
-  const { data: prizePoolNetworkTvlData, isFetched: isPrizePoolNetworkTvlFetched } =
-    usePrizePoolNetworkTicketTwabTotalSupply()
+  const {
+    data: prizePoolNetworkTvlData,
+    isFetched: isPrizePoolNetworkTvlFetched,
+    isError: isPrizePoolNetworkTvlError
+  } = usePrizePoolNetworkTicketTwabTotalSupply()
   const allUpcomingPrizeTiers = useAllUpcomingPrizeTiers()
 
-  const isPrizeTierFetched = allUpcomingPrizeTiers.every(({ isFetched }) => isFetched)
-  const isTwabsFetched = allPrizePoolTicketTwabTotalSupplies.every(({ isFetched }) => isFetched)
+  const isPrizeTierFetched = allUpcomingPrizeTiers.every(
+    ({ isFetched, isError }) => isFetched && !isError
+  )
+  const isTwabsFetched = allPrizePoolTicketTwabTotalSupplies.every(
+    ({ isFetched, isError }) => isFetched && !isError
+  )
 
   return useQueries(
-    isTwabsFetched && isPrizeTierFetched && isPrizePoolNetworkTvlFetched
+    isTwabsFetched &&
+      isPrizeTierFetched &&
+      isPrizePoolNetworkTvlFetched &&
+      !isPrizePoolNetworkTvlError
       ? prizePools.map((prizePool) => {
           const prizePoolTicketTwabQueryResult = allPrizePoolTicketTwabTotalSupplies.find(
             (queryResult) => queryResult.data?.prizePoolId === prizePool.id()

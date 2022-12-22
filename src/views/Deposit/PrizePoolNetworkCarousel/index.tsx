@@ -3,8 +3,8 @@ import classNames from 'classnames'
 import { atom, useAtom } from 'jotai'
 import { CSSProperties, useRef } from 'react'
 import Slider from 'react-slick'
+import { PerDrawGrandPrizeValue } from './PerDrawGrandPrizeValue'
 import { PerDrawPrizeCount } from './PerDrawPrizeCount'
-import { PerDrawPrizeValue } from './PerDrawPrizeValue'
 import { PrizePoolNetworkTvl } from './PrizePoolNetworkTvl'
 import { UpcomingPrize } from './UpcomingPrize'
 
@@ -32,7 +32,7 @@ export const PrizePoolNetworkCarousel = (props: { className?: string }) => {
         autoplaySpeed={8000}
       >
         <UpcomingPrize className='py-10 my-auto mx-auto max-w-screen-sm' />
-        <PerDrawPrizeValue className='my-auto mx-auto max-w-screen-sm' />
+        <PerDrawGrandPrizeValue className='my-auto mx-auto max-w-screen-sm' />
         <PerDrawPrizeCount className='my-auto mx-auto max-w-screen-sm' />
         <PrizePoolNetworkTvl className='h-full my-auto mx-auto max-w-screen-sm' />
       </Slider>

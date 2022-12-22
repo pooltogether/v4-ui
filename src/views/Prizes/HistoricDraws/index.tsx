@@ -44,7 +44,11 @@ export const HistoricDraws = (props: { className?: string }) => {
     usersAddress,
     prizeDistributor
   )
-  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
+  const {
+    data: drawLocks,
+    isFetched: isDrawLocksFetched,
+    isError: isDrawLocksError
+  } = useDrawLocks()
   // Modal state
   const [drawId, setDrawId] = useState<number | null>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -58,6 +62,7 @@ export const HistoricDraws = (props: { className?: string }) => {
     usersAddress === claimedAmountsData?.usersAddress
 
   if (
+    isDrawLocksError ||
     !isPrizePoolTokensFetched ||
     !isDrawsAndPrizeDistributionsFetched ||
     !isDrawLocksFetched ||
@@ -99,7 +104,7 @@ export const HistoricDraws = (props: { className?: string }) => {
                 token={prizePoolTokens.token}
                 ticket={prizePoolTokens.ticket}
                 drawData={drawData}
-                drawLock={drawLocks.find(
+                drawLock={drawLocks?.find(
                   (drawLock) =>
                     drawLock.drawId === drawData.draw.drawId &&
                     drawLock.prizeDistributorId === prizeDistributor.id()
