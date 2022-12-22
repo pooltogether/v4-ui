@@ -3,7 +3,14 @@ import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { LargestPrizeInNetwork } from '@components/PrizePoolNetwork/LargestPrizeInNetwork'
 import { TotalNumberOfPrizes } from '@components/PrizePoolNetwork/TotalNumberOfPrizes'
 import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
-import { COINBASE_CHAIN_KEYS, getCoinbaseChainAssets, getCoinbaseChainKey } from '@constants/config'
+import {
+  COINBASE_CHAIN_KEYS,
+  ON_RAMP_URLS,
+  getCoinbaseChainAssets,
+  getCoinbaseChainKey,
+  getOnRamp,
+  getOnRamps
+} from '@constants/config'
 import { BRIDGE_URLS, EXCHANGE_URLS, getBridges, getExchange } from '@constants/config'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
@@ -17,7 +24,7 @@ import {
   Tabs,
   ViewProps
 } from '@pooltogether/react-components'
-import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
+import { dedupeArray, getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
   CHAIN_ID,
   useUsersAddress,
@@ -172,6 +179,10 @@ const HelpView = (props: ViewProps) => {
 }
 
 const COINBASE_CHAINS = Object.freeze([CHAIN_ID.mainnet, CHAIN_ID.polygon, CHAIN_ID.avalanche])
+const BUY_TOKENS_CHAINS = dedupeArray([
+  ...Object.keys(ON_RAMP_URLS).map(Number),
+  ...COINBASE_CHAINS
+])
 const SWAP_TOKENS_CHAINS = Object.keys(EXCHANGE_URLS).map(Number)
 const BRIDGE_TOKENS_CHAINS = Object.keys(BRIDGE_URLS).map(Number)
 
@@ -254,7 +265,7 @@ const GetTokensView = () => {
 const BuyTokens = () => {
   const walletChainId = useWalletChainId()
   const [chainId, setChainId] = useState(
-    !!walletChainId && COINBASE_CHAINS.includes(walletChainId) ? walletChainId : COINBASE_CHAINS[0]
+    !!walletChainId && BUY_TOKENS_CHAINS.includes(walletChainId) ? walletChainId : CHAIN_ID.mainnet
   )
   const { t } = useTranslation()
 
@@ -269,22 +280,39 @@ const BuyTokens = () => {
           onChange={(event) => setChainId(Number(event.target.value))}
           value={chainId}
         >
-          {COINBASE_CHAINS.map((chainId) => (
+          {BUY_TOKENS_CHAINS.map((chainId) => (
             <option key={`cb-opt-${chainId}`} value={chainId} className='dark:bg-pt-purple'>
               {getChainNameByChainId(chainId)}
             </option>
           ))}
         </TransparentSelect>{' '}
       </p>
-      <PayWithCoinbaseButton className='w-full' chainId={chainId} />
-      <ExternalLink
-        className='text-xxs mt-2'
-        // theme={LinkTheme.accent}
-        href='https://docs.pooltogether.com/pooltogether/guides/using-coinbase-pay'
-      >
-        {t('userGuide')}
-      </ExternalLink>
-      <TemporaryWarningForNoOnRamp chainId={chainId} />
+      {COINBASE_CHAINS.includes(chainId) && (
+        <div className='mb-2'>
+          <ExternalLink
+            className='text-xxs'
+            href='https://docs.pooltogether.com/pooltogether/guides/using-coinbase-pay'
+          >
+            {t('userGuide')}
+          </ExternalLink>
+          <PayWithCoinbaseButton className='w-full' chainId={chainId} />
+        </div>
+      )}
+      <div className='flex flex-col space-y-2'>
+        {getOnRamps(chainId)?.map(({ title, url }) => (
+          <ButtonLink
+            className='space-x-1 w-full'
+            theme={ButtonTheme.teal}
+            key={`${chainId}-${title}`}
+            href={url}
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <span className='text-sm'>{t('buyWith', { onRamp: title })}</span>
+            <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
+          </ButtonLink>
+        ))}
+      </div>
     </div>
   )
 }
@@ -449,33 +477,4 @@ const PayWithCoinbaseButton: React.FC<{ chainId: number; className?: string }> =
       <FeatherIcon icon={'arrow-up-right'} className='relative w-4 h-4 inline-block' />
     </ButtonLink>
   )
-}
-
-export const TemporaryWarningForNoOnRamp: React.FC<{ chainId: number }> = (props) => {
-  const { chainId } = props
-  const usersAddress = useUsersAddress()
-  const chainKey = getCoinbaseChainKey(chainId)
-  const { t } = useTranslation()
-
-  if (!chainKey) {
-    return (
-      <div className='text-xxxs xs:text-xxs text-pt-red-light mt-4 xs:mt-6'>
-        {t('coinbasePayWarning', {
-          networkName: getNetworkNiceNameByChainId(chainId),
-          supportedNetworks: `${getNetworkNiceNameByChainId(
-            CHAIN_ID.mainnet
-          )}, ${getNetworkNiceNameByChainId(CHAIN_ID.avalanche)}, ${getNetworkNiceNameByChainId(
-            CHAIN_ID.polygon
-          )} `
-        })}
-      </div>
-    )
-  } else if (!usersAddress) {
-    return (
-      <div className='text-xxxs xs:text-xxs text-pt-red-light mt-4 xs:mt-6'>
-        {t('connectAWalletToProceed', 'Connect a wallet to proceed.')}
-      </div>
-    )
-  }
-  return null
 }

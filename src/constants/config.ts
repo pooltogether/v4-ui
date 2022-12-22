@@ -164,6 +164,31 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
 })
 
 /**
+ * Urls used for quick links to onramps for users
+ */
+export const getOnRamps = (chainId: number) => ON_RAMP_URLS[chainId]
+export const ON_RAMP_URLS = Object.freeze({
+  [CHAIN_ID.mainnet]: [
+    {
+      url: 'https://juno.finance/partners/PoolTogether?currency=usdc&action=buy&partnerKey=live_wPwq3D4YN2VKjl6U2z9W91b9',
+      title: 'Juno'
+    }
+  ],
+  [CHAIN_ID.optimism]: [
+    {
+      url: 'https://juno.finance/partners/PoolTogether?currency=usdc&action=buy&partnerKey=live_wPwq3D4YN2VKjl6U2z9W91b9&network=Optimism',
+      title: 'Juno'
+    }
+  ],
+  [CHAIN_ID.arbitrum]: [
+    {
+      url: 'https://juno.finance/partners/PoolTogether?currency=usdc&action=buy&partnerKey=live_wPwq3D4YN2VKjl6U2z9W91b9&network=Arbitrum%20One',
+      title: 'Juno'
+    }
+  ]
+})
+
+/**
  * Urls used for quick links to bridges for users
  */
 export const getBridges = (chainId: number) => BRIDGE_URLS[chainId] || BRIDGE_URLS[CHAIN_ID.mainnet]
