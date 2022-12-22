@@ -8,7 +8,6 @@ import {
   ON_RAMP_URLS,
   getCoinbaseChainAssets,
   getCoinbaseChainKey,
-  getOnRamp,
   getOnRamps
 } from '@constants/config'
 import { BRIDGE_URLS, EXCHANGE_URLS, getBridges, getExchange } from '@constants/config'
