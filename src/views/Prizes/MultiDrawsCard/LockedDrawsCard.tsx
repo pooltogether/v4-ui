@@ -133,7 +133,11 @@ const LockedDrawsCountdown = (props: {
   className?: string
 }) => {
   const { className, prizeDistributor, firstLockDrawId } = props
-  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
+  const queryResults = useDrawLocks()
+  const drawLocks = queryResults
+    .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
+    .map(({ data }) => data)
+  const isDrawLocksFetched = queryResults.every(({ isFetched, isError }) => isFetched && !isError)
 
   const drawLock = drawLocks?.find(
     (drawLock) =>

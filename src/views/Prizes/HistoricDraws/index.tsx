@@ -44,11 +44,12 @@ export const HistoricDraws = (props: { className?: string }) => {
     usersAddress,
     prizeDistributor
   )
-  const {
-    data: drawLocks,
-    isFetched: isDrawLocksFetched,
-    isError: isDrawLocksError
-  } = useDrawLocks()
+  const queryResults = useDrawLocks()
+  const drawLocks = queryResults
+    .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
+    .map(({ data }) => data)
+  const isDrawLocksFetched = queryResults.every(({ isFetched, isError }) => isFetched && !isError)
+
   // Modal state
   const [drawId, setDrawId] = useState<number | null>(null)
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -62,7 +63,6 @@ export const HistoricDraws = (props: { className?: string }) => {
     usersAddress === claimedAmountsData?.usersAddress
 
   if (
-    isDrawLocksError ||
     !isPrizePoolTokensFetched ||
     !isDrawsAndPrizeDistributionsFetched ||
     !isDrawLocksFetched ||

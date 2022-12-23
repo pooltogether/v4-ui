@@ -1,51 +1,87 @@
-import { sToMs } from '@pooltogether/utilities'
+import { msToS, sToMs } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
-import { useQuery } from 'react-query'
+import { Dispatch, SetStateAction, useState } from 'react'
+import { useQueries } from 'react-query'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
 
 /**
- * Fetches all of the locked draws, returns the latest ending time for each draw id, an amount of time until the next time we need to refetch and the chain ids that it is locked on.
+ * Fetches all of the draws stored in the drawcalculator timelocks and checks if they're still locked. Refetches when they're unlocked and polls every 2.5 minutes to check if htey're updated.
  * @returns
  */
 export const useDrawLocks = () => {
   const prizeDistributors = usePrizeDistributors()
   const { data: drawBeaconPeriod, isFetched: isDrawBeaconFetched } = useDrawBeaconPeriod()
-  const enabled = Boolean(prizeDistributors) && isDrawBeaconFetched
-  return useQuery(
-    [
-      'useDrawUnlockTime',
-      drawBeaconPeriod?.startedAtSeconds.toString(),
-      prizeDistributors?.map((pd) => pd.id())
-    ],
-    () => getDrawLocks(prizeDistributors),
-    {
-      refetchInterval: sToMs(60 * 5),
-      enabled
-    }
-  )
-}
+  const [refetchIntervals, setRefetchIntervals] = useState<{
+    [prizeDistributorId: string]: number
+  }>({})
 
-const getDrawLocks = async (
-  prizeDistributors: PrizeDistributor[]
-): Promise<
-  {
-    drawId: number
-    endTimeSeconds: BigNumber
-    prizeDistributorId: string
-  }[]
-> => {
-  const lockedDraws = await Promise.all(
-    prizeDistributors.map(async (prizeDistributor) => {
-      const result = await prizeDistributor.getTimelockDrawId()
+  return useQueries(
+    prizeDistributors.map((prizeDistributor) => {
       return {
-        prizeDistributorId: prizeDistributor.id(),
-        endTimeSeconds: result.endTimeSeconds.add(1),
-        drawId: result.drawId
+        queryKey: [
+          'useDrawLocks',
+          prizeDistributor.id(),
+          drawBeaconPeriod?.startedAtSeconds.toString()
+        ],
+        queryFn: () => getDrawLock(prizeDistributor),
+        enabled: !!prizeDistributor && isDrawBeaconFetched,
+        refetchInterval: refetchIntervals[prizeDistributor.id()] || sToMs(60 * 2.5),
+        onSuccess: (data) => handleSettingRefetch(data, setRefetchIntervals)
       }
     })
   )
+}
 
-  return lockedDraws
+const getDrawLock = async (
+  prizeDistributor: PrizeDistributor
+): Promise<{
+  prizeDistributorId: string
+  endTimeSeconds: BigNumber
+  drawId: number
+} | null> => {
+  const result = await prizeDistributor.getTimelockDrawId()
+
+  // If the lock is over, return null
+  const endTimeSeconds = result.endTimeSeconds.toNumber()
+  const currentTimeSeconds = Math.round(msToS(Date.now()))
+  if (endTimeSeconds <= currentTimeSeconds) {
+    return null
+  }
+
+  return {
+    prizeDistributorId: prizeDistributor.id(),
+    endTimeSeconds: result.endTimeSeconds.add(1),
+    drawId: result.drawId
+  }
+}
+
+const handleSettingRefetch = (
+  data: {
+    prizeDistributorId: string
+    endTimeSeconds: BigNumber
+    drawId: number
+  } | null,
+  setRefetchIntervals: Dispatch<
+    SetStateAction<{
+      [prizeDistributorId: string]: number
+    }>
+  >
+) => {
+  if (!data) return
+  const endTimeSeconds = data.endTimeSeconds.toNumber()
+  const currentTimeSeconds = Math.round(msToS(Date.now()))
+  if (endTimeSeconds > currentTimeSeconds) {
+    const timeDelayMs = sToMs(endTimeSeconds - currentTimeSeconds)
+    setRefetchIntervals((prev) => ({
+      ...prev,
+      [data.prizeDistributorId]: timeDelayMs
+    }))
+  } else {
+    setRefetchIntervals((prev) => ({
+      ...prev,
+      [data.prizeDistributorId]: undefined
+    }))
+  }
 }

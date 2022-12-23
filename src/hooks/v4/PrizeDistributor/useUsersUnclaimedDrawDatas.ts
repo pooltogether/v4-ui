@@ -39,7 +39,9 @@ export const useUsersUnclaimedDrawDatas = (
 ) => {
   // Generic data
   const lockedDrawIds = useLockedDrawIds()
-  const { isFetched: isDrawUnlockTimesFetched } = useDrawLocks()
+  const queryResults = useDrawLocks()
+  const isDrawLocksFetched = queryResults.every(({ isFetched, isError }) => isFetched && !isError)
+
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
   // User specific data
   const storedDrawResults = useUsersStoredDrawResults(usersAddress, prizeDistributor)
@@ -65,7 +67,7 @@ export const useUsersUnclaimedDrawDatas = (
 
   const enabled =
     Boolean(prizeDistributor) &&
-    isDrawUnlockTimesFetched &&
+    isDrawLocksFetched &&
     isDrawDatasFetched &&
     isNormalizedBalancesFetched &&
     isClaimedAmountsFetched &&

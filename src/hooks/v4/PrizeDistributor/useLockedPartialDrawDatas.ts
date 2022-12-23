@@ -5,7 +5,8 @@ import { useLockedDrawIds } from './useLockedDrawIds'
 
 export const useLockedPartialDrawDatas = (prizeDistributor: PrizeDistributor) => {
   const drawIds = useLockedDrawIds()
-  const { isFetched: isDrawLocksFetched } = useDrawLocks()
+  const queryResults = useDrawLocks()
+  const isDrawLocksFetched = queryResults.every(({ isFetched }) => isFetched)
   const { data: drawDatas, isFetched: isDrawDatasFetched } =
     useAllPartialDrawDatas(prizeDistributor)
 
