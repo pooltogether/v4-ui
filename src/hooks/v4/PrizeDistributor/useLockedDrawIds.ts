@@ -1,11 +1,11 @@
-import { useAtom } from 'jotai'
-import { lockedDrawIdsAtom } from './useLockedDrawIdsWatcher'
+import { dedupeArray } from '@pooltogether/utilities'
+import { useDrawLocks } from './useDrawLocks'
 
-/**
- * useLockedDrawIds depends on useLockedDrawIdsWatcher to update the atom when draws unlock
- * @returns {number[]}
- */
 export const useLockedDrawIds = () => {
-  const [lockedDrawIds] = useAtom(lockedDrawIdsAtom)
-  return lockedDrawIds
+  const queryResults = useDrawLocks()
+  return dedupeArray(
+    queryResults
+      .filter(({ isFetched, isError, data }) => isFetched && !isError && data !== null)
+      .map(({ data }) => data.drawId)
+  )
 }

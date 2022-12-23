@@ -100,7 +100,11 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
   const firstLockDrawId = lockedPartialDrawDatasList?.[0]?.draw.drawId
   const { t } = useTranslation()
 
-  const { data: drawLocks, isFetched: isDrawLocksFetched } = useDrawLocks()
+  const queryResults = useDrawLocks()
+  const drawLocks = queryResults
+    .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
+    .map(({ data }) => data)
+  const isDrawLocksFetched = queryResults.every(({ isFetched, isError }) => isFetched && !isError)
 
   const drawLock = drawLocks?.find(
     (drawLock) =>

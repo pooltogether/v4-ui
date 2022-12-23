@@ -3,7 +3,6 @@ import { SelectAppChainIdModal } from '@components/SelectAppChainIdModal'
 import { CardTitle } from '@components/Text/CardTitle'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { useQueryParamState } from '@hooks/useQueryParamState'
-import { useLockedDrawIdsWatcher } from '@hooks/v4/PrizeDistributor/useLockedDrawIdsWatcher'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
@@ -28,7 +27,6 @@ export const PRIZE_UI_STATES = {
 }
 
 export const PrizesUI = () => {
-  useLockedDrawIdsWatcher()
   const { t } = useTranslation()
   const prizeDistributor = usePrizeDistributorBySelectedChainId()
   const prizePool = useSelectedPrizePool()
