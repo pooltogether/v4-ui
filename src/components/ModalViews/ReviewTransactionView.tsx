@@ -6,17 +6,9 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
-import {
-  Transaction,
-  TransactionState,
-  TransactionStatus,
-  useApproveErc20,
-  useTransaction,
-  useUsersAddress
-} from '@pooltogether/wallet-connection'
+import { Transaction, TransactionStatus, useUsersAddress } from '@pooltogether/wallet-connection'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export interface ReviewTransactionViewProps extends ViewProps {
@@ -24,7 +16,6 @@ export interface ReviewTransactionViewProps extends ViewProps {
   sendTransaction: () => void
   clearTransaction: () => void
   connectWallet: () => void
-  setApproveTransactionId?: (id: string) => void
   isFetched?: boolean
   successView?: React.ReactNode
   reviewView?: React.ReactNode
@@ -54,8 +45,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     amount,
     spenderAddress,
     tokenAddress,
-    buttonTexti18nKey,
-    setApproveTransactionId: _setApproveTransactionId
+    buttonTexti18nKey
   } = props
   const { chainId } = useSelectedChainId()
   const prizePool = useSelectedPrizePool()
@@ -64,22 +54,10 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const {
     data: allowanceUnformatted,
     isFetched: isTokenAllowanceFetched,
-    refetch: refetchTokenAllowance,
     isIdle
   } = useTokenAllowance(chainId, usersAddress, spenderAddress, tokenAddress)
-  const [approveTransactionId, setApproveTransactionId] = useState('')
-  const approveTransaction = useTransaction(approveTransactionId)
-  const _sendApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
-    callbacks: { onSuccess: () => refetchTokenAllowance() }
-  })
   const { isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const amountUnformatted = amount?.amountUnformatted
-
-  const sendApproveTx = async () => {
-    const transactionId = await _sendApproveTx()
-    setApproveTransactionId(transactionId)
-    _setApproveTransactionId?.(transactionId)
-  }
 
   const { t } = useTranslation()
 
@@ -100,8 +78,8 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           connectWallet={connectWallet}
           amountToDeposit={amount}
           chainId={chainId}
-          approveTx={approveTransaction}
-          sendApproveTx={sendApproveTx}
+          spenderAddress={spenderAddress}
+          tokenAddress={tokenAddress}
         />
       </>
     )
