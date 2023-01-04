@@ -43,6 +43,9 @@ const getDrawLock = async (
 } | null> => {
   const result = await prizeDistributor.getTimelockDrawId()
 
+  // If there's no lock, return null
+  if (!result) return null
+
   // If the lock is over, return null
   const endTimeSeconds = result.endTimeSeconds.toNumber()
   const currentTimeSeconds = Math.round(msToS(Date.now()))
