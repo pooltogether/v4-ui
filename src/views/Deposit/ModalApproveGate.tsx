@@ -80,24 +80,23 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
   const getUser = useGetUser(prizePool)
   const { t } = useTranslation()
 
+  // TODO: send signatures to deposit view to build transaction with permits
+
   const approveDeposit = async () => {
     if (approvalType === 'eip2612') {
-      console.log('testing eip2612 permit') // TODO: remove
       setSignatureApprovalStatus(TransactionStatus.pendingUserConfirmation)
-      console.log('getting user') // TODO: remove
       const user = await getUser()
-      console.log('getting deposit signature') // TODO: remove
-      const depositSignature = await user.getPermitAndDepositSignaturePromise(
-        amountToDeposit.amountUnformatted
-      )
-      console.log(depositSignature) // TODO: remove
-      console.log('getting delegation signature') // TODO: remove
-      const delegationSignature = await user.getPermitAndDelegateSignaturePromise(
-        amountToDeposit.amountUnformatted
-      )
-      console.log(delegationSignature) // TODO: remove
-      setSignatureApprovalStatus(TransactionStatus.success)
-      console.log('done')
+      try {
+        const depositSignature = await user.getPermitAndDepositSignaturePromise(
+          amountToDeposit.amountUnformatted
+        )
+        const delegationSignature = await user.getPermitAndDelegateSignaturePromise(
+          amountToDeposit.amountUnformatted
+        )
+        setSignatureApprovalStatus(TransactionStatus.success)
+      } catch {
+        setSignatureApprovalStatus(TransactionStatus.error)
+      }
     } else if (approvalType === 'infinite') {
       const transactionId = await _sendInfiniteApproveTx()
       setApproveTransactionId(transactionId)
