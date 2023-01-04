@@ -57,6 +57,8 @@ export const MultiDrawsCard = (props: MultiDrawsCardProps) => {
   const { data: hasUserCheckedAllDrawsData, isFetched: isHasUserCheckedAllDrawsFetched } =
     useHasUserCheckedAllDraws(usersAddress, prizeDistributor)
 
+  console.log({ unclaimedDrawDatasData, hasUserCheckedAllDrawsData })
+
   if (
     !isPrizePoolTokensFetched ||
     !isUnclaimedDrawDataFetched ||

@@ -1,11 +1,11 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
-import { useLockedDrawIds } from './useLockedDrawIds'
+import { useAllLockedDrawIds } from './useAllLockedDrawIds'
 import { useValidDrawIds } from './useValidDrawIds'
 
 export const useLatestUnlockedDrawId = (prizeDistributor: PrizeDistributor) => {
   const { data, isFetched } = useValidDrawIds(prizeDistributor)
-  const lockedDrawIds = useLockedDrawIds()
+  const lockedDrawIds = useAllLockedDrawIds()
   return useMemo(() => {
     if (!isFetched) return { drawId: undefined, prizeDistributor }
 

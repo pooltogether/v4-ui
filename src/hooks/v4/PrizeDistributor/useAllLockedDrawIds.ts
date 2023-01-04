@@ -1,8 +1,8 @@
 import { dedupeArray } from '@pooltogether/utilities'
-import { useDrawLocks } from './useDrawLocks'
+import { useAllDrawLocks } from './useAllDrawLocks'
 
-export const useLockedDrawIds = () => {
-  const queryResults = useDrawLocks()
+export const useAllLockedDrawIds = () => {
+  const queryResults = useAllDrawLocks()
   return dedupeArray(
     queryResults
       .filter(({ isFetched, isError, data }) => isFetched && !isError && data !== null)

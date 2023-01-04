@@ -3,13 +3,13 @@ import { PrizeApi, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
 import { useQueries, useQuery } from 'react-query'
+import { useAllLockedDrawIds } from './PrizeDistributor/useAllLockedDrawIds'
 import { useAllPrizeDistributorTokens } from './PrizeDistributor/useAllPrizeDistributorTokens'
 import { useAllValidDrawIds } from './PrizeDistributor/useAllValidDrawIds'
 import {
   getLatestUnlockedDrawId,
   useLatestUnlockedDrawId
 } from './PrizeDistributor/useLatestUnlockedDrawId'
-import { useLockedDrawIds } from './PrizeDistributor/useLockedDrawIds'
 import { usePrizeDistributors } from './PrizeDistributor/usePrizeDistributors'
 import { usePrizeDistributorToken } from './PrizeDistributor/usePrizeDistributorToken'
 import { useValidDrawIds } from './PrizeDistributor/useValidDrawIds'
@@ -43,7 +43,7 @@ export const useAllLatestDrawWinnersInfo = () => {
 export const useAllLatestUnlockedDrawWinnersInfo = () => {
   const prizeDistributors = usePrizeDistributors()
   const drawIdQueries = useAllValidDrawIds()
-  const lockedDrawIds = useLockedDrawIds()
+  const lockedDrawIds = useAllLockedDrawIds()
   const data = useMemo(
     () =>
       prizeDistributors.map((prizeDistributor) => {
