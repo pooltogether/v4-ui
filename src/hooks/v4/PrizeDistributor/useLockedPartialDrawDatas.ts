@@ -1,11 +1,11 @@
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { useAllDrawLocks } from './useAllDrawLocks'
+import { useAllLockedDrawIds } from './useAllLockedDrawIds'
 import { useAllPartialDrawDatas } from './useAllPartialDrawDatas'
-import { useDrawLocks } from './useDrawLocks'
-import { useLockedDrawIds } from './useLockedDrawIds'
 
 export const useLockedPartialDrawDatas = (prizeDistributor: PrizeDistributor) => {
-  const drawIds = useLockedDrawIds()
-  const queryResults = useDrawLocks()
+  const drawIds = useAllLockedDrawIds()
+  const queryResults = useAllDrawLocks()
   const isDrawLocksFetched = queryResults.every(({ isFetched }) => isFetched)
   const { data: drawDatas, isFetched: isDrawDatasFetched } =
     useAllPartialDrawDatas(prizeDistributor)

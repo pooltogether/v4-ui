@@ -1,4 +1,4 @@
-import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
+import { useAllDrawLocks } from '@hooks/v4/PrizeDistributor/useAllDrawLocks'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDraws'
 import { Token } from '@pooltogether/hooks'
@@ -133,7 +133,7 @@ const LockedDrawsCountdown = (props: {
   className?: string
 }) => {
   const { className, prizeDistributor, firstLockDrawId } = props
-  const queryResults = useDrawLocks()
+  const queryResults = useAllDrawLocks()
   const drawLocks = queryResults
     .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
     .map(({ data }) => data)

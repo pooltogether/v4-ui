@@ -1,7 +1,7 @@
 import { ListItem } from '@components/List/ListItem'
 import { AmountWonInDraw } from '@components/PrizeDistributor/AmountWonInDraw'
+import { useAllDrawLocks } from '@hooks/v4/PrizeDistributor/useAllDrawLocks'
 import { useAllPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useAllPartialDrawDatas'
-import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
 import { usePrizeDistributorBySelectedChainId } from '@hooks/v4/PrizeDistributor/usePrizeDistributorBySelectedChainId'
 import { useUsersClaimedAmounts } from '@hooks/v4/PrizeDistributor/useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from '@hooks/v4/PrizeDistributor/useUsersNormalizedBalances'
@@ -44,7 +44,7 @@ export const HistoricDraws = (props: { className?: string }) => {
     usersAddress,
     prizeDistributor
   )
-  const queryResults = useDrawLocks()
+  const queryResults = useAllDrawLocks()
   const drawLocks = queryResults
     .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
     .map(({ data }) => data)
