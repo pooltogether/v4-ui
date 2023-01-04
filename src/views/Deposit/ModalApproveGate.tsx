@@ -1,17 +1,19 @@
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { TxButton } from '@components/Input/TxButton'
+import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import {
   ButtonLink,
   ButtonTheme,
   ThemedClipSpinner,
-  ButtonRadius,
-  CheckboxInputGroup
+  ButtonRadius
 } from '@pooltogether/react-components'
+import { PrizePool } from '@pooltogether/v4-client-js'
 import {
   formatBlockExplorerTxUrl,
   TransactionState,
+  TransactionStatus,
   useApproveErc20,
   useTransaction,
   useUsersAddress
@@ -28,14 +30,29 @@ interface ModalApproveGateProps {
   connectWallet?: () => void
   spenderAddress: string
   tokenAddress: string
+  prizePool: PrizePool
 }
+
+type ApprovalType = 'eip2612' | 'infinite' | 'simple'
+
+// TODO: make easy and good looking method to switch between different approval types
+// TODO: add context to each approval type to make sure users know what they are doing
+// TODO: note that signature approvals do not work on multisigs or smart contract wallets
 
 /**
  * @param props
  * @returns
  */
 export const ModalApproveGate = (props: ModalApproveGateProps) => {
-  const { className, amountToDeposit, chainId, connectWallet, spenderAddress, tokenAddress } = props
+  const {
+    className,
+    amountToDeposit,
+    chainId,
+    connectWallet,
+    spenderAddress,
+    tokenAddress,
+    prizePool
+  } = props
   const usersAddress = useUsersAddress()
   const { refetch: refetchTokenAllowance } = useTokenAllowance(
     chainId,
@@ -43,8 +60,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     spenderAddress,
     tokenAddress
   )
-  const [isInfiniteApproval, setIsInfiniteApproval] = useState(true)
+  const [approvalType, setApprovalType] = useState<ApprovalType>('eip2612')
   const [approveTransactionId, setApproveTransactionId] = useState('')
+  const [signatureApprovalStatus, setSignatureApprovalStatus] = useState<
+    TransactionStatus | undefined
+  >(undefined)
   const approveTransaction = useTransaction(approveTransactionId)
   const _sendInfiniteApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
     callbacks: { onSuccess: () => refetchTokenAllowance() }
@@ -57,11 +77,34 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     },
     amountToDeposit.amountUnformatted
   )
+  const getUser = useGetUser(prizePool)
   const { t } = useTranslation()
 
-  const sendApproveTx = async () => {
-    const transactionId = await (isInfiniteApproval ? _sendInfiniteApproveTx() : _sendApproveTx())
-    setApproveTransactionId(transactionId)
+  const approveDeposit = async () => {
+    if (approvalType === 'eip2612') {
+      console.log('testing eip2612 permit') // TODO: remove
+      setSignatureApprovalStatus(TransactionStatus.pendingUserConfirmation)
+      console.log('getting user') // TODO: remove
+      const user = await getUser()
+      console.log('getting deposit signature') // TODO: remove
+      const depositSignature = await user.getPermitAndDepositSignaturePromise(
+        amountToDeposit.amountUnformatted
+      )
+      console.log(depositSignature) // TODO: remove
+      console.log('getting delegation signature') // TODO: remove
+      const delegationSignature = await user.getPermitAndDelegateSignaturePromise(
+        amountToDeposit.amountUnformatted
+      )
+      console.log(delegationSignature) // TODO: remove
+      setSignatureApprovalStatus(TransactionStatus.success)
+      console.log('done')
+    } else if (approvalType === 'infinite') {
+      const transactionId = await _sendInfiniteApproveTx()
+      setApproveTransactionId(transactionId)
+    } else if (approvalType === 'simple') {
+      const transactionId = await _sendApproveTx()
+      setApproveTransactionId(transactionId)
+    }
   }
 
   if (approveTransaction?.state === TransactionState.pending) {
@@ -124,25 +167,13 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         className='w-full'
         radius={ButtonRadius.full}
         chainId={chainId}
-        onClick={sendApproveTx}
+        onClick={approveDeposit}
         state={approveTransaction?.state}
-        status={approveTransaction?.status}
+        status={approvalType === 'eip2612' ? signatureApprovalStatus : approveTransaction?.status}
         connectWallet={connectWallet}
       >
         {t('confirmApproval', 'Confirm approval')}
       </TxButton>
-      <div className='flex justify-end mt-2 mr-2 text-xxs'>
-        <CheckboxInputGroup
-          large
-          id='infinite-approval-toggle'
-          name='infinite-approval-toggle'
-          label={t('infiniteApproval')}
-          checked={isInfiniteApproval}
-          handleClick={() => {
-            setIsInfiniteApproval(!isInfiniteApproval)
-          }}
-        />
-      </div>
     </div>
   )
 }

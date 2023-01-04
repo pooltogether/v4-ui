@@ -23,8 +23,7 @@ import { ButtonLink, ButtonSize, ButtonTheme, Button } from '@pooltogether/react
 import {
   formatCurrencyNumberForDisplay,
   formatUnformattedBigNumberForDisplay,
-  msToS,
-  numberWithCommas
+  msToS
 } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { Transaction, useIsWalletMetamask, useWalletChainId } from '@pooltogether/wallet-connection'
@@ -42,7 +41,7 @@ import { LensterPostButton } from '../LensterPostButton'
  * @param props
  * @returns
  */
-export const DepositReviewView: React.FC<
+export const DepositReviewViewCore: React.FC<
   {
     reviewView?: React.ReactNode
     successView?: React.ReactNode

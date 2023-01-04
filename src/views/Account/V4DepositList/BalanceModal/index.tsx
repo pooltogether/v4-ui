@@ -1,4 +1,4 @@
-import { DepositReviewView } from '@components/ModalViews/DepositReviewView'
+import { DepositReviewViewCore } from '@components/ModalViews/DepositReviewViewCore'
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
 import { WithdrawReviewView } from '@components/ModalViews/WithdrawReviewView'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
@@ -65,7 +65,7 @@ export const BalanceModal: React.FC<{
     },
     {
       id: ViewIds.depositReview,
-      view: DepositReviewView,
+      view: DepositReviewViewCore,
       header: t('depositReview'),
       previousViewId: ViewIds.deposit,
       onCloseViewId: ViewIds.main

@@ -61,6 +61,8 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
 
   const { t } = useTranslation()
 
+  // TODO: need to make it so that after signing approvals, the view switches to the last tx view
+
   if (
     !isTokensFetched ||
     (!isIdle && !isTokenAllowanceFetched) ||
@@ -80,6 +82,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           chainId={chainId}
           spenderAddress={spenderAddress}
           tokenAddress={tokenAddress}
+          prizePool={prizePool}
         />
       </>
     )

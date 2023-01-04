@@ -1,4 +1,4 @@
-import { DepositReviewView as DepositReviewViewCore } from '@components/ModalViews/DepositReviewView'
+import { DepositReviewViewCore } from '@components/ModalViews/DepositReviewViewCore'
 import { ReviewTransactionViewProps } from '@components/ModalViews/ReviewTransactionView'
 import { Amount } from '@pooltogether/hooks'
 import { Transaction } from '@pooltogether/wallet-connection'
