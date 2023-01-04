@@ -1,4 +1,4 @@
-import { useDrawLocks } from '@hooks/v4/PrizeDistributor/useDrawLocks'
+import { useAllDrawLocks } from '@hooks/v4/PrizeDistributor/useAllDrawLocks'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState, usePrizePageState } from '@hooks/v4/usePrizePageState'
@@ -100,7 +100,7 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
   const firstLockDrawId = lockedPartialDrawDatasList?.[0]?.draw.drawId
   const { t } = useTranslation()
 
-  const queryResults = useDrawLocks()
+  const queryResults = useAllDrawLocks()
   const drawLocks = queryResults
     .filter(({ isFetched, data, isError }) => isFetched && !isError && data !== null)
     .map(({ data }) => data)

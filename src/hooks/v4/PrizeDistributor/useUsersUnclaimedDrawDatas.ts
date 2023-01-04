@@ -4,8 +4,9 @@ import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
 import { DrawData } from '../../../interfaces/v4'
+import { useAllDrawLocks } from './useAllDrawLocks'
+import { useAllLockedDrawIds } from './useAllLockedDrawIds'
 import { useDrawLocks } from './useDrawLocks'
-import { useLockedDrawIds } from './useLockedDrawIds'
 import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
@@ -38,9 +39,11 @@ export const useUsersUnclaimedDrawDatas = (
   prizeDistributor: PrizeDistributor
 ) => {
   // Generic data
-  const lockedDrawIds = useLockedDrawIds()
-  const queryResults = useDrawLocks()
-  const isDrawLocksFetched = queryResults.every(({ isFetched, isError }) => isFetched && !isError)
+  const {
+    data: drawLock,
+    isFetched: isDrawLockFetched,
+    isError: isDrawLockError
+  } = useDrawLocks(prizeDistributor)
 
   const { data: drawDatas, isFetched: isDrawDatasFetched } = useValidDrawDatas(prizeDistributor)
   // User specific data
@@ -67,13 +70,14 @@ export const useUsersUnclaimedDrawDatas = (
 
   const enabled =
     Boolean(prizeDistributor) &&
-    isDrawLocksFetched &&
+    isDrawLockFetched &&
+    !isDrawLockError &&
     isDrawDatasFetched &&
     isNormalizedBalancesFetched &&
     isClaimedAmountsFetched &&
     userAddressesMatch
 
-  const lockedDrawsKey = lockedDrawIds ? 'lockedDraws-' + lockedDrawIds.join(',') : ''
+  const lockedDrawsKey = 'lockedDraw-' + drawLock?.drawId
   const claimedAmountsKey = claimedAmounts
     ? 'claimedAmounts-' +
       Object.values(claimedAmounts)
@@ -101,7 +105,7 @@ export const useUsersUnclaimedDrawDatas = (
     async () =>
       getUnclaimedDrawDatas(
         usersAddress,
-        lockedDrawIds,
+        drawLock?.drawId,
         drawDatas,
         normalizedBalances,
         claimedAmounts,
@@ -115,7 +119,7 @@ export const useUsersUnclaimedDrawDatas = (
 
 const getUnclaimedDrawDatas = async (
   usersAddress: string,
-  lockedDrawIds: number[],
+  lockedDrawId: number,
   drawDatas: { [drawId: number]: DrawData },
   normalizedBalances: { [drawId: number]: BigNumber },
   claimedAmounts: { [drawId: number]: Amount },
@@ -132,7 +136,7 @@ const getUnclaimedDrawDatas = async (
     const drawData = drawDatas[drawId]
     const claimedAmount = claimedAmounts[drawId]
     const normalizedBalance = normalizedBalances[drawId]
-    const isLocked = lockedDrawIds.includes(drawId)
+    const isLocked = lockedDrawId === drawId
     const drawResult = drawResults?.[drawId]
 
     const { draw, prizeDistribution } = drawData
