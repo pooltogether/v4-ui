@@ -177,7 +177,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         tabs={approvalTypeTabs}
       />
       <ModalInfoList className='mb-2'>
-        <EstimatedDepositGasItems chainId={chainId} showApprove />
+        <EstimatedDepositGasItems chainId={chainId} showApprove={approvalType !== 'eip2612'} />
       </ModalInfoList>
       <div className='mb-6'>
         <DepositLowAmountWarning chainId={chainId} amountToDeposit={amountToDeposit} />

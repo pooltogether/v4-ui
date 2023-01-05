@@ -61,7 +61,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
 
   const { t } = useTranslation()
 
-  // TODO: need to make it so that after signing approvals, the view switches to the last tx view
+  // TODO: need to make it so that after signing approvals, the view switches to the last tx view with necessary signatures
 
   if (
     !isTokensFetched ||
