@@ -36,7 +36,7 @@ interface ModalApproveGateProps {
   prizePool: PrizePool
 }
 
-type ApprovalType = 'eip2612' | 'infinite' | 'simple'
+type ApprovalType = 'eip2612' | 'infinite' | 'exact'
 
 interface ApprovalTypeTab extends Tab {
   id: ApprovalType
@@ -105,7 +105,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     } else if (approvalType === 'infinite') {
       const transactionId = await _sendInfiniteApproveTx()
       setApproveTransactionId(transactionId)
-    } else if (approvalType === 'simple') {
+    } else if (approvalType === 'exact') {
       const transactionId = await _sendApproveTx()
       setApproveTransactionId(transactionId)
     }
@@ -124,9 +124,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
       title: 'Infinite'
     },
     {
-      id: 'simple',
-      view: <ApprovalInfo type='simple' />,
-      title: 'Simple'
+      id: 'exact',
+      view: <ApprovalInfo type='exact' />,
+      title: 'Exact'
     }
   ]
   if (!supportsEIP2612) {
@@ -163,7 +163,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
   return (
     <div className={classNames(className, 'flex flex-col')}>
       <div className='mx-4 text-inverse opacity-60'>
-        <p className='mb-4'>
+        <p className='mb-6'>
           {t(
             'prizePoolContractsRequireApprovals',
             `PoolTogether's Prize Pool contracts require you to send an approval transaction before depositing.`
@@ -211,8 +211,8 @@ const ApprovalInfo = (props: { type: ApprovalType }) => {
     infinite: [
       'By sending an infinite approval, you will not need to send another approval transaction on your next deposit.'
     ],
-    simple: [
-      'A simple approval transaction will only approve your exact deposit amount for transacting.'
+    exact: [
+      'An exact approval transaction will only approve your exact deposit amount for transacting.'
     ]
   }
 
