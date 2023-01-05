@@ -8,7 +8,9 @@ import {
   ButtonLink,
   ButtonTheme,
   ThemedClipSpinner,
-  ButtonRadius
+  ButtonRadius,
+  Tabs,
+  Tab
 } from '@pooltogether/react-components'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import {
@@ -35,6 +37,10 @@ interface ModalApproveGateProps {
 }
 
 type ApprovalType = 'eip2612' | 'infinite' | 'simple'
+
+interface ApprovalTypeTab extends Tab {
+  id: ApprovalType
+}
 
 /**
  * @param props
@@ -105,6 +111,28 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     }
   }
 
+  // TODO: localization
+  const approvalTypeTabs: ApprovalTypeTab[] = [
+    {
+      id: 'eip2612',
+      view: <ApprovalInfo type='eip2612' />,
+      title: 'Signature'
+    },
+    {
+      id: 'infinite',
+      view: <ApprovalInfo type='infinite' />,
+      title: 'Infinite'
+    },
+    {
+      id: 'simple',
+      view: <ApprovalInfo type='simple' />,
+      title: 'Simple'
+    }
+  ]
+  if (!supportsEIP2612) {
+    approvalTypeTabs.shift()
+  }
+
   if (approveTransaction?.state === TransactionState.pending) {
     const blockExplorerUrl = formatBlockExplorerTxUrl(approveTransaction.response?.hash, chainId)
 
@@ -134,9 +162,6 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
 
   return (
     <div className={classNames(className, 'flex flex-col')}>
-      {/* TODO: add general info on approvals */}
-      {/* TODO: add tabs for different approval types (only show eip2612 for specific pools) */}
-      {/* TODO: add information for each type (sigs cannot be used on multisig/sc wallets, etc.) */}
       <div className='mx-4 text-inverse opacity-60'>
         <p className='mb-4'>
           {t(
@@ -144,20 +169,13 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
             `PoolTogether's Prize Pool contracts require you to send an approval transaction before depositing.`
           )}
         </p>
-        <p className='mb-4'>{t('thisIsOncePerNetworkIfInfinite')}</p>
-        <p className='mb-10'>
-          {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
-          <a
-            target='_blank'
-            rel='noreferrer'
-            className='underline'
-            href='https://docs.pooltogether.com/how-to/how-to-deposit'
-          >
-            {t('howToDeposit', 'How to deposit')}
-          </a>
-          .
-        </p>
       </div>
+      <Tabs
+        titleClassName='mx-4 mb-4'
+        initialTabId={approvalType}
+        onTabSelect={(tab) => setApprovalType(tab.id as ApprovalType)}
+        tabs={approvalTypeTabs}
+      />
       <ModalInfoList className='mb-2'>
         <EstimatedDepositGasItems chainId={chainId} showApprove />
       </ModalInfoList>
@@ -173,9 +191,48 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         status={approvalType === 'eip2612' ? signatureApprovalStatus : approveTransaction?.status}
         connectWallet={connectWallet}
       >
-        {/* TODO: change button text based on type selection */}
-        {t('confirmApproval', 'Confirm approval')}
+        {/* TODO: localization */}
+        {approvalType === 'eip2612' ? 'Sign approval' : t('confirmApproval')}
       </TxButton>
+    </div>
+  )
+}
+
+const ApprovalInfo = (props: { type: ApprovalType }) => {
+  const { type } = props
+  const { t } = useTranslation()
+
+  // TODO: localization
+  const content: Record<ApprovalType, string[]> = {
+    eip2612: [
+      'Through EIP 2612 signatures, you are able to approve your deposit without paying gas fees!',
+      'Keep in mind this cannot be used with multisigs or smart contract wallets.'
+    ],
+    infinite: [
+      'By sending an infinite approval, you will not need to send another approval transaction on your next deposit.'
+    ],
+    simple: [
+      'A simple approval transaction will only approve your exact deposit amount for transacting.'
+    ]
+  }
+
+  return (
+    <div className='mx-4 text-inverse opacity-60'>
+      {content[type].map((text) => {
+        return <p className='mb-4'>{text}</p>
+      })}
+      <p className='mb-10'>
+        {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
+        <a
+          target='_blank'
+          rel='noreferrer'
+          className='underline'
+          href='https://docs.pooltogether.com/how-to/how-to-deposit'
+        >
+          {t('howToDeposit', 'How to deposit')}
+        </a>
+        .
+      </p>
     </div>
   )
 }
