@@ -171,11 +171,26 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </p>
       </div>
       <Tabs
-        titleClassName='mx-4 mb-4'
+        titleClassName='px-4 pt-4 pb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-t-lg'
+        className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-b-lg'
         initialTabId={approvalType}
         onTabSelect={(tab) => setApprovalType(tab.id as ApprovalType)}
         tabs={approvalTypeTabs}
       />
+      <div className='mx-4 text-inverse opacity-60'>
+        <p className='mb-10'>
+          {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
+          <a
+            target='_blank'
+            rel='noreferrer'
+            className='underline'
+            href='https://docs.pooltogether.com/how-to/how-to-deposit'
+          >
+            {t('howToDeposit', 'How to deposit')}
+          </a>
+          .
+        </p>
+      </div>
       <ModalInfoList className='mb-2'>
         <EstimatedDepositGasItems chainId={chainId} showApprove={approvalType !== 'eip2612'} />
       </ModalInfoList>
@@ -221,18 +236,6 @@ const ApprovalInfo = (props: { type: ApprovalType }) => {
       {content[type].map((text) => {
         return <p className='mb-4'>{text}</p>
       })}
-      <p className='mb-10'>
-        {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
-        <a
-          target='_blank'
-          rel='noreferrer'
-          className='underline'
-          href='https://docs.pooltogether.com/how-to/how-to-deposit'
-        >
-          {t('howToDeposit', 'How to deposit')}
-        </a>
-        .
-      </p>
     </div>
   )
 }
