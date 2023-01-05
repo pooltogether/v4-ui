@@ -1,6 +1,7 @@
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { TxButton } from '@components/Input/TxButton'
+import { SUPPORTED_EIP2612_PRIZE_POOL_IDS } from '@constants/config'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import {
@@ -35,10 +36,6 @@ interface ModalApproveGateProps {
 
 type ApprovalType = 'eip2612' | 'infinite' | 'simple'
 
-// TODO: make easy and good looking method to switch between different approval types
-// TODO: add context to each approval type to make sure users know what they are doing
-// TODO: note that signature approvals do not work on multisigs or smart contract wallets
-
 /**
  * @param props
  * @returns
@@ -60,7 +57,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     spenderAddress,
     tokenAddress
   )
-  const [approvalType, setApprovalType] = useState<ApprovalType>('eip2612')
+  const supportsEIP2612 = SUPPORTED_EIP2612_PRIZE_POOL_IDS.includes(prizePool.id())
+  const defaultApprovalType: ApprovalType = supportsEIP2612 ? 'eip2612' : 'infinite'
+  const [approvalType, setApprovalType] = useState<ApprovalType>(defaultApprovalType)
   const [approveTransactionId, setApproveTransactionId] = useState('')
   const [signatureApprovalStatus, setSignatureApprovalStatus] = useState<
     TransactionStatus | undefined
@@ -135,6 +134,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
 
   return (
     <div className={classNames(className, 'flex flex-col')}>
+      {/* TODO: add general info on approvals */}
+      {/* TODO: add tabs for different approval types (only show eip2612 for specific pools) */}
+      {/* TODO: add information for each type (sigs cannot be used on multisig/sc wallets, etc.) */}
       <div className='mx-4 text-inverse opacity-60'>
         <p className='mb-4'>
           {t(
@@ -171,6 +173,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         status={approvalType === 'eip2612' ? signatureApprovalStatus : approveTransaction?.status}
         connectWallet={connectWallet}
       >
+        {/* TODO: change button text based on type selection */}
         {t('confirmApproval', 'Confirm approval')}
       </TxButton>
     </div>

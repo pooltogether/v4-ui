@@ -163,6 +163,13 @@ export const CHAIN_NATIVE_CURRENCY = Object.freeze({
   [CHAIN_ID.fuji]: 'AVAX'
 })
 
+// These pools have EIP2612-compatible tokens and thus can have gasless approvals:
+export const SUPPORTED_EIP2612_PRIZE_POOL_IDS: string[] = [
+  `0xd89a09084555a7D0ABe7B111b1f78DFEdDd638Be-${CHAIN_ID.mainnet}`,
+  `0x19DE635fb3678D8B8154E37d8C9Cdf182Fe84E60-${CHAIN_ID.polygon}`,
+  `0x7b36f452f13f897eC1CCBe660A64971B6095f666-${CHAIN_ID.goerli}`
+]
+
 /**
  * Urls used for quick links to onramps for users
  */
