@@ -12,7 +12,7 @@ import {
   Tabs,
   Tab
 } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-client-js'
+import { ERC2612PermitMessage, PrizePool } from '@pooltogether/v4-client-js'
 import {
   formatBlockExplorerTxUrl,
   TransactionState,
@@ -23,8 +23,10 @@ import {
 } from '@pooltogether/wallet-connection'
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
+import { RSV } from 'eth-permit/dist/rpc'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ApprovalType } from './DepositTrigger/DepositModal'
 
 interface ModalApproveGateProps {
   className?: string
@@ -34,9 +36,11 @@ interface ModalApproveGateProps {
   spenderAddress: string
   tokenAddress: string
   prizePool: PrizePool
+  approvalType: ApprovalType
+  setApprovalType: (type: ApprovalType) => void
+  setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
+  setEip2612DelegationPermit?: (permit: ERC2612PermitMessage & RSV) => void
 }
-
-type ApprovalType = 'eip2612' | 'infinite' | 'exact'
 
 interface ApprovalTypeTab extends Tab {
   id: ApprovalType
@@ -54,7 +58,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     connectWallet,
     spenderAddress,
     tokenAddress,
-    prizePool
+    prizePool,
+    approvalType,
+    setApprovalType,
+    setEip2612DepositPermit,
+    setEip2612DelegationPermit
   } = props
   const usersAddress = useUsersAddress()
   const { refetch: refetchTokenAllowance } = useTokenAllowance(
@@ -63,9 +71,6 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     spenderAddress,
     tokenAddress
   )
-  const supportsEIP2612 = SUPPORTED_EIP2612_PRIZE_POOL_IDS.includes(prizePool.id())
-  const defaultApprovalType: ApprovalType = supportsEIP2612 ? 'eip2612' : 'infinite'
-  const [approvalType, setApprovalType] = useState<ApprovalType>(defaultApprovalType)
   const [approveTransactionId, setApproveTransactionId] = useState('')
   const [signatureApprovalStatus, setSignatureApprovalStatus] = useState<
     TransactionStatus | undefined
@@ -85,8 +90,6 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
   const getUser = useGetUser(prizePool)
   const { t } = useTranslation()
 
-  // TODO: send signatures to deposit view to build transaction with permits
-
   const approveDeposit = async () => {
     if (approvalType === 'eip2612') {
       setSignatureApprovalStatus(TransactionStatus.pendingUserConfirmation)
@@ -95,9 +98,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         const depositSignature = await user.getPermitAndDepositSignaturePromise(
           amountToDeposit.amountUnformatted
         )
+        setEip2612DepositPermit(depositSignature)
         const delegationSignature = await user.getPermitAndDelegateSignaturePromise(
           amountToDeposit.amountUnformatted
         )
+        setEip2612DelegationPermit(delegationSignature)
         setSignatureApprovalStatus(TransactionStatus.success)
       } catch {
         setSignatureApprovalStatus(TransactionStatus.error)
@@ -129,7 +134,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
       title: 'Exact'
     }
   ]
-  if (!supportsEIP2612) {
+  if (!SUPPORTED_EIP2612_PRIZE_POOL_IDS.includes(prizePool.id())) {
     approvalTypeTabs.shift()
   }
 
@@ -170,6 +175,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           )}
         </p>
       </div>
+      {/* TODO: make it visually clearer that the user is selecting options, not just viewing info */}
       <Tabs
         titleClassName='px-4 pt-4 pb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-t-lg'
         className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-b-lg'

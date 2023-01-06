@@ -6,9 +6,12 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
+import { ERC2612PermitMessage } from '@pooltogether/v4-client-js'
 import { Transaction, TransactionStatus, useUsersAddress } from '@pooltogether/wallet-connection'
+import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
+import { RSV } from 'eth-permit/dist/rpc'
 import { useTranslation } from 'react-i18next'
 
 export interface ReviewTransactionViewProps extends ViewProps {
@@ -24,6 +27,12 @@ export interface ReviewTransactionViewProps extends ViewProps {
   tokenAddress?: string
   amount?: Amount
   buttonTexti18nKey?: string
+  approvalType: ApprovalType
+  setApprovalType: (type: ApprovalType) => void
+  eip2612DepositPermit?: ERC2612PermitMessage & RSV
+  eip2612DelegationPermit?: ERC2612PermitMessage & RSV
+  setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
+  setEip2612DelegationPermit?: (permit: ERC2612PermitMessage & RSV) => void
 }
 
 /**
@@ -45,7 +54,13 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     amount,
     spenderAddress,
     tokenAddress,
-    buttonTexti18nKey
+    buttonTexti18nKey,
+    approvalType,
+    setApprovalType,
+    eip2612DepositPermit,
+    eip2612DelegationPermit,
+    setEip2612DepositPermit,
+    setEip2612DelegationPermit
   } = props
   const { chainId } = useSelectedChainId()
   const prizePool = useSelectedPrizePool()
@@ -59,9 +74,9 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const { isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const amountUnformatted = amount?.amountUnformatted
 
-  const { t } = useTranslation()
+  // TODO: need to check for permit value and deadline validity in order to move past the approval gating
 
-  // TODO: need to make it so that after signing approvals, the view switches to the last tx view with necessary signatures
+  const { t } = useTranslation()
 
   if (
     !isTokensFetched ||
@@ -73,7 +88,12 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
         <ModalLoadingGate />
       </>
     )
-  } else if (!isIdle && !!amountUnformatted && allowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (
+    !isIdle &&
+    !!amountUnformatted &&
+    allowanceUnformatted?.lt(amountUnformatted) &&
+    (!eip2612DepositPermit || !eip2612DelegationPermit)
+  ) {
     return (
       <>
         <ModalApproveGate
@@ -83,6 +103,10 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           spenderAddress={spenderAddress}
           tokenAddress={tokenAddress}
           prizePool={prizePool}
+          approvalType={approvalType}
+          setApprovalType={setApprovalType}
+          setEip2612DepositPermit={setEip2612DepositPermit}
+          setEip2612DelegationPermit={setEip2612DelegationPermit}
         />
       </>
     )
