@@ -12,6 +12,7 @@ import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
 import { RSV } from 'eth-permit/dist/rpc'
+import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
 export interface ReviewTransactionViewProps extends ViewProps {
@@ -74,7 +75,26 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const { isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const amountUnformatted = amount?.amountUnformatted
 
-  // TODO: need to check for permit value and deadline validity in order to move past the approval gating
+  const hasAllValidApprovalSignatures = () => {
+    if (!!eip2612DepositPermit && !!eip2612DelegationPermit) {
+      return (
+        isValidApprovalSignature(eip2612DepositPermit) &&
+        isValidApprovalSignature(eip2612DelegationPermit)
+      )
+    }
+    return false
+  }
+
+  const isValidApprovalSignature = (signature: ERC2612PermitMessage & RSV) => {
+    const timeNowInS = Date.now() / 1000
+    return (
+      signature.owner.toLowerCase() === usersAddress.toLowerCase() &&
+      signature.spender.toLowerCase() ===
+        prizePool.eip2612PermitAndDepositMetadata.address.toLowerCase() &&
+      BigNumber.from(signature.value).gte(amountUnformatted) &&
+      Number(signature.deadline) >= timeNowInS + 20
+    )
+  }
 
   const { t } = useTranslation()
 
@@ -92,7 +112,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     !isIdle &&
     !!amountUnformatted &&
     allowanceUnformatted?.lt(amountUnformatted) &&
-    (!eip2612DepositPermit || !eip2612DelegationPermit)
+    !hasAllValidApprovalSignatures()
   ) {
     return (
       <>

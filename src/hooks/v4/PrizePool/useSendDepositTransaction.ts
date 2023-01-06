@@ -41,6 +41,8 @@ export const useSendDepositTransaction = (
     const name = `${t('deposit')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
     let callTransaction
     if (!!eip2612) {
+      // TODO: [BUG] sometimes the `depositPermit` and `delegationPermit` aren't being passed properly
+      // console.log(eip2612)
       if (!eip2612.depositPermit || !eip2612.delegationPermit) {
         throw Error('No valid deposit and delegation EIP2612 permits.')
       }
