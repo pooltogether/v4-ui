@@ -175,14 +175,15 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
           )}
         </p>
       </div>
-      {/* TODO: make it visually clearer that the user is selecting options, not just viewing info */}
-      <Tabs
-        titleClassName='px-4 pt-4 pb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-t-lg'
-        className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-b-lg'
-        initialTabId={approvalType}
-        onTabSelect={(tab) => setApprovalType(tab.id as ApprovalType)}
-        tabs={approvalTypeTabs}
-      />
+      <div className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
+        <h6 className='mx-4 mt-4'>Choose your approval method:</h6>
+        <Tabs
+          titleClassName='p-4'
+          initialTabId={approvalType}
+          onTabSelect={(tab) => setApprovalType(tab.id as ApprovalType)}
+          tabs={approvalTypeTabs}
+        />
+      </div>
       <div className='mx-4 text-inverse opacity-60'>
         <p className='mb-10'>
           {t('forMoreInfoOnApprovals', `For more info on approvals see:`)}{' '}
