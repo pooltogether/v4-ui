@@ -2,6 +2,7 @@ import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
 import { TxButton } from '@components/Input/TxButton'
 import { SUPPORTED_EIP2612_PRIZE_POOL_IDS } from '@constants/config'
+import { useUsersTicketDelegate } from '@hooks/v4/PrizePool/useUsersTicketDelegate'
 import { useGetUser } from '@hooks/v4/User/useGetUser'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import {
@@ -12,7 +13,11 @@ import {
   Tabs,
   Tab
 } from '@pooltogether/react-components'
-import { ERC2612PermitMessage, PrizePool } from '@pooltogether/v4-client-js'
+import {
+  ERC2612PermitMessage,
+  ERC2612TicketPermitMessage,
+  PrizePool
+} from '@pooltogether/v4-client-js'
 import {
   formatBlockExplorerTxUrl,
   TransactionState,
@@ -24,6 +29,7 @@ import {
 import { DepositLowAmountWarning } from '@views/DepositLowAmountWarning'
 import classNames from 'classnames'
 import { RSV } from 'eth-permit/dist/rpc'
+import { ethers } from 'ethers'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ApprovalType } from './DepositTrigger/DepositModal'
@@ -39,7 +45,7 @@ interface ModalApproveGateProps {
   approvalType: ApprovalType
   setApprovalType: (type: ApprovalType) => void
   setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
-  setEip2612DelegationPermit?: (permit: ERC2612PermitMessage & RSV) => void
+  setEip2612DelegationPermit?: (permit: ERC2612TicketPermitMessage & RSV) => void
 }
 
 interface ApprovalTypeTab extends Tab {
@@ -88,6 +94,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     amountToDeposit.amountUnformatted
   )
   const getUser = useGetUser(prizePool)
+  const { data: delegateData } = useUsersTicketDelegate(usersAddress, prizePool)
   const { t } = useTranslation()
 
   const approveDeposit = async () => {
@@ -100,7 +107,9 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         )
         setEip2612DepositPermit(depositSignature)
         const delegationSignature = await user.getPermitAndDelegateSignaturePromise(
-          amountToDeposit.amountUnformatted
+          delegateData.ticketDelegate === ethers.constants.AddressZero
+            ? usersAddress
+            : delegateData.ticketDelegate
         )
         setEip2612DelegationPermit(delegationSignature)
         setSignatureApprovalStatus(TransactionStatus.success)
@@ -176,6 +185,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </p>
       </div>
       <div className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
+        {/* TODO: localization */}
         <h6 className='mx-4 mt-4'>Choose your approval method:</h6>
         <Tabs
           titleClassName='p-4'
@@ -240,8 +250,12 @@ const ApprovalInfo = (props: { type: ApprovalType }) => {
 
   return (
     <div className='mx-4 text-inverse opacity-60'>
-      {content[type].map((text) => {
-        return <p className='mb-4'>{text}</p>
+      {content[type].map((text, i) => {
+        return (
+          <p className='mb-4' key={`p-info-${type}-${i}`}>
+            {text}
+          </p>
+        )
       })}
     </div>
   )

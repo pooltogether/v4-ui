@@ -1,6 +1,6 @@
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { Amount } from '@pooltogether/hooks'
-import { ERC2612PermitMessage } from '@pooltogether/v4-client-js'
+import { ERC2612PermitMessage, ERC2612TicketPermitMessage } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { RSV } from 'eth-permit/dist/rpc'
@@ -18,7 +18,7 @@ export const useSendDepositTransaction = (
   depositAmount: Amount,
   eip2612?: {
     depositPermit: ERC2612PermitMessage & RSV
-    delegationPermit: ERC2612PermitMessage & RSV
+    delegationPermit: ERC2612TicketPermitMessage & RSV
   }
 ) => {
   const _sendTransaction = useSendTransaction()
@@ -44,8 +44,7 @@ export const useSendDepositTransaction = (
       if (!eip2612.depositPermit || !eip2612.delegationPermit) {
         throw Error('No valid deposit and delegation EIP2612 permits.')
       }
-      // TODO: confirm gasLimit override once function has been tested
-      // const overrides: Overrides = { gasLimit: 750000 }
+      const overrides: Overrides = { gasLimit: 800000 }
       callTransaction = async () => {
         const user = await getUser()
         const delegationTarget =
@@ -56,8 +55,8 @@ export const useSendDepositTransaction = (
           depositAmount.amountUnformatted,
           eip2612.depositPermit,
           eip2612.delegationPermit,
-          delegationTarget
-          // overrides
+          delegationTarget,
+          overrides
         )
       }
     } else if (delegateData.ticketDelegate === ethers.constants.AddressZero) {

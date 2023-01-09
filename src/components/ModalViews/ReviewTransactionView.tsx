@@ -6,7 +6,7 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
-import { ERC2612PermitMessage } from '@pooltogether/v4-client-js'
+import { ERC2612PermitMessage, ERC2612TicketPermitMessage } from '@pooltogether/v4-client-js'
 import { Transaction, TransactionStatus, useUsersAddress } from '@pooltogether/wallet-connection'
 import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
@@ -33,7 +33,7 @@ export interface ReviewTransactionViewProps extends ViewProps {
   eip2612DepositPermit?: ERC2612PermitMessage & RSV
   eip2612DelegationPermit?: ERC2612PermitMessage & RSV
   setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
-  setEip2612DelegationPermit?: (permit: ERC2612PermitMessage & RSV) => void
+  setEip2612DelegationPermit?: (permit: ERC2612TicketPermitMessage & RSV) => void
 }
 
 /**
@@ -85,15 +85,24 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     return false
   }
 
-  const isValidApprovalSignature = (signature: ERC2612PermitMessage & RSV) => {
+  const isValidApprovalSignature = (
+    signature: (ERC2612PermitMessage | ERC2612TicketPermitMessage) & RSV
+  ) => {
     const timeNowInS = Date.now() / 1000
-    return (
-      signature.owner.toLowerCase() === usersAddress.toLowerCase() &&
-      signature.spender.toLowerCase() ===
-        prizePool.eip2612PermitAndDepositMetadata.address.toLowerCase() &&
-      BigNumber.from(signature.value).gte(amountUnformatted) &&
-      Number(signature.deadline) >= timeNowInS + 20
-    )
+    if ('owner' in signature) {
+      return (
+        signature.owner.toLowerCase() === usersAddress.toLowerCase() &&
+        signature.spender.toLowerCase() ===
+          prizePool.eip2612PermitAndDepositMetadata.address.toLowerCase() &&
+        BigNumber.from(signature.value).gte(amountUnformatted) &&
+        Number(signature.deadline) >= timeNowInS + 20
+      )
+    } else {
+      return (
+        signature.user.toLowerCase() === usersAddress.toLowerCase() &&
+        Number(signature.deadline) >= timeNowInS + 20
+      )
+    }
   }
 
   const { t } = useTranslation()

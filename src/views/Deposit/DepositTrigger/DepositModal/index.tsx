@@ -8,7 +8,11 @@ import {
   ModalWithViewStateView,
   snapToFull
 } from '@pooltogether/react-components'
-import { ERC2612PermitMessage, PrizePool } from '@pooltogether/v4-client-js'
+import {
+  ERC2612PermitMessage,
+  ERC2612TicketPermitMessage,
+  PrizePool
+} from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
 import { RSV } from 'eth-permit/dist/rpc'
 import { useTranslation } from 'next-i18next'
@@ -54,7 +58,7 @@ export const DepositModal: React.FC<{
   const [approvalType, setApprovalType] = useState<ApprovalType>(defaultApprovalType)
   const [eip2612DepositPermit, setEip2612DepositPermit] = useState<ERC2612PermitMessage & RSV>()
   const [eip2612DelegationPermit, setEip2612DelegationPermit] = useState<
-    ERC2612PermitMessage & RSV
+    ERC2612TicketPermitMessage & RSV
   >()
   useEffect(() => {
     setApprovalType(defaultApprovalType)
@@ -63,13 +67,15 @@ export const DepositModal: React.FC<{
   /**
    * Submit the transaction to deposit and store the transaction id in state
    */
-  const _sendDepositTransaction =
+  const _sendDepositTransaction = useSendDepositTransaction(
+    depositAmount,
     approvalType === 'eip2612'
-      ? useSendDepositTransaction(depositAmount, {
+      ? {
           depositPermit: eip2612DepositPermit,
           delegationPermit: eip2612DelegationPermit
-        })
-      : useSendDepositTransaction(depositAmount)
+        }
+      : undefined
+  )
   const sendDepositTransaction = useCallback(
     () => setDepositTransactionId(_sendDepositTransaction()),
     [_sendDepositTransaction]
