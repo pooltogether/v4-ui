@@ -44,7 +44,7 @@
     "@pooltogether/react-components": "2.0.2",
     "@pooltogether/utilities": "^0.7.0",
     "@pooltogether/v4-client-js": "1.17.1",
-    "@pooltogether/v4-pool-data": "1.11.0-beta.7",
+    "@pooltogether/v4-pool-data": "1.11.0-beta.8",
     "@pooltogether/v4-twab-delegator-js": "0.2.2",
     "@pooltogether/v4-utils-js": "0.1.5",
     "@pooltogether/wallet-connection": "^1.0.0-beta.4",
