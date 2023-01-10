@@ -125,22 +125,21 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     }
   }
 
-  // TODO: localization
   const approvalTypeTabs: ApprovalTypeTab[] = [
     {
       id: 'eip2612',
       view: <ApprovalInfo type='eip2612' />,
-      title: 'Signature'
+      title: t('signature')
     },
     {
       id: 'infinite',
       view: <ApprovalInfo type='infinite' />,
-      title: 'Infinite'
+      title: t('infinite')
     },
     {
       id: 'exact',
       view: <ApprovalInfo type='exact' />,
-      title: 'Exact'
+      title: t('exact')
     }
   ]
   if (!SUPPORTED_EIP2612_PRIZE_POOL_IDS.includes(prizePool.id())) {
@@ -185,8 +184,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         </p>
       </div>
       <div className='mb-4 bg-white bg-opacity-20 dark:bg-actually-black dark:bg-opacity-10 rounded-lg'>
-        {/* TODO: localization */}
-        <h6 className='mx-4 mt-4'>Choose your approval method:</h6>
+        <h6 className='mx-4 mt-4'>{t('chooseApprovalMethod')}</h6>
         <Tabs
           titleClassName='p-4'
           initialTabId={approvalType}
@@ -223,8 +221,7 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
         status={approvalType === 'eip2612' ? signatureApprovalStatus : approveTransaction?.status}
         connectWallet={connectWallet}
       >
-        {/* TODO: localization */}
-        {approvalType === 'eip2612' ? 'Sign approval' : t('confirmApproval')}
+        {approvalType === 'eip2612' ? t('signApproval') : t('confirmApproval')}
       </TxButton>
     </div>
   )
@@ -234,18 +231,10 @@ const ApprovalInfo = (props: { type: ApprovalType }) => {
   const { type } = props
   const { t } = useTranslation()
 
-  // TODO: localization
   const content: Record<ApprovalType, string[]> = {
-    eip2612: [
-      'Through EIP 2612 signatures, you are able to approve your deposit without paying gas fees!',
-      'Keep in mind this cannot be used with multisigs or smart contract wallets.'
-    ],
-    infinite: [
-      'By sending an infinite approval, you will not need to send another approval transaction on your next deposit.'
-    ],
-    exact: [
-      'An exact approval transaction will only approve your exact deposit amount for transacting.'
-    ]
+    eip2612: [t('signatureApprovalDescription'), t('signatureApprovalCompatibilityWarning')],
+    infinite: [t('infiniteApprovalDescription')],
+    exact: [t('exactApprovalDescription')]
   }
 
   return (
