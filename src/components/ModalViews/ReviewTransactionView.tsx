@@ -6,9 +6,13 @@ import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount, useTokenAllowance } from '@pooltogether/hooks'
 import { Button, ButtonRadius, ButtonTheme, ViewProps } from '@pooltogether/react-components'
+import { ERC2612PermitMessage, ERC2612TicketPermitMessage } from '@pooltogether/v4-client-js'
 import { Transaction, TransactionStatus, useUsersAddress } from '@pooltogether/wallet-connection'
+import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { ModalApproveGate } from '@views/Deposit/ModalApproveGate'
 import { ModalLoadingGate } from '@views/Deposit/ModalLoadingGate'
+import { RSV } from 'eth-permit/dist/rpc'
+import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
 export interface ReviewTransactionViewProps extends ViewProps {
@@ -24,6 +28,12 @@ export interface ReviewTransactionViewProps extends ViewProps {
   tokenAddress?: string
   amount?: Amount
   buttonTexti18nKey?: string
+  approvalType: ApprovalType
+  setApprovalType: (type: ApprovalType) => void
+  eip2612DepositPermit?: ERC2612PermitMessage & RSV
+  eip2612DelegationPermit?: ERC2612PermitMessage & RSV
+  setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
+  setEip2612DelegationPermit?: (permit: ERC2612TicketPermitMessage & RSV) => void
 }
 
 /**
@@ -45,7 +55,13 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     amount,
     spenderAddress,
     tokenAddress,
-    buttonTexti18nKey
+    buttonTexti18nKey,
+    approvalType,
+    setApprovalType,
+    eip2612DepositPermit,
+    eip2612DelegationPermit,
+    setEip2612DepositPermit,
+    setEip2612DelegationPermit
   } = props
   const { chainId } = useSelectedChainId()
   const prizePool = useSelectedPrizePool()
@@ -59,6 +75,36 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
   const { isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
   const amountUnformatted = amount?.amountUnformatted
 
+  const hasAllValidApprovalSignatures = () => {
+    if (!!eip2612DepositPermit && !!eip2612DelegationPermit) {
+      return (
+        isValidApprovalSignature(eip2612DepositPermit) &&
+        isValidApprovalSignature(eip2612DelegationPermit)
+      )
+    }
+    return false
+  }
+
+  const isValidApprovalSignature = (
+    signature: (ERC2612PermitMessage | ERC2612TicketPermitMessage) & RSV
+  ) => {
+    const timeNowInS = Date.now() / 1000
+    if ('owner' in signature) {
+      return (
+        signature.owner.toLowerCase() === usersAddress.toLowerCase() &&
+        signature.spender.toLowerCase() ===
+          prizePool.eip2612PermitAndDepositMetadata.address.toLowerCase() &&
+        BigNumber.from(signature.value).gte(amountUnformatted) &&
+        Number(signature.deadline) >= timeNowInS + 20
+      )
+    } else {
+      return (
+        signature.user.toLowerCase() === usersAddress.toLowerCase() &&
+        Number(signature.deadline) >= timeNowInS + 20
+      )
+    }
+  }
+
   const { t } = useTranslation()
 
   if (
@@ -71,7 +117,12 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
         <ModalLoadingGate />
       </>
     )
-  } else if (!isIdle && !!amountUnformatted && allowanceUnformatted?.lt(amountUnformatted)) {
+  } else if (
+    !isIdle &&
+    !!amountUnformatted &&
+    allowanceUnformatted?.lt(amountUnformatted) &&
+    !hasAllValidApprovalSignatures()
+  ) {
     return (
       <>
         <ModalApproveGate
@@ -80,6 +131,11 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
           chainId={chainId}
           spenderAddress={spenderAddress}
           tokenAddress={tokenAddress}
+          prizePool={prizePool}
+          approvalType={approvalType}
+          setApprovalType={setApprovalType}
+          setEip2612DepositPermit={setEip2612DepositPermit}
+          setEip2612DelegationPermit={setEip2612DelegationPermit}
         />
       </>
     )

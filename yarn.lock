@@ -2349,10 +2349,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/utilities/-/utilities-0.7.0.tgz#2d9b14beb9ce25ec9fcf63091bb4623567406878"
   integrity sha512-BSzMGG5/lFHvx8diZxQpkJ/yNOxqnMfimWpgs4AVQmdXAyn7NhfM8CJJ/17OnQ0I7qOCXqiZhQcQholEynSyRg==
 
-"@pooltogether/v4-client-js@1.17.1":
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-1.17.1.tgz#47dbf34371e60753f247798128ff80825aa47c3f"
-  integrity sha512-bVC/u+l5z2vnOVfxTm2j+Bw2A6o0lCJK1BGrc5o4ZJNORvF/ouHHkwk2AXnCCI/84oOoA+mhKR0IaTkqvKGVPQ==
+"@pooltogether/v4-client-js@1.18.0":
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/@pooltogether/v4-client-js/-/v4-client-js-1.18.0.tgz#3fd94f39b7a760c81ed0e893f37dc9d4103ca75e"
+  integrity sha512-RAfmfi+puHqPgEPfo+RwNGF2eRSlvvSu6aH9Vjm/WoeXHSawsdyfeLprVzMVJe3qZZuYSbBKatrqoIS3QmceBg==
   dependencies:
     "@ethersproject/abi" "^5.1.0"
     "@pooltogether/contract-list-schema" "^0.1.4"
@@ -2360,6 +2360,7 @@
     "@pooltogether/utilities" "^0.6.2"
     "@pooltogether/v4-utils-js" "0.1.5"
     debug "^4.3.3"
+    eth-permit "^0.2.3"
     ethers "^5.4.6"
 
 "@pooltogether/v4-core@1.2.0":
@@ -7416,7 +7417,7 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
-eth-permit@^0.2.1:
+eth-permit@^0.2.1, eth-permit@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/eth-permit/-/eth-permit-0.2.3.tgz#7d8b051e329d2166fef32553ed397970d369cafe"
   integrity sha512-d4tbiRQgbpdeJbdC9hdyT0SUJcJx28FIy3o2RxEAoeYI+zyYbNC0ZpdE6kxBK+7iY2payjHRE7rs7tr5EcOVLg==
