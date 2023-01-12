@@ -34,6 +34,7 @@ export interface ReviewTransactionViewProps extends ViewProps {
   eip2612DelegationPermit?: ERC2612PermitMessage & RSV
   setEip2612DepositPermit?: (permit: ERC2612PermitMessage & RSV) => void
   setEip2612DelegationPermit?: (permit: ERC2612TicketPermitMessage & RSV) => void
+  skipApproval?: boolean
 }
 
 /**
@@ -61,7 +62,8 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     eip2612DepositPermit,
     eip2612DelegationPermit,
     setEip2612DepositPermit,
-    setEip2612DelegationPermit
+    setEip2612DelegationPermit,
+    skipApproval
   } = props
   const { chainId } = useSelectedChainId()
   const prizePool = useSelectedPrizePool()
@@ -119,6 +121,7 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
     )
   } else if (
     !isIdle &&
+    !skipApproval &&
     !!amountUnformatted &&
     allowanceUnformatted?.lt(amountUnformatted) &&
     !hasAllValidApprovalSignatures()
