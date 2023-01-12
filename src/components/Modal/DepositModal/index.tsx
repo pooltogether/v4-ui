@@ -1,5 +1,7 @@
 import { WalletConnectionView } from '@components/ModalViews/WalletConnectionView'
+import { SUPPORTED_EIP2612_PRIZE_POOL_IDS } from '@constants/config'
 import { useSelectedChainId } from '@hooks/useSelectedChainId'
+import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useSendDepositTransaction } from '@hooks/v4/PrizePool/useSendDepositTransaction'
 import { Amount } from '@pooltogether/hooks'
 import {
@@ -7,9 +9,15 @@ import {
   ModalWithViewStateView,
   snapToFull
 } from '@pooltogether/react-components'
-import { PrizePool } from '@pooltogether/v4-client-js'
+import {
+  ERC2612PermitMessage,
+  ERC2612TicketPermitMessage,
+  PrizePool
+} from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
-import { useCallback, useState } from 'react'
+import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
+import { RSV } from 'eth-permit/dist/rpc'
+import { useCallback, useEffect, useState } from 'react'
 import { DepositReviewView } from './DepositReviewView'
 import { DepositView } from './DepositView'
 
@@ -32,11 +40,34 @@ export const DepositModal: React.FC<{
   const { chainId } = useSelectedChainId()
   const [depositTransactionId, setDepositTransactionId] = useState('')
   const depositTransaction = useTransaction(depositTransactionId)
+  const prizePool = useSelectedPrizePool()
+
+  const defaultApprovalType: ApprovalType = SUPPORTED_EIP2612_PRIZE_POOL_IDS.includes(
+    prizePool.id()
+  )
+    ? 'eip2612'
+    : 'infinite'
+  const [approvalType, setApprovalType] = useState<ApprovalType>(defaultApprovalType)
+  const [eip2612DepositPermit, setEip2612DepositPermit] = useState<ERC2612PermitMessage & RSV>()
+  const [eip2612DelegationPermit, setEip2612DelegationPermit] = useState<
+    ERC2612TicketPermitMessage & RSV
+  >()
+  useEffect(() => {
+    setApprovalType(defaultApprovalType)
+  }, [defaultApprovalType])
 
   /**
    * Submit the transaction to deposit and store the transaction id in state
    */
-  const _sendDepositTransaction = useSendDepositTransaction(depositAmount)
+  const _sendDepositTransaction = useSendDepositTransaction(
+    depositAmount,
+    approvalType === 'eip2612'
+      ? {
+          depositPermit: eip2612DepositPermit,
+          delegationPermit: eip2612DelegationPermit
+        }
+      : undefined
+  )
   const sendDepositTransaction = useCallback(
     () => setDepositTransactionId(_sendDepositTransaction()),
     [_sendDepositTransaction]
@@ -101,6 +132,12 @@ export const DepositModal: React.FC<{
       sendDepositTransaction={sendDepositTransaction}
       clearDepositTransaction={() => setDepositTransactionId('')}
       connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
+      approvalType={approvalType}
+      setApprovalType={setApprovalType}
+      eip2612DepositPermit={eip2612DepositPermit}
+      eip2612DelegationPermit={eip2612DelegationPermit}
+      setEip2612DepositPermit={setEip2612DepositPermit}
+      setEip2612DelegationPermit={setEip2612DelegationPermit}
     />
   )
 }
