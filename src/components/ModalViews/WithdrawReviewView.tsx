@@ -57,6 +57,7 @@ export const WithdrawReviewView: React.FC<
         </div>
       }
       successView={<div className='flex flex-col space-y-4'>{successView}</div>}
+      skipApproval={true}
     />
   )
 }
