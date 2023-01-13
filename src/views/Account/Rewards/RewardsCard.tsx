@@ -29,9 +29,9 @@ import {
   numberWithCommas,
   getNetworkNameAliasByChainId,
   getNetworkNiceNameByChainId,
-  sToD
+  sToD,
+  getAmountFromUnformatted
 } from '@pooltogether/utilities'
-import { getAmount } from '@pooltogether/utilities'
 import {
   useSendTransaction,
   useUsersAddress,
@@ -434,7 +434,7 @@ const ClaimModalForm = (props: {
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
 
-  const amount = getAmount(usersClaimedPromotionHistory?.rewards, decimals)
+  const amount = getAmountFromUnformatted(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
 
