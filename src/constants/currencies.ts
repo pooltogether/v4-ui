@@ -1,11 +1,35 @@
 export const SUPPORTED_CURRENCIES = Object.freeze({
-  eth: {
-    name: 'Ether',
-    symbol: 'Ξ'
-  },
   usd: {
     name: 'US Dollar',
     symbol: '$'
+  },
+  cad: {
+    name: 'Canadian Dollar',
+    symbol: 'CA$'
+  },
+  eur: {
+    name: 'Euro',
+    symbol: '€'
+  },
+  gbp: {
+    name: 'British Pound Sterling',
+    symbol: '£'
+  },
+  brl: {
+    name: 'Brazil Real',
+    symbol: 'R$'
+  },
+  aud: {
+    name: 'Australian Dollar',
+    symbol: 'A$'
+  },
+  cny: {
+    name: 'Chinese Yuan',
+    symbol: '¥'
+  },
+  eth: {
+    name: 'Ether',
+    symbol: 'Ξ'
   },
   aed: {
     name: 'United Arab Emirates Dirham',
@@ -14,10 +38,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
   ars: {
     name: 'Argentine Peso',
     symbol: '$'
-  },
-  aud: {
-    name: 'Australian Dollar',
-    symbol: 'A$'
   },
   bdt: {
     name: 'Bangladeshi Taka',
@@ -31,14 +51,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
     name: 'Bermudian Dollar',
     symbol: '$'
   },
-  brl: {
-    name: 'Brazil Real',
-    symbol: 'R$'
-  },
-  cad: {
-    name: 'Canadian Dollar',
-    symbol: 'CA$'
-  },
   chf: {
     name: 'Swiss Franc',
     symbol: 'Fr.'
@@ -47,10 +59,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
     name: 'Chilean Peso',
     symbol: 'CLP$'
   },
-  cny: {
-    name: 'Chinese Yuan',
-    symbol: '¥'
-  },
   czk: {
     name: 'Czech Koruna',
     symbol: 'Kč'
@@ -58,14 +66,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
   dkk: {
     name: 'Danish Krone',
     symbol: 'kr.'
-  },
-  eur: {
-    name: 'Euro',
-    symbol: '€'
-  },
-  gbp: {
-    name: 'British Pound Sterling',
-    symbol: '£'
   },
   hkd: {
     name: 'Hong Kong Dollar',
