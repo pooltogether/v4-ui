@@ -1,9 +1,8 @@
-import { CurrencyValue } from '@components/CurrencyValue'
+import { CurrencyValue, getStringCurrencyValue } from '@components/CurrencyValue'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolsByOdds } from '@hooks/usePrizePoolsByOdds'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
-import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -40,14 +39,14 @@ export const TopPoolByOdds: React.FC<{
           >
             {AMOUNT_OPTIONS.map((amount) => (
               <option key={amount} value={amount} className='dark:bg-pt-purple'>
-                <CurrencyValue value={Number(amount)} precision={0} />
+                <CurrencyValue usdValue={amount} decimals={0} />
               </option>
             ))}
           </TransparentSelect>
         </div>
       }
       description={t('bestChanceToWinDescription', {
-        amount: formatCurrencyNumberForDisplay(amount, 'usd')
+        amount: getStringCurrencyValue(amount)
       })}
       prizePool={prizePool}
       onClick={async (prizePool) => {

@@ -48,7 +48,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
         }
       >
         <span>
-          <CurrencyValue value={totalGasUsd} precision={2} />
+          <CurrencyValue usdValue={totalGasUsd} decimals={2} />
         </span>
       </Tooltip>
     )

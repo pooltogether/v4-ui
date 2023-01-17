@@ -1,99 +1,82 @@
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
+import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
 import { CountUp } from '@pooltogether/react-components'
-import { numberWithCommas } from '@pooltogether/utilities'
-// import { useQuery, UseQueryResult } from 'react-query'
+import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 
 interface CurrencyValueProps {
-  value: number
+  usdValue: number | string
   countUp?: boolean
   decimals?: number
-  precision?: number
 }
 
-// TODO: symbol displayed should be accurate while loading
 export const CurrencyValue = (props: CurrencyValueProps) => {
-  const { value, countUp, decimals, precision } = props
+  const { usdValue, countUp, decimals } = props
 
   const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
 
-  if (
-    !!value &&
-    isFetched &&
-    currency !== 'usd' &&
-    !!exchangeRates &&
-    !!exchangeRates[currency] &&
-    !!exchangeRates.usd
-  ) {
+  // TODO: need to get symbol from list of currencies instead of from coingecko results
+  const symbol = exchangeRates?.[currency]?.unit ?? '$'
+
+  if (isFetched && !!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
     const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
-    const currencyValue = value * currencyMultiplier
-    const symbol = exchangeRates[currency].unit
+    const currencyValue = Number(usdValue) * currencyMultiplier
     return (
       <CurrencyValueDisplay
         value={currencyValue}
+        currency={currency}
         symbol={symbol}
         countUp={countUp}
         decimals={decimals}
-        precision={precision}
       />
     )
   } else {
+    return <CurrencyValueDisplay value={0} currency={currency} symbol={symbol} />
+  }
+}
+
+interface CurrencyValueDisplayProps {
+  value: number
+  currency: string
+  symbol: string
+  countUp?: boolean
+  decimals?: number
+}
+
+const CurrencyValueDisplay = (props: CurrencyValueDisplayProps) => {
+  const { value, currency, symbol, countUp, decimals } = props
+
+  if (countUp) {
     return (
-      <CurrencyValueDisplay
-        value={value}
-        symbol={'$'}
-        countUp={countUp}
-        decimals={decimals}
-        precision={precision}
-      />
+      <>
+        {symbol}
+        <CountUp countTo={value} decimals={decimals ?? 0} />
+      </>
+    )
+  } else {
+    return (
+      <>
+        {formatCurrencyNumberForDisplay(value, currency, {
+          minimumFractionDigits: decimals,
+          maximumFractionDigits: decimals
+        })}
+      </>
     )
   }
 }
 
-const CurrencyValueDisplay = (props: CurrencyValueProps & { symbol: string }) => {
-  const { value: currencyValue, symbol, countUp, decimals, precision } = props
+export const getStringCurrencyValue = (usdValue: number | string, decimals?: number) => {
+  const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
+  const { currency } = useSelectedCurrency()
 
-  return (
-    <>
-      {symbol}
-      {countUp ? (
-        <CountUp countTo={currencyValue} decimals={decimals ?? 0} />
-      ) : (
-        numberWithCommas(currencyValue, { decimals, precision })
-      )}
-    </>
-  )
+  if (isFetched && !!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
+    const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
+    const currencyValue = Number(usdValue) * currencyMultiplier
+    return formatCurrencyNumberForDisplay(currencyValue, currency, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    })
+  } else {
+    return formatCurrencyNumberForDisplay(0, currency)
+  }
 }
-
-// TODO: REMOVE THIS AFTER TESTING (IMPORT FROM HOOKS PACKAGE)
-// interface CoingeckoExchangeRates {
-//   [id: string]: {
-//     name: string
-//     unit: string
-//     value: number
-//     type: 'crypto' | 'fiat' | 'commodity'
-//   }
-// }
-// export const useCoingeckoExchangeRates = (): UseQueryResult<CoingeckoExchangeRates, unknown> => {
-//   return useQuery(['getCoingeckoExchangeRates'], async () => await getCoingeckoExchangeRates(), {
-//     staleTime: Infinity,
-//     enabled: true,
-//     refetchInterval: false,
-//     refetchIntervalInBackground: false,
-//     refetchOnMount: false,
-//     refetchOnReconnect: false,
-//     refetchOnWindowFocus: false
-//   })
-// }
-// const getCoingeckoExchangeRates = async () => {
-//   try {
-//     const url = new URL(`https://api.coingecko.com/api/v3/exchange_rates`)
-//     const response = await fetch(url.toString())
-//     const exchangeRates = (await response.json()).rates
-
-//     return exchangeRates
-//   } catch (e) {
-//     console.error(e.message)
-//     return undefined
-//   }
-// }
