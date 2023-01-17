@@ -19,10 +19,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
     name: 'Bahraini Dinar',
     symbol: 'BD'
   },
-  bmd: {
-    name: 'Bermudian Dollar',
-    symbol: '$'
-  },
   brl: {
     name: 'Brazil Real',
     symbol: 'R$'

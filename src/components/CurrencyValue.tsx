@@ -2,6 +2,7 @@ import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
 import { CountUp } from '@pooltogether/react-components'
 import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
+import { getCurrencySymbolById } from '@utils/getCurrencySymbolById'
 
 interface CurrencyValueProps {
   usdValue: number | string
@@ -15,8 +16,7 @@ export const CurrencyValue = (props: CurrencyValueProps) => {
   const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
 
-  // TODO: need to get symbol from list of currencies instead of from coingecko results
-  const symbol = exchangeRates?.[currency]?.unit ?? '$'
+  const symbol = getCurrencySymbolById(currency) ?? '$'
 
   if (isFetched && !!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
     const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
