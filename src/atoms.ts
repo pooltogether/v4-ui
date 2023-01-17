@@ -49,6 +49,20 @@ const getInitialSelectedPrizePoolAddress = () => {
 }
 
 /**
+ * Initializes the currency used throughout the app.
+ * Reads from localstorage if set, otherwise defaults to USD.
+ */
+const getInitialSelectedCurrencyId = () => {
+  if (typeof window === 'undefined') return 'usd'
+  const cachedCurrency = localStorage.getItem('selectedCurrency')
+  if (!!cachedCurrency) {
+    return cachedCurrency
+  } else {
+    return 'usd'
+  }
+}
+
+/**
  *
  */
 export const selectedPrizePoolAddressAtom = atom<string>(getInitialSelectedPrizePoolAddress())
@@ -59,6 +73,11 @@ export const selectedPrizePoolAddressAtom = atom<string>(getInitialSelectedPrize
 export const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }>(
   DEFAULT_PRIZE_POOLS[getAppEnv()]
 )
+
+/**
+ *
+ */
+export const selectedCurrencyIdAtom = atom<string>(getInitialSelectedCurrencyId())
 
 /**
  * Used to set the active prize pool in the app when a chain id changes
@@ -88,3 +107,15 @@ export const setSelectedPrizePoolWriteAtom = atom<null, PrizePool>(
     set(selectedPrizePoolAddressesAtom, selectedPrizePoolAddresses)
   }
 )
+
+/**
+ * Used to set the currency used when a new one is selected.
+ */
+export const setSelectedCurrencyIdWriteAtom = atom<null, string>(null, (get, set, currencyId) => {
+  if (typeof window !== 'undefined') {
+    // Set in atom
+    set(selectedCurrencyIdAtom, currencyId)
+    // Set in localstorage
+    localStorage.setItem('selectedCurrency', currencyId)
+  }
+})

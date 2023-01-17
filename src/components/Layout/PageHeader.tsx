@@ -1,7 +1,7 @@
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
 import { SUPPORTED_CURRENCIES } from '@constants/currencies'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
-import { useCachedCurrency } from '@hooks/useCachedCurrency'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import {
   LanguagePickerDropdown,
   SettingsItem,
@@ -49,7 +49,7 @@ export const PageHeader = (props) => (
 
 const Settings = () => {
   const { t, i18n: i18next } = useTranslation()
-  const { currency, updateCurrency } = useCachedCurrency()
+  const { currency, setCurrency } = useSelectedCurrency()
   const [isOpen, setIsOpen] = useState(false)
   const chains = getSupportedChains()
   const walletChainId = useWalletChainId()
@@ -81,7 +81,7 @@ const Settings = () => {
         }}
         currencies={SUPPORTED_CURRENCIES}
         currentCurrency={currency}
-        changeCurrency={updateCurrency}
+        changeCurrency={setCurrency}
       />
     </>
   )

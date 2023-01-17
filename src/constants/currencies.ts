@@ -51,10 +51,6 @@ export const SUPPORTED_CURRENCIES = Object.freeze({
     name: 'Danish Krone',
     symbol: 'kr.'
   },
-  eth: {
-    name: 'Ether',
-    symbol: 'Ξ'
-  },
   eur: {
     name: 'Euro',
     symbol: '€'

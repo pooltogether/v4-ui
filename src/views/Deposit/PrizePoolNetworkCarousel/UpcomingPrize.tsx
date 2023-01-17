@@ -1,4 +1,5 @@
 import { Dot } from '@components/Dot'
+import { CurrencyValue } from '@components/CurrencyValue'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { useExpectedUpcomingDailyPrizeValue } from '@hooks/v4/PrizePool/useExpectedUpcomingDailyPrizeValue'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
@@ -121,7 +122,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
           { 'opacity-50': !amount }
         )}
       >
-        $<CountUp countFrom={0} countTo={amount} decimals={0} />
+        <CurrencyValue value={amount} countUp />
         {!amount && (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
         )}
