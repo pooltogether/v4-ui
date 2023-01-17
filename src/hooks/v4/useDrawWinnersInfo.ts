@@ -127,10 +127,14 @@ const getDrawStats = async (
       prizeLength: number
       amountsTotal: string
     }
+    status: 'FAILURE' | 'SUCCESS'
   }
 
   try {
     data = await response.json()
+    if (data?.status === 'FAILURE') {
+      throw new Error('Could not fetch draw results')
+    }
   } catch (e) {
     try {
       drawId = drawId - 1
@@ -144,8 +148,8 @@ const getDrawStats = async (
 
   return {
     chainId: prizeDistributor.chainId,
-    prizesWon: data.meta.prizeLength,
-    amount: getAmountFromUnformatted(BigNumber.from(data.meta.amountsTotal), decimals),
+    prizesWon: data?.meta?.prizeLength || 0,
+    amount: getAmountFromUnformatted(BigNumber.from(data?.meta?.amountsTotal || 0), decimals),
     prizeDistributorId: prizeDistributor.id(),
     drawId
   }
