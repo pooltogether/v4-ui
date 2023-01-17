@@ -1,7 +1,8 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { InfoListHeader, InfoListItem } from '@components/InfoList'
 import { useChainNativeCurrency } from '@hooks/useChainNativeCurrency'
 import { useGasCostEstimate } from '@pooltogether/hooks'
-import { Tooltip, ThemedClipSpinner } from '@pooltogether/react-components'
+import { Tooltip } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import FeatherIcon from 'feather-icons-react'
@@ -46,7 +47,9 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
           </>
         }
       >
-        <span>${numberWithCommas(totalGasUsd, { precision: 2 })}</span>
+        <span>
+          <CurrencyValue value={totalGasUsd} precision={2} />
+        </span>
       </Tooltip>
     )
   }

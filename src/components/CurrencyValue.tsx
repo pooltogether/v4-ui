@@ -10,6 +10,7 @@ interface CurrencyValueProps {
   precision?: number
 }
 
+// TODO: symbol displayed should be accurate while loading
 export const CurrencyValue = (props: CurrencyValueProps) => {
   const { value, countUp, decimals, precision } = props
 

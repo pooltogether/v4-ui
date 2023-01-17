@@ -7,12 +7,7 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { Token } from '@pooltogether/hooks'
-import {
-  ThemedClipSpinner,
-  CountUp,
-  useCountdown,
-  TimeDisplay
-} from '@pooltogether/react-components'
+import { ThemedClipSpinner, useCountdown, TimeDisplay } from '@pooltogether/react-components'
 import { PrizeTierConfig } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
