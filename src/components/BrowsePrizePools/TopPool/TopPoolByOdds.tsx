@@ -1,8 +1,10 @@
-import { CurrencyValue, getStringCurrencyValue } from '@components/CurrencyValue'
+import { CurrencyValue, getCurrencyValue } from '@components/CurrencyValue'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolsByOdds } from '@hooks/usePrizePoolsByOdds'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
+import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
@@ -22,11 +24,13 @@ export const TopPoolByOdds: React.FC<{
   const { isFetched, prizePools } = usePrizePoolsByOdds(amount, '6')
   const { t } = useTranslation()
   const prizePool = prizePools?.[0]
+  const { data: exchangeRates, isFetched: isFetchedExchangeRates } = useCoingeckoExchangeRates()
+  const { currency } = useSelectedCurrency()
 
   return (
     <TopPool
       className={className}
-      isFetched={isFetched}
+      isFetched={isFetched && isFetchedExchangeRates}
       title={t('bestChanceToWin')}
       secondaryTitle={
         <div className='flex items-center space-x-1 text-xs'>
@@ -46,7 +50,7 @@ export const TopPoolByOdds: React.FC<{
         </div>
       }
       description={t('bestChanceToWinDescription', {
-        amount: getStringCurrencyValue(amount)
+        amount: getCurrencyValue(amount, currency, exchangeRates)
       })}
       prizePool={prizePool}
       onClick={async (prizePool) => {

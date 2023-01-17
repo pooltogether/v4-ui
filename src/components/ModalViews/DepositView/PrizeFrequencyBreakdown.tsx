@@ -1,11 +1,9 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { Amount } from '@pooltogether/hooks'
-import {
-  formatCurrencyNumberForDisplay,
-  formatDailyCountToFrequency
-} from '@pooltogether/utilities'
+import { formatDailyCountToFrequency } from '@pooltogether/utilities'
 import { TimeUnit } from '@pooltogether/utilities/dist/types'
 import classNames from 'classnames'
 import { useMemo } from 'react'
@@ -69,9 +67,7 @@ const PrizeFrequencyBreakdownTableRow = (props: {
   return (
     <>
       <PrizeTableCell index={index}>
-        {formatCurrencyNumberForDisplay(prizeValue.amount, 'usd', {
-          hideZeroes: true
-        })}
+        <CurrencyValue usdValue={prizeValue.amount} hideZeroes />
       </PrizeTableCell>
       <PrizeTableCell index={index}>
         <PrettyFrequencyForTier frequency={prizeFrequency.frequency} unit={prizeFrequency.unit} />

@@ -8,10 +8,12 @@ interface CurrencyValueProps {
   usdValue: number | string
   countUp?: boolean
   decimals?: number
+  hideZeroes?: boolean
+  notation?: Intl.NumberFormatOptions['notation']
 }
 
 export const CurrencyValue = (props: CurrencyValueProps) => {
-  const { usdValue, countUp, decimals } = props
+  const { usdValue, countUp, decimals, hideZeroes, notation } = props
 
   const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
@@ -28,6 +30,8 @@ export const CurrencyValue = (props: CurrencyValueProps) => {
         symbol={symbol}
         countUp={countUp}
         decimals={decimals}
+        hideZeroes={hideZeroes}
+        notation={notation}
       />
     )
   } else {
@@ -41,10 +45,12 @@ interface CurrencyValueDisplayProps {
   symbol: string
   countUp?: boolean
   decimals?: number
+  hideZeroes?: boolean
+  notation?: Intl.NumberFormatOptions['notation']
 }
 
 const CurrencyValueDisplay = (props: CurrencyValueDisplayProps) => {
-  const { value, currency, symbol, countUp, decimals } = props
+  const { value, currency, symbol, countUp, decimals, hideZeroes, notation } = props
 
   if (countUp) {
     return (
@@ -58,23 +64,33 @@ const CurrencyValueDisplay = (props: CurrencyValueDisplayProps) => {
       <>
         {formatCurrencyNumberForDisplay(value, currency, {
           minimumFractionDigits: decimals,
-          maximumFractionDigits: decimals
+          maximumFractionDigits: decimals,
+          hideZeroes: hideZeroes,
+          notation: notation ?? 'standard'
         })}
       </>
     )
   }
 }
 
-export const getStringCurrencyValue = (usdValue: number | string, decimals?: number) => {
-  const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
-  const { currency } = useSelectedCurrency()
-
-  if (isFetched && !!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
+export const getCurrencyValue = (
+  usdValue: number | string,
+  currency: string,
+  exchangeRates: Record<string, { value: number }>,
+  options?: {
+    decimals?: number
+    hideZeroes?: boolean
+    notation?: Intl.NumberFormatOptions['notation']
+  }
+) => {
+  if (!!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
     const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
     const currencyValue = Number(usdValue) * currencyMultiplier
     return formatCurrencyNumberForDisplay(currencyValue, currency, {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
+      minimumFractionDigits: options?.decimals,
+      maximumFractionDigits: options?.decimals,
+      hideZeroes: options?.hideZeroes,
+      notation: options?.notation ?? 'standard'
     })
   } else {
     return formatCurrencyNumberForDisplay(0, currency)
