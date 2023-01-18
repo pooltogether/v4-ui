@@ -1,6 +1,8 @@
+import { formatCurrencyValue } from '@components/CurrencyValue'
 import { ListItem } from '@components/List/ListItem'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import type { V3PrizePoolBalances } from '@hooks/v3/useAllUsersV3Balances'
 import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalances'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
@@ -15,6 +17,7 @@ import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
 import { useTranslation } from 'next-i18next'
+import { useExchangeRates } from '../../serverAtoms'
 
 /**
  * Displays V4 deposits.
@@ -24,13 +27,16 @@ import { useTranslation } from 'next-i18next'
 export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const { data } = useAllUsersV4Balances(usersAddress)
+  const exchangeRates = useExchangeRates()
+  const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
+
   return (
     <div id='deposits'>
       <CardTitle
         className='mb-2'
         title={t('deposits')}
-        secondary={`$${data?.totalValueUsd.amountPretty}`}
+        secondary={formatCurrencyValue(data?.totalValueUsd.amount, currency, exchangeRates)}
       />
       <V4DepositsList usersAddress={usersAddress} />
     </div>
@@ -45,14 +51,21 @@ export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) =
 export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress, false)
+  const exchangeRates = useExchangeRates()
+  const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
+
   if (!isFetched || data.balances.length === 0) return null
   return (
     <div>
       <CardTitle
         className='mb-2'
         title={`V3 ${t('deposits')}`}
-        secondary={`$${data?.totalValueUsd.amountPretty || '0.00'}`}
+        secondary={formatCurrencyValue(
+          data?.totalValueUsd.amount || '0.00',
+          currency,
+          exchangeRates
+        )}
       />
       <V3DepositsList usersAddress={usersAddress} balances={data.balances} />
     </div>

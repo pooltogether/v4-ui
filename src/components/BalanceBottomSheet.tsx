@@ -4,7 +4,6 @@ import {
   ButtonTheme,
   ButtonLink,
   BottomSheet,
-  CountUp,
   ModalTitle,
   TokenIcon,
   Tooltip
@@ -25,6 +24,7 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
+import { CurrencyValue } from './CurrencyValue'
 import { RevokeAllowanceButton } from './RevokeAllowanceButton'
 
 enum DefaultViews {
@@ -150,7 +150,7 @@ const MainView = (props: MainViewProps & { setView: (view: string) => void }) =>
             'opacity-50': balance.amountUnformatted.isZero()
           })}
         >
-          $<CountUp countTo={Number(balanceUsd.amount)} />
+          <CurrencyValue baseValue={balanceUsd.amount} options={{ countUp: true }} />
         </span>
         <span className='mx-auto flex mt-1'>
           <Tooltip

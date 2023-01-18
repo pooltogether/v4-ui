@@ -1,4 +1,4 @@
-import { formatCurrencyValue } from '@components/CurrencyValue'
+import { CurrencyValue, formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
@@ -7,7 +7,7 @@ import { useAllPrizePoolTicketTotalSupplies } from '@hooks/v4/PrizePool/useAllPr
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
 import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
-import { CountUp, ExternalLink } from '@pooltogether/react-components'
+import { ExternalLink } from '@pooltogether/react-components'
 import { divideBigNumbers } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { parseEther } from 'ethers/lib/utils'
@@ -60,11 +60,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         headers={[
           {
             title: t('totalDeposits'),
-            stat: (
-              <>
-                $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
-              </>
-            )
+            stat: <CurrencyValue baseValue={tvl?.totalSupply.amount} options={{ decimals: 0 }} />
           }
         ]}
       />

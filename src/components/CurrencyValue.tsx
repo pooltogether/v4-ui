@@ -14,13 +14,12 @@ interface CurrencyValueProps {
 type CurrencyFormattingOptions = Omit<Intl.NumberFormatOptions, 'style' | 'currency'> & {
   baseCurrency?: CURRENCY_ID
   countUp?: boolean
+  hideCountUpSymbol?: boolean
   decimals?: number
   locale?: string
   round?: boolean
   hideZeroes?: boolean
 }
-
-// TODO: search for other places in the app that require switching to this component (search for countup, amountpretty, formatUnformattedBigNumberForDisplay, etc.)
 
 /**
  * This component renders a JSX element with a currency value depending on the currency selected by the user.
@@ -42,7 +41,7 @@ export const CurrencyValue = (props: CurrencyValueProps) => {
   if (options?.countUp) {
     return (
       <>
-        {symbol}
+        {!options?.hideCountUpSymbol && symbol}
         <CountUp countTo={currencyValue} decimals={options?.decimals ?? 0} />
       </>
     )

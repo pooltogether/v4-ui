@@ -1,4 +1,5 @@
 import TrophyIcon from '@assets/images/pooltogether-trophy--detailed.png'
+import { CurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { useAllValidDrawIds } from '@hooks/v4/PrizeDistributor/useAllValidDrawIds'
 import { usePrizeDistributors } from '@hooks/v4/PrizeDistributor/usePrizeDistributors'
@@ -72,7 +73,7 @@ export const LastDrawWinners: React.FC<{ className?: string }> = (props) => {
         <div className='flex flex-col'>
           <span className='opacity-70'>totalling</span>
           <span className='text-12xl xs:text-14xl leading-none'>
-            ${totalAmountWon?.amountPretty}
+            <CurrencyValue baseValue={totalAmountWon?.amount} />
           </span>
         </div>
       </div>

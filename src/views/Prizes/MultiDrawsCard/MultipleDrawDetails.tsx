@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { Token } from '@pooltogether/hooks'
 import { Draw } from '@pooltogether/v4-client-js'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
@@ -65,11 +66,13 @@ export const TotalPrizes = (props: {
     .reduce((acc, drawData) => {
       return acc.add(drawData.prizeDistribution.prize)
     }, ethers.constants.Zero)
-  const { amountPretty } = roundPrizeAmount(totalAmountUnformatted, token.decimals)
+  const { amount } = roundPrizeAmount(totalAmountUnformatted, token.decimals)
 
   return (
     <div className={props.className}>
-      <span className={props.numberClassName}>${amountPretty}</span>
+      <span className={props.numberClassName}>
+        <CurrencyValue baseValue={amount} />
+      </span>
       <span className={props.textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
   )

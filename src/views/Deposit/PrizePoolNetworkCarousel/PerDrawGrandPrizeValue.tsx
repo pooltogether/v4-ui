@@ -1,11 +1,11 @@
-import { formatCurrencyValue } from '@components/CurrencyValue'
+import { CurrencyValue, formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
-import { CountUp, ExternalLink } from '@pooltogether/react-components'
+import { ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
@@ -66,7 +66,10 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
             title: t('largestGrandPrize'),
             stat: (
               <span className='text-flashy'>
-                $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
+                <CurrencyValue
+                  baseValue={grandPrizeData?.grandPrizeValue.amount}
+                  options={{ countUp: true, decimals: 0 }}
+                />
               </span>
             )
           }

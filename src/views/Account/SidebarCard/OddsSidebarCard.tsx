@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { V4_CHAIN_IDS } from '@constants/config'
 import { useAppEnvString } from '@hooks/useAppEnvString'
@@ -166,7 +167,9 @@ const AveragePrizeValue: React.FC<{ prizePool: PrizePool }> = (props) => {
     <li className='flex justify-between'>
       <span>{t('averagePrizeValue')}</span>
       {isPrizeFetched && !isError ? (
-        <span className='font-bold'>${data.averagePrizeValue.amountPretty}</span>
+        <span className='font-bold'>
+          <CurrencyValue baseValue={data.averagePrizeValue.amount} />
+        </span>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' />
       )}
