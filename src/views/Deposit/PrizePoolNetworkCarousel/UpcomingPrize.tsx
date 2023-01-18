@@ -1,5 +1,5 @@
-import { Dot } from '@components/Dot'
 import { CurrencyValue } from '@components/CurrencyValue'
+import { Dot } from '@components/Dot'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { useExpectedUpcomingDailyPrizeValue } from '@hooks/v4/PrizePool/useExpectedUpcomingDailyPrizeValue'
 import { usePrizePoolTokens } from '@hooks/v4/PrizePool/usePrizePoolTokens'
