@@ -43,7 +43,7 @@ export const TopPoolByOdds: React.FC<{
           >
             {AMOUNT_OPTIONS.map((amount) => (
               <option key={amount} value={amount} className='dark:bg-pt-purple'>
-                <CurrencyValue usdValue={amount} decimals={0} />
+                <CurrencyValue usdValue={amount} options={{ decimals: 0 }} />
               </option>
             ))}
           </TransparentSelect>

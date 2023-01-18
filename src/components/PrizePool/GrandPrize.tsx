@@ -9,5 +9,7 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 export const GrandPrize = (props: { prizePool: PrizePool }) => {
   const { prizePool } = props
   const { data, isFetched } = usePrizePoolExpectedPrizes(prizePool)
-  return isFetched ? <CurrencyValue usdValue={data?.grandPrizeValue.amount} hideZeroes /> : null
+  return isFetched ? (
+    <CurrencyValue usdValue={data?.grandPrizeValue.amount} options={{ hideZeroes: true }} />
+  ) : null
 }

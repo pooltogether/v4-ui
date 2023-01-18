@@ -67,7 +67,7 @@ const PrizeFrequencyBreakdownTableRow = (props: {
   return (
     <>
       <PrizeTableCell index={index}>
-        <CurrencyValue usdValue={prizeValue.amount} hideZeroes />
+        <CurrencyValue usdValue={prizeValue.amount} options={{ hideZeroes: true }} />
       </PrizeTableCell>
       <PrizeTableCell index={index}>
         <PrettyFrequencyForTier frequency={prizeFrequency.frequency} unit={prizeFrequency.unit} />

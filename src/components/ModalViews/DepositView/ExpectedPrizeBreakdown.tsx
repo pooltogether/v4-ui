@@ -92,7 +92,7 @@ const PrizeBreakdownTableRow: React.FC<{
   return (
     <>
       <PrizeTableCell index={index}>
-        <CurrencyValue usdValue={prizeValue.amount} hideZeroes />
+        <CurrencyValue usdValue={prizeValue.amount} options={{ hideZeroes: true }} />
       </PrizeTableCell>
       <PrizeTableCell index={index}>
         <OddsForTier
