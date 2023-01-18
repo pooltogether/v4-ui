@@ -1,4 +1,4 @@
-import { getCurrencyValue } from '@components/CurrencyValue'
+import { formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolTable } from '@components/PrizePoolTable'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
@@ -35,7 +35,7 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
       .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         const formattedPrizes = data.uniqueValueOfPrizesFormattedList.map((v) =>
-          getCurrencyValue(v, currency, exchangeRates, { hideZeroes: true })
+          formatCurrencyValue(v, currency, exchangeRates, { hideZeroes: true })
         )
         const prizes = (
           <div className='flex justify-center space-x-2'>

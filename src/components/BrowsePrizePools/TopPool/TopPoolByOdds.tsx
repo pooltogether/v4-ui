@@ -1,4 +1,4 @@
-import { CurrencyValue, getCurrencyValue } from '@components/CurrencyValue'
+import { CurrencyValue, formatCurrencyValue } from '@components/CurrencyValue'
 import { TransparentSelect } from '@components/Input/TransparentSelect'
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolsByOdds } from '@hooks/usePrizePoolsByOdds'
@@ -43,14 +43,14 @@ export const TopPoolByOdds: React.FC<{
           >
             {AMOUNT_OPTIONS.map((amount) => (
               <option key={amount} value={amount} className='dark:bg-pt-purple'>
-                <CurrencyValue usdValue={amount} options={{ decimals: 0 }} />
+                <CurrencyValue baseValue={amount} options={{ decimals: 0 }} />
               </option>
             ))}
           </TransparentSelect>
         </div>
       }
       description={t('bestChanceToWinDescription', {
-        amount: getCurrencyValue(amount, currency, exchangeRates)
+        amount: formatCurrencyValue(amount, currency, exchangeRates)
       })}
       prizePool={prizePool}
       onClick={async (prizePool) => {

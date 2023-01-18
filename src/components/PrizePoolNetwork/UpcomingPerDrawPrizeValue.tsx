@@ -16,7 +16,7 @@ export const UpcomingPerDrawPrizeValue = (props) => {
 
   return isFetched && isTokensFetched ? (
     <CurrencyValue
-      usdValue={ethers.utils.formatUnits(data?.prizeTier.prize, tokens.ticket.decimals)}
+      baseValue={ethers.utils.formatUnits(data?.prizeTier.prize, tokens.ticket.decimals)}
     />
   ) : null
 }

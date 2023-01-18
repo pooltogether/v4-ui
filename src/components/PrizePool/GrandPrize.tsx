@@ -10,6 +10,6 @@ export const GrandPrize = (props: { prizePool: PrizePool }) => {
   const { prizePool } = props
   const { data, isFetched } = usePrizePoolExpectedPrizes(prizePool)
   return isFetched ? (
-    <CurrencyValue usdValue={data?.grandPrizeValue.amount} options={{ hideZeroes: true }} />
+    <CurrencyValue baseValue={data?.grandPrizeValue.amount} options={{ hideZeroes: true }} />
   ) : null
 }

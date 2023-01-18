@@ -1,4 +1,5 @@
 import { DEFAULT_CHAIN_IDS, DEFAULT_PRIZE_POOLS } from '@constants/config'
+import { CURRENCY_ID } from '@constants/currencies'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
@@ -50,12 +51,13 @@ const getInitialSelectedPrizePoolAddress = () => {
 
 /**
  * TODO: set initial currency to match user's locale
+ * TODO: check if value from localstorage is actually a valid currency ID
  * Initializes the currency used throughout the app.
  * Reads from localstorage if set, otherwise defaults to USD.
  */
 const getInitialSelectedCurrencyId = () => {
   if (typeof window === 'undefined') return 'usd'
-  const cachedCurrency = localStorage.getItem('selectedCurrency')
+  const cachedCurrency = localStorage.getItem('selectedCurrency') as CURRENCY_ID
   if (!!cachedCurrency) {
     return cachedCurrency
   } else {
@@ -78,7 +80,7 @@ export const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }
 /**
  *
  */
-export const selectedCurrencyIdAtom = atom<string>(getInitialSelectedCurrencyId())
+export const selectedCurrencyIdAtom = atom<CURRENCY_ID>(getInitialSelectedCurrencyId())
 
 /**
  * Used to set the active prize pool in the app when a chain id changes
@@ -112,11 +114,14 @@ export const setSelectedPrizePoolWriteAtom = atom<null, PrizePool>(
 /**
  * Used to set the currency used when a new one is selected.
  */
-export const setSelectedCurrencyIdWriteAtom = atom<null, string>(null, (get, set, currencyId) => {
-  if (typeof window !== 'undefined') {
-    // Set in atom
-    set(selectedCurrencyIdAtom, currencyId)
-    // Set in localstorage
-    localStorage.setItem('selectedCurrency', currencyId)
+export const setSelectedCurrencyIdWriteAtom = atom<null, CURRENCY_ID>(
+  null,
+  (get, set, currencyId) => {
+    if (typeof window !== 'undefined') {
+      // Set in atom
+      set(selectedCurrencyIdAtom, currencyId)
+      // Set in localstorage
+      localStorage.setItem('selectedCurrency', currencyId)
+    }
   }
-})
+)

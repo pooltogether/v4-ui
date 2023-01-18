@@ -328,12 +328,15 @@ export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> 
       <div className='flex flex-col'>
         <span className='text-flashy'>
           {isFetched && (
-            <CurrencyValue usdValue={data?.grandPrizeValue.amount} options={{ hideZeroes: true }} />
+            <CurrencyValue
+              baseValue={data?.grandPrizeValue.amount}
+              options={{ hideZeroes: true }}
+            />
           )}
         </span>
         {data?.uniqueSmallPrizeValueList.map((smallPrizeValue, index) => (
           <span key={`prize-${prizePool.id()}-${index}`}>
-            <CurrencyValue usdValue={smallPrizeValue} options={{ hideZeroes: true }} />
+            <CurrencyValue baseValue={smallPrizeValue} options={{ hideZeroes: true }} />
           </span>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { getCurrencyValue } from '@components/CurrencyValue'
+import { formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
@@ -40,7 +40,9 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          tvl: getCurrencyValue(data?.amount.amount || 0, currency, exchangeRates, { decimals: 0 }),
+          tvl: formatCurrencyValue(data?.amount.amount || 0, currency, exchangeRates, {
+            decimals: 0
+          }),
           amount: data.amount,
           percentage: divideBigNumbers(
             parseEther(data.amount.amount),

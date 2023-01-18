@@ -8,5 +8,5 @@ import { usePrizePoolNetworkGrandPrize } from '@hooks/v4/PrizePoolNetwork/usePri
 export const LargestPrizeInNetwork = (props) => {
   const { data, isFetched } = usePrizePoolNetworkGrandPrize()
 
-  return isFetched ? <CurrencyValue usdValue={data?.grandPrizeValue.amount} /> : null
+  return isFetched ? <CurrencyValue baseValue={data?.grandPrizeValue.amount} /> : null
 }

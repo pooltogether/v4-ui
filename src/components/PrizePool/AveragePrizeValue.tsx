@@ -9,5 +9,5 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 export const AveragePrizeValue = (props: { prizePool: PrizePool }) => {
   const { prizePool } = props
   const { data, isFetched, isError } = usePrizePoolExpectedPrizes(prizePool)
-  return isFetched && !isError ? <CurrencyValue usdValue={data?.averagePrizeValue.amount} /> : null
+  return isFetched && !isError ? <CurrencyValue baseValue={data?.averagePrizeValue.amount} /> : null
 }

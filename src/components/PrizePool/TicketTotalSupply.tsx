@@ -32,7 +32,7 @@ export const TicketTotalSupply = (props: {
         </>
       )}
       {isFetched && !isError && (
-        <CurrencyValue usdValue={data?.amount.amount} options={{ notation: 'compact' }} />
+        <CurrencyValue baseValue={data?.amount.amount} options={{ notation: 'compact' }} />
       )}
       {showToken && <> {tokens?.ticket.symbol}</>}
     </>

@@ -1,15 +1,18 @@
+import { CURRENCY_ID } from '@constants/currencies'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
+import { CoingeckoExchangeRates } from '@pooltogether/hooks'
 import { CountUp } from '@pooltogether/react-components'
 import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { getCurrencySymbolById } from '@utils/getCurrencySymbolById'
 import { useExchangeRates } from '../serverAtoms'
 
 interface CurrencyValueProps {
-  usdValue: number | string
+  baseValue: number | string
   options?: CurrencyFormattingOptions
 }
 
 type CurrencyFormattingOptions = Omit<Intl.NumberFormatOptions, 'style' | 'currency'> & {
+  baseCurrency?: CURRENCY_ID
   countUp?: boolean
   decimals?: number
   locale?: string
@@ -18,65 +21,81 @@ type CurrencyFormattingOptions = Omit<Intl.NumberFormatOptions, 'style' | 'curre
 }
 
 // TODO: search for other places in the app that require switching to this component (search for countup, amountpretty, formatUnformattedBigNumberForDisplay, etc.)
-// TODO: investigate options to generalize this for the future where we may have ETH as the base currency instead of USD
+
+/**
+ * This component renders a JSX element with a currency value depending on the currency selected by the user.
+ * - Assumes base currency is USD unless otherwise specified.
+ * @param props
+ * @returns
+ */
 export const CurrencyValue = (props: CurrencyValueProps) => {
-  const { usdValue, options } = props
+  const { baseValue, options } = props
 
   const exchangeRates = useExchangeRates()
   const { currency } = useSelectedCurrency()
 
   const symbol = getCurrencySymbolById(currency) ?? '$'
-
-  if (!!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
-    const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
-    const currencyValue = Number(usdValue) * currencyMultiplier
-    return (
-      <CurrencyValueDisplay
-        value={currencyValue}
-        currency={currency}
-        symbol={symbol}
-        options={options}
-      />
-    )
-  } else {
-    return <CurrencyValueDisplay value={0} currency={currency} symbol={symbol} />
-  }
-}
-
-interface CurrencyValueDisplayProps {
-  value: number
-  currency: string
-  symbol: string
-  options?: CurrencyFormattingOptions
-}
-
-const CurrencyValueDisplay = (props: CurrencyValueDisplayProps) => {
-  const { value, currency, symbol, options } = props
+  const currencyValue = calculateCurrencyValue(baseValue, currency, exchangeRates, {
+    baseCurrency: options?.baseCurrency
+  })
 
   if (options?.countUp) {
     return (
       <>
         {symbol}
-        <CountUp countTo={value} decimals={options?.decimals ?? 0} />
+        <CountUp countTo={currencyValue} decimals={options?.decimals ?? 0} />
       </>
     )
   } else {
-    return <>{formatCurrencyNumberForDisplay(value, currency, options)}</>
+    return <>{formatCurrencyNumberForDisplay(currencyValue, currency, options)}</>
   }
 }
 
-// TODO: refactor this to avoid duplicate code
-export const getCurrencyValue = (
-  usdValue: number | string,
-  currency: string,
-  exchangeRates: Record<string, { value: number }>,
+/**
+ * This function returns a converted currency value in string form.
+ * - Assumed base currency is USD unless otherwise specified.
+ * @param baseValue
+ * @param currency
+ * @param exchangeRates
+ * @param options
+ * @returns
+ */
+export const formatCurrencyValue = (
+  baseValue: number | string,
+  currency: CURRENCY_ID,
+  exchangeRates: CoingeckoExchangeRates,
   options?: CurrencyFormattingOptions
 ) => {
-  if (!!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
-    const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
-    const currencyValue = Number(usdValue) * currencyMultiplier
-    return formatCurrencyNumberForDisplay(currencyValue, currency, options)
-  } else {
-    return formatCurrencyNumberForDisplay(0, currency)
+  const currencyValue = calculateCurrencyValue(baseValue, currency, exchangeRates, {
+    baseCurrency: options?.baseCurrency
+  })
+  return formatCurrencyNumberForDisplay(currencyValue, currency, options)
+}
+
+/**
+ * This function converts a currency value to any other available currency.
+ * @param baseValue
+ * @param currency
+ * @param exchangeRates
+ * @param options
+ * @returns
+ */
+const calculateCurrencyValue = (
+  baseValue: number | string,
+  currency: CURRENCY_ID,
+  exchangeRates: CoingeckoExchangeRates,
+  options?: { baseCurrency?: string }
+) => {
+  if (!!exchangeRates && !!exchangeRates[currency]) {
+    const baseCurrencyValue = options?.baseCurrency
+      ? exchangeRates[options.baseCurrency]?.value
+      : exchangeRates.usd?.value
+    if (!!baseCurrencyValue) {
+      const currencyMultiplier = exchangeRates[currency].value / baseCurrencyValue
+      const currencyValue = Number(baseValue) * currencyMultiplier
+      return currencyValue
+    }
   }
+
+  return 0
 }

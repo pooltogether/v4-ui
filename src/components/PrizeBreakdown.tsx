@@ -114,7 +114,7 @@ const PrizeBreakdownTableRow = (props: {
   return (
     <>
       <PrizeTableCell index={index}>
-        <CurrencyValue usdValue={valueOfPrize.amount} options={{ decimals: 0 }} />
+        <CurrencyValue baseValue={valueOfPrize.amount} options={{ decimals: 0 }} />
       </PrizeTableCell>
       <PrizeTableCell index={index}>
         {formatNumberForDisplay(numberOfPrizes / totalNumberOfPrizes, {

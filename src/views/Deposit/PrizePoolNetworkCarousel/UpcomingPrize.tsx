@@ -117,7 +117,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
           { 'opacity-50': !amount }
         )}
       >
-        <CurrencyValue usdValue={amount} options={{ countUp: true }} />
+        <CurrencyValue baseValue={amount} options={{ countUp: true }} />
         {!amount && (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
         )}

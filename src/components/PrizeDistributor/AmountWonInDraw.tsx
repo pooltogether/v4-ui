@@ -6,5 +6,5 @@ import { PrizeDistributor } from '@pooltogether/v4-client-js'
 export const AmountWonInDraw = (props: { prizeDistributor: PrizeDistributor; drawId: number }) => {
   const { prizeDistributor, drawId } = props
   const { data: winnersInfo, isFetched } = useDrawWinnersInfo(prizeDistributor, drawId)
-  return <>{isFetched && <CurrencyValue usdValue={winnersInfo.amount.amount} />}</>
+  return <>{isFetched && <CurrencyValue baseValue={winnersInfo.amount.amount} />}</>
 }

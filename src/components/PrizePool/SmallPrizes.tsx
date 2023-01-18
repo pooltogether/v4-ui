@@ -1,4 +1,4 @@
-import { getCurrencyValue } from '@components/CurrencyValue'
+import { formatCurrencyValue } from '@components/CurrencyValue'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
@@ -17,7 +17,7 @@ export const SmallPrizes = (props: { prizePool: PrizePool }) => {
   return isFetched && isFetchedExchangeRates && !isError ? (
     <>
       {data?.uniqueSmallPrizeValueList
-        .map((v) => getCurrencyValue(v, currency, exchangeRates, { hideZeroes: true }))
+        .map((v) => formatCurrencyValue(v, currency, exchangeRates, { hideZeroes: true }))
         .join(', ')}
     </>
   ) : null
