@@ -1,9 +1,10 @@
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
-import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
 import { CountUp } from '@pooltogether/react-components'
 import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { getCurrencySymbolById } from '@utils/getCurrencySymbolById'
+import { useExchangeRates } from '../serverAtoms'
 
+// TODO: use formatCurrencyNumberForDisplay typings for options (Omit<Intl.NumberFormatOptions, 'style' | 'currency'>)
 interface CurrencyValueProps {
   usdValue: number | string
   countUp?: boolean
@@ -12,15 +13,17 @@ interface CurrencyValueProps {
   notation?: Intl.NumberFormatOptions['notation']
 }
 
+// TODO: search for other places in the app that require switching to this component (search for countup, amountpretty, formatUnformattedBigNumberForDisplay, etc.)
+// TODO: investigate options to generalize this for the future where we may have ETH as the base currency instead of USD
 export const CurrencyValue = (props: CurrencyValueProps) => {
   const { usdValue, countUp, decimals, hideZeroes, notation } = props
 
-  const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
+  const exchangeRates = useExchangeRates()
   const { currency } = useSelectedCurrency()
 
   const symbol = getCurrencySymbolById(currency) ?? '$'
 
-  if (isFetched && !!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
+  if (!!exchangeRates && !!exchangeRates[currency] && !!exchangeRates.usd) {
     const currencyMultiplier = exchangeRates[currency].value / exchangeRates.usd.value
     const currencyValue = Number(usdValue) * currencyMultiplier
     return (
@@ -73,6 +76,7 @@ const CurrencyValueDisplay = (props: CurrencyValueDisplayProps) => {
   }
 }
 
+// TODO: refactor this to avoid duplicate code
 export const getCurrencyValue = (
   usdValue: number | string,
   currency: string,

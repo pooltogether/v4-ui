@@ -49,6 +49,7 @@ const getInitialSelectedPrizePoolAddress = () => {
 }
 
 /**
+ * TODO: set initial currency to match user's locale
  * Initializes the currency used throughout the app.
  * Reads from localstorage if set, otherwise defaults to USD.
  */
