@@ -24,5 +24,10 @@ export const ValueOfPrizesWonLastUnlockedDraw = () => {
       }, ethers.constants.Zero),
     [queryResults]
   )
-  return <CurrencyValue baseValue={formatUnits(valueOfPrizesWonLastDraw, decimals)} />
+  return (
+    <CurrencyValue
+      baseValue={formatUnits(valueOfPrizesWonLastDraw, decimals)}
+      options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+    />
+  )
 }

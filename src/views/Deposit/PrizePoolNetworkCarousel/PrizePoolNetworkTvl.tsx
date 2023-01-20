@@ -60,7 +60,12 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         headers={[
           {
             title: t('totalDeposits'),
-            stat: <CurrencyValue baseValue={tvl?.totalSupply.amount} options={{ decimals: 0 }} />
+            stat: (
+              <CurrencyValue
+                baseValue={tvl?.totalSupply.amount}
+                options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+              />
+            )
           }
         ]}
       />
