@@ -1,10 +1,13 @@
+import { formatCurrencyValue } from '@components/CurrencyValue'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
+import { useExchangeRates } from '../../../serverAtoms'
 
 /**
- * TODO: Assuems stablecoins
+ * TODO: Assumes stablecoins
  * @param props
  * @returns
  */
@@ -14,6 +17,8 @@ export const AccountListItemTokenBalance = (props: {
   error?: boolean
 }) => {
   const { chainId, token, error } = props
+  const exchangeRates = useExchangeRates()
+  const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
 
   let balanceToDisplay = token?.amountPretty
@@ -22,7 +27,12 @@ export const AccountListItemTokenBalance = (props: {
     !!(token as TokenWithUsdBalance).balanceUsd.amountPretty &&
     !(token as TokenWithUsdBalance).balanceUsd.amountUnformatted.isZero()
   ) {
-    balanceToDisplay = (token as TokenWithUsdBalance).balanceUsd.amountPretty
+    balanceToDisplay = formatCurrencyValue(
+      (token as TokenWithUsdBalance).balanceUsd.amount,
+      currency,
+      exchangeRates,
+      { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+    )
   }
 
   return (

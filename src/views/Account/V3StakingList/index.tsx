@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
@@ -42,7 +43,16 @@ export const V3StakingList = () => {
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle title={t('staking')} secondary={`$${amount.amountPretty}`} loading={!isFetched} />
+      <CardTitle
+        title={t('staking')}
+        secondary={
+          <CurrencyValue
+            baseValue={amount.amount}
+            options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+          />
+        }
+        loading={!isFetched}
+      />
       <POOLStakingCards />
       <LPStakingCards />
       <ul>
