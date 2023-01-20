@@ -8,7 +8,12 @@ import { useUsersV3PrizePoolBalances } from '@hooks/v3/useUsersV3PrizePoolBalanc
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useTotalAmountDelegatedTo } from '@hooks/v4/PrizePool/useTotalAmountDelegatedTo'
 import { useAllTwabDelegations } from '@hooks/v4/TwabDelegator/useAllTwabDelegations'
-import { Token, TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import {
+  Token,
+  TokenWithBalance,
+  TokenWithUsdBalance,
+  useCoingeckoExchangeRates
+} from '@pooltogether/hooks'
 import { NetworkIcon, TokenIconWithNetwork } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
@@ -17,7 +22,6 @@ import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { BalanceDelegatedToItem } from '@views/Account/V4DepositList/BalanceDelegatedToItem'
 import { TwabDelegatorItem } from '@views/Account/V4DepositList/TwabDelegatorItem'
 import { useTranslation } from 'next-i18next'
-import { useExchangeRates } from '../../serverAtoms'
 
 /**
  * Displays V4 deposits.
@@ -27,7 +31,7 @@ import { useExchangeRates } from '../../serverAtoms'
 export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const { data } = useAllUsersV4Balances(usersAddress)
-  const exchangeRates = useExchangeRates()
+  const { data: exchangeRates } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
 
@@ -51,11 +55,11 @@ export const SimpleV4DepositList: React.FC<{ usersAddress: string }> = (props) =
 export const SimpleV3DepositList: React.FC<{ usersAddress: string }> = (props) => {
   const { usersAddress } = props
   const { data, isFetched } = useUsersV3PrizePoolBalances(usersAddress, false)
-  const exchangeRates = useExchangeRates()
+  const { data: exchangeRates, isFetched: isFetchedExchangeRates } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
 
-  if (!isFetched || data.balances.length === 0) return null
+  if (!isFetched || !isFetchedExchangeRates || data.balances.length === 0) return null
   return (
     <div>
       <CardTitle

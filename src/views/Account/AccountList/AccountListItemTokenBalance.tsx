@@ -1,10 +1,13 @@
 import { formatCurrencyValue } from '@components/CurrencyValue'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
-import { TokenWithBalance, TokenWithUsdBalance } from '@pooltogether/hooks'
+import {
+  TokenWithBalance,
+  TokenWithUsdBalance,
+  useCoingeckoExchangeRates
+} from '@pooltogether/hooks'
 import { ThemedClipSpinner } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
-import { useExchangeRates } from '../../../serverAtoms'
 
 /**
  * TODO: Assumes stablecoins
@@ -17,7 +20,7 @@ export const AccountListItemTokenBalance = (props: {
   error?: boolean
 }) => {
   const { chainId, token, error } = props
-  const exchangeRates = useExchangeRates()
+  const { data: exchangeRates, isFetched: isFetchedExchangeRates } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
   const { t } = useTranslation()
 
@@ -37,7 +40,7 @@ export const AccountListItemTokenBalance = (props: {
 
   return (
     <div className='flex items-center'>
-      {!!token ? (
+      {!!token && !!isFetchedExchangeRates ? (
         <>
           {/* <TokenIcon chainId={chainId} address={token.address} className='mr-2' /> */}
           <span

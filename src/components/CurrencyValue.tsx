@@ -1,10 +1,9 @@
 import { CURRENCY_ID } from '@constants/currencies'
 import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
-import { CoingeckoExchangeRates } from '@pooltogether/hooks'
-import { CountUp } from '@pooltogether/react-components'
+import { CoingeckoExchangeRates, useCoingeckoExchangeRates } from '@pooltogether/hooks'
+import { CountUp, ThemedClipSpinner } from '@pooltogether/react-components'
 import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
 import { getCurrencySymbolById } from '@utils/getCurrencySymbolById'
-import { useExchangeRates } from '../serverAtoms'
 
 interface CurrencyValueProps {
   baseValue: number | string
@@ -30,7 +29,7 @@ type CurrencyFormattingOptions = Omit<Intl.NumberFormatOptions, 'style' | 'curre
 export const CurrencyValue = (props: CurrencyValueProps) => {
   const { baseValue, options } = props
 
-  const exchangeRates = useExchangeRates()
+  const { data: exchangeRates, isFetched } = useCoingeckoExchangeRates()
   const { currency } = useSelectedCurrency()
 
   const symbol = getCurrencySymbolById(currency) ?? '$'
@@ -38,7 +37,9 @@ export const CurrencyValue = (props: CurrencyValueProps) => {
     baseCurrency: options?.baseCurrency
   })
 
-  if (options?.countUp) {
+  if (!isFetched) {
+    return <ThemedClipSpinner />
+  } else if (options?.countUp) {
     return (
       <>
         {!options?.hideCountUpSymbol && symbol}
