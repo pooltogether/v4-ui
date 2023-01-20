@@ -1,7 +1,7 @@
-import { CurrencyValue } from '@components/CurrencyValue'
 import { usePrizePoolTicketTotalSupply } from '@hooks/v4/TwabRewards/usePrizePoolTicketTotalSupply'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { TokenIcon } from '@pooltogether/react-components'
+import { formatNumberForDisplay } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 
 /**
@@ -31,9 +31,11 @@ export const TicketTotalSupply = (props: {
           />
         </>
       )}
-      {isFetched && !isError && (
-        <CurrencyValue baseValue={data?.amount.amount} options={{ notation: 'compact' }} />
-      )}
+      {isFetched &&
+        !isError &&
+        formatNumberForDisplay(data?.amount.amount, {
+          notation: 'compact'
+        })}
       {showToken && <> {tokens?.ticket.symbol}</>}
     </>
   )
