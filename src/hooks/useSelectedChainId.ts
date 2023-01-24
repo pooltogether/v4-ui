@@ -5,12 +5,12 @@ import { getChainIdByAlias } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
 import { atom, useAtom } from 'jotai'
 import { useUpdateAtom } from 'jotai/utils'
+import { useQueryParamState } from './useQueryParamState'
 import {
   selectedChainIdAtom,
   selectedPrizePoolAddressesAtom,
   setSelectedChainIdWriteAtom
 } from '../atoms'
-import { useQueryParamState } from './useQueryParamState'
 
 const parseUrlNetwork = () => {
   const url = new URL(window.location.href)

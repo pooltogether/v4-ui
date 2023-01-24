@@ -1,8 +1,8 @@
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmountsGraph } from './useAllUsersClaimedAmountsGraph'
+import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 
 export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
   const { data: decimals, isFetched: isDecimalsFetched } = useSelectedPrizePoolTicketDecimals()

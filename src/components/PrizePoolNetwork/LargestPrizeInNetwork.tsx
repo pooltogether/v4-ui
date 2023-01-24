@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { usePrizePoolNetworkGrandPrize } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkGrandPrize'
 
 /**
@@ -7,5 +8,5 @@ import { usePrizePoolNetworkGrandPrize } from '@hooks/v4/PrizePoolNetwork/usePri
 export const LargestPrizeInNetwork = (props) => {
   const { data, isFetched } = usePrizePoolNetworkGrandPrize()
 
-  return isFetched ? <>${data?.grandPrizeValue.amountPretty}</> : null
+  return isFetched ? <CurrencyValue baseValue={data?.grandPrizeValue.amount} /> : null
 }

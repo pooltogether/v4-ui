@@ -3,9 +3,9 @@ import classNames from 'classnames'
 import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PrizePoolNetworkCarouselAutoplayAtom } from '../PrizePoolNetworkCarousel'
 import { DepositModal } from './DepositModal'
 import { HelpButtons } from './HelpButtons'
+import { PrizePoolNetworkCarouselAutoplayAtom } from '../PrizePoolNetworkCarousel'
 
 export const DepositTrigger = (props: { className?: string }) => {
   const { className } = props

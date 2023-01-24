@@ -1,10 +1,10 @@
 import { Amount } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 import { useQueries } from 'react-query'
-import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOddsData } from './useAllPrizePoolOddsData'
 import { getOdds, getOddsKey } from './useOdds'
 import { usePrizePools } from './usePrizePools'
+import { EstimateAction } from '../../../constants/odds'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

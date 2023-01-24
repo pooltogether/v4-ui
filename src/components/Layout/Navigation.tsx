@@ -1,7 +1,7 @@
 import { NavigationContainer, NavigationLink } from '@pooltogether/react-components'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 const navLinks = [

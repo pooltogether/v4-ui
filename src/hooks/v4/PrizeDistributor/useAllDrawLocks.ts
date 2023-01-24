@@ -3,8 +3,8 @@ import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useQueries, useQuery } from 'react-query'
-import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 import { usePrizeDistributors } from './usePrizeDistributors'
+import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
 
 export const getDrawLocksQueryKey = (
   prizeDistributor: PrizeDistributor,

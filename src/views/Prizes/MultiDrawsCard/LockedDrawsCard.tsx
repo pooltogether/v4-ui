@@ -13,10 +13,10 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { DrawData } from '../../../interfaces/v4'
 import { MultipleDrawIds, TotalPrizes } from './MultipleDrawDetails'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
 import { PrizeAnimationCard } from './PrizeAnimationCard'
+import { DrawData } from '../../../interfaces/v4'
 
 export const LockedDrawsCard: React.FC<{
   prizeDistributor: PrizeDistributor

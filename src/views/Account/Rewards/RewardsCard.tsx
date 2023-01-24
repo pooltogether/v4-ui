@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { TxButton } from '@components/Input/TxButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
@@ -47,9 +48,9 @@ import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
 import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { UseQueryResult } from 'react-query'
 import { useSigner } from 'wagmi'
@@ -483,7 +484,7 @@ const ClaimModalForm = (props: {
             <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
             <span className='ml-1 opacity-50'>
               {claimableUsd || claimableUsd === 0 ? (
-                <>(${numberWithCommas(claimableUsd)})</>
+                <CurrencyValue baseValue={claimableUsd} />
               ) : (
                 <ThemedClipSpinner sizeClassName='w-4 h-4' />
               )}
