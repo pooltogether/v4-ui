@@ -85,7 +85,10 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
         <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
-            ${data?.totalClaimedAmount?.amountPretty || '--'}
+            <CurrencyValue
+              baseValue={data?.totalClaimedAmount?.amount}
+              // options={{ notation: 'compact' }}
+            />
           </span>
           <span className='opacity-80 font-semibold text-xxs'>{t('totalWinnings')}</span>
         </div>

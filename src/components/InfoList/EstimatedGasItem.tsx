@@ -5,6 +5,7 @@ import { useGasCostEstimate } from '@pooltogether/hooks'
 import { Tooltip } from '@pooltogether/react-components'
 import { numberWithCommas } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -14,8 +15,8 @@ interface EstimatedGasItemProps {
   isFetched: boolean
   txName: string
   label: string
-  totalGasWei?: number
-  totalGasUsd?: number
+  totalGasWei?: BigNumber
+  totalGasUsd?: BigNumber
   error?: unknown
   labelClassName?: string
   valueClassName?: string
@@ -48,7 +49,7 @@ export const EstimatedGasItem = (props: EstimatedGasItemProps) => {
         }
       >
         <span>
-          <CurrencyValue baseValue={totalGasUsd} options={{ decimals: 2 }} />
+          <CurrencyValue baseValue={formatUnits(totalGasUsd, 18)} options={{ decimals: 2 }} />
         </span>
       </Tooltip>
     )
