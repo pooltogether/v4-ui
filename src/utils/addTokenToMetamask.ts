@@ -1,3 +1,5 @@
+// @ts-nocheck
+// Note: CoinbaseWalletSDK types window.ethereum but the type doesn't support wallet_watchAsset
 const DEFAULT_TOKEN_PRECISION = 18
 
 export const addTokenToMetamask = async (
@@ -11,7 +13,6 @@ export const addTokenToMetamask = async (
 
     if (typeof window === 'undefined') return null
 
-    // @ts-ignore
     const ethereum = window?.ethereum
 
     return await ethereum.request({
