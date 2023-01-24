@@ -140,7 +140,7 @@ export const AppContainer: React.FC<AppProps> = (props) => {
             overlayBlur: 'small'
           }),
           darkMode: darkTheme({
-            accentColor: '#ff77e1',
+            accentColor: '#35f0d0',
             accentColorForeground: '#1A1B1F',
             borderRadius: 'small',
             overlayBlur: 'small'
