@@ -1,5 +1,5 @@
 import { DEFAULT_CHAIN_IDS, DEFAULT_PRIZE_POOLS } from '@constants/config'
-import { CURRENCY_ID } from '@constants/currencies'
+import { CURRENCY_ID, SUPPORTED_CURRENCIES } from '@constants/currencies'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
@@ -58,7 +58,7 @@ const getInitialSelectedPrizePoolAddress = () => {
 const getInitialSelectedCurrencyId = () => {
   if (typeof window === 'undefined') return 'usd'
   const cachedCurrency = localStorage.getItem('selectedCurrency') as CURRENCY_ID
-  if (!!cachedCurrency) {
+  if (!!cachedCurrency && Object.keys(SUPPORTED_CURRENCIES).includes(cachedCurrency)) {
     return cachedCurrency
   } else {
     return 'usd'
