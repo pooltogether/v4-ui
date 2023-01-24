@@ -10,9 +10,11 @@ const Layout = dynamic(() => import('../components/Layout'), {
 })
 
 export async function getStaticProps({ locale }) {
+  const translations = await serverSideTranslations(locale, ['common'], nextI18NextConfig)
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'], nextI18NextConfig))
+      ...translations
     }
   }
 }

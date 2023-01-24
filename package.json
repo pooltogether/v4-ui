@@ -40,9 +40,9 @@
   "dependencies": {
     "@coinbase/cbpay-js": "1.6.0",
     "@pooltogether/etherplex": "^1.1.4",
-    "@pooltogether/hooks": "^2.0.0-beta.6",
+    "@pooltogether/hooks": "^2.0.3",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "2.0.2",
+    "@pooltogether/react-components": "2.0.5",
     "@pooltogether/utilities": "^0.7.0",
     "@pooltogether/v4-client-js": "1.18.0",
     "@pooltogether/v4-pool-data": "1.11.0-beta.8",

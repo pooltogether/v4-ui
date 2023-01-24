@@ -1,9 +1,11 @@
+import { formatCurrencyValue } from '@components/CurrencyValue'
 import { ListItem } from '@components/List/ListItem'
 import { PrizePoolLabel } from '@components/PrizePool/PrizePoolLabel'
 import { CardTitle } from '@components/Text/CardTitle'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useSelectedPrizePoolAddress } from '@hooks/useSelectedPrizePoolAddress'
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
-import { TokenWithUsdBalance } from '@pooltogether/hooks'
+import { TokenWithUsdBalance, useCoingeckoExchangeRates } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { AccountList } from '@views/Account/AccountList'
@@ -21,13 +23,15 @@ export const V4DepositList = () => {
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
   const { data } = useAllUsersV4Balances(usersAddress)
+  const { data: exchangeRates } = useCoingeckoExchangeRates()
+  const { currency } = useSelectedCurrency()
 
   return (
     <div id='deposits'>
       <CardTitle
         className='mb-2'
         title={t('savings')}
-        secondary={`$${data?.totalValueUsd.amountPretty}`}
+        secondary={formatCurrencyValue(data?.totalValueUsd.amount, currency, exchangeRates)}
       />
       <DepositsList />
       <ExplorePrizePools />

@@ -1,5 +1,5 @@
 import { Amount } from '@pooltogether/hooks'
-import { formatCurrencyNumberForDisplay, formatNumberForDisplay } from '@pooltogether/utilities'
+import { formatNumberForDisplay } from '@pooltogether/utilities'
 import { PrizeTierConfig } from '@pooltogether/v4-client-js'
 import { getPrizeTierNumberOfPrizes } from '@utils/getPrizeTierNumberOfPrizes'
 import { getPrizeTierValues } from '@utils/getPrizeTierValues'
@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
+import { CurrencyValue } from './CurrencyValue'
 import { LoadingPrizeRow, PrizeTableHeader } from './ModalViews/DepositView/ExpectedPrizeBreakdown'
 
 interface PrizeBreakdownProps {
@@ -113,7 +114,7 @@ const PrizeBreakdownTableRow = (props: {
   return (
     <>
       <PrizeTableCell index={index}>
-        {formatCurrencyNumberForDisplay(valueOfPrize.amount, 'usd', { hideZeroes: true })}
+        <CurrencyValue baseValue={valueOfPrize.amount} options={{ decimals: 0 }} />
       </PrizeTableCell>
       <PrizeTableCell index={index}>
         {formatNumberForDisplay(numberOfPrizes / totalNumberOfPrizes, {

@@ -1,4 +1,5 @@
 import { DEFAULT_CHAIN_IDS, DEFAULT_PRIZE_POOLS } from '@constants/config'
+import { CURRENCY_ID, SUPPORTED_CURRENCIES } from '@constants/currencies'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
@@ -49,6 +50,22 @@ const getInitialSelectedPrizePoolAddress = () => {
 }
 
 /**
+ * TODO: set initial currency to match user's locale
+ * TODO: check if value from localstorage is actually a valid currency ID
+ * Initializes the currency used throughout the app.
+ * Reads from localstorage if set, otherwise defaults to USD.
+ */
+const getInitialSelectedCurrencyId = () => {
+  if (typeof window === 'undefined') return 'usd'
+  const cachedCurrency = localStorage.getItem('selectedCurrency') as CURRENCY_ID
+  if (!!cachedCurrency && Object.keys(SUPPORTED_CURRENCIES).includes(cachedCurrency)) {
+    return cachedCurrency
+  } else {
+    return 'usd'
+  }
+}
+
+/**
  *
  */
 export const selectedPrizePoolAddressAtom = atom<string>(getInitialSelectedPrizePoolAddress())
@@ -59,6 +76,11 @@ export const selectedPrizePoolAddressAtom = atom<string>(getInitialSelectedPrize
 export const selectedPrizePoolAddressesAtom = atom<{ [chainId: number]: string }>(
   DEFAULT_PRIZE_POOLS[getAppEnv()]
 )
+
+/**
+ *
+ */
+export const selectedCurrencyIdAtom = atom<CURRENCY_ID>(getInitialSelectedCurrencyId())
 
 /**
  * Used to set the active prize pool in the app when a chain id changes
@@ -86,5 +108,20 @@ export const setSelectedPrizePoolWriteAtom = atom<null, PrizePool>(
     const selectedPrizePoolAddresses = Object.assign({}, get(selectedPrizePoolAddressesAtom))
     selectedPrizePoolAddresses[chainId] = address
     set(selectedPrizePoolAddressesAtom, selectedPrizePoolAddresses)
+  }
+)
+
+/**
+ * Used to set the currency used when a new one is selected.
+ */
+export const setSelectedCurrencyIdWriteAtom = atom<null, CURRENCY_ID>(
+  null,
+  (get, set, currencyId) => {
+    if (typeof window !== 'undefined') {
+      // Set in atom
+      set(selectedCurrencyIdAtom, currencyId)
+      // Set in localstorage
+      localStorage.setItem('selectedCurrency', currencyId)
+    }
   }
 )

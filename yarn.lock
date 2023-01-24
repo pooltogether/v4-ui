@@ -2265,10 +2265,10 @@
   resolved "https://registry.yarnpkg.com/@pooltogether/fixed-point/-/fixed-point-1.0.0-beta.2.tgz#d76a1e77f21833e9b680296d65526b0ffd7415d7"
   integrity sha512-aUw4R0Z2oM0AK3W4LIXyBaojTOzRRbhLDHX0egeuvxfjy4gBb6X66v81gI7Wngg/7O0y9QL/B8jWkUnAFzhTig==
 
-"@pooltogether/hooks@^2.0.0-beta.6":
-  version "2.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.0-beta.6.tgz#55900a4bacb3a8159f451ec8b405a3731bfe65df"
-  integrity sha512-blLDcfTJE8Md5I8YvqsVx44C4pIvoYu5W0/vIBoxGFHlbtPqihLz4vI50elgaFylPRfQheK4vpFwiXkF6PHLrQ==
+"@pooltogether/hooks@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@pooltogether/hooks/-/hooks-2.0.3.tgz#85ffe72672f8e81edac0a83137a13c01d917d969"
+  integrity sha512-a7GpAZpo7TbzWxWLsDBM4cpY/92s8+M4YW+kEVy/75jlJ/QRCtDqYDxu1Q+uNQqFzJc+yLdi+VIO0KS4l5TVGQ==
 
 "@pooltogether/owner-manager-contracts@1.1.0":
   version "1.1.0"
@@ -2311,10 +2311,10 @@
   dependencies:
     "@pooltogether/owner-manager-contracts" "1.1.0"
 
-"@pooltogether/react-components@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.2.tgz#dffe84a725cba54c064818713ed577647e775ae8"
-  integrity sha512-TPMYvRlVyQ9HBl0m5ygPItJ+nyCsDtLZI6J/rlYnjKQ4yZ6xIb3XFUZLx0IeJXUmfw8BBRDlO2tWFO/jHwoZgg==
+"@pooltogether/react-components@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@pooltogether/react-components/-/react-components-2.0.5.tgz#80b6174f725193f868d5dec24bad620dfb87afe9"
+  integrity sha512-cQpEZsS5TqudR+mE885Z7Z+IxeUjejPzm5rmVhdCKAiDO6C753Z55J6myLMykWtHWw8h576RjiUsaN03IDFAvQ==
   dependencies:
     "@download/blockies" "^1.0.3"
     "@reach/dialog" "^0.15.0"

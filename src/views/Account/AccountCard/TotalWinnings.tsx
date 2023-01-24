@@ -1,7 +1,8 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { useAllUsersClaimedAmountsGraph } from '@hooks/v4/PrizeDistributor/useAllUsersClaimedAmountsGraph'
 import { useUsersTotalClaimedAmountGraph } from '@hooks/v4/PrizeDistributor/useUsersTotalClaimedAmountGraph'
 import { Amount, Token } from '@pooltogether/hooks'
-import { ThemedClipSpinner, TokenIcon, CountUp, BottomSheet } from '@pooltogether/react-components'
+import { ThemedClipSpinner, TokenIcon, BottomSheet } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { Trans, useTranslation } from 'next-i18next'
@@ -22,9 +23,10 @@ export const TotalWinningsAmount: React.FC<{ usersAddress: string; className?: s
       {!isFetched ? (
         <ThemedClipSpinner sizeClassName='w-3 h-3' className='mx-auto' />
       ) : (
-        <>
-          $<CountUp countTo={isFetched ? Number(data?.totalClaimedAmount.amount) : 0} />
-        </>
+        <CurrencyValue
+          baseValue={isFetched ? data?.totalClaimedAmount.amount : 0}
+          options={{ countUp: true }}
+        />
       )}
     </span>
   )
@@ -83,7 +85,10 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
         <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
-            ${data?.totalClaimedAmount?.amountPretty || '--'}
+            <CurrencyValue
+              baseValue={data?.totalClaimedAmount?.amount}
+              // options={{ notation: 'compact' }}
+            />
           </span>
           <span className='opacity-80 font-semibold text-xxs'>{t('totalWinnings')}</span>
         </div>

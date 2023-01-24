@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { TxButton } from '@components/Input/TxButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
@@ -483,7 +484,7 @@ const ClaimModalForm = (props: {
             <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
             <span className='ml-1 opacity-50'>
               {claimableUsd || claimableUsd === 0 ? (
-                <>(${numberWithCommas(claimableUsd)})</>
+                <CurrencyValue baseValue={claimableUsd} />
               ) : (
                 <ThemedClipSpinner sizeClassName='w-4 h-4' />
               )}

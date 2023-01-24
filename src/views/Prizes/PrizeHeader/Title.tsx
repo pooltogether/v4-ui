@@ -1,13 +1,14 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { NextDrawId } from '@components/PrizePoolNetwork/NextDrawId'
 import { UpcomingPerDrawPrizeValue } from '@components/PrizePoolNetwork/UpcomingPerDrawPrizeValue'
 import { usePrizeDistributorToken } from '@hooks/v4/PrizeDistributor/usePrizeDistributorToken'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState } from '@hooks/v4/usePrizePageState'
 import { LoadingDots } from '@pooltogether/react-components'
-import { formatUnformattedBigNumberForDisplay } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import { Trans, useTranslation } from 'next-i18next'
 
 export const Title = (props: {
@@ -81,14 +82,10 @@ const TotalPrizes = (props: { usersAddress: string; prizeDistributor: PrizeDistr
     }, ethers.constants.Zero)
 
   return (
-    <>
-      {formatUnformattedBigNumberForDisplay(totalAmountUnformatted, tokenData?.token.decimals, {
-        style: 'currency',
-        currency: 'usd',
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0
-      })}
-    </>
+    <CurrencyValue
+      baseValue={formatUnits(totalAmountUnformatted, tokenData?.token.decimals)}
+      options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+    />
   )
 }
 

@@ -1,5 +1,6 @@
 import { Amount } from '@pooltogether/hooks'
 import { useTranslation } from 'next-i18next'
+import { CurrencyValue } from './CurrencyValue'
 
 export const AmountInPrizes = (props: {
   amount: Amount
@@ -14,11 +15,11 @@ export const AmountInPrizes = (props: {
     return null
   }
 
-  const { amountPretty } = amount
-
   return (
     <div className={className}>
-      <span className={numberClassName}>${amountPretty}</span>
+      <span className={numberClassName}>
+        <CurrencyValue baseValue={amount.amount} />
+      </span>
       <span className={textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
   )

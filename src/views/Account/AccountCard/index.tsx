@@ -1,7 +1,8 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { TransparentDiv } from '@components/TransparentDiv'
 import { useUsersTotalBalances } from '@hooks/useUsersTotalBalances'
 import { useUsersPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useUsersPrizePoolNetworkOdds'
-import { ThemedClipSpinner, CountUp } from '@pooltogether/react-components'
+import { ThemedClipSpinner } from '@pooltogether/react-components'
 import { shorten } from '@pooltogether/utilities'
 import { unionProbabilities } from '@utils/unionProbabilities'
 import classNames from 'classnames'
@@ -71,13 +72,16 @@ export const TotalBalanceAmount: React.FC<{ usersAddress: string }> = (props) =>
     (balancesData?.totalBalanceUsd.amountUnformatted.isZero() && !balancesData?.totalV4Balance)
   ) {
     return (
-      <>
-        $<CountUp countTo={Number(balancesData?.totalBalanceUsd.amount)} />
-      </>
+      <CurrencyValue baseValue={balancesData?.totalBalanceUsd.amount} options={{ countUp: true }} />
     )
   }
 
-  return <CountUp countTo={Number(balancesData?.totalV4Balance)} />
+  return (
+    <CurrencyValue
+      baseValue={balancesData?.totalV4Balance}
+      options={{ countUp: true, hideCountUpSymbol: true }}
+    />
+  )
 }
 
 const DailyOdds: React.FC<{ usersAddress: string }> = (props) => (
