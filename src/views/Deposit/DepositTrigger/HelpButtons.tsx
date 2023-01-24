@@ -32,8 +32,8 @@ import {
 } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 
 enum ViewIds {

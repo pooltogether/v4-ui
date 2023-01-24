@@ -4,9 +4,9 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { PrizeTier, PrizeTierV2 } from '@pooltogether/v4-utils-js'
 import { formatUnits, parseEther, parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 
 export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
   const { data: prizePoolTvlData, isFetched: isPrizePoolTvlFetched } =

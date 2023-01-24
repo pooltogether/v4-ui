@@ -7,12 +7,12 @@ import { RSV } from 'eth-permit/dist/rpc'
 import { ethers, Overrides } from 'ethers'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
 import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 import { useUsersTicketDelegate } from './useUsersTicketDelegate'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
+import { useGetUser } from '../User/useGetUser'
 
 export const useSendDepositTransaction = (
   depositAmount: Amount,

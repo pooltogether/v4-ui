@@ -20,9 +20,9 @@ import {
 import { getSupportedChains } from '@utils/getSupportedChains'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 

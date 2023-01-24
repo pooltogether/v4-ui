@@ -11,8 +11,8 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useSigner } from 'wagmi'
-import { DepositItemsProps } from '..'
 import { WithdrawStepContent } from './WithdrawStepContent'
+import { DepositItemsProps } from '..'
 
 export enum WithdrawalSteps {
   input,

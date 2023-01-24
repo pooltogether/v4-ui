@@ -9,9 +9,9 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { makeStablecoinTokenWithUsdBalance } from '@utils/makeStablecoinTokenWithUsdBalance'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
+import { usePrizePools } from './usePrizePools'
 import { useAllUsersPrizePoolBalances } from '../PrizePoolNetwork/useAllUsersPrizePoolBalances'
 import { useAllTwabDelegations } from '../TwabDelegator/useAllTwabDelegations'
-import { usePrizePools } from './usePrizePools'
 
 /**
  * TODO: Properly add fiat conversions

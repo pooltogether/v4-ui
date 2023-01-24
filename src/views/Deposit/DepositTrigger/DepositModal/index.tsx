@@ -15,13 +15,13 @@ import {
 } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
 import { RSV } from 'eth-permit/dist/rpc'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { useCallback, useEffect, useState } from 'react'
-import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
-import { WalletConnectionView } from '../../../../components/ModalViews/WalletConnectionView'
 import { DepositReviewView } from './DepositReviewView'
 import { DepositView } from './DepositView'
+import { ExplorePrizePoolsView } from '../../../../components/ModalViews/ExplorePrizePoolsView'
+import { WalletConnectionView } from '../../../../components/ModalViews/WalletConnectionView'
 
 export enum ViewIds {
   deposit,

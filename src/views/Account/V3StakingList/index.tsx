@@ -7,12 +7,12 @@ import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
+import { LPStakingCards } from './LPStakingCards'
+import { POOLStakingCards } from './POOLStakingCards'
 import { ExternalLinkWithWarning } from '../../../components/ExternalLinkWithWarning'
 import { ListItem } from '../../../components/List/ListItem'
 import { LPTokenIcon } from '../../../components/LPTokenIcon'
 import { POOL_TOKEN, WETH_TOKEN } from '../../../constants/misc'
-import { LPStakingCards } from './LPStakingCards'
-import { POOLStakingCards } from './POOLStakingCards'
 
 export const V3StakingList = () => {
   const usersAddress = useUsersAddress()

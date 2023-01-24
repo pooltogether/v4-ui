@@ -19,11 +19,11 @@ import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { RSV } from 'eth-permit/dist/rpc'
 import { useTranslation } from 'next-i18next'
 import { useCallback, useEffect, useState } from 'react'
-import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
-import { DelegateView } from '../DelegateView'
 import { DepositView } from './DepositView'
 import { MainView } from './MainView'
 import { WithdrawView } from './WithdrawView'
+import { PrizePoolInfoView } from '../../../../components/ModalViews/PrizePoolInfoView'
+import { DelegateView } from '../DelegateView'
 
 export enum ViewIds {
   main,

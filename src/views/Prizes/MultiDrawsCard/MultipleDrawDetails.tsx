@@ -6,9 +6,9 @@ import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { DrawData } from '../../../interfaces/v4'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
+import { DrawData } from '../../../interfaces/v4'
 
 interface MultipleDrawDetailsProps {
   drawDatas: { [drawId: number]: DrawData }

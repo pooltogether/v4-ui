@@ -26,13 +26,13 @@ import axios from 'axios'
 import { useAtom } from 'jotai'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { DrawData } from '../../../interfaces/v4'
 import { LoadingCard } from './LoadingCard'
 import { LockedDrawsCard } from './LockedDrawsCard'
 import { MultipleDrawDetails } from './MultipleDrawDetails'
 import { PrizeAnimationCard } from './PrizeAnimationCard'
 import { PrizeClaimSheet } from './PrizeClaimSheet'
 import { VideoClip } from './PrizeVideoBackground'
+import { DrawData } from '../../../interfaces/v4'
 
 interface MultiDrawsCardProps {
   checkedState: CheckedState

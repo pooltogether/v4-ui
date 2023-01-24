@@ -1,6 +1,4 @@
 import { useQueries } from 'react-query'
-import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import {
@@ -8,6 +6,8 @@ import {
   calculatePrizePoolPercentageOfPicksKey
 } from './usePrizePoolPercentageOfPicks'
 import { usePrizePools } from './usePrizePools'
+import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 
 /**
  * NOTE: Assumes 1 PrizeDistributor per chain

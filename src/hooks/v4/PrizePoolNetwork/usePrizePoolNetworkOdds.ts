@@ -1,9 +1,9 @@
 import { unionProbabilities } from '@utils/unionProbabilities'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
+import { usePrizePoolNetwork } from './usePrizePoolNetwork'
 import { EstimateAction } from '../../../constants/odds'
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
-import { usePrizePoolNetwork } from './usePrizePoolNetwork'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

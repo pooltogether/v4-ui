@@ -26,6 +26,15 @@
       "@views/*": ["./src/views/*"]
     }
   },
-  "include": ["src", "next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+  "include": [
+    "src",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "next.config.mjs",
+    "next-i18next.config.mjs"
+  ],
   "exclude": ["node_modules"]
 }

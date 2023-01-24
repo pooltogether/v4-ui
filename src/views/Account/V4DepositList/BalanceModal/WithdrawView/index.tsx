@@ -10,8 +10,8 @@ import { ViewProps } from '@pooltogether/react-components'
 import { getAmount } from '@pooltogether/utilities'
 import { Transaction } from '@pooltogether/wallet-connection'
 import { useTranslation } from 'next-i18next'
-import { ViewIds } from '..'
 import { WithdrawInfoListItems } from './WithdrawInfoListItems'
+import { ViewIds } from '..'
 
 const FORM_KEY = 'withdrawAmount'
 

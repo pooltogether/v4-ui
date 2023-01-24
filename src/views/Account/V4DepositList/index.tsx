@@ -12,12 +12,12 @@ import { AccountList } from '@views/Account/AccountList'
 import { AccountListItemTokenBalance } from '@views/Account/AccountList/AccountListItemTokenBalance'
 import { LoadingList } from '@views/Account/AccountList/LoadingList'
 import { DepositModal } from '@views/Deposit/DepositTrigger/DepositModal'
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { AccentTextButton } from '../AccentTextButton'
 import { BalanceModal } from './BalanceModal'
 import { DelegateTicketsSection } from './DelegateTicketsSection'
+import { AccentTextButton } from '../AccentTextButton'
 
 export const V4DepositList = () => {
   const { t } = useTranslation()

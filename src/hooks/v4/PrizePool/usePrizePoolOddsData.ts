@@ -3,9 +3,9 @@ import { Amount } from '@pooltogether/hooks'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { BigNumber, ethers } from 'ethers'
 import { useQuery } from 'react-query'
+import { usePrizePoolExpectedPrizes } from './usePrizePoolExpectedPrizes'
 import { EstimateAction } from '../../../constants/odds'
 import { usePrizePoolTicketTwabTotalSupply } from '../PrizePool/usePrizePoolTicketTwabTotalSupply'
-import { usePrizePoolExpectedPrizes } from './usePrizePoolExpectedPrizes'
 
 export const getPrizePoolOddsDataKey = (
   prizePool: PrizePool,

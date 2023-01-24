@@ -1,6 +1,9 @@
-const path = require('path');
-const { i18n } = require('./next-i18next.config');
-const { withSentryConfig } = require('@sentry/nextjs');
+import * as path from 'path'
+import * as url from 'url'
+import config from './next-i18next.config.mjs'
+import { withSentryConfig } from '@sentry/nextjs'
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 const sentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
@@ -10,13 +13,13 @@ const sentryWebpackPluginOptions = {
   //   urlPrefix, include, ignore
 
   dryRun: process.env.NEXT_PUBLIC_PT_ENV !== 'production',
-  silent: true, // Suppresses all logs
+  silent: true // Suppresses all logs
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
-};
+}
 
 const nextConfig = {
-  i18n,
+  i18n: config.i18n,
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
   async redirects() {
@@ -33,10 +36,10 @@ const nextConfig = {
       '@styles': path.resolve(__dirname, './src/styles'),
       '@interfaces': path.resolve(__dirname, './src/interfaces'),
       '@utils': path.resolve(__dirname, './src/utils'),
-      '@views': path.resolve(__dirname, './src/views'),
-    };
+      '@views': path.resolve(__dirname, './src/views')
+    }
     return config
   }
 }
 
-module.exports = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions)

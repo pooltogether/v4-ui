@@ -1,7 +1,7 @@
 import { Card } from '@pooltogether/react-components'
 import classNames from 'classnames'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { ConnectWalletButton } from './ConnectWalletButton'
 
