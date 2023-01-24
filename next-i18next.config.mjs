@@ -1,12 +1,12 @@
-const path = require('path')
-const LocizeBackend = require('i18next-locize-backend/cjs')
-const ChainedBackend = require('i18next-chained-backend').default
-const LocalStorageBackend = require('i18next-localstorage-backend').default
+import path from 'path'
+import LocizeBackend from 'i18next-locize-backend/cjs'
+import ChainedBackend from 'i18next-chained-backend'
+import LocalStorageBackend from 'i18next-localstorage-backend'
 
 const isDev = process.env.NODE_ENV !== 'production'
 const isBrowser = typeof window !== 'undefined'
 
-module.exports = {
+export default {
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es', 'de', 'fa', 'fil', 'fr', 'hi', 'it', 'ko', 'pt', 'ru', 'sk', 'tr', 'zh']
