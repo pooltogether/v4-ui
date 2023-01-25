@@ -1,24 +1,34 @@
-import { Button, ButtonProps, ThemedClipSpinner } from '@pooltogether/react-components'
-import { useConnectWallet } from '@pooltogether/wallet-connection'
+import { Button, ButtonProps } from '@pooltogether/react-components'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useAccount } from 'wagmi'
 
 export const ConnectWalletButton: React.FC<Omit<ButtonProps, 'onClick' | 'type'>> = (props) => {
-  const connectWallet = useConnectWallet()
-  const { status } = useAccount()
   const { t } = useTranslation()
+
   return (
-    <Button {...props} onClick={() => connectWallet()} type='button'>
-      {status === 'connecting' ? (
-        <>
-          {t('connecting')}{' '}
-          <ThemedClipSpinner className='opacity-50 ml-2' sizeClassName='w-3 h-3' />
-        </>
-      ) : (
-        t('connectWallet')
-      )}
-    </Button>
+    <ConnectButton.Custom>
+      {({ openConnectModal, mounted }) => {
+        const ready = mounted
+
+        return (
+          <div
+            {...(!ready && {
+              'aria-hidden': true,
+              'style': {
+                opacity: 0,
+                pointerEvents: 'none',
+                userSelect: 'none'
+              }
+            })}
+          >
+            <Button {...props} onClick={openConnectModal} type='button'>
+              {t('connectWallet')}
+            </Button>
+          </div>
+        )
+      }}
+    </ConnectButton.Custom>
   )
 }
 

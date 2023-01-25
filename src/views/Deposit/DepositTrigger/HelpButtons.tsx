@@ -138,7 +138,7 @@ const HelpView = (props: ViewProps) => {
               <ExternalLink
                 children={undefined}
                 theme={LinkTheme.accent}
-                href={'https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'}
+                href={'https://ethereum.org/en/wallets/'}
               />
             ),
             button: (
