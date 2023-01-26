@@ -11,7 +11,7 @@ export const usePrizePoolsByAvgPrizeValue = () => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
     let prizePools: PrizePool[] = []
     const sortedPrizePoolIds = queryResults
-      .filter(({ isFetched, isError }) => isFetched && !isError)
+      .filter(({ isFetched, isError, data }) => isFetched && !isError && !!data)
       .map(({ data }) => data)
       .sort((a, b) =>
         a.averagePrizeValue.amountUnformatted.gte(b.averagePrizeValue.amountUnformatted) ? -1 : 1

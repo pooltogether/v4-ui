@@ -19,8 +19,7 @@ export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
     isError: isPrizeTierError
   } = useUpcomingPrizeTier(prizePool)
 
-  const isFetched =
-    isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched && !isPrizeTierError
+  const isFetched = isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched
 
   return useQuery(
     calculatePrizePoolPercentageOfPicksKey(
@@ -37,7 +36,7 @@ export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
         prizeTierData?.prizeTier
       )
     },
-    { enabled: isFetched }
+    { enabled: isFetched && !isPrizeTierError && !!prizeTierData?.prizeTier }
   )
 }
 

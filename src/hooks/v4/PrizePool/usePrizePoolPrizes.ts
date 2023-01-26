@@ -17,13 +17,17 @@ import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
  * @returns
  */
 export const usePrizePoolPrizes = (prizePool: PrizePool) => {
-  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
+  const {
+    data: prizeTierData,
+    isFetched: isPrizeTierFetched,
+    isError
+  } = useUpcomingPrizeTier(prizePool)
   const { data: decimals } = usePrizePoolTicketDecimals(prizePool)
 
   return useQuery(
     getPrizePoolPrizesKey(prizePool, prizeTierData?.prizeTier, decimals),
     () => getPrizePoolPrizes(prizePool, prizeTierData?.prizeTier, decimals),
-    { enabled: isPrizeTierFetched && !!decimals }
+    { enabled: isPrizeTierFetched && !!decimals && !isError && !!prizeTierData }
   )
 }
 
