@@ -166,9 +166,9 @@ const AveragePrizeValue: React.FC<{ prizePool: PrizePool }> = (props) => {
   return (
     <li className='flex justify-between'>
       <span>{t('averagePrizeValue')}</span>
-      {isPrizeFetched && !isError ? (
+      {isPrizeFetched && !isError && !!data ? (
         <span className='font-bold'>
-          <CurrencyValue baseValue={data.averagePrizeValue.amount} />
+          <CurrencyValue baseValue={data?.averagePrizeValue.amount} />
         </span>
       ) : (
         <ThemedClipSpinner sizeClassName='w-4 h-4' />
