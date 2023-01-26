@@ -15,7 +15,7 @@ export const usePrizePoolNetworkTotalAmountOfPrizes = () => {
     }
     const totalAmountOfPrizes = Math.round(
       queryResults
-        .filter(({ isFetched, isError }) => isFetched && !isError)
+        .filter(({ isFetched, isError, data }) => isFetched && !isError && !!data)
         .reduce((sum, { data }) => sum + data.expectedTotalNumberOfPrizes, 0)
     )
     const data = queryResults

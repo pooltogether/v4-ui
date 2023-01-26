@@ -67,7 +67,8 @@ export const useAllPrizePoolPercentagesofPicks = () => {
             enabled:
               !!prizeTierQueryResult &&
               !!prizeTierQueryResult.isFetched &&
-              !prizeTierQueryResult.isError
+              !prizeTierQueryResult.isError &&
+              !!prizeTierQueryResult.data
           }
         })
       : []
