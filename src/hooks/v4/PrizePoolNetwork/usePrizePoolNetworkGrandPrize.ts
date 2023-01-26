@@ -18,8 +18,8 @@ export const usePrizePoolNetworkGrandPrize = () => {
 
     let grandPrizeValue: Amount
     let prizePool: PrizePool
-    queryResults.forEach(({ data, isFetched }) => {
-      if (!isFetched) return
+    queryResults.forEach(({ data, isFetched, isError }) => {
+      if (!isFetched || !!isError) return
       if (!grandPrizeValue) {
         prizePool = prizePools.find((prizePool) => prizePool.id() === data.prizePoolId)
         grandPrizeValue = data.grandPrizeValue

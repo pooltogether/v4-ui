@@ -12,9 +12,9 @@ import { ethers } from 'ethers'
 export const UpcomingPerDrawPrizeValue = (props) => {
   const prizePool = useSelectedPrizePool()
   const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
-  const { data, isFetched } = useUpcomingPrizeTier(prizePool)
+  const { data, isFetched, isError } = useUpcomingPrizeTier(prizePool)
 
-  return isFetched && isTokensFetched ? (
+  return isFetched && isTokensFetched && !isError && !!data ? (
     <CurrencyValue
       baseValue={ethers.utils.formatUnits(data?.prizeTier.prize, tokens.ticket.decimals)}
     />

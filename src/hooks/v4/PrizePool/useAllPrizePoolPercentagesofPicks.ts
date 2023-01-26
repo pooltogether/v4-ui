@@ -44,7 +44,7 @@ export const useAllPrizePoolPercentagesofPicks = () => {
             (prizeDistributor) => prizeDistributor.chainId === prizePool.chainId
           )
           const prizeTierQueryResult = allUpcomingPrizeTiers.find(
-            ({ data }) => data.prizeDistributorId === prizeDistributor.id()
+            ({ data }) => data?.prizeDistributorId === prizeDistributor.id()
           )
 
           const prizePoolTvl = prizePoolTicketTwabQueryResult?.data?.amount
@@ -63,7 +63,11 @@ export const useAllPrizePoolPercentagesofPicks = () => {
                 prizePoolNetworkTvlData?.totalSupply,
                 prizeTierQueryResult?.data.prizeTier
               )
-            }
+            },
+            enabled:
+              !!prizeTierQueryResult &&
+              !!prizeTierQueryResult.isFetched &&
+              !prizeTierQueryResult.isError
           }
         })
       : []

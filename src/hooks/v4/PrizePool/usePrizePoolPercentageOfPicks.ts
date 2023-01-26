@@ -13,9 +13,14 @@ export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
     usePrizePoolTicketTwabTotalSupply(prizePool)
   const { data: prizePoolNetworkTvl, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
-  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
+  const {
+    data: prizeTierData,
+    isFetched: isPrizeTierFetched,
+    isError: isPrizeTierError
+  } = useUpcomingPrizeTier(prizePool)
 
-  const isFetched = isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched
+  const isFetched =
+    isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched && !isPrizeTierError
 
   return useQuery(
     calculatePrizePoolPercentageOfPicksKey(

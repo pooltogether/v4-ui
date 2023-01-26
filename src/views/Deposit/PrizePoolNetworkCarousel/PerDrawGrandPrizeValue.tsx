@@ -67,7 +67,7 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
             stat: (
               <span className='text-flashy'>
                 <CurrencyValue
-                  baseValue={grandPrizeData?.grandPrizeValue.amount}
+                  baseValue={grandPrizeData?.grandPrizeValue?.amount}
                   options={{ countUp: true, decimals: 0 }}
                 />
               </span>
