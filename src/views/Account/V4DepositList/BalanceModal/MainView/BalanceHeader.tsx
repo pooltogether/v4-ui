@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { InfoListItem } from '@components/InfoList'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { TransparentDiv } from '@components/TransparentDiv'
@@ -29,7 +30,10 @@ export const BalanceHeader = () => {
         sizeClassName='w-10 h-10'
       />
       <span className='mx-auto font-bold text-3xl'>
-        $<CountUp countTo={balanceData?.balances.ticket.balanceUsd.amount} />
+        <CurrencyValue
+          baseValue={balanceData?.balances.ticket.balanceUsd.amount}
+          options={{ countUp: true }}
+        />
       </span>
       <div className='flex items-center mx-auto font-bold opacity-70 text-xs space-x-2 mb-4'>
         <TokenIcon chainId={chainId} address={balanceData?.balances.ticket.address} />

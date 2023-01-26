@@ -1,18 +1,26 @@
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { Amount } from '@pooltogether/hooks'
+import { ERC2612PermitMessage, ERC2612TicketPermitMessage } from '@pooltogether/v4-client-js'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
+import { RSV } from 'eth-permit/dist/rpc'
 import { ethers, Overrides } from 'ethers'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
 import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 import { useUsersTicketDelegate } from './useUsersTicketDelegate'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
+import { useGetUser } from '../User/useGetUser'
 
-export const useSendDepositTransaction = (depositAmount: Amount) => {
+export const useSendDepositTransaction = (
+  depositAmount: Amount,
+  eip2612?: {
+    depositPermit: ERC2612PermitMessage & RSV
+    delegationPermit: ERC2612TicketPermitMessage & RSV
+  }
+) => {
   const _sendTransaction = useSendTransaction()
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
@@ -31,15 +39,35 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
 
   return useCallback(() => {
     const name = `${t('deposit')} ${depositAmount.amountPretty} ${tokenData.token.symbol}`
-    const overrides: Overrides = { gasLimit: 750000 }
     let callTransaction
-    if (delegateData.ticketDelegate === ethers.constants.AddressZero) {
+    if (!!eip2612) {
+      if (!eip2612.depositPermit || !eip2612.delegationPermit) {
+        throw Error('No valid deposit and delegation EIP2612 permits.')
+      }
+      const overrides: Overrides = { gasLimit: 800000 }
+      callTransaction = async () => {
+        const user = await getUser()
+        const delegationTarget =
+          delegateData.ticketDelegate === ethers.constants.AddressZero
+            ? usersAddress
+            : delegateData.ticketDelegate
+        return user.depositAndDelegateWithSignature(
+          depositAmount.amountUnformatted,
+          eip2612.depositPermit,
+          eip2612.delegationPermit,
+          delegationTarget,
+          overrides
+        )
+      }
+    } else if (delegateData.ticketDelegate === ethers.constants.AddressZero) {
+      const overrides: Overrides = { gasLimit: 750000 }
       callTransaction = async () => {
         const user = await getUser()
         return user.depositAndDelegate(depositAmount.amountUnformatted, usersAddress, overrides)
       }
     } else {
       callTransaction = async () => {
+        const overrides: Overrides = { gasLimit: 750000 }
         const user = await getUser()
         return user.deposit(depositAmount.amountUnformatted, overrides)
       }
@@ -61,5 +89,5 @@ export const useSendDepositTransaction = (depositAmount: Amount) => {
         }
       }
     })
-  }, [depositAmount, usersAddress, prizePool.id()])
+  }, [depositAmount, eip2612, usersAddress, prizePool.id()])
 }

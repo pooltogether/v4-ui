@@ -130,7 +130,7 @@ const NoWalletAccountHeader: React.FC<{ className?: string }> = (props) => {
       />
       <ExternalLink
         className='opacity-75 text-xxs lg:text-xs'
-        href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
+        href='https://ethereum.org/en/wallets/'
       >
         {t('whatsAWallet')}
       </ExternalLink>
@@ -200,7 +200,7 @@ export const FunWalletConnectionPrompt: React.FC<{ className?: string }> = (prop
       />
       <ExternalLink
         className='opacity-75 text-xxs lg:text-xs'
-        href='https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'
+        href='https://ethereum.org/en/wallets/'
       >
         {t('whatsAWallet')}
       </ExternalLink>

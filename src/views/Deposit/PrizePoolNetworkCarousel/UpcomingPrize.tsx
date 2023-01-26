@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { useExpectedUpcomingDailyPrizeValue } from '@hooks/v4/PrizePool/useExpectedUpcomingDailyPrizeValue'
@@ -6,12 +7,7 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { useDrawBeaconPeriod } from '@hooks/v4/PrizePoolNetwork/useDrawBeaconPeriod'
 import { Token } from '@pooltogether/hooks'
-import {
-  ThemedClipSpinner,
-  CountUp,
-  useCountdown,
-  TimeDisplay
-} from '@pooltogether/react-components'
+import { ThemedClipSpinner, useCountdown, TimeDisplay } from '@pooltogether/react-components'
 import { PrizeTierConfig } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import { BigNumber } from 'ethers'
@@ -121,7 +117,7 @@ const PrizeAmount = (props: { isFetched: boolean; ticket: Token; prizeTier: Priz
           { 'opacity-50': !amount }
         )}
       >
-        $<CountUp countFrom={0} countTo={amount} decimals={0} />
+        <CurrencyValue baseValue={amount} options={{ countUp: true }} />
         {!amount && (
           <ThemedClipSpinner sizeClassName='w-4 h-4' className='ml-2 absolute bottom-2' />
         )}

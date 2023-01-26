@@ -32,8 +32,8 @@ import {
 } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useMemo, useState } from 'react'
 
 enum ViewIds {
@@ -138,7 +138,7 @@ const HelpView = (props: ViewProps) => {
               <ExternalLink
                 children={undefined}
                 theme={LinkTheme.accent}
-                href={'https://docs.ethhub.io/using-ethereum/wallets/intro-to-ethereum-wallets/'}
+                href={'https://ethereum.org/en/wallets/'}
               />
             ),
             button: (

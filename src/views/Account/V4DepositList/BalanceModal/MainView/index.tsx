@@ -1,8 +1,8 @@
 import { RoundButton } from '@components/Input/RoundButton'
 import { ViewProps } from '@pooltogether/react-components'
 import { useTranslation } from 'next-i18next'
-import { ViewIds } from '..'
 import { BalanceHeader } from './BalanceHeader'
+import { ViewIds } from '..'
 
 export const MainView: React.FC<{} & ViewProps> = (props) => {
   const { setSelectedViewId } = props

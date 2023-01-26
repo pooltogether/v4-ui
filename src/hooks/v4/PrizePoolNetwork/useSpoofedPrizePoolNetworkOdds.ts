@@ -2,9 +2,9 @@ import { Amount } from '@pooltogether/hooks'
 import { getAmount } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
 import { useMemo } from 'react'
+import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'
 import { useAllPrizePoolOdds } from '../PrizePool/useAllPrizePoolOdds'
 import { usePrizePools } from '../PrizePool/usePrizePools'
-import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

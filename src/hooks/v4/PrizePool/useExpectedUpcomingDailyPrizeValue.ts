@@ -17,7 +17,7 @@ export const useExpectedUpcomingDailyPrizeValue = () => {
     }
     return getAmountFromUnformatted(
       queryResults
-        .filter(({ isFetched }) => isFetched)
+        .filter(({ isFetched, isError }) => !!isFetched && !isError)
         .reduce(
           (total, { data }) => total.add(data.expectedTotalValueOfPrizes.amountUnformatted),
           BigNumber.from(0)

@@ -37,7 +37,11 @@ export const useAllPrizePoolExpectedPrizes = () => {
             prizeData?.decimals
           ),
           queryFn: () => getPrizePoolExpectedPrizes(prizeData, percentage),
-          enabled: !!prizeQueryResult?.isFetched && !!percentageOfPicksQueryResult?.isFetched
+          enabled:
+            !!prizeQueryResult?.isFetched &&
+            !!percentageOfPicksQueryResult?.isFetched &&
+            !percentageOfPicksQueryResult?.isError &&
+            !prizeQueryResult?.isError
         }
       }),
     [prizePools, allPrizePoolPrizesQueryResults, allPercentagesOfPicksQueryResults]

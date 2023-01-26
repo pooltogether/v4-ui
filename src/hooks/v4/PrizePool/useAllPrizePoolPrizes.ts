@@ -1,11 +1,11 @@
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { useMemo } from 'react'
 import { useQueries } from 'react-query'
-import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
 import { useAllPrizePoolTokens } from './useAllPrizePoolTokens'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import { getPrizePoolPrizes, getPrizePoolPrizesKey } from './usePrizePoolPrizes'
 import { usePrizePools } from './usePrizePools'
+import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
 
 /**
  * Prize details across all prize pools

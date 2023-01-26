@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { CardTitle } from '@components/Text/CardTitle'
 import { useUsersV3LPPoolBalances } from '@hooks/v3/useUsersV3LPPoolBalances'
 import { useUsersV3POOLPoolBalances } from '@hooks/v3/useUsersV3POOLPoolBalances'
@@ -6,12 +7,12 @@ import { CHAIN_ID, useUsersAddress } from '@pooltogether/wallet-connection'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
+import { LPStakingCards } from './LPStakingCards'
+import { POOLStakingCards } from './POOLStakingCards'
 import { ExternalLinkWithWarning } from '../../../components/ExternalLinkWithWarning'
 import { ListItem } from '../../../components/List/ListItem'
 import { LPTokenIcon } from '../../../components/LPTokenIcon'
 import { POOL_TOKEN, WETH_TOKEN } from '../../../constants/misc'
-import { LPStakingCards } from './LPStakingCards'
-import { POOLStakingCards } from './POOLStakingCards'
 
 export const V3StakingList = () => {
   const usersAddress = useUsersAddress()
@@ -42,7 +43,16 @@ export const V3StakingList = () => {
 
   return (
     <div className='flex flex-col space-y-2'>
-      <CardTitle title={t('staking')} secondary={`$${amount.amountPretty}`} loading={!isFetched} />
+      <CardTitle
+        title={t('staking')}
+        secondary={
+          <CurrencyValue
+            baseValue={amount.amount}
+            options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+          />
+        }
+        loading={!isFetched}
+      />
       <POOLStakingCards />
       <LPStakingCards />
       <ul>

@@ -6,8 +6,8 @@ import { ThemedClipSpinner, TokenIcon } from '@pooltogether/react-components'
 import { displayPercentage } from '@pooltogether/utilities'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 import { StakingBottomSheet } from './StakingBottomSheet'
+import { AccountListItemTokenBalance } from '../AccountList/AccountListItemTokenBalance'
 
 interface StakingCardProps {
   chainId: number

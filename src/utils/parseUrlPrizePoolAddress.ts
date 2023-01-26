@@ -1,7 +1,7 @@
 import { V4_PRIZE_POOLS } from '@constants/config'
 import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
-import { getInitialSelectedChainId } from '../atoms'
 import { getAppEnv } from './getAppEnv'
+import { getInitialSelectedChainId } from '../atoms'
 
 export const parseUrlPrizePoolAddress = () => {
   const url = new URL(window.location.href)

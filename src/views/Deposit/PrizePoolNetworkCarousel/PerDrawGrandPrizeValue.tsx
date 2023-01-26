@@ -1,9 +1,11 @@
+import { CurrencyValue, formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolTable } from '@components/PrizePoolTable'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useAllPrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/useAllPrizePoolExpectedPrizes'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
-import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import { formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
+import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
+import { ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import { Trans, useTranslation } from 'next-i18next'
 import { useMemo } from 'react'
@@ -21,6 +23,8 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolExpectedPrizes()
   const { data: grandPrizeData } = usePrizePoolNetworkGrandPrize()
+  const { data: exchangeRates } = useCoingeckoExchangeRates()
+  const { currency } = useSelectedCurrency()
 
   const data = useMemo(() => {
     const isFetched = queryResults.some(({ isFetched }) => isFetched)
@@ -31,7 +35,7 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
       .filter(({ isFetched, isError }) => isFetched && !isError)
       .map(({ data }) => {
         const formattedPrizes = data.uniqueValueOfPrizesFormattedList.map((v) =>
-          formatCurrencyNumberForDisplay(v, 'usd', { hideZeroes: true })
+          formatCurrencyValue(v, currency, exchangeRates, { hideZeroes: true })
         )
         const prizes = (
           <div className='flex justify-center space-x-2'>
@@ -51,7 +55,7 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
       .sort((a, b) =>
         b.grandPrizeValue.amountUnformatted.sub(a.grandPrizeValue.amountUnformatted).toNumber()
       )
-  }, [prizePools, queryResults])
+  }, [prizePools, queryResults, exchangeRates, currency])
 
   return (
     <div className={classNames('relative', className)}>
@@ -62,7 +66,10 @@ export const PerDrawGrandPrizeValue: React.FC<{ className?: string }> = (props) 
             title: t('largestGrandPrize'),
             stat: (
               <span className='text-flashy'>
-                $<CountUp countTo={grandPrizeData?.grandPrizeValue.amount} decimals={0} />
+                <CurrencyValue
+                  baseValue={grandPrizeData?.grandPrizeValue?.amount}
+                  options={{ countUp: true, decimals: 0 }}
+                />
               </span>
             )
           }

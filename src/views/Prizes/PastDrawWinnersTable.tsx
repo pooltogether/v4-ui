@@ -6,8 +6,8 @@ import { shorten } from '@pooltogether/utilities'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
 import { loopXTimes } from '@utils/loopXTimes'
 import classNames from 'classnames'
-import { useTranslation, Trans } from 'next-i18next'
 import Link from 'next/link'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState } from 'react'
 
 const DEFAULT_ROWS_TO_SHOW = 10

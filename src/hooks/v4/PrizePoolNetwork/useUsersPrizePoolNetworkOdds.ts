@@ -1,8 +1,8 @@
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
+import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'
 import { EstimateAction } from '../../../constants/odds'
 import { useAllUsersPrizePoolOdds } from '../PrizePool/useAllUsersPrizePoolOdds'
-import { usePrizePoolNetworkOdds } from './usePrizePoolNetworkOdds'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

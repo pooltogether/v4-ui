@@ -1,8 +1,9 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { usePrizePoolTicketDecimals } from '@hooks/v4/PrizePool/usePrizePoolTicketDecimals'
 import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useAllLatestUnlockedDrawWinnersInfo } from '@hooks/v4/useDrawWinnersInfo'
-import { formatUnformattedBigNumberForDisplay } from '@pooltogether/utilities'
 import { ethers } from 'ethers'
+import { formatUnits } from 'ethers/lib/utils'
 import { useMemo } from 'react'
 
 /**
@@ -24,11 +25,9 @@ export const ValueOfPrizesWonLastUnlockedDraw = () => {
     [queryResults]
   )
   return (
-    <>
-      {formatUnformattedBigNumberForDisplay(valueOfPrizesWonLastDraw, decimals, {
-        style: 'currency',
-        currency: 'usd'
-      })}
-    </>
+    <CurrencyValue
+      baseValue={formatUnits(valueOfPrizesWonLastDraw, decimals)}
+      options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+    />
   )
 }

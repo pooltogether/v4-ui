@@ -1,7 +1,7 @@
 import { useQueries } from 'react-query'
+import { getUpcomingPrizeTier, getUpcomingPrizeTierKey } from './useUpcomingPrizeTier'
 import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
 import { useDrawBeaconPeriod } from '../PrizePoolNetwork/useDrawBeaconPeriod'
-import { getUpcomingPrizeTier, getUpcomingPrizeTierKey } from './useUpcomingPrizeTier'
 
 export const useAllUpcomingPrizeTiers = () => {
   const prizeDistributors = usePrizeDistributors()

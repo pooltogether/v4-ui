@@ -2,8 +2,8 @@ import { useAllUsersTicketDelegates } from '@hooks/v4/PrizePool/useAllUsersTicke
 import { useAllUsersV4Balances } from '@hooks/v4/PrizePool/useAllUsersV4Balances'
 import { useUsersAddress } from '@pooltogether/wallet-connection'
 import { constants } from 'ethers'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export const AlertBanners = () => {

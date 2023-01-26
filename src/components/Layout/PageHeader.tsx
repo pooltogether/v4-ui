@@ -1,5 +1,7 @@
 import { CHAIN_IDS_TO_BLOCK } from '@constants/config'
+import { SUPPORTED_CURRENCIES } from '@constants/currencies'
 import { SUPPORTED_LANGUAGES } from '@constants/languages'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import {
   LanguagePickerDropdown,
   SettingsItem,
@@ -18,9 +20,9 @@ import {
 import { getSupportedChains } from '@utils/getSupportedChains'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
-import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { FullWalletConnectionButtonWrapper } from './FullWalletConnectionButtonWrapper'
 
@@ -47,6 +49,7 @@ export const PageHeader = (props) => (
 
 const Settings = () => {
   const { t, i18n: i18next } = useTranslation()
+  const { currency, setCurrency } = useSelectedCurrency()
   const [isOpen, setIsOpen] = useState(false)
   const chains = getSupportedChains()
   const walletChainId = useWalletChainId()
@@ -76,6 +79,9 @@ const Settings = () => {
             locale: newLang
           })
         }}
+        currencies={SUPPORTED_CURRENCIES}
+        currentCurrency={currency}
+        changeCurrency={setCurrency}
       />
     </>
   )

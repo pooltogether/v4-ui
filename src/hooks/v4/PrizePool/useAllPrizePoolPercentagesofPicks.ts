@@ -1,6 +1,4 @@
 import { useQueries } from 'react-query'
-import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { useAllPrizePoolTicketTwabTotalSupplies } from './useAllPrizePoolTicketTwabTotalSupplies'
 import { useAllUpcomingPrizeTiers } from './useAllUpcomingPrizeTiers'
 import {
@@ -8,6 +6,8 @@ import {
   calculatePrizePoolPercentageOfPicksKey
 } from './usePrizePoolPercentageOfPicks'
 import { usePrizePools } from './usePrizePools'
+import { usePrizeDistributors } from '../PrizeDistributor/usePrizeDistributors'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 
 /**
  * NOTE: Assumes 1 PrizeDistributor per chain
@@ -44,7 +44,7 @@ export const useAllPrizePoolPercentagesofPicks = () => {
             (prizeDistributor) => prizeDistributor.chainId === prizePool.chainId
           )
           const prizeTierQueryResult = allUpcomingPrizeTiers.find(
-            ({ data }) => data.prizeDistributorId === prizeDistributor.id()
+            ({ data }) => data?.prizeDistributorId === prizeDistributor.id()
           )
 
           const prizePoolTvl = prizePoolTicketTwabQueryResult?.data?.amount
@@ -63,7 +63,11 @@ export const useAllPrizePoolPercentagesofPicks = () => {
                 prizePoolNetworkTvlData?.totalSupply,
                 prizeTierQueryResult?.data.prizeTier
               )
-            }
+            },
+            enabled:
+              !!prizeTierQueryResult &&
+              !!prizeTierQueryResult.isFetched &&
+              !prizeTierQueryResult.isError
           }
         })
       : []

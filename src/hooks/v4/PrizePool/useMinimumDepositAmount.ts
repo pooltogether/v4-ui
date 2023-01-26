@@ -10,6 +10,6 @@ import { usePrizePoolTicketDecimals } from './usePrizePoolTicketDecimals'
 export const useMinimumDepositAmount = (prizePool: PrizePool) => {
   const { data, isFetched, isError } = useUpcomingPrizeTier(prizePool)
   const { data: decimals, isFetched: isDecimalsFetched } = usePrizePoolTicketDecimals(prizePool)
-  if (!isDecimalsFetched || !isFetched || isError) return null
-  return getAmount(Math.pow(2, data.prizeTier.bitRangeSize).toString(), decimals)
+  if (!isDecimalsFetched || !isFetched || isError || !data) return null
+  return getAmount(Math.pow(2, data?.prizeTier.bitRangeSize).toString(), decimals)
 }

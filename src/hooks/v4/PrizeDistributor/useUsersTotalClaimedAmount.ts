@@ -1,7 +1,7 @@
 import { getAmountFromUnformatted } from '@pooltogether/utilities'
 import { BigNumber } from 'ethers'
-import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 import { useAllUsersClaimedAmounts } from './useAllUsersClaimedAmounts'
+import { useSelectedPrizePoolTicketDecimals } from '../PrizePool/useSelectedPrizePoolTicketDecimals'
 
 /**
  * NOTE: Legacy hook.  Use useUsersTotalClaimedAmountGraph instead. This reads from chain data which uses a buffer that will get overwritten.

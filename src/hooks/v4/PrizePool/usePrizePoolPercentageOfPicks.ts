@@ -4,18 +4,23 @@ import { PrizePool } from '@pooltogether/v4-client-js'
 import { PrizeTier, PrizeTierV2 } from '@pooltogether/v4-utils-js'
 import { formatUnits, parseEther, parseUnits } from 'ethers/lib/utils'
 import { useQuery } from 'react-query'
-import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
+import { usePrizePoolNetworkTicketTwabTotalSupply } from '../PrizePoolNetwork/usePrizePoolNetworkTicketTwabTotalSupply'
 
 export const usePrizePoolPercentageOfPicks = (prizePool: PrizePool) => {
   const { data: prizePoolTvlData, isFetched: isPrizePoolTvlFetched } =
     usePrizePoolTicketTwabTotalSupply(prizePool)
   const { data: prizePoolNetworkTvl, isFetched: isPrizePoolNetworkTvlFetched } =
     usePrizePoolNetworkTicketTwabTotalSupply()
-  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
+  const {
+    data: prizeTierData,
+    isFetched: isPrizeTierFetched,
+    isError: isPrizeTierError
+  } = useUpcomingPrizeTier(prizePool)
 
-  const isFetched = isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched
+  const isFetched =
+    isPrizePoolTvlFetched && isPrizePoolNetworkTvlFetched && isPrizeTierFetched && !isPrizeTierError
 
   return useQuery(
     calculatePrizePoolPercentageOfPicksKey(

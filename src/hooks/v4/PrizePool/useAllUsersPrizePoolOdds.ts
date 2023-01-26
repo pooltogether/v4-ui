@@ -1,9 +1,9 @@
 import { Amount } from '@pooltogether/hooks'
 import { BigNumber } from 'ethers'
 import { useMemo } from 'react'
-import { EstimateAction } from '../../../constants/odds'
 import { useAllPrizePoolOdds } from './useAllPrizePoolOdds'
 import { useAllUsersPrizePoolTwabs } from './useUsersPrizePoolTwab'
+import { EstimateAction } from '../../../constants/odds'
 
 /**
  * Calculates the users overall chances of winning a prize on any network

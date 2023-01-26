@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { PrizeWLaurels } from '@components/Images/PrizeWithLaurels'
 import { TxButton } from '@components/Input/TxButton'
 import { TransactionReceiptButton } from '@components/TransactionReceiptButton'
@@ -29,9 +30,9 @@ import {
   numberWithCommas,
   getNetworkNameAliasByChainId,
   getNetworkNiceNameByChainId,
-  sToD
+  sToD,
+  getAmountFromUnformatted
 } from '@pooltogether/utilities'
-import { getAmount } from '@pooltogether/utilities'
 import {
   useSendTransaction,
   useUsersAddress,
@@ -47,9 +48,9 @@ import { capitalizeFirstLetter } from '@utils/v4/TwabRewards/misc'
 import { getNextRewardIn, getPromotionDaysRemaining } from '@utils/v4/TwabRewards/promotionHooks'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
+import Link from 'next/link'
 import { Trans } from 'next-i18next'
 import { useTranslation } from 'next-i18next'
-import Link from 'next/link'
 import { useMemo, useState } from 'react'
 import { UseQueryResult } from 'react-query'
 import { useSigner } from 'wagmi'
@@ -434,7 +435,7 @@ const ClaimModalForm = (props: {
 
   const { value, unit, seconds } = getNextRewardIn(promotion)
 
-  const amount = getAmount(usersClaimedPromotionHistory?.rewards, decimals)
+  const amount = getAmountFromUnformatted(usersClaimedPromotionHistory?.rewards, decimals)
 
   const vapr = usePromotionVAPR(promotion)
 
@@ -483,7 +484,7 @@ const ClaimModalForm = (props: {
             <span className='font-bold'>{t('unclaimedRewards', 'Unclaimed rewards')}</span>
             <span className='ml-1 opacity-50'>
               {claimableUsd || claimableUsd === 0 ? (
-                <>(${numberWithCommas(claimableUsd)})</>
+                <CurrencyValue baseValue={claimableUsd} />
               ) : (
                 <ThemedClipSpinner sizeClassName='w-4 h-4' />
               )}

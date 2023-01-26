@@ -5,11 +5,11 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { Overrides } from 'ethers'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGetUser } from '../User/useGetUser'
 import { useSelectedPrizePool } from './useSelectedPrizePool'
 import { useSelectedPrizePoolTokens } from './useSelectedPrizePoolTokens'
 import { useUsersPrizePoolBalancesWithFiat } from './useUsersPrizePoolBalancesWithFiat'
 import { useUsersTotalTwab } from './useUsersTotalTwab'
+import { useGetUser } from '../User/useGetUser'
 
 export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
   const _sendTransaction = useSendTransaction()

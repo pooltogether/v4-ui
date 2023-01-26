@@ -1,3 +1,4 @@
+import { CurrencyValue } from '@components/CurrencyValue'
 import { OddsForDeposit } from '@components/PrizePoolNetwork/OddsForDeposit'
 import { usePrizePoolExpectedPrizes } from '@hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { useSpoofedPrizePoolNetworkOdds } from '@hooks/v4/PrizePoolNetwork/useSpoofedPrizePoolNetworkOdds'
@@ -12,15 +13,11 @@ import {
   ButtonSize,
   ButtonTheme
 } from '@pooltogether/react-components'
-import {
-  formatCurrencyNumberForDisplay,
-  getNetworkNiceNameByChainId
-} from '@pooltogether/utilities'
+import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
-import { PromotionsVapr } from '../InfoList/TwabRewardsAprItem'
 import { AveragePrizeValue } from './AveragePrizeValue'
 import { DepositToken } from './DepositToken'
 import { GrandPrize } from './GrandPrize'
@@ -29,6 +26,7 @@ import { PrizePoolLabelFlat } from './PrizePoolLabel'
 import { SmallPrizes } from './SmallPrizes'
 import { TicketTotalSupply } from './TicketTotalSupply'
 import { YieldSource } from './YieldSource'
+import { PromotionsVapr } from '../InfoList/TwabRewardsAprItem'
 
 const SIZE_CLASSNAME = 'w-full max-w-xl'
 const BG_CLASSNAME = 'bg-white bg-opacity-100 dark:bg-actually-black dark:bg-opacity-10'
@@ -329,14 +327,16 @@ export const PrizeGroup: React.FC<{ prizePool: PrizePool; className?: string }> 
     <CardLabelLarge isFetched={isFetched} className={className}>
       <div className='flex flex-col'>
         <span className='text-flashy'>
-          {isFetched &&
-            formatCurrencyNumberForDisplay(data?.grandPrizeValue.amount, 'usd', {
-              hideZeroes: true
-            })}
+          {isFetched && (
+            <CurrencyValue
+              baseValue={data?.grandPrizeValue.amount}
+              options={{ hideZeroes: true }}
+            />
+          )}
         </span>
         {data?.uniqueSmallPrizeValueList.map((smallPrizeValue, index) => (
           <span key={`prize-${prizePool.id()}-${index}`}>
-            {formatCurrencyNumberForDisplay(smallPrizeValue, 'usd', { hideZeroes: true })}
+            <CurrencyValue baseValue={smallPrizeValue} options={{ hideZeroes: true }} />
           </span>
         ))}
       </div>

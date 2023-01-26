@@ -1,11 +1,14 @@
+import { CurrencyValue, formatCurrencyValue } from '@components/CurrencyValue'
 import { Dot } from '@components/Dot'
 import { PrizePoolBar } from '@components/PrizePoolBar'
 import { PrizePoolTable } from '@components/PrizePoolTable'
+import { useSelectedCurrency } from '@hooks/useSelectedCurrency'
 import { useAllPrizePoolTicketTotalSupplies } from '@hooks/v4/PrizePool/useAllPrizePoolTicketTotalSupplies'
 import { usePrizePools } from '@hooks/v4/PrizePool/usePrizePools'
 import { usePrizePoolNetworkTicketTotalSupply } from '@hooks/v4/PrizePoolNetwork/usePrizePoolNetworkTicketTotalSupply'
-import { CountUp, ExternalLink } from '@pooltogether/react-components'
-import { divideBigNumbers, formatCurrencyNumberForDisplay } from '@pooltogether/utilities'
+import { useCoingeckoExchangeRates } from '@pooltogether/hooks'
+import { ExternalLink } from '@pooltogether/react-components'
+import { divideBigNumbers } from '@pooltogether/utilities'
 import classNames from 'classnames'
 import { parseEther } from 'ethers/lib/utils'
 import { Trans, useTranslation } from 'next-i18next'
@@ -23,6 +26,8 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
   const prizePools = usePrizePools()
   const queryResults = useAllPrizePoolTicketTotalSupplies()
   const { data: tvl } = usePrizePoolNetworkTicketTotalSupply()
+  const { data: exchangeRates } = useCoingeckoExchangeRates()
+  const { currency } = useSelectedCurrency()
 
   const data = useMemo(() => {
     const isFetched = queryResults.every(({ isFetched }) => isFetched)
@@ -35,9 +40,8 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
       .map(({ data }) => {
         return {
           prizePool: prizePools.find((prizePool) => prizePool.id() === data.prizePoolId),
-          tvl: formatCurrencyNumberForDisplay(data?.amount.amount || 0, 'usd', {
-            maximumFractionDigits: 0,
-            minimumFractionDigits: 0
+          tvl: formatCurrencyValue(data?.amount.amount || 0, currency, exchangeRates, {
+            decimals: 0
           }),
           amount: data.amount,
           percentage: divideBigNumbers(
@@ -47,7 +51,7 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
         }
       })
       .sort((a, b) => (b.amount.amountUnformatted.gt(a.amount.amountUnformatted) ? 1 : -1))
-  }, [queryResults, tvl])
+  }, [queryResults, tvl, exchangeRates, currency])
 
   return (
     <div className={classNames('relative', className)}>
@@ -57,9 +61,10 @@ export const PrizePoolNetworkTvl: React.FC<{ className?: string }> = (props) => 
           {
             title: t('totalDeposits'),
             stat: (
-              <>
-                $<CountUp countTo={tvl?.totalSupply.amount} decimals={0} />
-              </>
+              <CurrencyValue
+                baseValue={tvl?.totalSupply.amount}
+                options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+              />
             )
           }
         ]}

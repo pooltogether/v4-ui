@@ -3,7 +3,6 @@ import { msToS } from '@pooltogether/utilities'
 import { DrawResults, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { BigNumber } from 'ethers'
 import { useQuery } from 'react-query'
-import { DrawData } from '../../../interfaces/v4'
 import { useAllDrawLocks } from './useAllDrawLocks'
 import { useAllLockedDrawIds } from './useAllLockedDrawIds'
 import { useDrawLocks } from './useDrawLocks'
@@ -11,6 +10,7 @@ import { useUsersClaimedAmounts } from './useUsersClaimedAmounts'
 import { useUsersNormalizedBalances } from './useUsersNormalizedBalances'
 import { useUsersStoredDrawResults } from './useUsersStoredDrawResults'
 import { useValidDrawDatas } from './useValidDrawDatas'
+import { DrawData } from '../../../interfaces/v4'
 
 /**
  * Fetches valid draw ids, fetches draws & claimed amounts, then filters out claimed draws.

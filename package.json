@@ -31,6 +31,7 @@
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
+    "eth-permit": "^0.2.3",
     "jest": "^27.5.1",
     "locize-cli": "^7.12.7",
     "prettier": "^2.7.1",
@@ -39,15 +40,16 @@
   "dependencies": {
     "@coinbase/cbpay-js": "1.6.0",
     "@pooltogether/etherplex": "^1.1.4",
-    "@pooltogether/hooks": "^2.0.0-beta.6",
+    "@pooltogether/hooks": "^2.1.0",
     "@pooltogether/pooltogether-contracts": "^3.4.4",
-    "@pooltogether/react-components": "2.0.2",
+    "@pooltogether/react-components": "2.0.5",
     "@pooltogether/utilities": "^0.7.0",
-    "@pooltogether/v4-client-js": "1.17.1",
-    "@pooltogether/v4-pool-data": "1.11.0-beta.8",
+    "@pooltogether/v4-client-js": "1.18.1",
+    "@pooltogether/v4-pool-data": "1.11.0",
     "@pooltogether/v4-twab-delegator-js": "0.2.2",
     "@pooltogether/v4-utils-js": "0.1.5",
-    "@pooltogether/wallet-connection": "^1.0.0-beta.4",
+    "@pooltogether/wallet-connection": "1.0.1",
+    "@rainbow-me/rainbowkit": "^0.8.1",
     "@reach/dialog": "^0.15.3",
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",
@@ -60,6 +62,7 @@
     "@types/node": "17.0.21",
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
+    "@wagmi/chains": "^0.1.13",
     "autoprefixer": "^10.3.1",
     "beautiful-react-hooks": "^3.6.2",
     "classnames": "^2.3.1",
@@ -105,6 +108,6 @@
     "react-tooltip": "^4.2.21",
     "tailwindcss": "^2.2.19",
     "typescript": "^4.8.3",
-    "wagmi": "0.6.4"
+    "wagmi": "0.9.0"
   }
 }
