@@ -23,7 +23,7 @@ export const RevokeAllowanceButton: React.FC<{
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
   const { t } = useTranslation()
 
-  const sendRevokeAllowanceTransaction = useSendRevokeAllowance(token, prizePoolAddress)
+  const sendRevokeAllowanceTransaction = useSendRevokeAllowance(chainId, token, prizePoolAddress)
 
   const handleRevokeAllowanceClick = async () => {
     if (!isWalletOnProperNetwork) {

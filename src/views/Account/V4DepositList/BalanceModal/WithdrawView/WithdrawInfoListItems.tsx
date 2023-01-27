@@ -1,5 +1,4 @@
 import { InfoListItem } from '@components/InfoList'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { EstimateAction } from '@constants/odds'
@@ -8,6 +7,7 @@ import { Amount } from '@pooltogether/hooks'
 import { Transaction, TransactionState } from '@pooltogether/wallet-connection'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { EstimatedAPRItem } from '../../../../../components/InfoList/EstimatedAPRItem'
 
 export const WithdrawInfoListItems: React.FC<{
   withdrawAmount: Amount
@@ -27,7 +27,7 @@ export const WithdrawInfoListItems: React.FC<{
         className='w-full'
       />
       <TwabRewardsAprItem />
-      <PrizePoolNetworkAPRItem />
+      <EstimatedAPRItem prizePool={prizePool} />
     </>
   )
 }

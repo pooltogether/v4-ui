@@ -10,13 +10,13 @@ interface EstimatedAPRItemProps {
 }
 
 /**
- * TODO: Expand this calculation for different prize distributions.
+ *
  * @param props
  * @returns
  */
 export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
   const { prizePool, labelClassName, valueClassName } = props
-  const { data: apr, isFetched } = usePrizePoolApr(prizePool)
+  const { data: apr, isFetched, isError } = usePrizePoolApr(prizePool)
   const { t } = useTranslation()
   return (
     <InfoListItem
@@ -28,7 +28,7 @@ export const EstimatedAPRItem = (props: EstimatedAPRItemProps) => {
         'estimatedAverageAprTooltip',
         'Estimated average APR is a rough estimate based on the current TVL and daily prizes'
       )}
-      loading={!isFetched}
+      loading={!isFetched || isError}
       labelLink='https://docs.pooltogether.com/faq/prizes-and-winning#what-is-the-prize-apr'
       value={`${apr}%`}
     />

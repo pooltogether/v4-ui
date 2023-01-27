@@ -36,7 +36,6 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
     const overrides: Overrides = { gasLimit: 750000 }
     const callTransaction = async () => {
       const user = await getUser()
-      console.log({ user })
       return user.withdraw(withdrawAmount.amountUnformatted, overrides)
     }
 

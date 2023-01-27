@@ -27,6 +27,8 @@ import {
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+import { publicProvider } from '@wagmi/core/providers/public'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { AppProps } from 'next/app'
@@ -38,8 +40,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
 import { createClient, useAccount, WagmiConfig, configureChains } from 'wagmi'
-import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
-import { publicProvider } from '@wagmi/core/providers/public'
 import { CustomErrorBoundary } from './CustomErrorBoundary'
 
 // Initialize react-query Query Client
