@@ -935,7 +935,7 @@ const SubmitTransactionButton = (props: {
 
   const isWalletOnProperNetwork = useIsWalletOnChainId(chainId)
 
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({ chainId })
   const { t } = useTranslation()
 
   const sendTransaction = useSendTransaction()

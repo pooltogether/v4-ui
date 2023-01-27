@@ -154,7 +154,7 @@ const ClaimMainView = (props: ClaimMainViewProps) => {
   const { chainId, vapr, tokenFaucetAddress, tokenFaucetRewards, setClaimTxId, refetch } = props
 
   const { t } = useTranslation()
-  const { refetch: getSigner } = useSigner()
+  const { refetch: getSigner } = useSigner({ chainId })
   const sendTransaction = useSendTransaction()
   const usersAddress = useUsersAddress()
 
