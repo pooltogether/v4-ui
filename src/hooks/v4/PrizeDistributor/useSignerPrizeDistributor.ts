@@ -15,7 +15,7 @@ import { useSigner } from 'wagmi'
 export const useSignerPrizeDistributor = (prizeDistributor: PrizeDistributor) => {
   const isWalletConnected = useIsWalletConnected()
   const usersAddress = useUsersAddress()
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({ chainId: prizeDistributor.chainId })
   const walletChainId = useWalletChainId()
 
   return useMemo(() => {

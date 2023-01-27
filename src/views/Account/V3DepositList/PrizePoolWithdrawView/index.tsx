@@ -56,7 +56,7 @@ export const PrizePoolWithdrawView = (props: WithdrawViewProps) => {
     amountToWithdraw?.amountUnformatted
   )
 
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({ chainId })
 
   const sendWithdrawTx = async () => {
     const args = [usersAddress, amountToWithdraw?.amountUnformatted, ticket.address, exitFee]

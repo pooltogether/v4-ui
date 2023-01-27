@@ -27,6 +27,8 @@ import {
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
+import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
+import { publicProvider } from '@wagmi/core/providers/public'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { AppProps } from 'next/app'
@@ -37,13 +39,8 @@ import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
-import { createClient, useAccount, useConnect, WagmiConfig } from 'wagmi'
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { createClient, useAccount, WagmiConfig, configureChains } from 'wagmi'
 import { CustomErrorBoundary } from './CustomErrorBoundary'
-import '@rainbow-me/rainbowkit/styles.css'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient({
@@ -65,37 +62,34 @@ initSentry()
 initRpcUrls(RPC_URLS)
 
 // Initialize WAGMI wallet connectors
-const chains = getSupportedChains().map((chain) => {
-  if (!!RPC_URLS[chain.id]) {
-    chain.rpcUrls.default.http[0] = RPC_URLS[chain.id]
-  }
-  return chain
-})
+const supportedChains = getSupportedChains()
 
 const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
-      injectedWallet({ chains }),
-      walletConnectWallet({ chains }),
-      coinbaseWallet({ chains, appName: 'PoolTogether' }),
-      metaMaskWallet({ chains }),
-      rainbowWallet({ chains })
+      injectedWallet({ chains: supportedChains }),
+      walletConnectWallet({ chains: supportedChains }),
+      coinbaseWallet({ chains: supportedChains, appName: 'PoolTogether' }),
+      metaMaskWallet({ chains: supportedChains }),
+      rainbowWallet({ chains: supportedChains })
     ]
   }
+])
+
+const { chains, provider } = configureChains(supportedChains, [
+  jsonRpcProvider({
+    rpc: (chain) => ({
+      http: RPC_URLS[chain.id]
+    })
+  }),
+  publicProvider()
 ])
 
 const wagmiClient = createClient({
   autoConnect: true,
   connectors,
-  provider: ({ chainId }) => {
-    try {
-      return getReadProvider(chainId || CHAIN_ID.mainnet)
-    } catch (e) {
-      console.error(e)
-      return getReadProvider(CHAIN_ID.mainnet)
-    }
-  }
+  provider
 })
 
 /**

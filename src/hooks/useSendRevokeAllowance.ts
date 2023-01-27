@@ -7,9 +7,9 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSigner } from 'wagmi'
 
-export const useSendRevokeAllowance = (token: Token, prizePoolAddress: string) => {
+export const useSendRevokeAllowance = (chainId: number, token: Token, prizePoolAddress: string) => {
   const { t } = useTranslation()
-  const { refetch: getSigner } = useSigner()
+  const { refetch: getSigner } = useSigner({ chainId })
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
 

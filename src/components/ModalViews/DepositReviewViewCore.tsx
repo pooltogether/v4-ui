@@ -2,7 +2,6 @@ import { AmountBeingSwapped } from '@components/AmountBeingSwapped'
 import { AnimatedBorderCard } from '@components/AnimatedCard'
 import { ModalInfoList } from '@components/InfoList'
 import { EstimatedDepositGasItems } from '@components/InfoList/EstimatedGasItem'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import {
@@ -34,6 +33,7 @@ import { BigNumber } from 'ethers'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Trans, useTranslation } from 'react-i18next'
+import { EstimatedAPRItem } from '../InfoList/EstimatedAPRItem'
 import { LensterPostButton } from '../LensterPostButton'
 
 /**
@@ -139,7 +139,7 @@ const DepositReviewViewContent: React.FC<{ depositAmount: Amount }> = (props) =>
               className='w-full'
             />
             <TwabRewardsAprItem />
-            <PrizePoolNetworkAPRItem />
+            <EstimatedAPRItem prizePool={prizePool} />
           </>
         )}
         <EstimatedDepositGasItems chainId={chainId} />

@@ -60,7 +60,7 @@ export const PodWithdrawView = (props: WithdrawViewProps) => {
     token.decimals
   )
 
-  const { data: signer } = useSigner()
+  const { data: signer } = useSigner({ chainId })
 
   const sendWithdrawTx = async () => {
     const args = [amountToWithdraw.amountUnformatted, podExitFee.exitFee.amountUnformatted]

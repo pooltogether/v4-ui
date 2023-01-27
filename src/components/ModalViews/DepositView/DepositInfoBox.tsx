@@ -1,9 +1,7 @@
 import { InfoListItem } from '@components/InfoList'
-import { PrizePoolNetworkAPRItem } from '@components/InfoList/PrizePoolNetworkAPRItem'
 import { PrizePoolYieldSourceItem } from '@components/InfoList/PrizePoolYieldSourceItem'
 import { TicketBalanceListItem } from '@components/InfoList/TicketBalanceListItem'
 import { TwabRewardsAprItem } from '@components/InfoList/TwabRewardsAprItem'
-import { UpdatedPrizePoolNetworkOddsListItem } from '@components/InfoList/UpdatedPrizePoolNetworkOddsListItem'
 import { UpdatedPrizePoolOddsListItem } from '@components/InfoList/UpdatedPrizePoolOddsListItem'
 import { UpdatedPrizePoolOddsListItemBar } from '@components/InfoList/UpdatedPrizePoolOddsListItemBar'
 import { PrizePoolLabelFlat } from '@components/PrizePool/PrizePoolLabel'
@@ -16,6 +14,7 @@ import classNames from 'classnames'
 import React from 'react'
 import { useFormState } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { EstimatedAPRItem } from '../../InfoList/EstimatedAPRItem'
 
 export const DepositInfoBox: React.FC<{
   formKey: string
@@ -66,7 +65,7 @@ export const DepositInfoBox: React.FC<{
           className='w-full'
         />
         <TwabRewardsAprItem />
-        <PrizePoolNetworkAPRItem />
+        <EstimatedAPRItem prizePool={prizePool} />
         <PrizePoolYieldSourceItem prizePool={prizePool} />
 
         {isError && (

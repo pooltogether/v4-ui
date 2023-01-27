@@ -1,6 +1,6 @@
 import { useSendTransaction } from '@hooks/useSendTransaction'
 import { Amount, useTokenBalance } from '@pooltogether/hooks'
-import { useUsersAddress } from '@pooltogether/wallet-connection'
+import { useUsersAddress, useWalletChainId } from '@pooltogether/wallet-connection'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { Overrides } from 'ethers'
 import { useCallback } from 'react'
@@ -15,6 +15,7 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
   const _sendTransaction = useSendTransaction()
   const { t } = useTranslation()
   const usersAddress = useUsersAddress()
+  const walletChainId = useWalletChainId()
   const prizePool = useSelectedPrizePool()
   const getUser = useGetUser(prizePool)
   const { data: tokenData } = useSelectedPrizePoolTokens()
@@ -55,5 +56,5 @@ export const useSendWithdrawTransaction = (withdrawAmount: Amount) => {
         }
       }
     })
-  }, [withdrawAmount, usersAddress, prizePool.id()])
+  }, [withdrawAmount, walletChainId, usersAddress, prizePool.id()])
 }

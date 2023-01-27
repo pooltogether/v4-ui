@@ -1,31 +1,28 @@
-import { calculateApr, calculatePercentageOfBigNumber } from '@pooltogether/utilities'
 import { PrizePool } from '@pooltogether/v4-client-js'
 import { useQuery } from 'react-query'
-import { usePrizePoolPercentageOfPicks } from './usePrizePoolPercentageOfPicks'
-import { usePrizePoolTicketTwabTotalSupply } from './usePrizePoolTicketTwabTotalSupply'
 import { useUpcomingPrizeTier } from './useUpcomingPrizeTier'
 
 /**
+ * Assumes all Prize Pools are using DPR.
  * @returns
  */
 export const usePrizePoolApr = (prizePool: PrizePool) => {
-  const { data: prizeTierData, isFetched: isPrizeTierFetched } = useUpcomingPrizeTier(prizePool)
-  const { data: ticketTwabTotalSupply, isFetched: isTotalSupplyFetched } =
-    usePrizePoolTicketTwabTotalSupply(prizePool)
-  const { data: percentage, isFetched: isPercentageFetched } =
-    usePrizePoolPercentageOfPicks(prizePool)
+  const {
+    data: prizeTierData,
+    isFetched: isPrizeTierFetched,
+    isError
+  } = useUpcomingPrizeTier(prizePool)
 
-  const enabled =
-    isPrizeTierFetched && isTotalSupplyFetched && !!prizeTierData.prizeTier && isPercentageFetched
+  const enabled = isPrizeTierFetched && !!prizeTierData.prizeTier && !isError
 
   return useQuery(
-    ['usePrizePoolApr', prizeTierData?.prizeTier, ticketTwabTotalSupply?.amount],
+    ['usePrizePoolApr', prizeTierData?.prizeTier],
     () => {
-      const scaledDailyPrize = calculatePercentageOfBigNumber(
-        prizeTierData.prizeTier.prize,
-        percentage.percentage
-      )
-      return calculateApr(ticketTwabTotalSupply.amount.amountUnformatted, scaledDailyPrize)
+      if ('dpr' in prizeTierData.prizeTier) {
+        return (prizeTierData.prizeTier.dpr * 365) / 1e7
+      } else {
+        throw new Error('Legacy Prize Pool not supported.')
+      }
     },
     {
       enabled

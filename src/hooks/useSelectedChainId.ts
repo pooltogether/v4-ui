@@ -3,8 +3,7 @@ import { URL_QUERY_KEY } from '@constants/urlQueryKeys'
 import { APP_ENVIRONMENTS, getStoredIsTestnetsCookie } from '@pooltogether/hooks'
 import { getChainIdByAlias } from '@pooltogether/utilities'
 import { CHAIN_ID } from '@pooltogether/wallet-connection'
-import { atom, useAtom } from 'jotai'
-import { useUpdateAtom } from 'jotai/utils'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import { useQueryParamState } from './useQueryParamState'
 import {
   selectedChainIdAtom,
@@ -59,7 +58,7 @@ export const selectedNetworkAtom = atom<number>(getInitialSelectedChainId())
 
 export const useSelectedChainId = () => {
   const [chainId] = useAtom(selectedChainIdAtom)
-  const setSelectedChainId = useUpdateAtom(setSelectedChainIdWriteAtom)
+  const setSelectedChainId = useSetAtom(setSelectedChainIdWriteAtom)
   return {
     chainId,
     setSelectedChainId
