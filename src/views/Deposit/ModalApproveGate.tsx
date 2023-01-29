@@ -82,10 +82,11 @@ export const ModalApproveGate = (props: ModalApproveGateProps) => {
     TransactionStatus | undefined
   >(undefined)
   const approveTransaction = useTransaction(approveTransactionId)
-  const _sendInfiniteApproveTx = useApproveErc20(tokenAddress, spenderAddress, {
+  const _sendInfiniteApproveTx = useApproveErc20(chainId, tokenAddress, spenderAddress, {
     callbacks: { onSuccess: () => refetchTokenAllowance() }
   })
   const _sendApproveTx = useApproveErc20(
+    chainId,
     tokenAddress,
     spenderAddress,
     {
