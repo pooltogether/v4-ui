@@ -234,7 +234,7 @@ const DepositReviewView = (props: DepositReviewViewProps) => {
   } = props
 
   const { t } = useTranslation()
-  const { refetch: getSigner } = useSigner()
+  const { refetch: getSigner } = useSigner({ chainId: prizePool.chainId })
   const sendTx = useSendTransaction()
   const usersAddress = useUsersAddress()
   const isWalletOnProperNetwork = useIsWalletOnChainId(prizePool.chainId)
