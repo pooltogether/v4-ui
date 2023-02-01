@@ -13,7 +13,6 @@ export const PoolTogetherExplainerWithStats = () => {
           prizeFrequency: t('daily'),
           numberOfPrizes: <TotalNumberOfPrizes />,
           perDrawPrizeValue: <UpcomingPerDrawPrizeValue />,
-          grandPrizeValue: <LargestPrizeInNetwork />,
           style: <b className='text-flashy' />,
           b: <b />
         }}
