@@ -17,11 +17,13 @@ export const DepositUI = () => {
       className={classNames('flex flex-col space-y-2 xs:space-y-4 sm:space-y-8 lg:space-y-12')}
       style={{ minHeight: '620px' }}
     >
-      <AnnouncementBanner
-        href={'https://medium.com/pooltogether/upgrading-the-prize-machine-18a277e3dd6a'}
-        i18nKey={'upgradingThePrizeMachine'}
-      />
-      <ActiveProposalsBanner />
+      <div className='flex flex-col space-y-2'>
+        <AnnouncementBanner
+          href={'https://medium.com/pooltogether/upgrading-the-prize-machine-18a277e3dd6a'}
+          i18nKey={'upgradingThePrizeMachine'}
+        />
+        <ActiveProposalsBanner />
+      </div>
       <PrizePoolNetworkCarousel />
       <DepositTrigger />
     </PagePadding>
