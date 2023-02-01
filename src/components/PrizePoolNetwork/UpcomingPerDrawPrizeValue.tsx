@@ -3,6 +3,7 @@ import { useSelectedPrizePool } from '@hooks/v4/PrizePool/useSelectedPrizePool'
 import { useUpcomingPrizeTier } from '@hooks/v4/PrizePool/useUpcomingPrizeTier'
 import { usePrizePoolTokens } from '@pooltogether/hooks'
 import { ethers } from 'ethers'
+import { useExpectedUpcomingDailyPrizeValue } from '../../hooks/v4/PrizePool/useExpectedUpcomingDailyPrizeValue'
 
 /**
  * TODO: Actually get token prices
@@ -11,12 +12,8 @@ import { ethers } from 'ethers'
  */
 export const UpcomingPerDrawPrizeValue = (props) => {
   const prizePool = useSelectedPrizePool()
-  const { data: tokens, isFetched: isTokensFetched } = usePrizePoolTokens(prizePool)
-  const { data, isFetched, isError } = useUpcomingPrizeTier(prizePool)
+  const { data: tokens } = usePrizePoolTokens(prizePool)
+  const prizeValue = useExpectedUpcomingDailyPrizeValue()
 
-  return isFetched && isTokensFetched && !isError && !!data ? (
-    <CurrencyValue
-      baseValue={ethers.utils.formatUnits(data?.prizeTier.prize, tokens.ticket.decimals)}
-    />
-  ) : null
+  return <CurrencyValue baseValue={prizeValue.amount} />
 }
