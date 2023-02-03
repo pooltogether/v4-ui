@@ -61,6 +61,7 @@ export const LockedDrawsCardContent: React.FC<{
           className='mx-auto xs:mx-0'
         />
         <LockedDrawDetails
+          prizeDistributor={prizeDistributor}
           partialDrawDatas={lockedPartialDrawDatas}
           token={token}
           ticket={ticket}
@@ -98,8 +99,9 @@ const LockedDrawDetails = (props: {
       prizeDistribution?: PrizeDistribution
     }
   }
+  prizeDistributor: PrizeDistributor
 }) => {
-  const { className, partialDrawDatas, token, ticket } = props
+  const { className, partialDrawDatas, token, prizeDistributor } = props
 
   const fullDrawDraws: { [drawId: number]: DrawData } = {}
   Object.keys(partialDrawDatas).forEach((_drawId) => {
@@ -121,7 +123,12 @@ const LockedDrawDetails = (props: {
           ticket={ticket}
           drawDatas={fullDrawDraws}
         /> */}
-        <TotalPrizes className='mt-2' token={token} drawDatas={fullDrawDraws} />
+        <TotalPrizes
+          className='mt-2'
+          prizeDistributor={prizeDistributor}
+          token={token}
+          drawDatas={fullDrawDraws}
+        />
       </span>
     </div>
   )

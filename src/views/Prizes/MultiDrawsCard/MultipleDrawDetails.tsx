@@ -1,6 +1,6 @@
 import { CurrencyValue } from '@components/CurrencyValue'
 import { Token } from '@pooltogether/hooks'
-import { Draw } from '@pooltogether/v4-client-js'
+import { Draw, PrizeDistributor } from '@pooltogether/v4-client-js'
 import { roundPrizeAmount } from '@utils/roundPrizeAmount'
 import classNames from 'classnames'
 import { ethers } from 'ethers'
@@ -8,9 +8,12 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { MultiDrawsPrizeTiersTrigger } from './MultiDrawsPrizeTiersTrigger'
 import { MultipleDrawsDate } from './MultipleDrawsDate'
+import { ValueOfUncheckedPrizes } from '../../../components/PrizePoolNetwork/ValueOfUncheckedPrizes'
+import { usePrizePoolExpectedPrizes } from '../../../hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
 import { DrawData } from '../../../interfaces/v4'
 
 interface MultipleDrawDetailsProps {
+  prizeDistributor: PrizeDistributor
   drawDatas: { [drawId: number]: DrawData }
   token: Token
   ticket: Token
@@ -48,6 +51,7 @@ export const MultipleDrawDetails = (props: MultipleDrawDetailsProps) => {
 }
 
 export const TotalPrizes = (props: {
+  prizeDistributor: PrizeDistributor
   token: Token
   drawDatas: { [drawId: number]: DrawData }
   className?: string
@@ -55,23 +59,16 @@ export const TotalPrizes = (props: {
   textClassName?: string
 }) => {
   const { t } = useTranslation()
-  const { drawDatas, token } = props
+  const { drawDatas, prizeDistributor } = props
 
   if (!drawDatas) {
     return null
   }
 
-  const totalAmountUnformatted = Object.values(drawDatas)
-    .filter((drawData) => Boolean(drawData.prizeDistribution))
-    .reduce((acc, drawData) => {
-      return acc.add(drawData.prizeDistribution.prize)
-    }, ethers.constants.Zero)
-  const { amount } = roundPrizeAmount(totalAmountUnformatted, token.decimals)
-
   return (
     <div className={props.className}>
       <span className={props.numberClassName}>
-        <CurrencyValue baseValue={amount} />
+        <ValueOfUncheckedPrizes drawDatas={drawDatas} prizeDistributor={prizeDistributor} />
       </span>
       <span className={props.textClassName}>{t('inPrizes', 'in prizes')}</span>
     </div>
