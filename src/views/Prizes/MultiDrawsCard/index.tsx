@@ -109,7 +109,7 @@ export enum CheckedState {
 
 // TODO: set claim section state should push into the animation queue with a callback, that then executes the claim section change
 const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
-  const { drawDatas, ticket, token, checkedState, setCheckedState } = props
+  const { drawDatas, ticket, token, checkedState, setCheckedState, prizeDistributor } = props
   const [targetVideoClip, setTargetVideoClip] = useState<VideoClip>(VideoClip.rest)
   const [winningDrawResults, setWinningDrawResults] = useState<{ [drawId: number]: DrawResults }>(
     null
@@ -161,7 +161,12 @@ const MultiDrawsClaimSection = (props: MultiDrawsCardPropsWithDetails) => {
 
   return (
     <PrizeAnimationCard targetVideoClip={targetVideoClip} onTargetReached={onTargetReached}>
-      <MultipleDrawDetails drawDatas={drawDatas} token={token} ticket={ticket} />
+      <MultipleDrawDetails
+        prizeDistributor={prizeDistributor}
+        drawDatas={drawDatas}
+        token={token}
+        ticket={ticket}
+      />
       <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-1'>
         <MultiDrawsClaimButton
           {...props}
@@ -260,7 +265,12 @@ const CheckedDrawsClaimCard = (props: MultiDrawsCardPropsWithDetails) => {
 
   return (
     <PrizeAnimationCard targetVideoClip={VideoClip.prize}>
-      <MultipleDrawDetails drawDatas={winningDrawData} token={token} ticket={ticket} />
+      <MultipleDrawDetails
+        prizeDistributor={prizeDistributor}
+        drawDatas={winningDrawData}
+        token={token}
+        ticket={ticket}
+      />
       <div className='flex flex-col justify-end h-full xs:justify-start xs:max-w-min xs:-mt-1'>
         <Button
           theme={ButtonTheme.rainbow}

@@ -10,6 +10,10 @@ import classNames from 'classnames'
 import { ethers } from 'ethers'
 import { formatUnits } from 'ethers/lib/utils'
 import { Trans, useTranslation } from 'next-i18next'
+import { ValueOfUncheckedPrizes } from '../../../components/PrizePoolNetwork/ValueOfUncheckedPrizes'
+import { usePrizePoolByChainId } from '../../../hooks/v4/PrizePool/usePrizePoolByChainId'
+import { usePrizePoolExpectedPrizes } from '../../../hooks/v4/PrizePool/usePrizePoolExpectedPrizes'
+import { useAllLatestDrawWinnersInfo } from '../../../hooks/v4/useDrawWinnersInfo'
 
 export const Title = (props: {
   className?: string
@@ -64,29 +68,15 @@ const DrawsToCheck = (props: { usersAddress: string; prizeDistributor: PrizeDist
 
 const TotalPrizes = (props: { usersAddress: string; prizeDistributor: PrizeDistributor }) => {
   const { usersAddress, prizeDistributor } = props
-  const { t } = useTranslation()
   const { data: unclaimedDrawDatasData, isFetched: isUnclaimedDrawDataFetched } =
     useUsersUnclaimedDrawDatas(usersAddress, prizeDistributor)
-  const { data: tokenData, isFetched: isTokenDataFetched } =
-    usePrizeDistributorToken(prizeDistributor)
   const drawDatas = unclaimedDrawDatasData?.[usersAddress]
 
-  if (!isUnclaimedDrawDataFetched || !drawDatas || !isTokenDataFetched) {
+  if (!isUnclaimedDrawDataFetched || !drawDatas) {
     return null
   }
 
-  const totalAmountUnformatted = Object.values(drawDatas)
-    .filter((drawData) => Boolean(drawData.prizeDistribution))
-    .reduce((acc, drawData) => {
-      return acc.add(drawData.prizeDistribution.prize)
-    }, ethers.constants.Zero)
-
-  return (
-    <CurrencyValue
-      baseValue={formatUnits(totalAmountUnformatted, tokenData?.token.decimals)}
-      options={{ minimumFractionDigits: 0, maximumFractionDigits: 0 }}
-    />
-  )
+  return <ValueOfUncheckedPrizes drawDatas={drawDatas} prizeDistributor={prizeDistributor} />
 }
 
 const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => (
