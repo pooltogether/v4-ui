@@ -177,6 +177,12 @@ export const ReviewTransactionView: React.FC<ReviewTransactionViewProps> = (prop
         <TransactionReceiptButton className='w-full' chainId={chainId} tx={transaction} />
       </>
     )
+  } else if (
+    approvalType === 'eip2612' &&
+    !!amountUnformatted &&
+    allowanceUnformatted?.gte(amountUnformatted)
+  ) {
+    setApprovalType('exact')
   }
 
   return (
