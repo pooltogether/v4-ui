@@ -44,23 +44,9 @@ export const V3DepositList = () => {
           title={`V3 ${t('deposits')}`}
           secondary={`$${data.totalValueUsd.amountPretty}`}
         />
-        <V3AppLink />
       </div>
       <DepositsList data={data} refetch={refetchBalances} />
     </div>
-  )
-}
-
-const V3AppLink = () => {
-  const { t } = useTranslation()
-  return (
-    <a
-      className='opacity-50 hover:opacity-100 flex items-center transition-opacity'
-      href='https://v3.pooltogether.com'
-    >
-      {t('v3App', 'V3 App')}
-      <FeatherIcon icon='external-link' className='w-4 h-4 ml-1' />
-    </a>
   )
 }
 
