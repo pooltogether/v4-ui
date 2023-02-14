@@ -29,6 +29,7 @@ import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
+import { apexRainbowWallet } from 'apex-integration'
 import * as Fathom from 'fathom-client'
 import { Provider as JotaiProvider } from 'jotai'
 import { AppProps } from 'next/app'
@@ -68,6 +69,7 @@ const connectors = connectorsForWallets([
   {
     groupName: 'Recommended',
     wallets: [
+      apexRainbowWallet({ chains: supportedChains }),
       injectedWallet({ chains: supportedChains }),
       walletConnectWallet({ chains: supportedChains }),
       coinbaseWallet({ chains: supportedChains, appName: 'PoolTogether' }),

@@ -4248,6 +4248,11 @@ anymatch@^3.0.3, anymatch@~3.1.1, anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
+apex-integration@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/apex-integration/-/apex-integration-1.0.9.tgz#bee57c13784879012390df298f53e1af45386796"
+  integrity sha512-5DUBRso9ywqmo/kxJNXrQ8WVIoPTsitLdD0A9XOkKRMsIPGTygUQ/TR6RGOlUexW0B7YcMNV2TyNHkUECiX3KQ==
+
 aproba@^1.0.3:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
