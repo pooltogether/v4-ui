@@ -172,8 +172,8 @@ const PrizePoolDepositItem = (props: DepositItemsProps) => {
         externalLinks={[
           {
             id: prizePool.addresses.prizePool,
-            label: t('viewOnV3App', 'View on V3 app'),
-            href: `https://v3.pooltogether.com/account`
+            label: prizePool.url ? 'View on the community website' : t('viewOnV3App', 'View on V3 app'),
+            href: prizePool.url
           }
         ]}
         views={views}
@@ -266,8 +266,8 @@ const PodDepositItem = (props: DepositItemsProps) => {
         externalLinks={[
           {
             id: prizePool.addresses.prizePool,
-            label: t('viewOnV3App', 'View on V3 app'),
-            href: `https://v3.pooltogether.com/account`
+            label: prizePool.url ? 'View on the community website' : t('viewOnV3App', 'View on V3 app'),
+            href: prizePool.url
           }
         ]}
         views={views}

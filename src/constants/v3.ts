@@ -7,6 +7,7 @@ export const V3_PRIZE_POOL_ADDRESSES: {
     symbol: string
     subgraphVersion: string
     tokenFaucets?: string[]
+    url?: string
   }[]
 } = {
   [CHAIN_ID.mainnet]: [
@@ -90,6 +91,13 @@ export const V3_PRIZE_POOL_ADDRESSES: {
       prizePool: '0xc7d56c06F136EFff93e349C7BF8cc46bBF5D902c',
       symbol: 'USDT-0xc7d56c',
       subgraphVersion: '3.3.8'
+    },
+    {
+      prizePool: '0x2758b8d894b08342f0D00AC5f9466fDC795e4618',
+      symbol: 'ETHWIN',
+      subgraphVersion: '',
+      tokenFaucets: ['0x987a99Edba69D6F19d2dA57a4f3A3B030a714122'],
+      url: 'https://steth.win/'
     }
   ],
   [CHAIN_ID.rinkeby]: [
