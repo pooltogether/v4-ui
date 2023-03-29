@@ -32,6 +32,7 @@ export interface V3PrizePool {
     sponsorship: Token
     podStablecoin?: PodToken
   }
+  url: string
 }
 
 /**
@@ -186,6 +187,8 @@ const getPrizePools = async (chainId: number, provider: Provider, prizePoolAddre
     const podAddress = getPodAddress(chainId, prizePoolAddress)
     const podStablecoin = podAddress ? makePodToken(podAddress, tokenResults[podAddress]) : null
 
+    const urlLink = getUrlPool(chainId, prizePoolAddress)
+
     v3PrizePools.push({
       chainId,
       addresses: {
@@ -201,7 +204,8 @@ const getPrizePools = async (chainId: number, provider: Provider, prizePoolAddre
         ticket,
         sponsorship,
         podStablecoin
-      }
+      },
+      url: urlLink
     })
   })
 
@@ -253,4 +257,17 @@ const getPodAddress = (chainId: number, prizePoolAddress: string) => {
   return pods
     ? pods.find((pod) => getAddress(pod.prizePool) === getAddress(prizePoolAddress))?.pod
     : null
+}
+
+/**
+ * Finds correct url for customs pools
+ * @param chainId
+ * @param prizePoolAddress
+ * @returns
+ */
+const getUrlPool = (chainId: number, prizePoolAddress: string) => {
+  const pool = V3_PRIZE_POOL_ADDRESSES?.[chainId]
+  return pool
+    ? pool.find((token) => getAddress(token.prizePool) === getAddress(prizePoolAddress))?.url
+    : 'https://v3.pooltogether.com/account'
 }
