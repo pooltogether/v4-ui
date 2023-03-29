@@ -19,8 +19,8 @@ export const DepositUI = () => {
     >
       <div className='flex flex-col space-y-2'>
         <AnnouncementBanner
-          href={'https://medium.com/pooltogether/upgrading-the-prize-machine-18a277e3dd6a'}
-          i18nKey={'upgradingThePrizeMachine'}
+          href={'https://medium.com/pooltogether/op-rewards-whats-next-29a7ec67d962'}
+          i18nKey={'rewardsUpdate'}
         />
         <ActiveProposalsBanner />
       </div>

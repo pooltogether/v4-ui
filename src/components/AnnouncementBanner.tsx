@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 
-export const AnnouncementBanner = (props: { href: string; i18nKey: string }) => {
+export const AnnouncementBanner = (props: { href: string; i18nKey?: string }) => {
   const { t } = useTranslation()
 
   return (
@@ -15,7 +15,8 @@ export const AnnouncementBanner = (props: { href: string; i18nKey: string }) => 
       )}
     >
       <span>
-        📣 {t('announcementBannerKey')} <b className='text-flashy'>{t('readMore')}</b>
+        📣 {!!props.i18nKey ? t(props.i18nKey) : t('announcementBannerKey')}{' '}
+        <b className='text-flashy'>{t('readMore')}</b>
         <FeatherIcon
           icon='arrow-up-right'
           className='ml-1 mb-0.5 w-2 h-2 xs:w-3 xs:h-3 inline-block'
