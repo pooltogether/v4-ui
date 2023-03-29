@@ -262,7 +262,7 @@ const RewardsGroup: React.FC<{ prizePool: PrizePool; className?: string }> = (pr
   const { data, isFetched } = useChainTwabRewardsPromotions(prizePool.chainId)
   const { t } = useTranslation()
 
-  if (!isFetched || data?.promotions.length === 0) {
+  if (!isFetched || data?.promotions.length === 0 || !data.hasActivePromotions) {
     return null
   }
 
