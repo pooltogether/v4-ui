@@ -4,6 +4,7 @@ export type CURRENCY_ID =
   | 'aud'
   | 'bdt'
   | 'bhd'
+  | 'btc'
   | 'brl'
   | 'cad'
   | 'chf'
@@ -11,6 +12,7 @@ export type CURRENCY_ID =
   | 'cny'
   | 'czk'
   | 'dkk'
+  | 'eth'
   | 'eur'
   | 'gbp'
   | 'hkd'
@@ -66,6 +68,10 @@ export const SUPPORTED_CURRENCIES: Record<CURRENCY_ID, { name: string; symbol: s
       name: 'Bahraini Dinar',
       symbol: 'BD'
     },
+    btc: {
+      name: 'Bitcoin',
+      symbol: '₿'
+    },
     brl: {
       name: 'Brazil Real',
       symbol: 'R$'
@@ -93,6 +99,10 @@ export const SUPPORTED_CURRENCIES: Record<CURRENCY_ID, { name: string; symbol: s
     dkk: {
       name: 'Danish Krone',
       symbol: 'kr.'
+    },
+    eth: {
+      name: 'Ether',
+      symbol: 'Ξ'
     },
     eur: {
       name: 'Euro',
