@@ -11,19 +11,12 @@ import {
   useUpdateStoredPendingTransactions
 } from '@pooltogether/wallet-connection'
 import {
-  connectorsForWallets,
+  getDefaultWallets,
   RainbowKitProvider,
   lightTheme,
   darkTheme,
   DisclaimerComponent
 } from '@rainbow-me/rainbowkit'
-import {
-  injectedWallet,
-  rainbowWallet,
-  walletConnectWallet,
-  metaMaskWallet,
-  coinbaseWallet
-} from '@rainbow-me/rainbowkit/wallets'
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
@@ -64,19 +57,6 @@ initRpcUrls(RPC_URLS)
 // Initialize WAGMI wallet connectors
 const supportedChains = getSupportedChains()
 
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      injectedWallet({ chains: supportedChains }),
-      walletConnectWallet({ chains: supportedChains }),
-      coinbaseWallet({ chains: supportedChains, appName: 'PoolTogether' }),
-      metaMaskWallet({ chains: supportedChains }),
-      rainbowWallet({ chains: supportedChains })
-    ]
-  }
-])
-
 const { chains, provider } = configureChains(supportedChains, [
   jsonRpcProvider({
     rpc: (chain) => ({
@@ -85,6 +65,14 @@ const { chains, provider } = configureChains(supportedChains, [
   }),
   publicProvider()
 ])
+
+console.log(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID)
+
+const { connectors } = getDefaultWallets({
+  appName: 'PoolTogether',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+  chains
+})
 
 const wagmiClient = createClient({
   autoConnect: true,
