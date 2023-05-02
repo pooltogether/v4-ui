@@ -75,11 +75,19 @@ const { connectors: _connectors } = getDefaultWallets({
   chains
 })
 
-const connectors = _connectors()
+const connectors = [] // _connectors()
 connectors.push(
   new WalletConnectConnector({
+    chains,
     options: {
-      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+      metadata: {
+        name: 'PoolTogether',
+        description:
+          'PoolTogether is a crypto-powered savings protocol based on Premium Bonds. Save money and have a chance to win every day.',
+        url: 'https://app.pooltogether.com',
+        icons: ['https://app.pooltogether.com/pooltogether-token-logo.png']
+      }
     }
   })
 )
