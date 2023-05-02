@@ -20,6 +20,7 @@ import {
 import { getSupportedChains } from '@utils/getSupportedChains'
 import { FathomEvent, logEvent } from '@utils/services/fathom'
 import { initSentry } from '@utils/services/initSentry'
+import { WalletConnectConnector } from '@wagmi/core/connectors/walletConnect'
 import { jsonRpcProvider } from '@wagmi/core/providers/jsonRpc'
 import { publicProvider } from '@wagmi/core/providers/public'
 import * as Fathom from 'fathom-client'
@@ -68,11 +69,20 @@ const { chains, provider } = configureChains(supportedChains, [
 
 console.log(process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID)
 
-const { connectors } = getDefaultWallets({
+const { connectors: _connectors } = getDefaultWallets({
   appName: 'PoolTogether',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
   chains
 })
+
+const connectors = _connectors()
+connectors.push(
+  new WalletConnectConnector({
+    options: {
+      projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+    }
+  })
+)
 
 const wagmiClient = createClient({
   autoConnect: true,
