@@ -44,7 +44,8 @@ export const getWalletConnectors = (chains: Chain[]): (() => Connector[]) => {
     validValues: Object.keys(WALLETS)
   })
 
-  if (!!highlightedWallet) {
+  // Don't highlight solely the injected wallet since it might be something sketchy.
+  if (!!highlightedWallet && highlightedWallet !== 'injected') {
     walletGroups.push({
       groupName: 'Recommended',
       wallets: [WALLETS[highlightedWallet]({ appName, chains, projectId })]
