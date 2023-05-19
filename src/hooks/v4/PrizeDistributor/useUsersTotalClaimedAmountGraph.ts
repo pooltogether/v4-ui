@@ -24,10 +24,10 @@ export const useUsersTotalClaimedAmountGraph = (usersAddress: string) => {
 
     const { totalClaimedAmountUnformatted, totalClaimedPrizes } = claimedAmountsQueryResults.reduce(
       (accumulator, queryResult) => {
-        const totalClaimed = queryResult.data.totalClaimed
+        const totalClaimed = queryResult.data?.totalClaimed
 
-        if (Boolean(totalClaimed)) {
-          const totalClaimedUnformatted = BigNumber.from(queryResult.data.totalClaimed)
+        if (!!totalClaimed) {
+          const totalClaimedUnformatted = BigNumber.from(totalClaimed)
 
           return {
             totalClaimedAmountUnformatted:
