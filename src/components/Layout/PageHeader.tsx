@@ -9,10 +9,12 @@ import {
   NetworkIcon,
   HeaderLogo,
   PageHeaderContainer,
-  SettingsModal
+  SettingsModal,
+  ExternalLink
 } from '@pooltogether/react-components'
 import { getNetworkNiceNameByChainId } from '@pooltogether/utilities'
 import {
+  CHAIN_ID,
   NetworkSelectionCurrentlySelected,
   NetworkSelectionList,
   useWalletChainId
@@ -129,10 +131,8 @@ const ClearLocalStorageSettingsItem = () => {
 
 const NetworkWarning = () => {
   const [isOpen, setIsOpen] = useState(true)
-  const chainIds = CHAIN_IDS_TO_BLOCK
-  const { t } = useTranslation()
 
-  if (chainIds.length === 0) return null
+  if (CHAIN_IDS_TO_BLOCK.length === 0) return null
 
   return (
     <>
@@ -143,31 +143,60 @@ const NetworkWarning = () => {
         label='network-warning-modal'
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
-        className='border-2 border-pt-red-light flex flex-col text-center rounded bg-darkened py-8 px-4 space-y-4'
+        className='flex flex-col text-center rounded py-8 px-4 space-y-4'
       >
-        <FeatherIcon icon='alert-triangle' className='text-pt-red-light w-12 h-12 mx-auto' />
+        {/* <FeatherIcon icon='alert-triangle' className='text-gradient-yellow' /> */}
+        <NetworkIcon chainId={CHAIN_ID.optimism} sizeClassName='w-12 h-12 mx-auto' />
         <p className='text-lg font-bold'>
-          {t(
-            'issuesContactingBlockchain',
-            `We're having issues contacting one or more blockchains.`
-          )}
+          Optimism is undergoing expected downtime. Please check back in 2-4 hours.
         </p>
         <p className='opacity-70'>
-          {t(
-            'followingChainsHaveDegradedService',
-            'The following networks will have degraded service in app:'
-          )}
+          All transactions, deposits, and withdrawals on Optimism will be unavailable for the
+          duration of the downtime, and the OP Mainnet chain will not be progressing.
         </p>
-        {CHAIN_IDS_TO_BLOCK.map((chainId) => (
-          <div
-            key={`chain-to-block-${chainId}`}
-            className='flex space-x-2 items-center mx-auto w-full justify-center'
-          >
-            <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
-            <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
-          </div>
-        ))}
+        <ExternalLink href='https://twitter.com/optimismFND/status/1658202279147601921'>
+          Read more
+        </ExternalLink>
       </Modal>
     </>
   )
+
+  // NOTE: This is the default modal for manually hiding a network (like when Polygon was down for a bit).
+  //       Uncomment once the Bedrock upgrade is finished.
+  // return (
+  //   <>
+  //     <button onClick={() => setIsOpen(true)} className='mr-1'>
+  //       <FeatherIcon icon='alert-triangle' className='text-pt-red-light w-6 h-6' />
+  //     </button>
+  //     <Modal
+  //       label='network-warning-modal'
+  //       isOpen={isOpen}
+  //       closeModal={() => setIsOpen(false)}
+  //       className='flex flex-col text-center rounded py-8 px-4 space-y-4'
+  //     >
+  //       <FeatherIcon icon='alert-triangle' className='text-pt-red-light w-12 h-12 mx-auto' />
+  //       <p className='text-lg font-bold'>
+  //         {t(
+  //           'issuesContactingBlockchain',
+  //           `We're having issues contacting one or more blockchains.`
+  //         )}
+  //       </p>
+  //       <p className='opacity-70'>
+  //         {t(
+  //           'followingChainsHaveDegradedService',
+  //           'The following networks will have degraded service in app:'
+  //         )}
+  //       </p>
+  //       {CHAIN_IDS_TO_BLOCK.map((chainId) => (
+  //         <div
+  //           key={`chain-to-block-${chainId}`}
+  //           className='flex space-x-2 items-center mx-auto w-full justify-center'
+  //         >
+  //           <NetworkIcon chainId={chainId} sizeClassName='w-6 h-6' />
+  //           <span className='text-lg font-bold'>{getNetworkNiceNameByChainId(chainId)}</span>
+  //         </div>
+  //       ))}
+  //     </Modal>
+  //   </>
+  // )
 }
