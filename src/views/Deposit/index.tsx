@@ -32,9 +32,9 @@ export const DepositUI = () => {
 
 const ActiveProposalsBanner = () => {
   const { t } = useTranslation()
-  const { data, isFetched, error } = useAllProposalsByStatus()
+  const { data, isFetched, error, isError } = useAllProposalsByStatus()
   if (error || !isFetched) return null
-  const activeProposalsCount = data.active.length
+  const activeProposalsCount = data?.active.length || 0
   const noProposals = activeProposalsCount === 0
   if (noProposals) return null
 

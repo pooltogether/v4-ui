@@ -35,7 +35,7 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
         main={<UsersVotes usersAddress={usersAddress} />}
         href={'https://vote.pooltogether.com/proposals?view=active'}
         link={
-          isFetched && data.active.length > 0
+          isFetched && !!data && data.active.length > 0
             ? t('activeProposalsCount', { count: data.active.length })
             : t('seeMore', 'See more')
         }
