@@ -77,7 +77,7 @@ interface TotalWinningsSheetProps {
 export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
   const { isOpen, closeModal, usersAddress } = props
   const { t } = useTranslation()
-  const { data } = useUsersTotalClaimedAmountGraph(usersAddress)
+  const { data, isError } = useUsersTotalClaimedAmountGraph(usersAddress)
 
   return (
     <BottomSheet isOpen={isOpen} closeModal={closeModal} className='flex flex-col space-y-8'>
@@ -85,10 +85,11 @@ export const TotalWinningsSheet = (props: TotalWinningsSheetProps) => {
         <img src={'/trophy.svg'} className='mr-2' style={{ width: '38px' }} />
         <div className='flex flex-col leading-none'>
           <span className='font-bold text-xl mb-1'>
-            <CurrencyValue
-              baseValue={data?.totalClaimedAmount?.amount}
-              // options={{ notation: 'compact' }}
-            />
+            {!isError ? (
+              <CurrencyValue baseValue={data?.totalClaimedAmount?.amount} />
+            ) : (
+              <CurrencyValue baseValue={0} />
+            )}
           </span>
           <span className='opacity-80 font-semibold text-xxs'>{t('totalWinnings')}</span>
         </div>
@@ -102,6 +103,7 @@ const PrizesClaimedList = (props: { usersAddress: string }) => {
   const { usersAddress } = props
   const queryResults = useAllUsersClaimedAmountsGraph(usersAddress)
   const isFetched = queryResults.every((queryResult) => queryResult.isFetched)
+  const isError = queryResults.some((queryResult) => queryResult.isError)
   const { t } = useTranslation()
 
   const listItems: React.ReactNode[] = useMemo(() => {
@@ -110,10 +112,12 @@ const PrizesClaimedList = (props: { usersAddress: string }) => {
       <LoadingRow key={'loadingrow2'} />,
       <LoadingRow key={'loadingrow3'} />
     ]
-    if (isFetched) {
+    if (isFetched && !isError) {
       let itemData = queryResults
         .flatMap((queryResult) => {
           const { data } = queryResult
+
+          if (!data) return []
 
           return Object.keys(data.claimedAmounts).map((drawId) => {
             const claimedAmount = data.claimedAmounts[drawId]
@@ -140,6 +144,10 @@ const PrizesClaimedList = (props: { usersAddress: string }) => {
     }
     return listItems
   }, [])
+
+  if (isError) {
+    return <ErrorState />
+  }
 
   if (listItems.length === 0) {
     return <EmptyState />
@@ -186,6 +194,16 @@ const EmptyState = () => {
     <div className='rounded-lg bg-actually-black bg-opacity-5 dark:bg-white dark:bg-opacity-5 p-4 flex flex-col text-center'>
       <span className='font-bold opacity-70'>{t('noPrizesYet', 'No prizes... Yet.')}</span>
       <span className='text-9xl'>🤞</span>
+    </div>
+  )
+}
+
+const ErrorState = () => {
+  const { t } = useTranslation()
+  return (
+    <div className='rounded-lg bg-actually-black bg-opacity-5 dark:bg-white dark:bg-opacity-5 p-4 flex flex-col text-center'>
+      <span className='font-bold opacity-70'>{t('errorLoadingData')}</span>
+      <span className='text-9xl'>😔</span>
     </div>
   )
 }

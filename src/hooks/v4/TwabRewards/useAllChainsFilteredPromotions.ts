@@ -30,7 +30,7 @@ export const useAllChainsFilteredPromotions = () => {
   const rpcIsError = rpcQueryResults.some((queryResult) => queryResult.isError)
 
   const isFetched = graphIsFetched && rpcIsFetched
-  const isError = graphIsError && rpcIsError
+  const isError = graphIsError || rpcIsError
 
   return useQueries(
     chainIds.map((chainId) => {

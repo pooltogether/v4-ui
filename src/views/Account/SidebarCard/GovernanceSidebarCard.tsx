@@ -18,9 +18,13 @@ export const GovernanceSidebarCard: React.FC<{ className?: string; usersAddress:
   props
 ) => {
   const { className, usersAddress } = props
-  const { data, isFetched } = useAllProposalsByStatus()
+  const { data, isFetched, isError } = useAllProposalsByStatus()
 
   const { t } = useTranslation()
+
+  if (isError) {
+    return null
+  }
 
   return (
     <>
