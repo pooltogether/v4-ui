@@ -5,7 +5,6 @@ import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { DepositTrigger } from './DepositTrigger'
-import { RewardsBanners } from './DepositTrigger/RewardsBanners'
 import { PrizePoolNetworkCarousel } from './PrizePoolNetworkCarousel'
 import { AnnouncementBanner } from '../../components/AnnouncementBanner'
 
@@ -19,8 +18,8 @@ export const DepositUI = () => {
     >
       <div className='flex flex-col space-y-2'>
         <AnnouncementBanner
-          href={'https://medium.com/pooltogether/op-rewards-whats-next-29a7ec67d962'}
-          i18nKey={'rewardsUpdate'}
+          href={'https://pooltogether.mirror.xyz/iKqcuu2roE4BHGahxEi9Ci35r16FX5jbzWoHHpiLqsY'}
+          i18nKey={'delegationWeek'}
         />
         <ActiveProposalsBanner />
       </div>
