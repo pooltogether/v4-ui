@@ -3,7 +3,9 @@ import { usePropagatingDraws } from '@hooks/v4/PrizeDistributor/usePropagatingDr
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState } from '@hooks/v4/usePrizePageState'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { useIsWalletConnected } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
+import { useTranslation } from 'next-i18next'
 import { MultipleDrawIds } from '../MultiDrawsCard/MultipleDrawDetails'
 import { MultipleDrawsDate } from '../MultiDrawsCard/MultipleDrawsDate'
 
@@ -82,4 +84,14 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
   )
 }
 
-const NoDraws = () => null
+const NoDraws = () => {
+  const { t } = useTranslation()
+
+  const isWalletConnected = useIsWalletConnected()
+
+  return (
+    <span className='text-lg font-bold text-inverse text-center'>
+      {t(isWalletConnected ? 'noDrawsToCheckNoDeposits' : 'connectAWalletToSeeIfYouWon')}
+    </span>
+  )
+}
