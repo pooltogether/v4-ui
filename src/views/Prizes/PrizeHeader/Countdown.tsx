@@ -1,14 +1,17 @@
+import { ConnectWalletButton } from '@components/ConnectWalletButton'
 import { useAllDrawLocks } from '@hooks/v4/PrizeDistributor/useAllDrawLocks'
 import { useLockedPartialDrawDatas } from '@hooks/v4/PrizeDistributor/useLockedPartialDrawDatas'
 import { useUsersUnclaimedDrawDatas } from '@hooks/v4/PrizeDistributor/useUsersUnclaimedDrawDatas'
 import { CheckedState, PrizePageState, usePrizePageState } from '@hooks/v4/usePrizePageState'
 import {
+  ButtonSize,
   ThemedClipSpinner,
   TimeDisplay,
   Tooltip,
   useCountdown
 } from '@pooltogether/react-components'
 import { PrizeDistributor } from '@pooltogether/v4-client-js'
+import { useIsWalletConnected } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
@@ -129,12 +132,15 @@ const LockedDraws = (props: { prizeDistributor: PrizeDistributor }) => {
 const NoDraws = () => {
   const { t } = useTranslation()
 
+  const isWalletConnected = useIsWalletConnected()
+
   return (
     <div className='flex flex-col text-center mx-auto xs:mx-0 xs:text-left'>
-      <span className='text-lg font-bold text-inverse text-center'>
-        {t('noDrawsToCheckNoDeposits')}
-      </span>
-      <span className='text-center'>{t('comeBackSoon')}</span>
+      {isWalletConnected ? (
+        <span className='text-center'>{t('comeBackSoon')}</span>
+      ) : (
+        <ConnectWalletButton />
+      )}
     </div>
   )
 }

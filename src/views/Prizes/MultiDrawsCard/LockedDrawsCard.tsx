@@ -9,6 +9,7 @@ import {
   useCountdown
 } from '@pooltogether/react-components'
 import { Draw, PrizeDistribution, PrizeDistributor } from '@pooltogether/v4-client-js'
+import { useIsWalletConnected } from '@pooltogether/wallet-connection'
 import classNames from 'classnames'
 import FeatherIcon from 'feather-icons-react'
 import { useTranslation } from 'next-i18next'
@@ -166,11 +167,15 @@ const LockedDrawsCountdown = (props: {
 const NoDrawsContent = (props: { className?: string }) => {
   const { t } = useTranslation()
 
+  const isWalletConnected = useIsWalletConnected()
+
   return (
     <div className='flex flex-col justify-end h-full xs:flex-row xs:justify-start'>
       <div className='flex flex-col text-center mx-auto xs:mx-0 xs:text-left'>
         <span className='text-lg text-inverse'>{t('noDrawsToCheckNoDeposits')}</span>
-        <span className=''>{t('comeBackSoon')}</span>
+        <span className=''>
+          {t(isWalletConnected ? 'comeBackSoon' : 'connectAWalletToSeeIfYouWon')}
+        </span>
       </div>
     </div>
   )
