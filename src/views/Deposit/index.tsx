@@ -17,10 +17,10 @@ export const DepositUI = () => {
       style={{ minHeight: '620px' }}
     >
       <div className='flex flex-col space-y-2'>
-        {/* <AnnouncementBanner
-          href={'https://pooltogether.mirror.xyz/iKqcuu2roE4BHGahxEi9Ci35r16FX5jbzWoHHpiLqsY'}
-          i18nKey={'delegationWeek'}
-        /> */}
+        <AnnouncementBanner
+          href={'https://pooltogether.mirror.xyz/-ZAV-RfzeNW5F1fnGGjMF3LL7G8NNgMhYwhWMS3Y4rI'}
+          i18nKey={'pooltogetherEnsSubdomain'}
+        />
         <ActiveProposalsBanner />
       </div>
       <PrizePoolNetworkCarousel />
