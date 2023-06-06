@@ -35,15 +35,7 @@ export const RPC_URLS = {
 }
 
 // NOTE: Should be empty. Add a chain id to hide it in app.
-// NOTE: Remember to set the default chain ID back to Optimism after removing the temporary block for Bedrock upgrade.
 export const CHAIN_IDS_TO_BLOCK = []
-const currentTime = msToSeconds(Date.now())
-const OP_UPGRADE_START_TIME = 1686067200
-const OP_UPGRADE_END_TIME = 1686081600
-
-if (currentTime >= OP_UPGRADE_START_TIME && currentTime <= OP_UPGRADE_END_TIME) {
-  CHAIN_IDS_TO_BLOCK.push(CHAIN_ID.optimism)
-}
 
 // Pull prize pool addresses from the contract list
 export const V4_PRIZE_POOLS = Object.freeze({
@@ -152,9 +144,8 @@ export const SUPPORTED_CHAINS: { [key: string]: Chain[] } = Object.freeze({
   [APP_ENVIRONMENTS.testnets]: SUPPORTED_CHAIN_IDS[APP_ENVIRONMENTS.testnets].map(getChain)
 })
 
-// NOTE: Remember to change default chain ID back to Optimism after Bedrock upgrade
 export const DEFAULT_CHAIN_IDS = Object.freeze({
-  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.mainnet,
+  [APP_ENVIRONMENTS.mainnets]: CHAIN_ID.optimism,
   [APP_ENVIRONMENTS.testnets]: CHAIN_ID['optimism-goerli']
 })
 

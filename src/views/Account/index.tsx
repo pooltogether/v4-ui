@@ -58,11 +58,11 @@ export const AccountUI = (props) => {
         <Card>
           <V4DepositList />
           <DelegationList />
-          {/* <Rewards /> */}
+          <Rewards />
           <hr className='sm:hidden' />
           <GovernanceSidebarCard usersAddress={usersAddress} className='sm:hidden' />
           <OddsOfWinningWithX className='sm:hidden' />
-          {/* <EarnRewardsCard className='sm:hidden' /> */}
+          <EarnRewardsCard className='sm:hidden' />
           <hr className='sm:hidden' />
           <V3StakingList />
           <V3DepositList />
@@ -74,7 +74,7 @@ export const AccountUI = (props) => {
         <PastPrizesSidebarCard usersAddress={usersAddress} />
         <OddsSidebarCard usersAddress={usersAddress} />
         <GovernanceSidebarCard usersAddress={usersAddress} />
-        {/* <EarnRewardsCard /> */}
+        <EarnRewardsCard />
         <SocialLinks />
       </SidebarContent>
     </PagePadding>
