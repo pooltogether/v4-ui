@@ -38,8 +38,9 @@ export const RPC_URLS = {
 // NOTE: Remember to set the default chain ID back to Optimism after removing the temporary block for Bedrock upgrade.
 export const CHAIN_IDS_TO_BLOCK = []
 const currentTime = msToSeconds(Date.now())
-const OP_UPGRADE_START_TIME = 1686009600
-const OP_UPGRADE_END_TIME = 1686024000
+const OP_UPGRADE_START_TIME = 1686067200
+const OP_UPGRADE_END_TIME = 1686081600
+
 if (currentTime >= OP_UPGRADE_START_TIME && currentTime <= OP_UPGRADE_END_TIME) {
   CHAIN_IDS_TO_BLOCK.push(CHAIN_ID.optimism)
 }
