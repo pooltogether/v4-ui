@@ -709,14 +709,14 @@ const ClaimModalReceipt = (props: {
           <TwitterIntentButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=twitter&utm_content=rewards-claim'
             text={t('rewardsTweet', {
-              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
+              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 2 })}`
             })}
             hashTags={['PoolTogether']}
           />
           <LensterPostButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=rewards-claim'
             text={t('rewardsLensPost', {
-              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 0 })}`
+              amountClaimed: `$${numberWithCommas(cachedClaimableUsd, { precision: 2 })}`
             })}
             hashTags={['PoolTogether']}
           />

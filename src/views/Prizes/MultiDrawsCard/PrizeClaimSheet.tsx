@@ -190,14 +190,14 @@ export const PrizeClaimSheet = (props: PrizeClaimSheetProps) => {
           <TwitterIntentButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=twitter&utm_content=prize-claim'
             text={t('prizesTweet', {
-              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
+              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 2 })}`
             })}
             hashTags={['PoolTogether']}
           />
           <LensterPostButton
             url='https://app.pooltogether.com?utm_campaign=in-app-share&utm_source=app&utm_medium=lenster&utm_content=prize-claim'
             text={t('prizesLensPost', {
-              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 0 })}`
+              amountClaimed: `$${numberWithCommas(claimAmountTwitter, { precision: 2 })}`
             })}
             hashTags={['PoolTogether']}
           />
