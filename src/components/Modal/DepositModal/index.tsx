@@ -15,6 +15,7 @@ import {
   PrizePool
 } from '@pooltogether/v4-client-js'
 import { useTransaction } from '@pooltogether/wallet-connection'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ApprovalType } from '@views/Deposit/DepositTrigger/DepositModal'
 import { RSV } from 'eth-permit/dist/rpc'
 import { useCallback, useEffect, useState } from 'react'
@@ -99,6 +100,8 @@ export const DepositModal: React.FC<{
     setSelectedViewId(ViewIds.deposit)
   }
 
+  const { openConnectModal } = useConnectModal()
+
   return (
     <BottomSheetWithViewState
       snapPoints={snapToFull}
@@ -131,7 +134,7 @@ export const DepositModal: React.FC<{
       // reviewView
       sendDepositTransaction={sendDepositTransaction}
       clearDepositTransaction={() => setDepositTransactionId('')}
-      connectWallet={() => setSelectedViewId(ViewIds.walletConnection)}
+      connectWallet={openConnectModal}
       approvalType={approvalType}
       setApprovalType={setApprovalType}
       eip2612DepositPermit={eip2612DepositPermit}

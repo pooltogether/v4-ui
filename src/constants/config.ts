@@ -204,7 +204,8 @@ export const BRIDGE_URLS = Object.freeze({
     { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' },
     { url: 'https://wallet.polygon.technology/bridge', title: 'Polygon bridge' },
     { url: 'https://bridge.avax.network/', title: 'Avalanche bridge' },
-    { url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }
+    { url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' },
+    { url: 'https://across.to/bridge', title: 'Across bridge' }
     // { url: 'https://zapper.fi/bridge', title: 'Zapper' },
     // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
@@ -214,7 +215,10 @@ export const BRIDGE_URLS = Object.freeze({
     // { url: 'https://app.hop.exchange/send?token=USDC', title: 'Hop Protocol' }
   ],
   [CHAIN_ID.avalanche]: [{ url: 'https://bridge.avax.network/', title: 'Avalanche bridge' }],
-  [CHAIN_ID.optimism]: [{ url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' }],
+  [CHAIN_ID.optimism]: [
+    { url: 'https://app.optimism.io/bridge', title: 'Optimism bridge' },
+    { url: 'https://across.to/bridge', title: 'Across bridge' }
+  ],
   [CHAIN_ID.arbitrum]: [{ url: 'https://bridge.arbitrum.io/', title: 'Arbitrum bridge' }]
 })
 

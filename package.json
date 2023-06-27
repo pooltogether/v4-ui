@@ -49,7 +49,7 @@
     "@pooltogether/v4-twab-delegator-js": "0.2.2",
     "@pooltogether/v4-utils-js": "0.1.5",
     "@pooltogether/wallet-connection": "1.0.3",
-    "@rainbow-me/rainbowkit": "0.12.15-canary.3",
+    "@rainbow-me/rainbowkit": "0.12.15",
     "@reach/dialog": "^0.15.3",
     "@reach/menu-button": "^0.15.3",
     "@reach/tooltip": "^0.15.3",
