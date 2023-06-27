@@ -16,8 +16,6 @@ import {
   Transaction,
   TransactionState,
   TransactionStatus,
-  useConnectWallet,
-  useIsWalletConnected,
   useTransaction,
   useUsersAddress
 } from '@pooltogether/wallet-connection'
@@ -162,8 +160,6 @@ const DepositFormView = (props: DepositFormViewProps) => {
   const { chainId, ticket, token, amountToDeposit, form, depositTx, setReviewDepositView } = props
 
   const { t } = useTranslation()
-  const connectWallet = useConnectWallet()
-  const isWalletConnected = useIsWalletConnected()
 
   const {
     handleSubmit,
