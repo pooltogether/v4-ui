@@ -50,7 +50,7 @@ export const AppContainer: React.FC<AppProps> = (props) => {
     const fathomSiteId = process.env.NEXT_PUBLIC_FATHOM_SITE_ID
     if (fathomSiteId) {
       Fathom.load(process.env.NEXT_PUBLIC_FATHOM_SITE_ID, {
-        url: 'https://goose.pooltogether.com/script.js',
+        url: 'https://cdn.usefathom.com/script.js',
         includedDomains: ['app.pooltogether.com', 'v4.pooltogether.com']
       })
       const onRouteChangeComplete = (url) => {
