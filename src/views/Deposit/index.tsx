@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { DepositTrigger } from './DepositTrigger'
 import { PrizePoolNetworkCarousel } from './PrizePoolNetworkCarousel'
-import { AnnouncementBanner } from '../../components/AnnouncementBanner'
+import { AnnouncementBanner, V5BetaAnnouncementBanner } from '../../components/AnnouncementBanner'
 
 export const DepositUI = () => {
   return (
@@ -17,10 +17,11 @@ export const DepositUI = () => {
       style={{ minHeight: '620px' }}
     >
       <div className='flex flex-col space-y-2'>
-        <AnnouncementBanner
+        {/* <AnnouncementBanner
           href={'https://pooltogether.mirror.xyz/-ZAV-RfzeNW5F1fnGGjMF3LL7G8NNgMhYwhWMS3Y4rI'}
           i18nKey={'pooltogetherEnsSubdomain'}
-        />
+        /> */}
+        <V5BetaAnnouncementBanner />
         <ActiveProposalsBanner />
       </div>
       <PrizePoolNetworkCarousel />
