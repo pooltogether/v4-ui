@@ -27,10 +27,10 @@ export const AnnouncementBanner = (props: { href: string; i18nKey?: string }) =>
   )
 }
 
-export const V5BetaAnnouncementBanner = () => {
+export const V5AnnouncementBanner = () => {
   return (
     <a
-      href='https://pooltogether.mirror.xyz/IeSRsl6cRCF64LqBruoHINJb1EipiBcRm-JU2U9-WuI'
+      href='https://pooltogether.mirror.xyz/CBvKNusRaaLJUSFH9ZQHureadrOF7eE7r6QsgqP2Oc8'
       rel='noopener noreferrer'
       target='_blank'
       className={classNames(
@@ -38,7 +38,7 @@ export const V5BetaAnnouncementBanner = () => {
       )}
     >
       <span>
-        📣 The private beta for PoolTogether V5 is live!
+        📣 PoolTogether V5 is live!
         <FeatherIcon
           icon='arrow-up-right'
           className='ml-1 mb-0.5 w-2 h-2 xs:w-3 xs:h-3 inline-block'
