@@ -60,10 +60,9 @@ const temporaryAlerts: { id: string; content: ReactNode }[] = [
         >
           proposal 358
         </ExternalLink>{' '}
-        passes, due to a security issue. While no funds are at risk, the Prize USDC.e and Prize DAI
-        vaults will be unavailable in the meantime. Aave is currently evaluating a security issue.
-        Deposits will be paused for Prize USDC.e and Prize DAI until further updates. No funds are
-        at risk.{' '}
+        passes, due to a security issue. While no funds are at risk, the Optimism prize pool will be
+        unavailable in the meantime. Deposits will be paused for the Optimism prize pool until
+        further updates. No funds are at risk.{' '}
       </span>
     )
   }
