@@ -17,8 +17,8 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { ToastContainer, ToastContainerProps } from 'react-toastify'
 import { useAccount } from 'wagmi'
 import { CustomErrorBoundary } from './CustomErrorBoundary'
-import { WalletConnectionContainer } from './WalletConnectionContainer'
 import { Toaster } from './SonnerToaster'
+import { WalletConnectionContainer } from './WalletConnectionContainer'
 
 // Initialize react-query Query Client
 const queryClient = new QueryClient({

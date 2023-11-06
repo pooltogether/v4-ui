@@ -1,13 +1,13 @@
 import { PageHeader } from '@components/Layout/PageHeader'
+import { ExternalLink } from '@pooltogether/react-components'
 import classNames from 'classnames'
 import React, { useEffect, ReactNode } from 'react'
+import { toast } from 'sonner'
 import { Navigation } from './Navigation'
-import { ExternalLink } from '@pooltogether/react-components'
 
 /**
  * Sonner Toasts
  */
-import { toast } from 'sonner'
 
 interface LayoutProps {
   className?: string
