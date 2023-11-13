@@ -18,11 +18,11 @@ interface LayoutProps {
 const Layout = (props: LayoutProps) => {
   const { children, className, backgroundClassName } = props
 
-  useEffect(() => {
-    temporaryAlerts.forEach((alert) => {
-      toast(alert.content, { id: alert.id })
-    })
-  })
+  // useEffect(() => {
+  //   temporaryAlerts.forEach((alert) => {
+  //     toast(alert.content, { id: alert.id })
+  //   })
+  // })
 
   return (
     <div
@@ -47,23 +47,23 @@ const Layout = (props: LayoutProps) => {
 
 export default Layout
 
-const temporaryAlerts: { id: string; content: ReactNode }[] = [
-  {
-    id: 'aave-issues-04-11-2023',
-    content: (
-      <span className='flex flex-col items-center text-center text-xxs'>
-        Aave has temporarily paused deposits and withdrawals on some assets until{' '}
-        <ExternalLink
-          href='https://app.aave.com/governance/proposal/?proposalId=358'
-          className='text-pt-teal transition hover:opacity-90 underline'
-          underline
-        >
-          proposal 358
-        </ExternalLink>{' '}
-        passes, due to a security issue. While no funds are at risk, the Optimism prize pool will be
-        unavailable in the meantime. Deposits will be paused for the Optimism prize pool until
-        further updates. No funds are at risk.{' '}
-      </span>
-    )
-  }
-]
+// const temporaryAlerts: { id: string; content: ReactNode }[] = [
+//   {
+//     id: 'aave-issues-04-11-2023',
+//     content: (
+//       <span className='flex flex-col items-center text-center text-xxs'>
+//         Aave has temporarily paused deposits and withdrawals on some assets until{' '}
+//         <ExternalLink
+//           href='https://app.aave.com/governance/proposal/?proposalId=358'
+//           className='text-pt-teal transition hover:opacity-90 underline'
+//           underline
+//         >
+//           proposal 358
+//         </ExternalLink>{' '}
+//         passes, due to a security issue. While no funds are at risk, the Optimism prize pool will be
+//         unavailable in the meantime. Deposits will be paused for the Optimism prize pool until
+//         further updates. No funds are at risk.{' '}
+//       </span>
+//     )
+//   }
+// ]
