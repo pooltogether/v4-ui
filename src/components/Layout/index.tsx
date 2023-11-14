@@ -60,9 +60,7 @@ export default Layout
 //         >
 //           proposal 358
 //         </ExternalLink>{' '}
-//         passes, due to a security issue. While no funds are at risk, the Optimism prize pool will be
-//         unavailable in the meantime. Deposits will be paused for the Optimism prize pool until
-//         further updates. No funds are at risk.{' '}
+//         passes, due to a security issue. While no funds are at risk, this temporarily halts deposits and withdrawals from the Optimism and Polygon prize pools until the proposal passes.{' '}
 //       </span>
 //     )
 //   }
